@@ -1,0 +1,1161 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2021-04-20",
+    "endpointPrefix":"identity-chime",
+    "protocol":"rest-json",
+    "serviceFullName":"Amazon Chime SDK Identity",
+    "serviceId":"Chime SDK Identity",
+    "signatureVersion":"v4",
+    "signingName":"chime",
+    "uid":"chime-sdk-identity-2021-04-20"
+  },
+  "operations":{
+    "CreateAppInstance":{
+      "name":"CreateAppInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app-instances",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAppInstanceRequest"},
+      "output":{"shape":"CreateAppInstanceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates an Amazon Chime SDK messaging <code>AppInstance</code> under an AWS account. Only SDK messaging customers use this API. <code>CreateAppInstance</code> supports idempotency behavior as described in the AWS API Standard.</p> <p>identity</p>"
+    },
+    "CreateAppInstanceAdmin":{
+      "name":"CreateAppInstanceAdmin",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app-instances/{appInstanceArn}/admins",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAppInstanceAdminRequest"},
+      "output":{"shape":"CreateAppInstanceAdminResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Promotes an <code>AppInstanceUser</code> to an <code>AppInstanceAdmin</code>. The promoted user can perform the following actions. </p> <ul> <li> <p> <code>ChannelModerator</code> actions across all channels in the <code>AppInstance</code>.</p> </li> <li> <p> <code>DeleteChannelMessage</code> actions.</p> </li> </ul> <p>Only an <code>AppInstanceUser</code> can be promoted to an <code>AppInstanceAdmin</code> role.</p>"
+    },
+    "CreateAppInstanceUser":{
+      "name":"CreateAppInstanceUser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app-instance-users",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAppInstanceUserRequest"},
+      "output":{"shape":"CreateAppInstanceUserResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates a user under an Amazon Chime <code>AppInstance</code>. The request consists of a unique <code>appInstanceUserId</code> and <code>Name</code> for that user.</p>"
+    },
+    "DeleteAppInstance":{
+      "name":"DeleteAppInstance",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app-instances/{appInstanceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAppInstanceRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes an <code>AppInstance</code> and all associated data asynchronously.</p>"
+    },
+    "DeleteAppInstanceAdmin":{
+      "name":"DeleteAppInstanceAdmin",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAppInstanceAdminRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Demotes an <code>AppInstanceAdmin</code> to an <code>AppInstanceUser</code>. This action does not delete the user.</p>"
+    },
+    "DeleteAppInstanceUser":{
+      "name":"DeleteAppInstanceUser",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAppInstanceUserRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes an <code>AppInstanceUser</code>.</p>"
+    },
+    "DescribeAppInstance":{
+      "name":"DescribeAppInstance",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instances/{appInstanceArn}"
+      },
+      "input":{"shape":"DescribeAppInstanceRequest"},
+      "output":{"shape":"DescribeAppInstanceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns the full details of an <code>AppInstance</code>.</p>"
+    },
+    "DescribeAppInstanceAdmin":{
+      "name":"DescribeAppInstanceAdmin",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppInstanceAdminRequest"},
+      "output":{"shape":"DescribeAppInstanceAdminResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns the full details of an <code>AppInstanceAdmin</code>.</p>"
+    },
+    "DescribeAppInstanceUser":{
+      "name":"DescribeAppInstanceUser",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}"
+      },
+      "input":{"shape":"DescribeAppInstanceUserRequest"},
+      "output":{"shape":"DescribeAppInstanceUserResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns the full details of an <code>AppInstanceUser</code>.</p>"
+    },
+    "GetAppInstanceRetentionSettings":{
+      "name":"GetAppInstanceRetentionSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instances/{appInstanceArn}/retention-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAppInstanceRetentionSettingsRequest"},
+      "output":{"shape":"GetAppInstanceRetentionSettingsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Gets the retention settings for an <code>AppInstance</code>.</p>"
+    },
+    "ListAppInstanceAdmins":{
+      "name":"ListAppInstanceAdmins",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instances/{appInstanceArn}/admins",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppInstanceAdminsRequest"},
+      "output":{"shape":"ListAppInstanceAdminsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns a list of the administrators in the <code>AppInstance</code>.</p>"
+    },
+    "ListAppInstanceUsers":{
+      "name":"ListAppInstanceUsers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instance-users"
+      },
+      "input":{"shape":"ListAppInstanceUsersRequest"},
+      "output":{"shape":"ListAppInstanceUsersResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>List all <code>AppInstanceUsers</code> created under a single <code>AppInstance</code>.</p>"
+    },
+    "ListAppInstances":{
+      "name":"ListAppInstances",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instances"
+      },
+      "input":{"shape":"ListAppInstancesRequest"},
+      "output":{"shape":"ListAppInstancesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Lists all Amazon Chime <code>AppInstance</code>s created under a single AWS account.</p>"
+    },
+    "PutAppInstanceRetentionSettings":{
+      "name":"PutAppInstanceRetentionSettings",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instances/{appInstanceArn}/retention-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAppInstanceRetentionSettingsRequest"},
+      "output":{"shape":"PutAppInstanceRetentionSettingsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Sets the amount of time in days that a given <code>AppInstance</code> retains data.</p>"
+    },
+    "UpdateAppInstance":{
+      "name":"UpdateAppInstance",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instances/{appInstanceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppInstanceRequest"},
+      "output":{"shape":"UpdateAppInstanceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Updates <code>AppInstance</code> metadata.</p>"
+    },
+    "UpdateAppInstanceUser":{
+      "name":"UpdateAppInstanceUser",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppInstanceUserRequest"},
+      "output":{"shape":"UpdateAppInstanceUserResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Updates the details of an <code>AppInstanceUser</code>. You can update names and metadata.</p>"
+    }
+  },
+  "shapes":{
+    "AppInstance":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the messaging instance.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyResourceName",
+          "documentation":"<p>The name of an <code>AppInstance</code>.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which an <code>AppInstance</code> was created. In epoch milliseconds.</p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time an <code>AppInstance</code> was last updated. In epoch milliseconds.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of an <code>AppInstance</code>.</p>"
+        }
+      },
+      "documentation":"<p>The details of an <code>AppInstance</code>, an instance of an Amazon Chime SDK messaging application.</p>"
+    },
+    "AppInstanceAdmin":{
+      "type":"structure",
+      "members":{
+        "Admin":{
+          "shape":"Identity",
+          "documentation":"<p>The <code>AppInstanceAdmin</code> data.</p>"
+        },
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code> for which the user is an administrator.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which an administrator was created.</p>"
+        }
+      },
+      "documentation":"<p>The details of an <code>AppInstanceAdmin</code>.</p>"
+    },
+    "AppInstanceAdminList":{
+      "type":"list",
+      "member":{"shape":"AppInstanceAdminSummary"}
+    },
+    "AppInstanceAdminSummary":{
+      "type":"structure",
+      "members":{
+        "Admin":{
+          "shape":"Identity",
+          "documentation":"<p>The details of the <code>AppInstanceAdmin</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the details of an <code>AppInstanceAdmin</code>.</p>"
+    },
+    "AppInstanceList":{
+      "type":"list",
+      "member":{"shape":"AppInstanceSummary"}
+    },
+    "AppInstanceRetentionSettings":{
+      "type":"structure",
+      "members":{
+        "ChannelRetentionSettings":{
+          "shape":"ChannelRetentionSettings",
+          "documentation":"<p>The length of time in days to retain the messages in a channel.</p>"
+        }
+      },
+      "documentation":"<p>The details of the data-retention settings for an <code>AppInstance</code>.</p>"
+    },
+    "AppInstanceSummary":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The <code>AppInstance</code> ARN.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyResourceName",
+          "documentation":"<p>The name of the <code>AppInstance</code>.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the <code>AppInstance</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the data for an <code>AppInstance</code>.</p>"
+    },
+    "AppInstanceUser":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "Name":{
+          "shape":"UserName",
+          "documentation":"<p>The name of the <code>AppInstanceUser</code>.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the <code>AppInstanceUser</code>.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the <code>AppInstanceUser</code> was created.</p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the <code>AppInstanceUser</code> was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The details of an <code>AppInstanceUser</code>.</p>"
+    },
+    "AppInstanceUserList":{
+      "type":"list",
+      "member":{"shape":"AppInstanceUserSummary"}
+    },
+    "AppInstanceUserSummary":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "Name":{
+          "shape":"UserName",
+          "documentation":"<p>The name of an <code>AppInstanceUser</code>.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the <code>AppInstanceUser</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the details of an <code>AppInstanceUser</code>.</p>"
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The input parameters don't match the service's restrictions.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ChannelRetentionSettings":{
+      "type":"structure",
+      "members":{
+        "RetentionDays":{
+          "shape":"RetentionDays",
+          "documentation":"<p>The time in days to retain the messages in a channel.</p>"
+        }
+      },
+      "documentation":"<p>The details of the retention settings for a channel.</p>"
+    },
+    "ChimeArn":{
+      "type":"string",
+      "max":1600,
+      "min":5,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    },
+    "ClientRequestToken":{
+      "type":"string",
+      "max":64,
+      "min":2,
+      "pattern":"[-_a-zA-Z0-9]*",
+      "sensitive":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be processed because of conflict in the current state of the resource.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "CreateAppInstanceAdminRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceAdminArn",
+        "AppInstanceArn"
+      ],
+      "members":{
+        "AppInstanceAdminArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the administrator of the current <code>AppInstance</code>.</p>"
+        },
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "CreateAppInstanceAdminResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceAdmin":{
+          "shape":"Identity",
+          "documentation":"<p>The name and ARN of the admin for the <code>AppInstance</code>.</p>"
+        },
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the of the admin for the <code>AppInstance</code>.</p>"
+        }
+      }
+    },
+    "CreateAppInstanceRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NonEmptyResourceName",
+          "documentation":"<p>The name of the <code>AppInstance</code>.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the <code>AppInstance</code>. Limited to a 1KB string in UTF-8.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The <code>ClientRequestToken</code> of the <code>AppInstance</code>.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags assigned to the <code>AppInstanceUser</code>.</p>"
+        }
+      }
+    },
+    "CreateAppInstanceResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the <code>AppInstance</code>.</p>"
+        }
+      }
+    },
+    "CreateAppInstanceUserRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceArn",
+        "AppInstanceUserId",
+        "Name",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code> request.</p>"
+        },
+        "AppInstanceUserId":{
+          "shape":"UserId",
+          "documentation":"<p>The user ID of the <code>AppInstance</code>.</p>"
+        },
+        "Name":{
+          "shape":"UserName",
+          "documentation":"<p>The user's name.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The request's metadata. Limited to a 1KB string in UTF-8.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The token assigned to the user requesting an <code>AppInstance</code>.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags assigned to the <code>AppInstanceUser</code>.</p>"
+        }
+      }
+    },
+    "CreateAppInstanceUserResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The user's ARN.</p>"
+        }
+      }
+    },
+    "DeleteAppInstanceAdminRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceAdminArn",
+        "AppInstanceArn"
+      ],
+      "members":{
+        "AppInstanceAdminArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>'s administrator.</p>",
+          "location":"uri",
+          "locationName":"appInstanceAdminArn"
+        },
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "DeleteAppInstanceRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "DeleteAppInstanceUserRequest":{
+      "type":"structure",
+      "required":["AppInstanceUserArn"],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the user request being deleted.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        }
+      }
+    },
+    "DescribeAppInstanceAdminRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceAdminArn",
+        "AppInstanceArn"
+      ],
+      "members":{
+        "AppInstanceAdminArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceAdmin</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceAdminArn"
+        },
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "DescribeAppInstanceAdminResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceAdmin":{
+          "shape":"AppInstanceAdmin",
+          "documentation":"<p>The ARN and name of the <code>AppInstanceUser</code>, the ARN of the <code>AppInstance</code>, and the created and last-updated timestamps. All timestamps use epoch milliseconds.</p>"
+        }
+      }
+    },
+    "DescribeAppInstanceRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "DescribeAppInstanceResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstance":{
+          "shape":"AppInstance",
+          "documentation":"<p>The ARN, metadata, created and last-updated timestamps, and the name of the <code>AppInstance</code>. All timestamps use epoch milliseconds.</p>"
+        }
+      }
+    },
+    "DescribeAppInstanceUserRequest":{
+      "type":"structure",
+      "required":["AppInstanceUserArn"],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        }
+      }
+    },
+    "DescribeAppInstanceUserResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUser":{
+          "shape":"AppInstanceUser",
+          "documentation":"<p>The name of the <code>AppInstanceUser</code>.</p>"
+        }
+      }
+    },
+    "ErrorCode":{
+      "type":"string",
+      "enum":[
+        "BadRequest",
+        "Conflict",
+        "Forbidden",
+        "NotFound",
+        "PreconditionFailed",
+        "ResourceLimitExceeded",
+        "ServiceFailure",
+        "AccessDenied",
+        "ServiceUnavailable",
+        "Throttled",
+        "Throttling",
+        "Unauthorized",
+        "Unprocessable",
+        "VoiceConnectorGroupAssociationsExist",
+        "PhoneNumberAssociationsExist"
+      ]
+    },
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The client is permanently forbidden from making the request.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
+    "GetAppInstanceRetentionSettingsRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "GetAppInstanceRetentionSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceRetentionSettings":{
+          "shape":"AppInstanceRetentionSettings",
+          "documentation":"<p>The retention settings for the <code>AppInstance</code>.</p>"
+        },
+        "InitiateDeletionTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp representing the time at which the specified items are retained, in Epoch Seconds.</p>"
+        }
+      }
+    },
+    "Identity":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN in an Identity.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name in an Identity.</p>"
+        }
+      },
+      "documentation":"<p>The details of a user.</p>"
+    },
+    "ListAppInstanceAdminsRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of administrators that you want to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token returned from previous API requests until the number of administrators is reached.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAppInstanceAdminsResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>"
+        },
+        "AppInstanceAdmins":{
+          "shape":"AppInstanceAdminList",
+          "documentation":"<p>The information for each administrator.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token returned from previous API requests until the number of administrators is reached.</p>"
+        }
+      }
+    },
+    "ListAppInstanceUsersRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"querystring",
+          "locationName":"app-instance-arn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of requests that you want returned.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API calls until all requested users are returned.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAppInstanceUsersResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>"
+        },
+        "AppInstanceUsers":{
+          "shape":"AppInstanceUserList",
+          "documentation":"<p>The information for each requested <code>AppInstanceUser</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API calls until all requested users are returned.</p>"
+        }
+      }
+    },
+    "ListAppInstancesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of <code>AppInstance</code>s that you want to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API requests until you reach the maximum number of <code>AppInstances</code>.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAppInstancesResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstances":{
+          "shape":"AppInstanceList",
+          "documentation":"<p>The information for each <code>AppInstance</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API requests until the maximum number of <code>AppInstance</code>s is reached.</p>"
+        }
+      }
+    },
+    "MaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "Metadata":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":".*",
+      "sensitive":true
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":".*",
+      "sensitive":true
+    },
+    "NonEmptyResourceName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u0085\\u00A0-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFFF]*",
+      "sensitive":true
+    },
+    "PutAppInstanceRetentionSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceArn",
+        "AppInstanceRetentionSettings"
+      ],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        },
+        "AppInstanceRetentionSettings":{
+          "shape":"AppInstanceRetentionSettings",
+          "documentation":"<p>The time in days to retain data. Data type: number.</p>"
+        }
+      }
+    },
+    "PutAppInstanceRetentionSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceRetentionSettings":{
+          "shape":"AppInstanceRetentionSettings",
+          "documentation":"<p>The time in days to retain data. Data type: number.</p>"
+        },
+        "InitiateDeletionTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the API deletes data.</p>"
+        }
+      }
+    },
+    "ResourceLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request exceeds the resource limit.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ResourceName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u0085\\u00A0-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFFF]*",
+      "sensitive":true
+    },
+    "RetentionDays":{
+      "type":"integer",
+      "max":5475,
+      "min":1
+    },
+    "ServiceFailureException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The service encountered an unexpected error.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The service is currently unavailable.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true
+    },
+    "String":{"type":"string"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the tag.</p>"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the tag.</p>"
+        }
+      },
+      "documentation":"<p>Describes a tag applied to a resource.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "sensitive":true
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":1
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
+    "ThrottledClientException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The client exceeded its request rate limit.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UnauthorizedClientException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The client is not currently authorized to make the request.</p>",
+      "error":{"httpStatusCode":401},
+      "exception":true
+    },
+    "UpdateAppInstanceRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceArn",
+        "Name",
+        "Metadata"
+      ],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        },
+        "Name":{
+          "shape":"NonEmptyResourceName",
+          "documentation":"<p>The name that you want to change.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata that you want to change.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceUserRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceUserArn",
+        "Name",
+        "Metadata"
+      ],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "Name":{
+          "shape":"UserName",
+          "documentation":"<p>The name of the <code>AppInstanceUser</code>.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the <code>AppInstanceUser</code>.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceUserResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        }
+      }
+    },
+    "UserId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9]([A-Za-z0-9\\:\\-\\_\\.\\@]{0,62}[A-Za-z0-9])?",
+      "sensitive":true
+    },
+    "UserName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":".*\\S.*",
+      "sensitive":true
+    }
+  },
+  "documentation":"<p>The Amazon Chime SDK Identity APIs in this section allow software developers to create and manage unique instances of their messaging applications. These APIs provide the overarching framework for creating and sending messages. For more information about the identity APIs, refer to <a href=\"https://docs.aws.amazon.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_Identity.html\">Amazon Chime SDK identity</a>.</p>"
+}

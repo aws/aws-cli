@@ -1,0 +1,1461 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2020-08-18",
+    "endpointPrefix":"grafana",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceFullName":"Amazon Managed Grafana",
+    "serviceId":"grafana",
+    "signatureVersion":"v4",
+    "signingName":"grafana",
+    "uid":"grafana-2020-08-18"
+  },
+  "operations":{
+    "AssociateLicense":{
+      "name":"AssociateLicense",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/licenses/{licenseType}",
+        "responseCode":202
+      },
+      "input":{"shape":"AssociateLicenseRequest"},
+      "output":{"shape":"AssociateLicenseResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Assigns a Grafana Enterprise license to a workspace. Upgrading to Grafana Enterprise incurs additional fees. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html\">Upgrade a workspace to Grafana Enterprise</a>.</p>"
+    },
+    "CreateWorkspace":{
+      "name":"CreateWorkspace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateWorkspaceRequest"},
+      "output":{"shape":"CreateWorkspaceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a <i>workspace</i>. In a workspace, you can create Grafana dashboards and visualizations to analyze your metrics, logs, and traces. You don't have to build, package, or deploy any hardware to run the Grafana server.</p> <p>Don't use <code>CreateWorkspace</code> to modify an existing workspace. Instead, use <a href=\"https://docs.aws.amazon.com/grafana/latest/APIReference/API_UpdateWorkspace.html\">UpdateWorkspace</a>.</p>",
+      "idempotent":true
+    },
+    "DeleteWorkspace":{
+      "name":"DeleteWorkspace",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteWorkspaceRequest"},
+      "output":{"shape":"DeleteWorkspaceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Managed Grafana workspace.</p>",
+      "idempotent":true
+    },
+    "DescribeWorkspace":{
+      "name":"DescribeWorkspace",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeWorkspaceRequest"},
+      "output":{"shape":"DescribeWorkspaceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Displays information about one Amazon Managed Grafana workspace.</p>"
+    },
+    "DescribeWorkspaceAuthentication":{
+      "name":"DescribeWorkspaceAuthentication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/authentication",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeWorkspaceAuthenticationRequest"},
+      "output":{"shape":"DescribeWorkspaceAuthenticationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Displays information about the authentication methods used in one Amazon Managed Grafana workspace.</p>"
+    },
+    "DisassociateLicense":{
+      "name":"DisassociateLicense",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/licenses/{licenseType}",
+        "responseCode":202
+      },
+      "input":{"shape":"DisassociateLicenseRequest"},
+      "output":{"shape":"DisassociateLicenseResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes the Grafana Enterprise license from a workspace.</p>"
+    },
+    "ListPermissions":{
+      "name":"ListPermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPermissionsRequest"},
+      "output":{"shape":"ListPermissionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the users and groups who have the Grafana <code>Admin</code> and <code>Editor</code> roles in this workspace. If you use this operation without specifying <code>userId</code> or <code>groupId</code>, the operation returns the roles of all users and groups. If you specify a <code>userId</code> or a <code>groupId</code>, only the roles for that user or group are returned. If you do this, you can specify only one <code>userId</code> or one <code>groupId</code>.</p>"
+    },
+    "ListWorkspaces":{
+      "name":"ListWorkspaces",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkspacesRequest"},
+      "output":{"shape":"ListWorkspacesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of Amazon Managed Grafana workspaces in the account, with some information about each workspace. For more complete information about one workspace, use <a href=\"https://docs.aws.amazon.com/AAMG/latest/APIReference/API_DescribeWorkspace.html\">DescribeWorkspace</a>.</p>"
+    },
+    "UpdatePermissions":{
+      "name":"UpdatePermissions",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/workspaces/{workspaceId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePermissionsRequest"},
+      "output":{"shape":"UpdatePermissionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates which users in a workspace have the Grafana <code>Admin</code> or <code>Editor</code> roles.</p>"
+    },
+    "UpdateWorkspace":{
+      "name":"UpdateWorkspace",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workspaces/{workspaceId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateWorkspaceRequest"},
+      "output":{"shape":"UpdateWorkspaceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Modifies an existing Amazon Managed Grafana workspace. If you use this operation and omit any optional parameters, the existing values of those parameters are not changed.</p> <p>To modify the user authentication methods that the workspace uses, such as SAML or Amazon Web Services SSO, use <a href=\"https://docs.aws.amazon.com/grafana/latest/APIReference/API_UpdateWorkspaceAuthentication.html\">UpdateWorkspaceAuthentication</a>.</p> <p>To modify which users in the workspace have the <code>Admin</code> and <code>Editor</code> Grafana roles, use <a href=\"https://docs.aws.amazon.com/grafana/latest/APIReference/API_UpdatePermissions.html\">UpdatePermissions</a>.</p>"
+    },
+    "UpdateWorkspaceAuthentication":{
+      "name":"UpdateWorkspaceAuthentication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/authentication",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateWorkspaceAuthenticationRequest"},
+      "output":{"shape":"UpdateWorkspaceAuthenticationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Use this operation to define the identity provider (IdP) that this workspace authenticates users from, using SAML. You can also map SAML assertion attributes to workspace user information and define which groups in the assertion attribute are to have the <code>Admin</code> and <code>Editor</code> roles in the workspace.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient permissions to perform this action. </p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountAccessType":{
+      "type":"string",
+      "enum":[
+        "CURRENT_ACCOUNT",
+        "ORGANIZATION"
+      ]
+    },
+    "AllowedOrganization":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AllowedOrganizations":{
+      "type":"list",
+      "member":{"shape":"AllowedOrganization"}
+    },
+    "AssertionAttribute":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AssertionAttributes":{
+      "type":"structure",
+      "members":{
+        "email":{
+          "shape":"AssertionAttribute",
+          "documentation":"<p>The name of the attribute within the SAML assertion to use as the email names for SAML users.</p>"
+        },
+        "groups":{
+          "shape":"AssertionAttribute",
+          "documentation":"<p>The name of the attribute within the SAML assertion to use as the user full \"friendly\" names for user groups.</p>"
+        },
+        "login":{
+          "shape":"AssertionAttribute",
+          "documentation":"<p>The name of the attribute within the SAML assertion to use as the login names for SAML users.</p>"
+        },
+        "name":{
+          "shape":"AssertionAttribute",
+          "documentation":"<p>The name of the attribute within the SAML assertion to use as the user full \"friendly\" names for SAML users.</p>"
+        },
+        "org":{
+          "shape":"AssertionAttribute",
+          "documentation":"<p>The name of the attribute within the SAML assertion to use as the user full \"friendly\" names for the users' organizations.</p>"
+        },
+        "role":{
+          "shape":"AssertionAttribute",
+          "documentation":"<p>The name of the attribute within the SAML assertion to use as the user roles.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines which attributes in the IdP assertion are to be used to define information about the users authenticated by the IdP to use the workspace.</p>"
+    },
+    "AssociateLicenseRequest":{
+      "type":"structure",
+      "required":[
+        "licenseType",
+        "workspaceId"
+      ],
+      "members":{
+        "licenseType":{
+          "shape":"LicenseType",
+          "documentation":"<p>The type of license to associate with the workspace.</p>",
+          "location":"uri",
+          "locationName":"licenseType"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to associate the license with.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "AssociateLicenseResponse":{
+      "type":"structure",
+      "required":["workspace"],
+      "members":{
+        "workspace":{
+          "shape":"WorkspaceDescription",
+          "documentation":"<p>A structure containing data about the workspace.</p>"
+        }
+      }
+    },
+    "AuthenticationDescription":{
+      "type":"structure",
+      "required":["providers"],
+      "members":{
+        "awsSso":{
+          "shape":"AwsSsoAuthentication",
+          "documentation":"<p>A structure containing information about how this workspace works with Amazon Web Services SSO. </p>"
+        },
+        "providers":{
+          "shape":"AuthenticationProviders",
+          "documentation":"<p>Specifies whether this workspace uses Amazon Web Services SSO, SAML, or both methods to authenticate users to use the Grafana console in the Amazon Managed Grafana workspace.</p>"
+        },
+        "saml":{
+          "shape":"SamlAuthentication",
+          "documentation":"<p>A structure containing information about how this workspace works with SAML, including what attributes within the assertion are to be mapped to user information in the workspace. </p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about the user authentication methods used by the workspace.</p>"
+    },
+    "AuthenticationProviderTypes":{
+      "type":"string",
+      "enum":[
+        "AWS_SSO",
+        "SAML"
+      ]
+    },
+    "AuthenticationProviders":{
+      "type":"list",
+      "member":{"shape":"AuthenticationProviderTypes"}
+    },
+    "AuthenticationSummary":{
+      "type":"structure",
+      "required":["providers"],
+      "members":{
+        "providers":{
+          "shape":"AuthenticationProviders",
+          "documentation":"<p>Specifies whether the workspace uses SAML, Amazon Web Services SSO, or both methods for user authentication.</p>"
+        },
+        "samlConfigurationStatus":{
+          "shape":"SamlConfigurationStatus",
+          "documentation":"<p>Specifies whether the workplace's user authentication method is fully configured.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes whether the workspace uses SAML, Amazon Web Services SSO, or both methods for user authentication, and whether that authentication is fully configured.</p>"
+    },
+    "AwsSsoAuthentication":{
+      "type":"structure",
+      "members":{
+        "ssoClientId":{
+          "shape":"SSOClientId",
+          "documentation":"<p>The ID of the Amazon Web Services SSO-managed application that is created by Amazon Managed Grafana.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about how this workspace works with Amazon Web Services SSO. </p>"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClientToken":{
+      "type":"string",
+      "pattern":"^[!-~]{1,64}$"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that is associated with the error.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that is associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>A resource was in an inconsistent state during an update or a deletion.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateWorkspaceRequest":{
+      "type":"structure",
+      "required":[
+        "accountAccessType",
+        "authenticationProviders",
+        "permissionType"
+      ],
+      "members":{
+        "accountAccessType":{
+          "shape":"AccountAccessType",
+          "documentation":"<p>Specifies whether the workspace can access Amazon Web Services resources in this Amazon Web Services account only, or whether it can also access Amazon Web Services resources in other accounts in the same organization. If you specify <code>ORGANIZATION</code>, you must specify which organizational units the workspace can access in the <code>workspaceOrganizationalUnits</code> parameter.</p>"
+        },
+        "authenticationProviders":{
+          "shape":"AuthenticationProviders",
+          "documentation":"<p>Specifies whether this workspace uses SAML 2.0, Amazon Web Services Single Sign On, or both to authenticate users for using the Grafana console within a workspace. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/authentication-in-AMG.html\">User authentication in Amazon Managed Grafana</a>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "organizationRoleName":{
+          "shape":"OrganizationRoleName",
+          "documentation":"<p>The name of an IAM role that already exists to use with Organizations to access Amazon Web Services data sources and notification channels in other accounts in an organization.</p>"
+        },
+        "permissionType":{
+          "shape":"PermissionType",
+          "documentation":"<p>If you specify <code>Service Managed</code>, Amazon Managed Grafana automatically creates the IAM roles and provisions the permissions that the workspace needs to use Amazon Web Services data sources and notification channels.</p> <p>If you specify <code>CUSTOMER_MANAGED</code>, you will manage those roles and permissions yourself. If you are creating this workspace in a member account of an organization that is not a delegated administrator account, and you want the workspace to access data sources in other Amazon Web Services accounts in the organization, you must choose <code>CUSTOMER_MANAGED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/AMG-manage-permissions.html\">Amazon Managed Grafana permissions and policies for Amazon Web Services data sources and notification channels</a> </p>"
+        },
+        "stackSetName":{
+          "shape":"StackSetName",
+          "documentation":"<p>The name of the CloudFormation stack set to use to generate IAM roles to be used for this workspace.</p>"
+        },
+        "workspaceDataSources":{
+          "shape":"DataSourceTypesList",
+          "documentation":"<p>Specify the Amazon Web Services data sources that you want to be queried in this workspace. Specifying these data sources here enables Amazon Managed Grafana to create IAM roles and permissions that allow Amazon Managed Grafana to read data from these sources. You must still add them as data sources in the Grafana console in the workspace.</p> <p>If you don't specify a data source here, you can still add it as a data source in the workspace console later. However, you will then have to manually configure permissions for it.</p>"
+        },
+        "workspaceDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description for the workspace. This is used only to help you identify this workspace.</p>"
+        },
+        "workspaceName":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>The name for the workspace. It does not have to be unique.</p>"
+        },
+        "workspaceNotificationDestinations":{
+          "shape":"NotificationDestinationsList",
+          "documentation":"<p>Specify the Amazon Web Services notification channels that you plan to use in this workspace. Specifying these data sources here enables Amazon Managed Grafana to create IAM roles and permissions that allow Amazon Managed Grafana to use these channels.</p>"
+        },
+        "workspaceOrganizationalUnits":{
+          "shape":"OrganizationalUnitList",
+          "documentation":"<p>Specifies the organizational units that this workspace is allowed to use data sources from, if this workspace is in an account that is part of an organization.</p>"
+        },
+        "workspaceRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The workspace needs an IAM role that grants permissions to the Amazon Web Services resources that the workspace will view data from. If you already have a role that you want to use, specify it here. If you omit this field and you specify some Amazon Web Services resources in <code>workspaceDataSources</code> or <code>workspaceNotificationDestinations</code>, a new IAM role with the necessary permissions is automatically created.</p>"
+        }
+      }
+    },
+    "CreateWorkspaceResponse":{
+      "type":"structure",
+      "required":["workspace"],
+      "members":{
+        "workspace":{
+          "shape":"WorkspaceDescription",
+          "documentation":"<p>A structure containing data about the workspace that was created.</p>"
+        }
+      }
+    },
+    "DataSourceType":{
+      "type":"string",
+      "enum":[
+        "AMAZON_OPENSEARCH_SERVICE",
+        "CLOUDWATCH",
+        "PROMETHEUS",
+        "XRAY",
+        "TIMESTREAM",
+        "SITEWISE"
+      ]
+    },
+    "DataSourceTypesList":{
+      "type":"list",
+      "member":{"shape":"DataSourceType"}
+    },
+    "DeleteWorkspaceRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to delete.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DeleteWorkspaceResponse":{
+      "type":"structure",
+      "required":["workspace"],
+      "members":{
+        "workspace":{
+          "shape":"WorkspaceDescription",
+          "documentation":"<p>A structure containing information about the workspace that was deleted.</p>"
+        }
+      }
+    },
+    "DescribeWorkspaceAuthenticationRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to return authentication information about.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DescribeWorkspaceAuthenticationResponse":{
+      "type":"structure",
+      "required":["authentication"],
+      "members":{
+        "authentication":{
+          "shape":"AuthenticationDescription",
+          "documentation":"<p>A structure containing information about the authentication methods used in the workspace.</p>"
+        }
+      }
+    },
+    "DescribeWorkspaceRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to display information about.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DescribeWorkspaceResponse":{
+      "type":"structure",
+      "required":["workspace"],
+      "members":{
+        "workspace":{
+          "shape":"WorkspaceDescription",
+          "documentation":"<p>A structure containing information about the workspace.</p>"
+        }
+      }
+    },
+    "Description":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
+    },
+    "DisassociateLicenseRequest":{
+      "type":"structure",
+      "required":[
+        "licenseType",
+        "workspaceId"
+      ],
+      "members":{
+        "licenseType":{
+          "shape":"LicenseType",
+          "documentation":"<p>The type of license to remove from the workspace.</p>",
+          "location":"uri",
+          "locationName":"licenseType"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to remove the Grafana Enterprise license from.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DisassociateLicenseResponse":{
+      "type":"structure",
+      "required":["workspace"],
+      "members":{
+        "workspace":{
+          "shape":"WorkspaceDescription",
+          "documentation":"<p>A structure containing information about the workspace.</p>"
+        }
+      }
+    },
+    "Endpoint":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "GrafanaVersion":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "IamRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
+    "IdpMetadata":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"IdpMetadataUrl",
+          "documentation":"<p>The URL of the location containing the metadata.</p>"
+        },
+        "xml":{
+          "shape":"String",
+          "documentation":"<p>The actual full metadata file, in XML format.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing the identity provider (IdP) metadata used to integrate the identity provider with this workspace. You can specify the metadata either by providing a URL to its location in the <code>url</code> parameter, or by specifying the full metadata in XML format in the <code>xml</code> parameter.</p>",
+      "union":true
+    },
+    "IdpMetadataUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>How long to wait before you retry this operation.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>Unexpected error while processing the request. Retry the request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "LicenseType":{
+      "type":"string",
+      "enum":[
+        "ENTERPRISE",
+        "ENTERPRISE_FREE_TRIAL"
+      ]
+    },
+    "ListPermissionsRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "groupId":{
+          "shape":"SsoId",
+          "documentation":"<p>(Optional) Limits the results to only the group that matches this ID.</p>",
+          "location":"querystring",
+          "locationName":"groupId"
+        },
+        "maxResults":{
+          "shape":"ListPermissionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to include in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use when requesting the next set of results. You received this token from a previous <code>ListPermissions</code> operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "userId":{
+          "shape":"SsoId",
+          "documentation":"<p>(Optional) Limits the results to only the user that matches this ID.</p>",
+          "location":"querystring",
+          "locationName":"userId"
+        },
+        "userType":{
+          "shape":"UserType",
+          "documentation":"<p>(Optional) If you specify <code>SSO_USER</code>, then only the permissions of Amazon Web Services SSO users are returned. If you specify <code>SSO_GROUP</code>, only the permissions of Amazon Web Services SSO groups are returned.</p>",
+          "location":"querystring",
+          "locationName":"userType"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to list permissions for. This parameter is required.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "ListPermissionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListPermissionsResponse":{
+      "type":"structure",
+      "required":["permissions"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use in a subsequent <code>ListPermissions</code> operation to return the next set of results.</p>"
+        },
+        "permissions":{
+          "shape":"PermissionEntryList",
+          "documentation":"<p>The permissions returned by the operation.</p>"
+        }
+      }
+    },
+    "ListWorkspacesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListWorkspacesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of workspaces to include in the results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of workspaces to return. (You receive this token from a previous <code>ListWorkspaces</code> operation.)</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListWorkspacesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkspacesResponse":{
+      "type":"structure",
+      "required":["workspaces"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use when requesting the next set of workspaces.</p>"
+        },
+        "workspaces":{
+          "shape":"WorkspaceList",
+          "documentation":"<p>An array of structures that contain some information about the workspaces in the account.</p>"
+        }
+      }
+    },
+    "LoginValidityDuration":{"type":"integer"},
+    "NotificationDestinationType":{
+      "type":"string",
+      "enum":["SNS"]
+    },
+    "NotificationDestinationsList":{
+      "type":"list",
+      "member":{"shape":"NotificationDestinationType"}
+    },
+    "OrganizationRoleName":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
+    "OrganizationalUnit":{"type":"string"},
+    "OrganizationalUnitList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnit"},
+      "sensitive":true
+    },
+    "PaginationToken":{"type":"string"},
+    "PermissionEntry":{
+      "type":"structure",
+      "required":[
+        "role",
+        "user"
+      ],
+      "members":{
+        "role":{
+          "shape":"Role",
+          "documentation":"<p>Specifies whether the user or group has the <code>Admin</code> or <code>Editor</code> role.</p>"
+        },
+        "user":{
+          "shape":"User",
+          "documentation":"<p>A structure with the ID of the user or group with this role.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing the identity of one user or group and the <code>Admin</code> or <code>Editor</code> role that they have.</p>"
+    },
+    "PermissionEntryList":{
+      "type":"list",
+      "member":{"shape":"PermissionEntry"}
+    },
+    "PermissionType":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_MANAGED",
+        "SERVICE_MANAGED"
+      ]
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The value of a parameter in the request caused an error.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that is associated with the error.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that is associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>The request references a resource that does not exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Role":{
+      "type":"string",
+      "enum":[
+        "ADMIN",
+        "EDITOR"
+      ]
+    },
+    "RoleValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "RoleValueList":{
+      "type":"list",
+      "member":{"shape":"RoleValue"}
+    },
+    "RoleValues":{
+      "type":"structure",
+      "members":{
+        "admin":{
+          "shape":"RoleValueList",
+          "documentation":"<p>A list of groups from the SAML assertion attribute to grant the Grafana <code>Admin</code> role to.</p>"
+        },
+        "editor":{
+          "shape":"RoleValueList",
+          "documentation":"<p>A list of groups from the SAML assertion attribute to grant the Grafana <code>Editor</code> role to.</p>"
+        }
+      },
+      "documentation":"<p>This structure defines which groups defined in the SAML assertion attribute are to be mapped to the Grafana <code>Admin</code> and <code>Editor</code> roles in the workspace.</p>"
+    },
+    "SSOClientId":{"type":"string"},
+    "SamlAuthentication":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "configuration":{
+          "shape":"SamlConfiguration",
+          "documentation":"<p>A structure containing details about how this workspace works with SAML. </p>"
+        },
+        "status":{
+          "shape":"SamlConfigurationStatus",
+          "documentation":"<p>Specifies whether the workspace's SAML configuration is complete.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about how this workspace works with SAML. </p>"
+    },
+    "SamlConfiguration":{
+      "type":"structure",
+      "required":["idpMetadata"],
+      "members":{
+        "allowedOrganizations":{
+          "shape":"AllowedOrganizations",
+          "documentation":"<p>Lists which organizations defined in the SAML assertion are allowed to use the Amazon Managed Grafana workspace. If this is empty, all organizations in the assertion attribute have access.</p>"
+        },
+        "assertionAttributes":{
+          "shape":"AssertionAttributes",
+          "documentation":"<p>A structure that defines which attributes in the SAML assertion are to be used to define information about the users authenticated by that IdP to use the workspace.</p>"
+        },
+        "idpMetadata":{
+          "shape":"IdpMetadata",
+          "documentation":"<p>A structure containing the identity provider (IdP) metadata used to integrate the identity provider with this workspace.</p>"
+        },
+        "loginValidityDuration":{
+          "shape":"LoginValidityDuration",
+          "documentation":"<p>How long a sign-on session by a SAML user is valid, before the user has to sign on again.</p>"
+        },
+        "roleValues":{
+          "shape":"RoleValues",
+          "documentation":"<p>A structure containing arrays that map group names in the SAML assertion to the Grafana <code>Admin</code> and <code>Editor</code> roles in the workspace.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about how this workspace works with SAML. </p>"
+    },
+    "SamlConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "CONFIGURED",
+        "NOT_CONFIGURED"
+      ]
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "quotaCode",
+        "resourceId",
+        "resourceType",
+        "serviceCode"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service quota that was exceeded.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that is associated with the error.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that is associated with the error.</p>"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The value of a parameter in the request caused an error.</p>"
+        }
+      },
+      "documentation":"<p>The request would cause a service quota to be exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SsoId":{
+      "type":"string",
+      "max":47,
+      "min":1
+    },
+    "StackSetName":{"type":"string"},
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service quota that was exceeded.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The value of a parameter in the request caused an error.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service that is associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>The request was denied because of request throttling. Retry the request.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UpdateAction":{
+      "type":"string",
+      "enum":[
+        "ADD",
+        "REVOKE"
+      ]
+    },
+    "UpdateError":{
+      "type":"structure",
+      "required":[
+        "causedBy",
+        "code",
+        "message"
+      ],
+      "members":{
+        "causedBy":{
+          "shape":"UpdateInstruction",
+          "documentation":"<p>Specifies which permission update caused the error.</p>"
+        },
+        "code":{
+          "shape":"UpdateErrorCodeInteger",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message for this error.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about one error encountered while performing an <a href=\"https://docs.aws.amazon.com/grafana/latest/APIReference/API_UpdatePermissions.html\">UpdatePermissions</a> operation.</p>"
+    },
+    "UpdateErrorCodeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":999,
+      "min":100
+    },
+    "UpdateErrorList":{
+      "type":"list",
+      "member":{"shape":"UpdateError"}
+    },
+    "UpdateInstruction":{
+      "type":"structure",
+      "required":[
+        "action",
+        "role",
+        "users"
+      ],
+      "members":{
+        "action":{
+          "shape":"UpdateAction",
+          "documentation":"<p>Specifies whether this update is to add or revoke role permissions.</p>"
+        },
+        "role":{
+          "shape":"Role",
+          "documentation":"<p>The role to add or revoke for the user or the group specified in <code>users</code>.</p>"
+        },
+        "users":{
+          "shape":"UserList",
+          "documentation":"<p>A structure that specifies the user or group to add or revoke the role for.</p>"
+        }
+      },
+      "documentation":"<p>Contains the instructions for one Grafana role permission update in a <a href=\"https://docs.aws.amazon.com/grafana/latest/APIReference/API_UpdatePermissions.html\">UpdatePermissions</a> operation.</p>"
+    },
+    "UpdateInstructionBatch":{
+      "type":"list",
+      "member":{"shape":"UpdateInstruction"},
+      "max":20,
+      "min":0
+    },
+    "UpdatePermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "updateInstructionBatch",
+        "workspaceId"
+      ],
+      "members":{
+        "updateInstructionBatch":{
+          "shape":"UpdateInstructionBatch",
+          "documentation":"<p>An array of structures that contain the permission updates to make.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to update.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "UpdatePermissionsResponse":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "errors":{
+          "shape":"UpdateErrorList",
+          "documentation":"<p>An array of structures that contain the errors from the operation, if any.</p>"
+        }
+      }
+    },
+    "UpdateWorkspaceAuthenticationRequest":{
+      "type":"structure",
+      "required":[
+        "authenticationProviders",
+        "workspaceId"
+      ],
+      "members":{
+        "authenticationProviders":{
+          "shape":"AuthenticationProviders",
+          "documentation":"<p>Specifies whether this workspace uses SAML 2.0, Amazon Web Services Single Sign On, or both to authenticate users for using the Grafana console within a workspace. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/authentication-in-AMG.html\">User authentication in Amazon Managed Grafana</a>.</p>"
+        },
+        "samlConfiguration":{
+          "shape":"SamlConfiguration",
+          "documentation":"<p>If the workspace uses SAML, use this structure to map SAML assertion attributes to workspace user information and define which groups in the assertion attribute are to have the <code>Admin</code> and <code>Editor</code> roles in the workspace.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to update the authentication for.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "UpdateWorkspaceAuthenticationResponse":{
+      "type":"structure",
+      "required":["authentication"],
+      "members":{
+        "authentication":{
+          "shape":"AuthenticationDescription",
+          "documentation":"<p>A structure that describes the user authentication for this workspace after the update is made.</p>"
+        }
+      }
+    },
+    "UpdateWorkspaceRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "accountAccessType":{
+          "shape":"AccountAccessType",
+          "documentation":"<p>Specifies whether the workspace can access Amazon Web Services resources in this Amazon Web Services account only, or whether it can also access Amazon Web Services resources in other accounts in the same organization. If you specify <code>ORGANIZATION</code>, you must specify which organizational units the workspace can access in the <code>workspaceOrganizationalUnits</code> parameter.</p>"
+        },
+        "organizationRoleName":{
+          "shape":"OrganizationRoleName",
+          "documentation":"<p>The name of an IAM role that already exists to use to access resources through Organizations.</p>"
+        },
+        "permissionType":{
+          "shape":"PermissionType",
+          "documentation":"<p>If you specify <code>Service Managed</code>, Amazon Managed Grafana automatically creates the IAM roles and provisions the permissions that the workspace needs to use Amazon Web Services data sources and notification channels.</p> <p>If you specify <code>CUSTOMER_MANAGED</code>, you will manage those roles and permissions yourself. If you are creating this workspace in a member account of an organization and that account is not a delegated administrator account, and you want the workspace to access data sources in other Amazon Web Services accounts in the organization, you must choose <code>CUSTOMER_MANAGED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/AMG-manage-permissions.html\">Amazon Managed Grafana permissions and policies for Amazon Web Services data sources and notification channels</a> </p>"
+        },
+        "stackSetName":{
+          "shape":"StackSetName",
+          "documentation":"<p>The name of the CloudFormation stack set to use to generate IAM roles to be used for this workspace.</p>"
+        },
+        "workspaceDataSources":{
+          "shape":"DataSourceTypesList",
+          "documentation":"<p>Specify the Amazon Web Services data sources that you want to be queried in this workspace. Specifying these data sources here enables Amazon Managed Grafana to create IAM roles and permissions that allow Amazon Managed Grafana to read data from these sources. You must still add them as data sources in the Grafana console in the workspace.</p> <p>If you don't specify a data source here, you can still add it as a data source later in the workspace console. However, you will then have to manually configure permissions for it.</p>"
+        },
+        "workspaceDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description for the workspace. This is used only to help you identify this workspace.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to update.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "workspaceName":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>A new name for the workspace to update.</p>"
+        },
+        "workspaceNotificationDestinations":{
+          "shape":"NotificationDestinationsList",
+          "documentation":"<p>Specify the Amazon Web Services notification channels that you plan to use in this workspace. Specifying these data sources here enables Amazon Managed Grafana to create IAM roles and permissions that allow Amazon Managed Grafana to use these channels.</p>"
+        },
+        "workspaceOrganizationalUnits":{
+          "shape":"OrganizationalUnitList",
+          "documentation":"<p>Specifies the organizational units that this workspace is allowed to use data sources from, if this workspace is in an account that is part of an organization.</p>"
+        },
+        "workspaceRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The workspace needs an IAM role that grants permissions to the Amazon Web Services resources that the workspace will view data from. If you already have a role that you want to use, specify it here. If you omit this field and you specify some Amazon Web Services resources in <code>workspaceDataSources</code> or <code>workspaceNotificationDestinations</code>, a new IAM role with the necessary permissions is automatically created.</p>"
+        }
+      }
+    },
+    "UpdateWorkspaceResponse":{
+      "type":"structure",
+      "required":["workspace"],
+      "members":{
+        "workspace":{
+          "shape":"WorkspaceDescription",
+          "documentation":"<p>A structure containing data about the workspace that was created.</p>"
+        }
+      }
+    },
+    "User":{
+      "type":"structure",
+      "required":[
+        "id",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"SsoId",
+          "documentation":"<p>The ID of the user or group.</p>"
+        },
+        "type":{
+          "shape":"UserType",
+          "documentation":"<p>Specifies whether this is a single user or a group.</p>"
+        }
+      },
+      "documentation":"<p>A structure that specifies one user or group in the workspace.</p>"
+    },
+    "UserList":{
+      "type":"list",
+      "member":{"shape":"User"}
+    },
+    "UserType":{
+      "type":"string",
+      "enum":[
+        "SSO_USER",
+        "SSO_GROUP"
+      ]
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of fields that might be associated with the error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason that the operation failed.</p>"
+        }
+      },
+      "documentation":"<p>The value of a parameter in the request caused an error.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "message",
+        "name"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing why this field couldn't be validated.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field that caused the validation error.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a request parameter that caused an error.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "UNKNOWN_OPERATION",
+        "CANNOT_PARSE",
+        "FIELD_VALIDATION_FAILED",
+        "OTHER"
+      ]
+    },
+    "WorkspaceDescription":{
+      "type":"structure",
+      "required":[
+        "authentication",
+        "created",
+        "dataSources",
+        "endpoint",
+        "grafanaVersion",
+        "id",
+        "modified",
+        "status"
+      ],
+      "members":{
+        "accountAccessType":{
+          "shape":"AccountAccessType",
+          "documentation":"<p>Specifies whether the workspace can access Amazon Web Services resources in this Amazon Web Services account only, or whether it can also access Amazon Web Services resources in other accounts in the same organization. If this is <code>ORGANIZATION</code>, the <code>workspaceOrganizationalUnits</code> parameter specifies which organizational units the workspace can access.</p>"
+        },
+        "authentication":{
+          "shape":"AuthenticationSummary",
+          "documentation":"<p>A structure that describes whether the workspace uses SAML, Amazon Web Services SSO, or both methods for user authentication.</p>"
+        },
+        "created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date that the workspace was created.</p>"
+        },
+        "dataSources":{
+          "shape":"DataSourceTypesList",
+          "documentation":"<p>Specifies the Amazon Web Services data sources that have been configured to have IAM roles and permissions created to allow Amazon Managed Grafana to read data from these sources.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The user-defined description of the workspace.</p>"
+        },
+        "endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The URL that users can use to access the Grafana console in the workspace.</p>"
+        },
+        "freeTrialConsumed":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether this workspace has already fully used its free trial for Grafana Enterprise.</p>"
+        },
+        "freeTrialExpiration":{
+          "shape":"Timestamp",
+          "documentation":"<p>If this workspace is currently in the free trial period for Grafana Enterprise, this value specifies when that free trial ends.</p>"
+        },
+        "grafanaVersion":{
+          "shape":"GrafanaVersion",
+          "documentation":"<p>The version of Grafana supported in this workspace.</p>"
+        },
+        "id":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The unique ID of this workspace.</p>"
+        },
+        "licenseExpiration":{
+          "shape":"Timestamp",
+          "documentation":"<p>If this workspace has a full Grafana Enterprise license, this specifies when the license ends and will need to be renewed.</p>"
+        },
+        "licenseType":{
+          "shape":"LicenseType",
+          "documentation":"<p>Specifies whether this workspace has a full Grafana Enterprise license or a free trial license.</p>"
+        },
+        "modified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent date that the workspace was modified.</p>"
+        },
+        "name":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>The name of the workspace.</p>"
+        },
+        "notificationDestinations":{
+          "shape":"NotificationDestinationsList",
+          "documentation":"<p>The Amazon Web Services notification channels that Amazon Managed Grafana can automatically create IAM roles and permissions for, to allow Amazon Managed Grafana to use these channels.</p>"
+        },
+        "organizationRoleName":{
+          "shape":"OrganizationRoleName",
+          "documentation":"<p>The name of the IAM role that is used to access resources through Organizations.</p>"
+        },
+        "organizationalUnits":{
+          "shape":"OrganizationalUnitList",
+          "documentation":"<p>Specifies the organizational units that this workspace is allowed to use data sources from, if this workspace is in an account that is part of an organization.</p>"
+        },
+        "permissionType":{
+          "shape":"PermissionType",
+          "documentation":"<p>If this is <code>Service Managed</code>, Amazon Managed Grafana automatically creates the IAM roles and provisions the permissions that the workspace needs to use Amazon Web Services data sources and notification channels.</p> <p>If this is <code>CUSTOMER_MANAGED</code>, you manage those roles and permissions yourself. If you are creating this workspace in a member account of an organization and that account is not a delegated administrator account, and you want the workspace to access data sources in other Amazon Web Services accounts in the organization, you must choose <code>CUSTOMER_MANAGED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/AMG-manage-permissions.html\">Amazon Managed Grafana permissions and policies for Amazon Web Services data sources and notification channels</a> </p>"
+        },
+        "stackSetName":{
+          "shape":"StackSetName",
+          "documentation":"<p>The name of the CloudFormation stack set that is used to generate IAM roles to be used for this workspace.</p>"
+        },
+        "status":{
+          "shape":"WorkspaceStatus",
+          "documentation":"<p>The current status of the workspace.</p>"
+        },
+        "workspaceRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The IAM role that grants permissions to the Amazon Web Services resources that the workspace will view data from. This role must already exist.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about an Amazon Managed Grafana workspace in your account.</p>"
+    },
+    "WorkspaceId":{
+      "type":"string",
+      "pattern":"^g-[0-9a-f]{10}$"
+    },
+    "WorkspaceList":{
+      "type":"list",
+      "member":{"shape":"WorkspaceSummary"}
+    },
+    "WorkspaceName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9-._~]{1,255}$",
+      "sensitive":true
+    },
+    "WorkspaceStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "DELETING",
+        "FAILED",
+        "UPDATING",
+        "UPGRADING",
+        "DELETION_FAILED",
+        "CREATION_FAILED",
+        "UPDATE_FAILED",
+        "UPGRADE_FAILED",
+        "LICENSE_REMOVAL_FAILED"
+      ]
+    },
+    "WorkspaceSummary":{
+      "type":"structure",
+      "required":[
+        "authentication",
+        "created",
+        "endpoint",
+        "grafanaVersion",
+        "id",
+        "modified",
+        "status"
+      ],
+      "members":{
+        "authentication":{
+          "shape":"AuthenticationSummary",
+          "documentation":"<p>A structure containing information about the authentication methods used in the workspace.</p>"
+        },
+        "created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date that the workspace was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The customer-entered description of the workspace.</p>"
+        },
+        "endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The URL endpoint to use to access the Grafana console in the workspace.</p>"
+        },
+        "grafanaVersion":{
+          "shape":"GrafanaVersion",
+          "documentation":"<p>The Grafana version that the workspace is running.</p>"
+        },
+        "id":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The unique ID of the workspace.</p>"
+        },
+        "modified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent date that the workspace was modified.</p>"
+        },
+        "name":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>The name of the workspace.</p>"
+        },
+        "notificationDestinations":{
+          "shape":"NotificationDestinationsList",
+          "documentation":"<p>The Amazon Web Services notification channels that Amazon Managed Grafana can automatically create IAM roles and permissions for, which allows Amazon Managed Grafana to use these channels.</p>"
+        },
+        "status":{
+          "shape":"WorkspaceStatus",
+          "documentation":"<p>The current status of the workspace.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains some information about one workspace in the account.</p>"
+    }
+  },
+  "documentation":"<p>Amazon Managed Grafana is a fully managed and secure data visualization service that you can use to instantly query, correlate, and visualize operational metrics, logs, and traces from multiple sources. Amazon Managed Grafana makes it easy to deploy, operate, and scale Grafana, a widely deployed data visualization tool that is popular for its extensible data support.</p> <p>With Amazon Managed Grafana, you create logically isolated Grafana servers called <i>workspaces</i>. In a workspace, you can create Grafana dashboards and visualizations to analyze your metrics, logs, and traces without having to build, package, or deploy any hardware to run Grafana servers. </p>"
+}

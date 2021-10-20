@@ -1,0 +1,95 @@
+<GetTemplateResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+  <GetTemplateResult>
+    <TemplateBody>{
+  &quot;AWSTemplateFormatVersion&quot; : &quot;2010-09-09&quot;,
+
+  &quot;Description&quot; : &quot;AWS CloudFormation Sample Template EC2WithEBSSample: Create an Amazon EC2 instance running the Amazon Linux AMI with a new EBS volume attached. The instance and the volume are pinned to the same availability zone. We recommend that you do untargeted launches rather than pinning instances this way.The AMI is chosen based on the region in which the stack is run. **WARNING** This template creates an Amazon EC2 instance and an EBS Volume. You will be billed for the AWS resources used if you create a stack from this template.&quot;,
+
+  &quot;Parameters&quot; : {
+    &quot;KeyName&quot; : {
+      &quot;Description&quot; : &quot;Name of an existing EC2 KeyPair to enable SSH access to the instance&quot;,
+      &quot;Type&quot; : &quot;String&quot;
+    },
+    &quot;SSHLocation&quot; : {
+      &quot;Description&quot; : &quot;The IP address range that can be used to SSH to the EC2 instances&quot;,
+      &quot;Type&quot;: &quot;String&quot;,
+      &quot;MinLength&quot;: &quot;9&quot;,
+      &quot;MaxLength&quot;: &quot;18&quot;,
+      &quot;Default&quot;: &quot;0.0.0.0/0&quot;,
+      &quot;AllowedPattern&quot;: &quot;(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})&quot;,
+      &quot;ConstraintDescription&quot;: &quot;must be a valid IP CIDR range of the form x.x.x.x/x.&quot;
+   }
+  },
+
+  &quot;Mappings&quot; : {
+    &quot;RegionMap&quot; : {
+      &quot;us-east-1&quot;      : { &quot;AMI&quot; : &quot;ami-7f418316&quot;, &quot;TestAz&quot; : &quot;us-east-1a&quot; },
+      &quot;us-west-1&quot;      : { &quot;AMI&quot; : &quot;ami-951945d0&quot;, &quot;TestAz&quot; : &quot;us-west-1a&quot; },
+      &quot;us-west-2&quot;      : { &quot;AMI&quot; : &quot;ami-16fd7026&quot;, &quot;TestAz&quot; : &quot;us-west-2a&quot; },
+      &quot;eu-west-1&quot;      : { &quot;AMI&quot; : &quot;ami-24506250&quot;, &quot;TestAz&quot; : &quot;eu-west-1a&quot; },
+      &quot;sa-east-1&quot;      : { &quot;AMI&quot; : &quot;ami-3e3be423&quot;, &quot;TestAz&quot; : &quot;sa-east-1a&quot; },
+      &quot;ap-southeast-1&quot; : { &quot;AMI&quot; : &quot;ami-74dda626&quot;, &quot;TestAz&quot; : &quot;ap-southeast-1a&quot; },
+      &quot;ap-southeast-2&quot; : { &quot;AMI&quot; : &quot;ami-b3990e89&quot;, &quot;TestAz&quot; : &quot;ap-southeast-2a&quot; },
+      &quot;ap-northeast-1&quot; : { &quot;AMI&quot; : &quot;ami-dcfa4edd&quot;, &quot;TestAz&quot; : &quot;ap-northeast-1a&quot; }
+    }
+  },
+
+  &quot;Resources&quot; : {
+    &quot;Ec2Instance&quot; : {
+      &quot;Type&quot; : &quot;AWS::EC2::Instance&quot;,
+      &quot;Properties&quot; : {
+        &quot;AvailabilityZone&quot; : { &quot;Fn::FindInMap&quot; : [ &quot;RegionMap&quot;, { &quot;Ref&quot; : &quot;AWS::Region&quot; }, &quot;TestAz&quot; ]},
+        &quot;SecurityGroups&quot; : [ { &quot;Ref&quot; : &quot;InstanceSecurityGroup&quot; } ],
+        &quot;KeyName&quot; : { &quot;Ref&quot; : &quot;KeyName&quot; },
+        &quot;ImageId&quot; : { &quot;Fn::FindInMap&quot; : [ &quot;RegionMap&quot;, { &quot;Ref&quot; : &quot;AWS::Region&quot; }, &quot;AMI&quot; ]},
+        &quot;Volumes&quot; : [
+          { &quot;VolumeId&quot; : { &quot;Ref&quot; : &quot;NewVolume&quot; },
+            &quot;Device&quot; : &quot;/dev/sdk&quot;
+          }
+        ]
+      }
+    },
+
+    &quot;InstanceSecurityGroup&quot; : {
+      &quot;Type&quot; : &quot;AWS::EC2::SecurityGroup&quot;,
+      &quot;Properties&quot; : {
+        &quot;GroupDescription&quot; : &quot;Enable SSH access via port 22&quot;,
+        &quot;SecurityGroupIngress&quot; : [ {
+          &quot;IpProtocol&quot; : &quot;tcp&quot;,
+          &quot;FromPort&quot; : &quot;22&quot;,
+          &quot;ToPort&quot; : &quot;22&quot;,
+          &quot;CidrIp&quot; : { &quot;Ref&quot; : &quot;SSHLocation&quot;}
+        } ]
+      }
+    },
+
+    &quot;NewVolume&quot; : {
+      &quot;Type&quot; : &quot;AWS::EC2::Volume&quot;,
+      &quot;Properties&quot; : {
+        &quot;Size&quot; : &quot;100&quot;,
+        &quot;AvailabilityZone&quot; : { &quot;Fn::FindInMap&quot; : [ &quot;RegionMap&quot;, { &quot;Ref&quot; : &quot;AWS::Region&quot; }, &quot;TestAz&quot; ]}
+      }
+    }
+  },
+
+  &quot;Outputs&quot; : {
+    &quot;InstanceId&quot; : {
+      &quot;Description&quot; : &quot;InstanceId of the newly created EC2 instance&quot;,
+      &quot;Value&quot; : { &quot;Ref&quot; : &quot;Ec2Instance&quot; }
+    },
+    &quot;PublicIP&quot; : {
+      &quot;Description&quot; : &quot;Public IP address of the newly created EC2 instance&quot;,
+      &quot;Value&quot; : { &quot;Fn::GetAtt&quot; : [ &quot;Ec2Instance&quot;, &quot;PublicIp&quot; ] }
+    },
+    &quot;PublicDNS&quot; : {
+      &quot;Description&quot; : &quot;Public DNSName of the newly created EC2 instance&quot;,
+      &quot;Value&quot; : { &quot;Fn::GetAtt&quot; : [ &quot;Ec2Instance&quot;, &quot;PublicDnsName&quot; ] }
+    }
+  }
+}
+</TemplateBody>
+  </GetTemplateResult>
+  <ResponseMetadata>
+    <RequestId>4ca8b6a8-bc40-11e2-95ee-bd3eac9f6692</RequestId>
+  </ResponseMetadata>
+</GetTemplateResponse>

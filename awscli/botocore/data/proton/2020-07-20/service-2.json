@@ -1,0 +1,3795 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2020-07-20",
+    "endpointPrefix":"proton",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "serviceFullName":"AWS Proton",
+    "serviceId":"Proton",
+    "signatureVersion":"v4",
+    "signingName":"proton",
+    "targetPrefix":"AwsProton20200720",
+    "uid":"proton-2020-07-20"
+  },
+  "operations":{
+    "AcceptEnvironmentAccountConnection":{
+      "name":"AcceptEnvironmentAccountConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptEnvironmentAccountConnectionInput"},
+      "output":{"shape":"AcceptEnvironmentAccountConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>In a management account, an environment account connection request is accepted. When the environment account connection request is accepted, AWS Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>",
+      "idempotent":true
+    },
+    "CancelEnvironmentDeployment":{
+      "name":"CancelEnvironmentDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelEnvironmentDeploymentInput"},
+      "output":{"shape":"CancelEnvironmentDeploymentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attempts to cancel an environment deployment on an <a>UpdateEnvironment</a> action, if the deployment is <code>IN_PROGRESS</code>. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-update.html\">Update an environment</a> in the <i>AWS Proton Administrator guide</i>.</p> <p>The following list includes potential cancellation scenarios.</p> <ul> <li> <p>If the cancellation attempt succeeds, the resulting deployment state is <code>CANCELLED</code>.</p> </li> <li> <p>If the cancellation attempt fails, the resulting deployment state is <code>FAILED</code>.</p> </li> <li> <p>If the current <a>UpdateEnvironment</a> action succeeds before the cancellation attempt starts, the resulting deployment state is <code>SUCCEEDED</code> and the cancellation attempt has no effect.</p> </li> </ul>"
+    },
+    "CancelServiceInstanceDeployment":{
+      "name":"CancelServiceInstanceDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelServiceInstanceDeploymentInput"},
+      "output":{"shape":"CancelServiceInstanceDeploymentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attempts to cancel a service instance deployment on an <a>UpdateServiceInstance</a> action, if the deployment is <code>IN_PROGRESS</code>. For more information, see <i>Update a service instance</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-svc-instance-update.html\">AWS Proton Administrator guide</a> or the <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-instance-update.html\">AWS Proton User guide</a>.</p> <p>The following list includes potential cancellation scenarios.</p> <ul> <li> <p>If the cancellation attempt succeeds, the resulting deployment state is <code>CANCELLED</code>.</p> </li> <li> <p>If the cancellation attempt fails, the resulting deployment state is <code>FAILED</code>.</p> </li> <li> <p>If the current <a>UpdateServiceInstance</a> action succeeds before the cancellation attempt starts, the resulting deployment state is <code>SUCCEEDED</code> and the cancellation attempt has no effect.</p> </li> </ul>"
+    },
+    "CancelServicePipelineDeployment":{
+      "name":"CancelServicePipelineDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelServicePipelineDeploymentInput"},
+      "output":{"shape":"CancelServicePipelineDeploymentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attempts to cancel a service pipeline deployment on an <a>UpdateServicePipeline</a> action, if the deployment is <code>IN_PROGRESS</code>. For more information, see <i>Update a service pipeline</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-svc-pipeline-update.html\">AWS Proton Administrator guide</a> or the <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-pipeline-update.html\">AWS Proton User guide</a>.</p> <p>The following list includes potential cancellation scenarios.</p> <ul> <li> <p>If the cancellation attempt succeeds, the resulting deployment state is <code>CANCELLED</code>.</p> </li> <li> <p>If the cancellation attempt fails, the resulting deployment state is <code>FAILED</code>.</p> </li> <li> <p>If the current <a>UpdateServicePipeline</a> action succeeds before the cancellation attempt starts, the resulting deployment state is <code>SUCCEEDED</code> and the cancellation attempt has no effect.</p> </li> </ul>"
+    },
+    "CreateEnvironment":{
+      "name":"CreateEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEnvironmentInput"},
+      "output":{"shape":"CreateEnvironmentOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deploy a new environment. An AWS Proton environment is created from an environment template that defines infrastructure and resources that can be shared across services. For more information, see the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> in the <i>AWS Proton Administrator Guide.</i> </p>",
+      "idempotent":true
+    },
+    "CreateEnvironmentAccountConnection":{
+      "name":"CreateEnvironmentAccountConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEnvironmentAccountConnectionInput"},
+      "output":{"shape":"CreateEnvironmentAccountConnectionOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create an environment account connection in an environment account so that environment infrastructure resources can be provisioned in the environment account from a management account.</p> <p>An environment account connection is a secure bi-directional connection between a <i>management account</i> and an <i>environment account</i> that maintains authorization and permissions. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>",
+      "idempotent":true
+    },
+    "CreateEnvironmentTemplate":{
+      "name":"CreateEnvironmentTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEnvironmentTemplateInput"},
+      "output":{"shape":"CreateEnvironmentTemplateOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create an environment template for AWS Proton. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-templates.html\">Environment Templates</a> in the <i>AWS Proton Administrator Guide</i>.</p> <p>You can create an environment template in one of the two following ways:</p> <ul> <li> <p>Register and publish a <i>standard</i> environment template that instructs AWS Proton to deploy and manage environment infrastructure.</p> </li> <li> <p>Register and publish a <i>customer managed</i> environment template that connects AWS Proton to your existing provisioned infrastructure that you manage. AWS Proton <i>doesn't</i> manage your existing provisioned infrastructure. To create an environment template for customer provisioned and managed infrastructure, include the <code>provisioning</code> parameter and set the value to <code>CUSTOMER_MANAGED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/template-create.html\">Register and publish an environment template</a> in the <i>AWS Proton Administrator Guide</i>.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "CreateEnvironmentTemplateVersion":{
+      "name":"CreateEnvironmentTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEnvironmentTemplateVersionInput"},
+      "output":{"shape":"CreateEnvironmentTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a new major or minor version of an environment template. A major version of an environment template is a version that <i>isn't</i> backwards compatible. A minor version of an environment template is a version that's backwards compatible within its major version.</p>",
+      "idempotent":true
+    },
+    "CreateService":{
+      "name":"CreateService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateServiceInput"},
+      "output":{"shape":"CreateServiceOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create an AWS Proton service. An AWS Proton service is an instantiation of a service template and often includes several service instances and pipeline. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-services.html\">Services</a> in the <i>AWS Proton Administrator Guide</i> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-service.html\">Services</a> in the <i>AWS Proton User Guide</i>.</p>",
+      "idempotent":true
+    },
+    "CreateServiceTemplate":{
+      "name":"CreateServiceTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateServiceTemplateInput"},
+      "output":{"shape":"CreateServiceTemplateOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a service template. The administrator creates a service template to define standardized infrastructure and an optional CICD service pipeline. Developers, in turn, select the service template from AWS Proton. If the selected service template includes a service pipeline definition, they provide a link to their source code repository. AWS Proton then deploys and manages the infrastructure defined by the selected service template. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/managing-svc-templates.html\">Service Templates</a> in the <i>AWS Proton Administrator Guide</i>.</p>",
+      "idempotent":true
+    },
+    "CreateServiceTemplateVersion":{
+      "name":"CreateServiceTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateServiceTemplateVersionInput"},
+      "output":{"shape":"CreateServiceTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a new major or minor version of a service template. A major version of a service template is a version that <i>isn't</i> backwards compatible. A minor version of a service template is a version that's backwards compatible within its major version.</p>",
+      "idempotent":true
+    },
+    "DeleteEnvironment":{
+      "name":"DeleteEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEnvironmentInput"},
+      "output":{"shape":"DeleteEnvironmentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete an environment.</p>",
+      "idempotent":true
+    },
+    "DeleteEnvironmentAccountConnection":{
+      "name":"DeleteEnvironmentAccountConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEnvironmentAccountConnectionInput"},
+      "output":{"shape":"DeleteEnvironmentAccountConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>In an environment account, delete an environment account connection.</p> <p>After you delete an environment account connection that’s in use by an AWS Proton environment, AWS Proton <i>can’t</i> manage the environment infrastructure resources until a new environment account connection is accepted for the environment account and associated environment. You're responsible for cleaning up provisioned resources that remain without an environment connection.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>",
+      "idempotent":true
+    },
+    "DeleteEnvironmentTemplate":{
+      "name":"DeleteEnvironmentTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEnvironmentTemplateInput"},
+      "output":{"shape":"DeleteEnvironmentTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>If no other major or minor versions of an environment template exist, delete the environment template.</p>",
+      "idempotent":true
+    },
+    "DeleteEnvironmentTemplateVersion":{
+      "name":"DeleteEnvironmentTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEnvironmentTemplateVersionInput"},
+      "output":{"shape":"DeleteEnvironmentTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>If no other minor versions of an environment template exist, delete a major version of the environment template if it's not the <code>Recommended</code> version. Delete the <code>Recommended</code> version of the environment template if no other major versions or minor versions of the environment template exist. A major version of an environment template is a version that's not backwards compatible.</p> <p>Delete a minor version of an environment template if it <i>isn't</i> the <code>Recommended</code> version. Delete a <code>Recommended</code> minor version of the environment template if no other minor versions of the environment template exist. A minor version of an environment template is a version that's backwards compatible.</p>",
+      "idempotent":true
+    },
+    "DeleteService":{
+      "name":"DeleteService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteServiceInput"},
+      "output":{"shape":"DeleteServiceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a service.</p>",
+      "idempotent":true
+    },
+    "DeleteServiceTemplate":{
+      "name":"DeleteServiceTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteServiceTemplateInput"},
+      "output":{"shape":"DeleteServiceTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>If no other major or minor versions of the service template exist, delete the service template.</p>",
+      "idempotent":true
+    },
+    "DeleteServiceTemplateVersion":{
+      "name":"DeleteServiceTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteServiceTemplateVersionInput"},
+      "output":{"shape":"DeleteServiceTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>If no other minor versions of a service template exist, delete a major version of the service template if it's not the <code>Recommended</code> version. Delete the <code>Recommended</code> version of the service template if no other major versions or minor versions of the service template exist. A major version of a service template is a version that <i>isn't</i> backwards compatible.</p> <p>Delete a minor version of a service template if it's not the <code>Recommended</code> version. Delete a <code>Recommended</code> minor version of the service template if no other minor versions of the service template exist. A minor version of a service template is a version that's backwards compatible.</p>",
+      "idempotent":true
+    },
+    "GetAccountSettings":{
+      "name":"GetAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAccountSettingsInput"},
+      "output":{"shape":"GetAccountSettingsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detail data for the AWS Proton pipeline service role.</p>"
+    },
+    "GetEnvironment":{
+      "name":"GetEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnvironmentInput"},
+      "output":{"shape":"GetEnvironmentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detail data for an environment.</p>"
+    },
+    "GetEnvironmentAccountConnection":{
+      "name":"GetEnvironmentAccountConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnvironmentAccountConnectionInput"},
+      "output":{"shape":"GetEnvironmentAccountConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>In an environment account, view the detail data for an environment account connection.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>"
+    },
+    "GetEnvironmentTemplate":{
+      "name":"GetEnvironmentTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnvironmentTemplateInput"},
+      "output":{"shape":"GetEnvironmentTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detail data for an environment template.</p>"
+    },
+    "GetEnvironmentTemplateVersion":{
+      "name":"GetEnvironmentTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnvironmentTemplateVersionInput"},
+      "output":{"shape":"GetEnvironmentTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>View detail data for a major or minor version of an environment template.</p>"
+    },
+    "GetService":{
+      "name":"GetService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceInput"},
+      "output":{"shape":"GetServiceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detail data for a service.</p>"
+    },
+    "GetServiceInstance":{
+      "name":"GetServiceInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceInstanceInput"},
+      "output":{"shape":"GetServiceInstanceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detail data for a service instance. A service instance is an instantiation of service template, which is running in a specific environment.</p>"
+    },
+    "GetServiceTemplate":{
+      "name":"GetServiceTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceTemplateInput"},
+      "output":{"shape":"GetServiceTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detail data for a service template.</p>"
+    },
+    "GetServiceTemplateVersion":{
+      "name":"GetServiceTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceTemplateVersionInput"},
+      "output":{"shape":"GetServiceTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>View detail data for a major or minor version of a service template.</p>"
+    },
+    "ListEnvironmentAccountConnections":{
+      "name":"ListEnvironmentAccountConnections",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnvironmentAccountConnectionsInput"},
+      "output":{"shape":"ListEnvironmentAccountConnectionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>View a list of environment account connections.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>"
+    },
+    "ListEnvironmentTemplateVersions":{
+      "name":"ListEnvironmentTemplateVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnvironmentTemplateVersionsInput"},
+      "output":{"shape":"ListEnvironmentTemplateVersionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List major or minor versions of an environment template with detail data.</p>"
+    },
+    "ListEnvironmentTemplates":{
+      "name":"ListEnvironmentTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnvironmentTemplatesInput"},
+      "output":{"shape":"ListEnvironmentTemplatesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List environment templates.</p>"
+    },
+    "ListEnvironments":{
+      "name":"ListEnvironments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnvironmentsInput"},
+      "output":{"shape":"ListEnvironmentsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List environments with detail data summaries.</p>"
+    },
+    "ListServiceInstances":{
+      "name":"ListServiceInstances",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListServiceInstancesInput"},
+      "output":{"shape":"ListServiceInstancesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List service instances with summaries of detail data.</p>"
+    },
+    "ListServiceTemplateVersions":{
+      "name":"ListServiceTemplateVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListServiceTemplateVersionsInput"},
+      "output":{"shape":"ListServiceTemplateVersionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List major or minor versions of a service template with detail data.</p>"
+    },
+    "ListServiceTemplates":{
+      "name":"ListServiceTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListServiceTemplatesInput"},
+      "output":{"shape":"ListServiceTemplatesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List service templates with detail data.</p>"
+    },
+    "ListServices":{
+      "name":"ListServices",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListServicesInput"},
+      "output":{"shape":"ListServicesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List services with summaries of detail data.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List tags for a resource. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>"
+    },
+    "RejectEnvironmentAccountConnection":{
+      "name":"RejectEnvironmentAccountConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectEnvironmentAccountConnectionInput"},
+      "output":{"shape":"RejectEnvironmentAccountConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>In a management account, reject an environment account connection from another environment account.</p> <p>After you reject an environment account connection request, you <i>won’t</i> be able to accept or use the rejected environment account connection.</p> <p>You <i>can’t</i> reject an environment account connection that is connected to an environment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Tag a resource. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Remove a tag from a resource. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>",
+      "idempotent":true
+    },
+    "UpdateAccountSettings":{
+      "name":"UpdateAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAccountSettingsInput"},
+      "output":{"shape":"UpdateAccountSettingsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the AWS Proton pipeline service account settings.</p>"
+    },
+    "UpdateEnvironment":{
+      "name":"UpdateEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEnvironmentInput"},
+      "output":{"shape":"UpdateEnvironmentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update an environment.</p> <p>If the environment is associated with an environment account connection, <i>don't</i> update or include the <code>protonServiceRoleArn</code> parameter to update or connect to an environment account connection. </p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p> <p>If the environment <i>isn't</i> associated with an environment account connection, <i>don't</i> update or include the <code>environmentAccountConnectionId</code> parameter to update or connect to an environment account connection.</p> <p>You can update either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value. You can’t update both.</p> <p>There are four modes for updating an environment as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+    },
+    "UpdateEnvironmentAccountConnection":{
+      "name":"UpdateEnvironmentAccountConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEnvironmentAccountConnectionInput"},
+      "output":{"shape":"UpdateEnvironmentAccountConnectionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>In an environment account, update an environment account connection to use a new IAM role.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>",
+      "idempotent":true
+    },
+    "UpdateEnvironmentTemplate":{
+      "name":"UpdateEnvironmentTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEnvironmentTemplateInput"},
+      "output":{"shape":"UpdateEnvironmentTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update an environment template.</p>"
+    },
+    "UpdateEnvironmentTemplateVersion":{
+      "name":"UpdateEnvironmentTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEnvironmentTemplateVersionInput"},
+      "output":{"shape":"UpdateEnvironmentTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a major or minor version of an environment template.</p>"
+    },
+    "UpdateService":{
+      "name":"UpdateService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceInput"},
+      "output":{"shape":"UpdateServiceOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Edit a service description or use a spec to add and delete service instances.</p> <note> <p>Existing service instances and the service pipeline <i>can't</i> be edited using this API. They can only be deleted.</p> </note> <p>Use the <code>description</code> parameter to modify the description.</p> <p>Edit the <code>spec</code> parameter to add or delete instances.</p>"
+    },
+    "UpdateServiceInstance":{
+      "name":"UpdateServiceInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceInstanceInput"},
+      "output":{"shape":"UpdateServiceInstanceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a service instance.</p> <p>There are four modes for updating a service instance as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+    },
+    "UpdateServicePipeline":{
+      "name":"UpdateServicePipeline",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServicePipelineInput"},
+      "output":{"shape":"UpdateServicePipelineOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the service pipeline.</p> <p>There are four modes for updating a service pipeline as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+    },
+    "UpdateServiceTemplate":{
+      "name":"UpdateServiceTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceTemplateInput"},
+      "output":{"shape":"UpdateServiceTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a service template.</p>"
+    },
+    "UpdateServiceTemplateVersion":{
+      "name":"UpdateServiceTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceTemplateVersionInput"},
+      "output":{"shape":"UpdateServiceTemplateVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a major or minor version of a service template.</p>"
+    }
+  },
+  "shapes":{
+    "AcceptEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection.</p>"
+        }
+      }
+    },
+    "AcceptEnvironmentAccountConnectionOutput":{
+      "type":"structure",
+      "required":["environmentAccountConnection"],
+      "members":{
+        "environmentAccountConnection":{
+          "shape":"EnvironmentAccountConnection",
+          "documentation":"<p>The environment account connection data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>There <i>isn't</i> sufficient access for performing this action.</p>",
+      "exception":true
+    },
+    "AccountSettings":{
+      "type":"structure",
+      "members":{
+        "pipelineServiceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Proton pipeline service role.</p>"
+        }
+      },
+      "documentation":"<p>The AWS Proton pipeline service role data.</p>"
+    },
+    "Arn":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "AwsAccountId":{
+      "type":"string",
+      "pattern":"^\\d{12}$"
+    },
+    "CancelEnvironmentDeploymentInput":{
+      "type":"structure",
+      "required":["environmentName"],
+      "members":{
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment with the deployment to cancel.</p>"
+        }
+      }
+    },
+    "CancelEnvironmentDeploymentOutput":{
+      "type":"structure",
+      "required":["environment"],
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment summary data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CancelServiceInstanceDeploymentInput":{
+      "type":"structure",
+      "required":[
+        "serviceInstanceName",
+        "serviceName"
+      ],
+      "members":{
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance with the deployment to cancel.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service with the service instance deployment to cancel.</p>"
+        }
+      }
+    },
+    "CancelServiceInstanceDeploymentOutput":{
+      "type":"structure",
+      "required":["serviceInstance"],
+      "members":{
+        "serviceInstance":{
+          "shape":"ServiceInstance",
+          "documentation":"<p>The service instance summary data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CancelServicePipelineDeploymentInput":{
+      "type":"structure",
+      "required":["serviceName"],
+      "members":{
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service with the service pipeline deployment to cancel.</p>"
+        }
+      }
+    },
+    "CancelServicePipelineDeploymentOutput":{
+      "type":"structure",
+      "required":["pipeline"],
+      "members":{
+        "pipeline":{
+          "shape":"ServicePipeline",
+          "documentation":"<p>The service pipeline detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"^[!-~]*$"
+    },
+    "CompatibleEnvironmentTemplate":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the compatible environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The compatible environment template name.</p>"
+        }
+      },
+      "documentation":"<p>Compatible environment template data.</p>"
+    },
+    "CompatibleEnvironmentTemplateInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the compatible environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The compatible environment template name.</p>"
+        }
+      },
+      "documentation":"<p>Compatible environment template data.</p>"
+    },
+    "CompatibleEnvironmentTemplateInputList":{
+      "type":"list",
+      "member":{"shape":"CompatibleEnvironmentTemplateInput"},
+      "max":10,
+      "min":1
+    },
+    "CompatibleEnvironmentTemplateList":{
+      "type":"list",
+      "member":{"shape":"CompatibleEnvironmentTemplate"}
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request <i>couldn't</i> be made due to a conflicting operation or resource.</p>",
+      "exception":true
+    },
+    "CreateEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":[
+        "environmentName",
+        "managementAccountId",
+        "roleArn"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>When included, if two identicial requests are made with the same client token, AWS Proton returns the environment account connection that the first request created.</p>",
+          "idempotencyToken":true
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the AWS Proton environment that's created in the associated management account.</p>"
+        },
+        "managementAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the management account that accepts or rejects the environment account connection. You create an manage the AWS Proton environment in this account. If the management account accepts the environment account connection, AWS Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.</p>"
+        },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. AWS Proton uses this role to provision infrastructure resources in the associated environment account.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentAccountConnectionOutput":{
+      "type":"structure",
+      "required":["environmentAccountConnection"],
+      "members":{
+        "environmentAccountConnection":{
+          "shape":"EnvironmentAccountConnection",
+          "documentation":"<p>The environment account connection detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "spec",
+        "templateMajorVersion",
+        "templateName"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the environment that's being created and deployed.</p>"
+        },
+        "environmentAccountConnectionId":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection that you provide if you're provisioning your environment infrastructure resources to an environment account. You must include either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>AWS Proton Administrator guide</i>.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment.</p>"
+        },
+        "protonServiceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Proton service role that allows AWS Proton to make calls to other services on your behalf. You must include either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>A link to a YAML formatted spec file that provides inputs as defined in the environment template bundle schema file. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> in the <i>AWS Proton Administrator Guide</i>.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Create tags for your environment. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the environment template.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-templates.html\">Environment Templates</a> in the <i>AWS Proton Administrator Guide</i>.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentOutput":{
+      "type":"structure",
+      "required":["environment"],
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the environment template.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The environment template name as displayed in the developer interface.</p>"
+        },
+        "encryptionKey":{
+          "shape":"Arn",
+          "documentation":"<p>A customer provided encryption key that AWS Proton uses to encrypt data.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        },
+        "provisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>When included, indicates that the environment template is for customer provisioned and managed infrastructure.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Create tags for your environment template. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentTemplateOutput":{
+      "type":"structure",
+      "required":["environmentTemplate"],
+      "members":{
+        "environmentTemplate":{
+          "shape":"EnvironmentTemplate",
+          "documentation":"<p>The environment template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "source",
+        "templateName"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>When included, if two identicial requests are made with the same client token, AWS Proton returns the environment template version that the first request created.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the new version of an environment template.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To create a new minor version of the environment template, include a <code>majorVersion</code>.</p> <p>To create a new major and minor version of the environment template, <i>exclude</i> <code>majorVersion</code>.</p>"
+        },
+        "source":{
+          "shape":"TemplateVersionSourceInput",
+          "documentation":"<p>An object that includes the template bundle S3 bucket path and name for the new version of an template.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Create tags for a new version of an environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentTemplateVersionOutput":{
+      "type":"structure",
+      "required":["environmentTemplateVersion"],
+      "members":{
+        "environmentTemplateVersion":{
+          "shape":"EnvironmentTemplateVersion",
+          "documentation":"<p>The environment template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CreateServiceInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "spec",
+        "templateMajorVersion",
+        "templateName"
+      ],
+      "members":{
+        "branchName":{
+          "shape":"GitBranchName",
+          "documentation":"<p>The name of the code repository branch that holds the code that's deployed in AWS Proton. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the AWS Proton service.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The service name.</p>"
+        },
+        "repositoryConnectionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the repository connection. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/setting-up-for-service.html#setting-up-vcontrol\">Set up repository connection</a> in the <i>AWS Proton Administrator Guide</i> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/proton-setup.html#setup-repo-connection\">Setting up with AWS Proton</a> in the <i>AWS Proton User Guide</i>. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.</p>"
+        },
+        "repositoryId":{
+          "shape":"RepositoryId",
+          "documentation":"<p>The ID of the code repository. <i>Don't</i> include this parameter if your service template <i>doesn't</i> include a service pipeline.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>A link to a spec file that provides inputs as defined in the service template bundle schema file. The spec file is in YAML format. Don’t include pipeline inputs in the spec if your service template <i>doesn’t</i> include a service pipeline. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-create-svc.html.html\">Create a service</a> in the <i>AWS Proton Administrator Guide</i> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-create.html\">Create a service</a> in the <i>AWS Proton User Guide</i>.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Create tags for your service. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the service template that was used to create the service.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the service template that was used to create the service.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template that's used to create the service.</p>"
+        }
+      }
+    },
+    "CreateServiceOutput":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The service detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CreateServiceTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the service template.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the service template as displayed in the developer interface.</p>"
+        },
+        "encryptionKey":{
+          "shape":"Arn",
+          "documentation":"<p>A customer provided encryption key that's used to encrypt data.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        },
+        "pipelineProvisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>AWS Proton includes a service pipeline for your service by default. When included, this parameter indicates that an AWS Proton service pipeline <i>won't</i> be included for your service. Once specified, this parameter <i>can't</i> be changed. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-bundles.html\">Service template bundles</a> in the <i>AWS Proton Administrator Guide</i>.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Create tags for your service template. For more information, see <i>AWS Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">AWS Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">AWS Proton User Guide</a>.</p>"
+        }
+      }
+    },
+    "CreateServiceTemplateOutput":{
+      "type":"structure",
+      "required":["serviceTemplate"],
+      "members":{
+        "serviceTemplate":{
+          "shape":"ServiceTemplate",
+          "documentation":"<p>The service template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "CreateServiceTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "compatibleEnvironmentTemplates",
+        "source",
+        "templateName"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>When included, if two identicial requests are made with the same client token, AWS Proton returns the service template version that the first request created.</p>",
+          "idempotencyToken":true
+        },
+        "compatibleEnvironmentTemplates":{
+          "shape":"CompatibleEnvironmentTemplateInputList",
+          "documentation":"<p>An array of compatible environment template objects for the new version of a service template.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the new version of a service template.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To create a new minor version of the service template, include a <code>majorVersion</code>.</p> <p>To create a new major and minor version of the service template, <i>exclude</i> <code>majorVersion</code>.</p>"
+        },
+        "source":{
+          "shape":"TemplateVersionSourceInput",
+          "documentation":"<p>An object that includes the template bundle S3 bucket path and name for the new version of a service template.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Create tags for a new version of a service template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      }
+    },
+    "CreateServiceTemplateVersionOutput":{
+      "type":"structure",
+      "required":["serviceTemplateVersion"],
+      "members":{
+        "serviceTemplateVersion":{
+          "shape":"ServiceTemplateVersion",
+          "documentation":"<p>The service template version summary of detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection to delete.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentAccountConnectionOutput":{
+      "type":"structure",
+      "members":{
+        "environmentAccountConnection":{
+          "shape":"EnvironmentAccountConnection",
+          "documentation":"<p>The environment account connection detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment to delete.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentOutput":{
+      "type":"structure",
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template to delete.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "environmentTemplate":{
+          "shape":"EnvironmentTemplate",
+          "documentation":"<p>The environment template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "minorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The environment template major version to delete.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The environment template minor version to delete.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentTemplateVersionOutput":{
+      "type":"structure",
+      "members":{
+        "environmentTemplateVersion":{
+          "shape":"EnvironmentTemplateVersion",
+          "documentation":"<p>The environment template version detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteServiceInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service to delete.</p>"
+        }
+      }
+    },
+    "DeleteServiceOutput":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The service detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteServiceTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template to delete.</p>"
+        }
+      }
+    },
+    "DeleteServiceTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "serviceTemplate":{
+          "shape":"ServiceTemplate",
+          "documentation":"<p>The service template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeleteServiceTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "minorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The service template major version to delete.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The service template minor version to delete.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      }
+    },
+    "DeleteServiceTemplateVersionOutput":{
+      "type":"structure",
+      "members":{
+        "serviceTemplateVersion":{
+          "shape":"ServiceTemplateVersion",
+          "documentation":"<p>The service template version detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "DeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED",
+        "SUCCEEDED",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED",
+        "DELETE_COMPLETE",
+        "CANCELLING",
+        "CANCELLED"
+      ]
+    },
+    "DeploymentUpdateType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "CURRENT_VERSION",
+        "MINOR_VERSION",
+        "MAJOR_VERSION"
+      ]
+    },
+    "Description":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "sensitive":true
+    },
+    "DisplayName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
+    "Environment":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "lastDeploymentAttemptedAt",
+        "lastDeploymentSucceededAt",
+        "name",
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The environment deployment status.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>An environment deployment status message.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the environment.</p>"
+        },
+        "environmentAccountConnectionId":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection that's used to provision infrastructure resources in an environment account.</p>"
+        },
+        "environmentAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the environment account that the environment infrastructure resources are provisioned in.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the environment was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment was last deployed successfully.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment.</p>"
+        },
+        "protonServiceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Proton service role that allows AWS Proton to make calls to other services on your behalf.</p>"
+        },
+        "provisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>When included, indicates that the environment template is for customer provisioned and managed infrastructure.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The environment spec.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the environment template.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment template.</p>"
+        }
+      },
+      "documentation":"<p>The environment detail data. An AWS Proton environment is a set resources shared across an AWS Proton service.</p>"
+    },
+    "EnvironmentAccountConnection":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "environmentAccountId",
+        "environmentName",
+        "id",
+        "lastModifiedAt",
+        "managementAccountId",
+        "requestedAt",
+        "roleArn",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentAccountConnectionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment account connection.</p>"
+        },
+        "environmentAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The environment account that's connected to the environment account connection.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment that's associated with the environment account connection.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment account connection was last modified.</p>"
+        },
+        "managementAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the management account that's connected to the environment account connection.</p>"
+        },
+        "requestedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment account connection request was made.</p>"
+        },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The IAM service role that's associated with the environment account connection.</p>"
+        },
+        "status":{
+          "shape":"EnvironmentAccountConnectionStatus",
+          "documentation":"<p>The status of the environment account connection.</p>"
+        }
+      },
+      "documentation":"<p>The environment account connection detail data.</p>"
+    },
+    "EnvironmentAccountConnectionArn":{"type":"string"},
+    "EnvironmentAccountConnectionId":{
+      "type":"string",
+      "pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "EnvironmentAccountConnectionRequesterAccountType":{
+      "type":"string",
+      "enum":[
+        "MANAGEMENT_ACCOUNT",
+        "ENVIRONMENT_ACCOUNT"
+      ]
+    },
+    "EnvironmentAccountConnectionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "CONNECTED",
+        "REJECTED"
+      ]
+    },
+    "EnvironmentAccountConnectionStatusList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentAccountConnectionStatus"}
+    },
+    "EnvironmentAccountConnectionSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "environmentAccountId",
+        "environmentName",
+        "id",
+        "lastModifiedAt",
+        "managementAccountId",
+        "requestedAt",
+        "roleArn",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentAccountConnectionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment account connection.</p>"
+        },
+        "environmentAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the environment account that's connected to the environment account connection.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment that's associated with the environment account connection.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment account connection was last modified.</p>"
+        },
+        "managementAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the management account that's connected to the environment account connection.</p>"
+        },
+        "requestedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment account connection request was made.</p>"
+        },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The IAM service role that's associated with the environment account connection.</p>"
+        },
+        "status":{
+          "shape":"EnvironmentAccountConnectionStatus",
+          "documentation":"<p>The status of the environment account connection.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the environment account connection detail data.</p>"
+    },
+    "EnvironmentAccountConnectionSummaryList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentAccountConnectionSummary"}
+    },
+    "EnvironmentArn":{"type":"string"},
+    "EnvironmentSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "lastDeploymentAttemptedAt",
+        "lastDeploymentSucceededAt",
+        "name",
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The environment deployment status.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>An environment deployment status message.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the environment.</p>"
+        },
+        "environmentAccountConnectionId":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection that the environment is associated with.</p>"
+        },
+        "environmentAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the environment account that the environment infrastructure resources are provisioned in.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the environment was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment was last deployed successfully.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment.</p>"
+        },
+        "protonServiceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Proton service role that allows AWS Proton to make calls to other services on your behalf.</p>"
+        },
+        "provisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>When included, indicates that the environment template is for customer provisioned and managed infrastructure.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the environment template.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the environment detail data.</p>"
+    },
+    "EnvironmentSummaryList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentSummary"}
+    },
+    "EnvironmentTemplate":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "name"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the environment template.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the environment template as displayed in the developer interface.</p>"
+        },
+        "encryptionKey":{
+          "shape":"Arn",
+          "documentation":"<p>The customer provided encryption key for the environment template.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment template was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        },
+        "provisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>When included, indicates that the environment template is for customer provisioned and managed infrastructure.</p>"
+        },
+        "recommendedVersion":{
+          "shape":"FullTemplateVersionNumber",
+          "documentation":"<p>The ID of the recommended version of the environment template.</p>"
+        }
+      },
+      "documentation":"<p>The environment template data.</p>"
+    },
+    "EnvironmentTemplateArn":{"type":"string"},
+    "EnvironmentTemplateFilter":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>Include <code>majorVersion</code> to filter search for a major version.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>Include <code>templateName</code> to filter search for a template name.</p>"
+        }
+      },
+      "documentation":"<p>A search filter for environment templates.</p>"
+    },
+    "EnvironmentTemplateFilterList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentTemplateFilter"}
+    },
+    "EnvironmentTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "name"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the environment template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the environment template.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the environment template as displayed in the developer interface.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the environment template was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        },
+        "provisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>When included, indicates that the environment template is for customer provisioned and managed infrastructure.</p>"
+        },
+        "recommendedVersion":{
+          "shape":"FullTemplateVersionNumber",
+          "documentation":"<p>The ID of the recommended version of the environment template.</p>"
+        }
+      },
+      "documentation":"<p>The environment template data.</p>"
+    },
+    "EnvironmentTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentTemplateSummary"}
+    },
+    "EnvironmentTemplateVersion":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "majorVersion",
+        "minorVersion",
+        "status",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentTemplateVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the version of an environment template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of an environment template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the minor version of an environment template.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of an environment template was last modified.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the latest major version that's associated with the version of an environment template.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of an environment template.</p>"
+        },
+        "recommendedMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the recommended minor version of the environment template.</p>"
+        },
+        "schema":{
+          "shape":"TemplateSchema",
+          "documentation":"<p>The schema of the version of an environment template.</p>"
+        },
+        "status":{
+          "shape":"TemplateVersionStatus",
+          "documentation":"<p>The status of the version of an environment template.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The status message of the version of an environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the version of an environment template.</p>"
+        }
+      },
+      "documentation":"<p>The environment template version data.</p>"
+    },
+    "EnvironmentTemplateVersionArn":{"type":"string"},
+    "EnvironmentTemplateVersionSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "majorVersion",
+        "minorVersion",
+        "status",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EnvironmentTemplateVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the version of an environment template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of an environment template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the version of an environment template.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of an environment template was last modified.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the latest major version that's associated with the version of an environment template.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the version of an environment template.</p>"
+        },
+        "recommendedMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the recommended minor version of the environment template.</p>"
+        },
+        "status":{
+          "shape":"TemplateVersionStatus",
+          "documentation":"<p>The status of the version of an environment template.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The status message of the version of an environment template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the version of an environment template.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the version of an environment template detail data.</p>"
+    },
+    "EnvironmentTemplateVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentTemplateVersionSummary"}
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "sensitive":true
+    },
+    "FullTemplateVersionNumber":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"^(0|([1-9]{1}\\d*)).(0|([1-9]{1}\\d*))$"
+    },
+    "GetAccountSettingsInput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetAccountSettingsOutput":{
+      "type":"structure",
+      "members":{
+        "accountSettings":{
+          "shape":"AccountSettings",
+          "documentation":"<p>The AWS Proton pipeline service role detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection.</p>"
+        }
+      }
+    },
+    "GetEnvironmentAccountConnectionOutput":{
+      "type":"structure",
+      "required":["environmentAccountConnection"],
+      "members":{
+        "environmentAccountConnection":{
+          "shape":"EnvironmentAccountConnection",
+          "documentation":"<p>The environment account connection detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetEnvironmentInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment that you want to get the detail data for.</p>"
+        }
+      }
+    },
+    "GetEnvironmentOutput":{
+      "type":"structure",
+      "required":["environment"],
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetEnvironmentTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template that you want to get the detail data for.</p>"
+        }
+      }
+    },
+    "GetEnvironmentTemplateOutput":{
+      "type":"structure",
+      "required":["environmentTemplate"],
+      "members":{
+        "environmentTemplate":{
+          "shape":"EnvironmentTemplate",
+          "documentation":"<p>The environment template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetEnvironmentTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "minorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To view environment template major version detail data, include <code>majorVersion</code>.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To view environment template minor version detail data, include <code>minorVersion</code>.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        }
+      }
+    },
+    "GetEnvironmentTemplateVersionOutput":{
+      "type":"structure",
+      "required":["environmentTemplateVersion"],
+      "members":{
+        "environmentTemplateVersion":{
+          "shape":"EnvironmentTemplateVersion",
+          "documentation":"<p>The environment template version detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetServiceInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that you want to get the detail data for.</p>"
+        }
+      }
+    },
+    "GetServiceInstanceInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "serviceName"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a service instance that you want to get the detail data for.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        }
+      }
+    },
+    "GetServiceInstanceOutput":{
+      "type":"structure",
+      "required":["serviceInstance"],
+      "members":{
+        "serviceInstance":{
+          "shape":"ServiceInstance",
+          "documentation":"<p>The service instance detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetServiceOutput":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The service detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetServiceTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template that you want to get detail data for.</p>"
+        }
+      }
+    },
+    "GetServiceTemplateOutput":{
+      "type":"structure",
+      "required":["serviceTemplate"],
+      "members":{
+        "serviceTemplate":{
+          "shape":"ServiceTemplate",
+          "documentation":"<p>The service template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GetServiceTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "minorVersion",
+        "templateName"
+      ],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To view service template major version detail data, include <code>majorVersion</code>.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To view service template minor version detail data, include <code>minorVersion</code>.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      }
+    },
+    "GetServiceTemplateVersionOutput":{
+      "type":"structure",
+      "required":["serviceTemplateVersion"],
+      "members":{
+        "serviceTemplateVersion":{
+          "shape":"ServiceTemplateVersion",
+          "documentation":"<p>The service template version detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "GitBranchName":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request failed to register with the service.</p>",
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "ListEnvironmentAccountConnectionsInput":{
+      "type":"structure",
+      "required":["requestedBy"],
+      "members":{
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The environment name that's associated with each listed environment account connection.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of environment account connections to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next environment account connection in the array of environment account connections, after the list of environment account connections that was previously requested.</p>"
+        },
+        "requestedBy":{
+          "shape":"EnvironmentAccountConnectionRequesterAccountType",
+          "documentation":"<p>The type of account making the <code>ListEnvironmentAccountConnections</code> request.</p>"
+        },
+        "statuses":{
+          "shape":"EnvironmentAccountConnectionStatusList",
+          "documentation":"<p>The status details for each listed environment account connection.</p>"
+        }
+      }
+    },
+    "ListEnvironmentAccountConnectionsOutput":{
+      "type":"structure",
+      "required":["environmentAccountConnections"],
+      "members":{
+        "environmentAccountConnections":{
+          "shape":"EnvironmentAccountConnectionSummaryList",
+          "documentation":"<p>An array of environment account connections with details that's returned by AWS Proton. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next environment account connection in the array of environment account connections, after the current requested list of environment account connections.</p>"
+        }
+      }
+    },
+    "ListEnvironmentTemplateVersionsInput":{
+      "type":"structure",
+      "required":["templateName"],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To view a list of minor of versions under a major version of an environment template, include <code>majorVersion</code>.</p> <p>To view a list of major versions of an environment template, <i>exclude</i> <code>majorVersion</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of major or minor versions of an environment template to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        }
+      }
+    },
+    "ListEnvironmentTemplateVersionsOutput":{
+      "type":"structure",
+      "required":["templateVersions"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.</p>"
+        },
+        "templateVersions":{
+          "shape":"EnvironmentTemplateVersionSummaryList",
+          "documentation":"<p>An array of major or minor versions of an environment template detail data.</p>"
+        }
+      }
+    },
+    "ListEnvironmentTemplatesInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of environment templates to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next environment template in the array of environment templates, after the list of environment templates that was previously requested.</p>"
+        }
+      }
+    },
+    "ListEnvironmentTemplatesOutput":{
+      "type":"structure",
+      "required":["templates"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next environment template in the array of environment templates, after the current requested list of environment templates.</p>"
+        },
+        "templates":{
+          "shape":"EnvironmentTemplateSummaryList",
+          "documentation":"<p>An array of environment templates with detail data.</p>"
+        }
+      }
+    },
+    "ListEnvironmentsInput":{
+      "type":"structure",
+      "members":{
+        "environmentTemplates":{
+          "shape":"EnvironmentTemplateFilterList",
+          "documentation":"<p>An array of the versions of the environment template.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of environments to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next environment in the array of environments, after the list of environments that was previously requested.</p>"
+        }
+      }
+    },
+    "ListEnvironmentsOutput":{
+      "type":"structure",
+      "required":["environments"],
+      "members":{
+        "environments":{
+          "shape":"EnvironmentSummaryList",
+          "documentation":"<p>An array of environment detail data summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next environment in the array of environments, after the current requested list of environments.</p>"
+        }
+      }
+    },
+    "ListServiceInstancesInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of service instances to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next service in the array of service instances, after the list of service instances that was previously requested.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        }
+      }
+    },
+    "ListServiceInstancesOutput":{
+      "type":"structure",
+      "required":["serviceInstances"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next service instance in the array of service instances, after the current requested list of service instances.</p>"
+        },
+        "serviceInstances":{
+          "shape":"ServiceInstanceSummaryList",
+          "documentation":"<p>An array of service instances with summaries of detail data.</p>"
+        }
+      }
+    },
+    "ListServiceTemplateVersionsInput":{
+      "type":"structure",
+      "required":["templateName"],
+      "members":{
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To view a list of minor of versions under a major version of a service template, include <code>majorVersion</code>.</p> <p>To view a list of major versions of a service template, <i>exclude</i> <code>majorVersion</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of major or minor versions of a service template to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of a service template, after the list of major or minor versions that was previously requested.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      }
+    },
+    "ListServiceTemplateVersionsOutput":{
+      "type":"structure",
+      "required":["templateVersions"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of a service template, after the list of major or minor versions that was previously requested.</p>"
+        },
+        "templateVersions":{
+          "shape":"ServiceTemplateVersionSummaryList",
+          "documentation":"<p>An array of major or minor versions of a service template with detail data.</p>"
+        }
+      }
+    },
+    "ListServiceTemplatesInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of service templates to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next service template in the array of service templates, after the list of service templates previously requested.</p>"
+        }
+      }
+    },
+    "ListServiceTemplatesOutput":{
+      "type":"structure",
+      "required":["templates"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next service template in the array of service templates, after the current requested list of service templates.</p>"
+        },
+        "templates":{
+          "shape":"ServiceTemplateSummaryList",
+          "documentation":"<p>An array of service templates with detail data.</p>"
+        }
+      }
+    },
+    "ListServicesInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of services to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next service in the array of services, after the list of services that was previously requested.</p>"
+        }
+      }
+    },
+    "ListServicesOutput":{
+      "type":"structure",
+      "required":["services"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to indicate the location of the next service in the array of services, after the current requested list of services.</p>"
+        },
+        "services":{
+          "shape":"ServiceSummaryList",
+          "documentation":"<p>An array of services with summaries of detail data.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of tags to list.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to indicate the location of the next resource tag in the array of resource tags, after the list of resource tags that was previously requested.</p>"
+        },
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for the listed tags.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "required":["tags"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to indicate the location of the next resource tag in the array of resource tags, after the current requested list of resource tags.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of resource tags with detail data.</p>"
+        }
+      }
+    },
+    "MaxPageResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9+=/]+$"
+    },
+    "Provisioning":{
+      "type":"string",
+      "enum":["CUSTOMER_MANAGED"]
+    },
+    "RejectEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection to reject.</p>"
+        }
+      }
+    },
+    "RejectEnvironmentAccountConnectionOutput":{
+      "type":"structure",
+      "required":["environmentAccountConnection"],
+      "members":{
+        "environmentAccountConnection":{
+          "shape":"EnvironmentAccountConnection",
+          "documentation":"<p>The environment connection account detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "RepositoryId":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "ResourceName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[0-9A-Za-z]+[0-9A-Za-z_\\-]*$"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The requested resource <i>wasn't</i> found.</p>",
+      "exception":true
+    },
+    "S3Bucket":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"^[a-z0-9]+[a-z0-9-\\.]+[a-z0-9]+$"
+    },
+    "S3Key":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "S3ObjectSource":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "key"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The name of the S3 bucket that contains a template bundle.</p>"
+        },
+        "key":{
+          "shape":"S3Key",
+          "documentation":"<p>The path to the S3 bucket that contains a template bundle.</p>"
+        }
+      },
+      "documentation":"<p>Template bundle S3 bucket data.</p>"
+    },
+    "Service":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "name",
+        "spec",
+        "status",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service.</p>"
+        },
+        "branchName":{
+          "shape":"GitBranchName",
+          "documentation":"<p>The name of the code repository branch that holds the code that's deployed in AWS Proton.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of a service.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service.</p>"
+        },
+        "pipeline":{
+          "shape":"ServicePipeline",
+          "documentation":"<p>The service pipeline detail data.</p>"
+        },
+        "repositoryConnectionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the repository connection. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/setting-up-for-service.html#setting-up-vcontrol\">Set up a repository connection</a> in the <i>AWS Proton Administrator Guide</i> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/proton-setup.html#setup-repo-connection\">Setting up with AWS Proton</a> in the <i>AWS Proton User Guide</i>.</p>"
+        },
+        "repositoryId":{
+          "shape":"RepositoryId",
+          "documentation":"<p>The ID of the code repository.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The formatted specification that defines the service.</p>"
+        },
+        "status":{
+          "shape":"ServiceStatus",
+          "documentation":"<p>The status of the service.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service status message.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      },
+      "documentation":"<p>The service detail data.</p>"
+    },
+    "ServiceArn":{"type":"string"},
+    "ServiceInstance":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "environmentName",
+        "lastDeploymentAttemptedAt",
+        "lastDeploymentSucceededAt",
+        "name",
+        "serviceName",
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service instance.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service instance was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The service instance deployment status.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service instance deployment status message.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment that the service instance was deployed into.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the service instance was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service instance was last deployed successfully.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that was used to create the service instance.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the service template that was used to create the service instance.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the service template that was used to create the service instance.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template that was used to create the service instance.</p>"
+        }
+      },
+      "documentation":"<p>The service instance detail data.</p>"
+    },
+    "ServiceInstanceArn":{"type":"string"},
+    "ServiceInstanceSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "environmentName",
+        "lastDeploymentAttemptedAt",
+        "lastDeploymentSucceededAt",
+        "name",
+        "serviceName",
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service instance.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service instance was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The service instance deployment status.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service instance deployment status message.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment that the service instance was deployed into.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the service was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service was last deployed successfully.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of a service template.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of a service template.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the service instance detail data.</p>"
+    },
+    "ServiceInstanceSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceInstanceSummary"}
+    },
+    "ServicePipeline":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "lastDeploymentAttemptedAt",
+        "lastDeploymentSucceededAt",
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service pipeline.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service pipeline was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The deployment status of the service pipeline.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service pipeline deployment status message.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the service pipeline was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service pipeline was last deployed successfully.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that was used to create the service pipeline.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the service template that was used to create the service pipeline.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the service template that was used to create the service pipeline.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template that was used to create the service pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The service pipeline detail data.</p>"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>A quota was exceeded. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-limits.html\">AWS Proton Quotas</a> in the <i>AWS Proton Administrator Guide</i>.</p>",
+      "exception":true
+    },
+    "ServiceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED_CLEANUP_IN_PROGRESS",
+        "CREATE_FAILED_CLEANUP_COMPLETE",
+        "CREATE_FAILED_CLEANUP_FAILED",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_FAILED_CLEANUP_IN_PROGRESS",
+        "UPDATE_FAILED_CLEANUP_COMPLETE",
+        "UPDATE_FAILED_CLEANUP_FAILED",
+        "UPDATE_FAILED",
+        "UPDATE_COMPLETE_CLEANUP_FAILED"
+      ]
+    },
+    "ServiceSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "name",
+        "status",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the service.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service.</p>"
+        },
+        "status":{
+          "shape":"ServiceStatus",
+          "documentation":"<p>The status of the service.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service status message.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the service detail data.</p>"
+    },
+    "ServiceSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceSummary"}
+    },
+    "ServiceTemplate":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "name"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the service template.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The service template name as displayed in the developer interface.</p>"
+        },
+        "encryptionKey":{
+          "shape":"Arn",
+          "documentation":"<p>The customer provided service template encryption key that's used to encrypt data.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service template was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        },
+        "pipelineProvisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>If <code>pipelineProvisioning</code> is <code>true</code>, a service pipeline is included in the service template. Otherwise, a service pipeline <i>isn't</i> included in the service template.</p>"
+        },
+        "recommendedVersion":{
+          "shape":"FullTemplateVersionNumber",
+          "documentation":"<p>The ID of the recommended version of the service template.</p>"
+        }
+      },
+      "documentation":"<p>The service template detail data.</p>"
+    },
+    "ServiceTemplateArn":{"type":"string"},
+    "ServiceTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "name"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the service template.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The service template name as displayed in the developer interface.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the service template was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        },
+        "pipelineProvisioning":{
+          "shape":"Provisioning",
+          "documentation":"<p>If <code>pipelineProvisioning</code> is <code>true</code>, a service pipeline is included in the service template, otherwise a service pipeline <i>isn't</i> included in the service template.</p>"
+        },
+        "recommendedVersion":{
+          "shape":"FullTemplateVersionNumber",
+          "documentation":"<p>The ID of the recommended version of the service template.</p>"
+        }
+      },
+      "documentation":"<p>The service template summary data.</p>"
+    },
+    "ServiceTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceTemplateSummary"}
+    },
+    "ServiceTemplateVersion":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "compatibleEnvironmentTemplates",
+        "createdAt",
+        "lastModifiedAt",
+        "majorVersion",
+        "minorVersion",
+        "status",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceTemplateVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the version of a service template.</p>"
+        },
+        "compatibleEnvironmentTemplates":{
+          "shape":"CompatibleEnvironmentTemplateList",
+          "documentation":"<p>An array of compatible environment template names for the major version of a service template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of a service template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the version of a service template.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of a service template was last modified.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the latest major version that's associated with the version of a service template.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of a service template.</p>"
+        },
+        "recommendedMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the recommended minor version of the service template.</p>"
+        },
+        "schema":{
+          "shape":"TemplateSchema",
+          "documentation":"<p>The schema of the version of a service template.</p>"
+        },
+        "status":{
+          "shape":"TemplateVersionStatus",
+          "documentation":"<p>The service template version status.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service template version status message.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the version of a service template.</p>"
+        }
+      },
+      "documentation":"<p>The version of a service template detail data.</p>"
+    },
+    "ServiceTemplateVersionArn":{"type":"string"},
+    "ServiceTemplateVersionSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "lastModifiedAt",
+        "majorVersion",
+        "minorVersion",
+        "status",
+        "templateName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ServiceTemplateVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the version of a service template.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of a service template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the version of a service template.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version of a service template was last modified.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the latest major version that's associated with the version of a service template.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of a service template.</p>"
+        },
+        "recommendedMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the recommended minor version of the service template.</p>"
+        },
+        "status":{
+          "shape":"TemplateVersionStatus",
+          "documentation":"<p>The service template minor version status.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>A service template minor version status message.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the service template version detail data.</p>"
+    },
+    "ServiceTemplateVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceTemplateVersionSummary"}
+    },
+    "SpecContents":{
+      "type":"string",
+      "max":51200,
+      "min":1,
+      "sensitive":true
+    },
+    "StatusMessage":{
+      "type":"string",
+      "sensitive":true
+    },
+    "String":{"type":"string"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the resource tag.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the resource tag.</p>"
+        }
+      },
+      "documentation":"<p>A description of a resource tag.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":0
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that the resource tag is applied to.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of resource tags to apply to a resource.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "TemplateSchema":{
+      "type":"string",
+      "max":51200,
+      "min":1,
+      "sensitive":true
+    },
+    "TemplateVersionPart":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^(0|([1-9]{1}\\d*))$"
+    },
+    "TemplateVersionSourceInput":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3ObjectSource",
+          "documentation":"<p>An S3 source object that includes the template bundle S3 path and name for a template minor version.</p>"
+        }
+      },
+      "documentation":"<p>Template version source data.</p>",
+      "union":true
+    },
+    "TemplateVersionStatus":{
+      "type":"string",
+      "enum":[
+        "REGISTRATION_IN_PROGRESS",
+        "REGISTRATION_FAILED",
+        "DRAFT",
+        "PUBLISHED"
+      ]
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that the tag is to be removed from.</p>"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>An array of tag keys indicating the resource tags to be removed from the resource.</p>"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateAccountSettingsInput":{
+      "type":"structure",
+      "members":{
+        "pipelineServiceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Proton pipeline service role.</p>"
+        }
+      }
+    },
+    "UpdateAccountSettingsOutput":{
+      "type":"structure",
+      "required":["accountSettings"],
+      "members":{
+        "accountSettings":{
+          "shape":"AccountSettings",
+          "documentation":"<p>The AWS Proton pipeline service role detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "roleArn"
+      ],
+      "members":{
+        "id":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection to update.</p>"
+        },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that is associated with the environment account connection to update.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentAccountConnectionOutput":{
+      "type":"structure",
+      "required":["environmentAccountConnection"],
+      "members":{
+        "environmentAccountConnection":{
+          "shape":"EnvironmentAccountConnection",
+          "documentation":"<p>The environment account connection detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentInput":{
+      "type":"structure",
+      "required":[
+        "deploymentType",
+        "name"
+      ],
+      "members":{
+        "deploymentType":{
+          "shape":"DeploymentUpdateType",
+          "documentation":"<p>There are four modes for updating an environment as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the environment update.</p>"
+        },
+        "environmentAccountConnectionId":{
+          "shape":"EnvironmentAccountConnectionId",
+          "documentation":"<p>The ID of the environment account connection.</p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment to update.</p>"
+        },
+        "protonServiceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Proton service role that allows AWS Proton to make API calls to other services your behalf.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The formatted specification that defines the update.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the major version of the environment to update.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The ID of the minor version of the environment to update.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentOutput":{
+      "type":"structure",
+      "required":["environment"],
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the environment template update.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the environment template to update as displayed in the developer interface.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template to update.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentTemplateOutput":{
+      "type":"structure",
+      "required":["environmentTemplate"],
+      "members":{
+        "environmentTemplate":{
+          "shape":"EnvironmentTemplate",
+          "documentation":"<p>The environment template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "minorVersion",
+        "templateName"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of environment template version to update.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To update a major version of an environment template, include <code>majorVersion</code>.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To update a minor version of an environment template, include <code>minorVersion</code>.</p>"
+        },
+        "status":{
+          "shape":"TemplateVersionStatus",
+          "documentation":"<p>The status of the environment template minor version to update.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentTemplateVersionOutput":{
+      "type":"structure",
+      "required":["environmentTemplateVersion"],
+      "members":{
+        "environmentTemplateVersion":{
+          "shape":"EnvironmentTemplateVersion",
+          "documentation":"<p>The environment template version detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateServiceInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The edited service description.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service to edit.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>Lists the service instances to add and the existing service instances to remain. Omit the existing service instances to delete from the list. <i>Don't</i> include edits to the existing service instances or pipeline. For more information, see <i>Edit a service</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-svc-update.html\">AWS Proton Administrator Guide</a> or the <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-update.html\">AWS Proton User Guide</a>.</p>"
+        }
+      }
+    },
+    "UpdateServiceInstanceInput":{
+      "type":"structure",
+      "required":[
+        "deploymentType",
+        "name",
+        "serviceName"
+      ],
+      "members":{
+        "deploymentType":{
+          "shape":"DeploymentUpdateType",
+          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service instance as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance to update.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The formatted specification that defines the service instance update.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the service template to update.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The minor version of the service template to update.</p>"
+        }
+      }
+    },
+    "UpdateServiceInstanceOutput":{
+      "type":"structure",
+      "required":["serviceInstance"],
+      "members":{
+        "serviceInstance":{
+          "shape":"ServiceInstance",
+          "documentation":"<p>The service instance summary data returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateServiceOutput":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The service detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateServicePipelineInput":{
+      "type":"structure",
+      "required":[
+        "deploymentType",
+        "serviceName",
+        "spec"
+      ],
+      "members":{
+        "deploymentType":{
+          "shape":"DeploymentUpdateType",
+          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service pipeline as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service to that the pipeline is associated with.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The spec for the service pipeline to update.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the service template that was used to create the service that the pipeline is associated with.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The minor version of the service template that was used to create the service that the pipeline is associated with.</p>"
+        }
+      }
+    },
+    "UpdateServicePipelineOutput":{
+      "type":"structure",
+      "required":["pipeline"],
+      "members":{
+        "pipeline":{
+          "shape":"ServicePipeline",
+          "documentation":"<p>The pipeline details returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateServiceTemplateInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the service template update.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the service template to update as displayed in the developer interface.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template to update.</p>"
+        }
+      }
+    },
+    "UpdateServiceTemplateOutput":{
+      "type":"structure",
+      "required":["serviceTemplate"],
+      "members":{
+        "serviceTemplate":{
+          "shape":"ServiceTemplate",
+          "documentation":"<p>The service template detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "UpdateServiceTemplateVersionInput":{
+      "type":"structure",
+      "required":[
+        "majorVersion",
+        "minorVersion",
+        "templateName"
+      ],
+      "members":{
+        "compatibleEnvironmentTemplates":{
+          "shape":"CompatibleEnvironmentTemplateInputList",
+          "documentation":"<p>An array of compatible environment names for a service template major or minor version to update.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of a service template version to update.</p>"
+        },
+        "majorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To update a major version of a service template, include <code>majorVersion</code>.</p>"
+        },
+        "minorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To update a minor version of a service template, include <code>minorVersion</code>.</p>"
+        },
+        "status":{
+          "shape":"TemplateVersionStatus",
+          "documentation":"<p>The status of the service template minor version to update.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template.</p>"
+        }
+      }
+    },
+    "UpdateServiceTemplateVersionOutput":{
+      "type":"structure",
+      "required":["serviceTemplateVersion"],
+      "members":{
+        "serviceTemplateVersion":{
+          "shape":"ServiceTemplateVersion",
+          "documentation":"<p>The service template version detail data that's returned by AWS Proton.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The input is invalid or an out-of-range value was supplied for the input parameter.</p>",
+      "exception":true
+    }
+  },
+  "documentation":"<p>This is the AWS Proton Service API Reference. It provides descriptions, syntax and usage examples for each of the <a href=\"https://docs.aws.amazon.com/proton/latest/APIReference/API_Operations.html\">actions</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/APIReference/API_Types.html\">data types</a> for the AWS Proton service.</p> <p>The documentation for each action shows the Query API request parameters and the XML response.</p> <p>Alternatively, you can use the AWS CLI to access an API. For more information, see the <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html\">AWS Command Line Interface User Guide</a>.</p> <p>The AWS Proton service is a two-pronged automation framework. Administrators create service templates to provide standardized infrastructure and deployment tooling for serverless and container based applications. Developers, in turn, select from the available service templates to automate their application or service deployments.</p> <p>Because administrators define the infrastructure and tooling that AWS Proton deploys and manages, they need permissions to use all of the listed API operations.</p> <p>When developers select a specific infrastructure and tooling set, AWS Proton deploys their applications. To monitor their applications that are running on AWS Proton, developers need permissions to the service <i>create</i>, <i>list</i>, <i>update</i> and <i>delete</i> API operations and the service instance <i>list</i> and <i>update</i> API operations.</p> <p>To learn more about AWS Proton administration, see the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/Welcome.html\">AWS Proton Administrator Guide</a>.</p> <p>To learn more about deploying serverless and containerized applications on AWS Proton, see the <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/Welcome.html\">AWS Proton User Guide</a>.</p> <p> <b>Ensuring Idempotency</b> </p> <p>When you make a mutating API request, the request typically returns a result before the asynchronous workflows of the operation are complete. Operations might also time out or encounter other server issues before they're complete, even if the request already returned a result. This might make it difficult to determine whether the request succeeded. Moreover, you might need to retry the request multiple times to ensure that the operation completes successfully. However, if the original request and the subsequent retries are successful, the operation occurs multiple times. This means that you might create more resources than you intended.</p> <p> <i>Idempotency</i> ensures that an API request action completes no more than one time. With an idempotent request, if the original request action completes successfully, any subsequent retries complete successfully without performing any further actions. However, the result might contain updated information, such as the current creation status.</p> <p>The following lists of APIs are grouped according to methods that ensure idempotency.</p> <p> <b>Idempotent create APIs with a client token</b> </p> <p>The API actions in this list support idempotency with the use of a <i>client token</i>. The corresponding AWS CLI commands also support idempotency using a client token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request using one of these actions, specify a client token in the request. We recommend that you <i>don't</i> reuse the same client token for other API requests. If you don’t provide a client token for these APIs, a default client token is automatically provided by SDKs.</p> <p>Given a request action that has succeeded:</p> <p>If you retry the request using the same client token and the same parameters, the retry succeeds without performing any further actions other than returning the original resource detail data in the response.</p> <p>If you retry the request using the same client token, but one or more of the parameters are different, the retry throws a <code>ValidationException</code> with an <code>IdempotentParameterMismatch</code> error.</p> <p>Client tokens expire eight hours after a request is made. If you retry the request with the expired token, a new resource is created.</p> <p>If the original resource is deleted and you retry the request, a new resource is created.</p> <p>Idempotent create APIs with a client token:</p> <ul> <li> <p>CreateEnvironmentTemplateVersion</p> </li> <li> <p>CreateServiceTemplateVersion</p> </li> <li> <p>CreateEnvironmentAccountConnection</p> </li> </ul> <p> <b>Idempotent create APIs</b> </p> <p>Given a request action that has succeeded:</p> <p>If you retry the request with an API from this group, and the original resource <i>hasn't</i> been modified, the retry succeeds without performing any further actions other than returning the original resource detail data in the response.</p> <p>If the original resource has been modified, the retry throws a <code>ConflictException</code>.</p> <p>If you retry with different input parameters, the retry throws a <code>ValidationException</code> with an <code>IdempotentParameterMismatch</code> error.</p> <p>Idempotent create APIs:</p> <ul> <li> <p>CreateEnvironmentTemplate</p> </li> <li> <p>CreateServiceTemplate</p> </li> <li> <p>CreateEnvironment</p> </li> <li> <p>CreateService</p> </li> </ul> <p> <b>Idempotent delete APIs</b> </p> <p>Given a request action that has succeeded:</p> <p>When you retry the request with an API from this group and the resource was deleted, its metadata is returned in the response.</p> <p>If you retry and the resource doesn't exist, the response is empty.</p> <p>In both cases, the retry succeeds.</p> <p>Idempotent delete APIs:</p> <ul> <li> <p>DeleteEnvironmentTemplate</p> </li> <li> <p>DeleteEnvironmentTemplateVersion</p> </li> <li> <p>DeleteServiceTemplate</p> </li> <li> <p>DeleteServiceTemplateVersion</p> </li> <li> <p>DeleteEnvironmentAccountConnection</p> </li> </ul> <p> <b>Asynchronous idempotent delete APIs</b> </p> <p>Given a request action that has succeeded:</p> <p>If you retry the request with an API from this group, if the original request delete operation status is <code>DELETE_IN_PROGRESS</code>, the retry returns the resource detail data in the response without performing any further actions.</p> <p>If the original request delete operation is complete, a retry returns an empty response.</p> <p>Asynchronous idempotent delete APIs:</p> <ul> <li> <p>DeleteEnvironment</p> </li> <li> <p>DeleteService</p> </li> </ul>"
+}

@@ -1,0 +1,915 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2019-09-01",
+    "endpointPrefix":"braket",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceFullName":"Braket",
+    "serviceId":"Braket",
+    "signatureVersion":"v4",
+    "signingName":"braket",
+    "uid":"braket-2019-09-01"
+  },
+  "operations":{
+    "CancelQuantumTask":{
+      "name":"CancelQuantumTask",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/quantum-task/{quantumTaskArn}/cancel",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelQuantumTaskRequest"},
+      "output":{"shape":"CancelQuantumTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Cancels the specified task.</p>",
+      "idempotent":true
+    },
+    "CreateQuantumTask":{
+      "name":"CreateQuantumTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/quantum-task",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateQuantumTaskRequest"},
+      "output":{"shape":"CreateQuantumTaskResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"DeviceOfflineException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a quantum task.</p>"
+    },
+    "GetDevice":{
+      "name":"GetDevice",
+      "http":{
+        "method":"GET",
+        "requestUri":"/device/{deviceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDeviceRequest"},
+      "output":{"shape":"GetDeviceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"DeviceOfflineException"},
+        {"shape":"DeviceRetiredException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the devices available in Amazon Braket.</p>"
+    },
+    "GetQuantumTask":{
+      "name":"GetQuantumTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/quantum-task/{quantumTaskArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQuantumTaskRequest"},
+      "output":{"shape":"GetQuantumTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the specified quantum task.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Shows the tags associated with this resource.</p>"
+    },
+    "SearchDevices":{
+      "name":"SearchDevices",
+      "http":{
+        "method":"POST",
+        "requestUri":"/devices",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchDevicesRequest"},
+      "output":{"shape":"SearchDevicesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Searches for devices using the specified filters.</p>"
+    },
+    "SearchQuantumTasks":{
+      "name":"SearchQuantumTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/quantum-tasks",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchQuantumTasksRequest"},
+      "output":{"shape":"SearchQuantumTasksResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Searches for tasks that match the specified filter values.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Add a tag to the specified resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Remove tags from a resource.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CancelQuantumTaskRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "quantumTaskArn"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String64",
+          "documentation":"<p>The client token associated with the request.</p>",
+          "idempotencyToken":true
+        },
+        "quantumTaskArn":{
+          "shape":"QuantumTaskArn",
+          "documentation":"<p>The ARN of the task to cancel.</p>",
+          "location":"uri",
+          "locationName":"quantumTaskArn"
+        }
+      }
+    },
+    "CancelQuantumTaskResponse":{
+      "type":"structure",
+      "required":[
+        "cancellationStatus",
+        "quantumTaskArn"
+      ],
+      "members":{
+        "cancellationStatus":{
+          "shape":"CancellationStatus",
+          "documentation":"<p>The status of the cancellation request.</p>"
+        },
+        "quantumTaskArn":{
+          "shape":"QuantumTaskArn",
+          "documentation":"<p>The ARN of the task.</p>"
+        }
+      }
+    },
+    "CancellationStatus":{
+      "type":"string",
+      "enum":[
+        "CANCELLING",
+        "CANCELLED"
+      ]
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An error occurred due to a conflict.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateQuantumTaskRequest":{
+      "type":"structure",
+      "required":[
+        "action",
+        "clientToken",
+        "deviceArn",
+        "outputS3Bucket",
+        "outputS3KeyPrefix",
+        "shots"
+      ],
+      "members":{
+        "action":{
+          "shape":"JsonValue",
+          "documentation":"<p>The action associated with the task.</p>",
+          "jsonvalue":true
+        },
+        "clientToken":{
+          "shape":"String64",
+          "documentation":"<p>The client token associated with the request.</p>",
+          "idempotencyToken":true
+        },
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device to run the task on.</p>"
+        },
+        "deviceParameters":{
+          "shape":"CreateQuantumTaskRequestDeviceParametersString",
+          "documentation":"<p>The parameters for the device to run the task on.</p>",
+          "jsonvalue":true
+        },
+        "outputS3Bucket":{
+          "shape":"CreateQuantumTaskRequestOutputS3BucketString",
+          "documentation":"<p>The S3 bucket to store task result files in.</p>"
+        },
+        "outputS3KeyPrefix":{
+          "shape":"CreateQuantumTaskRequestOutputS3KeyPrefixString",
+          "documentation":"<p>The key prefix for the location in the S3 bucket to store task results in.</p>"
+        },
+        "shots":{
+          "shape":"CreateQuantumTaskRequestShotsLong",
+          "documentation":"<p>The number of shots to use for the task.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to be added to the quantum task you're creating.</p>"
+        }
+      }
+    },
+    "CreateQuantumTaskRequestDeviceParametersString":{
+      "type":"string",
+      "max":48000,
+      "min":1
+    },
+    "CreateQuantumTaskRequestOutputS3BucketString":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
+    "CreateQuantumTaskRequestOutputS3KeyPrefixString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "CreateQuantumTaskRequestShotsLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "CreateQuantumTaskResponse":{
+      "type":"structure",
+      "required":["quantumTaskArn"],
+      "members":{
+        "quantumTaskArn":{
+          "shape":"QuantumTaskArn",
+          "documentation":"<p>The ARN of the task created by the request.</p>"
+        }
+      }
+    },
+    "DeviceArn":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "DeviceOfflineException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified device is currently offline.</p>",
+      "error":{
+        "httpStatusCode":424,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DeviceRetiredException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified device has been retired.</p>",
+      "error":{
+        "httpStatusCode":410,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DeviceStatus":{
+      "type":"string",
+      "enum":[
+        "ONLINE",
+        "OFFLINE",
+        "RETIRED"
+      ]
+    },
+    "DeviceSummary":{
+      "type":"structure",
+      "required":[
+        "deviceArn",
+        "deviceName",
+        "deviceStatus",
+        "deviceType",
+        "providerName"
+      ],
+      "members":{
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device.</p>"
+        },
+        "deviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the device.</p>"
+        },
+        "deviceStatus":{
+          "shape":"DeviceStatus",
+          "documentation":"<p>The status of the device.</p>"
+        },
+        "deviceType":{
+          "shape":"DeviceType",
+          "documentation":"<p>The type of the device.</p>"
+        },
+        "providerName":{
+          "shape":"String",
+          "documentation":"<p>The provider of the device.</p>"
+        }
+      },
+      "documentation":"<p>Includes information about the device.</p>"
+    },
+    "DeviceSummaryList":{
+      "type":"list",
+      "member":{"shape":"DeviceSummary"}
+    },
+    "DeviceType":{
+      "type":"string",
+      "enum":[
+        "QPU",
+        "SIMULATOR"
+      ]
+    },
+    "GetDeviceRequest":{
+      "type":"structure",
+      "required":["deviceArn"],
+      "members":{
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device to retrieve.</p>",
+          "location":"uri",
+          "locationName":"deviceArn"
+        }
+      }
+    },
+    "GetDeviceResponse":{
+      "type":"structure",
+      "required":[
+        "deviceArn",
+        "deviceCapabilities",
+        "deviceName",
+        "deviceStatus",
+        "deviceType",
+        "providerName"
+      ],
+      "members":{
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device.</p>"
+        },
+        "deviceCapabilities":{
+          "shape":"JsonValue",
+          "documentation":"<p>Details about the capabilities of the device.</p>",
+          "jsonvalue":true
+        },
+        "deviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the device.</p>"
+        },
+        "deviceStatus":{
+          "shape":"DeviceStatus",
+          "documentation":"<p>The status of the device.</p>"
+        },
+        "deviceType":{
+          "shape":"DeviceType",
+          "documentation":"<p>The type of the device.</p>"
+        },
+        "providerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the partner company for the device.</p>"
+        }
+      }
+    },
+    "GetQuantumTaskRequest":{
+      "type":"structure",
+      "required":["quantumTaskArn"],
+      "members":{
+        "quantumTaskArn":{
+          "shape":"QuantumTaskArn",
+          "documentation":"<p>the ARN of the task to retrieve.</p>",
+          "location":"uri",
+          "locationName":"quantumTaskArn"
+        }
+      }
+    },
+    "GetQuantumTaskResponse":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "deviceArn",
+        "deviceParameters",
+        "outputS3Bucket",
+        "outputS3Directory",
+        "quantumTaskArn",
+        "shots",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the task was created.</p>"
+        },
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device the task was run on.</p>"
+        },
+        "deviceParameters":{
+          "shape":"JsonValue",
+          "documentation":"<p>The parameters for the device on which the task ran.</p>",
+          "jsonvalue":true
+        },
+        "endedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the task ended.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that a task failed.</p>"
+        },
+        "outputS3Bucket":{
+          "shape":"String",
+          "documentation":"<p>The S3 bucket where task results are stored.</p>"
+        },
+        "outputS3Directory":{
+          "shape":"String",
+          "documentation":"<p>The folder in the S3 bucket where task results are stored.</p>"
+        },
+        "quantumTaskArn":{
+          "shape":"QuantumTaskArn",
+          "documentation":"<p>The ARN of the task.</p>"
+        },
+        "shots":{
+          "shape":"Long",
+          "documentation":"<p>The number of shots used in the task.</p>"
+        },
+        "status":{
+          "shape":"QuantumTaskStatus",
+          "documentation":"<p>The status of the task.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags that belong to this task.</p>"
+        }
+      }
+    },
+    "InternalServiceException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request processing has failed because of an unknown error, exception, or failure.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "JsonValue":{"type":"string"},
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>Specify the <code>resourceArn</code> for the resource whose tags to display.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Displays the key, value pairs of tags associated with this resource.</p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "QuantumTaskArn":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "QuantumTaskStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "QUEUED",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLING",
+        "CANCELLED"
+      ]
+    },
+    "QuantumTaskSummary":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "deviceArn",
+        "outputS3Bucket",
+        "outputS3Directory",
+        "quantumTaskArn",
+        "shots",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the task was created.</p>"
+        },
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device the task ran on.</p>"
+        },
+        "endedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the task finished.</p>"
+        },
+        "outputS3Bucket":{
+          "shape":"String",
+          "documentation":"<p>The S3 bucket where the task result file is stored..</p>"
+        },
+        "outputS3Directory":{
+          "shape":"String",
+          "documentation":"<p>The folder in the S3 bucket where the task result file is stored.</p>"
+        },
+        "quantumTaskArn":{
+          "shape":"QuantumTaskArn",
+          "documentation":"<p>The ARN of the task.</p>"
+        },
+        "shots":{
+          "shape":"Long",
+          "documentation":"<p>The shots used for the task.</p>"
+        },
+        "status":{
+          "shape":"QuantumTaskStatus",
+          "documentation":"<p>The status of the task.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Displays the key, value pairs of tags associated with this quantum task.</p>"
+        }
+      },
+      "documentation":"<p>Includes information about a quantum task.</p>"
+    },
+    "QuantumTaskSummaryList":{
+      "type":"list",
+      "member":{"shape":"QuantumTaskSummary"}
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified resource was not found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SearchDevicesFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"SearchDevicesFilterNameString",
+          "documentation":"<p>The name to use to filter results.</p>"
+        },
+        "values":{
+          "shape":"SearchDevicesFilterValuesList",
+          "documentation":"<p>The values to use to filter results.</p>"
+        }
+      },
+      "documentation":"<p>The filter to use for searching devices.</p>"
+    },
+    "SearchDevicesFilterNameString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "SearchDevicesFilterValuesList":{
+      "type":"list",
+      "member":{"shape":"String256"},
+      "max":10,
+      "min":1
+    },
+    "SearchDevicesRequest":{
+      "type":"structure",
+      "required":["filters"],
+      "members":{
+        "filters":{
+          "shape":"SearchDevicesRequestFiltersList",
+          "documentation":"<p>The filter values to use to search for a device.</p>"
+        },
+        "maxResults":{
+          "shape":"SearchDevicesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination of results returned in the response. Use the token returned from the previous request continue results where the previous request ended.</p>"
+        }
+      }
+    },
+    "SearchDevicesRequestFiltersList":{
+      "type":"list",
+      "member":{"shape":"SearchDevicesFilter"},
+      "max":10,
+      "min":0
+    },
+    "SearchDevicesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "SearchDevicesResponse":{
+      "type":"structure",
+      "required":["devices"],
+      "members":{
+        "devices":{
+          "shape":"DeviceSummaryList",
+          "documentation":"<p>An array of <code>DeviceSummary</code> objects for devices that match the specified filter values.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.</p>"
+        }
+      }
+    },
+    "SearchQuantumTasksFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "operator",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"String64",
+          "documentation":"<p>The name of the device used for the task.</p>"
+        },
+        "operator":{
+          "shape":"SearchQuantumTasksFilterOperator",
+          "documentation":"<p>An operator to use in the filter.</p>"
+        },
+        "values":{
+          "shape":"SearchQuantumTasksFilterValuesList",
+          "documentation":"<p>The values to use for the filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter to use to search for tasks.</p>"
+    },
+    "SearchQuantumTasksFilterOperator":{
+      "type":"string",
+      "enum":[
+        "LT",
+        "LTE",
+        "EQUAL",
+        "GT",
+        "GTE",
+        "BETWEEN"
+      ]
+    },
+    "SearchQuantumTasksFilterValuesList":{
+      "type":"list",
+      "member":{"shape":"String256"},
+      "max":10,
+      "min":1
+    },
+    "SearchQuantumTasksRequest":{
+      "type":"structure",
+      "required":["filters"],
+      "members":{
+        "filters":{
+          "shape":"SearchQuantumTasksRequestFiltersList",
+          "documentation":"<p>Array of <code>SearchQuantumTasksFilter</code> objects.</p>"
+        },
+        "maxResults":{
+          "shape":"SearchQuantumTasksRequestMaxResultsInteger",
+          "documentation":"<p>Maximum number of results to return in the response.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination of results returned in the response. Use the token returned from the previous request continue results where the previous request ended.</p>"
+        }
+      }
+    },
+    "SearchQuantumTasksRequestFiltersList":{
+      "type":"list",
+      "member":{"shape":"SearchQuantumTasksFilter"},
+      "max":10,
+      "min":0
+    },
+    "SearchQuantumTasksRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "SearchQuantumTasksResponse":{
+      "type":"structure",
+      "required":["quantumTasks"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.</p>"
+        },
+        "quantumTasks":{
+          "shape":"QuantumTaskSummaryList",
+          "documentation":"<p>An array of <code>QuantumTaskSummary</code> objects for tasks that match the specified filters.</p>"
+        }
+      }
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request failed because a service quota is exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "String":{"type":"string"},
+    "String256":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "String64":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>Specify the <code>resourceArn</code> of the resource to which a tag will be added.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Specify the tags to add to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The throttling rate limit is met.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>Specify the <code>resourceArn</code> for the resource from which to remove the tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>Specify the keys for the tags to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>The Amazon Braket API Reference provides information about the operations and structures supported in Amazon Braket.</p>"
+}

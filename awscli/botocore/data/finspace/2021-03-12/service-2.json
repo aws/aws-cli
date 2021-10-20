@@ -1,0 +1,655 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2021-03-12",
+    "endpointPrefix":"finspace",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceAbbreviation":"finspace",
+    "serviceFullName":"FinSpace User Environment Management service",
+    "serviceId":"finspace",
+    "signatureVersion":"v4",
+    "signingName":"finspace",
+    "uid":"finspace-2021-03-12"
+  },
+  "operations":{
+    "CreateEnvironment":{
+      "name":"CreateEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/environment"
+      },
+      "input":{"shape":"CreateEnvironmentRequest"},
+      "output":{"shape":"CreateEnvironmentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Create a new FinSpace environment.</p>"
+    },
+    "DeleteEnvironment":{
+      "name":"DeleteEnvironment",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/environment/{environmentId}"
+      },
+      "input":{"shape":"DeleteEnvironmentRequest"},
+      "output":{"shape":"DeleteEnvironmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Delete an FinSpace environment.</p>"
+    },
+    "GetEnvironment":{
+      "name":"GetEnvironment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/environment/{environmentId}"
+      },
+      "input":{"shape":"GetEnvironmentRequest"},
+      "output":{"shape":"GetEnvironmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the FinSpace environment object.</p>"
+    },
+    "ListEnvironments":{
+      "name":"ListEnvironments",
+      "http":{
+        "method":"GET",
+        "requestUri":"/environment"
+      },
+      "input":{"shape":"ListEnvironmentsRequest"},
+      "output":{"shape":"ListEnvironmentsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>A list of all of your FinSpace environments.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>A list of all tags for a resource.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Adds metadata tags to a FinSpace resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes metadata tags from a FinSpace resource.</p>"
+    },
+    "UpdateEnvironment":{
+      "name":"UpdateEnvironment",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/environment/{environmentId}"
+      },
+      "input":{"shape":"UpdateEnvironmentRequest"},
+      "output":{"shape":"UpdateEnvironmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Update your FinSpace environment.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
+    "AttributeMap":{
+      "type":"map",
+      "key":{"shape":"FederationAttributeKey"},
+      "value":{"shape":"url"}
+    },
+    "CreateEnvironmentRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"EnvironmentName",
+          "documentation":"<p>The name of the FinSpace environment to be created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the FinSpace environment to be created.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The KMS key id to encrypt your data in the FinSpace environment.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Add tags to your FinSpace environment.</p>"
+        },
+        "federationMode":{
+          "shape":"FederationMode",
+          "documentation":"<p>Authentication mode for the environment.</p> <ul> <li> <p> <code>FEDERATED</code> - Users access FinSpace through Single Sign On (SSO) via your Identity provider.</p> </li> <li> <p> <code>LOCAL</code> - Users access FinSpace via email and password managed within the FinSpace environment.</p> </li> </ul>"
+        },
+        "federationParameters":{
+          "shape":"FederationParameters",
+          "documentation":"<p>Configuration information when authentication mode is FEDERATED.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentResponse":{
+      "type":"structure",
+      "members":{
+        "environmentId":{
+          "shape":"IdType",
+          "documentation":"<p>The unique identifier for FinSpace environment that you created.</p>"
+        },
+        "environmentArn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the FinSpace environment that you created.</p>"
+        },
+        "environmentUrl":{
+          "shape":"url",
+          "documentation":"<p>The sign-in url for the web application of the FinSpace environment you created.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "environmentId":{
+          "shape":"IdType",
+          "documentation":"<p>The identifier for the FinSpace environment.</p>",
+          "location":"uri",
+          "locationName":"environmentId"
+        }
+      }
+    },
+    "DeleteEnvironmentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "Description":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9. ]{1,1000}$"
+    },
+    "Environment":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"EnvironmentName",
+          "documentation":"<p>The name of the FinSpace environment.</p>"
+        },
+        "environmentId":{
+          "shape":"IdType",
+          "documentation":"<p>The identifier of the FinSpace environment.</p>"
+        },
+        "awsAccountId":{
+          "shape":"IdType",
+          "documentation":"<p>The ID of the AWS account in which the FinSpace environment is created.</p>"
+        },
+        "status":{
+          "shape":"EnvironmentStatus",
+          "documentation":"<p>The current status of creation of the FinSpace environment.</p>"
+        },
+        "environmentUrl":{
+          "shape":"url",
+          "documentation":"<p>The sign-in url for the web application of your FinSpace environment.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the FinSpace environment.</p>"
+        },
+        "environmentArn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your FinSpace environment.</p>"
+        },
+        "sageMakerStudioDomainUrl":{
+          "shape":"SmsDomainUrl",
+          "documentation":"<p>The url of the integrated FinSpace notebook environment in your web application.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The KMS key id used to encrypt in the FinSpace environment.</p>"
+        },
+        "dedicatedServiceAccountId":{
+          "shape":"IdType",
+          "documentation":"<p>The AWS account ID of the dedicated service account associated with your FinSpace environment.</p>"
+        },
+        "federationMode":{
+          "shape":"FederationMode",
+          "documentation":"<p>The authentication mode for the environment.</p>"
+        },
+        "federationParameters":{
+          "shape":"FederationParameters",
+          "documentation":"<p>Configuration information when authentication mode is FEDERATED.</p>"
+        }
+      },
+      "documentation":"<p>Represents an FinSpace environment.</p>"
+    },
+    "EnvironmentArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws:finspace:[A-Za-z0-9_/.-]{0,63}:\\d+:environment/[0-9A-Za-z_-]{1,128}$"
+    },
+    "EnvironmentList":{
+      "type":"list",
+      "member":{"shape":"Environment"}
+    },
+    "EnvironmentName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]+[a-zA-Z0-9-]*[a-zA-Z0-9]$"
+    },
+    "EnvironmentStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_REQUESTED",
+        "CREATING",
+        "CREATED",
+        "DELETE_REQUESTED",
+        "DELETING",
+        "DELETED",
+        "FAILED_CREATION",
+        "RETRY_DELETION",
+        "FAILED_DELETION",
+        "SUSPENDED"
+      ]
+    },
+    "FederationAttributeKey":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":".*"
+    },
+    "FederationMode":{
+      "type":"string",
+      "enum":[
+        "FEDERATED",
+        "LOCAL"
+      ]
+    },
+    "FederationParameters":{
+      "type":"structure",
+      "members":{
+        "samlMetadataDocument":{
+          "shape":"SamlMetadataDocument",
+          "documentation":"<p>SAML 2.0 Metadata document from identity provider (IdP).</p>"
+        },
+        "samlMetadataURL":{
+          "shape":"url",
+          "documentation":"<p>Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).</p>"
+        },
+        "applicationCallBackURL":{
+          "shape":"url",
+          "documentation":"<p>The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).</p>"
+        },
+        "federationURN":{
+          "shape":"urn",
+          "documentation":"<p>The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.</p>"
+        },
+        "federationProviderName":{
+          "shape":"FederationProviderName",
+          "documentation":"<p>Name of the identity provider (IdP).</p>"
+        },
+        "attributeMap":{
+          "shape":"AttributeMap",
+          "documentation":"<p>SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information when authentication mode is FEDERATED.</p>"
+    },
+    "FederationProviderName":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[^_\\p{Z}][\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}][^_\\p{Z}]+"
+    },
+    "GetEnvironmentRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "environmentId":{
+          "shape":"IdType",
+          "documentation":"<p>The identifier of the FinSpace environment.</p>",
+          "location":"uri",
+          "locationName":"environmentId"
+        }
+      }
+    },
+    "GetEnvironmentResponse":{
+      "type":"structure",
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The name of the FinSpace environment.</p>"
+        }
+      }
+    },
+    "IdType":{
+      "type":"string",
+      "max":26,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]{1,26}$"
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The request processing has failed because of an unknown error, exception or failure.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true
+    },
+    "InvalidRequestException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The request is invalid. Something is wrong with the input to the request.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "KmsKeyId":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^[a-zA-Z-0-9-:\\/]*$"
+    },
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>A service limit or quota is exceeded.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ListEnvironmentsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token generated by FinSpace that specifies where to continue pagination if a previous request was truncated. To get the next set of pages, pass in the nextToken value from the response object of the previous page call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ResultLimit",
+          "documentation":"<p>The maximum number of results to return in this request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListEnvironmentsResponse":{
+      "type":"structure",
+      "members":{
+        "environments":{
+          "shape":"EnvironmentList",
+          "documentation":"<p>A list of all of your FinSpace environments.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that you can use in a subsequent call to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>The Amazon Resource Name of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of all tags for a resource.</p>"
+        }
+      }
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":".*"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>One or more resources can't be found.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ResultLimit":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
+    "SamlMetadataDocument":{
+      "type":"string",
+      "max":10000000,
+      "min":1000,
+      "pattern":".*"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p> You have exceeded your service quota. To perform the requested action, remove some of the relevant resources, or use Service Quotas to request a service quota increase.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
+    },
+    "SmsDomainUrl":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^[a-zA-Z-0-9-:\\/.]*$"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>One or more tags to be assigned to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9+-=._:@ ]+$"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"EnvironmentArn",
+          "documentation":"<p>A FinSpace resource from which you want to remove a tag or tags. The value for this parameter is an Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys (names) of one or more tags to be removed.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateEnvironmentRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "environmentId":{
+          "shape":"IdType",
+          "documentation":"<p>The identifier of the FinSpace environment.</p>",
+          "location":"uri",
+          "locationName":"environmentId"
+        },
+        "name":{
+          "shape":"EnvironmentName",
+          "documentation":"<p>The name of the environment.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the environment.</p>"
+        },
+        "federationMode":{
+          "shape":"FederationMode",
+          "documentation":"<p>Authentication mode for the environment.</p> <ul> <li> <p> <code>FEDERATED</code> - Users access FinSpace through Single Sign On (SSO) via your Identity provider.</p> </li> <li> <p> <code>LOCAL</code> - Users access FinSpace via email and password managed within the FinSpace environment.</p> </li> </ul>"
+        },
+        "federationParameters":{"shape":"FederationParameters"}
+      }
+    },
+    "UpdateEnvironmentResponse":{
+      "type":"structure",
+      "members":{
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>Returns the FinSpace environment object.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "errorMessage":{"type":"string"},
+    "url":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+    },
+    "urn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[A-Za-z0-9._\\-:\\/#\\+]+$"
+    }
+  },
+  "documentation":"<p>The FinSpace management service provides the APIs for managing the FinSpace environments. </p>"
+}

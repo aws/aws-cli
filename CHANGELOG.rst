@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.21.1
+======
+
+* api-change:``connect``: Released Amazon Connect hours of operation API for general availability (GA). This API also supports AWS CloudFormation. For more information, see Amazon Connect Resource Type Reference in the AWS CloudFormation User Guide.
+
+
 1.21.0
 ======
 

@@ -354,11 +354,7 @@ This file points to the development version of our dependencies::
 
     $ cd <path_to_awscli> && git checkout v2
     $ pip install -r requirements.txt
-    $ pip install -e . --no-build-isolation
-
-However, to keep up to date, you will continually have to run the
-``pip install -r requirements.txt`` file to pull in the latest changes
-from the v2 branch of botocore and other dependencies.
+    $ pip install -e .
 
 Verify that the AWS CLI is correctly installed. Note that the word ``source`` should appear in the output::
 

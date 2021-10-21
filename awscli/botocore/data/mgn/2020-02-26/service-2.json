@@ -1,0 +1,2356 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2020-02-26",
+    "endpointPrefix":"mgn",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceAbbreviation":"mgn",
+    "serviceFullName":"Application Migration Service",
+    "serviceId":"mgn",
+    "signatureVersion":"v4",
+    "signingName":"mgn",
+    "uid":"mgn-2020-02-26"
+  },
+  "operations":{
+    "ChangeServerLifeCycleState":{
+      "name":"ChangeServerLifeCycleState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ChangeServerLifeCycleState",
+        "responseCode":200
+      },
+      "input":{"shape":"ChangeServerLifeCycleStateRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows the user to set the SourceServer.LifeCycle.state property for specific Source Server IDs to one of the following: READY_FOR_TEST or READY_FOR_CUTOVER. This command only works if the Source Server is already launchable (dataReplicationInfo.lagDuration is not null.)</p>"
+    },
+    "CreateReplicationConfigurationTemplate":{
+      "name":"CreateReplicationConfigurationTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateReplicationConfigurationTemplate",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateReplicationConfigurationTemplateRequest"},
+      "output":{"shape":"ReplicationConfigurationTemplate"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a new ReplicationConfigurationTemplate.</p>"
+    },
+    "DeleteJob":{
+      "name":"DeleteJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteJob",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteJobRequest"},
+      "output":{"shape":"DeleteJobResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a single Job by ID.</p>",
+      "idempotent":true
+    },
+    "DeleteReplicationConfigurationTemplate":{
+      "name":"DeleteReplicationConfigurationTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteReplicationConfigurationTemplate",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteReplicationConfigurationTemplateRequest"},
+      "output":{"shape":"DeleteReplicationConfigurationTemplateResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a single Replication Configuration Template by ID</p>",
+      "idempotent":true
+    },
+    "DeleteSourceServer":{
+      "name":"DeleteSourceServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteSourceServer",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteSourceServerRequest"},
+      "output":{"shape":"DeleteSourceServerResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a single source server by ID.</p>",
+      "idempotent":true
+    },
+    "DescribeJobLogItems":{
+      "name":"DescribeJobLogItems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeJobLogItems",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeJobLogItemsRequest"},
+      "output":{"shape":"DescribeJobLogItemsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves detailed Job log with paging.</p>"
+    },
+    "DescribeJobs":{
+      "name":"DescribeJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeJobsRequest"},
+      "output":{"shape":"DescribeJobsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of Jobs. Use the JobsID and fromDate and toData filters to limit which jobs are returned. The response is sorted by creationDataTime - latest date first. Jobs are normaly created by the StartTest, StartCutover, and TerminateTargetInstances APIs. Jobs are also created by DiagnosticLaunch and TerminateDiagnosticInstances, which are APIs available only to *Support* and only used in response to relevant support tickets.</p>"
+    },
+    "DescribeReplicationConfigurationTemplates":{
+      "name":"DescribeReplicationConfigurationTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeReplicationConfigurationTemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeReplicationConfigurationTemplatesRequest"},
+      "output":{"shape":"DescribeReplicationConfigurationTemplatesResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all ReplicationConfigurationTemplates, filtered by Source Server IDs.</p>"
+    },
+    "DescribeSourceServers":{
+      "name":"DescribeSourceServers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeSourceServers",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeSourceServersRequest"},
+      "output":{"shape":"DescribeSourceServersResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves all SourceServers or multiple SourceServers by ID.</p>"
+    },
+    "DisconnectFromService":{
+      "name":"DisconnectFromService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DisconnectFromService",
+        "responseCode":200
+      },
+      "input":{"shape":"DisconnectFromServiceRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Disconnects specific Source Servers from Application Migration Service. Data replication is stopped immediately. All AWS resources created by Application Migration Service for enabling the replication of these source servers will be terminated / deleted within 90 minutes. Launched Test or Cutover instances will NOT be terminated. If the agent on the source server has not been prevented from communciating with the Application Migration Service service, then it will receive a command to uninstall itself (within approximately 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be set to DISCONNECTED; The totalStorageBytes property for each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDurationwill be nullified.</p>"
+    },
+    "FinalizeCutover":{
+      "name":"FinalizeCutover",
+      "http":{
+        "method":"POST",
+        "requestUri":"/FinalizeCutover",
+        "responseCode":200
+      },
+      "input":{"shape":"FinalizeCutoverRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Finalizes the cutover immediately for specific Source Servers. All AWS resources created by Application Migration Service for enabling the replication of these source servers will be terminated / deleted within 90 minutes. Launched Test or Cutover instances will NOT be terminated. The AWS Replication Agent will receive a command to uninstall itself (within 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be to DISCONNECTED; The SourceServer.lifeCycle.state will be changed to CUTOVER; The totalStorageBytes property fo each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDurationwill be nullified.</p>"
+    },
+    "GetLaunchConfiguration":{
+      "name":"GetLaunchConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetLaunchConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLaunchConfigurationRequest"},
+      "output":{"shape":"LaunchConfiguration"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all LaunchConfigurations available, filtered by Source Server IDs.</p>"
+    },
+    "GetReplicationConfiguration":{
+      "name":"GetReplicationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetReplicationConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetReplicationConfigurationRequest"},
+      "output":{"shape":"ReplicationConfiguration"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all ReplicationConfigurations, filtered by Source Server ID.</p>"
+    },
+    "InitializeService":{
+      "name":"InitializeService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/InitializeService",
+        "responseCode":204
+      },
+      "input":{"shape":"InitializeServiceRequest"},
+      "output":{"shape":"InitializeServiceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Initialize Application Migration Service.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all tags for your Application Migration Service resources.</p>"
+    },
+    "MarkAsArchived":{
+      "name":"MarkAsArchived",
+      "http":{
+        "method":"POST",
+        "requestUri":"/MarkAsArchived",
+        "responseCode":200
+      },
+      "input":{"shape":"MarkAsArchivedRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Archives specific Source Servers by setting the SourceServer.isArchived property to true for specified SourceServers by ID. This command only works for SourceServers with a lifecycle.state which equals DISCONNECTED or CUTOVER.</p>"
+    },
+    "RetryDataReplication":{
+      "name":"RetryDataReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/RetryDataReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"RetryDataReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Causes the data replication initiation sequence to begin immediately upon next Handshake for specified SourceServer IDs, regardless of when the previous initiation started. This command will not work if the SourceServer is not stalled or is in a DISCONNECTED or STOPPED state.</p>"
+    },
+    "StartCutover":{
+      "name":"StartCutover",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartCutover",
+        "responseCode":202
+      },
+      "input":{"shape":"StartCutoverRequest"},
+      "output":{"shape":"StartCutoverResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Launches a Cutover Instance for specific Source Servers. This command starts a LAUNCH job whose initiatedBy property is StartCutover and changes the SourceServer.lifeCycle.state property to CUTTING_OVER.</p>"
+    },
+    "StartTest":{
+      "name":"StartTest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartTest",
+        "responseCode":202
+      },
+      "input":{"shape":"StartTestRequest"},
+      "output":{"shape":"StartTestResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Lauches a Test Instance for specific Source Servers. This command starts a LAUNCH job whose initiatedBy property is StartTest and changes the SourceServer.lifeCycle.state property to TESTING.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds or overwrites only the specified tags for the specified Application Migration Service resource or resources. When you specify an existing tag key, the value is overwritten with the new value. Each resource can have a maximum of 50 tags. Each tag consists of a key and optional value.</p>",
+      "idempotent":true
+    },
+    "TerminateTargetInstances":{
+      "name":"TerminateTargetInstances",
+      "http":{
+        "method":"POST",
+        "requestUri":"/TerminateTargetInstances",
+        "responseCode":202
+      },
+      "input":{"shape":"TerminateTargetInstancesRequest"},
+      "output":{"shape":"TerminateTargetInstancesResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a job that terminates specific launched EC2 Test and Cutover instances. This command will not work for any Source Server with a lifecycle.state of TESTING, CUTTING_OVER, or CUTOVER.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the specified set of tags from the specified set of Application Migration Service resources.</p>",
+      "idempotent":true
+    },
+    "UpdateLaunchConfiguration":{
+      "name":"UpdateLaunchConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateLaunchConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLaunchConfigurationRequest"},
+      "output":{"shape":"LaunchConfiguration"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates multiple LaunchConfigurations by Source Server ID.</p>",
+      "idempotent":true
+    },
+    "UpdateReplicationConfiguration":{
+      "name":"UpdateReplicationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateReplicationConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateReplicationConfigurationRequest"},
+      "output":{"shape":"ReplicationConfiguration"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows you to update multiple ReplicationConfigurations by Source Server ID.</p>",
+      "idempotent":true
+    },
+    "UpdateReplicationConfigurationTemplate":{
+      "name":"UpdateReplicationConfigurationTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateReplicationConfigurationTemplate",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateReplicationConfigurationTemplateRequest"},
+      "output":{"shape":"ReplicationConfigurationTemplate"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates multiple ReplicationConfigurationTemplates by ID.</p>"
+    }
+  },
+  "shapes":{
+    "ARN":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "code":{"shape":"LargeBoundedString"},
+        "message":{"shape":"LargeBoundedString"}
+      },
+      "documentation":"<p>Operating denied due to a file permission or access check error.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BoundedString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "CPU":{
+      "type":"structure",
+      "members":{
+        "cores":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The number of CPU cores on the source server.</p>"
+        },
+        "modelName":{
+          "shape":"BoundedString",
+          "documentation":"<p>The source server's CPU model name.</p>"
+        }
+      },
+      "documentation":"<p>Source server CPU information.</p>"
+    },
+    "ChangeServerLifeCycleStateRequest":{
+      "type":"structure",
+      "required":[
+        "lifeCycle",
+        "sourceServerID"
+      ],
+      "members":{
+        "lifeCycle":{
+          "shape":"ChangeServerLifeCycleStateSourceServerLifecycle",
+          "documentation":"<p>The request to change the source server migration lifecycle state.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>The request to change the source server migration lifecycle state by source server ID.</p>"
+        }
+      }
+    },
+    "ChangeServerLifeCycleStateSourceServerLifecycle":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "state":{
+          "shape":"ChangeServerLifeCycleStateSourceServerLifecycleState",
+          "documentation":"<p>The request to change the source server migration lifecycle state.</p>"
+        }
+      },
+      "documentation":"<p>The request to change the source server migration lifecycle state.</p>"
+    },
+    "ChangeServerLifeCycleStateSourceServerLifecycleState":{
+      "type":"string",
+      "enum":[
+        "READY_FOR_TEST",
+        "READY_FOR_CUTOVER",
+        "CUTOVER"
+      ]
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "code":{"shape":"LargeBoundedString"},
+        "message":{"shape":"LargeBoundedString"},
+        "resourceId":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>A conflict occured when prompting for the Resource ID.</p>"
+        },
+        "resourceType":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>A conflict occured when prompting for resource type.</p>"
+        }
+      },
+      "documentation":"<p>The request could not be completed due to a conflict with the current state of the target resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Cpus":{
+      "type":"list",
+      "member":{"shape":"CPU"},
+      "max":256,
+      "min":0
+    },
+    "CreateReplicationConfigurationTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "associateDefaultSecurityGroup",
+        "bandwidthThrottling",
+        "createPublicIP",
+        "dataPlaneRouting",
+        "defaultLargeStagingDiskType",
+        "ebsEncryption",
+        "replicationServerInstanceType",
+        "replicationServersSecurityGroupsIDs",
+        "stagingAreaSubnetId",
+        "stagingAreaTags",
+        "useDedicatedReplicationServer"
+      ],
+      "members":{
+        "associateDefaultSecurityGroup":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to associate the default Application Migration Service Security group with the Replication Settings template.</p>"
+        },
+        "bandwidthThrottling":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Request to configure bandwidth throttling during Replication Settings template creation.</p>"
+        },
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to create Public IP during Replication Settings template creation.</p>"
+        },
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Request to configure data plane routing during Replication Settings template creation.</p>"
+        },
+        "defaultLargeStagingDiskType":{
+          "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
+          "documentation":"<p>Request to configure the Staging Disk EBS volume type to \"gp2\" during Replication Settings template creation.</p>"
+        },
+        "ebsEncryption":{
+          "shape":"ReplicationConfigurationEbsEncryption",
+          "documentation":"<p>Request to configure EBS enryption during Replication Settings template creation.</p>"
+        },
+        "ebsEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>Request to configure an EBS enryption key during Replication Settings template creation.</p>"
+        },
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Request to configure the Replication Server instance type during Replication Settings template creation.</p>"
+        },
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Request to configure the Replication Server Secuirity group ID during Replication Settings template creation.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Request to configure the Staging Area subnet ID during Replication Settings template creation.</p>"
+        },
+        "stagingAreaTags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Request to configure Staiging Area tags during Replication Settings template creation.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Request to configure tags during Replication Settings template creation.</p>"
+        },
+        "useDedicatedReplicationServer":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to use Dedicated Replication Servers during Replication Settings template creation.</p>"
+        }
+      }
+    },
+    "DataReplicationError":{
+      "type":"structure",
+      "members":{
+        "error":{
+          "shape":"DataReplicationErrorString",
+          "documentation":"<p>Error in data replication.</p>"
+        },
+        "rawError":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Error in data replication.</p>"
+        }
+      },
+      "documentation":"<p>Error in data replication.</p>"
+    },
+    "DataReplicationErrorString":{
+      "type":"string",
+      "enum":[
+        "AGENT_NOT_SEEN",
+        "SNAPSHOTS_FAILURE",
+        "NOT_CONVERGING",
+        "UNSTABLE_NETWORK",
+        "FAILED_TO_CREATE_SECURITY_GROUP",
+        "FAILED_TO_LAUNCH_REPLICATION_SERVER",
+        "FAILED_TO_BOOT_REPLICATION_SERVER",
+        "FAILED_TO_AUTHENTICATE_WITH_SERVICE",
+        "FAILED_TO_DOWNLOAD_REPLICATION_SOFTWARE",
+        "FAILED_TO_CREATE_STAGING_DISKS",
+        "FAILED_TO_ATTACH_STAGING_DISKS",
+        "FAILED_TO_PAIR_REPLICATION_SERVER_WITH_AGENT",
+        "FAILED_TO_CONNECT_AGENT_TO_REPLICATION_SERVER",
+        "FAILED_TO_START_DATA_TRANSFER"
+      ]
+    },
+    "DataReplicationInfo":{
+      "type":"structure",
+      "members":{
+        "dataReplicationError":{
+          "shape":"DataReplicationError",
+          "documentation":"<p>Error in obtaining data replication info.</p>"
+        },
+        "dataReplicationInitiation":{
+          "shape":"DataReplicationInitiation",
+          "documentation":"<p>Request to query whether data replication has been initiated.</p>"
+        },
+        "dataReplicationState":{
+          "shape":"DataReplicationState",
+          "documentation":"<p>Request to query the data replication state.</p>"
+        },
+        "etaDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to query the time when data replication will be complete.</p>"
+        },
+        "lagDuration":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to query data replication lag durating.</p>"
+        },
+        "replicatedDisks":{
+          "shape":"DataReplicationInfoReplicatedDisks",
+          "documentation":"<p>Request to query disks replicated.</p>"
+        }
+      },
+      "documentation":"<p>Request data replication info.</p>"
+    },
+    "DataReplicationInfoReplicatedDisk":{
+      "type":"structure",
+      "members":{
+        "backloggedStorageBytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Request to query data replication backlog size in bytes.</p>"
+        },
+        "deviceName":{
+          "shape":"BoundedString",
+          "documentation":"<p>Request to query device name.</p>"
+        },
+        "replicatedStorageBytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Request to query amount of data replicated in bytes.</p>"
+        },
+        "rescannedStorageBytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Request to query amount of data rescanned in bytes.</p>"
+        },
+        "totalStorageBytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Request to query total amount of data replicated in bytes.</p>"
+        }
+      },
+      "documentation":"<p>Request to query disks replicated.</p>"
+    },
+    "DataReplicationInfoReplicatedDisks":{
+      "type":"list",
+      "member":{"shape":"DataReplicationInfoReplicatedDisk"},
+      "max":60,
+      "min":0
+    },
+    "DataReplicationInitiation":{
+      "type":"structure",
+      "members":{
+        "nextAttemptDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to query next data initiation date and time.</p>"
+        },
+        "startDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to query data initiation start date and time.</p>"
+        },
+        "steps":{
+          "shape":"DataReplicationInitiationSteps",
+          "documentation":"<p>Request to query data initiation steps.</p>"
+        }
+      },
+      "documentation":"<p>Data replication initiation.</p>"
+    },
+    "DataReplicationInitiationStep":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"DataReplicationInitiationStepName",
+          "documentation":"<p>Request to query data initiation step name.</p>"
+        },
+        "status":{
+          "shape":"DataReplicationInitiationStepStatus",
+          "documentation":"<p>Request to query data initiation status.</p>"
+        }
+      },
+      "documentation":"<p>Data replication intiation step.</p>"
+    },
+    "DataReplicationInitiationStepName":{
+      "type":"string",
+      "enum":[
+        "WAIT",
+        "CREATE_SECURITY_GROUP",
+        "LAUNCH_REPLICATION_SERVER",
+        "BOOT_REPLICATION_SERVER",
+        "AUTHENTICATE_WITH_SERVICE",
+        "DOWNLOAD_REPLICATION_SOFTWARE",
+        "CREATE_STAGING_DISKS",
+        "ATTACH_STAGING_DISKS",
+        "PAIR_REPLICATION_SERVER_WITH_AGENT",
+        "CONNECT_AGENT_TO_REPLICATION_SERVER",
+        "START_DATA_TRANSFER"
+      ]
+    },
+    "DataReplicationInitiationStepStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "DataReplicationInitiationSteps":{
+      "type":"list",
+      "member":{"shape":"DataReplicationInitiationStep"}
+    },
+    "DataReplicationState":{
+      "type":"string",
+      "enum":[
+        "STOPPED",
+        "INITIATING",
+        "INITIAL_SYNC",
+        "BACKLOG",
+        "CREATING_SNAPSHOT",
+        "CONTINUOUS",
+        "PAUSED",
+        "RESCAN",
+        "STALLED",
+        "DISCONNECTED"
+      ]
+    },
+    "DeleteJobRequest":{
+      "type":"structure",
+      "required":["jobID"],
+      "members":{
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Request to delete Job from service by Job ID.</p>"
+        }
+      }
+    },
+    "DeleteJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteReplicationConfigurationTemplateRequest":{
+      "type":"structure",
+      "required":["replicationConfigurationTemplateID"],
+      "members":{
+        "replicationConfigurationTemplateID":{
+          "shape":"ReplicationConfigurationTemplateID",
+          "documentation":"<p>Request to delete Replication Configuration Template from service by Replication Configuration Template ID.</p>"
+        }
+      }
+    },
+    "DeleteReplicationConfigurationTemplateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteSourceServerRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to delete Source Server from service by Server ID.</p>"
+        }
+      }
+    },
+    "DeleteSourceServerResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DescribeJobLogItemsRequest":{
+      "type":"structure",
+      "required":["jobID"],
+      "members":{
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Request to describe Job log job ID.</p>"
+        },
+        "maxResults":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Request to describe Job log item maximum results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to describe Job log next token.</p>"
+        }
+      }
+    },
+    "DescribeJobLogItemsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"JobLogs",
+          "documentation":"<p>Request to describe Job log response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to describe Job log response next token.</p>"
+        }
+      }
+    },
+    "DescribeJobsRequest":{
+      "type":"structure",
+      "required":["filters"],
+      "members":{
+        "filters":{
+          "shape":"DescribeJobsRequestFilters",
+          "documentation":"<p>Request to describe Job log filters.</p>"
+        },
+        "maxResults":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Request to describe Job log by max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to describe Job logby next token.</p>"
+        }
+      }
+    },
+    "DescribeJobsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "fromDate":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to describe Job log filters by date.</p>"
+        },
+        "jobIDs":{
+          "shape":"DescribeJobsRequestFiltersJobIDs",
+          "documentation":"<p>Request to describe Job log filters by job ID.</p>"
+        },
+        "toDate":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to describe Job log by last date.</p>"
+        }
+      },
+      "documentation":"<p>Request to describe Job log filters.</p>"
+    },
+    "DescribeJobsRequestFiltersJobIDs":{
+      "type":"list",
+      "member":{"shape":"JobID"},
+      "max":1000,
+      "min":0
+    },
+    "DescribeJobsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"JobsList",
+          "documentation":"<p>Request to describe Job log items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to describe Job response by next token.</p>"
+        }
+      }
+    },
+    "DescribeReplicationConfigurationTemplatesRequest":{
+      "type":"structure",
+      "required":["replicationConfigurationTemplateIDs"],
+      "members":{
+        "maxResults":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Request to describe Replication Configuration template by max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to describe Replication Configuration template by next token.</p>"
+        },
+        "replicationConfigurationTemplateIDs":{
+          "shape":"ReplicationConfigurationTemplateIDs",
+          "documentation":"<p>Request to describe Replication Configuration template by template IDs.</p>"
+        }
+      }
+    },
+    "DescribeReplicationConfigurationTemplatesResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ReplicationConfigurationTemplates",
+          "documentation":"<p>Request to describe Replication Configuration template by items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to describe Replication Configuration template by next token.</p>"
+        }
+      }
+    },
+    "DescribeSourceServersRequest":{
+      "type":"structure",
+      "required":["filters"],
+      "members":{
+        "filters":{
+          "shape":"DescribeSourceServersRequestFilters",
+          "documentation":"<p>Request to filter Source Servers list.</p>"
+        },
+        "maxResults":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Request to filter Source Servers list by maximum results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to filter Source Servers list by next token.</p>"
+        }
+      }
+    },
+    "DescribeSourceServersRequestFilters":{
+      "type":"structure",
+      "members":{
+        "isArchived":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to filter Source Servers list by archived.</p>"
+        },
+        "sourceServerIDs":{
+          "shape":"DescribeSourceServersRequestFiltersIDs",
+          "documentation":"<p>Request to filter Source Servers list by Source Server ID.</p>"
+        }
+      },
+      "documentation":"<p>Request to filter Source Servers list.</p>"
+    },
+    "DescribeSourceServersRequestFiltersIDs":{
+      "type":"list",
+      "member":{"shape":"SourceServerID"},
+      "max":200,
+      "min":0
+    },
+    "DescribeSourceServersResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"SourceServersList",
+          "documentation":"<p>Request to filter Source Servers list by item.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Request to filter Source Servers next token.</p>"
+        }
+      }
+    },
+    "DisconnectFromServiceRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to disconnect Source Server from service by Server ID.</p>"
+        }
+      }
+    },
+    "Disk":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The amount of storage on the disk in bytes.</p>"
+        },
+        "deviceName":{
+          "shape":"BoundedString",
+          "documentation":"<p>The disk or device name.</p>"
+        }
+      },
+      "documentation":"<p>The disk identifier.</p>"
+    },
+    "Disks":{
+      "type":"list",
+      "member":{"shape":"Disk"},
+      "max":1000,
+      "min":0
+    },
+    "EC2InstanceID":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^i-[0-9a-fA-F]{8,}$"
+    },
+    "EC2InstanceType":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "FinalizeCutoverRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to finalize Cutover by Soure Server ID.</p>"
+        }
+      }
+    },
+    "FirstBoot":{
+      "type":"string",
+      "enum":[
+        "WAITING",
+        "SUCCEEDED",
+        "UNKNOWN",
+        "STOPPED"
+      ]
+    },
+    "GetLaunchConfigurationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to get Launch Configuration information by Source Server ID.</p>"
+        }
+      }
+    },
+    "GetReplicationConfigurationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to get Replication Configuaration by Source Server ID.</p>"
+        }
+      }
+    },
+    "IPsList":{
+      "type":"list",
+      "member":{"shape":"BoundedString"}
+    },
+    "ISO8601DatetimeString":{
+      "type":"string",
+      "max":32,
+      "min":19,
+      "pattern":"^[1-9][0-9]*-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z$"
+    },
+    "IdentificationHints":{
+      "type":"structure",
+      "members":{
+        "awsInstanceID":{
+          "shape":"EC2InstanceID",
+          "documentation":"<p>AWS Instance ID identification hint.</p>"
+        },
+        "fqdn":{
+          "shape":"BoundedString",
+          "documentation":"<p>FQDN address identification hint.</p>"
+        },
+        "hostname":{
+          "shape":"BoundedString",
+          "documentation":"<p>Hostname identification hint.</p>"
+        },
+        "vmWareUuid":{
+          "shape":"BoundedString",
+          "documentation":"<p>vmWare UUID identification hint.</p>"
+        }
+      },
+      "documentation":"<p>Identification hints.</p>"
+    },
+    "InitializeServiceRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "InitializeServiceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "InitiatedBy":{
+      "type":"string",
+      "enum":[
+        "START_TEST",
+        "START_CUTOVER",
+        "DIAGNOSTIC",
+        "TERMINATE"
+      ]
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"LargeBoundedString"},
+        "retryAfterSeconds":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The server encountered an unexpected condition that prevented it from fulfilling the request. The request will be retried again after x seconds.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>The server encountered an unexpected condition that prevented it from fulfilling the request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "Job":{
+      "type":"structure",
+      "required":["jobID"],
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>the ARN of the specific Job.</p>"
+        },
+        "creationDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Job creation time.</p>"
+        },
+        "endDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Job end time.</p>"
+        },
+        "initiatedBy":{
+          "shape":"InitiatedBy",
+          "documentation":"<p>Job initiated by field.</p>"
+        },
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Job ID.</p>"
+        },
+        "participatingServers":{
+          "shape":"ParticipatingServers",
+          "documentation":"<p>Servers participating in a specific Job.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Job status.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags associated with spcific Job.</p>"
+        },
+        "type":{
+          "shape":"JobType",
+          "documentation":"<p>Job type.</p>"
+        }
+      },
+      "documentation":"<p>Job.</p>"
+    },
+    "JobID":{
+      "type":"string",
+      "max":24,
+      "min":24,
+      "pattern":"^mgnjob-[0-9a-zA-Z]{17}$"
+    },
+    "JobLog":{
+      "type":"structure",
+      "members":{
+        "event":{
+          "shape":"JobLogEvent",
+          "documentation":"<p>Job log event.</p>"
+        },
+        "eventData":{
+          "shape":"JobLogEventData",
+          "documentation":"<p>Job event data</p>"
+        },
+        "logDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Job log event date and time.</p>"
+        }
+      },
+      "documentation":"<p>Job log.</p>"
+    },
+    "JobLogEvent":{
+      "type":"string",
+      "enum":[
+        "JOB_START",
+        "SERVER_SKIPPED",
+        "CLEANUP_START",
+        "CLEANUP_END",
+        "CLEANUP_FAIL",
+        "SNAPSHOT_START",
+        "SNAPSHOT_END",
+        "SNAPSHOT_FAIL",
+        "USING_PREVIOUS_SNAPSHOT",
+        "CONVERSION_START",
+        "CONVERSION_END",
+        "CONVERSION_FAIL",
+        "LAUNCH_START",
+        "LAUNCH_FAILED",
+        "JOB_CANCEL",
+        "JOB_END"
+      ]
+    },
+    "JobLogEventData":{
+      "type":"structure",
+      "members":{
+        "conversionServerID":{
+          "shape":"EC2InstanceID",
+          "documentation":"<p>Job Event conversion Server ID.</p>"
+        },
+        "rawError":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Job error.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Job Event Source Server ID.</p>"
+        },
+        "targetInstanceID":{
+          "shape":"EC2InstanceID",
+          "documentation":"<p>Job Event Target instance ID.</p>"
+        }
+      },
+      "documentation":"<p>Job log data</p>"
+    },
+    "JobLogs":{
+      "type":"list",
+      "member":{"shape":"JobLog"}
+    },
+    "JobStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "COMPLETED"
+      ]
+    },
+    "JobType":{
+      "type":"string",
+      "enum":[
+        "LAUNCH",
+        "TERMINATE"
+      ]
+    },
+    "JobsList":{
+      "type":"list",
+      "member":{"shape":"Job"}
+    },
+    "LargeBoundedString":{
+      "type":"string",
+      "max":65536,
+      "min":0
+    },
+    "LaunchConfiguration":{
+      "type":"structure",
+      "members":{
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy Private IP during Launch Configuration.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy Tags during Launch Configuration.</p>"
+        },
+        "ec2LaunchTemplateID":{
+          "shape":"BoundedString",
+          "documentation":"<p>Configure EC2 lauch configuration template ID.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Configure launch dispostion for launch configuration.</p>"
+        },
+        "licensing":{
+          "shape":"Licensing",
+          "documentation":"<p>Configure launch configuration OS licensing.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Configure launch configuration name.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Configure launch configuration Source Server ID.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Configure launch configuration Target instance type right sizing method.</p>"
+        }
+      }
+    },
+    "LaunchDisposition":{
+      "type":"string",
+      "enum":[
+        "STOPPED",
+        "STARTED"
+      ]
+    },
+    "LaunchStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "LAUNCHED",
+        "FAILED",
+        "TERMINATED"
+      ]
+    },
+    "LaunchedInstance":{
+      "type":"structure",
+      "members":{
+        "ec2InstanceID":{
+          "shape":"EC2InstanceID",
+          "documentation":"<p>Configure launced instance EC2 ID.</p>"
+        },
+        "firstBoot":{
+          "shape":"FirstBoot",
+          "documentation":"<p>Configure launced instance first boot.</p>"
+        },
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Configure launced instance Job ID.</p>"
+        }
+      },
+      "documentation":"<p>Configure launced instance.</p>"
+    },
+    "Licensing":{
+      "type":"structure",
+      "members":{
+        "osByol":{
+          "shape":"Boolean",
+          "documentation":"<p>Configure BYOL OS licensing.</p>"
+        }
+      },
+      "documentation":"<p>Configure Licensing.</p>"
+    },
+    "LifeCycle":{
+      "type":"structure",
+      "members":{
+        "addedToServiceDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle added to service data and time.</p>"
+        },
+        "elapsedReplicationDuration":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle elapsed time and duration.</p>"
+        },
+        "firstByteDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle replication initiation date and time.</p>"
+        },
+        "lastCutover":{
+          "shape":"LifeCycleLastCutover",
+          "documentation":"<p>Lifecycle last Cutover.</p>"
+        },
+        "lastSeenByServiceDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle last seen date and time.</p>"
+        },
+        "lastTest":{
+          "shape":"LifeCycleLastTest",
+          "documentation":"<p>Lifecycle last Test.</p>"
+        },
+        "state":{
+          "shape":"LifeCycleState",
+          "documentation":"<p>Lifecycle state.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle.</p>"
+    },
+    "LifeCycleLastCutover":{
+      "type":"structure",
+      "members":{
+        "finalized":{
+          "shape":"LifeCycleLastCutoverFinalized",
+          "documentation":"<p>Lifecycle Cutover finalized date and time.</p>"
+        },
+        "initiated":{
+          "shape":"LifeCycleLastCutoverInitiated",
+          "documentation":"<p>Lifecycle last Cutover initiated.</p>"
+        },
+        "reverted":{
+          "shape":"LifeCycleLastCutoverReverted",
+          "documentation":"<p>Lifecycle last Cutover reverted.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Cutover .</p>"
+    },
+    "LifeCycleLastCutoverFinalized":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle Cutover finalized date and time.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle Cutover finalized</p>"
+    },
+    "LifeCycleLastCutoverInitiated":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p/>"
+        },
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Lifecycle last Cutover initiated by Job ID.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Cutover initiated.</p>"
+    },
+    "LifeCycleLastCutoverReverted":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle last Cutover reverted API call date time.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Cutover reverted.</p>"
+    },
+    "LifeCycleLastTest":{
+      "type":"structure",
+      "members":{
+        "finalized":{
+          "shape":"LifeCycleLastTestFinalized",
+          "documentation":"<p>Lifecycle last Test finlized.</p>"
+        },
+        "initiated":{
+          "shape":"LifeCycleLastTestInitiated",
+          "documentation":"<p>Lifecycle last Test initiated.</p>"
+        },
+        "reverted":{
+          "shape":"LifeCycleLastTestReverted",
+          "documentation":"<p>Lifecycle last Test reverted.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Test.</p>"
+    },
+    "LifeCycleLastTestFinalized":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle Test failed API call date and time.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Test finlized.</p>"
+    },
+    "LifeCycleLastTestInitiated":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle last Test initiated API call date and time.</p>"
+        },
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Lifecycle last Test initiated Job ID.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Test initiated.</p>"
+    },
+    "LifeCycleLastTestReverted":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Lifecycle last Test reverted API call date and time.</p>"
+        }
+      },
+      "documentation":"<p>Lifecycle last Test reverted.</p>"
+    },
+    "LifeCycleState":{
+      "type":"string",
+      "enum":[
+        "STOPPED",
+        "NOT_READY",
+        "READY_FOR_TEST",
+        "TESTING",
+        "READY_FOR_CUTOVER",
+        "CUTTING_OVER",
+        "CUTOVER",
+        "DISCONNECTED"
+      ]
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>List tags for resource request by ARN.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>List tags for resource response.</p>"
+        }
+      }
+    },
+    "MarkAsArchivedRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Mark as archived by Source Server ID.</p>"
+        }
+      }
+    },
+    "NetworkInterface":{
+      "type":"structure",
+      "members":{
+        "ips":{
+          "shape":"IPsList",
+          "documentation":"<p>Network interface IPs.</p>"
+        },
+        "isPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>Network interface primary IP.</p>"
+        },
+        "macAddress":{
+          "shape":"BoundedString",
+          "documentation":"<p>Network interface Mac address.</p>"
+        }
+      },
+      "documentation":"<p>Network interface.</p>"
+    },
+    "NetworkInterfaces":{
+      "type":"list",
+      "member":{"shape":"NetworkInterface"},
+      "max":32,
+      "min":0
+    },
+    "OS":{
+      "type":"structure",
+      "members":{
+        "fullString":{
+          "shape":"BoundedString",
+          "documentation":"<p>OS full string.</p>"
+        }
+      },
+      "documentation":"<p>Operating System.</p>"
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "ParticipatingServer":{
+      "type":"structure",
+      "members":{
+        "launchStatus":{
+          "shape":"LaunchStatus",
+          "documentation":"<p>Participating server launch status.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Participating server Source Server ID.</p>"
+        }
+      },
+      "documentation":"<p>Server participating in Job.</p>"
+    },
+    "ParticipatingServers":{
+      "type":"list",
+      "member":{"shape":"ParticipatingServer"}
+    },
+    "PositiveInteger":{
+      "type":"long",
+      "min":0
+    },
+    "ReplicationConfiguration":{
+      "type":"structure",
+      "members":{
+        "associateDefaultSecurityGroup":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration associate default Application Migration Service Security Group.</p>"
+        },
+        "bandwidthThrottling":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Replication Configuration set bandwidth throttling.</p>"
+        },
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration create Public IP.</p>"
+        },
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Replication Configuration data plane routing.</p>"
+        },
+        "defaultLargeStagingDiskType":{
+          "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
+          "documentation":"<p>Replication Configuration use default large Staging Disks.</p>"
+        },
+        "ebsEncryption":{
+          "shape":"ReplicationConfigurationEbsEncryption",
+          "documentation":"<p>Replication Configuration EBS encryption.</p>"
+        },
+        "ebsEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>Replication Configuration EBS encryption key ARN.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Replication Configuration name.</p>"
+        },
+        "replicatedDisks":{
+          "shape":"ReplicationConfigurationReplicatedDisks",
+          "documentation":"<p>Replication Configuration replicated disks.</p>"
+        },
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Replication Configuration Replication Server instance type.</p>"
+        },
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Replication Configuration Replication Server Security Group IDs.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Replication Configuration Source Server ID.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Replication Configuration Staging Area subnet ID.</p>"
+        },
+        "stagingAreaTags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Replication Configuration Staging Area tags.</p>"
+        },
+        "useDedicatedReplicationServer":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration use Dedicated Replication Server.</p>"
+        }
+      }
+    },
+    "ReplicationConfigurationDataPlaneRouting":{
+      "type":"string",
+      "enum":[
+        "PRIVATE_IP",
+        "PUBLIC_IP"
+      ]
+    },
+    "ReplicationConfigurationDefaultLargeStagingDiskType":{
+      "type":"string",
+      "enum":[
+        "GP2",
+        "ST1"
+      ]
+    },
+    "ReplicationConfigurationEbsEncryption":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "CUSTOM"
+      ]
+    },
+    "ReplicationConfigurationReplicatedDisk":{
+      "type":"structure",
+      "members":{
+        "deviceName":{
+          "shape":"BoundedString",
+          "documentation":"<p>Replication Configuration replicated disk device name.</p>"
+        },
+        "iops":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Replication Configuration replicated disk IOPs.</p>"
+        },
+        "isBootDisk":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration replicated disk boot disk.</p>"
+        },
+        "stagingDiskType":{
+          "shape":"ReplicationConfigurationReplicatedDiskStagingDiskType",
+          "documentation":"<p>Replication Configuration replicated disk staging disk type.</p>"
+        }
+      },
+      "documentation":"<p>Replication Configuration replicated disk.</p>"
+    },
+    "ReplicationConfigurationReplicatedDiskStagingDiskType":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "GP2",
+        "IO1",
+        "SC1",
+        "ST1",
+        "STANDARD"
+      ]
+    },
+    "ReplicationConfigurationReplicatedDisks":{
+      "type":"list",
+      "member":{"shape":"ReplicationConfigurationReplicatedDisk"},
+      "max":60,
+      "min":0
+    },
+    "ReplicationConfigurationTemplate":{
+      "type":"structure",
+      "required":["replicationConfigurationTemplateID"],
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>Replication Configuration template ARN.</p>"
+        },
+        "associateDefaultSecurityGroup":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template associate default Application Migration Service Security group.</p>"
+        },
+        "bandwidthThrottling":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Replication Configuration template bandwidth throtting.</p>"
+        },
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template create Public IP.</p>"
+        },
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Replication Configuration template data plane routing.</p>"
+        },
+        "defaultLargeStagingDiskType":{
+          "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
+          "documentation":"<p>Replication Configuration template use dedault large Staging Disk type.</p>"
+        },
+        "ebsEncryption":{
+          "shape":"ReplicationConfigurationEbsEncryption",
+          "documentation":"<p>Replication Configuration template EBS encryption.</p>"
+        },
+        "ebsEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>Replication Configuration template EBS encryption key ARN.</p>"
+        },
+        "replicationConfigurationTemplateID":{
+          "shape":"ReplicationConfigurationTemplateID",
+          "documentation":"<p>Replication Configuration template template ID.</p>"
+        },
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Replication Configuration template server instance type.</p>"
+        },
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Replication Configuration template server Security Groups IDs.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Replication Configuration template Staging Area subnet ID.</p>"
+        },
+        "stagingAreaTags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Replication Configuration template Staging Area Tags.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Replication Configuration template Tags.</p>"
+        },
+        "useDedicatedReplicationServer":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template use Dedicated Replication Server.</p>"
+        }
+      }
+    },
+    "ReplicationConfigurationTemplateID":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"^rct-[0-9a-zA-Z]{17}$"
+    },
+    "ReplicationConfigurationTemplateIDs":{
+      "type":"list",
+      "member":{"shape":"ReplicationConfigurationTemplateID"},
+      "max":200,
+      "min":0
+    },
+    "ReplicationConfigurationTemplates":{
+      "type":"list",
+      "member":{"shape":"ReplicationConfigurationTemplate"}
+    },
+    "ReplicationServersSecurityGroupsIDs":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupID"},
+      "max":32,
+      "min":0
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "code":{"shape":"LargeBoundedString"},
+        "message":{"shape":"LargeBoundedString"},
+        "resourceId":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Resource ID not found error.</p>"
+        },
+        "resourceType":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Resource type not found error.</p>"
+        }
+      },
+      "documentation":"<p>Resource not found exception.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RetryDataReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Retry data replication for Source Server ID.</p>"
+        }
+      }
+    },
+    "SecurityGroupID":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^sg-[0-9a-fA-F]{8,}$"
+    },
+    "SmallBoundedString":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "SourceProperties":{
+      "type":"structure",
+      "members":{
+        "cpus":{
+          "shape":"Cpus",
+          "documentation":"<p>Source Server CPUs.</p>"
+        },
+        "disks":{
+          "shape":"Disks",
+          "documentation":"<p>Source Server disks.</p>"
+        },
+        "identificationHints":{
+          "shape":"IdentificationHints",
+          "documentation":"<p>Source server identification hints.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Source server last update date and time.</p>"
+        },
+        "networkInterfaces":{
+          "shape":"NetworkInterfaces",
+          "documentation":"<p>Source server network interfaces.</p>"
+        },
+        "os":{
+          "shape":"OS",
+          "documentation":"<p>Source server OS.</p>"
+        },
+        "ramBytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Source server RAM in bytes.</p>"
+        },
+        "recommendedInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Source server recommended instance type.</p>"
+        }
+      },
+      "documentation":"<p>Source server properties.</p>"
+    },
+    "SourceServer":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>Source server ARN.</p>"
+        },
+        "dataReplicationInfo":{
+          "shape":"DataReplicationInfo",
+          "documentation":"<p>Source server data replication info.</p>"
+        },
+        "isArchived":{
+          "shape":"Boolean",
+          "documentation":"<p>Source server archived status.</p>"
+        },
+        "launchedInstance":{
+          "shape":"LaunchedInstance",
+          "documentation":"<p>Source server launched instance.</p>"
+        },
+        "lifeCycle":{
+          "shape":"LifeCycle",
+          "documentation":"<p>Source server lifecycle state.</p>"
+        },
+        "sourceProperties":{
+          "shape":"SourceProperties",
+          "documentation":"<p>Source server properties.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source server ID.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Source server Tags.</p>"
+        }
+      }
+    },
+    "SourceServerID":{
+      "type":"string",
+      "max":19,
+      "min":19,
+      "pattern":"^s-[0-9a-zA-Z]{17}$"
+    },
+    "SourceServersList":{
+      "type":"list",
+      "member":{"shape":"SourceServer"}
+    },
+    "StartCutoverRequest":{
+      "type":"structure",
+      "required":["sourceServerIDs"],
+      "members":{
+        "sourceServerIDs":{
+          "shape":"StartCutoverRequestSourceServerIDs",
+          "documentation":"<p>Start Cutover by Source Server IDs.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Start Cutover by Tags.</p>"
+        }
+      }
+    },
+    "StartCutoverRequestSourceServerIDs":{
+      "type":"list",
+      "member":{"shape":"SourceServerID"},
+      "max":200,
+      "min":1
+    },
+    "StartCutoverResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"Job",
+          "documentation":"<p>Start Cutover Job response.</p>"
+        }
+      }
+    },
+    "StartTestRequest":{
+      "type":"structure",
+      "required":["sourceServerIDs"],
+      "members":{
+        "sourceServerIDs":{
+          "shape":"StartTestRequestSourceServerIDs",
+          "documentation":"<p>Start Test for Source Server IDs.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Start Test by Tags.</p>"
+        }
+      }
+    },
+    "StartTestRequestSourceServerIDs":{
+      "type":"list",
+      "member":{"shape":"SourceServerID"},
+      "max":200,
+      "min":1
+    },
+    "StartTestResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"Job",
+          "documentation":"<p>Start Test Job response.</p>"
+        }
+      }
+    },
+    "StrictlyPositiveInteger":{
+      "type":"integer",
+      "min":1
+    },
+    "SubnetID":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^subnet-[0-9a-fA-F]{8,}$"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "sensitive":true
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>Tag resource by ARN.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tag resource by Tags.</p>"
+        }
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "sensitive":true
+    },
+    "TargetInstanceTypeRightSizingMethod":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "BASIC"
+      ]
+    },
+    "TerminateTargetInstancesRequest":{
+      "type":"structure",
+      "required":["sourceServerIDs"],
+      "members":{
+        "sourceServerIDs":{
+          "shape":"TerminateTargetInstancesRequestSourceServerIDs",
+          "documentation":"<p>Terminate Target instance by Source Server IDs.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Terminate Target instance by Tags.</p>"
+        }
+      }
+    },
+    "TerminateTargetInstancesRequestSourceServerIDs":{
+      "type":"list",
+      "member":{"shape":"SourceServerID"},
+      "max":200,
+      "min":1
+    },
+    "TerminateTargetInstancesResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"Job",
+          "documentation":"<p>Terminate Target instance Job response.</p>"
+        }
+      }
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"LargeBoundedString"},
+        "quotaCode":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Reached throttling quota exception.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Reached throttling quota exception will retry after x seconds.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        },
+        "serviceCode":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Reached throttling quota exception service code.</p>"
+        }
+      },
+      "documentation":"<p>Reached throttling quota exception.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UninitializedAccountException":{
+      "type":"structure",
+      "members":{
+        "code":{"shape":"LargeBoundedString"},
+        "message":{"shape":"LargeBoundedString"}
+      },
+      "documentation":"<p>Unitialized account exception.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>Untag resource by ARN.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>Untag resource by Keys.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UpdateLaunchConfigurationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Update Launch configuration copy Private IP request.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Update Launch configuration copy Tags request.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Update Launch configuration launch disposition request.</p>"
+        },
+        "licensing":{
+          "shape":"Licensing",
+          "documentation":"<p>Update Launch configuration licensing request.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Update Launch configuration name request.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Update Launch configuration by Source Server ID request.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Update Launch configuration Target instance right sizing request.</p>"
+        }
+      }
+    },
+    "UpdateReplicationConfigurationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "associateDefaultSecurityGroup":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration associate default Application Migration Service Security group request.</p>"
+        },
+        "bandwidthThrottling":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Update replication configuration bandwidth throttling request.</p>"
+        },
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration create Public IP request.</p>"
+        },
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Update replication configuration data plane routing request.</p>"
+        },
+        "defaultLargeStagingDiskType":{
+          "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
+          "documentation":"<p>Update replication configuration use default large Staging Disk type request.</p>"
+        },
+        "ebsEncryption":{
+          "shape":"ReplicationConfigurationEbsEncryption",
+          "documentation":"<p>Update replication configuration EBS encryption request.</p>"
+        },
+        "ebsEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>Update replication configuration EBS encryption key ARN request.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Update replication configuration name request.</p>"
+        },
+        "replicatedDisks":{
+          "shape":"ReplicationConfigurationReplicatedDisks",
+          "documentation":"<p>Update replication configuration replicated disks request.</p>"
+        },
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Update replication configuration Replication Server instance type request.</p>"
+        },
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Update replication configuration Replication Server Security Groups IDs request.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Update replication configuration Source Server ID request.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Update replication configuration Staging Area subnet request.</p>"
+        },
+        "stagingAreaTags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Update replication configuration Staging Area Tags request.</p>"
+        },
+        "useDedicatedReplicationServer":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration use dedicated Replication Server request.</p>"
+        }
+      }
+    },
+    "UpdateReplicationConfigurationTemplateRequest":{
+      "type":"structure",
+      "required":["replicationConfigurationTemplateID"],
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>Update replication configuration template ARN request.</p>"
+        },
+        "associateDefaultSecurityGroup":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template associate default Application Migration Service Security group request.</p>"
+        },
+        "bandwidthThrottling":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Update replication configuration template bandwidth throttling request.</p>"
+        },
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template create Public IP request.</p>"
+        },
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Update replication configuration template data plane routing request.</p>"
+        },
+        "defaultLargeStagingDiskType":{
+          "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
+          "documentation":"<p>Update replication configuration template use default large Staging Disk type request.</p>"
+        },
+        "ebsEncryption":{
+          "shape":"ReplicationConfigurationEbsEncryption",
+          "documentation":"<p>Update replication configuration template EBS encryption request.</p>"
+        },
+        "ebsEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>Update replication configuration template EBS encryption key ARN request.</p>"
+        },
+        "replicationConfigurationTemplateID":{
+          "shape":"ReplicationConfigurationTemplateID",
+          "documentation":"<p>Update replication configuration template template ID request.</p>"
+        },
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Update replication configuration template Replication Server instance type request.</p>"
+        },
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Update replication configuration template Replication Server Security groups IDs request.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Update replication configuration template Staging Area subnet ID request.</p>"
+        },
+        "stagingAreaTags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Update replication configuration template Staging Area Tags request.</p>"
+        },
+        "useDedicatedReplicationServer":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template use dedicated Replication Server request.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "code":{"shape":"LargeBoundedString"},
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>Validate exception field list.</p>"
+        },
+        "message":{"shape":"LargeBoundedString"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>Validate exception reason.</p>"
+        }
+      },
+      "documentation":"<p>Validate exception.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Validate exception field message.</p>"
+        },
+        "name":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Validate exception field name.</p>"
+        }
+      },
+      "documentation":"<p>Validate exception field.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "unknownOperation",
+        "cannotParse",
+        "fieldValidationFailed",
+        "other"
+      ]
+    }
+  },
+  "documentation":"<p>The Application Migration Service service.</p>"
+}

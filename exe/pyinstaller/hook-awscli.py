@@ -21,7 +21,12 @@ imports_for_legacy_plugins = (
     hooks.collect_submodules('http') +
     hooks.collect_submodules('logging')
 )
-
 hiddenimports += imports_for_legacy_plugins
+
+alias_packages_plugins = (
+    hooks.collect_submodules('awscli.botocore') +
+    hooks.collect_submodules('awscli.s3transfer')
+)
+hiddenimports += alias_packages_plugins
 
 datas = hooks.collect_data_files('awscli')

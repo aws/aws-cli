@@ -1,0 +1,3324 @@
+{
+  "documentation": "<p>Use the AWS Elemental MediaTailor SDKs and CLI to configure scalable ad insertion and linear channels. With MediaTailor, you can assemble existing content into a linear stream and serve targeted ads to viewers while maintaining broadcast quality in over-the-top (OTT) video applications. For information about using the service, including detailed information about the settings covered in this guide, see the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/\">AWS Elemental MediaTailor User Guide</a>.</p> <p>Through the SDKs and the CLI you manage AWS Elemental MediaTailor configurations and channels the same as you do through the console. For example, you specify ad insertion behavior and mapping information for the origin server and the ad decision server (ADS).</p>",
+  "metadata": {
+    "apiVersion": "2018-04-23",
+    "endpointPrefix": "api.mediatailor",
+    "jsonVersion": "1.1",
+    "protocol": "rest-json",
+    "serviceAbbreviation": "MediaTailor",
+    "serviceFullName": "AWS MediaTailor",
+    "serviceId": "MediaTailor",
+    "signatureVersion": "v4",
+    "signingName": "mediatailor",
+    "uid": "mediatailor-2018-04-23"
+  },
+  "operations": {
+    "ConfigureLogsForPlaybackConfiguration": {
+      "documentation": "<p>Configures Amazon CloudWatch log settings for a playback configuration.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/configureLogs/playbackConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ConfigureLogsForPlaybackConfigurationRequest"
+      },
+      "name": "ConfigureLogsForPlaybackConfiguration",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ConfigureLogsForPlaybackConfigurationResponse"
+      }
+    },
+    "CreateChannel": {
+      "documentation": "<p>Creates a channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "POST",
+        "requestUri": "/channel/{channelName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateChannelRequest"
+      },
+      "name": "CreateChannel",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "CreateChannelResponse"
+      }
+    },
+    "CreatePrefetchSchedule": {
+      "documentation": "<p>Creates a new prefetch schedule for the specified playback configuration.</p>",
+      "errors": [],
+      "http": {
+        "method": "POST",
+        "requestUri": "/prefetchSchedule/{PlaybackConfigurationName}/{Name}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreatePrefetchScheduleRequest"
+      },
+      "name": "CreatePrefetchSchedule",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "CreatePrefetchScheduleResponse"
+      }
+    },
+    "CreateProgram": {
+      "documentation": "<p>Creates a program.</p>",
+      "errors": [],
+      "http": {
+        "method": "POST",
+        "requestUri": "/channel/{channelName}/program/{programName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateProgramRequest"
+      },
+      "name": "CreateProgram",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "CreateProgramResponse"
+      }
+    },
+    "CreateSourceLocation": {
+      "documentation": "<p>Creates a source location on a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "POST",
+        "requestUri": "/sourceLocation/{sourceLocationName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateSourceLocationRequest"
+      },
+      "name": "CreateSourceLocation",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "CreateSourceLocationResponse"
+      }
+    },
+    "CreateVodSource": {
+      "documentation": "<p>Creates name for a specific VOD source in a source location.</p>",
+      "errors": [],
+      "http": {
+        "method": "POST",
+        "requestUri": "/sourceLocation/{sourceLocationName}/vodSource/{vodSourceName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateVodSourceRequest"
+      },
+      "name": "CreateVodSource",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "CreateVodSourceResponse"
+      }
+    },
+    "DeleteChannel": {
+      "documentation": "<p>Deletes a channel. You must stop the channel before it can be deleted.</p>",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/channel/{channelName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteChannelRequest"
+      },
+      "name": "DeleteChannel",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DeleteChannelResponse"
+      }
+    },
+    "DeleteChannelPolicy": {
+      "documentation": "<p>Deletes a channel's IAM policy.</p>",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/channel/{channelName}/policy",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteChannelPolicyRequest"
+      },
+      "name": "DeleteChannelPolicy",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DeleteChannelPolicyResponse"
+      }
+    },
+    "DeletePlaybackConfiguration": {
+      "documentation": "<p>Deletes the playback configuration for the specified name.</p>  ",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/playbackConfiguration/{Name}",
+        "responseCode": 204
+      },
+      "input": {
+        "shape": "DeletePlaybackConfigurationRequest"
+      },
+      "name": "DeletePlaybackConfiguration",
+      "output": {
+        "documentation": "<p>The request was successful and there is no content in the response.</p>",
+        "shape": "DeletePlaybackConfigurationResponse"
+      }
+    },
+    "DeletePrefetchSchedule": {
+      "documentation": "<p>Deletes a prefetch schedule for a specific playback configuration. If you call DeletePrefetchSchedule on an expired prefetch schedule, MediaTailor returns an HTTP 404 status code.</p>",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/prefetchSchedule/{PlaybackConfigurationName}/{Name}",
+        "responseCode": 204
+      },
+      "input": {
+        "shape": "DeletePrefetchScheduleRequest"
+      },
+      "name": "DeletePrefetchSchedule",
+      "output": {
+        "documentation": "<p>The request was successful and there is no content in the response.</p>",
+        "shape": "DeletePrefetchScheduleResponse"
+      }
+    },
+    "DeleteProgram": {
+      "documentation": "<p>Deletes a specific program on a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/channel/{channelName}/program/{programName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteProgramRequest"
+      },
+      "name": "DeleteProgram",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DeleteProgramResponse"
+      }
+    },
+    "DeleteSourceLocation": {
+      "documentation": "<p>Deletes a source location on a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/sourceLocation/{sourceLocationName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteSourceLocationRequest"
+      },
+      "name": "DeleteSourceLocation",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DeleteSourceLocationResponse"
+      }
+    },
+    "DeleteVodSource": {
+      "documentation": "<p>Deletes a specific VOD source in a specific source location.</p>",
+      "errors": [],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/sourceLocation/{sourceLocationName}/vodSource/{vodSourceName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteVodSourceRequest"
+      },
+      "name": "DeleteVodSource",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DeleteVodSourceResponse"
+      }
+    },
+    "DescribeChannel": {
+      "documentation": "<p>Describes the properties of a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/channel/{channelName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeChannelRequest"
+      },
+      "name": "DescribeChannel",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DescribeChannelResponse"
+      }
+    },
+    "DescribeProgram": {
+      "documentation": "<p>Retrieves the properties of the requested program.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/channel/{channelName}/program/{programName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeProgramRequest"
+      },
+      "name": "DescribeProgram",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DescribeProgramResponse"
+      }
+    },
+    "DescribeSourceLocation": {
+      "documentation": "<p>Retrieves the properties of the requested source location.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/sourceLocation/{sourceLocationName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeSourceLocationRequest"
+      },
+      "name": "DescribeSourceLocation",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DescribeSourceLocationResponse"
+      }
+    },
+    "DescribeVodSource": {
+      "documentation": "<p>Provides details about a specific VOD source in a specific source location.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/sourceLocation/{sourceLocationName}/vodSource/{vodSourceName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeVodSourceRequest"
+      },
+      "name": "DescribeVodSource",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "DescribeVodSourceResponse"
+      }
+    },
+    "GetChannelPolicy": {
+      "documentation": "<p>Retrieves information about a channel's IAM policy.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/channel/{channelName}/policy",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetChannelPolicyRequest"
+      },
+      "name": "GetChannelPolicy",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "GetChannelPolicyResponse"
+      }
+    },
+    "GetChannelSchedule": {
+      "documentation": "<p>Retrieves information about your channel's schedule.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/channel/{channelName}/schedule",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetChannelScheduleRequest"
+      },
+      "name": "GetChannelSchedule",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "GetChannelScheduleResponse"
+      }
+    },
+    "GetPlaybackConfiguration": {
+      "documentation": "<p>Returns the playback configuration for the specified name.</p>  ",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/playbackConfiguration/{Name}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetPlaybackConfigurationRequest"
+      },
+      "name": "GetPlaybackConfiguration",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "GetPlaybackConfigurationResponse"
+      }
+    },
+    "GetPrefetchSchedule": {
+      "documentation": "<p>Returns information about the prefetch schedule for a specific playback configuration. If you call GetPrefetchSchedule on an expired prefetch schedule, MediaTailor returns an HTTP 404 status code.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/prefetchSchedule/{PlaybackConfigurationName}/{Name}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetPrefetchScheduleRequest"
+      },
+      "name": "GetPrefetchSchedule",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "GetPrefetchScheduleResponse"
+      }
+    },
+    "ListAlerts": {
+      "documentation": "<p>Returns a list of alerts for the given resource.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListAlertsRequest"
+      },
+      "name": "ListAlerts",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListAlertsResponse"
+      }
+    },
+    "ListChannels": {
+      "documentation": "<p>Retrieves a list of channels that are associated with this account.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/channels",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListChannelsRequest"
+      },
+      "name": "ListChannels",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListChannelsResponse"
+      }
+    },
+    "ListPlaybackConfigurations": {
+      "documentation": "<p>Returns a list of the playback configurations defined in AWS Elemental MediaTailor. You can specify a maximum number of configurations to return at a time. The default maximum is 50. Results are returned in pagefuls. If MediaTailor has more configurations than the specified maximum, it provides parameters in the response that you can use to retrieve the next pageful.</p>  ",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/playbackConfigurations",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListPlaybackConfigurationsRequest"
+      },
+      "name": "ListPlaybackConfigurations",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListPlaybackConfigurationsResponse"
+      }
+    },
+    "ListPrefetchSchedules": {
+      "documentation": "<p>Creates a new prefetch schedule.</p>",
+      "errors": [],
+      "http": {
+        "method": "POST",
+        "requestUri": "/prefetchSchedule/{PlaybackConfigurationName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListPrefetchSchedulesRequest"
+      },
+      "name": "ListPrefetchSchedules",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListPrefetchSchedulesResponse"
+      }
+    },
+    "ListSourceLocations": {
+      "documentation": "<p>Retrieves a list of source locations.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/sourceLocations",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListSourceLocationsRequest"
+      },
+      "name": "ListSourceLocations",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListSourceLocationsResponse"
+      }
+    },
+    "ListTagsForResource": {
+      "documentation": "<p>Returns a list of the tags assigned to the specified playback configuration resource.</p>  ",
+      "errors": [
+        {
+          "documentation": "<p>One or more parameters in this request aren't valid.</p>",
+          "shape": "BadRequestException"
+        }
+      ],
+      "http": {
+        "method": "GET",
+        "requestUri": "/tags/{ResourceArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListTagsForResourceRequest"
+      },
+      "name": "ListTagsForResource",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListTagsForResourceResponse"
+      }
+    },
+    "ListVodSources": {
+      "documentation": "<p>Lists all the VOD sources in a source location.</p>",
+      "errors": [],
+      "http": {
+        "method": "GET",
+        "requestUri": "/sourceLocation/{sourceLocationName}/vodSources",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListVodSourcesRequest"
+      },
+      "name": "ListVodSources",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "ListVodSourcesResponse"
+      }
+    },
+    "PutChannelPolicy": {
+      "documentation": "<p>Creates an IAM policy for the channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/channel/{channelName}/policy",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "PutChannelPolicyRequest"
+      },
+      "name": "PutChannelPolicy",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "PutChannelPolicyResponse"
+      }
+    },
+    "PutPlaybackConfiguration": {
+      "documentation": "<p>Adds a new playback configuration to AWS Elemental MediaTailor.</p>  ",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/playbackConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "PutPlaybackConfigurationRequest"
+      },
+      "name": "PutPlaybackConfiguration",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "PutPlaybackConfigurationResponse"
+      }
+    },
+    "StartChannel": {
+      "documentation": "<p>Starts a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/channel/{channelName}/start",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StartChannelRequest"
+      },
+      "name": "StartChannel",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "StartChannelResponse"
+      }
+    },
+    "StopChannel": {
+      "documentation": "<p>Stops a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/channel/{channelName}/stop",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StopChannelRequest"
+      },
+      "name": "StopChannel",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "StopChannelResponse"
+      }
+    },
+    "TagResource": {
+      "documentation": "<p>Adds tags to the specified playback configuration resource. You can specify one or more tags to add.</p>  ",
+      "errors": [
+        {
+          "documentation": "<p>One or more parameters in this request aren't valid.</p>",
+          "shape": "BadRequestException"
+        }
+      ],
+      "http": {
+        "method": "POST",
+        "requestUri": "/tags/{ResourceArn}",
+        "responseCode": 204
+      },
+      "input": {
+        "shape": "TagResourceRequest"
+      },
+      "name": "TagResource"
+    },
+    "UntagResource": {
+      "documentation": "<p>Removes tags from the specified playback configuration resource. You can specify one or more tags to remove.</p>  ",
+      "errors": [
+        {
+          "documentation": "<p>One or more parameters in this request aren't valid.</p>",
+          "shape": "BadRequestException"
+        }
+      ],
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/tags/{ResourceArn}",
+        "responseCode": 204
+      },
+      "input": {
+        "shape": "UntagResourceRequest"
+      },
+      "name": "UntagResource"
+    },
+    "UpdateChannel": {
+      "documentation": "<p>Updates an existing channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/channel/{channelName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateChannelRequest"
+      },
+      "name": "UpdateChannel",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "UpdateChannelResponse"
+      }
+    },
+    "UpdateSourceLocation": {
+      "documentation": "<p>Updates a source location on a specific channel.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/sourceLocation/{sourceLocationName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateSourceLocationRequest"
+      },
+      "name": "UpdateSourceLocation",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "UpdateSourceLocationResponse"
+      }
+    },
+    "UpdateVodSource": {
+      "documentation": "<p>Updates a specific VOD source in a specific source location.</p>",
+      "errors": [],
+      "http": {
+        "method": "PUT",
+        "requestUri": "/sourceLocation/{sourceLocationName}/vodSource/{vodSourceName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateVodSourceRequest"
+      },
+      "name": "UpdateVodSource",
+      "output": {
+        "documentation": "<p>Success.</p>",
+        "shape": "UpdateVodSourceResponse"
+      }
+    }
+  },
+  "shapes": {
+    "AccessConfiguration": {
+      "documentation": "<p>Access configuration parameters.</p>",
+      "members": {
+        "AccessType": {
+          "documentation": "<p>The type of authentication used to access content from HttpConfiguration::BaseUrl on your source location. Accepted value: S3_SIGV4.</p> <p>S3_SIGV4 - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use S3_SIGV4, you must meet these requirements:</p> <p>\u2022 You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>\u2022 The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>\u2022 The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>",
+          "shape": "AccessType"
+        },
+        "SecretsManagerAccessTokenConfiguration": {
+          "documentation": "<p>AWS Secrets Manager access token configuration parameters.</p>",
+          "shape": "SecretsManagerAccessTokenConfiguration"
+        }
+      },
+      "type": "structure"
+    },
+    "AccessType": {
+      "enum": [
+        "S3_SIGV4",
+        "SECRETS_MANAGER_ACCESS_TOKEN"
+      ],
+      "type": "string"
+    },
+    "AdBreak": {
+      "documentation": "<p>Ad break configuration parameters.</p>",
+      "members": {
+        "MessageType": {
+          "documentation": "<p>The SCTE-35 ad insertion type. Accepted value: SPLICE_INSERT.</p>",
+          "shape": "MessageType"
+        },
+        "OffsetMillis": {
+          "documentation": "<p>How long (in milliseconds) after the beginning of the program that an ad starts. This value must fall within 100ms of a segment boundary, otherwise the ad break will be skipped.</p>",
+          "shape": "__long"
+        },
+        "Slate": {
+          "documentation": "<p>Ad break slate configuration.</p>",
+          "shape": "SlateSource"
+        },
+        "SpliceInsertMessage": {
+          "documentation": "<p>This defines the SCTE-35 splice_insert() message inserted around the ad. For information about using splice_insert(), see the SCTE-35 specficiaiton, section 9.7.3.1.</p>",
+          "shape": "SpliceInsertMessage"
+        }
+      },
+      "type": "structure"
+    },
+    "AdMarkerPassthrough": {
+      "documentation": "<p>For HLS, when set to true, MediaTailor passes through EXT-X-CUE-IN, EXT-X-CUE-OUT, and EXT-X-SPLICEPOINT-SCTE35 ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if EXT-X-CUE-OUT has a value of 60, but no ads are filled for that ad break, MediaTailor will not set the value to 0.</p>",
+      "members": {
+        "Enabled": {
+          "documentation": "<p>Enables ad marker passthrough for your configuration.</p>",
+          "shape": "__boolean"
+        }
+      },
+      "type": "structure"
+    },
+    "Alert": {
+      "documentation": "<p>Alert configuration parameters.</p>",
+      "members": {
+        "AlertCode": {
+          "documentation": "<p>The code for the alert. For example, NOT_PROCESSED.</p>",
+          "shape": "__string"
+        },
+        "AlertMessage": {
+          "documentation": "<p>If an alert is generated for a resource, an explanation of the reason for the alert.</p>",
+          "shape": "__string"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp when the alert was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "RelatedResourceArns": {
+          "documentation": "<p>The Amazon Resource Names (ARNs) related to this alert.</p>",
+          "shape": "__listOf__string"
+        },
+        "ResourceArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ResourceArn",
+        "AlertCode",
+        "LastModifiedTime",
+        "RelatedResourceArns",
+        "AlertMessage"
+      ],
+      "type": "structure"
+    },
+    "AvailMatchingCriteria": {
+      "documentation": "<p>MediaTailor only places (consumes) prefetched ads if the ad break meets the criteria defined by the dynamic variables. This gives you granular control over which ad break to place the prefetched ads into.</p> <p>As an example, let's say that you set DynamicVariable to scte.event_id and Operator to EQUALS, and your playback configuration has an ADS URL of https://my.ads.server.com/path?&amp;podId=[scte.avail_num]&amp;event=[scte.event_id]&amp;duration=[session.avail_duration_secs]. And the prefetch request to the ADS contains these values https://my.ads.server.com/path?&amp;podId=3&amp;event=my-awesome-event&amp;duration=30. MediaTailor will only insert the prefetched ads into the ad break if has a SCTE marker with an event id of my-awesome-event, since it must match the event id that MediaTailor uses to query the ADS.</p> <p>You can specify up to five AvailMatchingCriteria. If you specify multiple AvailMatchingCriteria, MediaTailor combines them to match using a logical AND. You can model logical OR combinations by creating multiple prefetch schedules.</p>",
+      "members": {
+        "DynamicVariable": {
+          "documentation": "<p>The dynamic variable(s) that MediaTailor should use as avail matching criteria. MediaTailor only places the prefetched ads into the avail if the avail matches the criteria defined by the dynamic variable. For information about dynamic variables, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html\">Using dynamic ad variables</a> in the <i>MediaTailor User Guide</i>.</p> <p>You can include up to 100 dynamic variables.</p>",
+          "shape": "__string"
+        },
+        "Operator": {
+          "documentation": "<p>For the DynamicVariable specified in AvailMatchingCriteria, the Operator that is used for the comparison.</p>",
+          "shape": "Operator"
+        }
+      },
+      "required": [
+        "Operator",
+        "DynamicVariable"
+      ],
+      "type": "structure"
+    },
+    "AvailSuppression": {
+      "documentation": "<p>The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Suppression</a>.</p>",
+      "members": {
+        "Mode": {
+          "documentation": "<p>Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to BEHIND_LIVE_EDGE, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window.</p>",
+          "shape": "Mode"
+        },
+        "Value": {
+          "documentation": "<p>A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "BadRequestException": {
+      "documentation": "Invalid request parameters.",
+      "error": {
+        "httpStatusCode": 400
+      },
+      "exception": true,
+      "members": {
+        "Message": {
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "Bumper": {
+      "documentation": "<p>The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html\">Bumpers</a>.</p>",
+      "members": {
+        "EndUrl": {
+          "documentation": "<p>The URL for the end bumper asset.</p>",
+          "shape": "__string"
+        },
+        "StartUrl": {
+          "documentation": "<p>The URL for the start bumper asset.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "CdnConfiguration": {
+      "documentation": "<p>The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.</p>",
+      "members": {
+        "AdSegmentUrlPrefix": {
+          "documentation": "<p>A non-default content delivery network (CDN) to serve ad segments. By default, AWS Elemental MediaTailor uses Amazon CloudFront with default cache settings as its CDN for ad segments. To set up an alternate CDN, create a rule in your CDN for the origin ads.mediatailor.&amp;lt;region&gt;.amazonaws.com. Then specify the rule's name in this AdSegmentUrlPrefix. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for ad segments.</p>",
+          "shape": "__string"
+        },
+        "ContentSegmentUrlPrefix": {
+          "documentation": "<p>A content delivery network (CDN) to cache content segments, so that content requests don\u2019t always have to go to the origin server. First, create a rule in your CDN for the content segment origin server. Then specify the rule's name in this ContentSegmentUrlPrefix. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for content segments.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "Channel": {
+      "documentation": "<p>The configuration parameters for a channel.</p>",
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelState": {
+          "documentation": "<p>Returns the state whether the channel is running or not.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp of when the channel was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "FillerSlate": {
+          "documentation": "<p>Contains information about the slate used to fill gaps between programs in the schedule. You must configure FillerSlate if your channel uses an LINEAR PlaybackMode.</p>",
+          "shape": "SlateSource"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp of when the channel was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "Outputs": {
+          "documentation": "<p>The channel's output properties.</p>",
+          "shape": "ResponseOutputs"
+        },
+        "PlaybackMode": {
+          "documentation": "<p>The type of playback mode for this channel.</p> <p>LINEAR - Programs play back-to-back only once.</p> <p>LOOP - Programs play back-to-back in an endless loop. When the last program in the schedule plays, playback loops back to the first program in the schedule.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags to assign to the channel.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "required": [
+        "ChannelState",
+        "ChannelName",
+        "Outputs",
+        "Arn",
+        "PlaybackMode"
+      ],
+      "type": "structure"
+    },
+    "ChannelState": {
+      "enum": [
+        "RUNNING",
+        "STOPPED"
+      ],
+      "type": "string"
+    },
+    "ConfigurationAliasesRequest": {
+      "documentation": "<p>The predefined aliases for dynamic variables.</p>",
+      "key": {
+        "documentation": "<p>The dynamic variable that has aliases.</p>",
+        "shape": "__string"
+      },
+      "type": "map",
+      "value": {
+        "documentation": "<p>Map of aliases to the value to be used at request time.</p>",
+        "shape": "__mapOf__string"
+      }
+    },
+    "ConfigurationAliasesResponse": {
+      "documentation": "<p>The predefined aliases for dynamic variables.</p>",
+      "key": {
+        "documentation": "<p>The dynamic variable that has aliases.</p>",
+        "shape": "__string"
+      },
+      "type": "map",
+      "value": {
+        "documentation": "<p>Map of aliases to the value to be used at request time.</p>",
+        "shape": "__mapOf__string"
+      }
+    },
+    "ConfigureLogsForPlaybackConfigurationRequest": {
+      "documentation": "<p>Configures Amazon CloudWatch log settings for a playback configuration.</p>",
+      "members": {
+        "PercentEnabled": {
+          "documentation": "<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to 60, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: 0 - 100</p>",
+          "shape": "__integer"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "PercentEnabled",
+        "PlaybackConfigurationName"
+      ],
+      "type": "structure"
+    },
+    "ConfigureLogsForPlaybackConfigurationResponse": {
+      "members": {
+        "PercentEnabled": {
+          "documentation": "<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account.</p>",
+          "shape": "__integer"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "CreateChannelRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "FillerSlate": {
+          "documentation": "<p>The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses a LINEAR PlaybackMode.</p>",
+          "shape": "SlateSource"
+        },
+        "Outputs": {
+          "documentation": "<p>The channel's output properties.</p>",
+          "shape": "RequestOutputs"
+        },
+        "PlaybackMode": {
+          "documentation": "<p>The type of playback mode to use for this channel.</p> <p>LINEAR - The programs in the schedule play once back-to-back in the schedule.</p> <p>LOOP - The programs in the schedule play back-to-back in an endless loop. When the last program in the schedule stops playing, playback loops back to the first program in the schedule.</p>",
+          "shape": "PlaybackMode"
+        },
+        "Tags": {
+          "documentation": "<p>The tags to assign to the channel.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "Outputs",
+        "PlaybackMode"
+      ],
+      "type": "structure"
+    },
+    "CreateChannelResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelState": {
+          "documentation": "<p>Indicates whether the channel is in a running state or not.</p>",
+          "shape": "ChannelState"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp of when the channel was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "FillerSlate": {
+          "documentation": "<p>Contains information about the slate used to fill gaps between programs in the schedule.</p>",
+          "shape": "SlateSource"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp of when the channel was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "Outputs": {
+          "documentation": "<p>The channel's output properties.</p>",
+          "shape": "ResponseOutputs"
+        },
+        "PlaybackMode": {
+          "documentation": "<p>The channel's playback mode.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the channel.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "CreatePrefetchScheduleRequest": {
+      "members": {
+        "Consumption": {
+          "documentation": "<p>The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.</p>",
+          "shape": "PrefetchConsumption"
+        },
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "Name",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "PlaybackConfigurationName",
+          "shape": "__string"
+        },
+        "Retrieval": {
+          "documentation": "<p>The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.</p>",
+          "shape": "PrefetchRetrieval"
+        },
+        "StreamId": {
+          "documentation": "<p>An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If StreamId is specified, MediaTailor returns all of the prefetch schedules with an exact match on StreamId. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of StreamId.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Name",
+        "PlaybackConfigurationName",
+        "Consumption",
+        "Retrieval"
+      ],
+      "type": "structure"
+    },
+    "CreatePrefetchScheduleResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) of the prefetch schedule.</p>",
+          "shape": "__string"
+        },
+        "Consumption": {
+          "documentation": "<p>Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.</p>",
+          "shape": "PrefetchConsumption"
+        },
+        "Name": {
+          "documentation": "<p>The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration to create the prefetch schedule for.</p>",
+          "shape": "__string"
+        },
+        "Retrieval": {
+          "documentation": "<p>A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).</p>",
+          "shape": "PrefetchRetrieval"
+        },
+        "StreamId": {
+          "documentation": "<p>An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "CreateProgramRequest": {
+      "members": {
+        "AdBreaks": {
+          "documentation": "<p>The ad break configuration settings.</p>",
+          "shape": "__listOfAdBreak"
+        },
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "ProgramName": {
+          "documentation": "<p>The identifier for the program you are working on.</p>",
+          "location": "uri",
+          "locationName": "programName",
+          "shape": "__string"
+        },
+        "ScheduleConfiguration": {
+          "documentation": "<p>The schedule configuration settings.</p>",
+          "shape": "ScheduleConfiguration"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location.</p>",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name that's used to refer to a VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "ProgramName",
+        "VodSourceName",
+        "ScheduleConfiguration",
+        "SourceLocationName"
+      ],
+      "type": "structure"
+    },
+    "CreateProgramResponse": {
+      "members": {
+        "AdBreaks": {
+          "documentation": "<p>The ad break configuration settings.</p>",
+          "shape": "__listOfAdBreak"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the program.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel that the program belongs to.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp of when the program was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "ProgramName": {
+          "documentation": "<p>The name of the program.</p>",
+          "shape": "__string"
+        },
+        "ScheduledStartTime": {
+          "documentation": "<p>The date and time that the program is scheduled to start in ISO 8601 format and Coordinated Universal Time (UTC). For example, the value 2021-03-27T17:48:16.751Z represents March 27, 2021 at 17:48:16.751 UTC.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The source location name.</p>",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name that's used to refer to a VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "CreateSourceLocationRequest": {
+      "members": {
+        "AccessConfiguration": {
+          "documentation": "<p>Access configuration parameters. Configures the type of authentication used to access content from your source location.</p>",
+          "shape": "AccessConfiguration"
+        },
+        "DefaultSegmentDeliveryConfiguration": {
+          "documentation": "<p>The optional configuration for the server that serves segments.</p>",
+          "shape": "DefaultSegmentDeliveryConfiguration"
+        },
+        "HttpConfiguration": {
+          "documentation": "<p>The source's HTTP package configurations.</p>",
+          "shape": "HttpConfiguration"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags to assign to the source location.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "HttpConfiguration"
+      ],
+      "type": "structure"
+    },
+    "CreateSourceLocationResponse": {
+      "members": {
+        "AccessConfiguration": {
+          "documentation": "<p>The access configuration for the source location.</p>",
+          "shape": "AccessConfiguration"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the source location.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "DefaultSegmentDeliveryConfiguration": {
+          "documentation": "<p>The default segment delivery configuration settings.</p>",
+          "shape": "DefaultSegmentDeliveryConfiguration"
+        },
+        "HttpConfiguration": {
+          "documentation": "<p>The HTTP package configuration settings for the source location.</p>",
+          "shape": "HttpConfiguration"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the source location.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "CreateVodSourceRequest": {
+      "members": {
+        "HttpPackageConfigurations": {
+          "documentation": "<p>An array of HTTP package configuration parameters for this VOD source.</p>",
+          "shape": "HttpPackageConfigurations"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags to assign to the VOD source.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The identifier for the VOD source you are working on.</p>",
+          "location": "uri",
+          "locationName": "vodSourceName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "VodSourceName",
+        "HttpPackageConfigurations"
+      ],
+      "type": "structure"
+    },
+    "CreateVodSourceResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the VOD source.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the VOD source was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "HttpPackageConfigurations": {
+          "documentation": "<p>The HTTP package configurations.</p>",
+          "shape": "HttpPackageConfigurations"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The ARN for the VOD source.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location associated with the VOD source.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the VOD source.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name of the VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "DashConfiguration": {
+      "documentation": "<p>The configuration for DASH content.</p>",
+      "members": {
+        "ManifestEndpointPrefix": {
+          "documentation": "<p>The URL generated by MediaTailor to initiate a playback session. The session uses server-side reporting. This setting is ignored in PUT operations.</p>",
+          "shape": "__string"
+        },
+        "MpdLocation": {
+          "documentation": "<p>The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are DISABLED and EMT_DEFAULT. The EMT_DEFAULT setting enables the inclusion of the tag and is the default value.</p>",
+          "shape": "__string"
+        },
+        "OriginManifestType": {
+          "documentation": "<p>The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to SINGLE_PERIOD. The default setting is MULTI_PERIOD. For multi-period manifests, omit this setting or set it to MULTI_PERIOD.</p>",
+          "shape": "OriginManifestType"
+        }
+      },
+      "type": "structure"
+    },
+    "DashConfigurationForPut": {
+      "documentation": "<p>The configuration for DASH PUT operations.</p>",
+      "members": {
+        "MpdLocation": {
+          "documentation": "<p>The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are DISABLED and EMT_DEFAULT. The EMT_DEFAULT setting enables the inclusion of the tag and is the default value.</p>",
+          "shape": "__string"
+        },
+        "OriginManifestType": {
+          "documentation": "<p>The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to SINGLE_PERIOD. The default setting is MULTI_PERIOD. For multi-period manifests, omit this setting or set it to MULTI_PERIOD.</p>",
+          "shape": "OriginManifestType"
+        }
+      },
+      "type": "structure"
+    },
+    "DashPlaylistSettings": {
+      "documentation": "<p>Dash manifest configuration parameters.</p>",
+      "members": {
+        "ManifestWindowSeconds": {
+          "documentation": "<p>The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.</p>",
+          "shape": "__integer"
+        },
+        "MinBufferTimeSeconds": {
+          "documentation": "<p>Minimum amount of content (measured in seconds) that a player must keep available in the buffer. Minimum value: 2 seconds. Maximum value: 60 seconds.</p>",
+          "shape": "__integer"
+        },
+        "MinUpdatePeriodSeconds": {
+          "documentation": "<p>Minimum amount of time (in seconds) that the player should wait before requesting updates to the manifest. Minimum value: 2 seconds. Maximum value: 60 seconds.</p>",
+          "shape": "__integer"
+        },
+        "SuggestedPresentationDelaySeconds": {
+          "documentation": "<p>Amount of time (in seconds) that the player should be from the live point at the end of the manifest. Minimum value: 2 seconds. Maximum value: 60 seconds.</p>",
+          "shape": "__integer"
+        }
+      },
+      "type": "structure"
+    },
+    "DefaultSegmentDeliveryConfiguration": {
+      "documentation": "<p>The optional configuration for a server that serves segments. Use this if you want the segment delivery server to be different from the source location server. For example, you can configure your source location server to be an origination server, such as MediaPackage, and the segment delivery server to be a content delivery network (CDN), such as CloudFront. If you don't specify a segment delivery server, then the source location server is used.</p>",
+      "members": {
+        "BaseUrl": {
+          "documentation": "<p>The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "DeleteChannelPolicyRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "DeleteChannelPolicyResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DeleteChannelRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "DeleteChannelResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DeletePlaybackConfigurationRequest": {
+      "members": {
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "Name",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "type": "structure"
+    },
+    "DeletePlaybackConfigurationResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DeletePrefetchScheduleRequest": {
+      "members": {
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "Name",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "PlaybackConfigurationName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Name",
+        "PlaybackConfigurationName"
+      ],
+      "type": "structure"
+    },
+    "DeletePrefetchScheduleResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DeleteProgramRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "ProgramName": {
+          "documentation": "<p>The identifier for the program you are working on.</p>",
+          "location": "uri",
+          "locationName": "programName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "ProgramName"
+      ],
+      "type": "structure"
+    },
+    "DeleteProgramResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DeleteSourceLocationRequest": {
+      "members": {
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName"
+      ],
+      "type": "structure"
+    },
+    "DeleteSourceLocationResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DeleteVodSourceRequest": {
+      "members": {
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The identifier for the VOD source you are working on.</p>",
+          "location": "uri",
+          "locationName": "vodSourceName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "VodSourceName"
+      ],
+      "type": "structure"
+    },
+    "DeleteVodSourceResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "DescribeChannelRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "DescribeChannelResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelState": {
+          "documentation": "<p>Indicates whether the channel is in a running state or not.</p>",
+          "shape": "ChannelState"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp of when the channel was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "FillerSlate": {
+          "documentation": "<p>Contains information about the slate used to fill gaps between programs in the schedule.</p>",
+          "shape": "SlateSource"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp of when the channel was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "Outputs": {
+          "documentation": "<p>The channel's output properties.</p>",
+          "shape": "ResponseOutputs"
+        },
+        "PlaybackMode": {
+          "documentation": "<p>The channel's playback mode.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the channel.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "DescribeProgramRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "ProgramName": {
+          "documentation": "<p>The identifier for the program you are working on.</p>",
+          "location": "uri",
+          "locationName": "programName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "ProgramName"
+      ],
+      "type": "structure"
+    },
+    "DescribeProgramResponse": {
+      "members": {
+        "AdBreaks": {
+          "documentation": "<p>The ad break configuration settings.</p>",
+          "shape": "__listOfAdBreak"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the program.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel that the program belongs to.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp of when the program was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "ProgramName": {
+          "documentation": "<p>The name of the program.</p>",
+          "shape": "__string"
+        },
+        "ScheduledStartTime": {
+          "documentation": "<p>The date and time that the program is scheduled to start in ISO 8601 format and Coordinated Universal Time (UTC). For example, the value 2021-03-27T17:48:16.751Z represents March 27, 2021 at 17:48:16.751 UTC.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The source location name.</p>",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name that's used to refer to a VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "DescribeSourceLocationRequest": {
+      "members": {
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName"
+      ],
+      "type": "structure"
+    },
+    "DescribeSourceLocationResponse": {
+      "members": {
+        "AccessConfiguration": {
+          "documentation": "<p>The access configuration for the source location.</p>",
+          "shape": "AccessConfiguration"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the source location.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "DefaultSegmentDeliveryConfiguration": {
+          "documentation": "<p>The default segment delivery configuration settings.</p>",
+          "shape": "DefaultSegmentDeliveryConfiguration"
+        },
+        "HttpConfiguration": {
+          "documentation": "<p>The HTTP package configuration settings for the source location.</p>",
+          "shape": "HttpConfiguration"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the source location.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "DescribeVodSourceRequest": {
+      "members": {
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The identifier for the VOD source you are working on.</p>",
+          "location": "uri",
+          "locationName": "vodSourceName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "VodSourceName"
+      ],
+      "type": "structure"
+    },
+    "DescribeVodSourceResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the VOD source.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the VOD source was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "HttpPackageConfigurations": {
+          "documentation": "<p>The HTTP package configurations.</p>",
+          "shape": "HttpPackageConfigurations"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The ARN for the VOD source.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location associated with the VOD source.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the VOD source.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name of the VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "GetChannelPolicyRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "GetChannelPolicyResponse": {
+      "members": {
+        "Policy": {
+          "documentation": "<p>The IAM policy for the channel.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "GetChannelScheduleRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "DurationMinutes": {
+          "documentation": "<p>The schedule duration in minutes. The maximum duration is 4320 minutes (three days).</p>",
+          "location": "querystring",
+          "locationName": "durationMinutes",
+          "shape": "__string"
+        },
+        "MaxResults": {
+          "documentation": "<p>Upper bound on number of records to return. The maximum number of results is 100.</p>",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "shape": "MaxResults"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the GET list request. Use the token to fetch the next page of results.</p>",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "GetChannelScheduleResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>An array of schedule entries for the channel.</p>",
+          "shape": "__listOfScheduleEntry"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the GET list request. Use the token to fetch the next page of results.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "GetPlaybackConfigurationRequest": {
+      "members": {
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "Name",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "type": "structure"
+    },
+    "GetPlaybackConfigurationResponse": {
+      "members": {
+        "AdDecisionServerUrl": {
+          "documentation": "<p>The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.</p>",
+          "shape": "__string"
+        },
+        "AvailSuppression": {
+          "documentation": "<p>The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Suppression</a>.</p>",
+          "shape": "AvailSuppression"
+        },
+        "Bumper": {
+          "documentation": "<p>The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html\">Bumpers</a>.</p>",
+          "shape": "Bumper"
+        },
+        "CdnConfiguration": {
+          "documentation": "<p>The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.</p>",
+          "shape": "CdnConfiguration"
+        },
+        "ConfigurationAliases": {
+          "documentation": "<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>",
+          "shape": "ConfigurationAliasesResponse"
+        },
+        "DashConfiguration": {
+          "documentation": "<p>The configuration for DASH content.</p>",
+          "shape": "DashConfiguration"
+        },
+        "HlsConfiguration": {
+          "documentation": "<p>The configuration for HLS content.</p>",
+          "shape": "HlsConfiguration"
+        },
+        "LivePreRollConfiguration": {
+          "documentation": "<p>The configuration for pre-roll ad insertion.</p>",
+          "shape": "LivePreRollConfiguration"
+        },
+        "LogConfiguration": {
+          "documentation": "<p>The Amazon CloudWatch log settings for a playback configuration.</p>",
+          "shape": "LogConfiguration"
+        },
+        "ManifestProcessingRules": {
+          "documentation": "<p>The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.</p>",
+          "shape": "ManifestProcessingRules"
+        },
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PersonalizationThresholdSeconds": {
+          "documentation": "<p>Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Behavior in AWS Elemental MediaTailor</a>.</p>",
+          "shape": "__integerMin1"
+        },
+        "PlaybackConfigurationArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PlaybackEndpointPrefix": {
+          "documentation": "<p>The URL that the player accesses to get a manifest from AWS Elemental MediaTailor. This session will use server-side reporting.</p>",
+          "shape": "__string"
+        },
+        "SessionInitializationEndpointPrefix": {
+          "documentation": "<p>The URL that the player uses to initialize a session that uses client-side reporting.</p>",
+          "shape": "__string"
+        },
+        "SlateAdUrl": {
+          "documentation": "<p>The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the playback configuration.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "TranscodeProfileName": {
+          "documentation": "<p>The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.</p>",
+          "shape": "__string"
+        },
+        "VideoContentSourceUrl": {
+          "documentation": "<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "GetPrefetchScheduleRequest": {
+      "members": {
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "Name",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "PlaybackConfigurationName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Name",
+        "PlaybackConfigurationName"
+      ],
+      "type": "structure"
+    },
+    "GetPrefetchScheduleResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) of the prefetch schedule.</p>",
+          "shape": "__string"
+        },
+        "Consumption": {
+          "documentation": "<p>Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.</p>",
+          "shape": "PrefetchConsumption"
+        },
+        "Name": {
+          "documentation": "<p>The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration to create the prefetch schedule for.</p>",
+          "shape": "__string"
+        },
+        "Retrieval": {
+          "documentation": "<p>A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).</p>",
+          "shape": "PrefetchRetrieval"
+        },
+        "StreamId": {
+          "documentation": "<p>An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "HlsConfiguration": {
+      "documentation": "<p>The configuration for HLS content.</p>",
+      "members": {
+        "ManifestEndpointPrefix": {
+          "documentation": "<p>The URL that is used to initiate a playback session for devices that support Apple HLS. The session uses server-side reporting.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "HlsPlaylistSettings": {
+      "documentation": "<p>HLS playlist configuration parameters.</p>",
+      "members": {
+        "ManifestWindowSeconds": {
+          "documentation": "<p>The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.</p>",
+          "shape": "__integer"
+        }
+      },
+      "type": "structure"
+    },
+    "HttpConfiguration": {
+      "documentation": "<p>The HTTP configuration for the source location.</p>",
+      "members": {
+        "BaseUrl": {
+          "documentation": "<p>The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "BaseUrl"
+      ],
+      "type": "structure"
+    },
+    "HttpPackageConfiguration": {
+      "documentation": "<p>The HTTP package configuration properties for the requested VOD source.</p>",
+      "members": {
+        "Path": {
+          "documentation": "<p>The relative path to the URL for this VOD source. This is combined with SourceLocation::HttpConfiguration::BaseUrl to form a valid URL.</p>",
+          "shape": "__string"
+        },
+        "SourceGroup": {
+          "documentation": "<p>The name of the source group. This has to match one of the Channel::Outputs::SourceGroup.</p>",
+          "shape": "__string"
+        },
+        "Type": {
+          "documentation": "<p>The streaming protocol for this package configuration. Supported values are HLS and DASH.</p>",
+          "shape": "Type"
+        }
+      },
+      "required": [
+        "Path",
+        "Type",
+        "SourceGroup"
+      ],
+      "type": "structure"
+    },
+    "HttpPackageConfigurations": {
+      "documentation": "<p>The VOD source's HTTP package configuration settings.</p>",
+      "member": {
+        "shape": "HttpPackageConfiguration"
+      },
+      "type": "list"
+    },
+    "ListAlertsRequest": {
+      "members": {
+        "MaxResults": {
+          "documentation": "<p>Upper bound on number of records to return. The maximum number of results is 100.</p>",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "shape": "MaxResults"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the GET list request. Use the token to fetch the next page of results.</p>",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "shape": "__string"
+        },
+        "ResourceArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location": "querystring",
+          "locationName": "resourceArn",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ResourceArn"
+      ],
+      "type": "structure"
+    },
+    "ListAlertsResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>An array of alerts that are associated with this resource.</p>",
+          "shape": "__listOfAlert"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the list request. Use the token to fetch the next page of results.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListChannelsRequest": {
+      "members": {
+        "MaxResults": {
+          "documentation": "<p>Upper bound on number of records to return. The maximum number of results is 100.</p>",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "shape": "MaxResults"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the GET list request. Use the token to fetch the next page of results.</p>",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListChannelsResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>An array of channels that are associated with this account.</p>",
+          "shape": "__listOfChannel"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListPlaybackConfigurationsRequest": {
+      "members": {
+        "MaxResults": {
+          "documentation": "<p>Maximum number of records to return.</p>",
+          "location": "querystring",
+          "locationName": "MaxResults",
+          "shape": "MaxResults"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token returned by the GET list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p>",
+          "location": "querystring",
+          "locationName": "NextToken",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListPlaybackConfigurationsResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>Array of playback configurations. This might be all the available configurations or a subset, depending on the settings that you provide and the total number of configurations stored.</p>",
+          "shape": "__listOfPlaybackConfiguration"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token returned by the GET list request when results exceed the maximum allowed. Use the token to fetch the next page of results.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListPrefetchSchedulesRequest": {
+      "members": {
+        "MaxResults": {
+          "documentation": "<p>The maximum number of prefetch schedules that you want MediaTailor to return in response to the current request. If the playback configuration has more than MaxResults prefetch schedules, use the value of NextToken in the response to get the next page of results.</p>",
+          "shape": "__integerMin1Max100"
+        },
+        "NextToken": {
+          "documentation": "<p>(Optional) If the playback configuration has more than MaxResults prefetch schedules, use NextToken to get the second and subsequent pages of results.</p> <p>For the first ListPrefetchSchedulesRequest request, omit this value.</p> <p>For the second and subsequent requests, get the value of NextToken from the previous response and specify that value for NextToken in the request.</p> <p>If the previous response didn't include a NextToken element, there are no more prefetch schedules to get.</p>",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration.</p>",
+          "location": "uri",
+          "locationName": "PlaybackConfigurationName",
+          "shape": "__string"
+        },
+        "StreamId": {
+          "documentation": "<p>An optional filtering parameter whereby MediaTailor filters the prefetch schedules to include only specific streams.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "PlaybackConfigurationName"
+      ],
+      "type": "structure"
+    },
+    "ListPrefetchSchedulesResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>Lists the prefetch schedules. An empty Items list doesn't mean there aren't more items to fetch, just that that page was empty.</p>",
+          "shape": "__listOfPrefetchSchedule"
+        },
+        "NextToken": {
+          "documentation": "<p>The value that you will use forNextToken in the next ListPrefetchSchedulesRequest request.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListSourceLocationsRequest": {
+      "members": {
+        "MaxResults": {
+          "documentation": "<p>Upper bound on number of records to return. The maximum number of results is 100.</p>",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "shape": "MaxResults"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the GET list request. Use the token to fetch the next page of results.</p>",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListSourceLocationsResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>An array of source locations.</p>",
+          "shape": "__listOfSourceLocation"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the list request. Use the token to fetch the next page of results.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListTagsForResourceRequest": {
+      "members": {
+        "ResourceArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) for the playback configuration. You can get this from the response to any playback configuration request.</p>",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ResourceArn"
+      ],
+      "type": "structure"
+    },
+    "ListTagsForResourceResponse": {
+      "members": {
+        "Tags": {
+          "documentation": "<p>A comma-separated list of tag key:value pairs.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ListVodSourcesRequest": {
+      "members": {
+        "MaxResults": {
+          "documentation": "<p>Upper bound on number of records to return. The maximum number of results is 100.</p>",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "shape": "MaxResults"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the GET list request. Use the token to fetch the next page of results.</p>",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "shape": "__string"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName"
+      ],
+      "type": "structure"
+    },
+    "ListVodSourcesResponse": {
+      "members": {
+        "Items": {
+          "documentation": "<p>Lists the VOD sources.</p>",
+          "shape": "__listOfVodSource"
+        },
+        "NextToken": {
+          "documentation": "<p>Pagination token from the list request. Use the token to fetch the next page of results.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "LivePreRollConfiguration": {
+      "documentation": "<p>The configuration for pre-roll ad insertion.</p>",
+      "members": {
+        "AdDecisionServerUrl": {
+          "documentation": "<p>The URL for the ad decision server (ADS) for pre-roll ads. This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.</p>",
+          "shape": "__string"
+        },
+        "MaxDurationSeconds": {
+          "documentation": "The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.",
+          "shape": "__integer"
+        }
+      },
+      "type": "structure"
+    },
+    "LogConfiguration": {
+      "documentation": "<p>Returns Amazon CloudWatch log settings for a playback configuration.</p>",
+      "members": {
+        "PercentEnabled": {
+          "documentation": "<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to 60, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: 0 - 100</p>",
+          "shape": "__integer"
+        }
+      },
+      "required": [
+        "PercentEnabled"
+      ],
+      "type": "structure"
+    },
+    "ManifestProcessingRules": {
+      "documentation": "<p>The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.</p>",
+      "members": {
+        "AdMarkerPassthrough": {
+          "documentation": "<p>For HLS, when set to true, MediaTailor passes through EXT-X-CUE-IN, EXT-X-CUE-OUT, and EXT-X-SPLICEPOINT-SCTE35 ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if EXT-X-CUE-OUT has a value of 60, but no ads are filled for that ad break, MediaTailor will not set the value to 0.</p>",
+          "shape": "AdMarkerPassthrough"
+        }
+      },
+      "type": "structure"
+    },
+    "MaxResults": {
+      "max": 100,
+      "min": 1,
+      "type": "integer"
+    },
+    "MessageType": {
+      "enum": [
+        "SPLICE_INSERT"
+      ],
+      "type": "string"
+    },
+    "Mode": {
+      "enum": [
+        "OFF",
+        "BEHIND_LIVE_EDGE"
+      ],
+      "type": "string"
+    },
+    "Operator": {
+      "enum": [
+        "EQUALS"
+      ],
+      "type": "string"
+    },
+    "OriginManifestType": {
+      "enum": [
+        "SINGLE_PERIOD",
+        "MULTI_PERIOD"
+      ],
+      "type": "string"
+    },
+    "PlaybackConfiguration": {
+      "documentation": "<p>Creates a playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>",
+      "members": {
+        "AdDecisionServerUrl": {
+          "documentation": "<p>The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.</p>",
+          "shape": "__string"
+        },
+        "AvailSuppression": {
+          "documentation": "<p>The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Suppression</a>.</p>",
+          "shape": "AvailSuppression"
+        },
+        "Bumper": {
+          "documentation": "<p>The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html\">Bumpers</a>.</p>",
+          "shape": "Bumper"
+        },
+        "CdnConfiguration": {
+          "documentation": "<p>The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.</p>",
+          "shape": "CdnConfiguration"
+        },
+        "ConfigurationAliases": {
+          "documentation": "<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>",
+          "shape": "ConfigurationAliasesResponse"
+        },
+        "DashConfiguration": {
+          "documentation": "<p>The configuration for a DASH source.</p>",
+          "shape": "DashConfiguration"
+        },
+        "HlsConfiguration": {
+          "documentation": "<p>The configuration for HLS content.</p>",
+          "shape": "HlsConfiguration"
+        },
+        "LivePreRollConfiguration": {
+          "documentation": "<p>The configuration for pre-roll ad insertion.</p>",
+          "shape": "LivePreRollConfiguration"
+        },
+        "LogConfiguration": {
+          "documentation": "<p>The Amazon CloudWatch log settings for a playback configuration.</p>",
+          "shape": "LogConfiguration"
+        },
+        "ManifestProcessingRules": {
+          "documentation": "<p>The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.</p>",
+          "shape": "ManifestProcessingRules"
+        },
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PersonalizationThresholdSeconds": {
+          "documentation": "<p>Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Behavior in AWS Elemental MediaTailor</a>.</p>",
+          "shape": "__integerMin1"
+        },
+        "PlaybackConfigurationArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PlaybackEndpointPrefix": {
+          "documentation": "<p>The URL that the player accesses to get a manifest from AWS Elemental MediaTailor.</p>",
+          "shape": "__string"
+        },
+        "SessionInitializationEndpointPrefix": {
+          "documentation": "<p>The URL that the player uses to initialize a session that uses client-side reporting.</p>",
+          "shape": "__string"
+        },
+        "SlateAdUrl": {
+          "documentation": "<p>The URL for a video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags to assign to the playback configuration.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "TranscodeProfileName": {
+          "documentation": "<p>The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.</p>",
+          "shape": "__string"
+        },
+        "VideoContentSourceUrl": {
+          "documentation": "<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "PlaybackMode": {
+      "enum": [
+        "LOOP",
+        "LINEAR"
+      ],
+      "type": "string"
+    },
+    "PrefetchConsumption": {
+      "documentation": "<p>A complex type that contains settings that determine how and when that MediaTailor places prefetched ads into upcoming ad breaks.</p>",
+      "members": {
+        "AvailMatchingCriteria": {
+          "documentation": "<p>If you only want MediaTailor to insert prefetched ads into avails (ad breaks) that match specific dynamic variables, such as scte.event_id, set the avail matching criteria.</p>",
+          "shape": "__listOfAvailMatchingCriteria"
+        },
+        "EndTime": {
+          "documentation": "<p>The time when MediaTailor no longer considers the prefetched ads for use in an ad break. MediaTailor automatically deletes prefetch schedules no less than seven days after the end time. If you'd like to manually delete the prefetch schedule, you can call DeletePrefetchSchedule.</p>",
+          "shape": "__timestampUnix"
+        },
+        "StartTime": {
+          "documentation": "<p>The time when prefetched ads are considered for use in an ad break. If you don't specify StartTime, the prefetched ads are available after MediaTailor retrives them from the ad decision server.</p>",
+          "shape": "__timestampUnix"
+        }
+      },
+      "required": [
+        "EndTime"
+      ],
+      "type": "structure"
+    },
+    "PrefetchRetrieval": {
+      "documentation": "<p>A complex type that contains settings governing when MediaTailor prefetches ads, and which dynamic variables that MediaTailor includes in the request to the ad decision server.</p>",
+      "members": {
+        "DynamicVariables": {
+          "documentation": "<p>The dynamic variables to use for substitution during prefetch requests to the ad decision server (ADS).</p> <p>You intially configure <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html\">dynamic variables</a> for the ADS URL when you set up your playback configuration. When you specify DynamicVariables for prefetch retrieval, MediaTailor includes the dynamic variables in the request to the ADS.</p>",
+          "shape": "__mapOf__string"
+        },
+        "EndTime": {
+          "documentation": "<p>The time when prefetch retrieval ends for the ad break. Prefetching will be attempted for manifest requests that occur at or before this time.</p>",
+          "shape": "__timestampUnix"
+        },
+        "StartTime": {
+          "documentation": "<p>The time when prefetch retrievals can start for this break. Ad prefetching will be attempted for manifest requests that occur at or after this time. Defaults to the current time. If not specified, the prefetch retrieval starts as soon as possible.</p>",
+          "shape": "__timestampUnix"
+        }
+      },
+      "required": [
+        "EndTime"
+      ],
+      "type": "structure"
+    },
+    "PrefetchSchedule": {
+      "documentation": "<p>A complex type that contains prefetch schedule information.</p>",
+      "members": {
+        "Arn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) of the prefetch schedule.</p>",
+          "shape": "__string"
+        },
+        "Consumption": {
+          "documentation": "<p>Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.</p>",
+          "shape": "PrefetchConsumption"
+        },
+        "Name": {
+          "documentation": "<p>The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PlaybackConfigurationName": {
+          "documentation": "<p>The name of the playback configuration to create the prefetch schedule for.</p>",
+          "shape": "__string"
+        },
+        "Retrieval": {
+          "documentation": "<p>A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).</p>",
+          "shape": "PrefetchRetrieval"
+        },
+        "StreamId": {
+          "documentation": "<p>An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Retrieval",
+        "Consumption",
+        "Arn",
+        "PlaybackConfigurationName",
+        "Name"
+      ],
+      "type": "structure"
+    },
+    "PutChannelPolicyRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "Policy": {
+          "documentation": "<p>Adds an IAM role that determines the permissions of your channel.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "Policy"
+      ],
+      "type": "structure"
+    },
+    "PutChannelPolicyResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "PutPlaybackConfigurationRequest": {
+      "members": {
+        "AdDecisionServerUrl": {
+          "documentation": "<p>The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.</p>",
+          "shape": "__string"
+        },
+        "AvailSuppression": {
+          "documentation": "<p>The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Suppression</a>.</p>",
+          "shape": "AvailSuppression"
+        },
+        "Bumper": {
+          "documentation": "<p>The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html\">Bumpers</a>.</p>",
+          "shape": "Bumper"
+        },
+        "CdnConfiguration": {
+          "documentation": "<p>The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.</p>",
+          "shape": "CdnConfiguration"
+        },
+        "ConfigurationAliases": {
+          "documentation": "<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p> ",
+          "shape": "ConfigurationAliasesRequest"
+        },
+        "DashConfiguration": {
+          "documentation": "<p>The configuration for DASH content.</p>",
+          "shape": "DashConfigurationForPut"
+        },
+        "LivePreRollConfiguration": {
+          "documentation": "<p>The configuration for pre-roll ad insertion.</p>",
+          "shape": "LivePreRollConfiguration"
+        },
+        "ManifestProcessingRules": {
+          "documentation": "<p>The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.</p>",
+          "shape": "ManifestProcessingRules"
+        },
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PersonalizationThresholdSeconds": {
+          "documentation": "<p>Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Behavior in AWS Elemental MediaTailor</a>.</p>",
+          "shape": "__integerMin1"
+        },
+        "SlateAdUrl": {
+          "documentation": "<p>The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID configurations. For VPAID, the slate is required because MediaTailor provides it in the slots that are designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags to assign to the playback configuration.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "TranscodeProfileName": {
+          "documentation": "<p>The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.</p>",
+          "shape": "__string"
+        },
+        "VideoContentSourceUrl": {
+          "documentation": "<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "PutPlaybackConfigurationResponse": {
+      "members": {
+        "AdDecisionServerUrl": {
+          "documentation": "<p>The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.</p>",
+          "shape": "__string"
+        },
+        "AvailSuppression": {
+          "documentation": "<p>The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Suppression</a>.</p>",
+          "shape": "AvailSuppression"
+        },
+        "Bumper": {
+          "documentation": "<p>The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html\">Bumpers</a>.</p>",
+          "shape": "Bumper"
+        },
+        "CdnConfiguration": {
+          "documentation": "<p>The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.</p>",
+          "shape": "CdnConfiguration"
+        },
+        "ConfigurationAliases": {
+          "documentation": "<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>",
+          "shape": "ConfigurationAliasesResponse"
+        },
+        "DashConfiguration": {
+          "documentation": "<p>The configuration for DASH content.</p>",
+          "shape": "DashConfiguration"
+        },
+        "HlsConfiguration": {
+          "documentation": "<p>The configuration for HLS content.</p>",
+          "shape": "HlsConfiguration"
+        },
+        "LivePreRollConfiguration": {
+          "documentation": "<p>The configuration for pre-roll ad insertion.</p>",
+          "shape": "LivePreRollConfiguration"
+        },
+        "LogConfiguration": {
+          "documentation": "<p>The Amazon CloudWatch log settings for a playback configuration.</p>",
+          "shape": "LogConfiguration"
+        },
+        "ManifestProcessingRules": {
+          "documentation": "<p>The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.</p>",
+          "shape": "ManifestProcessingRules"
+        },
+        "Name": {
+          "documentation": "<p>The identifier for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PersonalizationThresholdSeconds": {
+          "documentation": "<p>Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Behavior in AWS Elemental MediaTailor</a>.</p>",
+          "shape": "__integerMin1"
+        },
+        "PlaybackConfigurationArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) for the playback configuration.</p>",
+          "shape": "__string"
+        },
+        "PlaybackEndpointPrefix": {
+          "documentation": "<p>The URL that the player accesses to get a manifest from AWS Elemental MediaTailor. This session will use server-side reporting.</p>",
+          "shape": "__string"
+        },
+        "SessionInitializationEndpointPrefix": {
+          "documentation": "<p>The URL that the player uses to initialize a session that uses client-side reporting.</p>",
+          "shape": "__string"
+        },
+        "SlateAdUrl": {
+          "documentation": "<p>The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the playback configuration.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "TranscodeProfileName": {
+          "documentation": "<p>The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.</p>",
+          "shape": "__string"
+        },
+        "VideoContentSourceUrl": {
+          "documentation": "<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "RelativePosition": {
+      "enum": [
+        "BEFORE_PROGRAM",
+        "AFTER_PROGRAM"
+      ],
+      "type": "string"
+    },
+    "RequestOutputItem": {
+      "documentation": "<p>The output configuration for this channel.</p>",
+      "members": {
+        "DashPlaylistSettings": {
+          "documentation": "<p>DASH manifest configuration parameters.</p>",
+          "shape": "DashPlaylistSettings"
+        },
+        "HlsPlaylistSettings": {
+          "documentation": "<p>HLS playlist configuration parameters.</p>",
+          "shape": "HlsPlaylistSettings"
+        },
+        "ManifestName": {
+          "documentation": "<p>The name of the manifest for the channel. The name appears in the PlaybackUrl.</p>",
+          "shape": "__string"
+        },
+        "SourceGroup": {
+          "documentation": "<p>A string used to match which HttpPackageConfiguration is used for each VodSource.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ManifestName",
+        "SourceGroup"
+      ],
+      "type": "structure"
+    },
+    "RequestOutputs": {
+      "documentation": "<p>An object that represents an object in the CreateChannel request.</p>",
+      "member": {
+        "shape": "RequestOutputItem"
+      },
+      "type": "list"
+    },
+    "ResponseOutputItem": {
+      "documentation": "<p>This response includes only the \"property\" : \"type\" property.</p>",
+      "members": {
+        "DashPlaylistSettings": {
+          "documentation": "<p>DASH manifest configuration settings.</p>",
+          "shape": "DashPlaylistSettings"
+        },
+        "HlsPlaylistSettings": {
+          "documentation": "<p>HLS manifest configuration settings.</p>",
+          "shape": "HlsPlaylistSettings"
+        },
+        "ManifestName": {
+          "documentation": "<p>The name of the manifest for the channel that will appear in the channel output's playback URL.</p>",
+          "shape": "__string"
+        },
+        "PlaybackUrl": {
+          "documentation": "<p>The URL used for playback by content players.</p>",
+          "shape": "__string"
+        },
+        "SourceGroup": {
+          "documentation": "<p>A string used to associate a package configuration source group with a channel output.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ManifestName",
+        "PlaybackUrl",
+        "SourceGroup"
+      ],
+      "type": "structure"
+    },
+    "ResponseOutputs": {
+      "member": {
+        "shape": "ResponseOutputItem"
+      },
+      "type": "list"
+    },
+    "ScheduleAdBreak": {
+      "documentation": "<p>The schedule's ad break properties.</p>",
+      "members": {
+        "ApproximateDurationSeconds": {
+          "documentation": "<p>The approximate duration of the ad break, in seconds.</p>",
+          "shape": "__long"
+        },
+        "ApproximateStartTime": {
+          "documentation": "<p>The approximate time that the ad will start playing.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location containing the VOD source used for the ad break.</p>",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name of the VOD source used for the ad break.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "ScheduleConfiguration": {
+      "documentation": "<p>Schedule configuration parameters. A channel must be stopped before changes can be made to the schedule.</p>",
+      "members": {
+        "Transition": {
+          "documentation": "<p>Program transition configurations.</p>",
+          "shape": "Transition"
+        }
+      },
+      "required": [
+        "Transition"
+      ],
+      "type": "structure"
+    },
+    "ScheduleEntry": {
+      "documentation": "<p>The properties for a schedule.</p>",
+      "members": {
+        "ApproximateDurationSeconds": {
+          "documentation": "<p>The approximate duration of this program, in seconds.</p>",
+          "shape": "__long"
+        },
+        "ApproximateStartTime": {
+          "documentation": "<p>The approximate time that the program will start playing.</p>",
+          "shape": "__timestampUnix"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the program.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel that uses this schedule.</p>",
+          "shape": "__string"
+        },
+        "ProgramName": {
+          "documentation": "<p>The name of the program.</p>",
+          "shape": "__string"
+        },
+        "ScheduleAdBreaks": {
+          "documentation": "<p>The schedule's ad break properties.</p>",
+          "shape": "__listOfScheduleAdBreak"
+        },
+        "ScheduleEntryType": {
+          "documentation": "<p>The type of schedule entry.</p> <p>Valid values: PROGRAM or FILLER_SLATE.</p>",
+          "shape": "ScheduleEntryType"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location.</p>",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name of the VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "VodSourceName",
+        "ChannelName",
+        "SourceLocationName",
+        "Arn",
+        "ProgramName"
+      ],
+      "type": "structure"
+    },
+    "ScheduleEntryType": {
+      "enum": [
+        "PROGRAM",
+        "FILLER_SLATE"
+      ],
+      "type": "string"
+    },
+    "SecretsManagerAccessTokenConfiguration": {
+      "documentation": "<p>AWS Secrets Manager access token configuration parameters. For information about Secrets Manager access token authentication, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-access-configuration-access-token.html\">Working with AWS Secrets Manager access token authentication</a>.</p>",
+      "members": {
+        "HeaderName": {
+          "documentation": "<p>The name of the HTTP header used to supply the access token in requests to the source location.</p>",
+          "shape": "__string"
+        },
+        "SecretArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret that contains the access token.</p>",
+          "shape": "__string"
+        },
+        "SecretStringKey": {
+          "documentation": "<p>The AWS Secrets Manager <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_CreateSecret.html#SecretsManager-CreateSecret-request-SecretString.html\">SecretString</a> key associated with the access token. MediaTailor uses the key to look up SecretString key and value pair containing the access token.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "SlateSource": {
+      "documentation": "<p>Slate VOD source configuration.</p>",
+      "members": {
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location where the slate VOD source is stored.</p>",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "SourceLocation": {
+      "documentation": "<p>This response includes only the \"type\" : \"object\" property.</p>",
+      "members": {
+        "AccessConfiguration": {
+          "documentation": "<p>The access configuration for the source location.</p>",
+          "shape": "AccessConfiguration"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the SourceLocation.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "DefaultSegmentDeliveryConfiguration": {
+          "documentation": "<p>The default segment delivery configuration.</p>",
+          "shape": "DefaultSegmentDeliveryConfiguration"
+        },
+        "HttpConfiguration": {
+          "documentation": "<p>The HTTP configuration for the source location.</p>",
+          "shape": "HttpConfiguration"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the source location.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "HttpConfiguration",
+        "Arn"
+      ],
+      "type": "structure"
+    },
+    "SpliceInsertMessage": {
+      "documentation": "<p>Splice insert message configuration.</p>",
+      "members": {
+        "AvailNum": {
+          "documentation": "<p>This is written to splice_insert.avail_num, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is 0. Values must be between 0 and 256, inclusive.</p>",
+          "shape": "__integer"
+        },
+        "AvailsExpected": {
+          "documentation": "<p>This is written to splice_insert.avails_expected, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is 0. Values must be between 0 and 256, inclusive.</p>",
+          "shape": "__integer"
+        },
+        "SpliceEventId": {
+          "documentation": "<p>This is written to splice_insert.splice_event_id, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is 1.</p>",
+          "shape": "__integer"
+        },
+        "UniqueProgramId": {
+          "documentation": "<p>This is written to splice_insert.unique_program_id, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is 0. Values must be between 0 and 256, inclusive.</p>",
+          "shape": "__integer"
+        }
+      },
+      "type": "structure"
+    },
+    "StartChannelRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "StartChannelResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "StopChannelRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "ChannelName"
+      ],
+      "type": "structure"
+    },
+    "StopChannelResponse": {
+      "members": {},
+      "type": "structure"
+    },
+    "TagResourceRequest": {
+      "members": {
+        "ResourceArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) for the playback configuration. You can get this from the response to any playback configuration request.</p>",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>A comma-separated list of tag key:value pairs.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "required": [
+        "ResourceArn",
+        "Tags"
+      ],
+      "type": "structure"
+    },
+    "Transition": {
+      "documentation": "<p>Program transition configuration.</p>",
+      "members": {
+        "RelativePosition": {
+          "documentation": "<p>The position where this program will be inserted relative to the RelativePosition.</p>",
+          "shape": "RelativePosition"
+        },
+        "RelativeProgram": {
+          "documentation": "<p>The name of the program that this program will be inserted next to, as defined by RelativePosition.</p>",
+          "shape": "__string"
+        },
+        "ScheduledStartTimeMillis": {
+          "documentation": "<p>The date and time that the program is scheduled to start, in epoch milliseconds.</p>",
+          "shape": "__long"
+        },
+        "Type": {
+          "documentation": "<p>Defines when the program plays in the schedule. You can set the value to ABSOLUTE or RELATIVE.</p> <p>ABSOLUTE - The program plays at a specific wall clock time. This setting can only be used for channels using the LINEAR PlaybackMode.</p> <p>Note the following considerations when using ABSOLUTE transitions:</p> <p>If the preceding program in the schedule has a duration that extends past the wall clock time, MediaTailor truncates the preceding program on a common segment boundary.</p> <p>If there are gaps in playback, MediaTailor plays the FillerSlate you configured for your linear channel.</p> <p>RELATIVE - The program is inserted into the schedule either before or after a program that you specify via RelativePosition.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "Type",
+        "RelativePosition"
+      ],
+      "type": "structure"
+    },
+    "Type": {
+      "enum": [
+        "DASH",
+        "HLS"
+      ],
+      "type": "string"
+    },
+    "UntagResourceRequest": {
+      "members": {
+        "ResourceArn": {
+          "documentation": "<p>The Amazon Resource Name (ARN) for the playback configuration. You can get this from the response to any playback configuration request.</p>",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "shape": "__string"
+        },
+        "TagKeys": {
+          "documentation": "<p>A comma-separated list of the tag keys to remove from the playback configuration.</p>",
+          "location": "querystring",
+          "locationName": "tagKeys",
+          "shape": "__listOf__string"
+        }
+      },
+      "required": [
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "type": "structure"
+    },
+    "UpdateChannelRequest": {
+      "members": {
+        "ChannelName": {
+          "documentation": "<p>The identifier for the channel you are working on.</p>",
+          "location": "uri",
+          "locationName": "channelName",
+          "shape": "__string"
+        },
+        "Outputs": {
+          "documentation": "<p>The channel's output properties.</p>",
+          "shape": "RequestOutputs"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "Outputs"
+      ],
+      "type": "structure"
+    },
+    "UpdateChannelResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelName": {
+          "documentation": "<p>The name of the channel.</p>",
+          "shape": "__string"
+        },
+        "ChannelState": {
+          "documentation": "<p>Indicates whether the channel is in a running state or not.</p>",
+          "shape": "ChannelState"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp of when the channel was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "FillerSlate": {
+          "documentation": "<p>Contains information about the slate used to fill gaps between programs in the schedule.</p>",
+          "shape": "SlateSource"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp of when the channel was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "Outputs": {
+          "documentation": "<p>The channel's output properties.</p>",
+          "shape": "ResponseOutputs"
+        },
+        "PlaybackMode": {
+          "documentation": "<p>The channel's playback mode.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the channel.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "UpdateSourceLocationRequest": {
+      "members": {
+        "AccessConfiguration": {
+          "documentation": "<p>Access configuration parameters. Configures the type of authentication used to access content from your source location.</p>",
+          "shape": "AccessConfiguration"
+        },
+        "DefaultSegmentDeliveryConfiguration": {
+          "documentation": "<p>The optional configuration for the host server that serves segments.</p>",
+          "shape": "DefaultSegmentDeliveryConfiguration"
+        },
+        "HttpConfiguration": {
+          "documentation": "<p>The HTTP configuration for the source location.</p>",
+          "shape": "HttpConfiguration"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "HttpConfiguration"
+      ],
+      "type": "structure"
+    },
+    "UpdateSourceLocationResponse": {
+      "members": {
+        "AccessConfiguration": {
+          "documentation": "<p>The access configuration for the source location.</p>",
+          "shape": "AccessConfiguration"
+        },
+        "Arn": {
+          "documentation": "<p>The ARN of the source location.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "DefaultSegmentDeliveryConfiguration": {
+          "documentation": "<p>The default segment delivery configuration settings.</p>",
+          "shape": "DefaultSegmentDeliveryConfiguration"
+        },
+        "HttpConfiguration": {
+          "documentation": "<p>The HTTP package configuration settings for the source location.</p>",
+          "shape": "HttpConfiguration"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp that indicates when the source location was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the source location.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        }
+      },
+      "type": "structure"
+    },
+    "UpdateVodSourceRequest": {
+      "members": {
+        "HttpPackageConfigurations": {
+          "documentation": "<p>An array of HTTP package configurations for the VOD source on this account.</p>",
+          "shape": "HttpPackageConfigurations"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The identifier for the source location you are working on.</p>",
+          "location": "uri",
+          "locationName": "sourceLocationName",
+          "shape": "__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The identifier for the VOD source you are working on.</p>",
+          "location": "uri",
+          "locationName": "vodSourceName",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "SourceLocationName",
+        "VodSourceName",
+        "HttpPackageConfigurations"
+      ],
+      "type": "structure"
+    },
+    "UpdateVodSourceResponse": {
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN of the VOD source.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the VOD source was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "HttpPackageConfigurations": {
+          "documentation": "<p>The HTTP package configurations.</p>",
+          "shape": "HttpPackageConfigurations"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The ARN for the VOD source.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location associated with the VOD source.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the VOD source.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name of the VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "type": "structure"
+    },
+    "VodSource": {
+      "documentation": "<p>VOD source configuration parameters.</p>",
+      "members": {
+        "Arn": {
+          "documentation": "<p>The ARN for the VOD source.</p>",
+          "shape": "__string"
+        },
+        "CreationTime": {
+          "documentation": "<p>The timestamp that indicates when the VOD source was created.</p>",
+          "shape": "__timestampUnix"
+        },
+        "HttpPackageConfigurations": {
+          "documentation": "<p>The HTTP package configurations for the VOD source.</p>",
+          "shape": "HttpPackageConfigurations"
+        },
+        "LastModifiedTime": {
+          "documentation": "<p>The timestamp that indicates when the VOD source was last modified.</p>",
+          "shape": "__timestampUnix"
+        },
+        "SourceLocationName": {
+          "documentation": "<p>The name of the source location that the VOD source is associated with.</p>",
+          "shape": "__string"
+        },
+        "Tags": {
+          "documentation": "<p>The tags assigned to the VOD source.</p>",
+          "locationName": "tags",
+          "shape": "__mapOf__string"
+        },
+        "VodSourceName": {
+          "documentation": "<p>The name of the VOD source.</p>",
+          "shape": "__string"
+        }
+      },
+      "required": [
+        "VodSourceName",
+        "SourceLocationName",
+        "HttpPackageConfigurations",
+        "Arn"
+      ],
+      "type": "structure"
+    },
+    "__boolean": {
+      "type": "boolean"
+    },
+    "__integer": {
+      "type": "integer"
+    },
+    "__integerMin1": {
+      "min": 1,
+      "type": "integer"
+    },
+    "__integerMin1Max100": {
+      "max": 100,
+      "min": 1,
+      "type": "integer"
+    },
+    "__listOfAdBreak": {
+      "member": {
+        "shape": "AdBreak"
+      },
+      "type": "list"
+    },
+    "__listOfAlert": {
+      "member": {
+        "shape": "Alert"
+      },
+      "type": "list"
+    },
+    "__listOfAvailMatchingCriteria": {
+      "member": {
+        "shape": "AvailMatchingCriteria"
+      },
+      "type": "list"
+    },
+    "__listOfChannel": {
+      "member": {
+        "shape": "Channel"
+      },
+      "type": "list"
+    },
+    "__listOfPlaybackConfiguration": {
+      "member": {
+        "shape": "PlaybackConfiguration"
+      },
+      "type": "list"
+    },
+    "__listOfPrefetchSchedule": {
+      "member": {
+        "shape": "PrefetchSchedule"
+      },
+      "type": "list"
+    },
+    "__listOfScheduleAdBreak": {
+      "member": {
+        "shape": "ScheduleAdBreak"
+      },
+      "type": "list"
+    },
+    "__listOfScheduleEntry": {
+      "member": {
+        "shape": "ScheduleEntry"
+      },
+      "type": "list"
+    },
+    "__listOfSourceLocation": {
+      "member": {
+        "shape": "SourceLocation"
+      },
+      "type": "list"
+    },
+    "__listOfVodSource": {
+      "member": {
+        "shape": "VodSource"
+      },
+      "type": "list"
+    },
+    "__listOf__string": {
+      "member": {
+        "shape": "__string"
+      },
+      "type": "list"
+    },
+    "__long": {
+      "type": "long"
+    },
+    "__mapOf__string": {
+      "key": {
+        "shape": "__string"
+      },
+      "type": "map",
+      "value": {
+        "shape": "__string"
+      }
+    },
+    "__string": {
+      "type": "string"
+    },
+    "__timestampUnix": {
+      "timestampFormat": "unixTimestamp",
+      "type": "timestamp"
+    }
+  }
+}

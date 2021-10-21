@@ -1,0 +1,410 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2020-07-13",
+    "endpointPrefix":"finspace-api",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceAbbreviation":"FinSpace Data",
+    "serviceFullName":"FinSpace Public API",
+    "serviceId":"finspace data",
+    "signatureVersion":"v4",
+    "signingName":"finspace-api",
+    "uid":"finspace-2020-07-13"
+  },
+  "operations":{
+    "CreateChangeset":{
+      "name":"CreateChangeset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datasets/{datasetId}/changesets"
+      },
+      "input":{"shape":"CreateChangesetRequest"},
+      "output":{"shape":"CreateChangesetResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a new changeset in a FinSpace dataset.</p>"
+    },
+    "GetProgrammaticAccessCredentials":{
+      "name":"GetProgrammaticAccessCredentials",
+      "http":{
+        "method":"GET",
+        "requestUri":"/credentials/programmatic"
+      },
+      "input":{"shape":"GetProgrammaticAccessCredentialsRequest"},
+      "output":{"shape":"GetProgrammaticAccessCredentialsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Request programmatic credentials to use with Habanero SDK.</p>"
+    },
+    "GetWorkingLocation":{
+      "name":"GetWorkingLocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workingLocationV1"
+      },
+      "input":{"shape":"GetWorkingLocationRequest"},
+      "output":{"shape":"GetWorkingLocationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>A temporary Amazon S3 location to copy your files from a source location to stage or use as a scratch space in Habanero notebook.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
+    "ChangeType":{
+      "type":"string",
+      "enum":[
+        "REPLACE",
+        "APPEND",
+        "MODIFY"
+      ]
+    },
+    "ChangesetInfo":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"IdType",
+          "documentation":"<p>Unique identifier for a changeset.</p>"
+        },
+        "changesetArn":{
+          "shape":"arn",
+          "documentation":"<p>The ARN identifier of the changeset.</p>"
+        },
+        "datasetId":{
+          "shape":"IdType",
+          "documentation":"<p>The unique identifier for the FinSpace dataset in which the changeset is created.</p>"
+        },
+        "changeType":{
+          "shape":"ChangeType",
+          "documentation":"<p>Change type indicates how a changeset is applied to a dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset is considered as a replacement to all prior loaded changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset is considered as an addition to the end of all prior loaded changesets.</p> </li> <li> <p> <code>MODIFY</code> - Changeset is considered as a replacement to a specific prior ingested changeset.</p> </li> </ul>"
+        },
+        "sourceType":{
+          "shape":"SourceType",
+          "documentation":"<p>Type of the data source from which the files to create the changeset are sourced.</p> <ul> <li> <p> <code>S3</code> - Amazon S3.</p> </li> </ul>"
+        },
+        "sourceParams":{
+          "shape":"stringMap",
+          "documentation":"<p>Source path from which the files to create the changeset are sourced.</p>"
+        },
+        "formatType":{
+          "shape":"FormatType",
+          "documentation":"<p>Format type of the input files loaded into the changeset.</p>"
+        },
+        "formatParams":{
+          "shape":"stringMap",
+          "documentation":"<p>Structure of the source file(s).</p>"
+        },
+        "createTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the changeset was created in FinSpace.</p>"
+        },
+        "status":{
+          "shape":"ChangesetStatus",
+          "documentation":"<p>The status of changeset creation operation.</p>"
+        },
+        "errorInfo":{
+          "shape":"ErrorInfo",
+          "documentation":"<p>The structure with error messages.</p>"
+        },
+        "changesetLabels":{
+          "shape":"stringMap",
+          "documentation":"<p>Tags associated with the changeset.</p>"
+        },
+        "updatesChangesetId":{
+          "shape":"stringValue",
+          "documentation":"<p>Unique identifier of the changeset that is updated.</p>"
+        },
+        "updatedByChangesetId":{
+          "shape":"stringValue",
+          "documentation":"<p>Unique identifier of the changeset that is updated a changeset.</p>"
+        }
+      },
+      "documentation":"<p>A changeset is unit of data in a dataset.</p>"
+    },
+    "ChangesetStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "FAILED",
+        "SUCCESS",
+        "RUNNING",
+        "STOP_REQUESTED"
+      ]
+    },
+    "CreateChangesetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "changeType",
+        "sourceType",
+        "sourceParams"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"IdType",
+          "documentation":"<p>The unique identifier for the FinSpace dataset in which the changeset will be created.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "changeType":{
+          "shape":"ChangeType",
+          "documentation":"<p>Option to indicate how a changeset will be applied to a dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset will be considered as a replacement to all prior loaded changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset will be considered as an addition to the end of all prior loaded changesets.</p> </li> </ul>"
+        },
+        "sourceType":{
+          "shape":"SourceType",
+          "documentation":"<p>Type of the data source from which the files to create the changeset will be sourced.</p> <ul> <li> <p> <code>S3</code> - Amazon S3.</p> </li> </ul>"
+        },
+        "sourceParams":{
+          "shape":"stringMap",
+          "documentation":"<p>Source path from which the files to create the changeset will be sourced.</p>"
+        },
+        "formatType":{
+          "shape":"FormatType",
+          "documentation":"<p>Format type of the input files being loaded into the changeset.</p>"
+        },
+        "formatParams":{
+          "shape":"stringMap",
+          "documentation":"<p>Options that define the structure of the source file(s).</p>"
+        },
+        "tags":{
+          "shape":"stringMap",
+          "documentation":"<p>Metadata tags to apply to this changeset.</p>"
+        }
+      }
+    },
+    "CreateChangesetResponse":{
+      "type":"structure",
+      "members":{
+        "changeset":{
+          "shape":"ChangesetInfo",
+          "documentation":"<p>Returns the changeset details.</p>"
+        }
+      }
+    },
+    "Credentials":{
+      "type":"structure",
+      "members":{
+        "accessKeyId":{
+          "shape":"stringValueLength1to255",
+          "documentation":"<p>The access key identifier.</p>"
+        },
+        "secretAccessKey":{
+          "shape":"stringValueMaxLength1000",
+          "documentation":"<p>The access key.</p>"
+        },
+        "sessionToken":{
+          "shape":"stringValueMaxLength1000",
+          "documentation":"<p>The session token.</p>"
+        }
+      },
+      "documentation":"<p>Set short term API credentials.</p>"
+    },
+    "ErrorCategory":{
+      "type":"string",
+      "enum":[
+        "The_inputs_to_this_request_are_invalid",
+        "Service_limits_have_been_exceeded",
+        "Missing_required_permission_to_perform_this_request",
+        "One_or_more_inputs_to_this_request_were_not_found",
+        "The_system_temporarily_lacks_sufficient_resources_to_process_the_request",
+        "An_internal_error_has_occurred",
+        "Cancelled",
+        "A_user_recoverable_error_has_occurred"
+      ]
+    },
+    "ErrorInfo":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"stringValueMaxLength1000",
+          "documentation":"<p>The text of the error message.</p>"
+        },
+        "errorCategory":{
+          "shape":"ErrorCategory",
+          "documentation":"<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> -The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> - Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> - Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> - One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> - The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> - An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> - A user recoverable error has occurred.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Error message.</p>"
+    },
+    "FormatType":{
+      "type":"string",
+      "enum":[
+        "CSV",
+        "JSON",
+        "PARQUET",
+        "XML"
+      ]
+    },
+    "GetProgrammaticAccessCredentialsRequest":{
+      "type":"structure",
+      "required":["environmentId"],
+      "members":{
+        "durationInMinutes":{
+          "shape":"SessionDuration",
+          "documentation":"<p>The time duration in which the credentials remain valid. </p>",
+          "location":"querystring",
+          "locationName":"durationInMinutes"
+        },
+        "environmentId":{
+          "shape":"IdType",
+          "documentation":"<p>The habanero environment identifier.</p>",
+          "location":"querystring",
+          "locationName":"environmentId"
+        }
+      }
+    },
+    "GetProgrammaticAccessCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>Returns the programmatic credentials.</p>"
+        },
+        "durationInMinutes":{
+          "shape":"SessionDuration",
+          "documentation":"<p>Returns the duration in which the credentials will remain valid.</p>"
+        }
+      }
+    },
+    "GetWorkingLocationRequest":{
+      "type":"structure",
+      "members":{
+        "locationType":{
+          "shape":"locationType",
+          "documentation":"<p>Specify the type of the working location.</p> <ul> <li> <p> <code>SAGEMAKER</code> - Use the Amazon S3 location as a temporary location to store data content when working with FinSpace Notebooks that run on SageMaker studio.</p> </li> <li> <p> <code>INGESTION</code> - Use the Amazon S3 location as a staging location to copy your data content and then use the location with the changeset creation operation.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetWorkingLocationResponse":{
+      "type":"structure",
+      "members":{
+        "s3Uri":{
+          "shape":"stringValueLength1to1024",
+          "documentation":"<p>Returns the Amazon S3 URI for the working location.</p>"
+        },
+        "s3Path":{
+          "shape":"stringValueLength1to1024",
+          "documentation":"<p>Returns the Amazon S3 Path for the working location.</p>"
+        },
+        "s3Bucket":{
+          "shape":"stringValueLength1to63",
+          "documentation":"<p>Returns the Amazon S3 bucket name for the working location.</p>"
+        }
+      }
+    },
+    "IdType":{
+      "type":"string",
+      "max":26,
+      "min":1
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The request processing has failed because of an unknown error, exception or failure.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>One or more resources can't be found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "SessionDuration":{
+      "type":"long",
+      "max":720,
+      "min":60
+    },
+    "SourceType":{
+      "type":"string",
+      "enum":["S3"]
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "arn":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
+    "errorMessage":{"type":"string"},
+    "locationType":{
+      "type":"string",
+      "enum":[
+        "INGESTION",
+        "SAGEMAKER"
+      ]
+    },
+    "stringMap":{
+      "type":"map",
+      "key":{"shape":"stringMapKey"},
+      "value":{"shape":"stringMapValue"}
+    },
+    "stringMapKey":{"type":"string"},
+    "stringMapValue":{"type":"string"},
+    "stringValue":{"type":"string"},
+    "stringValueLength1to1024":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "stringValueLength1to255":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "stringValueLength1to63":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "stringValueMaxLength1000":{
+      "type":"string",
+      "max":1000
+    }
+  },
+  "documentation":"<p> The FinSpace APIs let you take actions inside the FinSpace environment. </p>"
+}

@@ -1,0 +1,308 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2019-12-02",
+    "endpointPrefix":"route53-recovery-cluster",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "serviceFullName":"Route53 Recovery Cluster",
+    "serviceId":"Route53 Recovery Cluster",
+    "signatureVersion":"v4",
+    "signingName":"route53-recovery-cluster",
+    "targetPrefix":"ToggleCustomerAPI",
+    "uid":"route53-recovery-cluster-2019-12-02"
+  },
+  "operations":{
+    "GetRoutingControlState":{
+      "name":"GetRoutingControlState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRoutingControlStateRequest"},
+      "output":{"shape":"GetRoutingControlStateResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"EndpointTemporarilyUnavailableException"}
+      ],
+      "documentation":"<p>Get the state for a routing control. A routing control is a simple on/off switch that you can use to route traffic to cells. When the state is On, traffic flows to a cell. When it's off, traffic does not flow. </p> <p>Before you can create a routing control, you first must create a cluster to host the control. For more information, see <a href=\"https://docs.aws.amazon.com/recovery-cluster/latest/api/cluster.html\">CreateCluster</a>. Access one of the endpoints for the cluster to get or update the routing control state to redirect traffic.</p> <p>For more information about working with routing controls, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.html\">Routing control</a> in the Route 53 Application Recovery Controller Developer Guide.</p>"
+    },
+    "UpdateRoutingControlState":{
+      "name":"UpdateRoutingControlState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateRoutingControlStateRequest"},
+      "output":{"shape":"UpdateRoutingControlStateResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"EndpointTemporarilyUnavailableException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Set the state of the routing control to reroute traffic. You can set the value to be On or Off. When the state is On, traffic flows to a cell. When it's off, traffic does not flow.</p> <p>For more information about working with routing controls, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.html\">Routing control</a> in the Route 53 Application Recovery Controller Developer Guide.</p>"
+    },
+    "UpdateRoutingControlStates":{
+      "name":"UpdateRoutingControlStates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateRoutingControlStatesRequest"},
+      "output":{"shape":"UpdateRoutingControlStatesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"EndpointTemporarilyUnavailableException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Set multiple routing control states. You can set the value for each state to be On or Off. When the state is On, traffic flows to a cell. When it's off, traffic does not flow.</p> <p>For more information about working with routing controls, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.html\">Routing control</a> in the Route 53 Application Recovery Controller Developer Guide.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have sufficient permissions to query the routing control state.</p>",
+      "exception":true
+    },
+    "Arn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[A-Za-z0-9:\\/_-]*$"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"Description of the ConflictException error"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"Identifier of the resource in use"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"Type of the resource in use"
+        }
+      },
+      "documentation":"<p>There was a conflict with this request. Try again.</p>",
+      "exception":true
+    },
+    "EndpointTemporarilyUnavailableException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The cluster endpoint isn't available. Try another cluster endpoint.</p>",
+      "exception":true
+    },
+    "GetRoutingControlStateRequest":{
+      "type":"structure",
+      "required":["RoutingControlArn"],
+      "members":{
+        "RoutingControlArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Number (ARN) for the routing control that you want to get the state for.</p>"
+        }
+      }
+    },
+    "GetRoutingControlStateResponse":{
+      "type":"structure",
+      "required":[
+        "RoutingControlArn",
+        "RoutingControlState"
+      ],
+      "members":{
+        "RoutingControlArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the response.</p>"
+        },
+        "RoutingControlState":{
+          "shape":"RoutingControlState",
+          "documentation":"<p>The state of the routing control.</p>"
+        }
+      }
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{"shape":"RetryAfterSeconds"}
+      },
+      "documentation":"<p>There was an unexpected error during processing of the request.</p>",
+      "exception":true,
+      "fault":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"Hypothetical resource identifier that was not found"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"Hypothetical resource type that was not found"
+        }
+      },
+      "documentation":"<p>The request references a routing control that was not found.</p>",
+      "exception":true
+    },
+    "RetryAfterSeconds":{
+      "type":"integer",
+      "documentation":"Advice to clients on when the call can be safely retried"
+    },
+    "RoutingControlState":{
+      "type":"string",
+      "enum":[
+        "On",
+        "Off"
+      ]
+    },
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{"shape":"RetryAfterSeconds"}
+      },
+      "documentation":"<p>The request was denied because of request throttling.</p>",
+      "exception":true
+    },
+    "UpdateRoutingControlStateEntries":{
+      "type":"list",
+      "member":{"shape":"UpdateRoutingControlStateEntry"}
+    },
+    "UpdateRoutingControlStateEntry":{
+      "type":"structure",
+      "required":[
+        "RoutingControlArn",
+        "RoutingControlState"
+      ],
+      "members":{
+        "RoutingControlArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Number (ARN) for the routing control state entry.</p>"
+        },
+        "RoutingControlState":{
+          "shape":"RoutingControlState",
+          "documentation":"<p>The routing control state in a set of routing control state entries.</p>"
+        }
+      },
+      "documentation":"<p>A routing control state.</p>"
+    },
+    "UpdateRoutingControlStateRequest":{
+      "type":"structure",
+      "required":[
+        "RoutingControlArn",
+        "RoutingControlState"
+      ],
+      "members":{
+        "RoutingControlArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Number (ARN) for the routing control that you want to update the state for.</p>"
+        },
+        "RoutingControlState":{
+          "shape":"RoutingControlState",
+          "documentation":"<p>The state of the routing control. You can set the value to be On or Off.</p>"
+        }
+      }
+    },
+    "UpdateRoutingControlStateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateRoutingControlStatesRequest":{
+      "type":"structure",
+      "required":["UpdateRoutingControlStateEntries"],
+      "members":{
+        "UpdateRoutingControlStateEntries":{
+          "shape":"UpdateRoutingControlStateEntries",
+          "documentation":"<p>A set of routing control entries that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateRoutingControlStatesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "reason":{"shape":"ValidationExceptionReason"},
+        "fields":{"shape":"ValidationExceptionFieldList"}
+      },
+      "documentation":"<p>There was a validation error on the request.</p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The field that had the validation exception.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Information about the validation exception.</p>"
+        }
+      },
+      "documentation":"<p>There was a validation error on the request.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"},
+      "documentation":"The fields that caused the error, if applicable"
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "documentation":"Reason the request failed validation",
+      "enum":[
+        "unknownOperation",
+        "cannotParse",
+        "fieldValidationFailed",
+        "other"
+      ]
+    }
+  },
+  "documentation":"<p>Welcome to the Amazon Route 53 Application Recovery Controller API Reference Guide for Recovery Control Data Plane .</p> <p>Recovery control in Route 53 Application Recovery Controller includes extremely reliable routing controls that enable you to recover applications by rerouting traffic, for example, across Availability Zones or AWS Regions. Routing controls are simple on/off switches hosted on a cluster. A cluster is a set of five redundant regional endpoints against which you can execute API calls to update or get the state of routing controls. You use routing controls to failover traffic to recover your application across Availability Zones or Regions.</p> <p>This API guide includes information about how to get and update routing control states in Route 53 Application Recovery Controller.</p> <p>For more information about Route 53 Application Recovery Controller, see the following:</p> <ul> <li> <p>You can create clusters, routing controls, and control panels by using the control plane API for Recovery Control. For more information, see <a href=\"https://docs.aws.amazon.com/recovery-cluster/latest/api/\">Amazon Route 53 Application Recovery Controller Recovery Control API Reference</a>.</p> </li> <li> <p>Route 53 Application Recovery Controller also provides continuous readiness checks to ensure that your applications are scaled to handle failover traffic. For more information about the related API actions, see <a href=\"https://docs.aws.amazon.com/recovery-readiness/latest/api/\">Amazon Route 53 Application Recovery Controller Recovery Readiness API Reference</a>.</p> </li> <li> <p>For more information about creating resilient applications and preparing for recovery readiness with Route 53 Application Recovery Controller, see the <a href=\"r53recovery/latest/dg/\">Amazon Route 53 Application Recovery Controller Developer Guide</a>.</p> </li> </ul>"
+}

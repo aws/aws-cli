@@ -30,6 +30,7 @@ import tempfile
 import platform
 import contextlib
 import binascii
+import math
 from pprint import pformat
 from subprocess import Popen, PIPE
 import unittest
@@ -533,6 +534,14 @@ class FileCreator(object):
         if mtime is not None:
             os.utime(full_path, (mtime, mtime))
         return full_path
+
+    def create_file_with_size(self, filename, filesize):
+        filename = self.create_file(filename, contents='')
+        chunksize = 8192
+        with open(filename, 'wb') as f:
+            for i in range(int(math.ceil(filesize / float(chunksize)))):
+                f.write(b'a' * chunksize)
+        return filename
 
     def append_file(self, filename, contents, encoding=None):
         """Append contents to a file

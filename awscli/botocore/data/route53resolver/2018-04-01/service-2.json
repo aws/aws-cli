@@ -457,6 +457,23 @@
       ],
       "documentation":"<p>Returns the Identity and Access Management (Amazon Web Services IAM) policy for sharing the specified rule group. You can use the policy to share the rule group using Resource Access Manager (RAM). </p>"
     },
+    "GetResolverConfig":{
+      "name":"GetResolverConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResolverConfigRequest"},
+      "output":{"shape":"GetResolverConfigResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the behavior configuration of Route 53 Resolver behavior for a single VPC from Amazon Virtual Private Cloud.</p>"
+    },
     "GetResolverDnssecConfig":{
       "name":"GetResolverDnssecConfig",
       "http":{
@@ -707,6 +724,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the firewall rules that you have defined for the specified firewall rule group. DNS Firewall uses the rules in a rule group to filter DNS network traffic for a VPC. </p> <p>A single call might return only a partial list of the rules. For information, see <code>MaxResults</code>. </p>"
+    },
+    "ListResolverConfigs":{
+      "name":"ListResolverConfigs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResolverConfigsRequest"},
+      "output":{"shape":"ListResolverConfigsResponse"},
+      "errors":[
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the Resolver configurations that you have defined. Route 53 Resolver uses the configurations to manage DNS resolution behavior for your VPCs.</p>"
     },
     "ListResolverDnssecConfigs":{
       "name":"ListResolverDnssecConfigs",
@@ -1007,6 +1042,26 @@
       ],
       "documentation":"<p>Changes the association of a <a>FirewallRuleGroup</a> with a VPC. The association enables DNS filtering for the VPC. </p>"
     },
+    "UpdateResolverConfig":{
+      "name":"UpdateResolverConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateResolverConfigRequest"},
+      "output":{"shape":"UpdateResolverConfigResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceUnavailableException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the behavior configuration of Route 53 Resolver behavior for a single VPC from Amazon Virtual Private Cloud.</p>"
+    },
     "UpdateResolverDnssecConfig":{
       "name":"UpdateResolverDnssecConfig",
       "http":{
@@ -1222,6 +1277,13 @@
           "documentation":"<p>Information about the <code>AssociateResolverRule</code> request, including the status of the request.</p>"
         }
       }
+    },
+    "AutodefinedReverseFlag":{
+      "type":"string",
+      "enum":[
+        "ENABLE",
+        "DISABLE"
+      ]
     },
     "BlockOverrideDnsType":{
       "type":"string",
@@ -2140,7 +2202,7 @@
     },
     "FirewallRuleGroupPolicy":{
       "type":"string",
-      "max":5000
+      "max":30000
     },
     "FirewallRuleGroupStatus":{
       "type":"string",
@@ -2246,6 +2308,25 @@
         "FirewallRuleGroup":{
           "shape":"FirewallRuleGroup",
           "documentation":"<p>A collection of rules used to filter DNS network traffic. </p>"
+        }
+      }
+    },
+    "GetResolverConfigRequest":{
+      "type":"structure",
+      "required":["ResourceId"],
+      "members":{
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>Resource ID of the Amazon VPC that you want to get information about.</p>"
+        }
+      }
+    },
+    "GetResolverConfigResponse":{
+      "type":"structure",
+      "members":{
+        "ResolverConfig":{
+          "shape":"ResolverConfig",
+          "documentation":"<p>Information about the behavior configuration of Route 53 Resolver behavior for the VPC you specified in the <code>GetResolverConfig</code> request.</p>"
         }
       }
     },
@@ -2829,6 +2910,39 @@
         }
       }
     },
+    "ListResolverConfigsMaxResult":{
+      "type":"integer",
+      "max":100,
+      "min":5
+    },
+    "ListResolverConfigsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListResolverConfigsMaxResult",
+          "documentation":"<p>The maximum number of Resolver configurations that you want to return in the response to a <code>ListResolverConfigs</code> request. If you don't specify a value for <code>MaxResults</code>, up to 100 Resolver configurations are returned.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>(Optional) If the current Amazon Web Services account has more than <code>MaxResults</code> Resolver configurations, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p>For the first <code>ListResolverConfigs</code> request, omit this value.</p> <p>For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListResolverConfigsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If a response includes the last of the Resolver configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn't appear in the response.</p> <p>If a response doesn't include the last of the configurations, you can get more configurations by submitting another <code>ListResolverConfigs</code> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>"
+        },
+        "ResolverConfigs":{
+          "shape":"ResolverConfigList",
+          "documentation":"<p>An array that contains one <code>ResolverConfigs</code> element for each Resolver configuration that is associated with the current Amazon Web Services account.</p>"
+        }
+      }
+    },
     "ListResolverDnssecConfigsRequest":{
       "type":"structure",
       "members":{
@@ -3242,6 +3356,41 @@
       },
       "documentation":"<p>The response to a <code>PutResolverRulePolicy</code> request.</p>"
     },
+    "ResolverAutodefinedReverseStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLING",
+        "ENABLED",
+        "DISABLING",
+        "DISABLED"
+      ]
+    },
+    "ResolverConfig":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID for the Resolver configuration.</p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Amazon Virtual Private Cloud VPC that you're configuring Resolver for.</p>"
+        },
+        "OwnerId":{
+          "shape":"AccountId",
+          "documentation":"<p>The owner account ID of the Amazon Virtual Private Cloud VPC.</p>"
+        },
+        "AutodefinedReverse":{
+          "shape":"ResolverAutodefinedReverseStatus",
+          "documentation":"<p> The status of whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. The status can be one of following:</p> <p> Status of the rules generated by VPCs based on CIDR/Region for reverse DNS resolution. The status can be one of following:</p> <ul> <li> <p> <b>ENABLING:</b> Autodefined rules for reverse DNS lookups are being enabled but are not complete.</p> </li> <li> <p> <b>ENABLED:</b> Autodefined rules for reverse DNS lookups are enabled.</p> </li> <li> <p> <b>DISABLING:</b> Autodefined rules for reverse DNS lookups are being disabled but are not complete.</p> </li> <li> <p> <b>DISABLED:</b> Autodefined rules for reverse DNS lookups are disabled.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A complex type that contains information about a Resolver configuration for a VPC.</p>"
+    },
+    "ResolverConfigList":{
+      "type":"list",
+      "member":{"shape":"ResolverConfig"}
+    },
     "ResolverDNSSECValidationStatus":{
       "type":"string",
       "enum":[
@@ -3469,7 +3618,7 @@
     },
     "ResolverQueryLogConfigPolicy":{
       "type":"string",
-      "max":5000
+      "max":30000
     },
     "ResolverQueryLogConfigStatus":{
       "type":"string",
@@ -4007,6 +4156,32 @@
         "FirewallRule":{
           "shape":"FirewallRule",
           "documentation":"<p>The firewall rule that you just updated. </p>"
+        }
+      }
+    },
+    "UpdateResolverConfigRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "AutodefinedReverseFlag"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>Resource ID of the Amazon VPC that you want to update the Resolver configuration for.</p>"
+        },
+        "AutodefinedReverseFlag":{
+          "shape":"AutodefinedReverseFlag",
+          "documentation":"<p>Indicates whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. Disabling this option will also affect EC2-Classic instances using ClassicLink. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 guide</i>.</p> <note> <p>It can take some time for the status change to be completed.</p> </note> <p/>"
+        }
+      }
+    },
+    "UpdateResolverConfigResponse":{
+      "type":"structure",
+      "members":{
+        "ResolverConfig":{
+          "shape":"ResolverConfig",
+          "documentation":"<p>An array that contains settings for the specified Resolver configuration.</p>"
         }
       }
     },

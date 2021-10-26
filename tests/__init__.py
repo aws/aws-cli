@@ -4,6 +4,7 @@ import collections
 import copy
 import os
 import sys
+import time
 from typing import Optional, Callable
 
 # Both nose and py.test will add the first parent directory it
@@ -22,9 +23,10 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
 
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
-from awscli.compat import collections_abc
+from awscli.compat import collections_abc, six
 from awscli.testutils import (
-    unittest, mock, capture_output, skip_if_windows, FileCreator
+    unittest, mock, capture_output, skip_if_windows, create_bucket,
+    FileCreator, ConsistencyWaiter
 )
 
 import botocore.awsrequest
@@ -32,6 +34,7 @@ import botocore.loaders
 import botocore.model
 import botocore.serialize
 import botocore.validate
+from botocore.exceptions import ClientError, WaiterError
 
 import prompt_toolkit
 import prompt_toolkit.input
@@ -46,7 +49,7 @@ import prompt_toolkit.key_binding.key_processor
 from tests.utils.botocore import (
     assert_url_equal, create_session, random_chars, temporary_file, BaseEnvVar,
     BaseSessionTest, BaseClientDriverTest, StubbedSession, ClientHTTPStubber,
-    SessionHTTPStubber, ConsistencyWaiter, IntegerRefresher, FreezeTime,
+    SessionHTTPStubber, IntegerRefresher, FreezeTime,
 )
 # S3transfer testing utilities that we want to preserve import statements for
 # in s3transfer specific tests.
@@ -478,3 +481,191 @@ class PromptToolkitApplicationStubber:
         _stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
         self._app.output.stdout = _stdout
         self._app.run(pre_run=pre_run)
+
+
+class S3Utils:
+    _PUT_HEAD_SHARED_EXTRAS = [
+        'SSECustomerAlgorithm',
+        'SSECustomerKey',
+        'SSECustomerKeyMD5',
+        'RequestPayer',
+    ]
+
+    def __init__(self, session, region=None):
+        self._session = session
+        self._region = region
+        self._bucket_to_region = {}
+        self._client = self._session.create_client(
+            's3', region_name=self._region)
+
+    def _create_client_for_bucket(self, bucket_name):
+        region = self._bucket_to_region.get(bucket_name, self._region)
+        client = self._session.create_client('s3', region_name=region)
+        return client
+
+    def assert_key_contents_equal(self, bucket, key, expected_contents):
+        self.wait_until_key_exists(bucket, key)
+        if isinstance(expected_contents, six.BytesIO):
+            expected_contents = expected_contents.getvalue().decode('utf-8')
+        actual_contents = self.get_key_contents(bucket, key)
+        # The contents can be huge so we try to give helpful error messages
+        # without necessarily printing the actual contents.
+        assert len(actual_contents) == len(expected_contents)
+        assert actual_contents == expected_contents, (
+            f"Contents for {bucket}/{key} do not match (but they "
+            f"have the same length)"
+        )
+
+    def create_bucket(self, name=None, region=None):
+        if not region:
+            region = self._region
+        bucket_name = create_bucket(self._session, name, region)
+        self._bucket_to_region[bucket_name] = region
+        # Wait for the bucket to exist before letting it be used.
+        self.wait_bucket_exists(bucket_name)
+        return bucket_name
+
+    def put_object(self, bucket_name, key_name, contents='', extra_args=None):
+        client = self._create_client_for_bucket(bucket_name)
+        call_args = {
+            'Bucket': bucket_name,
+            'Key': key_name, 'Body': contents
+        }
+        if extra_args is not None:
+            call_args.update(extra_args)
+        response = client.put_object(**call_args)
+        extra_head_params = {}
+        if extra_args:
+            extra_head_params = dict(
+                (k, v) for (k, v) in extra_args.items()
+                if k in self._PUT_HEAD_SHARED_EXTRAS
+            )
+        self.wait_until_key_exists(
+            bucket_name,
+            key_name,
+            extra_params=extra_head_params,
+        )
+        return response
+
+    def delete_bucket(self, bucket_name, attempts=5, delay=5):
+        self.remove_all_objects(bucket_name)
+        client = self._create_client_for_bucket(bucket_name)
+
+        # There's a chance that, even though the bucket has been used
+        # several times, the delete will fail due to eventual consistency
+        # issues.
+        attempts_remaining = attempts
+        while True:
+            attempts_remaining -= 1
+            try:
+                client.delete_bucket(Bucket=bucket_name)
+                break
+            except client.exceptions.NoSuchBucket:
+                if self.bucket_not_exists(bucket_name):
+                    # Fast fail when the NoSuchBucket error is real.
+                    break
+                if attempts_remaining <= 0:
+                    raise
+                time.sleep(delay)
+
+        self._bucket_to_region.pop(bucket_name, None)
+
+    def remove_all_objects(self, bucket_name):
+        client = self._create_client_for_bucket(bucket_name)
+        paginator = client.get_paginator('list_objects')
+        pages = paginator.paginate(Bucket=bucket_name)
+        key_names = []
+        for page in pages:
+            key_names += [obj['Key'] for obj in page.get('Contents', [])]
+        for key_name in key_names:
+            self.delete_key(bucket_name, key_name)
+
+    def delete_key(self, bucket_name, key_name):
+        client = self._create_client_for_bucket(bucket_name)
+        client.delete_object(Bucket=bucket_name, Key=key_name)
+
+    def get_key_contents(self, bucket_name, key_name):
+        self.wait_until_key_exists(bucket_name, key_name)
+        client = self._create_client_for_bucket(bucket_name)
+        response = client.get_object(Bucket=bucket_name, Key=key_name)
+        return response['Body'].read().decode('utf-8')
+
+    def wait_bucket_exists(self, bucket_name, min_successes=3):
+        client = self._create_client_for_bucket(bucket_name)
+        waiter = client.get_waiter('bucket_exists')
+        consistency_waiter = ConsistencyWaiter(
+            min_successes=min_successes, delay_initial_poll=True)
+        consistency_waiter.wait(
+            lambda: waiter.wait(Bucket=bucket_name) is None
+        )
+
+    def bucket_not_exists(self, bucket_name):
+        client = self._create_client_for_bucket(bucket_name)
+        try:
+            client.head_bucket(Bucket=bucket_name)
+            return True
+        except ClientError as error:
+            if error.response.get('Code') == '404':
+                return False
+            raise
+
+    def key_exists(self, bucket_name, key_name, min_successes=3):
+        try:
+            self.wait_until_key_exists(
+                    bucket_name, key_name, min_successes=min_successes)
+            return True
+        except (ClientError, WaiterError):
+            return False
+
+    def key_not_exists(self, bucket_name, key_name, min_successes=3):
+        try:
+            self.wait_until_key_not_exists(
+                    bucket_name, key_name, min_successes=min_successes)
+            return True
+        except (ClientError, WaiterError):
+            return False
+
+    def list_multipart_uploads(self, bucket_name):
+        client = self._create_client_for_bucket(bucket_name)
+        return client.list_multipart_uploads(
+            Bucket=bucket_name).get('Uploads', [])
+
+    def list_buckets(self):
+        response = self._client.list_buckets()
+        return response['Buckets']
+
+    def get_bucket_website(self, bucket_name):
+        client = self._create_client_for_bucket(bucket_name)
+        return client.get_bucket_website(Bucket=bucket_name)
+
+    def content_type_for_key(self, bucket_name, key_name):
+        parsed = self.head_object(bucket_name, key_name)
+        return parsed['ContentType']
+
+    def head_object(self, bucket_name, key_name):
+        client = self._create_client_for_bucket(bucket_name)
+        response = client.head_object(Bucket=bucket_name, Key=key_name)
+        return response
+
+    def wait_until_key_exists(self, bucket_name, key_name, extra_params=None,
+                              min_successes=3):
+        self._wait_for_key(bucket_name, key_name, extra_params,
+                           min_successes, exists=True)
+
+    def wait_until_key_not_exists(self, bucket_name, key_name,
+                                  extra_params=None, min_successes=3):
+        self._wait_for_key(bucket_name, key_name, extra_params,
+                           min_successes, exists=False)
+
+    def _wait_for_key(self, bucket_name, key_name, extra_params=None,
+                      min_successes=3, exists=True):
+        client = self._create_client_for_bucket(bucket_name)
+        if exists:
+            waiter = client.get_waiter('object_exists')
+        else:
+            waiter = client.get_waiter('object_not_exists')
+        params = {'Bucket': bucket_name, 'Key': key_name}
+        if extra_params is not None:
+            params.update(extra_params)
+        for _ in range(min_successes):
+            waiter.wait(**params)

@@ -17,44 +17,65 @@
 # variables to communicate with s3 as these are integration tests.  Therefore,
 # only tests that use sessions are included as integration tests.
 
-import unittest
 import os
 import itertools
 
-import botocore.session
+import pytest
+
 from awscli.customizations.s3.filegenerator import FileGenerator, FileStat
+import botocore.session
 from tests.unit.customizations.s3 import compare_files
-from tests.integration.customizations.s3 import make_s3_files, s3_cleanup
+from tests.integration.customizations.s3 import BaseS3IntegrationTest
 
 
-class S3FileGeneratorIntTest(unittest.TestCase):
-    def setUp(self):
-        self.session = botocore.session.get_session()
-        # Use the datetime and and blob parsing of the CLI
-        factory = self.session.get_component('response_parser_factory')
-        factory.set_parser_defaults(
-            blob_parser=lambda x: x,
-            timestamp_parser=lambda x: x)
-        self.client = self.session.create_client('s3', region_name='us-west-2')
-        self.bucket = make_s3_files(self.session)
-        self.file1 = self.bucket + '/' + 'text1.txt'
-        self.file2 = self.bucket + '/' + 'another_directory/text2.txt'
+@pytest.fixture(scope='module')
+def s3_client(region):
+    session = botocore.session.get_session()
+    # Use the datetime and and blob parsing of the CLI
+    factory = session.get_component('response_parser_factory')
+    factory.set_parser_defaults(
+        blob_parser=lambda x: x,
+        timestamp_parser=lambda x: x)
+    return session.create_client('s3', region_name=region)
 
-    def tearDown(self):
-        s3_cleanup(self.bucket, self.session)
 
-    def test_s3_file(self):
+@pytest.fixture()
+def s3_files(shared_bucket, s3_utils):
+    string1 = "This is a test."
+    string2 = "This is another test."
+    key1 = 'text1.txt'
+    key2 = 'text2.txt'
+
+    s3_utils.put_object(
+        bucket_name=shared_bucket, key_name=key1, contents=string1
+    )
+    s3_utils.put_object(
+        bucket_name=shared_bucket, key_name='another_directory/'
+    )
+    s3_utils.put_object(
+        bucket_name=shared_bucket, key_name=f'another_directory/{key2}',
+        contents=string2
+    )
+    return [
+        f'{shared_bucket}/{key1}',
+        f'{shared_bucket}/another_directory/',
+        f'{shared_bucket}/another_directory/{key2}'
+    ]
+
+
+class TestS3FileGenerator(BaseS3IntegrationTest):
+    def test_s3_file(self, s3_client, s3_files):
         #
         # Generate a single s3 file
         # Note: Size and last update are not tested because s3 generates them.
         #
-        input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
+        input_s3_file = {'src': {'path': s3_files[0], 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         expected_file_size = 15
         result_list = list(
-            FileGenerator(self.client, '').call(input_s3_file))
-        file_stat = FileStat(src=self.file1, dest='text1.txt',
+            FileGenerator(s3_client, '').call(input_s3_file))
+        file_stat = FileStat(src=s3_files[0], dest='text1.txt',
                              compare_key='text1.txt',
                              size=expected_file_size,
                              last_update=result_list[0].last_update,
@@ -62,28 +83,28 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                              dest_type='local', operation_name='')
 
         expected_list = [file_stat]
-        self.assertEqual(len(result_list), 1)
-        compare_files(self, result_list[0], expected_list[0])
+        assert len(result_list) == 1
+        compare_files(result_list[0], expected_list[0])
 
-    def test_s3_directory(self):
+    def test_s3_directory(self, s3_client, shared_bucket, s3_files):
         #
         # Generates s3 files under a common prefix. Also it ensures that
         # zero size files are ignored.
         # Note: Size and last update are not tested because s3 generates them.
         #
-        input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
+        input_s3_file = {'src': {'path': shared_bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         result_list = list(
-            FileGenerator(self.client, '').call(input_s3_file))
-        file_stat = FileStat(src=self.file2,
+            FileGenerator(s3_client, '').call(input_s3_file))
+        file_stat = FileStat(src=s3_files[2],
                              dest='another_directory' + os.sep + 'text2.txt',
                              compare_key='another_directory/text2.txt',
                              size=21,
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='')
-        file_stat2 = FileStat(src=self.file1,
+        file_stat2 = FileStat(src=s3_files[0],
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=15,
@@ -92,24 +113,24 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                               dest_type='local', operation_name='')
 
         expected_result = [file_stat, file_stat2]
-        self.assertEqual(len(result_list), 2)
-        compare_files(self, result_list[0], expected_result[0])
-        compare_files(self, result_list[1], expected_result[1])
+        assert len(result_list) == 2
+        compare_files(result_list[0], expected_result[0])
+        compare_files(result_list[1], expected_result[1])
 
-    def test_s3_delete_directory(self):
+    def test_s3_delete_directory(self, s3_client, shared_bucket, s3_files):
         #
         # Generates s3 files under a common prefix. Also it ensures that
         # the directory itself is included because it is a delete command
         # Note: Size and last update are not tested because s3 generates them.
         #
-        input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
+        input_s3_file = {'src': {'path': shared_bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         result_list = list(
-            FileGenerator(self.client, 'delete').call(input_s3_file))
+            FileGenerator(s3_client, 'delete').call(input_s3_file))
 
         file_stat1 = FileStat(
-            src=self.bucket + '/another_directory/',
+            src=shared_bucket + '/another_directory/',
             dest='another_directory' + os.sep,
             compare_key='another_directory/',
             size=0,
@@ -117,7 +138,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src_type='s3',
             dest_type='local', operation_name='delete')
         file_stat2 = FileStat(
-            src=self.file2,
+            src=s3_files[2],
             dest='another_directory' + os.sep + 'text2.txt',
             compare_key='another_directory/text2.txt',
             size=21,
@@ -125,7 +146,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src_type='s3',
             dest_type='local', operation_name='delete')
         file_stat3 = FileStat(
-            src=self.file1,
+            src=s3_files[0],
             dest='text1.txt',
             compare_key='text1.txt',
             size=15,
@@ -134,20 +155,20 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             dest_type='local', operation_name='delete')
 
         expected_list = [file_stat1, file_stat2, file_stat3]
-        self.assertEqual(len(result_list), 3)
-        compare_files(self, result_list[0], expected_list[0])
-        compare_files(self, result_list[1], expected_list[1])
-        compare_files(self, result_list[2], expected_list[2])
+        assert len(result_list) == 3
+        compare_files(result_list[0], expected_list[0])
+        compare_files(result_list[1], expected_list[1])
+        compare_files(result_list[2], expected_list[2])
 
-    def test_page_size(self):
-        input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
+    def test_page_size(self, s3_client, shared_bucket, s3_files):
+        input_s3_file = {'src': {'path': shared_bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        file_gen = FileGenerator(self.client, '',
+        file_gen = FileGenerator(s3_client, '',
                                  page_size=1).call(input_s3_file)
         limited_file_gen = itertools.islice(file_gen, 1)
         result_list = list(limited_file_gen)
-        file_stat = FileStat(src=self.file2,
+        file_stat = FileStat(src=s3_files[2],
                              dest='another_directory' + os.sep + 'text2.txt',
                              compare_key='another_directory/text2.txt',
                              size=21,
@@ -155,9 +176,5 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                              src_type='s3',
                              dest_type='local', operation_name='')
         # Ensure only one item is returned from ``ListObjects``
-        self.assertEqual(len(result_list), 1)
-        compare_files(self, result_list[0], file_stat)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert len(result_list) == 1
+        compare_files(result_list[0], file_stat)

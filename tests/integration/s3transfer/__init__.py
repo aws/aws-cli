@@ -16,37 +16,10 @@ from botocore.exceptions import WaiterError
 
 from tests import unittest
 from tests import FileCreator
+from tests import S3Utils
 from tests import random_bucket_name
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
-
-
-def recursive_delete(client, bucket_name):
-    # Ensure the bucket exists before attempting to wipe it out
-    exists_waiter = client.get_waiter('bucket_exists')
-    exists_waiter.wait(Bucket=bucket_name)
-    page = client.get_paginator('list_objects')
-    # Use pages paired with batch delete_objects().
-    for page in page.paginate(Bucket=bucket_name):
-        keys = [{'Key': obj['Key']} for obj in page.get('Contents', [])]
-        if keys:
-            client.delete_objects(Bucket=bucket_name, Delete={'Objects': keys})
-    for _ in range(5):
-        try:
-            client.delete_bucket(Bucket=bucket_name)
-            break
-        except client.exceptions.NoSuchBucket:
-            exists_waiter.wait(Bucket=bucket_name)
-        except Exception:
-            # We can sometimes get exceptions when trying to
-            # delete a bucket.  We'll let the waiter make
-            # the final call as to whether the bucket was able
-            # to be deleted.
-            not_exists_waiter = client.get_waiter('bucket_not_exists')
-            try:
-                not_exists_waiter.wait(Bucket=bucket_name)
-            except botocore.exceptions.WaiterError:
-                continue
 
 
 class BaseTransferManagerIntegTest(unittest.TestCase):
@@ -58,9 +31,8 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
         cls.session = botocore.session.get_session()
         cls.client = cls.session.create_client('s3', cls.region)
         cls.bucket_name = random_bucket_name()
-        cls.client.create_bucket(
-            Bucket=cls.bucket_name,
-            CreateBucketConfiguration={'LocationConstraint': cls.region})
+        cls.s3_utils = S3Utils(cls.session, cls.region)
+        cls.s3_utils.create_bucket(cls.bucket_name)
 
     def setUp(self):
         self.files = FileCreator()
@@ -70,7 +42,7 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        recursive_delete(cls.client, cls.bucket_name)
+        cls.s3_utils.delete_bucket(cls.bucket_name)
 
     def create_client(self, **override_kwargs):
         kwargs = {

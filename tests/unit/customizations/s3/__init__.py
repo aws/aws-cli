@@ -74,16 +74,16 @@ def clean_loc_files(file_creator):
     file_creator.remove_all()
 
 
-def compare_files(self, result_file, ref_file):
+def compare_files(result_file, ref_file):
     """
     Ensures that the FileStat's properties are what they
     are suppose to be.
     """
-    self.assertEqual(result_file.src, ref_file.src)
-    self.assertEqual(result_file.dest, ref_file.dest)
-    self.assertEqual(result_file.compare_key, ref_file.compare_key)
-    self.assertEqual(result_file.size, ref_file.size)
-    self.assertEqual(result_file.last_update, ref_file.last_update)
-    self.assertEqual(result_file.src_type, ref_file.src_type)
-    self.assertEqual(result_file.dest_type, ref_file.dest_type)
-    self.assertEqual(result_file.operation_name, ref_file.operation_name)
+    assert result_file.src == ref_file.src
+    assert result_file.dest == ref_file.dest
+    assert result_file.compare_key == ref_file.compare_key
+    assert result_file.size == ref_file.size
+    assert result_file.last_update == ref_file.last_update
+    assert result_file.src_type == ref_file.src_type
+    assert result_file.dest_type == ref_file.dest_type
+    assert result_file.operation_name == ref_file.operation_name

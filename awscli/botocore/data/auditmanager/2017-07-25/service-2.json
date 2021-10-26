@@ -26,7 +26,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Associates an evidence folder to the specified assessment report in Audit Manager. </p>"
+      "documentation":"<p> Associates an evidence folder to an assessment report in a Audit Manager assessment. </p>"
     },
     "BatchAssociateAssessmentReportEvidence":{
       "name":"BatchAssociateAssessmentReportEvidence",
@@ -58,7 +58,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Create a batch of delegations for a specified assessment in Audit Manager. </p>"
+      "documentation":"<p> Creates a batch of delegations for an assessment in Audit Manager. </p>"
     },
     "BatchDeleteDelegationByAssessment":{
       "name":"BatchDeleteDelegationByAssessment",
@@ -74,7 +74,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Deletes the delegations in the specified Audit Manager assessment. </p>"
+      "documentation":"<p> Deletes a batch of delegations for an assessment in Audit Manager. </p>"
     },
     "BatchDisassociateAssessmentReportEvidence":{
       "name":"BatchDisassociateAssessmentReportEvidence",
@@ -90,7 +90,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Disassociates a list of evidence from the specified assessment report in Audit Manager. </p>"
+      "documentation":"<p> Disassociates a list of evidence from an assessment report in Audit Manager. </p>"
     },
     "BatchImportEvidenceToAssessmentControl":{
       "name":"BatchImportEvidenceToAssessmentControl",
@@ -106,7 +106,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Uploads one or more pieces of evidence to the specified control in the assessment in Audit Manager. </p>"
+      "documentation":"<p> Uploads one or more pieces of evidence to a control in an Audit Manager assessment. </p>"
     },
     "CreateAssessment":{
       "name":"CreateAssessment",
@@ -204,6 +204,22 @@
       ],
       "documentation":"<p> Deletes a custom framework in Audit Manager. </p>"
     },
+    "DeleteAssessmentFrameworkShare":{
+      "name":"DeleteAssessmentFrameworkShare",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assessmentFrameworkShareRequests/{requestId}"
+      },
+      "input":{"shape":"DeleteAssessmentFrameworkShareRequest"},
+      "output":{"shape":"DeleteAssessmentFrameworkShareResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Deletes a share request for a custom framework in Audit Manager. </p>"
+    },
     "DeleteAssessmentReport":{
       "name":"DeleteAssessmentReport",
       "http":{
@@ -266,7 +282,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Removes the specified member account as a delegated administrator for Audit Manager. </p> <important> <p>When you remove a delegated administrator from your Audit Manager settings, or when you deregister a delegated administrator from Organizations, you continue to have access to the evidence that you previously collected under that account. However, Audit Manager will stop collecting and attaching evidence to that delegated administrator account moving forward.</p> </important>"
+      "documentation":"<p>Removes the specified member Amazon Web Services account as a delegated administrator for Audit Manager. </p> <important> <p>When you remove a delegated administrator from your Audit Manager settings, you continue to have access to the evidence that you previously collected under that account. This is also the case when you deregister a delegated administrator from Audit Manager. However, Audit Manager will stop collecting and attaching evidence to that delegated administrator account moving forward.</p> </important>"
     },
     "DisassociateAssessmentReportEvidenceFolder":{
       "name":"DisassociateAssessmentReportEvidenceFolder",
@@ -343,7 +359,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Returns the URL of a specified assessment report in Audit Manager. </p>"
+      "documentation":"<p> Returns the URL of an assessment report in Audit Manager. </p>"
     },
     "GetChangeLogs":{
       "name":"GetChangeLogs",
@@ -470,7 +486,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns a list of evidence folders associated with a specified control of an assessment in Audit Manager. </p>"
+      "documentation":"<p> Returns a list of evidence folders that are associated with a specified control of an assessment in Audit Manager. </p>"
     },
     "GetOrganizationAdminAccount":{
       "name":"GetOrganizationAdminAccount",
@@ -515,7 +531,22 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns the settings for the specified account. </p>"
+      "documentation":"<p> Returns the settings for the specified Amazon Web Services account. </p>"
+    },
+    "ListAssessmentFrameworkShareRequests":{
+      "name":"ListAssessmentFrameworkShareRequests",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assessmentFrameworkShareRequests"
+      },
+      "input":{"shape":"ListAssessmentFrameworkShareRequestsRequest"},
+      "output":{"shape":"ListAssessmentFrameworkShareRequestsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Returns a list of sent or received share requests for custom frameworks in Audit Manager. </p>"
     },
     "ListAssessmentFrameworks":{
       "name":"ListAssessmentFrameworks",
@@ -530,7 +561,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns a list of the frameworks available in the Audit Manager framework library. </p>"
+      "documentation":"<p> Returns a list of the frameworks that are available in the Audit Manager framework library. </p>"
     },
     "ListAssessmentReports":{
       "name":"ListAssessmentReports",
@@ -590,7 +621,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns a list of keywords that pre-mapped to the specified control data source. </p>"
+      "documentation":"<p> Returns a list of keywords that are pre-mapped to the specified control data source. </p>"
     },
     "ListNotifications":{
       "name":"ListNotifications",
@@ -636,7 +667,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Enables Audit Manager for the specified account. </p>"
+      "documentation":"<p> Enables Audit Manager for the specified Amazon Web Services account. </p>"
     },
     "RegisterOrganizationAdminAccount":{
       "name":"RegisterOrganizationAdminAccount",
@@ -652,7 +683,23 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Enables an account within the organization as the delegated administrator for Audit Manager. </p>"
+      "documentation":"<p> Enables an Amazon Web Services account within the organization as the delegated administrator for Audit Manager. </p>"
+    },
+    "StartAssessmentFrameworkShare":{
+      "name":"StartAssessmentFrameworkShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assessmentFrameworks/{frameworkId}/shareRequests"
+      },
+      "input":{"shape":"StartAssessmentFrameworkShareRequest"},
+      "output":{"shape":"StartAssessmentFrameworkShareResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Creates a share request for a custom framework in Audit Manager. </p> <p>The share request specifies a recipient and notifies them that a custom framework is available. Recipients have 120 days to accept or decline the request. If no action is taken, the share request expires.</p> <important> <p>When you invoke the <code>StartAssessmentFrameworkShare</code> API, you are about to share a custom framework with another Amazon Web Services account. You may not share a custom framework that is derived from a standard framework if the standard framework is designated as not eligible for sharing by Amazon Web Services, unless you have obtained permission to do so from the owner of the standard framework. To learn more about which standard frameworks are eligible for sharing, see <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/share-custom-framework-concepts-and-terminology.html#eligibility\">Framework sharing eligibility</a> in the <i>Audit Manager User Guide</i>.</p> </important>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -748,6 +795,22 @@
       ],
       "documentation":"<p> Updates a custom framework in Audit Manager. </p>"
     },
+    "UpdateAssessmentFrameworkShare":{
+      "name":"UpdateAssessmentFrameworkShare",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/assessmentFrameworkShareRequests/{requestId}"
+      },
+      "input":{"shape":"UpdateAssessmentFrameworkShareRequest"},
+      "output":{"shape":"UpdateAssessmentFrameworkShareResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Updates a share request for a custom framework in Audit Manager. </p>"
+    },
     "UpdateAssessmentStatus":{
       "name":"UpdateAssessmentStatus",
       "http":{
@@ -818,18 +881,18 @@
       "members":{
         "id":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified account. </p>"
+          "documentation":"<p> The identifier for the Amazon Web Services account. </p>"
         },
         "emailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p> The email address associated with the specified account. </p>"
+          "documentation":"<p> The email address that's associated with the Amazon Web Services account. </p>"
         },
         "name":{
           "shape":"AccountName",
-          "documentation":"<p> The name of the specified account. </p>"
+          "documentation":"<p> The name of the Amazon Web Services account. </p>"
         }
       },
-      "documentation":"<p> The wrapper of account details, such as account ID, email address, and so on. </p>"
+      "documentation":"<p> The wrapper of Amazon Web Services account details, such as account ID or email address. </p>"
     },
     "AWSAccounts":{
       "type":"list",
@@ -843,7 +906,7 @@
           "documentation":"<p> The name of the Amazon Web Service. </p>"
         }
       },
-      "documentation":"<p> An Amazon Web Service such as Amazon S3, CloudTrail, and so on. </p>"
+      "documentation":"<p> An Amazon Web Service such as Amazon S3 or CloudTrail. </p>"
     },
     "AWSServiceName":{
       "type":"string",
@@ -861,7 +924,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p> Your account is not registered with Audit Manager. Check the delegated administrator setup on the Audit Manager settings page, and try again. </p>",
+      "documentation":"<p> Your account isn't registered with Audit Manager. Check the delegated administrator setup on the Audit Manager settings page, and try again. </p>",
       "error":{"httpStatusCode":403},
       "exception":true
     },
@@ -917,19 +980,19 @@
         },
         "awsAccount":{
           "shape":"AWSAccount",
-          "documentation":"<p> The account associated with the assessment. </p>"
+          "documentation":"<p> The Amazon Web Services account that's associated with the assessment. </p>"
         },
         "metadata":{
           "shape":"AssessmentMetadata",
-          "documentation":"<p> The metadata for the specified assessment. </p>"
+          "documentation":"<p> The metadata for the assessment. </p>"
         },
         "framework":{
           "shape":"AssessmentFramework",
-          "documentation":"<p> The framework from which the assessment was created. </p>"
+          "documentation":"<p> The framework that the assessment was created from. </p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags associated with the assessment. </p>"
+          "documentation":"<p> The tags that are associated with the assessment. </p>"
         }
       },
       "documentation":"<p> An entity that defines the scope of audit evidence collected by Audit Manager. An Audit Manager assessment is an implementation of an Audit Manager framework. </p>"
@@ -939,42 +1002,42 @@
       "members":{
         "id":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>"
+          "documentation":"<p> The identifier for the control. </p>"
         },
         "name":{
           "shape":"ControlName",
-          "documentation":"<p> The name of the specified control. </p>"
+          "documentation":"<p> The name of the control. </p>"
         },
         "description":{
           "shape":"ControlDescription",
-          "documentation":"<p> The description of the specified control. </p>"
+          "documentation":"<p> The description of the control. </p>"
         },
         "status":{
           "shape":"ControlStatus",
-          "documentation":"<p> The status of the specified control. </p>"
+          "documentation":"<p> The status of the control. </p>"
         },
         "response":{
           "shape":"ControlResponse",
-          "documentation":"<p> The response of the specified control. </p>"
+          "documentation":"<p> The response of the control. </p>"
         },
         "comments":{
           "shape":"ControlComments",
-          "documentation":"<p> The list of comments attached to the specified control. </p>"
+          "documentation":"<p> The list of comments that's attached to the control. </p>"
         },
         "evidenceSources":{
           "shape":"EvidenceSources",
-          "documentation":"<p> The list of data sources for the specified evidence. </p>"
+          "documentation":"<p> The list of data sources for the evidence. </p>"
         },
         "evidenceCount":{
           "shape":"Integer",
-          "documentation":"<p> The amount of evidence generated for the control. </p>"
+          "documentation":"<p> The amount of evidence that's generated for the control. </p>"
         },
         "assessmentReportEvidenceCount":{
           "shape":"Integer",
           "documentation":"<p> The amount of evidence in the assessment report. </p>"
         }
       },
-      "documentation":"<p> The control entity that represents a standard or custom control used in an Audit Manager assessment. </p>"
+      "documentation":"<p> The control entity that represents a standard control or a custom control in an Audit Manager assessment. </p>"
     },
     "AssessmentControlSet":{
       "type":"structure",
@@ -993,23 +1056,23 @@
         },
         "roles":{
           "shape":"Roles",
-          "documentation":"<p> The roles associated with the control set. </p>"
+          "documentation":"<p> The roles that are associated with the control set. </p>"
         },
         "controls":{
           "shape":"AssessmentControls",
-          "documentation":"<p> The list of controls contained with the control set. </p>"
+          "documentation":"<p> The list of controls that's contained with the control set. </p>"
         },
         "delegations":{
           "shape":"Delegations",
-          "documentation":"<p> The delegations associated with the control set. </p>"
+          "documentation":"<p> The delegations that are associated with the control set. </p>"
         },
         "systemEvidenceCount":{
           "shape":"Integer",
-          "documentation":"<p> The total number of evidence objects retrieved automatically for the control set. </p>"
+          "documentation":"<p> The total number of evidence objects that are retrieved automatically for the control set. </p>"
         },
         "manualEvidenceCount":{
           "shape":"Integer",
-          "documentation":"<p> The total number of evidence objects uploaded manually to the control set. </p>"
+          "documentation":"<p> The total number of evidence objects that are uploaded manually to the control set. </p>"
         }
       },
       "documentation":"<p> Represents a set of controls in an Audit Manager assessment. </p>"
@@ -1032,7 +1095,7 @@
       "members":{
         "name":{
           "shape":"AssessmentEvidenceFolderName",
-          "documentation":"<p> The name of the specified evidence folder. </p>"
+          "documentation":"<p> The name of the evidence folder. </p>"
         },
         "date":{
           "shape":"Timestamp",
@@ -1040,7 +1103,7 @@
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>"
+          "documentation":"<p> The identifier for the assessment. </p>"
         },
         "controlSetId":{
           "shape":"ControlSetId",
@@ -1048,15 +1111,15 @@
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified control. </p>"
+          "documentation":"<p> The unique identifier for the control. </p>"
         },
         "id":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which evidence is stored. </p>"
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>"
         },
         "dataSource":{
           "shape":"String",
-          "documentation":"<p> The Amazon Web Service from which the evidence was collected. </p>"
+          "documentation":"<p> The Amazon Web Service that the evidence was collected from. </p>"
         },
         "author":{
           "shape":"String",
@@ -1068,7 +1131,7 @@
         },
         "assessmentReportSelectionCount":{
           "shape":"Integer",
-          "documentation":"<p> The total count of evidence included in the assessment report. </p>"
+          "documentation":"<p> The total count of evidence that's included in the assessment report. </p>"
         },
         "controlName":{
           "shape":"ControlName",
@@ -1076,7 +1139,7 @@
         },
         "evidenceResourcesIncludedCount":{
           "shape":"Integer",
-          "documentation":"<p> The amount of evidence included in the evidence folder. </p>"
+          "documentation":"<p> The amount of evidence that's included in the evidence folder. </p>"
         },
         "evidenceByTypeConfigurationDataCount":{
           "shape":"Integer",
@@ -1100,10 +1163,10 @@
         },
         "evidenceAwsServiceSourceCount":{
           "shape":"Integer",
-          "documentation":"<p> The total number of Amazon Web Services resources assessed to generate the evidence. </p>"
+          "documentation":"<p> The total number of Amazon Web Services resources that were assessed to generate the evidence. </p>"
         }
       },
-      "documentation":"<p> The folder in which Audit Manager stores evidence for an assessment. </p>"
+      "documentation":"<p> The folder where Audit Manager stores evidence for an assessment. </p>"
     },
     "AssessmentEvidenceFolderName":{
       "type":"string",
@@ -1124,12 +1187,12 @@
         },
         "arn":{
           "shape":"AuditManagerArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the specified framework. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the framework. </p>"
         },
         "metadata":{"shape":"FrameworkMetadata"},
         "controlSets":{
           "shape":"AssessmentControlSets",
-          "documentation":"<p> The control sets associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p>"
         }
       },
       "documentation":"<p> The file used to structure and automate Audit Manager assessments for a given compliance standard. </p>"
@@ -1149,23 +1212,23 @@
         },
         "id":{
           "shape":"UUID",
-          "documentation":"<p> The unique identified for the specified framework. </p>"
+          "documentation":"<p> The unique identifier for the framework. </p>"
         },
         "type":{
           "shape":"FrameworkType",
-          "documentation":"<p> The framework type, such as standard or custom. </p>"
+          "documentation":"<p> The framework type, such as a standard framework or a custom framework. </p>"
         },
         "name":{
           "shape":"FrameworkName",
-          "documentation":"<p> The name of the specified framework. </p>"
+          "documentation":"<p> The name of the framework. </p>"
         },
         "description":{
           "shape":"FrameworkDescription",
-          "documentation":"<p> The description of the specified framework. </p>"
+          "documentation":"<p> The description of the framework. </p>"
         },
         "logo":{
           "shape":"Filename",
-          "documentation":"<p> The logo associated with the framework. </p>"
+          "documentation":"<p> The logo that's associated with the framework. </p>"
         },
         "complianceType":{
           "shape":"ComplianceType",
@@ -1173,11 +1236,11 @@
         },
         "controlsCount":{
           "shape":"ControlsCount",
-          "documentation":"<p> The number of controls associated with the specified framework. </p>"
+          "documentation":"<p> The number of controls that are associated with the framework. </p>"
         },
         "controlSetsCount":{
           "shape":"ControlSetsCount",
-          "documentation":"<p> The number of control sets associated with the specified framework. </p>"
+          "documentation":"<p> The number of control sets that are associated with the framework. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -1188,7 +1251,77 @@
           "documentation":"<p> Specifies when the framework was most recently updated. </p>"
         }
       },
-      "documentation":"<p> The metadata associated with a standard or custom framework. </p>"
+      "documentation":"<p> The metadata that's associated with a standard framework or a custom framework. </p>"
+    },
+    "AssessmentFrameworkShareRequest":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p> The unique identifier for the share request. </p>"
+        },
+        "frameworkId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the shared custom framework. </p>"
+        },
+        "frameworkName":{
+          "shape":"FrameworkName",
+          "documentation":"<p> The name of the custom framework that the share request is for. </p>"
+        },
+        "frameworkDescription":{
+          "shape":"FrameworkDescription",
+          "documentation":"<p>The description of the shared custom framework.</p>"
+        },
+        "status":{
+          "shape":"ShareRequestStatus",
+          "documentation":"<p> The status of the share request. </p>"
+        },
+        "sourceAccount":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account of the sender. </p>"
+        },
+        "destinationAccount":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account of the recipient. </p>"
+        },
+        "destinationRegion":{
+          "shape":"Region",
+          "documentation":"<p> The Amazon Web Services Region of the recipient. </p>"
+        },
+        "expirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time when the share request expires. </p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time when the share request was created. </p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p> Specifies when the share request was last updated. </p>"
+        },
+        "comment":{
+          "shape":"ShareRequestComment",
+          "documentation":"<p> An optional comment from the sender about the share request. </p>"
+        },
+        "standardControlsCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of standard controls that are part of the shared custom framework. </p>"
+        },
+        "customControlsCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of custom controls that are part of the shared custom framework.</p>"
+        },
+        "complianceType":{
+          "shape":"ComplianceType",
+          "documentation":"<p>The compliance type that the shared custom framework supports, such as CIS or HIPAA.</p>"
+        }
+      },
+      "documentation":"<p> Represents a share request for a custom framework in Audit Manager. </p>"
+    },
+    "AssessmentFrameworkShareRequestList":{
+      "type":"list",
+      "member":{"shape":"AssessmentFrameworkShareRequest"}
     },
     "AssessmentMetadata":{
       "type":"structure",
@@ -1207,7 +1340,7 @@
         },
         "complianceType":{
           "shape":"ComplianceType",
-          "documentation":"<p> The name of a compliance standard related to the assessment, such as PCI-DSS. </p>"
+          "documentation":"<p> The name of the compliance standard that's related to the assessment, such as PCI-DSS. </p>"
         },
         "status":{
           "shape":"AssessmentStatus",
@@ -1215,19 +1348,19 @@
         },
         "assessmentReportsDestination":{
           "shape":"AssessmentReportsDestination",
-          "documentation":"<p> The destination in which evidence reports are stored for the specified assessment. </p>"
+          "documentation":"<p> The destination that evidence reports are stored in for the assessment. </p>"
         },
         "scope":{
           "shape":"Scope",
-          "documentation":"<p> The wrapper of accounts and services in scope for the assessment. </p>"
+          "documentation":"<p> The wrapper of Amazon Web Services accounts and services that are in scope for the assessment. </p>"
         },
         "roles":{
           "shape":"Roles",
-          "documentation":"<p> The roles associated with the assessment. </p>"
+          "documentation":"<p> The roles that are associated with the assessment. </p>"
         },
         "delegations":{
           "shape":"Delegations",
-          "documentation":"<p> The delegations associated with the assessment. </p>"
+          "documentation":"<p> The delegations that are associated with the assessment. </p>"
         },
         "creationTime":{
           "shape":"Timestamp",
@@ -1238,7 +1371,7 @@
           "documentation":"<p> The time of the most recent update. </p>"
         }
       },
-      "documentation":"<p> The metadata associated with the specified assessment. </p>"
+      "documentation":"<p> The metadata that's associated with the specified assessment. </p>"
     },
     "AssessmentMetadataItem":{
       "type":"structure",
@@ -1253,7 +1386,7 @@
         },
         "complianceType":{
           "shape":"ComplianceType",
-          "documentation":"<p> The name of the compliance standard related to the assessment, such as PCI-DSS. </p>"
+          "documentation":"<p> The name of the compliance standard that's related to the assessment, such as PCI-DSS. </p>"
         },
         "status":{
           "shape":"AssessmentStatus",
@@ -1261,11 +1394,11 @@
         },
         "roles":{
           "shape":"Roles",
-          "documentation":"<p> The roles associated with the assessment. </p>"
+          "documentation":"<p> The roles that are associated with the assessment. </p>"
         },
         "delegations":{
           "shape":"Delegations",
-          "documentation":"<p> The delegations associated with the assessment. </p>"
+          "documentation":"<p> The delegations that are associated with the assessment. </p>"
         },
         "creationTime":{
           "shape":"Timestamp",
@@ -1276,7 +1409,7 @@
           "documentation":"<p> The time of the most recent update. </p>"
         }
       },
-      "documentation":"<p> A metadata object associated with an assessment in Audit Manager. </p>"
+      "documentation":"<p> A metadata object that's associated with an assessment in Audit Manager. </p>"
     },
     "AssessmentName":{
       "type":"string",
@@ -1289,11 +1422,11 @@
       "members":{
         "id":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified assessment report. </p>"
+          "documentation":"<p> The unique identifier for the assessment report. </p>"
         },
         "name":{
           "shape":"AssessmentReportName",
-          "documentation":"<p> The name given to the assessment report. </p>"
+          "documentation":"<p> The name that's given to the assessment report. </p>"
         },
         "description":{
           "shape":"AssessmentReportDescription",
@@ -1301,7 +1434,7 @@
         },
         "awsAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified account. </p>"
+          "documentation":"<p> The identifier for the specified Amazon Web Services account. </p>"
         },
         "assessmentId":{
           "shape":"UUID",
@@ -1324,7 +1457,7 @@
           "documentation":"<p> Specifies when the assessment report was created. </p>"
         }
       },
-      "documentation":"<p> A finalized document generated from an Audit Manager assessment. These reports summarize the relevant evidence collected for your audit, and link to the relevant evidence folders which are named and organized according to the controls specified in your assessment. </p>"
+      "documentation":"<p> A finalized document that's generated from an Audit Manager assessment. These reports summarize the relevant evidence that was collected for your audit, and link to the relevant evidence folders. These evidence folders are named and organized according to the controls that are specified in your assessment. </p>"
     },
     "AssessmentReportDescription":{
       "type":"string",
@@ -1344,11 +1477,11 @@
         },
         "errorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p> The error code returned by the <code>AssessmentReportEvidence</code> API. </p>"
+          "documentation":"<p> The error code that the <code>AssessmentReportEvidence</code> API returned. </p>"
         },
         "errorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p> The error message returned by the <code>AssessmentReportEvidence</code> API. </p>"
+          "documentation":"<p> The error message that the <code>AssessmentReportEvidence</code> API returned. </p>"
         }
       },
       "documentation":"<p> An error entity for the <code>AssessmentReportEvidence</code> API. This is used to provide more meaningful errors than a simple string message. </p>"
@@ -1370,7 +1503,7 @@
         },
         "description":{
           "shape":"AssessmentReportDescription",
-          "documentation":"<p> The description of the specified assessment report. </p>"
+          "documentation":"<p> The description of the assessment report. </p>"
         },
         "assessmentId":{
           "shape":"UUID",
@@ -1393,7 +1526,7 @@
           "documentation":"<p> Specifies when the assessment report was created. </p>"
         }
       },
-      "documentation":"<p> The metadata objects associated with the specified assessment report. </p>"
+      "documentation":"<p> The metadata objects that are associated with the specified assessment report. </p>"
     },
     "AssessmentReportName":{
       "type":"string",
@@ -1421,7 +1554,7 @@
           "documentation":"<p> The destination of the assessment report. </p>"
         }
       },
-      "documentation":"<p> The location in which Audit Manager saves assessment reports for the given assessment. </p>"
+      "documentation":"<p> The location where Audit Manager saves assessment reports for the given assessment. </p>"
     },
     "AssessmentReportsMetadata":{
       "type":"list",
@@ -1443,13 +1576,13 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which evidence is stored. </p>"
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>"
         }
       }
     },
@@ -1474,13 +1607,13 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which the evidence is stored. </p>"
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>"
         },
         "evidenceIds":{
           "shape":"EvidenceIds",
@@ -1493,11 +1626,11 @@
       "members":{
         "evidenceIds":{
           "shape":"EvidenceIds",
-          "documentation":"<p> The identifier for the evidence. </p>"
+          "documentation":"<p> The list of evidence identifiers. </p>"
         },
         "errors":{
           "shape":"AssessmentReportEvidenceErrors",
-          "documentation":"<p> A list of errors returned by the <code>BatchAssociateAssessmentReportEvidence</code> API. </p>"
+          "documentation":"<p> A list of errors that the <code>BatchAssociateAssessmentReportEvidence</code> API returned. </p>"
         }
       }
     },
@@ -1510,11 +1643,11 @@
         },
         "errorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p> The error code returned by the <code>BatchCreateDelegationByAssessment</code> API. </p>"
+          "documentation":"<p> The error code that the <code>BatchCreateDelegationByAssessment</code> API returned. </p>"
         },
         "errorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p> The error message returned by the <code>BatchCreateDelegationByAssessment</code> API. </p>"
+          "documentation":"<p> The error message that the <code>BatchCreateDelegationByAssessment</code> API returned. </p>"
         }
       },
       "documentation":"<p> An error entity for the <code>BatchCreateDelegationByAssessment</code> API. This is used to provide more meaningful errors than a simple string message. </p>"
@@ -1536,7 +1669,7 @@
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -1547,11 +1680,11 @@
       "members":{
         "delegations":{
           "shape":"Delegations",
-          "documentation":"<p> The delegations associated with the assessment. </p>"
+          "documentation":"<p> The delegations that are associated with the assessment. </p>"
         },
         "errors":{
           "shape":"BatchCreateDelegationByAssessmentErrors",
-          "documentation":"<p> A list of errors returned by the <code>BatchCreateDelegationByAssessment</code> API. </p>"
+          "documentation":"<p> A list of errors that the <code>BatchCreateDelegationByAssessment</code> API returned. </p>"
         }
       }
     },
@@ -1560,15 +1693,15 @@
       "members":{
         "delegationId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified delegation. </p>"
+          "documentation":"<p> The identifier for the delegation. </p>"
         },
         "errorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p> The error code returned by the <code>BatchDeleteDelegationByAssessment</code> API. </p>"
+          "documentation":"<p> The error code that the <code>BatchDeleteDelegationByAssessment</code> API returned. </p>"
         },
         "errorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p> The error message returned by the <code>BatchDeleteDelegationByAssessment</code> API. </p>"
+          "documentation":"<p> The error message that the <code>BatchDeleteDelegationByAssessment</code> API returned. </p>"
         }
       },
       "documentation":"<p> An error entity for the <code>BatchDeleteDelegationByAssessment</code> API. This is used to provide more meaningful errors than a simple string message. </p>"
@@ -1586,11 +1719,11 @@
       "members":{
         "delegationIds":{
           "shape":"DelegationIds",
-          "documentation":"<p> The identifiers for the specified delegations. </p>"
+          "documentation":"<p> The identifiers for the delegations. </p>"
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -1601,7 +1734,7 @@
       "members":{
         "errors":{
           "shape":"BatchDeleteDelegationByAssessmentErrors",
-          "documentation":"<p> A list of errors returned by the <code>BatchDeleteDelegationByAssessment</code> API. </p>"
+          "documentation":"<p> A list of errors that the <code>BatchDeleteDelegationByAssessment</code> API returned. </p>"
         }
       }
     },
@@ -1615,13 +1748,13 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which evidence is stored. </p>"
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>"
         },
         "evidenceIds":{
           "shape":"EvidenceIds",
@@ -1638,7 +1771,7 @@
         },
         "errors":{
           "shape":"AssessmentReportEvidenceErrors",
-          "documentation":"<p> A list of errors returned by the <code>BatchDisassociateAssessmentReportEvidence</code> API. </p>"
+          "documentation":"<p> A list of errors that the <code>BatchDisassociateAssessmentReportEvidence</code> API returned. </p>"
         }
       }
     },
@@ -1647,15 +1780,15 @@
       "members":{
         "manualEvidence":{
           "shape":"ManualEvidence",
-          "documentation":"<p> Manual evidence that cannot be collected automatically by Audit Manager. </p>"
+          "documentation":"<p> Manual evidence that can't be collected automatically by Audit Manager. </p>"
         },
         "errorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p> The error code returned by the <code>BatchImportEvidenceToAssessmentControl</code> API. </p>"
+          "documentation":"<p> The error code that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. </p>"
         },
         "errorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p> The error message returned by the <code>BatchImportEvidenceToAssessmentControl</code> API. </p>"
+          "documentation":"<p> The error message that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. </p>"
         }
       },
       "documentation":"<p> An error entity for the <code>BatchImportEvidenceToAssessmentControl</code> API. This is used to provide more meaningful errors than a simple string message. </p>"
@@ -1675,19 +1808,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         },
@@ -1702,7 +1835,7 @@
       "members":{
         "errors":{
           "shape":"BatchImportEvidenceToAssessmentControlErrors",
-          "documentation":"<p> A list of errors returned by the <code>BatchImportEvidenceToAssessmentControl</code> API. </p>"
+          "documentation":"<p> A list of errors that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. </p>"
         }
       }
     },
@@ -1712,26 +1845,26 @@
       "members":{
         "objectType":{
           "shape":"ObjectTypeEnum",
-          "documentation":"<p> The changelog object type, such as an assessment, control, or control set. </p>"
+          "documentation":"<p> The object that was changed, such as an assessment, control, or control set. </p>"
         },
         "objectName":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The name of the changelog object. </p>"
+          "documentation":"<p> The name of the object that changed. This could be the name of an assessment, control, or control set.</p>"
         },
         "action":{
           "shape":"ActionEnum",
-          "documentation":"<p> The action performed. </p>"
+          "documentation":"<p> The action that was performed. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p> The time of creation for the changelog object. </p>"
+          "documentation":"<p> The time when the action was performed and the changelog record was created. </p>"
         },
         "createdBy":{
           "shape":"IamArn",
           "documentation":"<p> The IAM user or role that performed the action. </p>"
         }
       },
-      "documentation":"<p> The record of a change within Audit Manager, such as a modified assessment, a delegated control set, and so on. </p>"
+      "documentation":"<p> The record of a change within Audit Manager. For example, this could be the status change of an assessment or the delegation of a control set. </p>"
     },
     "ChangeLogs":{
       "type":"list",
@@ -1747,7 +1880,7 @@
       "members":{
         "arn":{
           "shape":"AuditManagerArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the specified control. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the control. </p>"
         },
         "id":{
           "shape":"UUID",
@@ -1755,19 +1888,19 @@
         },
         "type":{
           "shape":"ControlType",
-          "documentation":"<p> The type of control, such as custom or standard. </p>"
+          "documentation":"<p> The type of control, such as a custom control or a standard control. </p>"
         },
         "name":{
           "shape":"ControlName",
-          "documentation":"<p> The name of the specified control. </p>"
+          "documentation":"<p> The name of the control. </p>"
         },
         "description":{
           "shape":"ControlDescription",
-          "documentation":"<p> The description of the specified control. </p>"
+          "documentation":"<p> The description of the control. </p>"
         },
         "testingInformation":{
           "shape":"TestingInformation",
-          "documentation":"<p> The steps to follow to determine if the control has been satisfied. </p>"
+          "documentation":"<p> The steps that you should follow to determine if the control has been satisfied. </p>"
         },
         "actionPlanTitle":{
           "shape":"ActionPlanTitle",
@@ -1775,15 +1908,15 @@
         },
         "actionPlanInstructions":{
           "shape":"ActionPlanInstructions",
-          "documentation":"<p> The recommended actions to carry out if the control is not fulfilled. </p>"
+          "documentation":"<p> The recommended actions to carry out if the control isn't fulfilled. </p>"
         },
         "controlSources":{
           "shape":"ControlSources",
-          "documentation":"<p> The data source that determines from where Audit Manager collects evidence for the control. </p>"
+          "documentation":"<p> The data source that determines where Audit Manager collects evidence from for the control. </p>"
         },
         "controlMappingSources":{
           "shape":"ControlMappingSources",
-          "documentation":"<p> The data mapping sources for the specified control. </p>"
+          "documentation":"<p> The data mapping sources for the control. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -1824,7 +1957,7 @@
           "documentation":"<p> The time when the comment was posted. </p>"
         }
       },
-      "documentation":"<p> A comment posted by a user on a control. This includes the author's name, the comment text, and a timestamp. </p>"
+      "documentation":"<p> A comment that's posted by a user on a control. This includes the author's name, the comment text, and a timestamp. </p>"
     },
     "ControlCommentBody":{
       "type":"string",
@@ -1845,19 +1978,19 @@
       "members":{
         "sourceId":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified source. </p>"
+          "documentation":"<p> The unique identifier for the source. </p>"
         },
         "sourceName":{
           "shape":"SourceName",
-          "documentation":"<p> The name of the specified source. </p>"
+          "documentation":"<p> The name of the source. </p>"
         },
         "sourceDescription":{
           "shape":"SourceDescription",
-          "documentation":"<p> The description of the specified source. </p>"
+          "documentation":"<p> The description of the source. </p>"
         },
         "sourceSetUpOption":{
           "shape":"SourceSetUpOption",
-          "documentation":"<p> The setup option for the data source, which reflects if the evidence collection is automated or manual. </p>"
+          "documentation":"<p> The setup option for the data source. This option reflects if the evidence collection is automated or manual. </p>"
         },
         "sourceType":{
           "shape":"SourceType",
@@ -1866,14 +1999,14 @@
         "sourceKeyword":{"shape":"SourceKeyword"},
         "sourceFrequency":{
           "shape":"SourceFrequency",
-          "documentation":"<p> The frequency of evidence collection for the specified control mapping source. </p>"
+          "documentation":"<p> The frequency of evidence collection for the control mapping source. </p>"
         },
         "troubleshootingText":{
           "shape":"TroubleshootingText",
-          "documentation":"<p> The instructions for troubleshooting the specified control. </p>"
+          "documentation":"<p> The instructions for troubleshooting the control. </p>"
         }
       },
-      "documentation":"<p> The data source that determines from where Audit Manager collects evidence for the control. </p>"
+      "documentation":"<p> The data source that determines where Audit Manager collects evidence from for the control. </p>"
     },
     "ControlMappingSources":{
       "type":"list",
@@ -1885,19 +2018,19 @@
       "members":{
         "arn":{
           "shape":"AuditManagerArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the specified control. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the control. </p>"
         },
         "id":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified control. </p>"
+          "documentation":"<p> The unique identifier for the control. </p>"
         },
         "name":{
           "shape":"ControlName",
-          "documentation":"<p> The name of the specified control. </p>"
+          "documentation":"<p> The name of the control. </p>"
         },
         "controlSources":{
           "shape":"ControlSources",
-          "documentation":"<p> The data source that determines from where Audit Manager collects evidence for the control. </p>"
+          "documentation":"<p> The data source that determines where Audit Manager collects evidence from for the control. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -1908,7 +2041,7 @@
           "documentation":"<p> Specifies when the control was most recently updated. </p>"
         }
       },
-      "documentation":"<p> The metadata associated with the specified standard or custom control. </p>"
+      "documentation":"<p> The metadata that's associated with the standard control or custom control. </p>"
     },
     "ControlMetadataList":{
       "type":"list",
@@ -1957,7 +2090,7 @@
       "type":"string",
       "max":300,
       "min":1,
-      "pattern":"^[^\\_]*$"
+      "pattern":"^[^\\\\\\_]*$"
     },
     "ControlSetStatus":{
       "type":"string",
@@ -2008,7 +2141,7 @@
           "documentation":"<p> The unique identifier of the control. </p>"
         }
       },
-      "documentation":"<p> Control entity attributes that uniquely identify an existing control to be added to a framework in Audit Manager. </p>"
+      "documentation":"<p> The control entity attributes that uniquely identify an existing control to be added to a framework in Audit Manager. </p>"
     },
     "CreateAssessmentFrameworkControlSet":{
       "type":"structure",
@@ -2016,14 +2149,14 @@
       "members":{
         "name":{
           "shape":"ControlSetName",
-          "documentation":"<p> The name of the specified control set. </p>"
+          "documentation":"<p> The name of the control set. </p>"
         },
         "controls":{
           "shape":"CreateAssessmentFrameworkControls",
-          "documentation":"<p> The list of controls within the control set. This does not contain the control set ID. </p>"
+          "documentation":"<p> The list of controls within the control set. This doesn't contain the control set ID. </p>"
         }
       },
-      "documentation":"<p> A <code>controlSet</code> entity that represents a collection of controls in Audit Manager. This does not contain the control set ID. </p>"
+      "documentation":"<p> A <code>controlSet</code> entity that represents a collection of controls in Audit Manager. This doesn't contain the control set ID. </p>"
     },
     "CreateAssessmentFrameworkControlSets":{
       "type":"list",
@@ -2056,11 +2189,11 @@
         },
         "controlSets":{
           "shape":"CreateAssessmentFrameworkControlSets",
-          "documentation":"<p> The control sets to be associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags associated with the framework. </p>"
+          "documentation":"<p> The tags that are associated with the framework. </p>"
         }
       }
     },
@@ -2069,7 +2202,7 @@
       "members":{
         "framework":{
           "shape":"Framework",
-          "documentation":"<p> The name of the new framework returned by the <code>CreateAssessmentFramework</code> API. </p>"
+          "documentation":"<p> The name of the new framework that the <code>CreateAssessmentFramework</code> API returned. </p>"
         }
       }
     },
@@ -2090,7 +2223,7 @@
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -2101,7 +2234,7 @@
       "members":{
         "assessmentReport":{
           "shape":"AssessmentReport",
-          "documentation":"<p> The new assessment report returned by the <code>CreateAssessmentReport</code> API. </p>"
+          "documentation":"<p> The new assessment report that the <code>CreateAssessmentReport</code> API returned. </p>"
         }
       }
     },
@@ -2125,20 +2258,20 @@
         },
         "assessmentReportsDestination":{
           "shape":"AssessmentReportsDestination",
-          "documentation":"<p> The assessment report storage destination for the specified assessment that is being created. </p>"
+          "documentation":"<p> The assessment report storage destination for the assessment that's being created. </p>"
         },
         "scope":{"shape":"Scope"},
         "roles":{
           "shape":"Roles",
-          "documentation":"<p> The list of roles for the specified assessment. </p>"
+          "documentation":"<p> The list of roles for the assessment. </p>"
         },
         "frameworkId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified framework. </p>"
+          "documentation":"<p> The identifier for the framework that the assessment will be created from. </p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags associated with the assessment. </p>"
+          "documentation":"<p> The tags that are associated with the assessment. </p>"
         }
       }
     },
@@ -2157,7 +2290,7 @@
         },
         "sourceDescription":{
           "shape":"SourceDescription",
-          "documentation":"<p> The description of the data source that determines from where Audit Manager collects evidence for the control. </p>"
+          "documentation":"<p> The description of the data source that determines where Audit Manager collects evidence from for the control. </p>"
         },
         "sourceSetUpOption":{
           "shape":"SourceSetUpOption",
@@ -2170,14 +2303,14 @@
         "sourceKeyword":{"shape":"SourceKeyword"},
         "sourceFrequency":{
           "shape":"SourceFrequency",
-          "documentation":"<p> The frequency of evidence collection for the specified control mapping source. </p>"
+          "documentation":"<p> The frequency of evidence collection for the control mapping source. </p>"
         },
         "troubleshootingText":{
           "shape":"TroubleshootingText",
-          "documentation":"<p> The instructions for troubleshooting the specified control. </p>"
+          "documentation":"<p> The instructions for troubleshooting the control. </p>"
         }
       },
-      "documentation":"<p> Control mapping fields that represent the source for evidence collection, along with related parameters and metadata. This does not contain <code>mappingID</code>. </p>"
+      "documentation":"<p> The control mapping fields that represent the source for evidence collection, along with related parameters and metadata. This doesn't contain <code>mappingID</code>. </p>"
     },
     "CreateControlMappingSources":{
       "type":"list",
@@ -2201,7 +2334,7 @@
         },
         "testingInformation":{
           "shape":"TestingInformation",
-          "documentation":"<p> The steps to follow to determine if the control has been satisfied. </p>"
+          "documentation":"<p> The steps to follow to determine if the control is satisfied. </p>"
         },
         "actionPlanTitle":{
           "shape":"ActionPlanTitle",
@@ -2209,15 +2342,15 @@
         },
         "actionPlanInstructions":{
           "shape":"ActionPlanInstructions",
-          "documentation":"<p> The recommended actions to carry out if the control is not fulfilled. </p>"
+          "documentation":"<p> The recommended actions to carry out if the control isn't fulfilled. </p>"
         },
         "controlMappingSources":{
           "shape":"CreateControlMappingSources",
-          "documentation":"<p> The data mapping sources for the specified control. </p>"
+          "documentation":"<p> The data mapping sources for the control. </p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags associated with the control. </p>"
+          "documentation":"<p> The tags that are associated with the control. </p>"
         }
       }
     },
@@ -2226,7 +2359,7 @@
       "members":{
         "control":{
           "shape":"Control",
-          "documentation":"<p> The new control returned by the <code>CreateControl</code> API. </p>"
+          "documentation":"<p> The new control that the <code>CreateControl</code> API returned. </p>"
         }
       }
     },
@@ -2235,7 +2368,7 @@
       "members":{
         "comment":{
           "shape":"DelegationComment",
-          "documentation":"<p> A comment related to the delegation request. </p>"
+          "documentation":"<p> A comment that's related to the delegation request. </p>"
         },
         "controlSetId":{
           "shape":"ControlSetId",
@@ -2250,7 +2383,7 @@
           "documentation":"<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>"
         }
       },
-      "documentation":"<p> A collection of attributes used to create a delegation for an assessment in Audit Manager. </p>"
+      "documentation":"<p> A collection of attributes that's used to create a delegation for an assessment in Audit Manager. </p>"
     },
     "CreateDelegationRequests":{
       "type":"list",
@@ -2273,11 +2406,11 @@
         },
         "assessmentName":{
           "shape":"AssessmentName",
-          "documentation":"<p> The name of the associated assessment. </p>"
+          "documentation":"<p> The name of the assessment that's associated with the delegation. </p>"
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the associated assessment. </p>"
+          "documentation":"<p> The identifier for the assessment that's associated with the delegation. </p>"
         },
         "status":{
           "shape":"DelegationStatus",
@@ -2301,11 +2434,11 @@
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the associated control set. </p>"
+          "documentation":"<p> The identifier for the control set that's associated with the delegation. </p>"
         },
         "comment":{
           "shape":"DelegationComment",
-          "documentation":"<p> The comment related to the delegation. </p>"
+          "documentation":"<p> The comment that's related to the delegation. </p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -2338,11 +2471,11 @@
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified assessment. </p>"
+          "documentation":"<p> The unique identifier for the assessment. </p>"
         },
         "status":{
           "shape":"DelegationStatus",
-          "documentation":"<p> The current status of the delgation. </p>"
+          "documentation":"<p> The current status of the delegation. </p>"
         },
         "roleArn":{
           "shape":"IamArn",
@@ -2354,10 +2487,10 @@
         },
         "controlSetName":{
           "shape":"NonEmptyString",
-          "documentation":"<p> Specifies the name of the control set delegated for review. </p>"
+          "documentation":"<p> Specifies the name of the control set that was delegated for review. </p>"
         }
       },
-      "documentation":"<p> The metadata associated with the specified delegation. </p>"
+      "documentation":"<p> The metadata that's associated with the delegation. </p>"
     },
     "DelegationMetadataList":{
       "type":"list",
@@ -2381,13 +2514,39 @@
       "members":{
         "frameworkId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified framework. </p>",
+          "documentation":"<p> The identifier for the framework. </p>",
           "location":"uri",
           "locationName":"frameworkId"
         }
       }
     },
     "DeleteAssessmentFrameworkResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAssessmentFrameworkShareRequest":{
+      "type":"structure",
+      "required":[
+        "requestId",
+        "requestType"
+      ],
+      "members":{
+        "requestId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the share request to be deleted.</p>",
+          "location":"uri",
+          "locationName":"requestId"
+        },
+        "requestType":{
+          "shape":"ShareRequestType",
+          "documentation":"<p>Specifies whether the share request is a sent request or a received request.</p>",
+          "location":"querystring",
+          "locationName":"requestType"
+        }
+      }
+    },
+    "DeleteAssessmentFrameworkShareResponse":{
       "type":"structure",
       "members":{
       }
@@ -2401,7 +2560,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
@@ -2424,7 +2583,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -2441,7 +2600,7 @@
       "members":{
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         }
@@ -2471,7 +2630,7 @@
       "members":{
         "adminAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified administrator account. </p>"
+          "documentation":"<p> The identifier for the administrator account. </p>"
         }
       }
     },
@@ -2489,7 +2648,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
@@ -2531,11 +2690,11 @@
       "members":{
         "dataSource":{
           "shape":"String",
-          "documentation":"<p> The data source from which the specified evidence was collected. </p>"
+          "documentation":"<p> The data source where the evidence was collected from. </p>"
         },
         "evidenceAwsAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified account. </p>"
+          "documentation":"<p> The identifier for the Amazon Web Services account. </p>"
         },
         "time":{
           "shape":"Timestamp",
@@ -2543,11 +2702,11 @@
         },
         "eventSource":{
           "shape":"AWSServiceName",
-          "documentation":"<p> The Amazon Web Service from which the evidence is collected. </p>"
+          "documentation":"<p> The Amazon Web Service that the evidence is collected from. </p>"
         },
         "eventName":{
           "shape":"EventName",
-          "documentation":"<p> The name of the specified evidence event. </p>"
+          "documentation":"<p> The name of the evidence event. </p>"
         },
         "evidenceByType":{
           "shape":"String",
@@ -2555,15 +2714,15 @@
         },
         "resourcesIncluded":{
           "shape":"Resources",
-          "documentation":"<p> The list of resources assessed to generate the evidence. </p>"
+          "documentation":"<p> The list of resources that are assessed to generate the evidence. </p>"
         },
         "attributes":{
           "shape":"EvidenceAttributes",
-          "documentation":"<p> The names and values used by the evidence event, including an attribute name (such as <code>allowUsersToChangePassword</code>) and value (such as <code>true</code> or <code>false</code>). </p>"
+          "documentation":"<p> The names and values that are used by the evidence event. This includes an attribute name (such as <code>allowUsersToChangePassword</code>) and value (such as <code>true</code> or <code>false</code>). </p>"
         },
         "iamId":{
           "shape":"IamArn",
-          "documentation":"<p> The unique identifier for the IAM user or role associated with the evidence. </p>"
+          "documentation":"<p> The unique identifier for the IAM user or role that's associated with the evidence. </p>"
         },
         "complianceCheck":{
           "shape":"String",
@@ -2571,15 +2730,15 @@
         },
         "awsOrganization":{
           "shape":"String",
-          "documentation":"<p> The account from which the evidence is collected, and its organization path. </p>"
+          "documentation":"<p> The Amazon Web Services account that the evidence is collected from, and its organization path. </p>"
         },
         "awsAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified account. </p>"
+          "documentation":"<p> The identifier for the Amazon Web Services account. </p>"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which the evidence is stored. </p>"
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>"
         },
         "id":{
           "shape":"UUID",
@@ -2632,19 +2791,19 @@
       "members":{
         "arn":{
           "shape":"AuditManagerArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the specified framework. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the framework. </p>"
         },
         "id":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the specified framework. </p>"
+          "documentation":"<p> The unique identifier for the framework. </p>"
         },
         "name":{
           "shape":"FrameworkName",
-          "documentation":"<p> The name of the specified framework. </p>"
+          "documentation":"<p> The name of the framework. </p>"
         },
         "type":{
           "shape":"FrameworkType",
-          "documentation":"<p> The framework type, such as custom or standard. </p>"
+          "documentation":"<p> The framework type, such as a custom framework or a standard framework. </p>"
         },
         "complianceType":{
           "shape":"ComplianceType",
@@ -2652,19 +2811,19 @@
         },
         "description":{
           "shape":"FrameworkDescription",
-          "documentation":"<p> The description of the specified framework. </p>"
+          "documentation":"<p> The description of the framework. </p>"
         },
         "logo":{
           "shape":"Filename",
-          "documentation":"<p> The logo associated with the framework. </p>"
+          "documentation":"<p> The logo that's associated with the framework. </p>"
         },
         "controlSources":{
           "shape":"ControlSources",
-          "documentation":"<p> The sources from which Audit Manager collects evidence for the control. </p>"
+          "documentation":"<p> The sources that Audit Manager collects evidence from for the control. </p>"
         },
         "controlSets":{
           "shape":"ControlSets",
-          "documentation":"<p> The control sets associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -2684,10 +2843,10 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags associated with the framework. </p>"
+          "documentation":"<p> The tags that are associated with the framework. </p>"
         }
       },
-      "documentation":"<p> The file used to structure and automate Audit Manager assessments for a given compliance standard. </p>"
+      "documentation":"<p> The file that's used to structure and automate Audit Manager assessments for a given compliance standard. </p>"
     },
     "FrameworkDescription":{
       "type":"string",
@@ -2708,14 +2867,14 @@
         },
         "logo":{
           "shape":"Filename",
-          "documentation":"<p> The logo associated with the framework. </p>"
+          "documentation":"<p> The logo that's associated with the framework. </p>"
         },
         "complianceType":{
           "shape":"ComplianceType",
-          "documentation":"<p> The compliance standard associated with the framework, such as PCI-DSS or HIPAA. </p>"
+          "documentation":"<p> The compliance standard that's associated with the framework. For example, this could be PCI DSS or HIPAA. </p>"
         }
       },
-      "documentation":"<p> The metadata of a framework, such as the name, ID, description, and so on. </p>"
+      "documentation":"<p> The metadata of a framework, such as the name, ID, or description. </p>"
     },
     "FrameworkMetadataList":{
       "type":"list",
@@ -2750,7 +2909,7 @@
       "members":{
         "status":{
           "shape":"AccountStatus",
-          "documentation":"<p> The status of the specified account. </p>"
+          "documentation":"<p> The status of the Amazon Web Services account. </p>"
         }
       }
     },
@@ -2760,7 +2919,7 @@
       "members":{
         "frameworkId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified framework. </p>",
+          "documentation":"<p> The identifier for the framework. </p>",
           "location":"uri",
           "locationName":"frameworkId"
         }
@@ -2771,7 +2930,7 @@
       "members":{
         "framework":{
           "shape":"Framework",
-          "documentation":"<p> The framework returned by the <code>GetAssessmentFramework</code> API. </p>"
+          "documentation":"<p> The framework that the <code>GetAssessmentFramework</code> API returned. </p>"
         }
       }
     },
@@ -2790,7 +2949,7 @@
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -2808,7 +2967,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -2827,31 +2986,31 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"querystring",
           "locationName":"controlSetId"
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"querystring",
           "locationName":"controlId"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2866,7 +3025,7 @@
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -2876,7 +3035,7 @@
       "members":{
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         }
@@ -2887,7 +3046,7 @@
       "members":{
         "control":{
           "shape":"Control",
-          "documentation":"<p> The name of the control returned by the <code>GetControl</code> API. </p>"
+          "documentation":"<p> The name of the control that the <code>GetControl</code> API returned. </p>"
         }
       }
     },
@@ -2896,13 +3055,13 @@
       "members":{
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2913,11 +3072,11 @@
       "members":{
         "delegations":{
           "shape":"DelegationMetadataList",
-          "documentation":"<p> The list of delegations returned by the <code>GetDelegations</code> API. </p>"
+          "documentation":"<p> The list of delegations that the <code>GetDelegations</code> API returned. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -2931,7 +3090,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
@@ -2943,19 +3102,19 @@
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The unique identifier for the folder in which the evidence is stored. </p>",
+          "documentation":"<p> The unique identifier for the folder that the evidence is stored in. </p>",
           "location":"uri",
           "locationName":"evidenceFolderId"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2966,11 +3125,11 @@
       "members":{
         "evidence":{
           "shape":"EvidenceList",
-          "documentation":"<p> The list of evidence returned by the <code>GetEvidenceByEvidenceFolder</code> API. </p>"
+          "documentation":"<p> The list of evidence that the <code>GetEvidenceByEvidenceFolder</code> API returned. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -2984,19 +3143,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which the evidence is stored. </p>",
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>",
           "location":"uri",
           "locationName":"evidenceFolderId"
         }
@@ -3007,7 +3166,7 @@
       "members":{
         "evidenceFolder":{
           "shape":"AssessmentEvidenceFolder",
-          "documentation":"<p> The folder in which evidence is stored. </p>"
+          "documentation":"<p> The folder that the evidence is stored in. </p>"
         }
       }
     },
@@ -3021,31 +3180,31 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3056,11 +3215,11 @@
       "members":{
         "evidenceFolders":{
           "shape":"AssessmentEvidenceFolders",
-          "documentation":"<p> The list of evidence folders returned by the <code>GetEvidenceFoldersByAssessmentControl</code> API. </p>"
+          "documentation":"<p> The list of evidence folders that the <code>GetEvidenceFoldersByAssessmentControl</code> API returned. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3070,19 +3229,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3093,11 +3252,11 @@
       "members":{
         "evidenceFolders":{
           "shape":"AssessmentEvidenceFolders",
-          "documentation":"<p> The list of evidence folders returned by the <code>GetEvidenceFoldersByAssessment</code> API. </p>"
+          "documentation":"<p> The list of evidence folders that the <code>GetEvidenceFoldersByAssessment</code> API returned. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3112,19 +3271,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which the evidence is stored. </p>",
+          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>",
           "location":"uri",
           "locationName":"evidenceFolderId"
         },
@@ -3141,7 +3300,7 @@
       "members":{
         "evidence":{
           "shape":"Evidence",
-          "documentation":"<p> The evidence returned by the <code>GetEvidenceResponse</code> API. </p>"
+          "documentation":"<p> The evidence that the <code>GetEvidenceResponse</code> API returned. </p>"
         }
       }
     },
@@ -3155,11 +3314,11 @@
       "members":{
         "adminAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified administrator account. </p>"
+          "documentation":"<p> The identifier for the administrator account. </p>"
         },
         "organizationId":{
           "shape":"organizationId",
-          "documentation":"<p> The identifier for the specified organization. </p>"
+          "documentation":"<p> The identifier for the organization. </p>"
         }
       }
     },
@@ -3173,7 +3332,7 @@
       "members":{
         "serviceMetadata":{
           "shape":"ServiceMetadataList",
-          "documentation":"<p> The metadata associated with the Amazon Web Service. </p>"
+          "documentation":"<p> The metadata that's associated with the Amazon Web Service. </p>"
         }
       }
     },
@@ -3248,25 +3407,62 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9\\s-_()\\[\\]]+$"
     },
+    "ListAssessmentFrameworkShareRequestsRequest":{
+      "type":"structure",
+      "required":["requestType"],
+      "members":{
+        "requestType":{
+          "shape":"ShareRequestType",
+          "documentation":"<p> Specifies whether the share request is a sent request or a received request.</p>",
+          "location":"querystring",
+          "locationName":"requestType"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAssessmentFrameworkShareRequestsResponse":{
+      "type":"structure",
+      "members":{
+        "assessmentFrameworkShareRequests":{
+          "shape":"AssessmentFrameworkShareRequestList",
+          "documentation":"<p> The list of share requests that the <code>ListAssessmentFrameworkShareRequests</code> API returned. </p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
+        }
+      }
+    },
     "ListAssessmentFrameworksRequest":{
       "type":"structure",
       "required":["frameworkType"],
       "members":{
         "frameworkType":{
           "shape":"FrameworkType",
-          "documentation":"<p> The type of framework, such as standard or custom. </p>",
+          "documentation":"<p> The type of framework, such as a standard framework or a custom framework. </p>",
           "location":"querystring",
           "locationName":"frameworkType"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3277,11 +3473,11 @@
       "members":{
         "frameworkMetadataList":{
           "shape":"FrameworkMetadataList",
-          "documentation":"<p> The list of metadata objects for the specified framework. </p>"
+          "documentation":"<p> The list of metadata objects for the framework. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3294,13 +3490,13 @@
       "members":{
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3311,11 +3507,11 @@
       "members":{
         "assessmentReports":{
           "shape":"AssessmentReportsMetadata",
-          "documentation":"<p> The list of assessment reports returned by the <code>ListAssessmentReports</code> API. </p>"
+          "documentation":"<p> The list of assessment reports that the <code>ListAssessmentReports</code> API returned. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3324,13 +3520,13 @@
       "members":{
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3341,11 +3537,11 @@
       "members":{
         "assessmentMetadata":{
           "shape":"ListAssessmentMetadata",
-          "documentation":"<p> The metadata associated with the assessment. </p>"
+          "documentation":"<p> The metadata that's associated with the assessment. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3355,19 +3551,19 @@
       "members":{
         "controlType":{
           "shape":"ControlType",
-          "documentation":"<p> The type of control, such as standard or custom. </p>",
+          "documentation":"<p> The type of control, such as a standard control or a custom control. </p>",
           "location":"querystring",
           "locationName":"controlType"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3378,11 +3574,11 @@
       "members":{
         "controlMetadataList":{
           "shape":"ControlMetadataList",
-          "documentation":"<p> The list of control metadata objects returned by the <code>ListControls</code> API. </p>"
+          "documentation":"<p> The list of control metadata objects that the <code>ListControls</code> API returned. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3392,19 +3588,19 @@
       "members":{
         "source":{
           "shape":"SourceType",
-          "documentation":"<p> The control mapping data source to which the keywords apply. </p>",
+          "documentation":"<p> The control mapping data source that the keywords apply to. </p>",
           "location":"querystring",
           "locationName":"source"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3415,11 +3611,11 @@
       "members":{
         "keywords":{
           "shape":"Keywords",
-          "documentation":"<p> The list of keywords for the specified event mapping source. </p>"
+          "documentation":"<p> The list of keywords for the event mapping source. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3428,13 +3624,13 @@
       "members":{
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>",
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results per page, or per API request call. </p>",
+          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3449,7 +3645,7 @@
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token used to fetch the next set of results. </p>"
+          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3459,7 +3655,7 @@
       "members":{
         "resourceArn":{
           "shape":"AuditManagerArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the specified resource. </p>",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the resource. </p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -3470,7 +3666,7 @@
       "members":{
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The list of tags returned by the <code>ListTagsForResource</code> API. </p>"
+          "documentation":"<p> The list of tags that the <code>ListTagsForResource</code> API returned. </p>"
         }
       }
     },
@@ -3482,7 +3678,7 @@
           "documentation":"<p> The Amazon S3 URL that points to a manual evidence object. </p>"
         }
       },
-      "documentation":"<p> Evidence that is uploaded to Audit Manager manually. </p>"
+      "documentation":"<p> Evidence that's uploaded to Audit Manager manually. </p>"
     },
     "ManualEvidenceList":{
       "type":"list",
@@ -3511,7 +3707,7 @@
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>"
+          "documentation":"<p> The identifier for the assessment. </p>"
         },
         "assessmentName":{
           "shape":"AssessmentName",
@@ -3519,7 +3715,7 @@
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>"
+          "documentation":"<p> The identifier for the control set. </p>"
         },
         "controlSetName":{
           "shape":"NonEmptyString",
@@ -3538,12 +3734,13 @@
           "documentation":"<p> The sender of the notification. </p>"
         }
       },
-      "documentation":"<p> The notification used to inform a user of an update in Audit Manager. For example, this includes the notification that is sent when a control set is delegated for review. </p>"
+      "documentation":"<p> The notification that informs a user of an update in Audit Manager. For example, this includes the notification that's sent when a control set is delegated for review. </p>"
     },
     "Notifications":{
       "type":"list",
       "member":{"shape":"Notification"}
     },
+    "NullableInteger":{"type":"integer"},
     "ObjectTypeEnum":{
       "type":"string",
       "enum":[
@@ -3553,6 +3750,10 @@
         "DELEGATION",
         "ASSESSMENT_REPORT"
       ]
+    },
+    "Region":{
+      "type":"string",
+      "pattern":"^[a-z]{2}-[a-z]+-[0-9]{1}$"
     },
     "RegisterAccountRequest":{
       "type":"structure",
@@ -3582,7 +3783,7 @@
       "members":{
         "adminAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified delegated administrator account. </p>"
+          "documentation":"<p> The identifier for the delegated administrator account. </p>"
         }
       }
     },
@@ -3591,11 +3792,11 @@
       "members":{
         "adminAccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The identifier for the specified delegated administrator account. </p>"
+          "documentation":"<p> The identifier for the delegated administrator account. </p>"
         },
         "organizationId":{
           "shape":"organizationId",
-          "documentation":"<p> The identifier for the specified organization. </p>"
+          "documentation":"<p> The identifier for the organization. </p>"
         }
       }
     },
@@ -3604,14 +3805,14 @@
       "members":{
         "arn":{
           "shape":"GenericArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) for the specified resource. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) for the resource. </p>"
         },
         "value":{
           "shape":"String",
-          "documentation":"<p> The value of the specified resource. </p>"
+          "documentation":"<p> The value of the resource. </p>"
         }
       },
-      "documentation":"<p> A system asset that is evaluated in an Audit Manager assessment. </p>"
+      "documentation":"<p> A system asset that's evaluated in an Audit Manager assessment. </p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3624,14 +3825,14 @@
         "message":{"shape":"String"},
         "resourceId":{
           "shape":"String",
-          "documentation":"<p> The unique identifier for the specified resource. </p>"
+          "documentation":"<p> The unique identifier for the resource. </p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p> The type of resource affected by the error. </p>"
+          "documentation":"<p> The type of resource that's affected by the error. </p>"
         }
       },
-      "documentation":"<p> The resource specified in the request cannot be found. </p>",
+      "documentation":"<p> The resource that's specified in the request can't be found. </p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
@@ -3651,7 +3852,7 @@
           "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role. </p>"
         }
       },
-      "documentation":"<p> The wrapper that contains the Audit Manager role information of the current user, such as the role type and IAM Amazon Resource Name (ARN). </p>"
+      "documentation":"<p> The wrapper that contains the Audit Manager role information of the current user. This includes the role type and IAM Amazon Resource Name (ARN). </p>"
     },
     "RoleType":{
       "type":"string",
@@ -3681,14 +3882,14 @@
       "members":{
         "awsAccounts":{
           "shape":"AWSAccounts",
-          "documentation":"<p> The accounts included in the scope of the assessment. </p>"
+          "documentation":"<p> The Amazon Web Services accounts that are included in the scope of the assessment. </p>"
         },
         "awsServices":{
           "shape":"AWSServices",
-          "documentation":"<p> The Amazon Web Services services included in the scope of the assessment. </p>"
+          "documentation":"<p> The Amazon Web Services services that are included in the scope of the assessment. </p>"
         }
       },
-      "documentation":"<p> The wrapper that contains the accounts and services in scope for the assessment. </p>"
+      "documentation":"<p> The wrapper that contains the Amazon Web Services accounts and services that are in scope for the assessment. </p>"
     },
     "ServiceMetadata":{
       "type":"structure",
@@ -3703,14 +3904,14 @@
         },
         "description":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The description of the specified Amazon Web Service. </p>"
+          "documentation":"<p> The description of the Amazon Web Service. </p>"
         },
         "category":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The category in which the Amazon Web Service belongs, such as compute, storage, database, and so on. </p>"
+          "documentation":"<p> The category that the Amazon Web Service belongs to, such as compute, storage, or database. </p>"
         }
       },
-      "documentation":"<p> The metadata associated with the specified Amazon Web Service. </p>"
+      "documentation":"<p> The metadata that's associated with the Amazon Web Service. </p>"
     },
     "ServiceMetadataList":{
       "type":"list",
@@ -3752,6 +3953,39 @@
       },
       "documentation":"<p> The settings object that holds all supported Audit Manager settings. </p>"
     },
+    "ShareRequestAction":{
+      "type":"string",
+      "enum":[
+        "ACCEPT",
+        "DECLINE",
+        "REVOKE"
+      ]
+    },
+    "ShareRequestComment":{
+      "type":"string",
+      "max":500,
+      "pattern":"^[\\w\\W\\s\\S]*$"
+    },
+    "ShareRequestStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "REPLICATING",
+        "SHARED",
+        "EXPIRING",
+        "FAILED",
+        "EXPIRED",
+        "DECLINED",
+        "REVOKED"
+      ]
+    },
+    "ShareRequestType":{
+      "type":"string",
+      "enum":[
+        "SENT",
+        "RECEIVED"
+      ]
+    },
     "SnsArn":{
       "type":"string",
       "max":2048,
@@ -3776,11 +4010,11 @@
       "members":{
         "keywordInputType":{
           "shape":"KeywordInputType",
-          "documentation":"<p> The method of input for the specified keyword. </p>"
+          "documentation":"<p> The method of input for the keyword. </p>"
         },
         "keywordValue":{
           "shape":"KeywordValue",
-          "documentation":"<p> The value of the keyword used to search CloudTrail logs, Config rules, Security Hub checks, and Amazon Web Services API names when mapping a control data source. </p>"
+          "documentation":"<p> The value of the keyword that's used to search CloudTrail logs, Config rules, Security Hub checks, and Amazon Web Services API names when mapping a control data source. </p>"
         }
       },
       "documentation":"<p> The keyword to search for in CloudTrail logs, Config rules, Security Hub checks, and Amazon Web Services API names. </p>"
@@ -3806,6 +4040,43 @@
         "AWS_API_Call",
         "MANUAL"
       ]
+    },
+    "StartAssessmentFrameworkShareRequest":{
+      "type":"structure",
+      "required":[
+        "frameworkId",
+        "destinationAccount",
+        "destinationRegion"
+      ],
+      "members":{
+        "frameworkId":{
+          "shape":"UUID",
+          "documentation":"<p> The unique identifier for the custom framework to be shared. </p>",
+          "location":"uri",
+          "locationName":"frameworkId"
+        },
+        "destinationAccount":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account of the recipient. </p>"
+        },
+        "destinationRegion":{
+          "shape":"Region",
+          "documentation":"<p> The Amazon Web Services Region of the recipient. </p>"
+        },
+        "comment":{
+          "shape":"ShareRequestComment",
+          "documentation":"<p> An optional comment from the sender about the share request. </p>"
+        }
+      }
+    },
+    "StartAssessmentFrameworkShareResponse":{
+      "type":"structure",
+      "members":{
+        "assessmentFrameworkShareRequest":{
+          "shape":"AssessmentFrameworkShareRequest",
+          "documentation":"<p> The share request that's created by the <code>StartAssessmentFrameworkShare</code> API. </p>"
+        }
+      }
     },
     "String":{
       "type":"string",
@@ -3841,13 +4112,13 @@
       "members":{
         "resourceArn":{
           "shape":"AuditManagerArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the specified resource. </p>",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the resource. </p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags to be associated with the resource. </p>"
+          "documentation":"<p> The tags that are associated with the resource. </p>"
         }
       }
     },
@@ -3890,14 +4161,14 @@
       "members":{
         "hyperlinkName":{
           "shape":"HyperlinkName",
-          "documentation":"<p> The name or word used as a hyperlink to the URL. </p>"
+          "documentation":"<p> The name or word that's used as a hyperlink to the URL. </p>"
         },
         "link":{
           "shape":"UrlLink",
           "documentation":"<p> The unique identifier for the internet resource. </p>"
         }
       },
-      "documentation":"<p> A uniform resource locator, used as a unique identifier to locate a resource on the internet. </p>"
+      "documentation":"<p> Short for uniform resource locator. A URL is used as a unique identifier to locate a resource on the internet. </p>"
     },
     "UUID":{
       "type":"string",
@@ -3941,29 +4212,29 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         },
         "controlStatus":{
           "shape":"ControlStatus",
-          "documentation":"<p> The status of the specified control. </p>"
+          "documentation":"<p> The status of the control. </p>"
         },
         "commentBody":{
           "shape":"ControlCommentBody",
-          "documentation":"<p> The comment body text for the specified control. </p>"
+          "documentation":"<p> The comment body text for the control. </p>"
         }
       }
     },
@@ -3972,7 +4243,7 @@
       "members":{
         "control":{
           "shape":"AssessmentControl",
-          "documentation":"<p> The name of the updated control set returned by the <code>UpdateAssessmentControl</code> API. </p>"
+          "documentation":"<p> The name of the updated control set that the <code>UpdateAssessmentControl</code> API returned. </p>"
         }
       }
     },
@@ -3987,23 +4258,23 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"String",
-          "documentation":"<p> The identifier for the specified control set. </p>",
+          "documentation":"<p> The identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "status":{
           "shape":"ControlSetStatus",
-          "documentation":"<p> The status of the control set that is being updated. </p>"
+          "documentation":"<p> The status of the control set that's being updated. </p>"
         },
         "comment":{
           "shape":"DelegationComment",
-          "documentation":"<p> The comment related to the status update. </p>"
+          "documentation":"<p> The comment that's related to the status update. </p>"
         }
       }
     },
@@ -4012,7 +4283,7 @@
       "members":{
         "controlSet":{
           "shape":"AssessmentControlSet",
-          "documentation":"<p> The name of the updated control set returned by the <code>UpdateAssessmentControlSetStatus</code> API. </p>"
+          "documentation":"<p> The name of the updated control set that the <code>UpdateAssessmentControlSetStatus</code> API returned. </p>"
         }
       }
     },
@@ -4030,10 +4301,10 @@
         },
         "controls":{
           "shape":"CreateAssessmentFrameworkControls",
-          "documentation":"<p> The list of controls contained within the control set. </p>"
+          "documentation":"<p> The list of controls that are contained within the control set. </p>"
         }
       },
-      "documentation":"<p> A <code>controlSet</code> entity that represents a collection of controls in Audit Manager. This does not contain the control set ID. </p>"
+      "documentation":"<p> A <code>controlSet</code> entity that represents a collection of controls in Audit Manager. This doesn't contain the control set ID. </p>"
     },
     "UpdateAssessmentFrameworkControlSets":{
       "type":"list",
@@ -4049,7 +4320,7 @@
       "members":{
         "frameworkId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified framework. </p>",
+          "documentation":"<p> The identifier for the framework. </p>",
           "location":"uri",
           "locationName":"frameworkId"
         },
@@ -4059,7 +4330,7 @@
         },
         "description":{
           "shape":"FrameworkDescription",
-          "documentation":"<p> The description of the framework that is to be updated. </p>"
+          "documentation":"<p> The description of the updated framework. </p>"
         },
         "complianceType":{
           "shape":"ComplianceType",
@@ -4067,7 +4338,7 @@
         },
         "controlSets":{
           "shape":"UpdateAssessmentFrameworkControlSets",
-          "documentation":"<p> The control sets associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p>"
         }
       }
     },
@@ -4076,7 +4347,40 @@
       "members":{
         "framework":{
           "shape":"Framework",
-          "documentation":"<p> The name of the specified framework. </p>"
+          "documentation":"<p> The name of the framework. </p>"
+        }
+      }
+    },
+    "UpdateAssessmentFrameworkShareRequest":{
+      "type":"structure",
+      "required":[
+        "requestId",
+        "requestType",
+        "action"
+      ],
+      "members":{
+        "requestId":{
+          "shape":"UUID",
+          "documentation":"<p> The unique identifier for the share request. </p>",
+          "location":"uri",
+          "locationName":"requestId"
+        },
+        "requestType":{
+          "shape":"ShareRequestType",
+          "documentation":"<p>Specifies whether the share request is a sent request or a received request.</p>"
+        },
+        "action":{
+          "shape":"ShareRequestAction",
+          "documentation":"<p>Specifies the update action for the share request.</p>"
+        }
+      }
+    },
+    "UpdateAssessmentFrameworkShareResponse":{
+      "type":"structure",
+      "members":{
+        "assessmentFrameworkShareRequest":{
+          "shape":"AssessmentFrameworkShareRequest",
+          "documentation":"<p> The updated share request that's returned by the <code>UpdateAssessmentFrameworkShare</code> operation. </p>"
         }
       }
     },
@@ -4089,29 +4393,29 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "assessmentName":{
           "shape":"AssessmentName",
-          "documentation":"<p> The name of the specified assessment to be updated. </p>"
+          "documentation":"<p> The name of the assessment to be updated. </p>"
         },
         "assessmentDescription":{
           "shape":"AssessmentDescription",
-          "documentation":"<p> The description of the specified assessment. </p>"
+          "documentation":"<p> The description of the assessment. </p>"
         },
         "scope":{
           "shape":"Scope",
-          "documentation":"<p> The scope of the specified assessment. </p>"
+          "documentation":"<p> The scope of the assessment. </p>"
         },
         "assessmentReportsDestination":{
           "shape":"AssessmentReportsDestination",
-          "documentation":"<p> The assessment report storage destination for the specified assessment that is being updated. </p>"
+          "documentation":"<p> The assessment report storage destination for the assessment that's being updated. </p>"
         },
         "roles":{
           "shape":"Roles",
-          "documentation":"<p> The list of roles for the specified assessment. </p>"
+          "documentation":"<p> The list of roles for the assessment. </p>"
         }
       }
     },
@@ -4120,7 +4424,7 @@
       "members":{
         "assessment":{
           "shape":"Assessment",
-          "documentation":"<p> The response object (name of the updated assessment) for the <code>UpdateAssessmentRequest</code> API. </p>"
+          "documentation":"<p> The response object for the <code>UpdateAssessmentRequest</code> API. This is the name of the updated assessment.</p>"
         }
       }
     },
@@ -4133,13 +4437,13 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified assessment. </p>",
+          "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "status":{
           "shape":"AssessmentStatus",
-          "documentation":"<p> The current status of the specified assessment. </p>"
+          "documentation":"<p> The current status of the assessment. </p>"
         }
       }
     },
@@ -4148,7 +4452,7 @@
       "members":{
         "assessment":{
           "shape":"Assessment",
-          "documentation":"<p> The name of the updated assessment returned by the <code>UpdateAssessmentStatus</code> API. </p>"
+          "documentation":"<p> The name of the updated assessment that the <code>UpdateAssessmentStatus</code> API returned. </p>"
         }
       }
     },
@@ -4162,13 +4466,13 @@
       "members":{
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the specified control. </p>",
+          "documentation":"<p> The identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         },
         "name":{
           "shape":"ControlName",
-          "documentation":"<p> The name of the control to be updated. </p>"
+          "documentation":"<p> The name of the updated control. </p>"
         },
         "description":{
           "shape":"ControlDescription",
@@ -4176,7 +4480,7 @@
         },
         "testingInformation":{
           "shape":"TestingInformation",
-          "documentation":"<p> The steps that to follow to determine if the control has been satisfied. </p>"
+          "documentation":"<p> The steps that you should follow to determine if the control is met. </p>"
         },
         "actionPlanTitle":{
           "shape":"ActionPlanTitle",
@@ -4184,11 +4488,11 @@
         },
         "actionPlanInstructions":{
           "shape":"ActionPlanInstructions",
-          "documentation":"<p> The recommended actions to carry out if the control is not fulfilled. </p>"
+          "documentation":"<p> The recommended actions to carry out if the control isn't fulfilled. </p>"
         },
         "controlMappingSources":{
           "shape":"ControlMappingSources",
-          "documentation":"<p> The data mapping sources for the specified control. </p>"
+          "documentation":"<p> The data mapping sources for the control. </p>"
         }
       }
     },
@@ -4197,7 +4501,7 @@
       "members":{
         "control":{
           "shape":"Control",
-          "documentation":"<p> The name of the updated control set returned by the <code>UpdateControl</code> API. </p>"
+          "documentation":"<p> The name of the updated control set that the <code>UpdateControl</code> API returned. </p>"
         }
       }
     },
@@ -4206,7 +4510,7 @@
       "members":{
         "snsTopic":{
           "shape":"SnsArn",
-          "documentation":"<p> The Amazon Simple Notification Service (Amazon SNS) topic to which Audit Manager sends notifications. </p>"
+          "documentation":"<p> The Amazon Simple Notification Service (Amazon SNS) topic that Audit Manager sends notifications to. </p>"
         },
         "defaultAssessmentReportsDestination":{
           "shape":"AssessmentReportsDestination",
@@ -4249,7 +4553,7 @@
       "members":{
         "s3RelativePath":{
           "shape":"S3Url",
-          "documentation":"<p> The relative path of the specified Amazon S3 bucket in which the assessment report is stored. </p>"
+          "documentation":"<p> The relative path of the Amazon S3 bucket that the assessment report is stored in. </p>"
         }
       }
     },
@@ -4262,7 +4566,7 @@
         },
         "signatureAlgorithm":{
           "shape":"String",
-          "documentation":"<p> The signature algorithm used to code sign the assessment report file. </p>"
+          "documentation":"<p> The signature algorithm that's used to code sign the assessment report file. </p>"
         },
         "signatureDateTime":{
           "shape":"String",
@@ -4316,7 +4620,7 @@
           "documentation":"<p> The body of the error message. </p>"
         }
       },
-      "documentation":"<p> Indicates that the request has invalid or missing parameters for the specified field. </p>"
+      "documentation":"<p> Indicates that the request has invalid or missing parameters for the field. </p>"
     },
     "ValidationExceptionFieldList":{
       "type":"list",
@@ -4338,5 +4642,5 @@
       "pattern":"o-[a-z0-9]{10,32}"
     }
   },
-  "documentation":"<p>Welcome to the Audit Manager API reference. This guide is for developers who need detailed information about the Audit Manager API operations, data types, and errors. </p> <p>Audit Manager is a service that provides automated evidence collection so that you can continuously audit your Amazon Web Services usage, and assess the effectiveness of your controls to better manage risk and simplify compliance.</p> <p>Audit Manager provides pre-built frameworks that structure and automate assessments for a given compliance standard. Frameworks include a pre-built collection of controls with descriptions and testing procedures, which are grouped according to the requirements of the specified compliance standard or regulation. You can also customize frameworks and controls to support internal audits with unique requirements. </p> <p>Use the following links to get started with the Audit Manager API:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Audit Manager API operations.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_Types.html\">Data types</a>: An alphabetical list of all Audit Manager data types.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/CommonParameters.html\">Common parameters</a>: Parameters that all Query operations can use.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/CommonErrors.html\">Common errors</a>: Client and server errors that all operations can return.</p> </li> </ul> <p>If you're new to Audit Manager, we recommend that you review the <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/what-is.html\"> Audit Manager User Guide</a>.</p>"
+  "documentation":"<p>Welcome to the Audit Manager API reference. This guide is for developers who need detailed information about the Audit Manager API operations, data types, and errors. </p> <p>Audit Manager is a service that provides automated evidence collection so that you can continually audit your Amazon Web Services usage. You can use it to assess the effectiveness of your controls, manage risk, and simplify compliance.</p> <p>Audit Manager provides prebuilt frameworks that structure and automate assessments for a given compliance standard. Frameworks include a prebuilt collection of controls with descriptions and testing procedures. These controls are grouped according to the requirements of the specified compliance standard or regulation. You can also customize frameworks and controls to support internal audits with specific requirements. </p> <p>Use the following links to get started with the Audit Manager API:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Audit Manager API operations.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_Types.html\">Data types</a>: An alphabetical list of all Audit Manager data types.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/CommonParameters.html\">Common parameters</a>: Parameters that all Query operations can use.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/CommonErrors.html\">Common errors</a>: Client and server errors that all operations can return.</p> </li> </ul> <p>If you're new to Audit Manager, we recommend that you review the <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/what-is.html\"> Audit Manager User Guide</a>.</p>"
 }

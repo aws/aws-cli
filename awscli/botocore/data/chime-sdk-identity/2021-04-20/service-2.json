@@ -133,6 +133,24 @@
       ],
       "documentation":"<p>Deletes an <code>AppInstanceUser</code>.</p>"
     },
+    "DeregisterAppInstanceUserEndpoint":{
+      "name":"DeregisterAppInstanceUserEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeregisterAppInstanceUserEndpointRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deregisters an <code>AppInstanceUserEndpoint</code>.</p>"
+    },
     "DescribeAppInstance":{
       "name":"DescribeAppInstance",
       "http":{
@@ -188,6 +206,25 @@
       ],
       "documentation":"<p>Returns the full details of an <code>AppInstanceUser</code>.</p>"
     },
+    "DescribeAppInstanceUserEndpoint":{
+      "name":"DescribeAppInstanceUserEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppInstanceUserEndpointRequest"},
+      "output":{"shape":"DescribeAppInstanceUserEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns the full details of an <code>AppInstanceUserEndpoint</code>.</p>"
+    },
     "GetAppInstanceRetentionSettings":{
       "name":"GetAppInstanceRetentionSettings",
       "http":{
@@ -227,6 +264,25 @@
       ],
       "documentation":"<p>Returns a list of the administrators in the <code>AppInstance</code>.</p>"
     },
+    "ListAppInstanceUserEndpoints":{
+      "name":"ListAppInstanceUserEndpoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}/endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppInstanceUserEndpointsRequest"},
+      "output":{"shape":"ListAppInstanceUserEndpointsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Lists all the <code>AppInstanceUserEndpoints</code> created under a single <code>AppInstanceUser</code>.</p>"
+    },
     "ListAppInstanceUsers":{
       "name":"ListAppInstanceUsers",
       "http":{
@@ -263,6 +319,25 @@
       ],
       "documentation":"<p>Lists all Amazon Chime <code>AppInstance</code>s created under a single AWS account.</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Lists the tags applied to an Amazon Chime SDK identity resource.</p>"
+    },
     "PutAppInstanceRetentionSettings":{
       "name":"PutAppInstanceRetentionSettings",
       "http":{
@@ -281,6 +356,64 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Sets the amount of time in days that a given <code>AppInstance</code> retains data.</p>"
+    },
+    "RegisterAppInstanceUserEndpoint":{
+      "name":"RegisterAppInstanceUserEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}/endpoints",
+        "responseCode":201
+      },
+      "input":{"shape":"RegisterAppInstanceUserEndpointRequest"},
+      "output":{"shape":"RegisterAppInstanceUserEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Registers an endpoint under an Amazon Chime <code>AppInstanceUser</code>. The endpoint receives messages for a user. For push notifications, the endpoint is a mobile device used to receive mobile push notifications for a user.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags?operation=tag-resource",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Applies the specified tags to the specified Amazon Chime SDK identity resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags?operation=untag-resource",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Removes the specified tags from the specified Amazon Chime SDK identity resource.</p>"
     },
     "UpdateAppInstance":{
       "name":"UpdateAppInstance",
@@ -322,9 +455,36 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Updates the details of an <code>AppInstanceUser</code>. You can update names and metadata.</p>"
+    },
+    "UpdateAppInstanceUserEndpoint":{
+      "name":"UpdateAppInstanceUserEndpoint",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppInstanceUserEndpointRequest"},
+      "output":{"shape":"UpdateAppInstanceUserEndpointResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Updates the details of an <code>AppInstanceUserEndpoint</code>. You can update the name and <code>AllowMessage</code> values.</p>"
     }
   },
   "shapes":{
+    "AllowMessages":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE"
+      ]
+    },
     "AppInstance":{
       "type":"structure",
       "members":{
@@ -440,6 +600,94 @@
         }
       },
       "documentation":"<p>The details of an <code>AppInstanceUser</code>.</p>"
+    },
+    "AppInstanceUserEndpoint":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "Name":{
+          "shape":"SensitiveString1600",
+          "documentation":"<p>The name of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "Type":{
+          "shape":"AppInstanceUserEndpointType",
+          "documentation":"<p>The type of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the resource to which the endpoint belongs.</p>"
+        },
+        "EndpointAttributes":{
+          "shape":"EndpointAttributes",
+          "documentation":"<p>The attributes of an <code>Endpoint</code>.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which an <code>AppInstanceUserEndpoint</code> was created.</p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which an <code>AppInstanceUserEndpoint</code> was last updated.</p>"
+        },
+        "AllowMessages":{
+          "shape":"AllowMessages",
+          "documentation":"<p>Boolean that controls whether the <code>AppInstanceUserEndpoint</code> is opted in to receive messages. <code>ALL</code> indicates the endpoint will receive all messages. <code>NONE</code> indicates the endpoint will receive no messages.</p>"
+        },
+        "EndpointState":{
+          "shape":"EndpointState",
+          "documentation":"<p>A read-only field that represents the state of an <code>AppInstanceUserEndpoint</code>. Supported values:</p> <ul> <li> <p> <code>ACTIVE</code>: The <code>AppInstanceUserEndpoint</code> is active and able to receive messages. When <code>ACTIVE</code>, the <code>EndpointStatusReason</code> remains empty.</p> </li> <li> <p> <code>INACTIVE</code>: The <code>AppInstanceUserEndpoint</code> is inactive and can't receive message. When <code>INACTIVE</code>, the corresponding reason will be conveyed through <code>EndpointStatusReason</code>.</p> </li> <li> <p> <code>INVALID_DEVICE_TOKEN</code> indicates that an <code>AppInstanceUserEndpoint</code> is <code>INACTIVE</code> due to invalid device token</p> </li> <li> <p> <code>INVALID_PINPOINT_ARN</code> indicates that an <code>AppInstanceUserEndpoint</code> is <code>INACTIVE</code> due to an invalid pinpoint ARN that was input through the <code>ResourceArn</code> field.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An endpoint under an Amazon Chime <code>AppInstanceUser</code> that receives messages for a user. For push notifications, the endpoint is a mobile device used to receive mobile push notifications for a user.</p>"
+    },
+    "AppInstanceUserEndpointSummary":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "Name":{
+          "shape":"SensitiveString1600",
+          "documentation":"<p>The name of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "Type":{
+          "shape":"AppInstanceUserEndpointType",
+          "documentation":"<p>The type of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "AllowMessages":{
+          "shape":"AllowMessages",
+          "documentation":"<p>BBoolean that controls whether the <code>AppInstanceUserEndpoint</code> is opted in to receive messages. <code>ALL</code> indicates the endpoint will receive all messages. <code>NONE</code> indicates the endpoint will receive no messages.</p>"
+        },
+        "EndpointState":{
+          "shape":"EndpointState",
+          "documentation":"<p>A read-only field that represent the state of an <code>AppInstanceUserEndpoint</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the details of an <code>AppInstanceUserEndpoint</code>.</p>"
+    },
+    "AppInstanceUserEndpointSummaryList":{
+      "type":"list",
+      "member":{"shape":"AppInstanceUserEndpointSummary"}
+    },
+    "AppInstanceUserEndpointType":{
+      "type":"string",
+      "enum":[
+        "APNS",
+        "APNS_SANDBOX",
+        "GCM"
+      ]
     },
     "AppInstanceUserList":{
       "type":"list",
@@ -663,6 +911,27 @@
         }
       }
     },
+    "DeregisterAppInstanceUserEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceUserArn",
+        "EndpointId"
+      ],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>",
+          "location":"uri",
+          "locationName":"endpointId"
+        }
+      }
+    },
     "DescribeAppInstanceAdminRequest":{
       "type":"structure",
       "required":[
@@ -714,6 +983,36 @@
         }
       }
     },
+    "DescribeAppInstanceUserEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceUserArn",
+        "EndpointId"
+      ],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveString1600",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>",
+          "location":"uri",
+          "locationName":"endpointId"
+        }
+      }
+    },
+    "DescribeAppInstanceUserEndpointResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserEndpoint":{
+          "shape":"AppInstanceUserEndpoint",
+          "documentation":"<p>The full details of an <code>AppInstanceUserEndpoint</code>: the <code>AppInstanceUserArn</code>, ID, name, type, resource ARN, attributes, allow messages, state, and created and last updated timestamps. All timestamps use epoch milliseconds.</p>"
+        }
+      }
+    },
     "DescribeAppInstanceUserRequest":{
       "type":"structure",
       "required":["AppInstanceUserArn"],
@@ -734,6 +1033,50 @@
           "documentation":"<p>The name of the <code>AppInstanceUser</code>.</p>"
         }
       }
+    },
+    "EndpointAttributes":{
+      "type":"structure",
+      "required":["DeviceToken"],
+      "members":{
+        "DeviceToken":{
+          "shape":"NonEmptySensitiveString1600",
+          "documentation":"<p>The device token for the GCM, APNS, and APNS_SANDBOX endpoint types.</p>"
+        },
+        "VoipDeviceToken":{
+          "shape":"NonEmptySensitiveString1600",
+          "documentation":"<p>The VOIP device token for the APNS and APNS_SANDBOX endpoint types.</p>"
+        }
+      },
+      "documentation":"<p>The attributes of an <code>Endpoint</code>.</p>"
+    },
+    "EndpointState":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"EndpointStatus",
+          "documentation":"<p>Enum that indicates the Status of an <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "StatusReason":{
+          "shape":"EndpointStatusReason",
+          "documentation":"<p>The reason for the <code>EndpointStatus</code>.</p>"
+        }
+      },
+      "documentation":"<p>A read-only field that represents the state of an <code>AppInstanceUserEndpoint</code>. Supported values:</p> <ul> <li> <p> <code>ACTIVE</code>: The <code>AppInstanceUserEndpoint</code> is active and able to receive messages. When <code>ACTIVE</code>, the <code>EndpointStatusReason</code> remains empty.</p> </li> <li> <p> <code>INACTIVE</code>: The <code>AppInstanceUserEndpoint</code> is inactive and can't receive message. When INACTIVE, the corresponding reason will be conveyed through EndpointStatusReason.</p> </li> <li> <p> <code>INVALID_DEVICE_TOKEN</code> indicates that an <code>AppInstanceUserEndpoint</code> is <code>INACTIVE</code> due to invalid device token</p> </li> <li> <p> <code>INVALID_PINPOINT_ARN</code> indicates that an <code>AppInstanceUserEndpoint</code> is <code>INACTIVE</code> due to an invalid pinpoint ARN that was input through the <code>ResourceArn</code> field.</p> </li> </ul>"
+    },
+    "EndpointStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "EndpointStatusReason":{
+      "type":"string",
+      "enum":[
+        "INVALID_DEVICE_TOKEN",
+        "INVALID_PINPOINT_ARN"
+      ]
     },
     "ErrorCode":{
       "type":"string",
@@ -845,6 +1188,43 @@
         }
       }
     },
+    "ListAppInstanceUserEndpointsRequest":{
+      "type":"structure",
+      "required":["AppInstanceUserArn"],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of endpoints that you want to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API calls until all requested endpoints are returned.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAppInstanceUserEndpointsResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserEndpoints":{
+          "shape":"AppInstanceUserEndpointSummaryList",
+          "documentation":"<p>The information for each requested <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API calls until all requested endpoints are returned.</p>"
+        }
+      }
+    },
     "ListAppInstanceUsersRequest":{
       "type":"structure",
       "required":["AppInstanceArn"],
@@ -916,6 +1296,27 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the resource.</p>",
+          "location":"querystring",
+          "locationName":"arn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag key-value pairs.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "max":50,
@@ -940,6 +1341,13 @@
       "max":256,
       "min":1,
       "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u0085\\u00A0-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFFF]*",
+      "sensitive":true
+    },
+    "NonEmptySensitiveString1600":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":".*",
       "sensitive":true
     },
     "PutAppInstanceRetentionSettingsRequest":{
@@ -974,6 +1382,62 @@
         }
       }
     },
+    "RegisterAppInstanceUserEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceUserArn",
+        "Type",
+        "ResourceArn",
+        "EndpointAttributes",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "Name":{
+          "shape":"SensitiveString1600",
+          "documentation":"<p>The name of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "Type":{
+          "shape":"AppInstanceUserEndpointType",
+          "documentation":"<p>The type of the <code>AppInstanceUserEndpoint</code>. Supported types:</p> <ul> <li> <p> <code>APNS</code>: The mobile notification service for an Apple device.</p> </li> <li> <p> <code>APNS_SANDBOX</code>: The sandbox environment of the mobile notification service for an Apple device.</p> </li> <li> <p> <code>GCM</code>: The mobile notification service for an Android device.</p> </li> </ul> <p>Populate the <code>ResourceArn</code> value of each type as <code>PinpointAppArn</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the resource to which the endpoint belongs.</p>"
+        },
+        "EndpointAttributes":{
+          "shape":"EndpointAttributes",
+          "documentation":"<p>The attributes of an <code>Endpoint</code>.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The idempotency token for each client request. </p>",
+          "idempotencyToken":true
+        },
+        "AllowMessages":{
+          "shape":"AllowMessages",
+          "documentation":"<p>Boolean that controls whether the AppInstanceUserEndpoint is opted in to receive messages. <code>ALL</code> indicates the endpoint receives all messages. <code>NONE</code> indicates the endpoint receives no messages.</p>"
+        }
+      }
+    },
+    "RegisterAppInstanceUserEndpointResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>"
+        }
+      }
+    },
     "ResourceLimitExceededException":{
       "type":"structure",
       "members":{
@@ -995,6 +1459,27 @@
       "type":"integer",
       "max":5475,
       "min":1
+    },
+    "SensitiveChimeArn":{
+      "type":"string",
+      "max":1600,
+      "min":5,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}",
+      "sensitive":true
+    },
+    "SensitiveString1600":{
+      "type":"string",
+      "max":1600,
+      "min":0,
+      "pattern":".*",
+      "sensitive":true
+    },
+    "SensitiveString64":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":".*",
+      "sensitive":true
     },
     "ServiceFailureException":{
       "type":"structure",
@@ -1028,14 +1513,14 @@
       "members":{
         "Key":{
           "shape":"TagKey",
-          "documentation":"<p>The key of the tag.</p>"
+          "documentation":"<p>The key in a tag.</p>"
         },
         "Value":{
           "shape":"TagValue",
-          "documentation":"<p>The value of the tag.</p>"
+          "documentation":"<p>The value in a tag.</p>"
         }
       },
-      "documentation":"<p>Describes a tag applied to a resource.</p>"
+      "documentation":"<p>A tag object containing a key-value pair.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -1043,11 +1528,34 @@
       "min":1,
       "sensitive":true
     },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"},
       "max":50,
       "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The resource ARN.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag key-value pairs.</p>"
+        }
+      }
     },
     "TagValue":{
       "type":"string",
@@ -1075,6 +1583,23 @@
       "documentation":"<p>The client is not currently authorized to make the request.</p>",
       "error":{"httpStatusCode":401},
       "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The resource ARN.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys.</p>"
+        }
+      }
     },
     "UpdateAppInstanceRequest":{
       "type":"structure",
@@ -1106,6 +1631,48 @@
         "AppInstanceArn":{
           "shape":"ChimeArn",
           "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceUserEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceUserArn",
+        "EndpointId"
+      ],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>",
+          "location":"uri",
+          "locationName":"endpointId"
+        },
+        "Name":{
+          "shape":"SensitiveString1600",
+          "documentation":"<p>The name of the <code>AppInstanceUserEndpoint</code>.</p>"
+        },
+        "AllowMessages":{
+          "shape":"AllowMessages",
+          "documentation":"<p>Boolean that controls whether the <code>AppInstanceUserEndpoint</code> is opted in to receive messages. <code>ALL</code> indicates the endpoint will receive all messages. <code>NONE</code> indicates the endpoint will receive no messages.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceUserEndpointResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"SensitiveChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "EndpointId":{
+          "shape":"SensitiveString64",
+          "documentation":"<p>The unique identifier of the <code>AppInstanceUserEndpoint</code>.</p>"
         }
       }
     },

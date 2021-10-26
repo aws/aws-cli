@@ -152,7 +152,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Adds a user to a channel. The <code>InvitedBy</code> response field is derived from the request header. A channel member can:</p> <ul> <li> <p>List messages</p> </li> <li> <p>Send messages</p> </li> <li> <p>Receive messages</p> </li> <li> <p>Edit their own messages</p> </li> <li> <p>Leave the channel</p> </li> </ul> <p>Privacy settings impact this action as follows:</p> <ul> <li> <p>Public Channels: You do not need to be a member to list messages, but you must be a member to send messages.</p> </li> <li> <p>Private Channels: You must be a member to list or send messages.</p> </li> </ul> <note> <p>The <code>x-amz-chime-bearer</code> request header is mandatory. Use the <code>AppInstanceUserArn</code> of the user that makes the API call as the value in the header.</p> </note>"
+      "documentation":"<p>Adds a user to a channel. The <code>InvitedBy</code> field in <code>ChannelMembership</code> is derived from the request header. A channel member can:</p> <ul> <li> <p>List messages</p> </li> <li> <p>Send messages</p> </li> <li> <p>Receive messages</p> </li> <li> <p>Edit their own messages</p> </li> <li> <p>Leave the channel</p> </li> </ul> <p>Privacy settings impact this action as follows:</p> <ul> <li> <p>Public Channels: You do not need to be a member to list messages, but you must be a member to send messages.</p> </li> <li> <p>Private Channels: You must be a member to list or send messages.</p> </li> </ul> <note> <p>The <code>x-amz-chime-bearer</code> request header is mandatory. Use the <code>AppInstanceUserArn</code> of the user that makes the API call as the value in the header.</p> </note>"
     },
     "CreateChannelModerator":{
       "name":"CreateChannelModerator",
@@ -441,6 +441,25 @@
       ],
       "documentation":"<p>Disassociates a channel flow from all its channels. Once disassociated, all messages to that channel stop going through the channel flow processor.</p> <note> <p>Only administrators or channel moderators can disassociate a channel flow. The <code>x-amz-chime-bearer</code> request header is mandatory. Use the <code>AppInstanceUserArn</code> of the user that makes the API call as the value in the header.</p> </note>"
     },
+    "GetChannelMembershipPreferences":{
+      "name":"GetChannelMembershipPreferences",
+      "http":{
+        "method":"GET",
+        "requestUri":"/channels/{channelArn}/memberships/{memberArn}/preferences",
+        "responseCode":200
+      },
+      "input":{"shape":"GetChannelMembershipPreferencesRequest"},
+      "output":{"shape":"GetChannelMembershipPreferencesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Gets the membership preferences of an <code>AppInstanceUser</code> for the specified channel. The <code>AppInstanceUser</code> must be a member of the channel. Only the <code>AppInstanceUser</code> who owns the membership can retrieve preferences. Users in the <code>AppInstanceAdmin</code> and channel moderator roles can't retrieve preferences for other users. Banned users can't retrieve membership preferences for the channel from which they are banned.</p>"
+    },
     "GetChannelMessage":{
       "name":"GetChannelMessage",
       "http":{
@@ -553,7 +572,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Lists all channel memberships in a channel.</p> <note> <p>The <code>x-amz-chime-bearer</code> request header is mandatory. Use the <code>AppInstanceUserArn</code> of the user that makes the API call as the value in the header.</p> </note>"
+      "documentation":"<p>Lists all channel memberships in a channel.</p> <note> <p>The <code>x-amz-chime-bearer</code> request header is mandatory. Use the <code>AppInstanceUserArn</code> of the user that makes the API call as the value in the header.</p> </note> <p>If you want to list the channels to which a specific app instance user belongs, see the <a href=\"https://docs.aws.amazon.com/chime/latest/APIReference/API_messaging-chime_ListChannelMembershipsForAppInstanceUser.html\">ListChannelMembershipsForAppInstanceUser</a> API.</p>"
     },
     "ListChannelMembershipsForAppInstanceUser":{
       "name":"ListChannelMembershipsForAppInstanceUser",
@@ -687,6 +706,26 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Lists the tags applied to an Amazon Chime SDK messaging resource.</p>"
+    },
+    "PutChannelMembershipPreferences":{
+      "name":"PutChannelMembershipPreferences",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/channels/{channelArn}/memberships/{memberArn}/preferences",
+        "responseCode":200
+      },
+      "input":{"shape":"PutChannelMembershipPreferencesRequest"},
+      "output":{"shape":"PutChannelMembershipPreferencesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Sets the membership preferences of an <code>AppInstanceUser</code> for the specified channel. The <code>AppInstanceUser</code> must be a member of the channel. Only the <code>AppInstanceUser</code> who owns the membership can set preferences. Users in the <code>AppInstanceAdmin</code> and channel moderator roles can't set preferences for other users. Banned users can't set membership preferences for the channel from which they are banned.</p>"
     },
     "RedactChannelMessage":{
       "name":"RedactChannelMessage",
@@ -846,6 +885,14 @@
     }
   },
   "shapes":{
+    "AllowNotifications":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE",
+        "FILTERED"
+      ]
+    },
     "AppInstanceUserMembershipSummary":{
       "type":"structure",
       "members":{
@@ -923,7 +970,7 @@
       "members":{
         "MemberArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the member that the service couldn't add.</p>"
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member that the service couldn't add.</p>"
         },
         "ErrorCode":{
           "shape":"ErrorCode",
@@ -960,7 +1007,7 @@
         },
         "MemberArns":{
           "shape":"MemberArns",
-          "documentation":"<p>The ARNs of the members you want to add to the channel.</p>"
+          "documentation":"<p>The <code>AppInstanceUserArn</code>s of the members you want to add to the channel.</p>"
         },
         "ChimeBearer":{
           "shape":"ChimeArn",
@@ -1243,6 +1290,16 @@
       "type":"list",
       "member":{"shape":"ChannelMembershipForAppInstanceUserSummary"}
     },
+    "ChannelMembershipPreferences":{
+      "type":"structure",
+      "members":{
+        "PushNotifications":{
+          "shape":"PushNotificationPreferences",
+          "documentation":"<p>The push notification configuration of a message.</p>"
+        }
+      },
+      "documentation":"<p>The channel membership preferences for an <code>AppInstanceUser</code>.</p>"
+    },
     "ChannelMembershipSummary":{
       "type":"structure",
       "members":{
@@ -1314,6 +1371,10 @@
         "Status":{
           "shape":"ChannelMessageStatusStructure",
           "documentation":"<p>The status of the channel message.</p>"
+        },
+        "MessageAttributes":{
+          "shape":"MessageAttributeMap",
+          "documentation":"<p>The attributes for the message, used for message filtering along with a <code>FilterRule</code> defined in the <code>PushNotificationPreferences</code>.</p>"
         }
       },
       "documentation":"<p>The details of a message in a channel.</p>"
@@ -1409,6 +1470,10 @@
         "Status":{
           "shape":"ChannelMessageStatusStructure",
           "documentation":"<p>The message status. The status value is <code>SENT</code> for messages sent to a channel without a channel flow. For channels associated with channel flow, the value determines the processing stage.</p>"
+        },
+        "MessageAttributes":{
+          "shape":"MessageAttributeMap",
+          "documentation":"<p>The message attribues listed in a the summary of a channel message.</p>"
         }
       },
       "documentation":"<p>Summary of the messages in a <code>Channel</code>.</p>"
@@ -1568,7 +1633,7 @@
         },
         "MemberArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the member being banned.</p>"
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member being banned.</p>"
         },
         "ChimeBearer":{
           "shape":"ChimeArn",
@@ -1648,7 +1713,7 @@
         },
         "MemberArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the member you want to add to the channel.</p>"
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member you want to add to the channel.</p>"
         },
         "Type":{
           "shape":"ChannelMembershipType",
@@ -1691,7 +1756,7 @@
         },
         "ChannelModeratorArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the moderator.</p>"
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the moderator.</p>"
         },
         "ChimeBearer":{
           "shape":"ChimeArn",
@@ -1825,7 +1890,7 @@
         },
         "MemberArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the member that you're removing from the channel.</p>",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member that you're removing from the channel.</p>",
           "location":"uri",
           "locationName":"memberArn"
         },
@@ -1881,7 +1946,7 @@
         },
         "ChannelModeratorArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the moderator being deleted.</p>",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the moderator being deleted.</p>",
           "location":"uri",
           "locationName":"channelModeratorArn"
         },
@@ -1930,7 +1995,7 @@
         },
         "MemberArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the member being banned.</p>",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member being banned.</p>",
           "location":"uri",
           "locationName":"memberArn"
         },
@@ -2025,7 +2090,7 @@
         },
         "MemberArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the member.</p>",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member.</p>",
           "location":"uri",
           "locationName":"memberArn"
         },
@@ -2099,7 +2164,7 @@
         },
         "ChannelModeratorArn":{
           "shape":"ChimeArn",
-          "documentation":"<p>The ARN of the channel moderator.</p>",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the channel moderator.</p>",
           "location":"uri",
           "locationName":"channelModeratorArn"
         },
@@ -2205,6 +2270,12 @@
         "ABORT"
       ]
     },
+    "FilterRule":{
+      "type":"string",
+      "min":1,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
+    },
     "ForbiddenException":{
       "type":"structure",
       "members":{
@@ -2214,6 +2285,48 @@
       "documentation":"<p>The client is permanently forbidden from making the request.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "GetChannelMembershipPreferencesRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelArn",
+        "MemberArn",
+        "ChimeBearer"
+      ],
+      "members":{
+        "ChannelArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the channel.</p>",
+          "location":"uri",
+          "locationName":"channelArn"
+        },
+        "MemberArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member retrieving the preferences.</p>",
+          "location":"uri",
+          "locationName":"memberArn"
+        },
+        "ChimeBearer":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The <code>AppInstanceUserARN</code> of the user making the API call.</p>",
+          "location":"header",
+          "locationName":"x-amz-chime-bearer"
+        }
+      }
+    },
+    "GetChannelMembershipPreferencesResponse":{
+      "type":"structure",
+      "members":{
+        "ChannelArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the channel.</p>"
+        },
+        "Member":{"shape":"Identity"},
+        "Preferences":{
+          "shape":"ChannelMembershipPreferences",
+          "documentation":"<p>The channel membership preferences for an <code>AppInstanceUser</code> .</p>"
+        }
+      }
     },
     "GetChannelMessageRequest":{
       "type":"structure",
@@ -2817,6 +2930,39 @@
       "type":"list",
       "member":{"shape":"Identity"}
     },
+    "MessageAttributeMap":{
+      "type":"map",
+      "key":{"shape":"MessageAttributeName"},
+      "value":{"shape":"MessageAttributeValue"}
+    },
+    "MessageAttributeName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
+    },
+    "MessageAttributeStringValue":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
+    },
+    "MessageAttributeStringValues":{
+      "type":"list",
+      "member":{"shape":"MessageAttributeStringValue"}
+    },
+    "MessageAttributeValue":{
+      "type":"structure",
+      "members":{
+        "StringValues":{
+          "shape":"MessageAttributeStringValues",
+          "documentation":"<p>The strings in a message attribute value.</p>"
+        }
+      },
+      "documentation":"<p>A list of message attribute values.</p>"
+    },
     "MessageId":{
       "type":"string",
       "max":128,
@@ -2894,7 +3040,7 @@
         },
         "FallbackAction":{
           "shape":"FallbackAction",
-          "documentation":"<p>Determines whether to continue or stop processing if communication with processor fails. If the last processor in a channel flow sequence has a fallback action of CONTINUE, and communication with the processor fails, the message is considered processed and sent to the recipients in the channel.</p>"
+          "documentation":"<p>Determines whether to continue with message processing or stop it in cases where communication with a processor fails. If a processor has a fallback action of <code>ABORT</code> and communication with it fails, the processor sets the message status to <code>FAILED</code> and does not send the message to any recipients. Note that if the last processor in the channel flow sequence has a fallback action of <code>CONTINUE</code> and communication with the processor fails, then the message is considered processed and sent to recipients of the channel.</p>"
         }
       },
       "documentation":"<p>The information about a processor in a channel flow.</p>"
@@ -2915,6 +3061,112 @@
       "member":{"shape":"Processor"},
       "max":3,
       "min":1
+    },
+    "PushNotificationBody":{
+      "type":"string",
+      "max":150,
+      "min":0,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
+    },
+    "PushNotificationConfiguration":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "Body",
+        "Type"
+      ],
+      "members":{
+        "Title":{
+          "shape":"PushNotificationTitle",
+          "documentation":"<p>The title of the push notification.</p>"
+        },
+        "Body":{
+          "shape":"PushNotificationBody",
+          "documentation":"<p>The body of the push notification.</p>"
+        },
+        "Type":{
+          "shape":"PushNotificationType",
+          "documentation":"<p>Enum value that indicates the type of the push notification for a message. <code>DEFAULT</code>: Normal mobile push notification. <code>VOIP</code>: VOIP mobile push notification.</p>"
+        }
+      },
+      "documentation":"<p>The push notification configuration of the message.</p>"
+    },
+    "PushNotificationPreferences":{
+      "type":"structure",
+      "required":["AllowNotifications"],
+      "members":{
+        "AllowNotifications":{
+          "shape":"AllowNotifications",
+          "documentation":"<p>Enum value that indicates which push notifications to send to the requested member of a channel. <code>ALL</code> sends all push notifications, <code>NONE</code> sends no push notifications, <code>FILTERED</code> sends only filtered push notifications. </p>"
+        },
+        "FilterRule":{
+          "shape":"FilterRule",
+          "documentation":"<p>The simple JSON object used to send a subset of a push notification to the requsted member.</p>"
+        }
+      },
+      "documentation":"<p>The channel membership preferences for push notification.</p>"
+    },
+    "PushNotificationTitle":{
+      "type":"string",
+      "max":50,
+      "min":0,
+      "pattern":".*",
+      "sensitive":true
+    },
+    "PushNotificationType":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "VOIP"
+      ]
+    },
+    "PutChannelMembershipPreferencesRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelArn",
+        "MemberArn",
+        "ChimeBearer",
+        "Preferences"
+      ],
+      "members":{
+        "ChannelArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the channel.</p>",
+          "location":"uri",
+          "locationName":"channelArn"
+        },
+        "MemberArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The <code>AppInstanceUserArn</code> of the member setting the preferences.</p>",
+          "location":"uri",
+          "locationName":"memberArn"
+        },
+        "ChimeBearer":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The <code>AppInstanceUserARN</code> of the user making the API call.</p>",
+          "location":"header",
+          "locationName":"x-amz-chime-bearer"
+        },
+        "Preferences":{
+          "shape":"ChannelMembershipPreferences",
+          "documentation":"<p>The channel membership preferences of an <code>AppInstanceUser</code> .</p>"
+        }
+      }
+    },
+    "PutChannelMembershipPreferencesResponse":{
+      "type":"structure",
+      "members":{
+        "ChannelArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the channel.</p>"
+        },
+        "Member":{"shape":"Identity"},
+        "Preferences":{
+          "shape":"ChannelMembershipPreferences",
+          "documentation":"<p>The ARN and metadata of the member being added.</p>"
+        }
+      }
     },
     "RedactChannelMessageRequest":{
       "type":"structure",
@@ -3017,6 +3269,14 @@
           "documentation":"<p>The <code>AppInstanceUserArn</code> of the user that makes the API call.</p>",
           "location":"header",
           "locationName":"x-amz-chime-bearer"
+        },
+        "PushNotification":{
+          "shape":"PushNotificationConfiguration",
+          "documentation":"<p>The push notification configuration of the message.</p>"
+        },
+        "MessageAttributes":{
+          "shape":"MessageAttributeMap",
+          "documentation":"<p>The attributes for the message, used for message filtering along with a <code>FilterRule</code> defined in the <code>PushNotificationPreferences</code>.</p>"
         }
       }
     },

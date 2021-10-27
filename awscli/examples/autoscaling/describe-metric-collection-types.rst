@@ -21,16 +21,31 @@ Output::
                 "Metric": "GroupInServiceInstances"
             },
             {
+                "Metric": "GroupInServiceCapacity"
+            },
+            {
                 "Metric": "GroupPendingInstances"
+            },
+            {
+                "Metric": "GroupPendingCapacity"
             },
             {
                 "Metric": "GroupTerminatingInstances"
             },
             {
+                "Metric": "GroupTerminatingCapacity"
+            },
+            {
                 "Metric": "GroupStandbyInstances"
             },
             {
+                "Metric": "GroupStandbyCapacity"
+            },
+            {
                 "Metric": "GroupTotalInstances"
+            },
+            {
+                "Metric": "GroupTotalCapacity"
             }
         ],
         "Granularities": [

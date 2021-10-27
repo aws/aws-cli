@@ -5,9 +5,9 @@ The following ``update-job-execution`` example updates the status of the specifi
     aws iot-jobs-data update-job-execution \
         --job-id SampleJob \
         --thing-name MotionSensor1 \
-        --status REMOVED
+        --status REMOVED \
+        --endpoint-url https://1234567890abcd.jobs.iot.us-west-2.amazonaws.com
 
-This command produces no output.
 Output::
 
     {

@@ -134,7 +134,7 @@ class AppendFilter(argparse.Action):
     --exclude and the value will be the rule to apply.  This will
     format all of the rules inputted into the command line
     in a way compatible with the Filter class.  Note that rules that
-    appear later in the command line take preferance over rulers that
+    appear later in the command line take preference over rulers that
     appear earlier.
     """
     def __call__(self, parser, namespace, values, option_string=None):
@@ -338,9 +338,9 @@ def guess_content_type(filename):
     """
     try:
         return mimetypes.guess_type(filename)[0]
-    # This catches a bug in the mimetype libary where some MIME types
+    # This catches a bug in the mimetype library where some MIME types
     # specifically on windows machines cause a UnicodeDecodeError
-    # because the MIME type in the Windows registery has an encoding
+    # because the MIME type in the Windows registry has an encoding
     # that cannot be properly encoded using the default system encoding.
     # https://bugs.python.org/issue9291
     #

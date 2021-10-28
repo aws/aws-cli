@@ -1,6 +1,6 @@
 **Sync from local directory to S3 bucket**
 
-The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
+The following ``sync`` command syncs objects to a specified bucket and prefix from files in a local directory by
 uploading the local files to s3.  A local file will require uploading if the local file does not exist under the specified 
 bucket and prefix.  A local file will also require uploading if the size of the local file is different than
 the size of the s3 object, or if the last modified time of the local file is newer than the last modified time of the s3
@@ -16,10 +16,10 @@ Output::
     
 **Sync from S3 bucket to another S3 bucket**
 
-The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
-prefix and bucket by copying s3 objects.  An s3 object will require copying if the sizes of the two s3 objects differ,
+The following ``sync`` command syncs objects to a specified bucket and prefix from objects in another specified
+bucket and prefix by copying s3 objects.  An s3 object will require copying if the sizes of the two s3 objects differ,
 the last modified time of the source is newer than the last modified time of the destination, or the s3 object does not
-exist under the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket`` to
+exist in the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket`` to
 the bucket ``mybucket2``.  The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The bucket
 ``mybucket2`` contains no objects::
 
@@ -32,7 +32,7 @@ Output::
     
 **Sync from s3 bucket to local directory**
 
-The following ``sync`` command syncs files in a local directory to objects under a specified prefix and bucket by
+The following ``sync`` command syncs files to a local directory from objects in a specified bucket and prefix by
 downloading s3 objects.  An s3 object will require downloading if the s3 object does not exist in the local directory.  
 An s3 object will also require downloading if the size of the s3 object differs from the size of the local file, or if the 
 last modified time of the s3 object is older than the last modified time of the local file.  Take note that when objects 
@@ -49,9 +49,9 @@ Output::
     
 **Sync from local directory to S3 bucket while deleting files that exist in the destination but not in the source**
 
-The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
-uploading the local files to s3.  Because the ``--delete`` parameter flag is thrown, any files existing under the
-specified prefix and bucket but not existing in the local directory will be deleted.  In this example, the user syncs
+The following ``sync`` command syncs objects to a specified bucket and prefix from files in a local directory by
+uploading the local files to s3.  Because the ``--delete`` parameter flag is used, any files existing in
+specified bucket and prefix but not existing in the local directory will be deleted.  In this example, the user syncs
 the bucket ``mybucket`` to the local current directory.  The local current directory contains the files ``test.txt`` and
 ``test2.txt``.  The bucket ``mybucket`` contains the object ``test3.txt``::
 
@@ -65,8 +65,8 @@ Output::
     
 **Sync from local directory to S3 bucket while excluding files that match a specified pattern**
 
-The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
-uploading the local files to s3.  Because the ``--exclude`` parameter flag is thrown, all files matching the pattern
+The following ``sync`` command syncs objects to a specified bucket and prefix from files in a local directory by
+uploading the local files to s3.  Because the ``--exclude`` parameter flag is used, all files matching the pattern
 existing both in s3 and locally will be excluded from the sync.  In this example, the user syncs the bucket ``mybucket``
 to the local current directory.  The local current directory contains the files ``test.jpg`` and ``test2.txt``.  The
 bucket ``mybucket`` contains the object ``test.jpg`` of a different size than the local ``test.jpg``::
@@ -79,7 +79,7 @@ Output::
     
 **Sync from S3 bucket to local directory while excluding objects that match a specified pattern**
 
-The following ``sync`` command syncs files under a local directory to objects under a specified prefix and bucket by
+The following ``sync`` command syncs files to a local directory from objects in a specified bucket and prefix by
 downloading s3 objects.  This example uses the ``--exclude`` parameter flag to exclude a specified directory
 and s3 prefix from the ``sync`` command.  In this example, the user syncs the local current directory to the bucket
 ``mybucket``.  The local current directory contains the files ``test.txt`` and ``another/test2.txt``.  The bucket

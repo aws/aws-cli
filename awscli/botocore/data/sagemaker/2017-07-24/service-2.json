@@ -52,6 +52,16 @@
       ],
       "documentation":"<p>Associates a trial component with a trial. A trial component can be associated with multiple trials. To disassociate a trial component from a trial, call the <a>DisassociateTrialComponent</a> API.</p>"
     },
+    "BatchDescribeModelPackage":{
+      "name":"BatchDescribeModelPackage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchDescribeModelPackageInput"},
+      "output":{"shape":"BatchDescribeModelPackageOutput"},
+      "documentation":"<p>This action batch describes a list of versioned model packages</p>"
+    },
     "CreateAction":{
       "name":"CreateAction",
       "http":{
@@ -1453,7 +1463,7 @@
       },
       "input":{"shape":"DescribeModelPackageInput"},
       "output":{"shape":"DescribeModelPackageOutput"},
-      "documentation":"<p>Returns a description of the specified model package, which is used to create Amazon SageMaker models or list them on Amazon Web Services Marketplace.</p> <p>To create models in Amazon SageMaker, buyers can subscribe to model packages listed on Amazon Web Services Marketplace.</p>"
+      "documentation":"<p>Returns a description of the specified model package, which is used to create SageMaker models or list them on Amazon Web Services Marketplace.</p> <p>To create models in SageMaker, buyers can subscribe to model packages listed on Amazon Web Services Marketplace.</p>"
     },
     "DescribeModelPackageGroup":{
       "name":"DescribeModelPackageGroup",
@@ -2820,6 +2830,16 @@
       ],
       "documentation":"<p>Updates a pipeline execution.</p>"
     },
+    "UpdateProject":{
+      "name":"UpdateProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProjectInput"},
+      "output":{"shape":"UpdateProjectOutput"},
+      "documentation":"<p>Updates a machine learning (ML) project that is created from a template that sets up an ML pipeline from training to deploying an approved model.</p> <note> <p>You must not update a project that is in use. If you update the <code>ServiceCatalogProvisioningUpdateDetails</code> of a project that is active or being created, or updated, you may lose resources already created by the project.</p> </note>"
+    },
     "UpdateTrainingJob":{
       "name":"UpdateTrainingJob",
       "http":{
@@ -3431,6 +3451,13 @@
         "VpcOnly"
       ]
     },
+    "AppSecurityGroupManagement":{
+      "type":"string",
+      "enum":[
+        "Service",
+        "Customer"
+      ]
+    },
     "AppSortKey":{
       "type":"string",
       "enum":["CreationTime"]
@@ -3469,7 +3496,9 @@
       "enum":[
         "JupyterServer",
         "KernelGateway",
-        "TensorBoard"
+        "TensorBoard",
+        "RStudioServerPro",
+        "RSessionGateway"
       ]
     },
     "ApprovalDescription":{
@@ -4255,6 +4284,94 @@
         "AWS/Rekognition/DetectModerationLabels/Image/V3",
         "AWS/Textract/AnalyzeDocument/Forms/V1"
       ]
+    },
+    "BatchDescribeModelPackageError":{
+      "type":"structure",
+      "required":[
+        "ErrorCode",
+        "ErrorResponse"
+      ],
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p/>"
+        },
+        "ErrorResponse":{
+          "shape":"String",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p>The error code and error description associated with the resource.</p>"
+    },
+    "BatchDescribeModelPackageErrorMap":{
+      "type":"map",
+      "key":{"shape":"ModelPackageArn"},
+      "value":{"shape":"BatchDescribeModelPackageError"}
+    },
+    "BatchDescribeModelPackageInput":{
+      "type":"structure",
+      "required":["ModelPackageArnList"],
+      "members":{
+        "ModelPackageArnList":{
+          "shape":"ModelPackageArnList",
+          "documentation":"<p>The list of Amazon Resource Name (ARN) of the model package groups.</p>"
+        }
+      }
+    },
+    "BatchDescribeModelPackageOutput":{
+      "type":"structure",
+      "members":{
+        "ModelPackageSummaries":{
+          "shape":"ModelPackageSummaries",
+          "documentation":"<p>The summaries for the model package versions</p>"
+        },
+        "BatchDescribeModelPackageErrorMap":{
+          "shape":"BatchDescribeModelPackageErrorMap",
+          "documentation":"<p>A map of the resource and BatchDescribeModelPackageError objects reporting the error associated with describing the model package.</p>"
+        }
+      }
+    },
+    "BatchDescribeModelPackageSummary":{
+      "type":"structure",
+      "required":[
+        "ModelPackageGroupName",
+        "ModelPackageArn",
+        "CreationTime",
+        "InferenceSpecification",
+        "ModelPackageStatus"
+      ],
+      "members":{
+        "ModelPackageGroupName":{
+          "shape":"EntityName",
+          "documentation":"<p>The group name for the model package</p>"
+        },
+        "ModelPackageVersion":{
+          "shape":"ModelPackageVersion",
+          "documentation":"<p>The version number of a versioned model.</p>"
+        },
+        "ModelPackageArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package.</p>"
+        },
+        "ModelPackageDescription":{
+          "shape":"EntityDescription",
+          "documentation":"<p>The description of the model package.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time of the mortgage package summary.</p>"
+        },
+        "InferenceSpecification":{"shape":"InferenceSpecification"},
+        "ModelPackageStatus":{
+          "shape":"ModelPackageStatus",
+          "documentation":"<p>The status of the mortgage package.</p>"
+        },
+        "ModelApprovalStatus":{
+          "shape":"ModelApprovalStatus",
+          "documentation":"<p>The approval status of the model.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about the model package.</p>"
     },
     "BatchStrategy":{
       "type":"string",
@@ -5702,6 +5819,14 @@
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>SageMaker uses Amazon Web Services KMS to encrypt the EFS volume attached to the domain with an Amazon Web Services managed key by default. For more control, specify a customer managed key.</p>"
+        },
+        "AppSecurityGroupManagement":{
+          "shape":"AppSecurityGroupManagement",
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+        },
+        "DomainSettings":{
+          "shape":"DomainSettings",
+          "documentation":"<p>A collection of <code>Domain</code> settings.</p>"
         }
       }
     },
@@ -6370,8 +6495,8 @@
           "documentation":"<p>The name of the model package. The name must have 1 to 63 characters. Valid characters are a-z, A-Z, 0-9, and - (hyphen).</p> <p>This parameter is required for unversioned models. It is not applicable to versioned models.</p>"
         },
         "ModelPackageGroupName":{
-          "shape":"EntityName",
-          "documentation":"<p>The name of the model group that this model version belongs to.</p> <p>This parameter is required for versioned models, and does not apply to unversioned models.</p>"
+          "shape":"ArnOrName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package group that this model version belongs to.</p> <p>This parameter is required for versioned models, and does not apply to unversioned models.</p>"
         },
         "ModelPackageDescription":{
           "shape":"EntityDescription",
@@ -6410,6 +6535,10 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique token that guarantees that the call to this API is idempotent.</p>",
           "idempotencyToken":true
+        },
+        "CustomerMetadataProperties":{
+          "shape":"CustomerMetadataMap",
+          "documentation":"<p>The metadata properties associated with the model package versions.</p>"
         }
       }
     },
@@ -7274,6 +7403,29 @@
       "type":"list",
       "member":{"shape":"CustomImage"},
       "max":30
+    },
+    "CustomerMetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*)${1,128}"
+    },
+    "CustomerMetadataKeyList":{
+      "type":"list",
+      "member":{"shape":"CustomerMetadataKey"}
+    },
+    "CustomerMetadataMap":{
+      "type":"map",
+      "key":{"shape":"CustomerMetadataKey"},
+      "value":{"shape":"CustomerMetadataValue"},
+      "max":50,
+      "min":1
+    },
+    "CustomerMetadataValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*)${1,256}"
     },
     "DataCaptureConfig":{
       "type":"structure",
@@ -9048,6 +9200,18 @@
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The Amazon Web Services KMS customer managed key used to encrypt the EFS volume attached to the domain.</p>"
+        },
+        "DomainSettings":{
+          "shape":"DomainSettings",
+          "documentation":"<p>A collection of <code>Domain</code> settings.</p>"
+        },
+        "AppSecurityGroupManagement":{
+          "shape":"AppSecurityGroupManagement",
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+        },
+        "SecurityGroupIdForDomainBoundary":{
+          "shape":"SecurityGroupId",
+          "documentation":"<p>The ID of the security group that authorizes traffic between the <code>RSessionGateway</code> apps and the <code>RStudioServerPro</code> app.</p>"
         }
       }
     },
@@ -10042,7 +10206,7 @@
         },
         "ValidationSpecification":{
           "shape":"ModelPackageValidationSpecification",
-          "documentation":"<p>Configurations for one or more transform jobs that Amazon SageMaker runs to test the model package.</p>"
+          "documentation":"<p>Configurations for one or more transform jobs that SageMaker runs to test the model package.</p>"
         },
         "ModelPackageStatus":{
           "shape":"ModelPackageStatus",
@@ -10074,6 +10238,10 @@
         "ApprovalDescription":{
           "shape":"ApprovalDescription",
           "documentation":"<p>A description provided for the model approval.</p>"
+        },
+        "CustomerMetadataProperties":{
+          "shape":"CustomerMetadataMap",
+          "documentation":"<p>The metadata properties associated with the model package versions.</p>"
         }
       }
     },
@@ -10628,7 +10796,12 @@
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the project was created.</p>"
-        }
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when project was last modified.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"}
       }
     },
     "DescribeStudioLifecycleConfigRequest":{
@@ -11506,6 +11679,35 @@
       "type":"string",
       "max":63,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "DomainSecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":3
+    },
+    "DomainSettings":{
+      "type":"structure",
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"DomainSecurityGroupIds",
+          "documentation":"<p>The security groups for the Amazon Virtual Private Cloud that the <code>Domain</code> uses for communication between Domain-level apps and user apps.</p>"
+        },
+        "RStudioServerProDomainSettings":{
+          "shape":"RStudioServerProDomainSettings",
+          "documentation":"<p>A collection of settings that configure the <code>RStudioServerPro</code> Domain-level app.</p>"
+        }
+      },
+      "documentation":"<p>A collection of settings that apply to the <code>SageMaker Domain</code>. These settings are specified through the <code>CreateDomain</code> API call.</p>"
+    },
+    "DomainSettingsForUpdate":{
+      "type":"structure",
+      "members":{
+        "RStudioServerProDomainSettingsForUpdate":{
+          "shape":"RStudioServerProDomainSettingsForUpdate",
+          "documentation":"<p>A collection of <code>RStudioServerPro</code> Domain-level app settings to update.</p>"
+        }
+      },
+      "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
     },
     "DomainStatus":{
       "type":"string",
@@ -17652,6 +17854,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tags associated with the model package. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        },
+        "CustomerMetadataProperties":{
+          "shape":"CustomerMetadataMap",
+          "documentation":"<p>The metadata properties for the model package. </p>"
         }
       },
       "documentation":"<p>A versioned model that can be deployed for SageMaker inference.</p>"
@@ -17661,6 +17867,12 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:model-package/.*"
+    },
+    "ModelPackageArnList":{
+      "type":"list",
+      "member":{"shape":"ModelPackageArn"},
+      "max":100,
+      "min":1
     },
     "ModelPackageContainerDefinition":{
       "type":"structure",
@@ -17847,6 +18059,11 @@
     "ModelPackageStatusItemList":{
       "type":"list",
       "member":{"shape":"ModelPackageStatusItem"}
+    },
+    "ModelPackageSummaries":{
+      "type":"map",
+      "key":{"shape":"ModelPackageArn"},
+      "value":{"shape":"BatchDescribeModelPackageSummary"}
     },
     "ModelPackageSummary":{
       "type":"structure",
@@ -20542,7 +20759,12 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
-        }
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp container for when the project was last modified.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"}
       },
       "documentation":"<p>The properties of a project as returned by the Search API.</p>"
     },
@@ -20587,7 +20809,10 @@
         "CreateFailed",
         "DeleteInProgress",
         "DeleteFailed",
-        "DeleteCompleted"
+        "DeleteCompleted",
+        "UpdateInProgress",
+        "UpdateCompleted",
+        "UpdateFailed"
       ]
     },
     "ProjectSummary":{
@@ -20731,6 +20956,72 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the model package group.</p>"
         }
       }
+    },
+    "RSessionAppSettings":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A collection of settings that apply to an <code>RSessionGateway</code> app.</p>"
+    },
+    "RStudioServerProAccessStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "RStudioServerProAppSettings":{
+      "type":"structure",
+      "members":{
+        "AccessStatus":{
+          "shape":"RStudioServerProAccessStatus",
+          "documentation":"<p>Indicates whether the current user has access to the <code>RStudioServerPro</code> app.</p>"
+        },
+        "UserGroup":{
+          "shape":"RStudioServerProUserGroup",
+          "documentation":"<p>The level of permissions that the user has within the <code>RStudioServerPro</code> app. This value defaults to `User`. The `Admin` value allows the user access to the RStudio Administrative Dashboard.</p>"
+        }
+      },
+      "documentation":"<p>A collection of settings that configure user interaction with the <code>RStudioServerPro</code> app. <code>RStudioServerProAppSettings</code> cannot be updated. The <code>RStudioServerPro</code> app must be deleted and a new one created to make any changes.</p>"
+    },
+    "RStudioServerProDomainSettings":{
+      "type":"structure",
+      "required":["DomainExecutionRoleArn"],
+      "members":{
+        "DomainExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the execution role for the <code>RStudioServerPro</code> Domain-level app.</p>"
+        },
+        "RStudioConnectUrl":{
+          "shape":"String",
+          "documentation":"<p>A URL pointing to an RStudio Connect server.</p>"
+        },
+        "RStudioPackageManagerUrl":{
+          "shape":"String",
+          "documentation":"<p>A URL pointing to an RStudio Package Manager server.</p>"
+        },
+        "DefaultResourceSpec":{"shape":"ResourceSpec"}
+      },
+      "documentation":"<p>A collection of settings that configure the <code>RStudioServerPro</code> Domain-level app.</p>"
+    },
+    "RStudioServerProDomainSettingsForUpdate":{
+      "type":"structure",
+      "required":["DomainExecutionRoleArn"],
+      "members":{
+        "DomainExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The execution role for the <code>RStudioServerPro</code> Domain-level app.</p>"
+        },
+        "DefaultResourceSpec":{"shape":"ResourceSpec"}
+      },
+      "documentation":"<p>A collection of settings that update the current configuration for the <code>RStudioServerPro</code> Domain-level app.</p>"
+    },
+    "RStudioServerProUserGroup":{
+      "type":"string",
+      "enum":[
+        "R_STUDIO_ADMIN",
+        "R_STUDIO_USER"
+      ]
     },
     "RealtimeInferenceInstanceTypes":{
       "type":"list",
@@ -21571,6 +21862,20 @@
         }
       },
       "documentation":"<p>Details that you specify to provision a service catalog product. For information about service catalog, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html\">What is Amazon Web Services Service Catalog</a>.</p>"
+    },
+    "ServiceCatalogProvisioningUpdateDetails":{
+      "type":"structure",
+      "members":{
+        "ProvisioningArtifactId":{
+          "shape":"ServiceCatalogEntityId",
+          "documentation":"<p>The ID of the provisioning artifact.</p>"
+        },
+        "ProvisioningParameters":{
+          "shape":"ProvisioningParameters",
+          "documentation":"<p>A list of key value pairs that you specify when you provision a product.</p>"
+        }
+      },
+      "documentation":"<p>Details that you specify to provision a service catalog product. For information about service catalog, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html\">What is Amazon Web Services Service Catalog</a>. </p>"
     },
     "SessionExpirationDurationInSeconds":{
       "type":"integer",
@@ -23850,6 +24155,10 @@
         "DefaultUserSettings":{
           "shape":"UserSettings",
           "documentation":"<p>A collection of settings.</p>"
+        },
+        "DomainSettingsForUpdate":{
+          "shape":"DomainSettingsForUpdate",
+          "documentation":"<p>A collection of <code>DomainSettings</code> configuration values to update.</p>"
         }
       }
     },
@@ -23992,14 +24301,11 @@
     },
     "UpdateModelPackageInput":{
       "type":"structure",
-      "required":[
-        "ModelPackageArn",
-        "ModelApprovalStatus"
-      ],
+      "required":["ModelPackageArn"],
       "members":{
         "ModelPackageArn":{
           "shape":"ModelPackageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package.</p>"
         },
         "ModelApprovalStatus":{
           "shape":"ModelApprovalStatus",
@@ -24008,6 +24314,14 @@
         "ApprovalDescription":{
           "shape":"ApprovalDescription",
           "documentation":"<p>A description for the approval status of the model.</p>"
+        },
+        "CustomerMetadataProperties":{
+          "shape":"CustomerMetadataMap",
+          "documentation":"<p>The metadata properties associated with the model package versions.</p>"
+        },
+        "CustomerMetadataPropertiesToRemove":{
+          "shape":"CustomerMetadataKeyList",
+          "documentation":"<p>The metadata properties associated with the model package versions to remove.</p>"
         }
       }
     },
@@ -24193,6 +24507,38 @@
         "PipelineArn":{
           "shape":"PipelineArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the updated pipeline.</p>"
+        }
+      }
+    },
+    "UpdateProjectInput":{
+      "type":"structure",
+      "required":["ProjectName"],
+      "members":{
+        "ProjectName":{
+          "shape":"ProjectEntityName",
+          "documentation":"<p>The name of the project.</p>"
+        },
+        "ProjectDescription":{
+          "shape":"EntityDescription",
+          "documentation":"<p>The description for the project.</p>"
+        },
+        "ServiceCatalogProvisioningUpdateDetails":{
+          "shape":"ServiceCatalogProvisioningUpdateDetails",
+          "documentation":"<p>The product ID and provisioning artifact ID to provision a service catalog. The provisioning artifact ID will default to the latest provisioning artifact ID of the product, if you don't provide the provisioning artifact ID. For more information, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html\">What is Amazon Web Services Service Catalog</a>. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
+        }
+      }
+    },
+    "UpdateProjectOutput":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
         }
       }
     },
@@ -24504,6 +24850,14 @@
         "TensorBoardAppSettings":{
           "shape":"TensorBoardAppSettings",
           "documentation":"<p>The TensorBoard app settings.</p>"
+        },
+        "RStudioServerProAppSettings":{
+          "shape":"RStudioServerProAppSettings",
+          "documentation":"<p>A collection of settings that configure user interaction with the <code>RStudioServerPro</code> app.</p>"
+        },
+        "RSessionAppSettings":{
+          "shape":"RSessionAppSettings",
+          "documentation":"<p>A collection of settings that configure the <code>RSessionGateway</code> app.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to users of Amazon SageMaker Studio. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"

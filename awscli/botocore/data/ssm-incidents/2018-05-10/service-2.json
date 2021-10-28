@@ -124,7 +124,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the resource policy that AWS Resource Access Manager uses to share your Incident Manager resource.</p>"
+      "documentation":"<p>Deletes the resource policy that Resource Access Manager uses to share your Incident Manager resource.</p>"
     },
     "DeleteResponsePlan":{
       "name":"DeleteResponsePlan",
@@ -178,7 +178,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the details of the specified incident record.</p>"
+      "documentation":"<p>Returns the details for the specified incident record.</p>"
     },
     "GetReplicationSet":{
       "name":"GetReplicationSet",
@@ -353,7 +353,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists timeline events of the specified incident record.</p>"
+      "documentation":"<p>Lists timeline events for the specified incident record.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -468,7 +468,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update the details of an incident record. You can use this action to update an incident record from the defined chat channel. For more information about using actions in chat channels, see <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/chat.html#chat-interact\">Interacting through chat</a>.</p>",
+      "documentation":"<p>Update the details of an incident record. You can use this operation to update an incident record from the defined chat channel. For more information about using actions in chat channels, see <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/chat.html#chat-interact\">Interacting through chat</a>.</p>",
       "idempotent":true
     },
     "UpdateRelatedItems":{
@@ -557,7 +557,7 @@
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
+      "documentation":"<p>You don't have sufficient access to perform this operation.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -587,14 +587,14 @@
       "members":{
         "regionName":{
           "shape":"RegionName",
-          "documentation":"<p>The Region name to add to the replication set.</p>"
+          "documentation":"<p>The Amazon Web Services Region name to add to the replication set.</p>"
         },
         "sseKmsKeyId":{
           "shape":"SseKmsKey",
           "documentation":"<p>The KMS key ID to use to encrypt your replication set.</p>"
         }
       },
-      "documentation":"<p>Defines the Region and KMS key to add to the replication set. </p>"
+      "documentation":"<p>Defines the Amazon Web Services Region and KMS key to add to the replication set. </p>"
     },
     "Arn":{
       "type":"string",
@@ -643,14 +643,14 @@
       "members":{
         "chatbotSns":{
           "shape":"ChatbotSnsConfigurationSet",
-          "documentation":"<p>The SNS targets that AWS Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the SNS topics. </p>"
+          "documentation":"<p>The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. </p>"
         },
         "empty":{
           "shape":"EmptyChatChannel",
           "documentation":"<p>Used to remove the chat channel from an incident record or response plan.</p>"
         }
       },
-      "documentation":"<p>The AWS Chatbot chat channel used for collaboration during an incident.</p>",
+      "documentation":"<p>The Chatbot chat channel used for collaboration during an incident.</p>",
       "union":true
     },
     "ChatbotSnsConfigurationSet":{
@@ -695,6 +695,10 @@
         "resourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The resource type</p>"
+        },
+        "retryAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>If present in the output, the operation can be retried after this time</p>"
         }
       },
       "documentation":"<p>Updating or deleting a resource causes an inconsistent state.</p>",
@@ -710,7 +714,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "regions":{
@@ -742,11 +746,11 @@
         },
         "chatChannel":{
           "shape":"ChatChannel",
-          "documentation":"<p>The AWS Chatbot chat channel used for collaboration during an incident.</p>"
+          "documentation":"<p>The Chatbot chat channel used for collaboration during an incident.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "displayName":{
@@ -797,7 +801,7 @@
         },
         "eventData":{
           "shape":"EventData",
-          "documentation":"<p>A valid JSON string. There is no other schema imposed. A short description of the event.</p>"
+          "documentation":"<p>A short description of the event as a valid JSON string. There is no other schema imposed.</p>"
         },
         "eventTime":{
           "shape":"Timestamp",
@@ -809,7 +813,7 @@
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record you are adding the event to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record to which the event will be added.</p>"
         }
       }
     },
@@ -856,10 +860,10 @@
       "members":{
         "regionName":{
           "shape":"RegionName",
-          "documentation":"<p>The name of the Region you're deleting from the replication set.</p>"
+          "documentation":"<p>The name of the Amazon Web Services Region you're deleting from the replication set.</p>"
         }
       },
-      "documentation":"<p>Defines the information about the Region you're deleting from your replication set.</p>"
+      "documentation":"<p>Defines the information about the Amazon Web Services Region you're deleting from your replication set.</p>"
     },
     "DeleteReplicationSetInput":{
       "type":"structure",
@@ -928,7 +932,7 @@
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that the event is part of.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that includes the timeline event.</p>"
         }
       }
     },
@@ -1041,7 +1045,7 @@
       "members":{
         "incidentRecord":{
           "shape":"IncidentRecord",
-          "documentation":"<p>Details structure of the incident record.</p>"
+          "documentation":"<p>Details the structure of the incident record.</p>"
         }
       }
     },
@@ -1131,7 +1135,7 @@
         },
         "chatChannel":{
           "shape":"ChatChannel",
-          "documentation":"<p>The AWS Chatbot chat channel used for collaboration during an incident.</p>"
+          "documentation":"<p>The Chatbot chat channel used for collaboration during an incident.</p>"
         },
         "displayName":{
           "shape":"ResponsePlanDisplayName",
@@ -1147,7 +1151,7 @@
         },
         "name":{
           "shape":"ResponsePlanName",
-          "documentation":"<p>The short format name of the response plan. Can't contain spaces.</p>"
+          "documentation":"<p>The short format name of the response plan. The name can't contain spaces.</p>"
         }
       }
     },
@@ -1160,13 +1164,13 @@
       "members":{
         "eventId":{
           "shape":"UUID",
-          "documentation":"<p>The ID of the event. You can get an event's ID when you create it or by using <code>ListTimelineEvents</code>.</p>",
+          "documentation":"<p>The ID of the event. You can get an event's ID when you create it, or by using <code>ListTimelineEvents</code>.</p>",
           "location":"querystring",
           "locationName":"eventId"
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that the timeline event is part of.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that includes the timeline event.</p>",
           "location":"querystring",
           "locationName":"incidentRecordArn"
         }
@@ -1220,7 +1224,7 @@
         },
         "dedupeString":{
           "shape":"DedupeString",
-          "documentation":"<p>The string Incident Manager uses to prevent duplicate incidents from being created by the same incident.</p>"
+          "documentation":"<p>The string Incident Manager uses to prevent duplicate incidents from being created by the same incident in the same account.</p>"
         },
         "impact":{
           "shape":"Impact",
@@ -1240,7 +1244,7 @@
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
-          "documentation":"<p>The SNS targets that are notified when updates are made to an incident.</p>"
+          "documentation":"<p>The Amazon SNS targets that are notified when updates are made to an incident.</p>"
         },
         "resolvedTime":{
           "shape":"Timestamp",
@@ -1252,7 +1256,7 @@
         },
         "summary":{
           "shape":"IncidentSummary",
-          "documentation":"<p>The summary of the incident. The summary is a brief synopsis of what occurred, what is currently happening, and context.</p>"
+          "documentation":"<p>The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context of the incident.</p>"
         },
         "title":{
           "shape":"IncidentTitle",
@@ -1282,10 +1286,10 @@
         },
         "source":{
           "shape":"IncidentSource",
-          "documentation":"<p>The service that started the incident. This can be manually created from Incident Manager, automatically created using an AWS CloudWatch alarm, or Amazon EventBridge event.</p>"
+          "documentation":"<p>The service that started the incident. This can be manually created from Incident Manager, automatically created using an Amazon CloudWatch alarm, or Amazon EventBridge event.</p>"
         }
       },
-      "documentation":"<p>Details about how the incident record was created and when.</p>"
+      "documentation":"<p>Details about what created the incident record and when it was created.</p>"
     },
     "IncidentRecordStatus":{
       "type":"string",
@@ -1369,7 +1373,7 @@
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
-          "documentation":"<p>The SNS targets that are notified when updates are made to an incident.</p>"
+          "documentation":"<p>The Amazon SNS targets that are notified when updates are made to an incident.</p>"
         },
         "summary":{
           "shape":"IncidentSummary",
@@ -1446,11 +1450,11 @@
         },
         "metricDefinition":{
           "shape":"MetricDefinition",
-          "documentation":"<p>The metric definition, if the related item is a metric in CloudWatch.</p>"
+          "documentation":"<p>The metric definition, if the related item is a metric in Amazon CloudWatch.</p>"
         },
         "url":{
           "shape":"Url",
-          "documentation":"<p>The URL, if the related item is a non-AWS resource.</p>"
+          "documentation":"<p>The URL, if the related item is a non-Amazon Web Services resource.</p>"
         }
       },
       "documentation":"<p>Describes a related item.</p>",
@@ -1461,7 +1465,7 @@
       "members":{
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filter the list of incident records you are searching through. You can filter on the following keys:</p> <ul> <li> <p> <code>creationTime</code> </p> </li> <li> <p> <code>impact</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>createdBy</code> </p> </li> </ul>"
+          "documentation":"<p>Filters the list of incident records through which you are searching. You can filter on the following keys:</p> <ul> <li> <p> <code>creationTime</code> </p> </li> <li> <p> <code>impact</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>createdBy</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all incident records.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns incident records that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns incident records that match any of the values provided.</p> </li> </ul>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -1493,7 +1497,7 @@
       "members":{
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record that you are listing related items for.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record containing the listed related items.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -1601,11 +1605,11 @@
       "members":{
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters the timeline events based on the provided conditional values. You can filter timeline events using the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul>"
+          "documentation":"<p>Filters the timeline events based on the provided conditional values. You can filter timeline events using the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that the event is part of.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that includes the timeline event.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -1652,7 +1656,7 @@
     },
     "NextToken":{
       "type":"string",
-      "max":1000,
+      "max":2000,
       "min":0
     },
     "NotificationTargetItem":{
@@ -1723,22 +1727,22 @@
       "members":{
         "sseKmsKeyId":{
           "shape":"SseKmsKey",
-          "documentation":"<p>The ID of the KMS key used to encrypt the data in this Region.</p>"
+          "documentation":"<p>The ID of the KMS key used to encrypt the data in this Amazon Web Services Region.</p>"
         },
         "status":{
           "shape":"RegionStatus",
-          "documentation":"<p>The status of the Region in the replication set.</p>"
+          "documentation":"<p>The status of the Amazon Web Services Region in the replication set.</p>"
         },
         "statusMessage":{
           "shape":"String",
-          "documentation":"<p>Information displayed about the status of the Region.</p>"
+          "documentation":"<p>Information displayed about the status of the Amazon Web Services Region.</p>"
         },
         "statusUpdateDateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The most recent date and time that the Region's status was updated.</p>"
+          "documentation":"<p>The most recent date and time that Incident Manager updated the Amazon Web Services Region's status.</p>"
         }
       },
-      "documentation":"<p>Information about a Region in your replication set.</p>"
+      "documentation":"<p>Information about a Amazon Web Services Region in your replication set.</p>"
     },
     "RegionInfoMap":{
       "type":"map",
@@ -1760,7 +1764,7 @@
           "documentation":"<p>The KMS key used to encrypt the data in your replication set.</p>"
         }
       },
-      "documentation":"<p>The mapping between a Region and the key that's used to encrypt the data.</p>"
+      "documentation":"<p>The mapping between a Amazon Web Services Region and the key that's used to encrypt the data.</p>"
     },
     "RegionName":{
       "type":"string",
@@ -1843,7 +1847,7 @@
         },
         "deletionProtected":{
           "shape":"Boolean",
-          "documentation":"<p>Determines if the replication set deletion protection is enabled or not. If deletion protection is enabled, you can't delete the last Region in the replication set. </p>"
+          "documentation":"<p>Determines if the replication set deletion protection is enabled or not. If deletion protection is enabled, you can't delete the last Amazon Web Services Region in the replication set. </p>"
         },
         "lastModifiedBy":{
           "shape":"Arn",
@@ -1855,14 +1859,14 @@
         },
         "regionMap":{
           "shape":"RegionInfoMap",
-          "documentation":"<p>The map between each Region in your replication set and the KMS key that is used to encrypt the data in that Region.</p>"
+          "documentation":"<p>The map between each Amazon Web Services Region in your replication set and the KMS key that's used to encrypt the data in that Region.</p>"
         },
         "status":{
           "shape":"ReplicationSetStatus",
           "documentation":"<p>The status of the replication set. If the replication set is still pending, you can't use Incident Manager functionality.</p>"
         }
       },
-      "documentation":"<p>The set of Regions that your Incident Manager data will be replicated to and the KMS key used to encrypt the data. </p>"
+      "documentation":"<p>The set of Amazon Web Services Region that your Incident Manager data will be replicated to and the KMS key used to encrypt the data. </p>"
     },
     "ReplicationSetArnList":{
       "type":"list",
@@ -1892,7 +1896,7 @@
           "documentation":"<p>The resource type</p>"
         }
       },
-      "documentation":"<p>Request references a resource which does not exist. </p>",
+      "documentation":"<p>Request references a resource which doesn't exist. </p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -1917,7 +1921,7 @@
         },
         "ramResourceShareRegion":{
           "shape":"String",
-          "documentation":"<p>The Region that policy allows resources to be used in.</p>"
+          "documentation":"<p>The Amazon Web Services Region that policy allows resources to be used in.</p>"
         }
       },
       "documentation":"<p>The resource policy that allows Incident Manager to perform actions on resources on your behalf.</p>"
@@ -2118,7 +2122,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "impact":{
@@ -2127,11 +2131,11 @@
         },
         "relatedItems":{
           "shape":"RelatedItemList",
-          "documentation":"<p>Add related items to the incident for other responders to use. Related items are AWS resources, external links, or files uploaded to an S3 bucket. </p>"
+          "documentation":"<p>Add related items to the incident for other responders to use. Related items are AWS resources, external links, or files uploaded to an Amazon S3 bucket. </p>"
         },
         "responsePlanArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the response plan that pre-defines summary, chat channels, SNS topics, runbooks, title, and impact of the incident. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the response plan that pre-defines summary, chat channels, Amazon SNS topics, runbooks, title, and impact of the incident. </p>"
         },
         "title":{
           "shape":"IncidentTitle",
@@ -2296,11 +2300,11 @@
       "members":{
         "rawData":{
           "shape":"RawData",
-          "documentation":"<p>Raw data passed from either EventBridge, CloudWatch, or Incident Manager when an incident is created.</p>"
+          "documentation":"<p>Raw data passed from either Amazon EventBridge, Amazon CloudWatch, or Incident Manager when an incident is created.</p>"
         },
         "source":{
           "shape":"IncidentSource",
-          "documentation":"<p>Identifies the service that sourced the event. All events sourced from within AWS begin with \"aws.\" Customer-generated events can have any value here, as long as it doesn't begin with \"aws.\" We recommend the use of Java package-name style reverse domain-name strings. </p>"
+          "documentation":"<p>Identifies the service that sourced the event. All events sourced from within Amazon Web Services begin with \"<code>aws.</code>\" Customer-generated events can have any value here, as long as it doesn't begin with \"<code>aws.</code>\" We recommend the use of Java package-name style reverse domain-name strings. </p>"
         },
         "timestamp":{
           "shape":"Timestamp",
@@ -2308,7 +2312,7 @@
         },
         "triggerArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the source that detected the incident.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source that detected the incident.</p>"
         }
       },
       "documentation":"<p>Details about what caused the incident to be created in Incident Manager.</p>"
@@ -2357,7 +2361,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "deletionProtected":{
@@ -2381,20 +2385,20 @@
         },
         "chatChannel":{
           "shape":"ChatChannel",
-          "documentation":"<p>The AWS Chatbot chat channel for responders to collaborate in.</p>"
+          "documentation":"<p>The Chatbot chat channel where responders can collaborate.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "impact":{
           "shape":"Impact",
-          "documentation":"<p>Defines the impact to customers and applications. Providing an impact overwrites the impact provided by the response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, this typically relates to full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer might aren't impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren't currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>"
+          "documentation":"<p>Defines the impact of the incident to customers and applications. Providing an impact overwrites the impact provided by the response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer aren't impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren't currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>"
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
-          "documentation":"<p>The SNS targets that are notified when updates are made to an incident.</p> <p>Using multiple SNS topics creates redundancy in the case that a Region is down during the incident.</p>"
+          "documentation":"<p>The Amazon SNS targets that are notified when updates are made to an incident.</p> <p>Using multiple SNS topics creates redundancy in the event that a Region is down during the incident.</p>"
         },
         "status":{
           "shape":"IncidentRecordStatus",
@@ -2402,11 +2406,11 @@
         },
         "summary":{
           "shape":"IncidentSummary",
-          "documentation":"<p>The summary describes what has happened during the incident.</p>"
+          "documentation":"<p>A longer description of what occurred during the incident.</p>"
         },
         "title":{
           "shape":"IncidentTitle",
-          "documentation":"<p>The title of the incident is a brief and easily recognizable.</p>"
+          "documentation":"<p>A brief description of the incident.</p>"
         }
       }
     },
@@ -2424,12 +2428,12 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record you are updating related items in.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record containing the related items you are updating.</p>"
         },
         "relatedItemsUpdate":{
           "shape":"RelatedItemsUpdate",
@@ -2447,11 +2451,11 @@
       "members":{
         "addRegionAction":{
           "shape":"AddRegionAction",
-          "documentation":"<p>Details about the Region that you're adding to the replication set.</p>"
+          "documentation":"<p>Details about the Amazon Web Services Region that you're adding to the replication set.</p>"
         },
         "deleteRegionAction":{
           "shape":"DeleteRegionAction",
-          "documentation":"<p>Details about the Region that you're deleting to the replication set.</p>"
+          "documentation":"<p>Details about the Amazon Web Services Region that you're deleting to the replication set.</p>"
         }
       },
       "documentation":"<p>Details used when updating the replication set.</p>",
@@ -2474,7 +2478,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         }
       }
@@ -2504,16 +2508,16 @@
         },
         "chatChannel":{
           "shape":"ChatChannel",
-          "documentation":"<p>The AWS Chatbot chat channel used for collaboration during an incident.</p> <p>Use the empty structure to remove the chat channel from the response plan.</p>"
+          "documentation":"<p>The Chatbot chat channel used for collaboration during an incident.</p> <p>Use the empty structure to remove the chat channel from the response plan.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "displayName":{
           "shape":"ResponsePlanDisplayName",
-          "documentation":"<p>The long format name of the response plan. Can't contain spaces.</p>"
+          "documentation":"<p>The long format name of the response plan. The display name can't contain spaces.</p>"
         },
         "engagements":{
           "shape":"EngagementSet",
@@ -2521,7 +2525,7 @@
         },
         "incidentTemplateDedupeString":{
           "shape":"DedupeString",
-          "documentation":"<p>Used to create only one incident record for an incident.</p>"
+          "documentation":"<p>The string Incident Manager uses to prevent duplicate incidents from being created by the same incident in the same account.</p>"
         },
         "incidentTemplateImpact":{
           "shape":"Impact",
@@ -2529,7 +2533,7 @@
         },
         "incidentTemplateNotificationTargets":{
           "shape":"NotificationTargetSet",
-          "documentation":"<p>The SNS targets that are notified when updates are made to an incident.</p>"
+          "documentation":"<p>The Amazon SNS targets that are notified when updates are made to an incident.</p>"
         },
         "incidentTemplateSummary":{
           "shape":"IncidentSummary",
@@ -2537,7 +2541,7 @@
         },
         "incidentTemplateTitle":{
           "shape":"IncidentTitle",
-          "documentation":"<p>The short format name of the incident. Can't contain spaces.</p>"
+          "documentation":"<p>The short format name of the incident. The title can't contain spaces.</p>"
         }
       }
     },
@@ -2555,7 +2559,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "eventData":{
@@ -2576,7 +2580,7 @@
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that the timeline event is part of.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident that includes the timeline event.</p>"
         }
       }
     },
@@ -2596,7 +2600,7 @@
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service.</p>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -2604,5 +2608,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>AWS Systems Manager Incident Manager is an incident management console designed to help users mitigate and recover from incidents affecting their AWS-hosted applications. An incident is any unplanned interruption or reduction in quality of services. </p> <p>Incident Manager increases incident resolution by notifying responders of impact, highlighting relevant troubleshooting data, and providing collaboration tools to get services back up and running. To achieve the primary goal of reducing the time-to-resolution of critical incidents, Incident Manager automates response plans and enables responder team escalation. </p>"
+  "documentation":"<p>Systems Manager Incident Manager is an incident management console designed to help users mitigate and recover from incidents affecting their Amazon Web Services-hosted applications. An incident is any unplanned interruption or reduction in quality of services. </p> <p>Incident Manager increases incident resolution by notifying responders of impact, highlighting relevant troubleshooting data, and providing collaboration tools to get services back up and running. To achieve the primary goal of reducing the time-to-resolution of critical incidents, Incident Manager automates response plans and enables responder team escalation. </p>"
 }

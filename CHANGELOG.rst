@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.3.2
+=====
+
+* api-change:``eks``: EKS managed node groups now support BOTTLEROCKET_x86_64 and BOTTLEROCKET_ARM_64 AMI types.
+* api-change:``autoscaling``: This release adds support for attribute-based instance type selection, a new EC2 Auto Scaling feature that lets customers express their instance requirements as a set of attributes, such as vCPU, memory, and storage.
+* api-change:``sagemaker``: This release allows customers to describe one or more versioned model packages through BatchDescribeModelPackage, update project via UpdateProject, modify and read customer metadata properties using Create, Update and Describe ModelPackage and enables cross account registration of model packages.
+* bugfix:Source: Fix invalid dependency specification in pyproject.toml (`#6513 <https://github.com/aws/aws-cli/pull/6513>`__).
+* api-change:``ec2``: This release adds: attribute-based instance type selection for EC2 Fleet, Spot Fleet, a feature that lets customers express instance requirements as attributes like vCPU, memory, and storage; and Spot placement score, a feature that helps customers identify an optimal location to run Spot workloads.
+* enhancement:Source: Remove unsupported aws_legacy_completer script from source (`#6515 <https://github.com/aws/aws-cli/pull/6515>`__).
+* api-change:``ecs``: Amazon ECS now supports running Fargate tasks on Windows Operating Systems Families which includes Windows Server 2019 Core and Windows Server 2019 Full.
+* api-change:``textract``: This release adds support for asynchronously analyzing invoice and receipt documents through two new APIs: StartExpenseAnalysis and GetExpenseAnalysis
+* api-change:``gamelift``: Added support for Arm-based AWS Graviton2 instances, such as M6g, C6g, and R6g.
+* api-change:``ssm-incidents``: Updating documentation, adding new field to ConflictException to indicate earliest retry timestamp for some operations, increase maximum length of nextToken fields
+* api-change:``ec2``: Added new read-only DenyAllIGWTraffic network interface attribute. Added support for DL1 24xlarge instances powered by Habana Gaudi Accelerators for deep learning model training workloads
+* api-change:``sagemaker``: This release adds support for RStudio on SageMaker.
+* api-change:``connectparticipant``: This release adds a new boolean attribute - Connect Participant - to the CreateParticipantConnection API, which can be used to mark the participant as connected.
+
+
 2.3.1
 =====
 

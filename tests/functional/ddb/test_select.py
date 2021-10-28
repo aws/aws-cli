@@ -476,8 +476,6 @@ class TestSelect(BaseSelectTest):
         )
 
 
-
-
 class TestSelectPagination(BaseSelectTest):
     def setUp(self):
         super(TestSelectPagination, self).setUp()

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.21.7
+======
+
+* api-change:``application-insights``: Added Monitoring support for SQL Server Failover Cluster Instance. Additionally, added a new API to allow one-click monitoring of containers resources.
+* api-change:``rekognition``: This release added new attributes to Rekognition Video GetCelebrityRecognition API operations.
+* api-change:``ec2``: Support added for AMI sharing with organizations and organizational units in ModifyImageAttribute API
+* api-change:``transcribe``: Transcribe and Transcribe Call Analytics now support automatic language identification along with custom vocabulary, vocabulary filter, custom language model and PII redaction.
+* api-change:``connect``: Amazon Connect Chat now supports real-time message streaming.
+
+
 1.21.6
 ======
 

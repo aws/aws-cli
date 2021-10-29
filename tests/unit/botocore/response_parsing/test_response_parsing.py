@@ -106,38 +106,12 @@ def _convert_bytes_to_str(parsed):
         return parsed
 
 
-def _xml_test_cases():
-    for dp in ['responses', 'errors']:
-        data_path = os.path.join(os.path.dirname(__file__), 'xml')
-        data_path = os.path.join(data_path, dp)
-        session = create_session()
-        xml_files = glob.glob('%s/*.xml' % data_path)
-        service_names = set()
-        for fn in xml_files:
-            service_names.add(os.path.split(fn)[1].split('-')[0])
-        for service_name in service_names:
-            service_model = session.get_service_model(service_name)
-            service_xml_files = glob.glob('%s/%s-*.xml' % (data_path,
-                                                           service_name))
-            for xmlfile in service_xml_files:
-                expected = _get_expected_parsed_result(xmlfile)
-                operation_model = _get_operation_model(service_model, xmlfile)
-                yield xmlfile, operation_model, expected
-
-
-@pytest.mark.parametrize(
-    "xmlfile, operation_model, expected",
-    _xml_test_cases()
-)
-def test_xml_parsing(xmlfile, operation_model, expected):
-    _test_parsed_response(
-        xmlfile, operation_model, expected
-    )
-
-
-def _get_raw_response_body(xmlfile):
-    with open(xmlfile, 'rb') as f:
-        return f.read()
+def _get_expected_parsed_result(filename):
+    dirname, filename = os.path.split(filename)
+    basename = os.path.splitext(filename)[0]
+    jsonfile = os.path.join(dirname, basename + '.json')
+    with open(jsonfile) as f:
+        return json.load(f)
 
 
 def _get_operation_model(service_model, filename):
@@ -157,15 +131,44 @@ def _get_operation_model(service_model, filename):
     return operation
 
 
-def _get_expected_parsed_result(filename):
-    dirname, filename = os.path.split(filename)
-    basename = os.path.splitext(filename)[0]
-    jsonfile = os.path.join(dirname, basename + '.json')
-    with open(jsonfile) as f:
-        return json.load(f)
+def _xml_test_cases():
+    cases = []
+    for dp in ['responses', 'errors']:
+        data_path = os.path.join(os.path.dirname(__file__), 'xml')
+        data_path = os.path.join(data_path, dp)
+        session = create_session()
+        xml_files = glob.glob('%s/*.xml' % data_path)
+        service_names = set()
+        for fn in xml_files:
+            service_names.add(os.path.split(fn)[1].split('-')[0])
+        for service_name in service_names:
+            service_model = session.get_service_model(service_name)
+            service_xml_files = glob.glob('%s/%s-*.xml' % (data_path,
+                                                           service_name))
+            for xmlfile in service_xml_files:
+                expected = _get_expected_parsed_result(xmlfile)
+                operation_model = _get_operation_model(service_model, xmlfile)
+                cases.append((xmlfile, operation_model, expected))
+    return sorted(cases, key=lambda x: x[0])
+
+
+@pytest.mark.parametrize(
+    "xmlfile, operation_model, expected",
+    _xml_test_cases()
+)
+def test_xml_parsing(xmlfile, operation_model, expected):
+    _test_parsed_response(
+        xmlfile, operation_model, expected
+    )
+
+
+def _get_raw_response_body(xmlfile):
+    with open(xmlfile, 'rb') as f:
+        return f.read()
 
 
 def _json_test_cases():
+    cases = []
     # The outputs/ directory has sample output responses
     # For each file in outputs/ there's a corresponding file
     # in expected/ that has the expected parsed response.
@@ -189,7 +192,8 @@ def _json_test_cases():
         for op_name in operation_names:
             if xform_name(op_name) == operation_name.replace('-', '_'):
                 operation_model = service_model.operation_model(op_name)
-        yield raw_response_file, operation_model, expected
+        cases.append((raw_response_file, operation_model, expected))
+    return sorted(cases, key=lambda x: x[0])
 
 
 @pytest.mark.parametrize(

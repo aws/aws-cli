@@ -44,6 +44,7 @@ def process_args(args):
             f"--cov-config={os.path.join(REPO_ROOT, '.coveragerc')} "
             f"--cov-report xml "
         )
+    test_args += '--numprocesses=auto --dist=loadfile --maxprocesses=4 '
     dirs = " ".join(args.test_dirs)
 
     return runner, test_args, dirs

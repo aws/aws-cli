@@ -107,7 +107,7 @@ def known_endpoint_prefixes():
     # ``metadata`` section.
     session = get_session()
     loader = session.get_component('data_loader')
-    known_services = loader.list_available_services('service-2')
+    known_services = sorted(loader.list_available_services('service-2'))
     return [
         session.get_service_model(service_name).endpoint_prefix
         for service_name in known_services
@@ -138,7 +138,7 @@ def _computed_endpoint_prefixes():
     # Now we go through every known endpoint prefix in the endpoints.json
     # file and ensure it maps to an endpoint prefix we've seen
     # in a service model.
-    for endpoint_prefix in services_in_endpoints_file:
+    for endpoint_prefix in sorted(list(services_in_endpoints_file)):
         # Check for an override where we know that an entry
         # in the endpoints.json actually maps to a different endpoint
         # prefix.
@@ -160,7 +160,7 @@ def _available_services():
     # will become the client names.
     session = get_session()
     loader = session.get_component('data_loader')
-    return loader.list_available_services('service-2')
+    return sorted(loader.list_available_services('service-2'))
 
 
 @pytest.mark.parametrize("service_name", _available_services())

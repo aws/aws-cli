@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.21.8
+======
+
+* api-change:``lightsail``: This release adds support to enable access logging for buckets in the Lightsail object storage service.
+* api-change:``rekognition``: This Amazon Rekognition Custom Labels release introduces the management of datasets with  projects
+* api-change:``networkmanager``: This release adds API support to aggregate resources, routes, and telemetry data across a Global Network.
+* api-change:``neptune``: Adds support for major version upgrades to ModifyDbCluster API
+
+
 1.21.7
 ======
 

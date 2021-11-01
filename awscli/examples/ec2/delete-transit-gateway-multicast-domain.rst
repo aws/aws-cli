@@ -1,6 +1,6 @@
 **To delete a transit gateway multicast domain**
 
-This example returns the route table propagations for the specified route table.::
+The following ``delete-transit-gateway-multicast-domain`` example deletes the specified multicast domain. ::
 
     aws ec2 delete-transit-gateway-multicast-domain \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef7EXAMPLE
@@ -16,4 +16,4 @@ Output::
         }
     }
 
-For more information, see 'Delete a Transit Gateway Multicast Domain<https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#view-tgw-route-propagations>'__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Managing multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/manage-domain.html>`__ in the *Transit Gateways Guide*.

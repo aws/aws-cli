@@ -98,12 +98,5 @@ class TestTokenBucketThreading(unittest.TestCase):
             self.shutdown_threads = True
             for thread in all_threads:
                 thread.join()
+        # Verify all threads complete successfully
         self.assertEqual(self.caught_exceptions, [])
-        distribution = self.acquisitions_by_thread.values()
-        mean = sum(distribution) / float(len(distribution))
-        # We can't really rely on any guarantees about evenly distributing
-        # thread acquisition(), e.g. must be with a 2 stddev range, but we
-        # can sanity check that our implementation isn't drastically
-        # starving a thread.  So we'll arbitrarily say that a thread
-        # can't have less than 20% of the mean allocations per thread.
-        self.assertTrue(not any(x < (0.2 * mean) for x in distribution))

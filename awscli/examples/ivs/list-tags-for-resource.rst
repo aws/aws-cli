@@ -7,4 +7,4 @@ The following ``list-tags-for-resource`` example lists all tags for a specified 
 
 This command produces no output.
 
-For more information, see `Tagging<https://docs.aws.amazon.com/ivs/latest/APIReference/Welcome.html>`__ in the *Amazon Interactive Video Service API Reference*.
+For more information, see `Tagging <https://docs.aws.amazon.com/ivs/latest/APIReference/Welcome.html>`__ in the *Amazon Interactive Video Service API Reference*.

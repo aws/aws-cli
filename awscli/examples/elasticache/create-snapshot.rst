@@ -3,14 +3,14 @@
 The following ``create-snapshot`` example creates a snapshot using the Redis engine. ::
 
     aws elasticache create-snapshot \
-        --snapshot-name mysnashot \
+        --snapshot-name mysnapshot \
         --cache-cluster-id cluster-test
 
 Output::
 
     {
         "Snapshot": {
-            "SnapshotName": "mysnashot",
+            "SnapshotName": "mysnapshot",
             "CacheClusterId": "cluster-test",
             "SnapshotStatus": "creating",
             "SnapshotSource": "manual",

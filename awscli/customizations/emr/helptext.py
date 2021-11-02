@@ -205,7 +205,8 @@ INSTANCE_COUNT = (
     ' are used for the core node type.</p>')
 
 ADDITIONAL_INFO = (
-    '<p>Specifies additional information during cluster creation.</p>')
+    '<p>Specifies additional information during cluster creation. To set development mode when starting your EMR cluster,'
+    ' set this parameter to <code>{"clusterType":"development"}</code>.</p>')
 
 EC2_ATTRIBUTES = (
     '<p>Configures cluster and Amazon EC2 instance configurations. Accepts'

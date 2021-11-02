@@ -2688,6 +2688,33 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.21.9
+======
+
+* api-change:``nimble``: Amazon Nimble Studio adds support for users to stop and start streaming sessions.
+* api-change:``cloudfront``: CloudFront now supports response headers policies to add HTTP headers to the responses that CloudFront sends to viewers. You can use these policies to add CORS headers, control browser caching, and more, without modifying your origin or writing any code.
+* api-change:``connect``: Amazon Connect Chat now supports real-time message streaming.
+
+
+1.21.8
+======
+
+* api-change:``lightsail``: This release adds support to enable access logging for buckets in the Lightsail object storage service.
+* api-change:``rekognition``: This Amazon Rekognition Custom Labels release introduces the management of datasets with  projects
+* api-change:``networkmanager``: This release adds API support to aggregate resources, routes, and telemetry data across a Global Network.
+* api-change:``neptune``: Adds support for major version upgrades to ModifyDbCluster API
+
+
+1.21.7
+======
+
+* api-change:``application-insights``: Added Monitoring support for SQL Server Failover Cluster Instance. Additionally, added a new API to allow one-click monitoring of containers resources.
+* api-change:``rekognition``: This release added new attributes to Rekognition Video GetCelebrityRecognition API operations.
+* api-change:``ec2``: Support added for AMI sharing with organizations and organizational units in ModifyImageAttribute API
+* api-change:``transcribe``: Transcribe and Transcribe Call Analytics now support automatic language identification along with custom vocabulary, vocabulary filter, custom language model and PII redaction.
+* api-change:``connect``: Amazon Connect Chat now supports real-time message streaming.
+
+
 1.21.6
 ======
 

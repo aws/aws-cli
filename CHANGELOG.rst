@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.21.9
+======
+
+* api-change:``nimble``: Amazon Nimble Studio adds support for users to stop and start streaming sessions.
+* api-change:``cloudfront``: CloudFront now supports response headers policies to add HTTP headers to the responses that CloudFront sends to viewers. You can use these policies to add CORS headers, control browser caching, and more, without modifying your origin or writing any code.
+* api-change:``connect``: Amazon Connect Chat now supports real-time message streaming.
+
+
 1.21.8
 ======
 

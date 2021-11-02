@@ -34,6 +34,8 @@ plan:
         choices:
           - display: AWS CodeBuild
             actual_value: codebuild
+          - display: AWS CodeCommit
+            actual_value: codecommit
           - display: Amazon DynamoDB
             actual_value: dynamodb
           - display: Amazon EC2
@@ -107,12 +109,36 @@ plan:
         type: prompt
         description: Select the target type
         choices:
+          - display: CloudWatch Logs group
+            actual_value: logs_group
           - display: CodeBuild project
             actual_value: codebuild_project
           - display: Lambda function
             actual_value: lambda_function
           - display: SNS topic
             actual_value: sns_topic
+
+      # CloudWatch Logs target specific variables
+      logs_target:
+        condition:
+          variable: target_type
+          equals: logs_group
+        type: prompt
+        description: Select the CloudWatch Logs group
+        choices: existing_groups
+      existing_groups:
+        type: apicall
+        operation: logs.DescribeLogGroups
+        params: { }
+        query: "sort_by(logGroups[].{display: logGroupName, actual_value: arn}, &display)"
+        cache: true
+        paginate: true
+      logs_resource_policy:
+        condition:
+          variable: target_type
+          equals: logs_group
+        type: template
+        value: '{{"Version":"2012-10-17", "Statement":[{{"Sid":"TrustEventsToStoreLogEvent","Effect":"Allow","Principal":{{"Service":["delivery.logs.amazonaws.com","events.amazonaws.com"]}},"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Resource":"{logs_target}:*"}}]}}'
 
       # CodeBuild target specific variables
       codebuild_target:
@@ -186,6 +212,7 @@ plan:
           {% if {target_type} == codebuild_project %}yes{% endif %}
           {% if {target_type} == lambda_function %}no{% endif %}
           {% if {target_type} == sns_topic %}no{% endif %}
+          {% if {target_type} == logs_group %}no{% endif %}
       target_role_arn:
         condition:
           variable: target_needs_role
@@ -206,6 +233,7 @@ plan:
           {% if {target_type} == codebuild_project %}{codebuild_project_arn}{% endif %}
           {% if {target_type} == lambda_function %}{lambda_function_arn}{% endif %}
           {% if {target_type} == sns_topic %}{sns_topic_target}{% endif %}
+          {% if {target_type} == logs_group %}{logs_target}{% endif %}
 
   preview:
     shortname: Preview
@@ -277,6 +305,12 @@ plan:
             --topic-arn {sns_topic_target} \
             --attribute-name Policy \
             --attribute-value file://policy.json
+          {% endif %}
+
+          {% if {target_type} == logs_group %}
+          aws logs put-resource-policy \
+            --policy-name 'WriteEventLogs' \
+            --policy-document '{logs_resource_policy}'
           {% endif %}
 
           aws events put-targets \
@@ -363,6 +397,16 @@ execute:
       params: "{put_rule_params}"
       query: "RuleArn"
       output_var: rule_arn
+
+    # CloudWatch Logs specific calls
+    - type: apicall
+      condition:
+        variable: target_type
+        equals: logs_group
+      operation: logs.PutResourcePolicy
+      params:
+        policyName: WriteEventLogs
+        policyDocument: "{logs_resource_policy}"
 
     # Lambda specific calls
     - type: apicall

@@ -51,6 +51,27 @@
       ],
       "documentation":"<p>Creates a collection in an AWS Region. You can add faces to the collection using the <a>IndexFaces</a> operation. </p> <p>For example, you might create collections, one for each of your application users. A user can then index faces using the <code>IndexFaces</code> operation and persist results in a specific collection. Then, a user can search the collection for faces in the user-specific container. </p> <p>When you create a collection, it is associated with the latest version of the face model version.</p> <note> <p>Collection names are case-sensitive.</p> </note> <p>This operation requires permissions to perform the <code>rekognition:CreateCollection</code> action. If you want to tag your collection, you also require permission to perform the <code>rekognition:TagResource</code> operation.</p>"
     },
+    "CreateDataset":{
+      "name":"CreateDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDatasetRequest"},
+      "output":{"shape":"CreateDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidS3ObjectException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new Amazon Rekognition Custom Labels dataset. You can create a dataset by using an Amazon Sagemaker format manifest file or by copying an existing Amazon Rekognition Custom Labels dataset.</p> <p>To create a training dataset for a project, specify <code>train</code> for the value of <code>DatasetType</code>. To create the test dataset for a project, specify <code>test</code> for the value of <code>DatasetType</code>. </p> <p>The response from <code>CreateDataset</code> is the Amazon Resource Name (ARN) for the dataset. Creating a dataset takes a while to complete. Use <a>DescribeDataset</a> to check the current status. The dataset created successfully if the value of <code>Status</code> is <code>CREATE_COMPLETE</code>. </p> <p>To check if any non-terminal errors occurred, call <a>ListDatasetEntries</a> and check for the presence of <code>errors</code> lists in the JSON Lines.</p> <p>Dataset creation fails if a terminal error occurs (<code>Status</code> = <code>CREATE_FAILED</code>). Currently, you can't access the terminal error information. </p> <p>For more information, see Creating dataset in the <i>Amazon Rekognition Custom Labels Developer Guide</i>.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateDataset</code> action. If you want to copy an existing dataset, you also require permission to perform the <code>rekognition:ListDatasetEntries</code> action.</p>"
+    },
     "CreateProject":{
       "name":"CreateProject",
       "http":{
@@ -68,7 +89,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Creates a new Amazon Rekognition Custom Labels project. A project is a logical grouping of resources (images, Labels, models) and operations (training, evaluation and detection). </p> <p>This operation requires permissions to perform the <code>rekognition:CreateProject</code> action.</p>"
+      "documentation":"<p>Creates a new Amazon Rekognition Custom Labels project. A project is a group of resources (datasets, model versions) that you use to create and manage Amazon Rekognition Custom Labels models. </p> <p>This operation requires permissions to perform the <code>rekognition:CreateProject</code> action.</p>"
     },
     "CreateProjectVersion":{
       "name":"CreateProjectVersion",
@@ -89,7 +110,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new version of a model and begins training. Models are managed as part of an Amazon Rekognition Custom Labels project. You can specify one training dataset and one testing dataset. The response from <code>CreateProjectVersion</code> is an Amazon Resource Name (ARN) for the version of the model. </p> <p>Training takes a while to complete. You can get the current status by calling <a>DescribeProjectVersions</a>.</p> <p>Once training has successfully completed, call <a>DescribeProjectVersions</a> to get the training results and evaluate the model. </p> <p>After evaluating the model, you start the model by calling <a>StartProjectVersion</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateProjectVersion</code> action.</p>"
+      "documentation":"<p>Creates a new version of a model and begins training. Models are managed as part of an Amazon Rekognition Custom Labels project. The response from <code>CreateProjectVersion</code> is an Amazon Resource Name (ARN) for the version of the model. </p> <p>Training uses the training and test datasets associated with the project. For more information, see Creating training and test dataset in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <note> <p>You can train a modelin a project that doesn't have associated datasets by specifying manifest files in the <code>TrainingData</code> and <code>TestingData</code> fields. </p> <p>If you open the console after training a model with manifest files, Amazon Rekognition Custom Labels creates the datasets for you using the most recent manifest files. You can no longer train a model version for the project by specifying manifest files. </p> <p>Instead of training with a project without associated datasets, we recommend that you use the manifest files to create training and test datasets for the project.</p> </note> <p>Training takes a while to complete. You can get the current status by calling <a>DescribeProjectVersions</a>. Training completed successfully if the value of the <code>Status</code> field is <code>TRAINING_COMPLETED</code>.</p> <p>If training fails, see Debugging a failed model training in the <i>Amazon Rekognition Custom Labels</i> developer guide. </p> <p>Once training has successfully completed, call <a>DescribeProjectVersions</a> to get the training results and evaluate the model. For more information, see Improving a trained Amazon Rekognition Custom Labels model in the <i>Amazon Rekognition Custom Labels</i> developers guide. </p> <p>After evaluating the model, you start the model by calling <a>StartProjectVersion</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateProjectVersion</code> action.</p>"
     },
     "CreateStreamProcessor":{
       "name":"CreateStreamProcessor",
@@ -129,6 +150,26 @@
       ],
       "documentation":"<p>Deletes the specified collection. Note that this operation removes all faces in the collection. For an example, see <a>delete-collection-procedure</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteCollection</code> action.</p>"
     },
+    "DeleteDataset":{
+      "name":"DeleteDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDatasetRequest"},
+      "output":{"shape":"DeleteDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an existing Amazon Rekognition Custom Labels dataset. Deleting a dataset might take while. Use <a>DescribeDataset</a> to check the current status. The dataset is still deleting if the value of <code>Status</code> is <code>DELETE_IN_PROGRESS</code>. If you try to access the dataset after it is deleted, you get a <code>ResourceNotFoundException</code> exception. </p> <p>You can't delete a dataset while it is creating (<code>Status</code> = <code>CREATE_IN_PROGRESS</code>) or if the dataset is updating (<code>Status</code> = <code>UPDATE_IN_PROGRESS</code>).</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteDataset</code> action.</p>"
+    },
     "DeleteFaces":{
       "name":"DeleteFaces",
       "http":{
@@ -164,7 +205,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Deletes an Amazon Rekognition Custom Labels project. To delete a project you must first delete all models associated with the project. To delete a model, see <a>DeleteProjectVersion</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProject</code> action. </p>"
+      "documentation":"<p>Deletes an Amazon Rekognition Custom Labels project. To delete a project you must first delete all models associated with the project. To delete a model, see <a>DeleteProjectVersion</a>.</p> <p> <code>DeleteProject</code> is an asynchronous operation. To check if the project is deleted, call <a>DescribeProjects</a>. The project is deleted when the project no longer appears in the response.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProject</code> action. </p>"
     },
     "DeleteProjectVersion":{
       "name":"DeleteProjectVersion",
@@ -222,6 +263,24 @@
       ],
       "documentation":"<p>Describes the specified collection. You can use <code>DescribeCollection</code> to get information, such as the number of faces indexed into a collection and the version of the model used by the collection for face detection.</p> <p>For more information, see Describing a Collection in the Amazon Rekognition Developer Guide.</p>"
     },
+    "DescribeDataset":{
+      "name":"DescribeDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDatasetRequest"},
+      "output":{"shape":"DescribeDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Describes an Amazon Rekognition Custom Labels dataset. You can get information such as the current status of a dataset and statistics about the images and labels in a dataset. </p> <p>This operation requires permissions to perform the <code>rekognition:DescribeDataset</code> action.</p>"
+    },
     "DescribeProjectVersions":{
       "name":"DescribeProjectVersions",
       "http":{
@@ -239,7 +298,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Lists and describes the models in an Amazon Rekognition Custom Labels project. You can specify up to 10 model versions in <code>ProjectVersionArns</code>. If you don't specify a value, descriptions for all models are returned.</p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjectVersions</code> action.</p>"
+      "documentation":"<p>Lists and describes the versions of a model in an Amazon Rekognition Custom Labels project. You can specify up to 10 model versions in <code>ProjectVersionArns</code>. If you don't specify a value, descriptions for all model versions in the project are returned.</p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjectVersions</code> action.</p>"
     },
     "DescribeProjects":{
       "name":"DescribeProjects",
@@ -257,7 +316,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Lists and gets information about your Amazon Rekognition Custom Labels projects.</p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjects</code> action.</p>"
+      "documentation":"<p>Gets information about your Amazon Rekognition Custom Labels projects. </p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjects</code> action.</p>"
     },
     "DescribeStreamProcessor":{
       "name":"DescribeStreamProcessor",
@@ -401,6 +460,25 @@
       ],
       "documentation":"<p>Detects text in the input image and converts it into machine-readable text.</p> <p>Pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, you must pass it as a reference to an image in an Amazon S3 bucket. For the AWS CLI, passing image bytes is not supported. The image must be either a .png or .jpeg formatted file. </p> <p>The <code>DetectText</code> operation returns text in an array of <a>TextDetection</a> elements, <code>TextDetections</code>. Each <code>TextDetection</code> element provides information about a single word or line of text that was detected in the image. </p> <p>A word is one or more ISO basic latin script characters that are not separated by spaces. <code>DetectText</code> can detect up to 100 words in an image.</p> <p>A line is a string of equally spaced words. A line isn't necessarily a complete sentence. For example, a driver's license number is detected as a line. A line ends when there is no aligned text after it. Also, a line ends when there is a large gap between words, relative to the length of the words. This means, depending on the gap between words, Amazon Rekognition may detect multiple lines in text aligned in the same direction. Periods don't represent the end of a line. If a sentence spans multiple lines, the <code>DetectText</code> operation returns multiple lines.</p> <p>To determine whether a <code>TextDetection</code> element is a line of text or a word, use the <code>TextDetection</code> object <code>Type</code> field. </p> <p>To be detected, text must be within +/- 90 degrees orientation of the horizontal axis.</p> <p>For more information, see DetectText in the Amazon Rekognition Developer Guide.</p>"
     },
+    "DistributeDatasetEntries":{
+      "name":"DistributeDatasetEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DistributeDatasetEntriesRequest"},
+      "output":{"shape":"DistributeDatasetEntriesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"ResourceNotReadyException"}
+      ],
+      "documentation":"<p>Distributes the entries (images) in a training dataset across the training dataset and the test dataset for a project. <code>DistributeDatasetEntries</code> moves 20% of the training dataset images to the test dataset. An entry is a JSON Line that describes an image. </p> <p>You supply the Amazon Resource Names (ARN) of a project's training dataset and test dataset. The training dataset must contain the images that you want to split. The test dataset must be empty. The datasets must belong to the same project. To create training and test datasets for a project, call <a>CreateDataset</a>.</p> <p>Distributing a dataset takes a while to complete. To check the status call <code>DescribeDataset</code>. The operation is complete when the <code>Status</code> field for the training dataset and the test dataset is <code>UPDATE_COMPLETE</code>. If the dataset split fails, the value of <code>Status</code> is <code>UPDATE_FAILED</code>.</p> <p>This operation requires permissions to perform the <code>rekognition:DistributeDatasetEntries</code> action.</p>"
+    },
     "GetCelebrityInfo":{
       "name":"GetCelebrityInfo",
       "http":{
@@ -436,7 +514,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Gets the celebrity recognition results for a Amazon Rekognition Video analysis started by <a>StartCelebrityRecognition</a>.</p> <p>Celebrity recognition in a video is an asynchronous operation. Analysis is started by a call to <a>StartCelebrityRecognition</a> which returns a job identifier (<code>JobId</code>). When the celebrity recognition operation finishes, Amazon Rekognition Video publishes a completion status to the Amazon Simple Notification Service topic registered in the initial call to <code>StartCelebrityRecognition</code>. To get the results of the celebrity recognition analysis, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <code>GetCelebrityDetection</code> and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartCelebrityDetection</code>. </p> <p>For more information, see Working With Stored Videos in the Amazon Rekognition Developer Guide.</p> <p> <code>GetCelebrityRecognition</code> returns detected celebrities and the time(s) they are detected in an array (<code>Celebrities</code>) of <a>CelebrityRecognition</a> objects. Each <code>CelebrityRecognition</code> contains information about the celebrity in a <a>CelebrityDetail</a> object and the time, <code>Timestamp</code>, the celebrity was detected. </p> <note> <p> <code>GetCelebrityRecognition</code> only returns the default facial attributes (<code>BoundingBox</code>, <code>Confidence</code>, <code>Landmarks</code>, <code>Pose</code>, and <code>Quality</code>). The other facial attributes listed in the <code>Face</code> object of the following response syntax are not returned. For more information, see FaceDetail in the Amazon Rekognition Developer Guide. </p> </note> <p>By default, the <code>Celebrities</code> array is sorted by time (milliseconds from the start of the video). You can also sort the array by celebrity by specifying the value <code>ID</code> in the <code>SortBy</code> input parameter.</p> <p>The <code>CelebrityDetail</code> object includes the celebrity identifer and additional information urls. If you don't store the additional information urls, you can get them later by calling <a>GetCelebrityInfo</a> with the celebrity identifer.</p> <p>No information is returned for faces not recognized as celebrities.</p> <p>Use MaxResults parameter to limit the number of labels returned. If there are more results than specified in <code>MaxResults</code>, the value of <code>NextToken</code> in the operation response contains a pagination token for getting the next set of results. To get the next page of results, call <code>GetCelebrityDetection</code> and populate the <code>NextToken</code> request parameter with the token value returned from the previous call to <code>GetCelebrityRecognition</code>.</p>"
+      "documentation":"<p>Gets the celebrity recognition results for a Amazon Rekognition Video analysis started by <a>StartCelebrityRecognition</a>.</p> <p>Celebrity recognition in a video is an asynchronous operation. Analysis is started by a call to <a>StartCelebrityRecognition</a> which returns a job identifier (<code>JobId</code>). </p> <p>When the celebrity recognition operation finishes, Amazon Rekognition Video publishes a completion status to the Amazon Simple Notification Service topic registered in the initial call to <code>StartCelebrityRecognition</code>. To get the results of the celebrity recognition analysis, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <code>GetCelebrityDetection</code> and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartCelebrityDetection</code>. </p> <p>For more information, see Working With Stored Videos in the Amazon Rekognition Developer Guide.</p> <p> <code>GetCelebrityRecognition</code> returns detected celebrities and the time(s) they are detected in an array (<code>Celebrities</code>) of <a>CelebrityRecognition</a> objects. Each <code>CelebrityRecognition</code> contains information about the celebrity in a <a>CelebrityDetail</a> object and the time, <code>Timestamp</code>, the celebrity was detected. This <a>CelebrityDetail</a> object stores information about the detected celebrity's face attributes, a face bounding box, known gender, the celebrity's name, and a confidence estimate.</p> <note> <p> <code>GetCelebrityRecognition</code> only returns the default facial attributes (<code>BoundingBox</code>, <code>Confidence</code>, <code>Landmarks</code>, <code>Pose</code>, and <code>Quality</code>). The <code>BoundingBox</code> field only applies to the detected face instance. The other facial attributes listed in the <code>Face</code> object of the following response syntax are not returned. For more information, see FaceDetail in the Amazon Rekognition Developer Guide. </p> </note> <p>By default, the <code>Celebrities</code> array is sorted by time (milliseconds from the start of the video). You can also sort the array by celebrity by specifying the value <code>ID</code> in the <code>SortBy</code> input parameter.</p> <p>The <code>CelebrityDetail</code> object includes the celebrity identifer and additional information urls. If you don't store the additional information urls, you can get them later by calling <a>GetCelebrityInfo</a> with the celebrity identifer.</p> <p>No information is returned for faces not recognized as celebrities.</p> <p>Use MaxResults parameter to limit the number of labels returned. If there are more results than specified in <code>MaxResults</code>, the value of <code>NextToken</code> in the operation response contains a pagination token for getting the next set of results. To get the next page of results, call <code>GetCelebrityDetection</code> and populate the <code>NextToken</code> request parameter with the token value returned from the previous call to <code>GetCelebrityRecognition</code>.</p>"
     },
     "GetContentModeration":{
       "name":"GetContentModeration",
@@ -612,6 +690,48 @@
       ],
       "documentation":"<p>Returns list of collection IDs in your account. If the result is truncated, the response also provides a <code>NextToken</code> that you can use in the subsequent request to fetch the next set of collection IDs.</p> <p>For an example, see Listing Collections in the Amazon Rekognition Developer Guide.</p> <p>This operation requires permissions to perform the <code>rekognition:ListCollections</code> action.</p>"
     },
+    "ListDatasetEntries":{
+      "name":"ListDatasetEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDatasetEntriesRequest"},
+      "output":{"shape":"ListDatasetEntriesResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ResourceNotReadyException"}
+      ],
+      "documentation":"<p> Lists the entries (images) within a dataset. An entry is a JSON Line that contains the information for a single image, including the image location, assigned labels, and object location bounding boxes. For more information, see <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/md-manifest-files.html\">Creating a manifest file</a>.</p> <p>JSON Lines in the response include information about non-terminal errors found in the dataset. Non terminal errors are reported in <code>errors</code> lists within each JSON Line. The same information is reported in the training and testing validation result manifests that Amazon Rekognition Custom Labels creates during model training. </p> <p>You can filter the response in variety of ways, such as choosing which labels to return and returning JSON Lines created after a specific date. </p> <p>This operation requires permissions to perform the <code>rekognition:ListDatasetEntries</code> action.</p>"
+    },
+    "ListDatasetLabels":{
+      "name":"ListDatasetLabels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDatasetLabelsRequest"},
+      "output":{"shape":"ListDatasetLabelsResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceNotReadyException"}
+      ],
+      "documentation":"<p>Lists the labels in a dataset. Amazon Rekognition Custom Labels uses labels to describe images. For more information, see <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/md-labeling-images.html\">Labeling images</a>. </p> <p> Lists the labels in a dataset. Amazon Rekognition Custom Labels uses labels to describe images. For more information, see Labeling images in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p>"
+    },
     "ListFaces":{
       "name":"ListFaces",
       "http":{
@@ -686,7 +806,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidImageFormatException"}
       ],
-      "documentation":"<p>Returns an array of celebrities recognized in the input image. For more information, see Recognizing Celebrities in the Amazon Rekognition Developer Guide. </p> <p> <code>RecognizeCelebrities</code> returns the 64 largest faces in the image. It lists recognized celebrities in the <code>CelebrityFaces</code> array and unrecognized faces in the <code>UnrecognizedFaces</code> array. <code>RecognizeCelebrities</code> doesn't return celebrities whose faces aren't among the largest 64 faces in the image.</p> <p>For each celebrity recognized, <code>RecognizeCelebrities</code> returns a <code>Celebrity</code> object. The <code>Celebrity</code> object contains the celebrity name, ID, URL links to additional information, match confidence, and a <code>ComparedFace</code> object that you can use to locate the celebrity's face on the image.</p> <p>Amazon Rekognition doesn't retain information about which images a celebrity has been recognized in. Your application must store this information and use the <code>Celebrity</code> ID property as a unique identifier for the celebrity. If you don't store the celebrity name or additional information URLs returned by <code>RecognizeCelebrities</code>, you will need the ID to identify the celebrity in a call to the <a>GetCelebrityInfo</a> operation.</p> <p>You pass the input image either as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p>For an example, see Recognizing Celebrities in an Image in the Amazon Rekognition Developer Guide.</p> <p>This operation requires permissions to perform the <code>rekognition:RecognizeCelebrities</code> operation.</p>"
+      "documentation":"<p>Returns an array of celebrities recognized in the input image. For more information, see Recognizing Celebrities in the Amazon Rekognition Developer Guide. </p> <p> <code>RecognizeCelebrities</code> returns the 64 largest faces in the image. It lists the recognized celebrities in the <code>CelebrityFaces</code> array and any unrecognized faces in the <code>UnrecognizedFaces</code> array. <code>RecognizeCelebrities</code> doesn't return celebrities whose faces aren't among the largest 64 faces in the image.</p> <p>For each celebrity recognized, <code>RecognizeCelebrities</code> returns a <code>Celebrity</code> object. The <code>Celebrity</code> object contains the celebrity name, ID, URL links to additional information, match confidence, and a <code>ComparedFace</code> object that you can use to locate the celebrity's face on the image.</p> <p>Amazon Rekognition doesn't retain information about which images a celebrity has been recognized in. Your application must store this information and use the <code>Celebrity</code> ID property as a unique identifier for the celebrity. If you don't store the celebrity name or additional information URLs returned by <code>RecognizeCelebrities</code>, you will need the ID to identify the celebrity in a call to the <a>GetCelebrityInfo</a> operation.</p> <p>You pass the input image either as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p>For an example, see Recognizing Celebrities in an Image in the Amazon Rekognition Developer Guide.</p> <p>This operation requires permissions to perform the <code>rekognition:RecognizeCelebrities</code> operation.</p>"
     },
     "SearchFaces":{
       "name":"SearchFaces",
@@ -1017,6 +1137,26 @@
         {"shape":"ProvisionedThroughputExceededException"}
       ],
       "documentation":"<p> Removes one or more tags from an Amazon Rekognition collection, stream processor, or Custom Labels model. </p> <p>This operation requires permissions to perform the <code>rekognition:UntagResource</code> action. </p>"
+    },
+    "UpdateDatasetEntries":{
+      "name":"UpdateDatasetEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDatasetEntriesRequest"},
+      "output":{"shape":"UpdateDatasetEntriesResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Adds or updates one or more entries (images) in a dataset. An entry is a JSON Line which contains the information for a single image, including the image location, assigned labels, and object location bounding boxes. For more information, see Image-Level labels in manifest files and Object localization in manifest files in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>If the <code>source-ref</code> field in the JSON line references an existing image, the existing image in the dataset is updated. If <code>source-ref</code> field doesn't reference an existing image, the image is added as a new image to the dataset. </p> <p>You specify the changes that you want to make in the <code>Changes</code> input parameter. There isn't a limit to the number JSON Lines that you can change, but the size of <code>Changes</code> must be less than 5MB.</p> <p> <code>UpdateDatasetEntries</code> returns immediatly, but the dataset update might take a while to complete. Use <a>DescribeDataset</a> to check the current status. The dataset updated successfully if the value of <code>Status</code> is <code>UPDATE_COMPLETE</code>. </p> <p>To check if any non-terminal errors occured, call <a>ListDatasetEntries</a> and check for the presence of <code>errors</code> lists in the JSON Lines.</p> <p>Dataset update fails if a terminal error occurs (<code>Status</code> = <code>UPDATE_FAILED</code>). Currently, you can't access the terminal error information from the Amazon Rekognition Custom Labels SDK. </p> <p>This operation requires permissions to perform the <code>rekognition:UpdateDatasetEntries</code> action.</p>"
     }
   },
   "shapes":{
@@ -1216,6 +1356,10 @@
         "Face":{
           "shape":"FaceDetail",
           "documentation":"<p>Face details for the recognized celebrity.</p>"
+        },
+        "KnownGender":{
+          "shape":"KnownGender",
+          "documentation":"<p>Retrieves the known gender for the celebrity.</p>"
         }
       },
       "documentation":"<p>Information about a recognized celebrity.</p>"
@@ -1471,6 +1615,36 @@
         }
       }
     },
+    "CreateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "DatasetType",
+        "ProjectArn"
+      ],
+      "members":{
+        "DatasetSource":{
+          "shape":"DatasetSource",
+          "documentation":"<p> The source files for the dataset. You can specify the ARN of an existing dataset or specify the Amazon S3 bucket location of an Amazon Sagemaker format manifest file. If you don't specify <code>datasetSource</code>, an empty dataset is created. To add labeled images to the dataset, You can use the console or call <a>UpdateDatasetEntries</a>. </p>"
+        },
+        "DatasetType":{
+          "shape":"DatasetType",
+          "documentation":"<p> The type of the dataset. Specify <code>train</code> to create a training dataset. Specify <code>test</code> to create a test dataset. </p>"
+        },
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p> The ARN of the Amazon Rekognition Custom Labels project to which you want to asssign the dataset. </p>"
+        }
+      }
+    },
+    "CreateDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The ARN of the created Amazon Rekognition Custom Labels dataset. </p>"
+        }
+      }
+    },
     "CreateProjectRequest":{
       "type":"structure",
       "required":["ProjectName"],
@@ -1495,9 +1669,7 @@
       "required":[
         "ProjectArn",
         "VersionName",
-        "OutputConfig",
-        "TrainingData",
-        "TestingData"
+        "OutputConfig"
       ],
       "members":{
         "ProjectArn":{
@@ -1514,11 +1686,11 @@
         },
         "TrainingData":{
           "shape":"TrainingData",
-          "documentation":"<p>The dataset to use for training. </p>"
+          "documentation":"<p>Specifies an external manifest that the services uses to train the model. If you specify <code>TrainingData</code> you must also specify <code>TestingData</code>. The project must not have any associated datasets. </p>"
         },
         "TestingData":{
           "shape":"TestingData",
-          "documentation":"<p>The dataset to use for testing.</p>"
+          "documentation":"<p>Specifies an external manifest that the service uses to test the model. If you specify <code>TestingData</code> you must also specify <code>TrainingData</code>. The project must not have any associated datasets.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -1526,7 +1698,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The identifier for your AWS Key Management Service (AWS KMS) customer master key (CMK). You can supply the Amazon Resource Name (ARN) of your CMK, the ID of your CMK, an alias for your CMK, or an alias ARN. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. The key is also used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own CMK, you need the following permissions on the CMK.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>"
+          "documentation":"<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. The key is also used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>"
         }
       }
     },
@@ -1606,6 +1778,201 @@
       "type":"list",
       "member":{"shape":"CustomLabel"}
     },
+    "DatasetArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"(^arn:[a-z\\d-]+:rekognition:[a-z\\d-]+:\\d{12}:project\\/[a-zA-Z0-9_.\\-]{1,255}\\/dataset\\/(train|test)\\/[0-9]+$)"
+    },
+    "DatasetChanges":{
+      "type":"structure",
+      "required":["GroundTruth"],
+      "members":{
+        "GroundTruth":{
+          "shape":"GroundTruthBlob",
+          "documentation":"<p>A Base64-encoded binary data object containing one or JSON lines that either update the dataset or are additions to the dataset. You change a dataset by calling <a>UpdateDatasetEntries</a>. If you are using an AWS SDK to call <code>UpdateDatasetEntries</code>, you don't need to encode <code>Changes</code> as the SDK encodes the data for you. </p> <p>For example JSON lines, see Image-Level labels in manifest files and and Object localization in manifest files in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p>"
+        }
+      },
+      "documentation":"<p> Describes updates or additions to a dataset. A Single update or addition is an entry (JSON Line) that provides information about a single image. To update an existing entry, you match the <code>source-ref</code> field of the update entry with the <code>source-ref</code> filed of the entry that you want to update. If the <code>source-ref</code> field doesn't match an existing entry, the entry is added to dataset as a new entry. </p>"
+    },
+    "DatasetDescription":{
+      "type":"structure",
+      "members":{
+        "CreationTimestamp":{
+          "shape":"DateTime",
+          "documentation":"<p> The Unix timestamp for the time and date that the dataset was created. </p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"DateTime",
+          "documentation":"<p> The Unix timestamp for the date and time that the dataset was last updated. </p>"
+        },
+        "Status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p> The status of the dataset. </p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p> The status message for the dataset. </p>"
+        },
+        "StatusMessageCode":{
+          "shape":"DatasetStatusMessageCode",
+          "documentation":"<p> The status message code for the dataset operation. If a service error occurs, try the API call again later. If a client error occurs, check the input parameters to the dataset API call that failed. </p>"
+        },
+        "DatasetStats":{
+          "shape":"DatasetStats",
+          "documentation":"<p> The status message code for the dataset. </p>"
+        }
+      },
+      "documentation":"<p> A description for a dataset. For more information, see <a>DescribeDataset</a>.</p> <p>The status fields <code>Status</code>, <code>StatusMessage</code>, and <code>StatusMessageCode</code> reflect the last operation on the dataset. </p>"
+    },
+    "DatasetEntries":{
+      "type":"list",
+      "member":{"shape":"DatasetEntry"}
+    },
+    "DatasetEntry":{
+      "type":"string",
+      "max":100000,
+      "min":1,
+      "pattern":"^\\{.*\\}$"
+    },
+    "DatasetLabel":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".{1,}"
+    },
+    "DatasetLabelDescription":{
+      "type":"structure",
+      "members":{
+        "LabelName":{
+          "shape":"DatasetLabel",
+          "documentation":"<p> The name of the label. </p>"
+        },
+        "LabelStats":{
+          "shape":"DatasetLabelStats",
+          "documentation":"<p> Statistics about the label. </p>"
+        }
+      },
+      "documentation":"<p> Describes a dataset label. For more information, see <a>ListDatasetLabels</a>. </p>"
+    },
+    "DatasetLabelDescriptions":{
+      "type":"list",
+      "member":{"shape":"DatasetLabelDescription"}
+    },
+    "DatasetLabelStats":{
+      "type":"structure",
+      "members":{
+        "EntryCount":{
+          "shape":"UInteger",
+          "documentation":"<p> The total number of images that use the label. </p>"
+        },
+        "BoundingBoxCount":{
+          "shape":"UInteger",
+          "documentation":"<p> The total number of images that have the label assigned to a bounding box. </p>"
+        }
+      },
+      "documentation":"<p> Statistics about a label used in a dataset. For more information, see <a>DatasetLabelDescription</a>. </p>"
+    },
+    "DatasetLabels":{
+      "type":"list",
+      "member":{"shape":"DatasetLabel"},
+      "max":10,
+      "min":1
+    },
+    "DatasetMetadata":{
+      "type":"structure",
+      "members":{
+        "CreationTimestamp":{
+          "shape":"DateTime",
+          "documentation":"<p> The Unix timestamp for the date and time that the dataset was created. </p>"
+        },
+        "DatasetType":{
+          "shape":"DatasetType",
+          "documentation":"<p> The type of the dataset. </p>"
+        },
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the dataset. </p>"
+        },
+        "Status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p> The status for the dataset. </p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p> The status message for the dataset. </p>"
+        },
+        "StatusMessageCode":{
+          "shape":"DatasetStatusMessageCode",
+          "documentation":"<p> The status message code for the dataset operation. If a service error occurs, try the API call again later. If a client error occurs, check the input parameters to the dataset API call that failed. </p>"
+        }
+      },
+      "documentation":"<p> Summary information for an Amazon Rekognition Custom Labels dataset. For more information, see <a>ProjectDescription</a>. </p>"
+    },
+    "DatasetMetadataList":{
+      "type":"list",
+      "member":{"shape":"DatasetMetadata"}
+    },
+    "DatasetSource":{
+      "type":"structure",
+      "members":{
+        "GroundTruthManifest":{"shape":"GroundTruthManifest"},
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The ARN of an Amazon Rekognition Custom Labels dataset that you want to copy. </p>"
+        }
+      },
+      "documentation":"<p> The source that Amazon Rekognition Custom Labels uses to create a dataset. To use an Amazon Sagemaker format manifest file, specify the S3 bucket location in the <code>GroundTruthManifest</code> field. The S3 bucket must be in your AWS account. To create a copy of an existing dataset, specify the Amazon Resource Name (ARN) of an existing dataset in <code>DatasetArn</code>.</p> <p>You need to specify a value for <code>DatasetArn</code> or <code>GroundTruthManifest</code>, but not both. if you supply both values, or if you don't specify any values, an InvalidParameterException exception occurs. </p> <p>For more information, see <a>CreateDataset</a>.</p>"
+    },
+    "DatasetStats":{
+      "type":"structure",
+      "members":{
+        "LabeledEntries":{
+          "shape":"UInteger",
+          "documentation":"<p> The total number of images in the dataset that have labels. </p>"
+        },
+        "TotalEntries":{
+          "shape":"UInteger",
+          "documentation":"<p> The total number of images in the dataset. </p>"
+        },
+        "TotalLabels":{
+          "shape":"UInteger",
+          "documentation":"<p> The total number of labels declared in the dataset. </p>"
+        },
+        "ErrorEntries":{
+          "shape":"UInteger",
+          "documentation":"<p> The total number of entries that contain at least one error. </p>"
+        }
+      },
+      "documentation":"<p> Provides statistics about a dataset. For more information, see <a>DescribeDataset</a>. </p>"
+    },
+    "DatasetStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_COMPLETE",
+        "CREATE_FAILED",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_COMPLETE",
+        "UPDATE_FAILED",
+        "DELETE_IN_PROGRESS"
+      ]
+    },
+    "DatasetStatusMessageCode":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "SERVICE_ERROR",
+        "CLIENT_ERROR"
+      ]
+    },
+    "DatasetType":{
+      "type":"string",
+      "enum":[
+        "TRAIN",
+        "TEST"
+      ]
+    },
     "DateTime":{"type":"timestamp"},
     "Degree":{
       "type":"float",
@@ -1629,6 +1996,21 @@
           "shape":"UInteger",
           "documentation":"<p>HTTP status code that indicates the result of the operation.</p>"
         }
+      }
+    },
+    "DeleteDatasetRequest":{
+      "type":"structure",
+      "required":["DatasetArn"],
+      "members":{
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The ARN of the Amazon Rekognition Custom Labels dataset that you want to delete. </p>"
+        }
+      }
+    },
+    "DeleteDatasetResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteFacesRequest":{
@@ -1741,6 +2123,25 @@
         }
       }
     },
+    "DescribeDatasetRequest":{
+      "type":"structure",
+      "required":["DatasetArn"],
+      "members":{
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the dataset that you want to describe. </p>"
+        }
+      }
+    },
+    "DescribeDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetDescription":{
+          "shape":"DatasetDescription",
+          "documentation":"<p> The description for the dataset. </p>"
+        }
+      }
+    },
     "DescribeProjectVersionsRequest":{
       "type":"structure",
       "required":["ProjectArn"],
@@ -1786,6 +2187,10 @@
         "MaxResults":{
           "shape":"ProjectsPageSize",
           "documentation":"<p>The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. </p>"
+        },
+        "ProjectNames":{
+          "shape":"ProjectNames",
+          "documentation":"<p>A list of the projects that you want Amazon Rekognition Custom Labels to describe. If you don't specify a value, the response includes descriptions for all the projects in your AWS account.</p>"
         }
       }
     },
@@ -2071,6 +2476,38 @@
         }
       },
       "documentation":"<p>A set of parameters that allow you to filter out certain results from your returned results.</p>"
+    },
+    "DistributeDataset":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset that you want to use. </p>"
+        }
+      },
+      "documentation":"<p> A training dataset or a test dataset used in a dataset distribution operation. For more information, see <a>DistributeDatasetEntries</a>. </p>"
+    },
+    "DistributeDatasetEntriesRequest":{
+      "type":"structure",
+      "required":["Datasets"],
+      "members":{
+        "Datasets":{
+          "shape":"DistributeDatasetMetadataList",
+          "documentation":"<p>The ARNS for the training dataset and test dataset that you want to use. The datasets must belong to the same project. The test dataset must be empty. </p>"
+        }
+      }
+    },
+    "DistributeDatasetEntriesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DistributeDatasetMetadataList":{
+      "type":"list",
+      "member":{"shape":"DistributeDataset"},
+      "max":2,
+      "min":2
     },
     "Emotion":{
       "type":"structure",
@@ -2366,7 +2803,7 @@
         },
         "FaceMatchThreshold":{
           "shape":"Percent",
-          "documentation":"<p>Minimum face match confidence score that must be met to return a result for a recognized face. Default is 80. 0 is the lowest confidence. 100 is the highest confidence.</p>"
+          "documentation":"<p>Minimum face match confidence score that must be met to return a result for a recognized face. The default is 80. 0 is the lowest confidence. 100 is the highest confidence. Values between 0 and 100 are accepted, and values lower than 80 are set to 80.</p>"
         }
       },
       "documentation":"<p>Input face recognition parameters for an Amazon Rekognition stream processor. <code>FaceRecognitionSettings</code> is a request parameter for <a>CreateStreamProcessor</a>.</p>"
@@ -2826,6 +3263,11 @@
         }
       }
     },
+    "GroundTruthBlob":{
+      "type":"blob",
+      "max":5242880,
+      "min":1
+    },
     "GroundTruthManifest":{
       "type":"structure",
       "members":{
@@ -2833,6 +3275,7 @@
       },
       "documentation":"<p>The S3 bucket that contains an Amazon Sagemaker Ground Truth format manifest file. </p>"
     },
+    "HasErrors":{"type":"boolean"},
     "HumanLoopActivationConditionsEvaluationResults":{
       "type":"string",
       "max":10240
@@ -3086,6 +3529,7 @@
       "documentation":"<p>Amazon Rekognition is unable to access the S3 object specified in the request.</p>",
       "exception":true
     },
+    "IsLabeled":{"type":"boolean"},
     "JobId":{
       "type":"string",
       "max":64,
@@ -3292,6 +3736,94 @@
         "FaceModelVersions":{
           "shape":"FaceModelVersionList",
           "documentation":"<p>Version numbers of the face detection models associated with the collections in the array <code>CollectionIds</code>. For example, the value of <code>FaceModelVersions[2]</code> is the version number for the face detection model used by the collection in <code>CollectionId[2]</code>.</p>"
+        }
+      }
+    },
+    "ListDatasetEntriesPageSize":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListDatasetEntriesRequest":{
+      "type":"structure",
+      "required":["DatasetArn"],
+      "members":{
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the dataset that you want to use. </p>"
+        },
+        "ContainsLabels":{
+          "shape":"DatasetLabels",
+          "documentation":"<p>Specifies a label filter for the response. The response includes an entry only if one or more of the labels in <code>ContainsLabels</code> exist in the entry. </p>"
+        },
+        "Labeled":{
+          "shape":"IsLabeled",
+          "documentation":"<p> Specify <code>true</code> to get only the JSON Lines where the image is labeled. Specify <code>false</code> to get only the JSON Lines where the image isn't labeled. If you don't specify <code>Labeled</code>, <code>ListDatasetEntries</code> returns JSON Lines for labeled and unlabeled images. </p>"
+        },
+        "SourceRefContains":{
+          "shape":"QueryString",
+          "documentation":"<p>If specified, <code>ListDatasetEntries</code> only returns JSON Lines where the value of <code>SourceRefContains</code> is part of the <code>source-ref</code> field. The <code>source-ref</code> field contains the Amazon S3 location of the image. You can use <code>SouceRefContains</code> for tasks such as getting the JSON Line for a single image, or gettting JSON Lines for all images within a specific folder.</p>"
+        },
+        "HasErrors":{
+          "shape":"HasErrors",
+          "documentation":"<p>Specifies an error filter for the response. Specify <code>True</code> to only include entries that have errors. </p>"
+        },
+        "NextToken":{
+          "shape":"ExtendedPaginationToken",
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListDatasetEntriesPageSize",
+          "documentation":"<p>The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. </p>"
+        }
+      }
+    },
+    "ListDatasetEntriesResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetEntries":{
+          "shape":"DatasetEntries",
+          "documentation":"<p> A list of entries (images) in the dataset. </p>"
+        },
+        "NextToken":{
+          "shape":"ExtendedPaginationToken",
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+        }
+      }
+    },
+    "ListDatasetLabelsPageSize":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListDatasetLabelsRequest":{
+      "type":"structure",
+      "required":["DatasetArn"],
+      "members":{
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the dataset that you want to use. </p>"
+        },
+        "NextToken":{
+          "shape":"ExtendedPaginationToken",
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListDatasetLabelsPageSize",
+          "documentation":"<p>The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. </p>"
+        }
+      }
+    },
+    "ListDatasetLabelsResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetLabelDescriptions":{
+          "shape":"DatasetLabelDescriptions",
+          "documentation":"<p> A list of the labels in the dataset. </p>"
+        },
+        "NextToken":{
+          "shape":"ExtendedPaginationToken",
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
         }
       }
     },
@@ -3639,9 +4171,13 @@
         "Status":{
           "shape":"ProjectStatus",
           "documentation":"<p>The current status of the project.</p>"
+        },
+        "Datasets":{
+          "shape":"DatasetMetadataList",
+          "documentation":"<p> Information about the training and test datasets in the project. </p>"
         }
       },
-      "documentation":"<p>A description of a Amazon Rekognition Custom Labels project.</p>"
+      "documentation":"<p>A description of an Amazon Rekognition Custom Labels project. For more information, see <a>DescribeProjects</a>.</p>"
     },
     "ProjectDescriptions":{
       "type":"list",
@@ -3652,6 +4188,12 @@
       "max":255,
       "min":1,
       "pattern":"[a-zA-Z0-9_.\\-]+"
+    },
+    "ProjectNames":{
+      "type":"list",
+      "member":{"shape":"ProjectName"},
+      "max":10,
+      "min":1
     },
     "ProjectStatus":{
       "type":"string",
@@ -3692,7 +4234,7 @@
         },
         "BillableTrainingTimeInSeconds":{
           "shape":"ULong",
-          "documentation":"<p>The duration, in seconds, that the model version has been billed for training. This value is only returned if the model version has been successfully trained.</p>"
+          "documentation":"<p>The duration, in seconds, that you were billed for a successful training of the model version. This value is only returned if the model version has been successfully trained.</p>"
         },
         "TrainingEndTimestamp":{
           "shape":"DateTime",
@@ -3720,10 +4262,10 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The identifer for the AWS Key Management Service (AWS KMS) customer master key that was used to encrypt the model during training. </p>"
+          "documentation":"<p>The identifer for the AWS Key Management Service key (AWS KMS key) that was used to encrypt the model during training. </p>"
         }
       },
-      "documentation":"<p>The description of a version of a model.</p>"
+      "documentation":"<p>A description of a version of an Amazon Rekognition Custom Labels model.</p>"
     },
     "ProjectVersionDescriptions":{
       "type":"list",
@@ -3865,6 +4407,12 @@
         "MEDIUM",
         "HIGH"
       ]
+    },
+    "QueryString":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".*\\S.*"
     },
     "Reason":{
       "type":"string",
@@ -4805,10 +5353,10 @@
         },
         "AutoCreate":{
           "shape":"Boolean",
-          "documentation":"<p>If specified, Amazon Rekognition Custom Labels creates a testing dataset with an 80/20 split of the training dataset.</p>"
+          "documentation":"<p>If specified, Amazon Rekognition Custom Labels temporarily splits the training dataset (80%) to create a test dataset (20%) for the training job. After training completes, the test dataset is not stored and the training dataset reverts to its previous size.</p>"
         }
       },
-      "documentation":"<p>The dataset used for testing. Optionally, if <code>AutoCreate</code> is set, Amazon Rekognition Custom Labels creates a testing dataset using an 80/20 split of the training dataset.</p>"
+      "documentation":"<p>The dataset used for testing. Optionally, if <code>AutoCreate</code> is set, Amazon Rekognition Custom Labels uses the training dataset to create a test dataset with a temporary split of the training dataset. </p>"
     },
     "TestingDataResult":{
       "type":"structure",
@@ -4973,6 +5521,28 @@
       "members":{
       }
     },
+    "UpdateDatasetEntriesRequest":{
+      "type":"structure",
+      "required":[
+        "DatasetArn",
+        "Changes"
+      ],
+      "members":{
+        "DatasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the dataset that you want to update. </p>"
+        },
+        "Changes":{
+          "shape":"DatasetChanges",
+          "documentation":"<p> The changes that you want to make to the dataset. </p>"
+        }
+      }
+    },
+    "UpdateDatasetEntriesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Url":{"type":"string"},
     "Urls":{
       "type":"list",
@@ -4988,7 +5558,7 @@
           "documentation":"<p>The assets that comprise the validation data. </p>"
         }
       },
-      "documentation":"<p>Contains the Amazon S3 bucket location of the validation data for a model training job. </p> <p>The validation data includes error information for individual JSON lines in the dataset. For more information, see Debugging a Failed Model Training in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>You get the <code>ValidationData</code> object for the training dataset (<a>TrainingDataResult</a>) and the test dataset (<a>TestingDataResult</a>) by calling <a>DescribeProjectVersions</a>. </p> <p>The assets array contains a single <a>Asset</a> object. The <a>GroundTruthManifest</a> field of the Asset object contains the S3 bucket location of the validation data. </p>"
+      "documentation":"<p>Contains the Amazon S3 bucket location of the validation data for a model training job. </p> <p>The validation data includes error information for individual JSON Lines in the dataset. For more information, see <i>Debugging a Failed Model Training</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>You get the <code>ValidationData</code> object for the training dataset (<a>TrainingDataResult</a>) and the test dataset (<a>TestingDataResult</a>) by calling <a>DescribeProjectVersions</a>. </p> <p>The assets array contains a single <a>Asset</a> object. The <a>GroundTruthManifest</a> field of the Asset object contains the S3 bucket location of the validation data. </p>"
     },
     "VersionName":{
       "type":"string",

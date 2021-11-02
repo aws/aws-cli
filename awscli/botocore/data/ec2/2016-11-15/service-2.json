@@ -16079,7 +16079,7 @@
       "members":{
         "ExecutableUsers":{
           "shape":"ExecutableByStringList",
-          "documentation":"<p>Scopes the images by users with explicit launch permissions. Specify an Amazon Web Services account ID, <code>self</code> (the sender of the request), or <code>all</code> (public AMIs).</p>",
+          "documentation":"<p>Scopes the images by users with explicit launch permissions. Specify an Amazon Web Services account ID, <code>self</code> (the sender of the request), or <code>all</code> (public AMIs).</p> <ul> <li> <p>If you specify an Amazon Web Services account ID that is not your own, only AMIs shared with that specific Amazon Web Services account ID are returned. However, AMIs that are shared with the account’s organization or organizational unit (OU) are not returned.</p> </li> <li> <p>If you specify <code>self</code> or your own Amazon Web Services account ID, AMIs shared with your account are returned. In addition, AMIs that are shared with the organization or OU of which you are member are also returned. </p> </li> <li> <p>If you specify <code>all</code>, all public AMIs are returned.</p> </li> </ul>",
           "locationName":"ExecutableBy"
         },
         "Filters":{
@@ -27753,7 +27753,7 @@
         },
         "ExcludedInstanceTypes":{
           "shape":"ExcludedInstanceTypeSet",
-          "documentation":"<p>The instance types to exclude. You can use strings with one or more wild cards, represented by an asterisk (<code>*</code>), to exclude an instance type, size, or generation. The following are examples: <code>m5.8xlarge</code>, <code>c5*.*</code>, <code>m5a.*</code>, <code>r*</code>, <code>*3*</code>.</p> <p>For example, if you specify <code>c5*.*</code>, Amazon EC2 will exclude the entire C5 instance family (all C5a and C5n instance types). If you specify <code>c5a.*</code>, Amazon EC2 excludes all the C5a instance types, but does not exclude the C5n instance types.</p> <p>Default: No excluded instance types</p>",
+          "documentation":"<p>The instance types to exclude. You can use strings with one or more wild cards, represented by an asterisk (<code>*</code>), to exclude an instance type, size, or generation. The following are examples: <code>m5.8xlarge</code>, <code>c5*.*</code>, <code>m5a.*</code>, <code>r*</code>, <code>*3*</code>.</p> <p>For example, if you specify <code>c5*</code>,Amazon EC2 will exclude the entire C5 instance family, which includes all C5a and C5n instance types. If you specify <code>m5a.*</code>, Amazon EC2 will exclude all the M5a instance types, but not the M5n instance types.</p> <p>Default: No excluded instance types</p>",
           "locationName":"excludedInstanceTypeSet"
         },
         "InstanceGenerations":{
@@ -27865,7 +27865,7 @@
         },
         "ExcludedInstanceTypes":{
           "shape":"ExcludedInstanceTypeSet",
-          "documentation":"<p>The instance types to exclude. You can use strings with one or more wild cards, represented by an asterisk (<code>*</code>), to exclude an instance family, type, size, or generation. The following are examples: <code>m5.8xlarge</code>, <code>c5*.*</code>, <code>m5a.*</code>, <code>r*</code>, <code>*3*</code>.</p> <p>For example, if you specify <code>c5*.*</code>, Amazon EC2 will exclude the entire C5 instance family (all C5a and C5n instance types). If you specify <code>c5a.*</code>, Amazon EC2 excludes all the C5a instance types, but does not exclude the C5n instance types.</p> <p>Default: No excluded instance types</p>",
+          "documentation":"<p>The instance types to exclude. You can use strings with one or more wild cards, represented by an asterisk (<code>*</code>), to exclude an instance family, type, size, or generation. The following are examples: <code>m5.8xlarge</code>, <code>c5*.*</code>, <code>m5a.*</code>, <code>r*</code>, <code>*3*</code>.</p> <p>For example, if you specify <code>c5*</code>,Amazon EC2 will exclude the entire C5 instance family, which includes all C5a and C5n instance types. If you specify <code>m5a.*</code>, Amazon EC2 will exclude all the M5a instance types, but not the M5n instance types.</p> <p>Default: No excluded instance types</p>",
           "locationName":"ExcludedInstanceType"
         },
         "InstanceGenerations":{
@@ -29413,6 +29413,16 @@
           "shape":"String",
           "documentation":"<p>The Amazon Web Services account ID.</p> <p>Constraints: Up to 10 000 account IDs can be specified in a single request.</p>",
           "locationName":"userId"
+        },
+        "OrganizationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an organization.</p>",
+          "locationName":"organizationArn"
+        },
+        "OrganizationalUnitArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an organizational unit (OU).</p>",
+          "locationName":"organizationalUnitArn"
         }
       },
       "documentation":"<p>Describes a launch permission.</p>"
@@ -31829,7 +31839,7 @@
       "members":{
         "Attribute":{
           "shape":"String",
-          "documentation":"<p>The name of the attribute to modify. The valid values are <code>description</code> and <code>launchPermission</code>.</p>"
+          "documentation":"<p>The name of the attribute to modify.</p> <p>Valid values: <code>description</code> | <code>launchPermission</code> </p>"
         },
         "Description":{
           "shape":"AttributeValue",
@@ -31870,6 +31880,16 @@
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
           "locationName":"dryRun"
+        },
+        "OrganizationArns":{
+          "shape":"OrganizationArnStringList",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an organization. This parameter can be used only when the <code>Attribute</code> parameter is <code>launchPermission</code>.</p>",
+          "locationName":"OrganizationArn"
+        },
+        "OrganizationalUnitArns":{
+          "shape":"OrganizationalUnitArnStringList",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an organizational unit (OU). This parameter can be used only when the <code>Attribute</code> parameter is <code>launchPermission</code>.</p>",
+          "locationName":"OrganizationalUnitArn"
         }
       },
       "documentation":"<p>Contains the parameters for ModifyImageAttribute.</p>"
@@ -34567,6 +34587,20 @@
         "add",
         "remove"
       ]
+    },
+    "OrganizationArnStringList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"OrganizationArn"
+      }
+    },
+    "OrganizationalUnitArnStringList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"OrganizationalUnitArn"
+      }
     },
     "OutpostArn":{
       "type":"string",

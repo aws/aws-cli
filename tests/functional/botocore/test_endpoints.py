@@ -194,6 +194,12 @@ _S3_ALLOWED_PSEUDO_FIPS_REGIONS = [
     'fips-accesspoint-us-gov-east-1',
     'fips-accesspoint-us-gov-west-1',
     'fips-us-gov-west-1',
+    'fips-us-gov-east-1',
+    'fips-ca-central-1',
+    'fips-us-east-1',
+    'fips-us-east-2',
+    'fips-us-west-1',
+    'fips-us-west-2',
 ]
 
 

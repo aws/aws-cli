@@ -20,6 +20,7 @@ from botocore.stub import Stubber
 
 from awscli.compat import StringIO
 from awscli.customizations.logs.tail import ShortLogEventsFormatter
+from awscli.customizations.logs.tail import PrettyJSONLogEventsFormatter
 from awscli.customizations.logs.tail import DetailedLogEventsFormatter
 from awscli.customizations.logs.tail import TimestampUtils
 from awscli.customizations.logs.tail import NoFollowLogEventsGenerator
@@ -27,6 +28,9 @@ from awscli.customizations.logs.tail import FollowLogEventsGenerator
 
 
 class BaseLogEventsFormatterTest(unittest.TestCase):
+
+    FORMATTER_CLS = None
+
     def setUp(self):
         self.log_event = {
             'timestamp': datetime(2018, 1, 1, 0, 29, 43, 79060, tz.tzutc()),
@@ -35,70 +39,97 @@ class BaseLogEventsFormatterTest(unittest.TestCase):
         }
         self.output = StringIO()
 
+    def assert_formatted_display(self, expected_msg, **init_kwargs):
+        self.FORMATTER_CLS(self.output, **init_kwargs).display_log_event(
+            self.log_event)
+        self.assertEqual(expected_msg, self.output.getvalue())
+
 
 class TestShortLogEventsFormatter(BaseLogEventsFormatterTest):
+
+    FORMATTER_CLS = ShortLogEventsFormatter
+
     def test_display(self):
-        ShortLogEventsFormatter(self.output).display_log_event(self.log_event)
-        self.assertEqual(
+        self.assert_formatted_display(
             '\x1b[32m2018-01-01T00:29:43\x1b[0m my message\n',
-            self.output.getvalue()
         )
 
     def test_display_no_color(self):
-        ShortLogEventsFormatter(self.output, colorize=False).display_log_event(
-            self.log_event)
-        self.assertEqual(
-            '2018-01-01T00:29:43 my message\n', self.output.getvalue())
+        self.assert_formatted_display(
+            '2018-01-01T00:29:43 my message\n',
+            colorize=False,
+        )
 
     def test_ensures_single_newline_ending(self):
         self.log_event['message'] = self.log_event['message'] + '\n\n'
-        ShortLogEventsFormatter(self.output, colorize=False).display_log_event(
-            self.log_event)
-        self.assertEqual(
-            '2018-01-01T00:29:43 my message\n', self.output.getvalue())
+        self.assert_formatted_display(
+            '2018-01-01T00:29:43 my message\n',
+            colorize=False
+        )
 
     def test_handles_unicode(self):
         self.log_event['message'] = self.log_event['message'] + '\u00e9'
-        ShortLogEventsFormatter(self.output, colorize=False).display_log_event(
-            self.log_event)
-        self.assertEqual(
-            '2018-01-01T00:29:43 my message\u00e9\n', self.output.getvalue())
+        self.assert_formatted_display(
+            '2018-01-01T00:29:43 my message\u00e9\n',
+            colorize=False
+        )
+
+
+class TestPrettyJSONLogEventsFormatter(BaseLogEventsFormatterTest):
+
+    FORMATTER_CLS = PrettyJSONLogEventsFormatter
+
+    def test_no_json_is_same_as_detailed_output(self):
+        # The messages aren't displayed in color so this is the same output
+        # regardless of whether or not you enable color.
+        self.assert_formatted_display(
+            '\x1b[32m2018-01-01T00:29:43.079060+00:00\x1b[0m '
+            '\x1b[36mstream_name\x1b[0m '
+            'my message\n'
+        )
+
+    def test_has_json_message(self):
+        self.log_event['message'] = '{"foo": {"bar": "baz"}}'
+        self.assert_formatted_display(
+            '2018-01-01T00:29:43.079060+00:00 stream_name \n'
+            '{\n'
+            '    "foo": {\n'
+            '        "bar": "baz"\n'
+            '    }\n'
+            '}\n',
+            colorize=False,
+        )
 
 
 class TestDetailedLogEventsFormatter(BaseLogEventsFormatterTest):
+
+    FORMATTER_CLS = DetailedLogEventsFormatter
+
     def test_display(self):
-        DetailedLogEventsFormatter(
-            self.output).display_log_event(self.log_event)
-        self.assertEqual(
+        self.assert_formatted_display(
             '\x1b[32m2018-01-01T00:29:43.079060+00:00\x1b[0m '
             '\x1b[36mstream_name\x1b[0m '
-            'my message\n',
-            self.output.getvalue())
+            'my message\n'
+        )
 
     def test_display_no_color(self):
-        DetailedLogEventsFormatter(
-            self.output, colorize=False).display_log_event(self.log_event)
-        self.assertEqual(
+        self.assert_formatted_display(
             '2018-01-01T00:29:43.079060+00:00 stream_name my message\n',
-            self.output.getvalue()
+            colorize=False,
         )
 
     def test_ensures_single_newline_ending(self):
         self.log_event['message'] = self.log_event['message'] + '\n\n'
-        DetailedLogEventsFormatter(
-            self.output, colorize=False).display_log_event(self.log_event)
-        self.assertEqual(
+        self.assert_formatted_display(
             '2018-01-01T00:29:43.079060+00:00 stream_name my message\n',
-            self.output.getvalue()
+            colorize=False,
         )
 
     def test_handles_unicode(self):
         self.log_event['message'] = self.log_event['message'] + '\u00e9'
-        DetailedLogEventsFormatter(
-            self.output, colorize=False).display_log_event(self.log_event)
-        self.assertEqual(
+        self.assert_formatted_display(
             '2018-01-01T00:29:43.079060+00:00 stream_name my message\u00e9\n',
-            self.output.getvalue()
+            colorize=False,
         )
 
 

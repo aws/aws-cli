@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.21.11
+=======
+
+* api-change:``sagemaker``: ListDevices and DescribeDevice now show Edge Manager agent version.
+* api-change:``connect``: This release adds CRUD operation support for Security profile resource in Amazon Connect
+* api-change:``chime-sdk-meetings``: The Amazon Chime SDK Meetings APIs allow software developers to create meetings and attendees for interactive audio, video, screen and content sharing in custom meeting applications which use the Amazon Chime SDK.
+* api-change:``iotwireless``: Adding APIs for the FUOTA (firmware update over the air) and multicast for LoRaWAN devices and APIs to support event notification opt-in feature for Sidewalk related events. A few existing APIs need to be modified for this new feature.
+* api-change:``ec2``: This release adds a new instance replacement strategy for EC2 Fleet, Spot Fleet. Now you can select an action to perform when your instance gets a rebalance notification. EC2 Fleet, Spot Fleet can launch a replacement then terminate the instance that received notification after a termination delay
+
+
 1.21.10
 =======
 

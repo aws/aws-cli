@@ -70,6 +70,20 @@
       ],
       "documentation":"<p>Creates an endpoint for an Amazon FSx for Windows File Server file system.</p>"
     },
+    "CreateLocationHdfs":{
+      "name":"CreateLocationHdfs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocationHdfsRequest"},
+      "output":{"shape":"CreateLocationHdfsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates an endpoint for a Hadoop Distributed File System (HDFS). </p>"
+    },
     "CreateLocationNfs":{
       "name":"CreateLocationNfs",
       "http":{
@@ -223,6 +237,20 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns metadata, such as the path information about an Amazon FSx for Windows File Server location.</p>"
+    },
+    "DescribeLocationHdfs":{
+      "name":"DescribeLocationHdfs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLocationHdfsRequest"},
+      "output":{"shape":"DescribeLocationHdfsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns metadata, such as the authentication information about the Hadoop Distributed File System (HDFS) location. </p>"
     },
     "DescribeLocationNfs":{
       "name":"DescribeLocationNfs",
@@ -433,6 +461,20 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Updates the name of an agent.</p>"
+    },
+    "UpdateLocationHdfs":{
+      "name":"UpdateLocationHdfs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLocationHdfsRequest"},
+      "output":{"shape":"UpdateLocationHdfsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Updates some parameters of a previously created location for a Hadoop Distributed File System cluster.</p>"
     },
     "UpdateLocationNfs":{
       "name":"UpdateLocationNfs",
@@ -703,6 +745,77 @@
         }
       }
     },
+    "CreateLocationHdfsRequest":{
+      "type":"structure",
+      "required":[
+        "NameNodes",
+        "AuthenticationType",
+        "AgentArns"
+      ],
+      "members":{
+        "Subdirectory":{
+          "shape":"HdfsSubdirectory",
+          "documentation":"<p>A subdirectory in the HDFS cluster. This subdirectory is used to read data from or write data to the HDFS cluster. If the subdirectory isn't specified, it will default to <code>/</code>.</p>"
+        },
+        "NameNodes":{
+          "shape":"HdfsNameNodeList",
+          "documentation":"<p>The NameNode that manages the HDFS namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes. You can use only one NameNode.</p>"
+        },
+        "BlockSize":{
+          "shape":"HdfsBlockSize",
+          "documentation":"<p>The size of data blocks to write into the HDFS cluster. The block size must be a multiple of 512 bytes. The default block size is 128 mebibytes (MiB).</p>"
+        },
+        "ReplicationFactor":{
+          "shape":"HdfsReplicationFactor",
+          "documentation":"<p>The number of DataNodes to replicate the data to when writing to the HDFS cluster. By default, data is replicated to three DataNodes.</p>"
+        },
+        "KmsKeyProviderUri":{
+          "shape":"KmsKeyProviderUri",
+          "documentation":"<p>The URI of the HDFS cluster's Key Management Server (KMS). </p>"
+        },
+        "QopConfiguration":{
+          "shape":"QopConfiguration",
+          "documentation":"<p>The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer protection settings configured on the Hadoop Distributed File System (HDFS) cluster. If <code>QopConfiguration</code> isn't specified, <code>RpcProtection</code> and <code>DataTransferProtection</code> default to <code>PRIVACY</code>. If you set <code>RpcProtection</code> or <code>DataTransferProtection</code>, the other parameter assumes the same value. </p>"
+        },
+        "AuthenticationType":{
+          "shape":"HdfsAuthenticationType",
+          "documentation":"<p>The type of authentication used to determine the identity of the user. </p>"
+        },
+        "SimpleUser":{
+          "shape":"HdfsUser",
+          "documentation":"<p>The user name used to identify the client on the host operating system. </p> <note> <p>If <code>SIMPLE</code> is specified for <code>AuthenticationType</code>, this parameter is required. </p> </note>"
+        },
+        "KerberosPrincipal":{
+          "shape":"KerberosPrincipal",
+          "documentation":"<p>The Kerberos principal with access to the files and folders on the HDFS cluster. </p> <note> <p>If <code>KERBEROS</code> is specified for <code>AuthenticationType</code>, this parameter is required.</p> </note>"
+        },
+        "KerberosKeytab":{
+          "shape":"KerberosKeytabFile",
+          "documentation":"<p>The Kerberos key table (keytab) that contains mappings between the defined Kerberos principal and the encrypted keys. You can load the keytab from a file by providing the file's address. If you're using the CLI, it performs base64 encoding for you. Otherwise, provide the base64-encoded text. </p> <note> <p>If <code>KERBEROS</code> is specified for <code>AuthenticationType</code>, this parameter is required. </p> </note>"
+        },
+        "KerberosKrb5Conf":{
+          "shape":"KerberosKrb5ConfFile",
+          "documentation":"<p>The <code>krb5.conf</code> file that contains the Kerberos configuration information. You can load the <code>krb5.conf</code> file by providing the file's address. If you're using the CLI, it performs the base64 encoding for you. Otherwise, provide the base64-encoded text. </p> <note> <p>If <code>KERBEROS</code> is specified for <code>AuthenticationType</code>, this parameter is required.</p> </note>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the agents that are used to connect to the HDFS cluster.</p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>The key-value pair that represents the tag that you want to add to the location. The value can be an empty string. We recommend using tags to name your resources. </p>"
+        }
+      }
+    },
+    "CreateLocationHdfsResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The ARN of the source HDFS cluster location that's created. </p>"
+        }
+      }
+    },
     "CreateLocationNfsRequest":{
       "type":"structure",
       "required":[
@@ -938,7 +1051,7 @@
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe). For example: <code>\"/folder1|/folder2</code>\"</p>"
+          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern contains a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>.</p>"
         }
       },
       "documentation":"<p>CreateTaskRequest</p>"
@@ -1112,6 +1225,69 @@
         "Domain":{
           "shape":"SmbDomain",
           "documentation":"<p>The name of the Windows domain that the FSx for Windows File Server belongs to.</p>"
+        }
+      }
+    },
+    "DescribeLocationHdfsRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the HDFS cluster location to describe.</p>"
+        }
+      }
+    },
+    "DescribeLocationHdfsResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The ARN of the HDFS cluster location.</p>"
+        },
+        "LocationUri":{
+          "shape":"LocationUri",
+          "documentation":"<p>The URI of the HDFS cluster location.</p>"
+        },
+        "NameNodes":{
+          "shape":"HdfsNameNodeList",
+          "documentation":"<p>The NameNode that manage the HDFS namespace. </p>"
+        },
+        "BlockSize":{
+          "shape":"HdfsBlockSize",
+          "documentation":"<p>The size of the data blocks to write into the HDFS cluster. </p>"
+        },
+        "ReplicationFactor":{
+          "shape":"HdfsReplicationFactor",
+          "documentation":"<p>The number of DataNodes to replicate the data to when writing to the HDFS cluster. </p>"
+        },
+        "KmsKeyProviderUri":{
+          "shape":"KmsKeyProviderUri",
+          "documentation":"<p> The URI of the HDFS cluster's Key Management Server (KMS). </p>"
+        },
+        "QopConfiguration":{
+          "shape":"QopConfiguration",
+          "documentation":"<p>The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer protection settings configured on the Hadoop Distributed File System (HDFS) cluster. </p>"
+        },
+        "AuthenticationType":{
+          "shape":"HdfsAuthenticationType",
+          "documentation":"<p>The type of authentication used to determine the identity of the user. </p>"
+        },
+        "SimpleUser":{
+          "shape":"HdfsUser",
+          "documentation":"<p>The user name used to identify the client on the host operating system. This parameter is used if the <code>AuthenticationType</code> is defined as <code>SIMPLE</code>.</p>"
+        },
+        "KerberosPrincipal":{
+          "shape":"KerberosPrincipal",
+          "documentation":"<p>The Kerberos principal with access to the files and folders on the HDFS cluster. This parameter is used if the <code>AuthenticationType</code> is defined as <code>KERBEROS</code>.</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>The ARNs of the agents that are used to connect to the HDFS cluster. </p>"
+        },
+        "CreationTime":{
+          "shape":"Time",
+          "documentation":"<p>The time that the HDFS location was created.</p>"
         }
       }
     },
@@ -1383,11 +1559,11 @@
         },
         "SourceNetworkInterfaceArns":{
           "shape":"SourceNetworkInterfaceArns",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the source ENIs (Elastic Network Interface) that was created for your subnet.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the source elastic network interfaces (ENIs) that were created for your subnet.</p>"
         },
         "DestinationNetworkInterfaceArns":{
           "shape":"DestinationNetworkInterfaceArns",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the destination ENIs (Elastic Network Interface) that was created for your subnet.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the destination elastic network interfaces (ENIs) that were created for your subnet.</p>"
         },
         "Options":{
           "shape":"Options",
@@ -1395,7 +1571,7 @@
         },
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p> <p> </p>"
+          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p> <p> </p>"
         },
         "Schedule":{
           "shape":"TaskSchedule",
@@ -1415,7 +1591,7 @@
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe). For example: <code>\"/folder1|/folder2</code>\"</p>"
+          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern contains a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2</code>\".</p>"
         }
       },
       "documentation":"<p>DescribeTaskResponse</p>"
@@ -1546,6 +1722,89 @@
         "BOTH"
       ]
     },
+    "HdfsAuthenticationType":{
+      "type":"string",
+      "enum":[
+        "SIMPLE",
+        "KERBEROS"
+      ]
+    },
+    "HdfsBlockSize":{
+      "type":"integer",
+      "box":true,
+      "max":1073741824,
+      "min":1048576
+    },
+    "HdfsDataTransferProtection":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "AUTHENTICATION",
+        "INTEGRITY",
+        "PRIVACY"
+      ]
+    },
+    "HdfsNameNode":{
+      "type":"structure",
+      "required":[
+        "Hostname",
+        "Port"
+      ],
+      "members":{
+        "Hostname":{
+          "shape":"HdfsServerHostname",
+          "documentation":"<p>The hostname of the NameNode in the HDFS cluster. This value is the IP address or Domain Name Service (DNS) name of the NameNode. An agent that's installed on-premises uses this hostname to communicate with the NameNode in the network.</p>"
+        },
+        "Port":{
+          "shape":"HdfsServerPort",
+          "documentation":"<p>The port that the NameNode uses to listen to client requests.</p>"
+        }
+      },
+      "documentation":"<p>The NameNode of the Hadoop Distributed File System (HDFS). The NameNode manages the file system's namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes.</p>"
+    },
+    "HdfsNameNodeList":{
+      "type":"list",
+      "member":{"shape":"HdfsNameNode"},
+      "min":1
+    },
+    "HdfsReplicationFactor":{
+      "type":"integer",
+      "box":true,
+      "max":512,
+      "min":1
+    },
+    "HdfsRpcProtection":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "AUTHENTICATION",
+        "INTEGRITY",
+        "PRIVACY"
+      ]
+    },
+    "HdfsServerHostname":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"
+    },
+    "HdfsServerPort":{
+      "type":"integer",
+      "box":true,
+      "max":65536,
+      "min":1
+    },
+    "HdfsSubdirectory":{
+      "type":"string",
+      "max":4096,
+      "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+    },
+    "HdfsUser":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[_.A-Za-z0-9][-_.A-Za-z0-9]*$"
+    },
     "IamRoleArn":{
       "type":"string",
       "max":2048,
@@ -1575,6 +1834,26 @@
       },
       "documentation":"<p>This exception is thrown when the client submits a malformed request.</p>",
       "exception":true
+    },
+    "KerberosKeytabFile":{
+      "type":"blob",
+      "max":65536
+    },
+    "KerberosKrb5ConfFile":{
+      "type":"blob",
+      "max":131072
+    },
+    "KerberosPrincipal":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^.+$"
+    },
+    "KmsKeyProviderUri":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$"
     },
     "ListAgentsRequest":{
       "type":"structure",
@@ -1836,7 +2115,7 @@
       "members":{
         "Version":{
           "shape":"NfsVersion",
-          "documentation":"<p>The specific NFS version that you want DataSync to use to mount your NFS share. If the server refuses to use the version specified, the sync will fail. If you don't specify a version, DataSync defaults to <code>AUTOMATIC</code>. That is, DataSync automatically selects a version based on negotiation with the NFS server.</p> <p>You can specify the following NFS versions:</p> <ul> <li> <p> <b> <a href=\"https://tools.ietf.org/html/rfc1813\">NFSv3</a> </b> - stateless protocol version that allows for asynchronous writes on the server.</p> </li> <li> <p> <b> <a href=\"https://tools.ietf.org/html/rfc3530\">NFSv4.0</a> </b> - stateful, firewall-friendly protocol version that supports delegations and pseudo filesystems.</p> </li> <li> <p> <b> <a href=\"https://tools.ietf.org/html/rfc5661\">NFSv4.1</a> </b> - stateful protocol version that supports sessions, directory delegations, and parallel data processing. Version 4.1 also includes all features available in version 4.0.</p> </li> </ul>"
+          "documentation":"<p>The specific NFS version that you want DataSync to use to mount your NFS share. If the server refuses to use the version specified, the sync will fail. If you don't specify a version, DataSync defaults to <code>AUTOMATIC</code>. That is, DataSync automatically selects a version based on negotiation with the NFS server.</p> <p>You can specify the following NFS versions:</p> <ul> <li> <p> <b> <a href=\"https://tools.ietf.org/html/rfc1813\">NFSv3</a> </b> - stateless protocol version that allows for asynchronous writes on the server.</p> </li> <li> <p> <b> <a href=\"https://tools.ietf.org/html/rfc3530\">NFSv4.0</a> </b> - stateful, firewall-friendly protocol version that supports delegations and pseudo file systems.</p> </li> <li> <p> <b> <a href=\"https://tools.ietf.org/html/rfc5661\">NFSv4.1</a> </b> - stateful protocol version that supports sessions, directory delegations, and parallel data processing. Version 4.1 also includes all features available in version 4.0.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Represents the mount options that are available for DataSync to access an NFS location.</p>"
@@ -2051,6 +2330,20 @@
       },
       "documentation":"<p>The VPC endpoint, subnet, and security group that an agent uses to access IP addresses in a VPC (Virtual Private Cloud).</p>"
     },
+    "QopConfiguration":{
+      "type":"structure",
+      "members":{
+        "RpcProtection":{
+          "shape":"HdfsRpcProtection",
+          "documentation":"<p>The RPC protection setting configured on the HDFS cluster. This setting corresponds to your <code>hadoop.rpc.protection</code> setting in your <code>core-site.xml</code> file on your Hadoop cluster.</p>"
+        },
+        "DataTransferProtection":{
+          "shape":"HdfsDataTransferProtection",
+          "documentation":"<p>The data transfer protection setting configured on the HDFS cluster. This setting corresponds to your <code>dfs.data.transfer.protection</code> setting in the <code>hdfs-site.xml</code> file on your Hadoop cluster.</p>"
+        }
+      },
+      "documentation":"<p>The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer privacy settings configured on the Hadoop Distributed File System (HDFS) cluster.</p>"
+    },
     "S3BucketArn":{
       "type":"string",
       "max":156,
@@ -2156,11 +2449,11 @@
         "OverrideOptions":{"shape":"Options"},
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe). For example: <code>\"/folder1|/folder2\"</code> </p> <p> </p>"
+          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p> <p> </p>"
         },
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p>"
+          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list contains a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p>"
         }
       },
       "documentation":"<p>StartTaskExecutionRequest</p>"
@@ -2200,7 +2493,7 @@
           "documentation":"<p>The value for an Amazon Web Services resource tag.</p>"
         }
       },
-      "documentation":"<p>Represents a single entry in a list of AWS resource tags. <code>TagListEntry</code> returns an array that contains a list of tasks when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListTagsForResource.html\">ListTagsForResource</a> operation is called.</p>"
+      "documentation":"<p>Represents a single entry in a list of Amazon Web Services resource tags. <code>TagListEntry</code> returns an array that contains a list of tasks when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListTagsForResource.html\">ListTagsForResource</a> operation is called.</p>"
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -2462,6 +2755,69 @@
       "members":{
       }
     },
+    "UpdateLocationHdfsRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source HDFS cluster location.</p>"
+        },
+        "Subdirectory":{
+          "shape":"HdfsSubdirectory",
+          "documentation":"<p>A subdirectory in the HDFS cluster. This subdirectory is used to read data from or write data to the HDFS cluster.</p>"
+        },
+        "NameNodes":{
+          "shape":"HdfsNameNodeList",
+          "documentation":"<p>The NameNode that manages the HDFS namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes. You can use only one NameNode.</p>"
+        },
+        "BlockSize":{
+          "shape":"HdfsBlockSize",
+          "documentation":"<p>The size of the data blocks to write into the HDFS cluster. </p>"
+        },
+        "ReplicationFactor":{
+          "shape":"HdfsReplicationFactor",
+          "documentation":"<p>The number of DataNodes to replicate the data to when writing to the HDFS cluster. </p>"
+        },
+        "KmsKeyProviderUri":{
+          "shape":"KmsKeyProviderUri",
+          "documentation":"<p>The URI of the HDFS cluster's Key Management Server (KMS). </p>"
+        },
+        "QopConfiguration":{
+          "shape":"QopConfiguration",
+          "documentation":"<p>The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer privacy settings configured on the Hadoop Distributed File System (HDFS) cluster. </p>"
+        },
+        "AuthenticationType":{
+          "shape":"HdfsAuthenticationType",
+          "documentation":"<p>The type of authentication used to determine the identity of the user. </p>"
+        },
+        "SimpleUser":{
+          "shape":"HdfsUser",
+          "documentation":"<p>The user name used to identify the client on the host operating system.</p>"
+        },
+        "KerberosPrincipal":{
+          "shape":"KerberosPrincipal",
+          "documentation":"<p>The Kerberos principal with access to the files and folders on the HDFS cluster. </p>"
+        },
+        "KerberosKeytab":{
+          "shape":"KerberosKeytabFile",
+          "documentation":"<p>The Kerberos key table (keytab) that contains mappings between the defined Kerberos principal and the encrypted keys. You can load the keytab from a file by providing the file's address. If you use the AWS CLI, it performs base64 encoding for you. Otherwise, provide the base64-encoded text.</p>"
+        },
+        "KerberosKrb5Conf":{
+          "shape":"KerberosKrb5ConfFile",
+          "documentation":"<p>The <code>krb5.conf</code> file that contains the Kerberos configuration information. You can load the <code>krb5.conf</code> file by providing the file's address. If you're using the AWS CLI, it performs the base64 encoding for you. Otherwise, provide the base64-encoded text.</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>The ARNs of the agents that are used to connect to the HDFS cluster. </p>"
+        }
+      }
+    },
+    "UpdateLocationHdfsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateLocationNfsRequest":{
       "type":"structure",
       "required":["LocationArn"],
@@ -2588,7 +2944,7 @@
         "Options":{"shape":"Options"},
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p> <p> </p>"
+          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>.</p> <p> </p>"
         },
         "Schedule":{
           "shape":"TaskSchedule",
@@ -2600,11 +2956,11 @@
         },
         "CloudWatchLogGroupArn":{
           "shape":"LogGroupArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource name of the CloudWatch LogGroup.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource name of the Amazon CloudWatch log group.</p>"
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe). For example: <code>\"/folder1|/folder2</code>\"</p>"
+          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern contains a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>.</p>"
         }
       },
       "documentation":"<p>UpdateTaskResponse</p>"

@@ -5159,6 +5159,7 @@
           "ap-east-1" : { },
           "ap-northeast-1" : { },
           "ap-northeast-2" : { },
+          "ap-northeast-3" : { },
           "ap-south-1" : { },
           "ap-southeast-1" : { },
           "ap-southeast-2" : { },
@@ -9327,7 +9328,16 @@
       "s3-control" : {
         "defaults" : {
           "protocols" : [ "https" ],
-          "signatureVersions" : [ "s3v4" ]
+          "signatureVersions" : [ "s3v4" ],
+          "variants" : [ {
+            "dnsSuffix" : "amazonaws.com",
+            "hostname" : "{service}-fips.dualstack.{region}.{dnsSuffix}",
+            "tags" : [ "dualstack", "fips" ]
+          }, {
+            "dnsSuffix" : "amazonaws.com",
+            "hostname" : "{service}.dualstack.{region}.{dnsSuffix}",
+            "tags" : [ "dualstack" ]
+          } ]
         },
         "endpoints" : {
           "ap-northeast-1" : {
@@ -12845,7 +12855,12 @@
       "s3-control" : {
         "defaults" : {
           "protocols" : [ "https" ],
-          "signatureVersions" : [ "s3v4" ]
+          "signatureVersions" : [ "s3v4" ],
+          "variants" : [ {
+            "dnsSuffix" : "amazonaws.com.cn",
+            "hostname" : "{service}.dualstack.{region}.{dnsSuffix}",
+            "tags" : [ "dualstack" ]
+          } ]
         },
         "endpoints" : {
           "cn-north-1" : {
@@ -15562,7 +15577,16 @@
       "s3-control" : {
         "defaults" : {
           "protocols" : [ "https" ],
-          "signatureVersions" : [ "s3v4" ]
+          "signatureVersions" : [ "s3v4" ],
+          "variants" : [ {
+            "dnsSuffix" : "amazonaws.com",
+            "hostname" : "{service}-fips.dualstack.{region}.{dnsSuffix}",
+            "tags" : [ "dualstack", "fips" ]
+          }, {
+            "dnsSuffix" : "amazonaws.com",
+            "hostname" : "{service}.dualstack.{region}.{dnsSuffix}",
+            "tags" : [ "dualstack" ]
+          } ]
         },
         "endpoints" : {
           "us-gov-east-1" : {
@@ -16362,7 +16386,12 @@
     "defaults" : {
       "hostname" : "{service}.{region}.{dnsSuffix}",
       "protocols" : [ "https" ],
-      "signatureVersions" : [ "v4" ]
+      "signatureVersions" : [ "v4" ],
+      "variants" : [ {
+        "dnsSuffix" : "c2s.ic.gov",
+        "hostname" : "{service}-fips.{region}.{dnsSuffix}",
+        "tags" : [ "fips" ]
+      } ]
     },
     "dnsSuffix" : "c2s.ic.gov",
     "partition" : "aws-iso",
@@ -16849,7 +16878,12 @@
     "defaults" : {
       "hostname" : "{service}.{region}.{dnsSuffix}",
       "protocols" : [ "https" ],
-      "signatureVersions" : [ "v4" ]
+      "signatureVersions" : [ "v4" ],
+      "variants" : [ {
+        "dnsSuffix" : "sc2s.sgov.gov",
+        "hostname" : "{service}-fips.{region}.{dnsSuffix}",
+        "tags" : [ "fips" ]
+      } ]
     },
     "dnsSuffix" : "sc2s.sgov.gov",
     "partition" : "aws-iso-b",

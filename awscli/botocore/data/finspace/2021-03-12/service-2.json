@@ -182,6 +182,14 @@
         "federationParameters":{
           "shape":"FederationParameters",
           "documentation":"<p>Configuration information when authentication mode is FEDERATED.</p>"
+        },
+        "superuserParameters":{
+          "shape":"SuperuserParameters",
+          "documentation":"<p>Configuration information for the superuser.</p>"
+        },
+        "dataBundles":{
+          "shape":"DataBundleArns",
+          "documentation":"<p>The list of Amazon Resource Names (ARN) of the data bundles to install. Currently supported data bundle ARNs:</p> <ul> <li> <p> <code>arn:aws:finspace:${Region}::data-bundle/capital-markets-sample</code> - Contains sample Capital Markets datasets, categories and controlled vocabularies.</p> </li> <li> <p> <code>arn:aws:finspace:${Region}::data-bundle/taq</code> (default) - Contains trades and quotes data in addition to sample Capital Markets data.</p> </li> </ul>"
         }
       }
     },
@@ -201,6 +209,17 @@
           "documentation":"<p>The sign-in url for the web application of the FinSpace environment you created.</p>"
         }
       }
+    },
+    "DataBundleArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of the data bundle.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws:finspace:[A-Za-z0-9_/.-]{0,63}:\\d*:data-bundle/[0-9A-Za-z_-]{1,128}$"
+    },
+    "DataBundleArns":{
+      "type":"list",
+      "member":{"shape":"DataBundleArn"}
     },
     "DeleteEnvironmentRequest":{
       "type":"structure",
@@ -224,6 +243,13 @@
       "max":1000,
       "min":1,
       "pattern":"^[a-zA-Z0-9. ]{1,1000}$"
+    },
+    "EmailId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+[.]+[A-Za-z]+",
+      "sensitive":true
     },
     "Environment":{
       "type":"structure",
@@ -470,6 +496,12 @@
         }
       }
     },
+    "NameString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]{1,50}$"
+    },
     "PaginationToken":{
       "type":"string",
       "max":1000,
@@ -510,6 +542,29 @@
       "max":1000,
       "min":1,
       "pattern":"^[a-zA-Z-0-9-:\\/.]*$"
+    },
+    "SuperuserParameters":{
+      "type":"structure",
+      "required":[
+        "emailAddress",
+        "firstName",
+        "lastName"
+      ],
+      "members":{
+        "emailAddress":{
+          "shape":"EmailId",
+          "documentation":"<p>The email address of the superuser.</p>"
+        },
+        "firstName":{
+          "shape":"NameString",
+          "documentation":"<p>The first name of the superuser.</p>"
+        },
+        "lastName":{
+          "shape":"NameString",
+          "documentation":"<p>The last name of the superuser.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information for the superuser.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -651,5 +706,5 @@
       "pattern":"^[A-Za-z0-9._\\-:\\/#\\+]+$"
     }
   },
-  "documentation":"<p>The FinSpace management service provides the APIs for managing the FinSpace environments. </p>"
+  "documentation":"<p>The FinSpace management service provides the APIs for managing FinSpace environments.</p>"
 }

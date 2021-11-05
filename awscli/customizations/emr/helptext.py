@@ -48,25 +48,25 @@ HBASE_BACKUP_VERSION = (
 # create-cluster options help text
 
 CREATE_CLUSTER_DESCRIPTION = (
-    'Creates an Amazon EMR cluster with the specified configurations.\n'
-    '\nQuick start:\n'
-    '\naws emr create-cluster --release-label <release-label>'
-    ' --instance-type <instance-type> --instance-count <instance-count>\n'
-    '\nValues for the following can be set in the AWS CLI'
-    ' config file using the "aws configure set" command: --service-role, --log-uri,'
-    ' and InstanceProfile and KeyName arguments under --ec2-attributes.')
+    '<p>Creates an Amazon EMR cluster with the specified configurations.</p>'
+    '<p>Quick start:</p>'
+    '<p><code>aws emr create-cluster --release-label <release-label>'
+    ' --instance-type <instance-type> --instance-count <instance-count></code></p>'
+    '<p>Values for the following can be set in the AWS CLI'
+    ' config file using the <code>aws configure set</code> command: <code>--service-role, --log-uri,'
+    ' and InstanceProfile and KeyName arguments under --ec2-attributes</code>.</p>')
 
 DESCRIBE_CLUSTER_DESCRIPTION = (
-    'Provides  cluster-level details including status, hardware'
+    '<p>Provides  cluster-level details including status, hardware'
     ' and software configuration, VPC settings, bootstrap'
-    ' actions, instance groups and so on.'
-    '\nPermissions needed for describe-cluster include:\n'
-    '\n"elasticmapreduce:ListBootstrapActions",\n'
-    '\n"elasticmapreduce:ListInstanceFleets",\n'
-    '\n"elasticmapreduce:DescribeCluster",\n'
-    '\n"elasticmapreduce:ListInstanceGroups"\n'
-    '\nFor information about the cluster'
-    ' steps, see <code>list-steps</code>.')
+    ' actions, instance groups and so on.</p>'
+    '<p>Permissions needed for describe-cluster include:'
+    '<ul><li><code>elasticmapreduce:ListBootstrapActions</code></li>'
+    '<li><code>elasticmapreduce:ListInstanceFleets</code></li>'
+    '<li><code>elasticmapreduce:DescribeCluster</code></li>'
+    '<li><code>elasticmapreduce:ListInstanceGroups</code></li></ul>'
+    'For information about the cluster'
+    ' steps, see <code>list-steps</code>.</p>')
 
 CLUSTER_NAME = (
     '<p>The name of the cluster. If not provided, the default is "Development Cluster".</p>')

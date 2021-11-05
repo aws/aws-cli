@@ -178,7 +178,7 @@ class DeployCommand(BasicCommand):
             'default': False,
             'help_text': (
                 'Preserve the state of previously provisioned resources when '
-                'an operation fails.'
+                'the execute-change-set operation fails.'
             )
         },
         {
@@ -189,9 +189,8 @@ class DeployCommand(BasicCommand):
             'dest': 'disable_rollback',
             'default': True,
             'help_text': (
-                'Causes CloudFormation to attempt to rollback resource changes '
-                'when an error is encountered creating or updating a stack '
-                '(this is the default behavior).'
+                'Rollback all resource changes when the execute-change-set '
+                'operation fails.'
             )
         },
         {
@@ -314,15 +313,14 @@ class DeployCommand(BasicCommand):
         deployer = Deployer(cloudformation_client)
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
-                           parsed_args.execute_changeset,
-                           parsed_args.disable_rollback, parsed_args.role_arn,
+                           parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
-                           tags,
+                           tags, parsed_args.disable_rollback,
                            parsed_args.fail_on_empty_changeset)
 
     def deploy(self, deployer, stack_name, template_str,
-               parameters, capabilities, execute_changeset, disable_rollback,
-               role_arn, notification_arns, s3_uploader, tags,
+               parameters, capabilities, execute_changeset, role_arn,
+               notification_arns, s3_uploader, tags, disable_rollback=False,
                fail_on_empty_changeset=True):
         try:
             result = deployer.create_and_wait_for_changeset(

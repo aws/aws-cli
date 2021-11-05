@@ -184,6 +184,7 @@ class Deployer(object):
 
         :param changeset_id: ID of the changeset
         :param stack_name: Name or ID of the stack
+        :param disable_rollback: Disable rollback of all resource changes
         :return: Response from execute-change-set call
         """
         return self._client.execute_change_set(

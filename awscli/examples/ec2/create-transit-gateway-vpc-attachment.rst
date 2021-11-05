@@ -1,4 +1,4 @@
-**Example 1: To associate a Transit Gateway with a VPC**
+**Example 1: To associate a transit gateway with a VPC**
 
 The following ``create-transit-gateway-vpc-attachment`` example creates a transit gateway attachment to the specified VPC. ::
 
@@ -27,7 +27,9 @@ Output::
         }
     }
 
-**Example 2: To associate a Transit Gateway with multiple subnets in a VPC**
+For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *Transit Gateways Guide*.
+
+**Example 2: To associate a transit gateway with multiple subnets in a VPC**
 
 The following ``create-transit-gateway-vpc-attachment`` example creates a transit gateway attachment to the specified VPC and subnets. ::
 
@@ -57,4 +59,4 @@ Output::
         }
     }
 
-For more information, see `Create a Transit Gateway Attachment to a VPC<https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Create a transit gateway attachment to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#create-vpc-attachment>`__ in the *Transit Gateways Guide*.

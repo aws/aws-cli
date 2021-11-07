@@ -27,7 +27,7 @@ from tests import (
 )
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    WizardAppRunner, WizardTraverser, WizardValues
+    WizardAppRunner, WizardTraverser, WizardValues, FileIO
 )
 from awscli.customizations.wizard.exceptions import (
     InvalidChoiceException, UnableToRunWizardError, UnexpectedWizardException,
@@ -341,6 +341,14 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             pipe_input.close()
         self.assertIsInstance(captured_exception, UnexpectedWizardException)
         self.assertIs(captured_exception.original_exception, unexpected_error)
+
+    def test_cant_open_save_panel_if_no_details_available(self):
+        self.stubbed_app.add_keypress(
+            Keys.ControlS,
+            lambda app: self.assertNotIn(
+                'save_details_dialogue', self.get_visible_buffers(app))
+        )
+        self.stubbed_app.run()
 
 
 class TestConditionalWizardApplication(BaseWizardApplicationTest):
@@ -751,6 +759,27 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.add_keypress(
             Keys.F3,
             lambda app: self.assertIsNone(app.layout.current_buffer)
+        )
+        self.stubbed_app.run()
+
+    def test_can_toggle_save_panel(self):
+        self.stubbed_app.add_keypress(
+            Keys.ControlS,
+            lambda app: self.assertEqual(
+                app.layout.current_buffer.name, 'save_details_dialogue'
+            )
+        )
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertIn(
+                'save_details_dialogue', self.get_visible_buffers(app))
+        )
+        # The details panel will automatically be visible when
+        # Ctrl-S is pressed.
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertTrue(app.details_visible)
+        )
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertTrue(app.save_details_visible)
         )
         self.stubbed_app.run()
 
@@ -1646,3 +1675,54 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.add_keypress(Keys.Tab)
         self.add_current_buffer_assertion('second_prompt')
         self.stubbed_app.run()
+
+
+class TestSaveDetailsWizard(BaseWizardApplicationTest):
+    def setUp(self):
+        super(TestSaveDetailsWizard, self).setUp()
+        self.mock_file_io = mock.Mock(spec=FileIO)
+        self.app.file_io = self.mock_file_io
+
+    def get_definition(self):
+        return {
+            'title': 'Show details in prompting stage',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'policy_arn': {
+                            'description': 'Choose policy',
+                            'type': 'prompt',
+                            'choices': ['a'],
+                            'details': {
+                                'value': 'test_value',
+                                'description': 'Policy Document',
+                                'output': 'json'
+                            },
+                        },
+                    }
+                },
+                '__DONE__': {},
+            },
+            'execute': {}
+        }
+
+    def test_file_saved_to_disk(self):
+        self.app.values['test_value'] = {'foo': 'bar'}
+        self.stubbed_app.add_keypress(Keys.F3)
+        details_contents = '{\n    "foo": "bar"\n}'
+        self.add_buffer_text_assertion(
+            'details_buffer',
+            details_contents,
+        )
+        self.stubbed_app.add_keypress(Keys.ControlS)
+        self.stubbed_app.add_text_to_current_buffer('/tmp/myfile.json')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        # We should switch back to the control associated with
+        # the current prompt.
+        self.stubbed_app.add_app_assertion(
+            lambda app: app.layout.current_control.buffer.name
+        )
+        self.stubbed_app.run()
+        self.mock_file_io.write_file_contents.assert_called_with(
+            '/tmp/myfile.json', details_contents)

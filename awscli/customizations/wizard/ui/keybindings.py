@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from prompt_toolkit.application import get_app
-from prompt_toolkit.filters import Condition
+from prompt_toolkit.filters import has_focus, Condition
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
 
@@ -25,6 +25,11 @@ from awscli.customizations.wizard.exceptions import BaseWizardException
 @Condition
 def details_visible():
     return get_app().details_visible
+
+
+@Condition
+def save_details_visible():
+    return get_app().save_details_visible
 
 
 @Condition
@@ -107,6 +112,17 @@ def get_default_keybindings():
             layout.focus(current_control)
         else:
             refresh_details_view(event.app, current_prompt)
+
+    @kb.add(Keys.ControlS, filter=prompt_has_details)
+    def show_save_details_dialogue(event):
+        if not event.app.details_visible:
+            event.app.details_visible = True
+            current_prompt = event.app.traverser.get_current_prompt()
+            refresh_details_view(event.app, current_prompt)
+        event.app.save_details_visible = True
+        save_dialogue = get_ui_control_by_buffer_name(
+            event.app.layout, 'save_details_dialogue')
+        event.app.layout.focus(save_dialogue)
 
     @kb.add(Keys.F4, filter=error_bar_enabled)
     def show_details(event):

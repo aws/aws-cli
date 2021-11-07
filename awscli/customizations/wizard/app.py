@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import os
 from collections.abc import MutableMapping
 
 from prompt_toolkit.application import Application
@@ -42,7 +43,7 @@ class WizardAppRunner(object):
 class WizardApp(Application):
     def __init__(self, layout, values, traverser, executor, style=None,
                  key_bindings=None, full_screen=True, output=None,
-                 app_input=None):
+                 app_input=None, file_io=None):
         self.values = values
         self.traverser = traverser
         self.executor = executor
@@ -52,6 +53,10 @@ class WizardApp(Application):
             key_bindings = get_default_keybindings()
         self.details_visible = False
         self.error_bar_visible = None
+        self.save_details_visible = False
+        if file_io is None:
+            file_io = FileIO()
+        self.file_io = file_io
         super().__init__(
             layout=layout, style=style, key_bindings=key_bindings,
             full_screen=full_screen, output=output, input=app_input,
@@ -105,7 +110,7 @@ class WizardTraverser:
     def current_prompt_has_details(self):
         return 'details' in self._prompt_definitions.get(
             self._current_prompt, {})
-    
+
     def submit_prompt_answer(self, answer):
         definition = self._prompt_definitions[self._current_prompt]
         if 'choices' in definition:
@@ -333,3 +338,9 @@ class WizardValues(MutableMapping):
         return new_vars
 
     copy = __copy__
+
+
+class FileIO:
+    def write_file_contents(self, filename, contents):
+        with open(os.path.expanduser(filename), 'w') as f:
+            f.write(contents)

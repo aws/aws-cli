@@ -1,6 +1,6 @@
 **To enable resource sharing across AWS Organizations**
 
-The following ``enable-sharing-with-aws-organization`` example enables resource sharing across your organization or organizational units. ::
+The following ``enable-sharing-with-aws-organization`` example enables resource sharing across your organization and organizational units. ::
 
     aws ram enable-sharing-with-aws-organization
 

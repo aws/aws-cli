@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Delete an Association for a Transit Gateway Route Table <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#disassociate-tgw-route-table>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Transit gateway route tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html>`__ in the *Transit Gateways Guide*.

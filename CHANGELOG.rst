@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.0
+======
+
+* api-change:``wafv2``: You can now configure rules to run a CAPTCHA check against web requests and, as needed, send a CAPTCHA challenge to the client.
+* api-change:``chime-sdk-meetings``: Updated format validation for ids and regions.
+* api-change:``ec2``: This release adds internal validation on the GatewayAssociationState field
+* api-change:``sagemaker``: SageMaker CreateEndpoint and UpdateEndpoint APIs now support additional deployment configuration to manage traffic shifting options and automatic rollback monitoring. DescribeEndpoint now shows new in-progress deployment details with stage status.
+* feature:EndpointResolver: Adding support for resolving modeled FIPS and Dualstack endpoints. Added `AWS_USE_DUALSTACK_ENDPOINT` and `AWS_USE_FIPS_ENDPOINT` environment variables to enable these features.
+
+
 1.21.12
 =======
 

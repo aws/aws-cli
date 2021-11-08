@@ -189,7 +189,7 @@ class DeployCommand(BasicCommand):
             'dest': 'disable_rollback',
             'default': True,
             'help_text': (
-                'Rollback all resource changes when the execute-change-set '
+                'Roll back all resource changes when the execute-change-set '
                 'operation fails.'
             )
         },

@@ -1,6 +1,6 @@
 **To list the resources associated with a resource share**
 
-The following ``list-resources`` example lists the subnets that you added to the specified resource share. ::
+The following ``list-resources`` example lists all resources in the specified resource share that are of the specified resource type. ::
 
     aws ram list-resources \
         --resource-type ec2:Subnet \ 

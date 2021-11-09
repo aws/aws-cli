@@ -2,7 +2,7 @@
 
 The following ``delete-domain-configuration`` example deletes a domain configuration named ``additionalDataDomain`` from your AWS account. ::
 
-    aws iot update-domain-configuration \
+    aws iot delete-domain-configuration \
         --domain-configuration-name "additionalDataDomain" \
         --domain-configuration-status "DISABLED"
 

@@ -1,6 +1,6 @@
 **To describe your transit gateway VPC attachments**
 
-The following ``describe-transit-gateway-vpc-attachments`` example displays details for all of your transit gateway VPC attachments. ::
+The following ``describe-transit-gateway-vpc-attachments`` example displays details for your transit gateway VPC attachments. ::
 
     aws ec2 describe-transit-gateway-vpc-attachments
 
@@ -33,4 +33,4 @@ Output::
         ]
     }
 
-For more information, see `View Your VPC Attachments <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#view-vpc-attachment>`__ in the *AWS Transit Gateways*
+For more information, see `View your VPC attachments <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#view-vpc-attachment>`__ in the *Transit Gateways Guide*.

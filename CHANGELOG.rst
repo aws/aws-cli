@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.3.5
+=====
+
+* api-change:``health``: Documentation updates for AWS Health.
+* api-change:``chime-sdk-meetings``: Updated format validation for ids and regions.
+* api-change:``resourcegroupstaggingapi``: Documentation updates and improvements.
+* api-change:``sagemaker``: SageMaker CreateEndpoint and UpdateEndpoint APIs now support additional deployment configuration to manage traffic shifting options and automatic rollback monitoring. DescribeEndpoint now shows new in-progress deployment details with stage status.
+* api-change:``wafv2``: You can now configure rules to run a CAPTCHA check against web requests and, as needed, send a CAPTCHA challenge to the client.
+* api-change:``ec2``: This release adds internal validation on the GatewayAssociationState field
+* api-change:``batch``: Adds support for scheduling policy APIs.
+* api-change:``ec2``: DescribeInstances now returns customer-owned IP addresses for instances running on an AWS Outpost.
+* api-change:``translate``: This release enable customers to use their own KMS keys to encrypt output files when they submit a batch transform job.
+* api-change:``greengrassv2``: This release adds support for Greengrass core devices running Windows. You can now specify name of a Windows user to run a component.
+
+
 2.3.4
 =====
 

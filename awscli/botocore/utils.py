@@ -112,8 +112,10 @@ def ensure_boolean(val):
     """
     if isinstance(val, bool):
         return val
-    else:
+    elif isinstance(val, str):
         return val.lower() == 'true'
+    else:
+        return False
 
 
 def resolve_imds_endpoint_mode(session):
@@ -1490,10 +1492,13 @@ class S3EndpointSetter(object):
     _DEFAULT_DNS_SUFFIX = 'amazonaws.com'
 
     def __init__(self, endpoint_resolver, region=None,
-                 s3_config=None, endpoint_url=None, partition=None):
+                 s3_config=None, endpoint_url=None, partition=None,
+                 use_fips_endpoint=False):
+        # This is calling the endpoint_resolver in regions.py
         self._endpoint_resolver = endpoint_resolver
         self._region = region
         self._s3_config = s3_config
+        self._use_fips_endpoint = use_fips_endpoint
         if s3_config is None:
             self._s3_config = {}
         self._endpoint_url = endpoint_url
@@ -1521,10 +1526,12 @@ class S3EndpointSetter(object):
             return
 
         resolver = self._endpoint_resolver
+        # Constructing endpoints as s3-object-lambda as region
         resolved = resolver.construct_endpoint('s3-object-lambda', self._region)
 
         # Ideally we would be able to replace the endpoint before
         # serialization but there's no event to do that currently
+        # host_prefix is all the arn/bucket specs
         new_endpoint = 'https://{host_prefix}{hostname}'.format(
             host_prefix=params['host_prefix'],
             hostname=resolved['hostname'],
@@ -1544,6 +1551,14 @@ class S3EndpointSetter(object):
             self._switch_to_accesspoint_endpoint(request, region_name)
             return
         if self._use_accelerate_endpoint:
+            if self._use_fips_endpoint:
+                raise UnsupportedS3ConfigurationError(
+                    msg=(
+                        'Client is configured to use the FIPS psuedo region '
+                        'for "%s", but S3 Accelerate does not have any FIPS '
+                        'compatible endpoints.' % (self._region)
+                    )
+                )
             switch_host_s3_accelerate(request=request, **kwargs)
         if self._s3_addressing_handler:
             self._s3_addressing_handler(request=request, **kwargs)
@@ -1552,8 +1567,14 @@ class S3EndpointSetter(object):
         return 's3_accesspoint' in request.context
 
     def _validate_fips_supported(self, request):
-        if 'fips' not in self._region:
+        if not self._use_fips_endpoint:
             return
+        if 'fips' in request.context['s3_accesspoint']['region']:
+            raise UnsupportedS3AccesspointConfigurationError(
+                msg={
+                    'Invalid ARN, FIPS region not allowed in ARN.'
+                }
+            )
         if 'outpost_name' in request.context['s3_accesspoint']:
             raise UnsupportedS3AccesspointConfigurationError(
                 msg=(
@@ -1562,28 +1583,20 @@ class S3EndpointSetter(object):
                         self._region)
                 )
             )
-        client_region = self._region.replace('fips-', '').replace('-fips', '')
+        # Transforming psuedo region to actual region
         accesspoint_region = request.context['s3_accesspoint']['region']
-        if accesspoint_region != client_region:
-            if self._s3_config.get('use_arn_region', True):
+        if accesspoint_region != self._region:
+            if not self._s3_config.get('use_arn_region', True):
+                # TODO: Update message to reflect use_arn_region
+                # is not set
                 raise UnsupportedS3AccesspointConfigurationError(
                     msg=(
                         'Client is configured to use the FIPS psuedo-region '
-                        '"%s", but the access-point ARN provided is for the '
-                        '"%s" region. The use_arn_region configuration does '
-                        'not allow for cross-region calls when a FIPS '
-                        'pseudo-region is configured.' % (
-                            self._region, accesspoint_region)
-                    )
-                )
-            else:
-                raise UnsupportedS3AccesspointConfigurationError(
-                    msg=(
-                        'Client is configured to use the FIPS psuedo-region '
-                        '"%s", but the access-point ARN provided is for the '
-                        '"%s" region. For clients using a FIPS psuedo-region '
-                        'calls to access-point ARNs in another region are not '
-                        'allowed.' % (self._region, accesspoint_region)
+                        'for "%s", but the access-point ARN provided is for '
+                        'the "%s" region. For clients using a FIPS '
+                        'psuedo-region calls to access-point ARNs in another '
+                        'region are not allowed.' % (self._region,
+                                                     accesspoint_region)
                     )
                 )
 
@@ -1748,7 +1761,7 @@ class S3EndpointSetter(object):
         return '.'.join(accesspoint_netloc_components)
 
     def _inject_fips_if_needed(self, component, request_context):
-        if 'fips' in request_context.get('client_region', ''):
+        if self._use_fips_endpoint:
             return '%s-fips' % component
         return component
 
@@ -1872,10 +1885,12 @@ class S3ControlEndpointSetter(object):
     _HOST_LABEL_REGEX = re.compile(r'^[a-zA-Z0-9\-]{1,63}$')
 
     def __init__(self, endpoint_resolver, region=None,
-                 s3_config=None, endpoint_url=None, partition=None):
+                 s3_config=None, endpoint_url=None, partition=None,
+                 use_fips_endpoint=False):
         self._endpoint_resolver = endpoint_resolver
         self._region = region
         self._s3_config = s3_config
+        self._use_fips_endpoint = use_fips_endpoint
         if s3_config is None:
             self._s3_config = {}
         self._endpoint_url = endpoint_url
@@ -1907,6 +1922,13 @@ class S3ControlEndpointSetter(object):
         return 'outpost_id' in request.context
 
     def _validate_endpoint_from_arn_details_supported(self, request):
+        if 'fips' in request.context['arn_details']['region']:
+            raise UnsupportedS3ControlArnError(
+                arn=request.context['arn_details']['original'],
+                msg={
+                    'Invalid ARN, FIPS region not allowed in ARN.'
+                }
+            )
         if not self._s3_config.get('use_arn_region', False):
             arn_region = request.context['arn_details']['region']
             if arn_region != self._region:
@@ -2014,10 +2036,15 @@ class S3ControlEndpointSetter(object):
                 region_name,
                 self._get_dns_suffix(region_name),
             ]
+            self._add_fips(netloc)
         return self._construct_netloc(netloc)
 
     def _construct_netloc(self, netloc):
         return '.'.join(netloc)
+
+    def _add_fips(self, netloc):
+        if self._use_fips_endpoint:
+            netloc[0] = netloc[0] + '-fips'
 
     def _add_dualstack(self, netloc):
         if self._s3_config.get('use_dualstack_endpoint'):

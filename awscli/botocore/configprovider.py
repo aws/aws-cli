@@ -82,6 +82,14 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         'imds_use_ipv6',
         'AWS_IMDS_USE_IPV6',
         False, utils.ensure_boolean),
+    'use_dualstack_endpoint': (
+        'use_dualstack_endpoint',
+        'AWS_USE_DUALSTACK_ENDPOINT',
+        None, utils.ensure_boolean),
+    'use_fips_endpoint': (
+        'use_fips_endpoint',
+        'AWS_USE_FIPS_ENDPOINT',
+        None, utils.ensure_boolean),
     'parameter_validation': ('parameter_validation', None, True, None),
     # Client side monitoring configurations.
     # Note: These configurations are considered internal to botocore.

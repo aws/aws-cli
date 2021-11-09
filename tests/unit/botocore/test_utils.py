@@ -108,6 +108,9 @@ class TestEnsureBoolean(unittest.TestCase):
     def test_string_lowercase_true(self):
         self.assertEqual(ensure_boolean('true'), True)
 
+    def test_invalid_type_false(self):
+        self.assertEqual(ensure_boolean({'foo': 'bar'}), False)
+
 
 class TestResolveIMDSEndpointMode(unittest.TestCase):
     def create_session_with_config(self, endpoint_mode, imds_use_IPv6):

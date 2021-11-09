@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.2
+======
+
+* api-change:``greengrassv2``: This release adds support for Greengrass core devices running Windows. You can now specify name of a Windows user to run a component.
+* api-change:``health``: Documentation updates for AWS Health.
+* api-change:``batch``: Adds support for scheduling policy APIs.
+
+
 1.22.0
 ======
 

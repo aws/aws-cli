@@ -820,7 +820,9 @@
       "enum":[
         "ALLOW",
         "BLOCK",
-        "COUNT"
+        "COUNT",
+        "CAPTCHA",
+        "EXCLUDED_AS_COUNT"
       ]
     },
     "All":{
@@ -934,6 +936,44 @@
     "CapacityUnit":{
       "type":"long",
       "min":1
+    },
+    "CaptchaAction":{
+      "type":"structure",
+      "members":{
+        "CustomRequestHandling":{
+          "shape":"CustomRequestHandling",
+          "documentation":"<p>Defines custom handling for the web request.</p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
+        }
+      },
+      "documentation":"<p>Specifies that WAF should run a <code>CAPTCHA</code> check against the request: </p> <ul> <li> <p>If the request includes a valid, unexpired <code>CAPTCHA</code> token, WAF allows the web request inspection to proceed to the next rule, similar to a <code>CountAction</code>. </p> </li> <li> <p>If the request doesn't include a valid, unexpired <code>CAPTCHA</code> token, WAF discontinues the web ACL evaluation of the request and blocks it from going to its intended destination.</p> <p>WAF generates a response that it sends back to the client, which includes the following: </p> <ul> <li> <p>The header <code>x-amzn-waf-action</code> with a value of <code>captcha</code>. </p> </li> <li> <p>The HTTP status code <code>405 Method Not Allowed</code>. </p> </li> <li> <p>If the request contains an <code>Accept</code> header with a value of <code>text/html</code>, the response includes a <code>CAPTCHA</code> challenge. </p> </li> </ul> </li> </ul> <p>You can configure the expiration time in the <code>CaptchaConfig</code> <code>ImmunityTimeProperty</code> setting at the rule and web ACL level. The rule setting overrides the web ACL setting. </p> <p>This action option is available for rules. It isn't available for web ACL default actions. </p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>"
+    },
+    "CaptchaConfig":{
+      "type":"structure",
+      "members":{
+        "ImmunityTimeProperty":{
+          "shape":"ImmunityTimeProperty",
+          "documentation":"<p>Determines how long a <code>CAPTCHA</code> token remains valid after the client successfully solves a <code>CAPTCHA</code> puzzle. </p>"
+        }
+      },
+      "documentation":"<p>Specifies how WAF should handle <code>CAPTCHA</code> evaluations. This is available at the web ACL level and in each rule. </p>"
+    },
+    "CaptchaResponse":{
+      "type":"structure",
+      "members":{
+        "ResponseCode":{
+          "shape":"ResponseCode",
+          "documentation":"<p>The HTTP response code indicating the status of the <code>CAPTCHA</code> token in the web request. If the token is missing, invalid, or expired, this code is <code>405 Method Not Allowed</code>.</p>"
+        },
+        "SolveTimestamp":{
+          "shape":"SolveTimestamp",
+          "documentation":"<p>The time that the <code>CAPTCHA</code> puzzle was solved for the supplied token. </p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The reason for failure, populated when the evaluation of the token fails.</p>"
+        }
+      },
+      "documentation":"<p>The result from the inspection of the web request for a valid <code>CAPTCHA</code> token. </p>"
     },
     "CheckCapacityRequest":{
       "type":"structure",
@@ -1440,6 +1480,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
+        },
+        "CaptchaConfig":{
+          "shape":"CaptchaConfig",
+          "documentation":"<p>Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. </p>"
         }
       }
     },
@@ -1839,14 +1883,21 @@
       "members":{
         "Name":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the rule to exclude.</p>"
+          "documentation":"<p>The name of the rule whose action you want to override to <code>Count</code>.</p>"
         }
       },
-      "documentation":"<p>Specifies a single rule to exclude from the rule group. Excluding a rule overrides its action setting for the rule group in the web ACL, setting it to <code>COUNT</code>. This effectively excludes the rule from acting on web requests. </p>"
+      "documentation":"<p>Specifies a single rule in a rule group whose action you want to override to <code>Count</code>. When you exclude a rule, WAF evaluates it exactly as it would if the rule action setting were <code>Count</code>. This is a useful option for testing the rules in a rule group without modifying how they handle your web traffic. </p>"
     },
     "ExcludedRules":{
       "type":"list",
       "member":{"shape":"ExcludedRule"}
+    },
+    "FailureReason":{
+      "type":"string",
+      "enum":[
+        "TOKEN_MISSING",
+        "TOKEN_EXPIRED"
+      ]
     },
     "FallbackBehavior":{
       "type":"string",
@@ -1965,7 +2016,7 @@
         },
         "OverrideAction":{
           "shape":"OverrideAction",
-          "documentation":"<p>The override action to apply to the rules in a rule group. Used only for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <p>Set the override action to none to leave the rule actions in effect. Set it to count to only count matches, regardless of the rule action settings. </p> <p>In a <a>Rule</a>, you must specify either this <code>OverrideAction</code> setting or the rule <code>Action</code> setting, but not both:</p> <ul> <li> <p>If the rule statement references a rule group, use this override action setting and not the action setting. </p> </li> <li> <p>If the rule statement does not reference a rule group, use the rule action setting and not this rule override action setting. </p> </li> </ul>"
+          "documentation":"<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead exclude those rules in your rule group reference statement settings. </p> </note>"
         },
         "VisibilityConfig":{
           "shape":"VisibilityConfig",
@@ -2429,7 +2480,8 @@
     },
     "IPAddresses":{
       "type":"list",
-      "member":{"shape":"IPAddress"}
+      "member":{"shape":"IPAddress"},
+      "min":1
     },
     "IPSet":{
       "type":"structure",
@@ -2537,6 +2589,17 @@
       "documentation":"<p>High-level information about an <a>IPSet</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage an <code>IPSet</code>, and the ARN, that you provide to the <a>IPSetReferenceStatement</a> to use the address set in a <a>Rule</a>.</p>"
     },
     "IPString":{"type":"string"},
+    "ImmunityTimeProperty":{
+      "type":"structure",
+      "required":["ImmunityTime"],
+      "members":{
+        "ImmunityTime":{
+          "shape":"TimeWindowSecond",
+          "documentation":"<p>The amount of time, in seconds, that a <code>CAPTCHA</code> token is valid. The default setting is 300.</p>"
+        }
+      },
+      "documentation":"<p>Determines how long a <code>CAPTCHA</code> token remains valid after the client successfully solves a <code>CAPTCHA</code> puzzle. </p>"
+    },
     "JsonBody":{
       "type":"structure",
       "required":[
@@ -2776,6 +2839,7 @@
     },
     "ListLoggingConfigurationsRequest":{
       "type":"structure",
+      "required":["Scope"],
       "members":{
         "Scope":{
           "shape":"Scope",
@@ -3072,7 +3136,7 @@
         },
         "ExcludedRules":{
           "shape":"ExcludedRules",
-          "documentation":"<p>The rules whose actions are set to <code>COUNT</code> by the web ACL, regardless of the action that is set on the rule. This effectively excludes the rule from acting on web requests. </p>"
+          "documentation":"<p>The rules in the referenced rule group whose actions are set to <code>Count</code>. When you exclude a rule, WAF evaluates it exactly as it would if the rule action setting were <code>Count</code>. This is a useful option for testing the rules in a rule group without modifying how they handle your web traffic.</p>"
         },
         "ScopeDownStatement":{
           "shape":"Statement",
@@ -3246,7 +3310,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>Specifies that WAF should do nothing. This is generally used to try out a rule without performing any actions. You set the <code>OverrideAction</code> on the <a>Rule</a>. </p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p> <p>JSON specification: <code>\"None\": {}</code> </p>"
+      "documentation":"<p>Specifies that WAF should do nothing. This is used for the <code>OverrideAction</code> setting on a <a>Rule</a> when the rule uses a rule group reference statement. </p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p> <p>JSON specification: <code>\"None\": {}</code> </p>"
     },
     "NotStatement":{
       "type":"structure",
@@ -3275,14 +3339,14 @@
       "members":{
         "Count":{
           "shape":"CountAction",
-          "documentation":"<p>Override the rule action setting to count.</p>"
+          "documentation":"<p>Override the rule group evaluation result to count only. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead exclude those rules in your rule group reference statement settings. </p> </note>"
         },
         "None":{
           "shape":"NoneAction",
-          "documentation":"<p>Don't override the rule action setting.</p>"
+          "documentation":"<p>Don't override the rule group evaluation result. This is the most common setting.</p>"
         }
       },
-      "documentation":"<p>The override action to apply to the rules in a rule group. Used only for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <p>Set the override action to none to leave the rule actions in effect. Set it to count to only count matches, regardless of the rule action settings. </p> <p>In a <a>Rule</a>, you must specify either this <code>OverrideAction</code> setting or the rule <code>Action</code> setting, but not both:</p> <ul> <li> <p>If the rule statement references a rule group, use this override action setting and not the action setting. </p> </li> <li> <p>If the rule statement does not reference a rule group, use the rule action setting and not this rule override action setting. </p> </li> </ul>"
+      "documentation":"<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead exclude those rules in your rule group reference statement settings. </p> </note>"
     },
     "PaginationLimit":{
       "type":"integer",
@@ -3664,6 +3728,7 @@
         "APPSYNC"
       ]
     },
+    "ResponseCode":{"type":"integer"},
     "ResponseContent":{
       "type":"string",
       "max":10240,
@@ -3680,7 +3745,7 @@
     },
     "ResponseStatusCode":{
       "type":"integer",
-      "max":600,
+      "max":599,
       "min":200
     },
     "Rule":{
@@ -3710,7 +3775,7 @@
         },
         "OverrideAction":{
           "shape":"OverrideAction",
-          "documentation":"<p>The override action to apply to the rules in a rule group. Used only for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <p>Set the override action to none to leave the rule actions in effect. Set it to count to only count matches, regardless of the rule action settings. </p> <p>In a <a>Rule</a>, you must specify either this <code>OverrideAction</code> setting or the rule <code>Action</code> setting, but not both:</p> <ul> <li> <p>If the rule statement references a rule group, use this override action setting and not the action setting. </p> </li> <li> <p>If the rule statement does not reference a rule group, use the rule action setting and not this rule override action setting. </p> </li> </ul>"
+          "documentation":"<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead exclude those rules in your rule group reference statement settings. </p> </note>"
         },
         "RuleLabels":{
           "shape":"Labels",
@@ -3719,6 +3784,10 @@
         "VisibilityConfig":{
           "shape":"VisibilityConfig",
           "documentation":"<p>Defines and enables Amazon CloudWatch metrics and web request sample collection. </p>"
+        },
+        "CaptchaConfig":{
+          "shape":"CaptchaConfig",
+          "documentation":"<p>Specifies how WAF should handle <code>CAPTCHA</code> evaluations. If you don't specify this, WAF uses the <code>CAPTCHA</code> configuration that's defined for the web ACL. </p>"
         }
       },
       "documentation":"<p>A single rule, which you can use in a <a>WebACL</a> or <a>RuleGroup</a> to identify web requests that you want to allow, block, or count. Each rule includes one top-level <a>Statement</a> that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. </p>"
@@ -3737,6 +3806,10 @@
         "Count":{
           "shape":"CountAction",
           "documentation":"<p>Instructs WAF to count the web request and allow it.</p>"
+        },
+        "Captcha":{
+          "shape":"CaptchaAction",
+          "documentation":"<p>Instructs WAF to run a <code>CAPTCHA</code> check against the web request.</p>"
         }
       },
       "documentation":"<p>The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. </p>"
@@ -3808,7 +3881,7 @@
         },
         "ExcludedRules":{
           "shape":"ExcludedRules",
-          "documentation":"<p>The names of rules that are in the referenced rule group, but that you want WAF to exclude from processing for this rule statement. </p>"
+          "documentation":"<p>The rules in the referenced rule group whose actions are set to <code>Count</code>. When you exclude a rule, WAF evaluates it exactly as it would if the rule action setting were <code>Count</code>. This is a useful option for testing the rules in a rule group without modifying how they handle your web traffic.</p>"
         }
       },
       "documentation":"<p>A rule statement used to run the rules that are defined in a <a>RuleGroup</a>. To use this, create a rule group with your rules, then provide the ARN of the rule group in this statement.</p> <p>You cannot nest a <code>RuleGroupReferenceStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. You can only use a rule group reference statement at the top level inside a web ACL. </p>"
@@ -3894,7 +3967,7 @@
         },
         "Action":{
           "shape":"Action",
-          "documentation":"<p>The action for the <code>Rule</code> that the request matched: <code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>.</p>"
+          "documentation":"<p>The action for the <code>Rule</code> that the request matched: <code>Allow</code>, <code>Block</code>, or <code>Count</code>.</p>"
         },
         "RuleNameWithinRuleGroup":{
           "shape":"EntityName",
@@ -3911,6 +3984,10 @@
         "Labels":{
           "shape":"Labels",
           "documentation":"<p>Labels applied to the web request by matching rules. WAF applies fully qualified labels to matching web requests. A fully qualified label is the concatenation of a label namespace and a rule label. The rule's rule group or web ACL defines the label namespace. </p> <p>For example, <code>awswaf:111122223333:myRuleGroup:testRules:testNS1:testNS2:labelNameA</code> or <code>awswaf:managed:aws:managed-rule-set:header:encoding:utf8</code>. </p>"
+        },
+        "CaptchaResponse":{
+          "shape":"CaptchaResponse",
+          "documentation":"<p>The <code>CAPTCHA</code> response for the request.</p>"
         }
       },
       "documentation":"<p>Represents a single sampled web request. The response from <a>GetSampledRequests</a> includes a <code>SampledHTTPRequests</code> complex type that appears as <code>SampledRequests</code> in the response syntax. <code>SampledHTTPRequests</code> contains an array of <code>SampledHTTPRequest</code> objects.</p>"
@@ -3982,6 +4059,7 @@
       },
       "documentation":"<p>A rule statement that compares a number of bytes against the size of a request component, using a comparison operator, such as greater than (&gt;) or less than (&lt;). For example, you can use a size constraint statement to look for query strings that are longer than 100 bytes. </p> <p>If you configure WAF to inspect the request body, WAF inspects only the first 8192 bytes (8 KB). If the request body for your web requests never exceeds 8192 bytes, you can create a size constraint condition and block requests that have a request body greater than 8192 bytes.</p> <p>If you choose URI for the value of Part of the request to filter on, the slash (/) in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>"
     },
+    "SolveTimestamp":{"type":"long"},
     "SqliMatchStatement":{
       "type":"structure",
       "required":[
@@ -4220,6 +4298,11 @@
     "TimeWindowDay":{
       "type":"integer",
       "min":1
+    },
+    "TimeWindowSecond":{
+      "type":"long",
+      "max":259200,
+      "min":60
     },
     "Timestamp":{"type":"timestamp"},
     "URIString":{"type":"string"},
@@ -4488,6 +4571,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
+        },
+        "CaptchaConfig":{
+          "shape":"CaptchaConfig",
+          "documentation":"<p>Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. </p>"
         }
       }
     },
@@ -4763,6 +4850,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
+        },
+        "CaptchaConfig":{
+          "shape":"CaptchaConfig",
+          "documentation":"<p>Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. </p>"
         }
       },
       "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has an action defined (allow, block, or count) for requests that match the statement of the rule. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resources can be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an Application Load Balancer, or an AppSync GraphQL API. </p>"

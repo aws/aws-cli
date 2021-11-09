@@ -208,7 +208,7 @@
           "documentation":"<p>The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.</p>"
         },
         "AttendeeId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK attendee ID.</p>"
         },
         "JoinToken":{
@@ -248,7 +248,7 @@
       ],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK ID of the meeting to which you're adding attendees.</p>",
           "location":"uri",
           "locationName":"MeetingId"
@@ -305,7 +305,7 @@
       ],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The unique ID of the meeting.</p>",
           "location":"uri",
           "locationName":"MeetingId"
@@ -356,8 +356,8 @@
           "idempotencyToken":true
         },
         "MediaRegion":{
-          "shape":"String",
-          "documentation":"<p>The Region in which to create the meeting. Default: <code>us-east-1</code>.</p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>"
+          "shape":"MediaRegion",
+          "documentation":"<p>The Region in which to create the meeting.</p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>"
         },
         "MeetingHostId":{
           "shape":"ExternalUserId",
@@ -397,8 +397,8 @@
           "idempotencyToken":true
         },
         "MediaRegion":{
-          "shape":"String",
-          "documentation":"<p>The Region in which to create the meeting. Default: <code>us-east-1</code>.</p>"
+          "shape":"MediaRegion",
+          "documentation":"<p>The Region in which to create the meeting.</p>"
         },
         "MeetingHostId":{
           "shape":"ExternalUserId",
@@ -449,13 +449,13 @@
       ],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK meeting ID.</p>",
           "location":"uri",
           "locationName":"MeetingId"
         },
         "AttendeeId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK attendee ID.</p>",
           "location":"uri",
           "locationName":"AttendeeId"
@@ -467,7 +467,7 @@
       "required":["MeetingId"],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK meeting ID.</p>",
           "location":"uri",
           "locationName":"MeetingId"
@@ -566,13 +566,13 @@
       ],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK meeting ID.</p>",
           "location":"uri",
           "locationName":"MeetingId"
         },
         "AttendeeId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK attendee ID.</p>",
           "location":"uri",
           "locationName":"AttendeeId"
@@ -593,7 +593,7 @@
       "required":["MeetingId"],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK meeting ID.</p>",
           "location":"uri",
           "locationName":"MeetingId"
@@ -615,7 +615,7 @@
     },
     "JoinTokenString":{
       "type":"string",
-      "max":4096,
+      "max":2048,
       "min":2,
       "sensitive":true
     },
@@ -638,7 +638,7 @@
       "required":["MeetingId"],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The Amazon Chime SDK meeting ID.</p>",
           "location":"uri",
           "locationName":"MeetingId"
@@ -708,6 +708,11 @@
       },
       "documentation":"<p>A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.</p>"
     },
+    "MediaRegion":{
+      "type":"string",
+      "max":64,
+      "min":2
+    },
     "Meeting":{
       "type":"structure",
       "members":{
@@ -724,7 +729,7 @@
           "documentation":"<p>The external meeting ID.</p>"
         },
         "MediaRegion":{
-          "shape":"String",
+          "shape":"MediaRegion",
           "documentation":"<p>The Region in which you create the meeting. Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>.</p>"
         },
         "MediaPlacement":{
@@ -801,7 +806,7 @@
       ],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The unique ID of the meeting being transcribed.</p>",
           "location":"uri",
           "locationName":"MeetingId"
@@ -817,7 +822,7 @@
       "required":["MeetingId"],
       "members":{
         "MeetingId":{
-          "shape":"String",
+          "shape":"GuidString",
           "documentation":"<p>The unique ID of the meeting for which you stop transcription.</p>",
           "location":"uri",
           "locationName":"MeetingId"

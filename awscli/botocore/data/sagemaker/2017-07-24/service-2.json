@@ -3095,10 +3095,10 @@
       "members":{
         "AlarmName":{
           "shape":"AlarmName",
-          "documentation":"<p/>"
+          "documentation":"<p>The name of a CloudWatch alarm in your account.</p>"
         }
       },
-      "documentation":"<p>This API is not supported.</p>"
+      "documentation":"<p>An Amazon CloudWatch alarm configured to monitor metrics on an endpoint.</p>"
     },
     "AlarmList":{
       "type":"list",
@@ -4273,10 +4273,10 @@
       "members":{
         "Alarms":{
           "shape":"AlarmList",
-          "documentation":"<p/>"
+          "documentation":"<p>List of CloudWatch alarms in your account that are configured to monitor metrics on an endpoint. If any alarms are tripped during a deployment, SageMaker rolls back the deployment.</p>"
         }
       },
-      "documentation":"<p>Currently, the <code>AutoRollbackConfig</code> API is not supported.</p>"
+      "documentation":"<p>Automatic rollback configuration for handling endpoint deployment failures and recovery.</p>"
     },
     "AwsManagedHumanLoopRequestSource":{
       "type":"string",
@@ -4404,18 +4404,18 @@
       "members":{
         "TrafficRoutingConfiguration":{
           "shape":"TrafficRoutingConfig",
-          "documentation":"<p/>"
+          "documentation":"<p>Defines the traffic routing strategy to shift traffic from the old fleet to the new fleet during an endpoint deployment.</p>"
         },
         "TerminationWaitInSeconds":{
           "shape":"TerminationWaitInSeconds",
-          "documentation":"<p/>"
+          "documentation":"<p>Additional waiting time in seconds after the completion of an endpoint deployment before terminating the old endpoint fleet. Default is 0.</p>"
         },
         "MaximumExecutionTimeoutInSeconds":{
           "shape":"MaximumExecutionTimeoutInSeconds",
-          "documentation":"<p/>"
+          "documentation":"<p>Maximum execution timeout for the deployment. Note that the timeout value should be larger than the total waiting time specified in <code>TerminationWaitInSeconds</code> and <code>WaitIntervalInSeconds</code>.</p>"
         }
       },
-      "documentation":"<p>Currently, the <code>BlueGreenUpdatePolicy</code> API is not supported.</p>"
+      "documentation":"<p>Update policy for a blue/green deployment. If this update policy is specified, SageMaker creates a new fleet during the deployment while maintaining the old fleet. SageMaker flips traffic to the new fleet according to the specified traffic routing configuration. Only one update policy should be used in the deployment configuration. If no update policy is specified, SageMaker uses a blue/green deployment strategy with all at once traffic shifting by default.</p>"
     },
     "Boolean":{"type":"boolean"},
     "BooleanOperator":{
@@ -4549,14 +4549,14 @@
       "members":{
         "Type":{
           "shape":"CapacitySizeType",
-          "documentation":"<p>This API is not supported.</p>"
+          "documentation":"<p>Specifies the endpoint capacity type.</p> <ul> <li> <p> <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint activates based on the specified percentage of capacity.</p> </li> </ul>"
         },
         "Value":{
           "shape":"CapacitySizeValue",
-          "documentation":"<p/>"
+          "documentation":"<p>Defines the capacity size, either as a number of instances or a capacity percentage.</p>"
         }
       },
-      "documentation":"<p>Currently, the <code>CapacitySize</code> API is not supported.</p>"
+      "documentation":"<p>Specifies the endpoint capacity to activate for production.</p>"
     },
     "CapacitySizeType":{
       "type":"string",
@@ -5943,6 +5943,7 @@
           "shape":"EndpointConfigName",
           "documentation":"<p>The name of an endpoint configuration. For more information, see <a>CreateEndpointConfig</a>. </p>"
         },
+        "DeploymentConfig":{"shape":"DeploymentConfig"},
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
@@ -8337,14 +8338,14 @@
       "members":{
         "BlueGreenUpdatePolicy":{
           "shape":"BlueGreenUpdatePolicy",
-          "documentation":"<p/>"
+          "documentation":"<p>Update policy for a blue/green deployment. If this update policy is specified, SageMaker creates a new fleet during the deployment while maintaining the old fleet. SageMaker flips traffic to the new fleet according to the specified traffic routing configuration. Only one update policy should be used in the deployment configuration. If no update policy is specified, SageMaker uses a blue/green deployment strategy with all at once traffic shifting by default.</p>"
         },
         "AutoRollbackConfiguration":{
           "shape":"AutoRollbackConfig",
-          "documentation":"<p/>"
+          "documentation":"<p>Automatic rollback configuration for handling endpoint deployment failures and recovery.</p>"
         }
       },
-      "documentation":"<p>Currently, the <code>DeploymentConfig</code> API is not supported.</p>"
+      "documentation":"<p>The deployment configuration for an endpoint, which contains the desired deployment strategy and rollback configurations.</p>"
     },
     "DeregisterDevicesRequest":{
       "type":"structure",
@@ -9406,6 +9407,10 @@
         "AsyncInferenceConfig":{
           "shape":"AsyncInferenceConfig",
           "documentation":"<p>Returns the description of an endpoint configuration created using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html\"> <code>CreateEndpointConfig</code> </a> API.</p>"
+        },
+        "PendingDeploymentSummary":{
+          "shape":"PendingDeploymentSummary",
+          "documentation":"<p>Returns the summary of an in-progress deployment. This field is only returned when the endpoint is creating or updating with a new endpoint configuration.</p>"
         }
       }
     },
@@ -13130,11 +13135,11 @@
         },
         "TaskTimeLimitInSeconds":{
           "shape":"TaskTimeLimitInSeconds",
-          "documentation":"<p>The amount of time that a worker has to complete a task. </p> <p>If you create a custom labeling job, the maximum value for this parameter is 8 hours (28,800 seconds).</p> <p>If you create a labeling job using a <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-task-types.html\">built-in task type</a> the maximum for this parameter depends on the task type you use:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-images.html\">image</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-text.html\">text</a> labeling jobs, the maximum is 8 hours (28,800 seconds).</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-point-cloud.html\">3D point cloud</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-video.html\">video frame</a> labeling jobs, the maximum is 7 days (604,800 seconds). If you want to change these limits, contact Amazon Web Services Support.</p> </li> </ul>"
+          "documentation":"<p>The amount of time that a worker has to complete a task. </p> <p>If you create a custom labeling job, the maximum value for this parameter is 8 hours (28,800 seconds).</p> <p>If you create a labeling job using a <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-task-types.html\">built-in task type</a> the maximum for this parameter depends on the task type you use:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-images.html\">image</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-text.html\">text</a> labeling jobs, the maximum is 8 hours (28,800 seconds).</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-point-cloud.html\">3D point cloud</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-video.html\">video frame</a> labeling jobs, the maximum is 30 days (2952,000 seconds) for non-AL mode. For most users, the maximum is also 30 days. If you want to change these limits, contact Amazon Web Services Support.</p> </li> </ul>"
         },
         "TaskAvailabilityLifetimeInSeconds":{
           "shape":"TaskAvailabilityLifetimeInSeconds",
-          "documentation":"<p>The length of time that a task remains available for labeling by human workers. The default and maximum values for this parameter depend on the type of workforce you use.</p> <ul> <li> <p>If you choose the Amazon Mechanical Turk workforce, the maximum is 12 hours (43,200 seconds). The default is 6 hours (21,600 seconds).</p> </li> <li> <p>If you choose a private or vendor workforce, the default value is 10 days (864,000 seconds). For most users, the maximum is also 10 days. If you want to change this limit, contact Amazon Web Services Support.</p> </li> </ul>"
+          "documentation":"<p>The length of time that a task remains available for labeling by human workers. The default and maximum values for this parameter depend on the type of workforce you use.</p> <ul> <li> <p>If you choose the Amazon Mechanical Turk workforce, the maximum is 12 hours (43,200 seconds). The default is 6 hours (21,600 seconds).</p> </li> <li> <p>If you choose a private or vendor workforce, the default value is 30 days (2592,000 seconds) for non-AL mode. For most users, the maximum is also 30 days. If you want to change this limit, contact Amazon Web Services Support.</p> </li> </ul>"
         },
         "MaxConcurrentTaskCount":{
           "shape":"MaxConcurrentTaskCount",
@@ -19595,6 +19600,73 @@
       "type":"list",
       "member":{"shape":"Parent"}
     },
+    "PendingDeploymentSummary":{
+      "type":"structure",
+      "required":["EndpointConfigName"],
+      "members":{
+        "EndpointConfigName":{
+          "shape":"EndpointConfigName",
+          "documentation":"<p>The name of the endpoint configuration used in the deployment. </p>"
+        },
+        "ProductionVariants":{
+          "shape":"PendingProductionVariantSummaryList",
+          "documentation":"<p>List of <code>PendingProductionVariantSummary</code> objects.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the deployment.</p>"
+        }
+      },
+      "documentation":"<p>The summary of an in-progress deployment when an endpoint is creating or updating with a new endpoint configuration.</p>"
+    },
+    "PendingProductionVariantSummary":{
+      "type":"structure",
+      "required":["VariantName"],
+      "members":{
+        "VariantName":{
+          "shape":"VariantName",
+          "documentation":"<p>The name of the variant.</p>"
+        },
+        "DeployedImages":{
+          "shape":"DeployedImages",
+          "documentation":"<p>An array of <code>DeployedImage</code> objects that specify the Amazon EC2 Container Registry paths of the inference images deployed on instances of this <code>ProductionVariant</code>.</p>"
+        },
+        "CurrentWeight":{
+          "shape":"VariantWeight",
+          "documentation":"<p>The weight associated with the variant.</p>"
+        },
+        "DesiredWeight":{
+          "shape":"VariantWeight",
+          "documentation":"<p>The requested weight for the variant in this deployment, as specified in the endpoint configuration for the endpoint. The value is taken from the request to the <code> <a>CreateEndpointConfig</a> </code> operation.</p>"
+        },
+        "CurrentInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances associated with the variant.</p>"
+        },
+        "DesiredInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances requested in this deployment, as specified in the endpoint configuration for the endpoint. The value is taken from the request to the <code> <a>CreateEndpointConfig</a> </code> operation.</p>"
+        },
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The type of instances associated with the variant.</p>"
+        },
+        "AcceleratorType":{
+          "shape":"ProductionVariantAcceleratorType",
+          "documentation":"<p>The size of the Elastic Inference (EI) instance to use for the production variant. EI instances provide on-demand GPU computing for inference. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/ei.html\">Using Elastic Inference in Amazon SageMaker</a>.</p>"
+        },
+        "VariantStatus":{
+          "shape":"ProductionVariantStatusList",
+          "documentation":"<p>The endpoint variant status which describes the current deployment stage status or operational status.</p>"
+        }
+      },
+      "documentation":"<p>The production variant summary for a deployment when an endpoint is creating or updating with the <code> <a>CreateEndpoint</a> </code> or <code> <a>UpdateEndpoint</a> </code> operations. Describes the <code>VariantStatus </code>, weight and capacity for a production variant associated with an endpoint. </p>"
+    },
+    "PendingProductionVariantSummaryList":{
+      "type":"list",
+      "member":{"shape":"PendingProductionVariantSummary"},
+      "min":1
+    },
     "Pipeline":{
       "type":"structure",
       "members":{
@@ -20563,6 +20635,31 @@
       "max":10,
       "min":1
     },
+    "ProductionVariantStatus":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"VariantStatus",
+          "documentation":"<p>The endpoint variant status which describes the current deployment stage status or operational status.</p> <ul> <li> <p> <code>Creating</code>: Creating inference resources for the production variant.</p> </li> <li> <p> <code>Deleting</code>: Terminating inference resources for the production variant.</p> </li> <li> <p> <code>Updating</code>: Updating capacity for the production variant.</p> </li> <li> <p> <code>ActivatingTraffic</code>: Turning on traffic for the production variant.</p> </li> <li> <p> <code>Baking</code>: Waiting period to monitor the CloudWatch alarms in the automatic rollback configuration.</p> </li> </ul>"
+        },
+        "StatusMessage":{
+          "shape":"VariantStatusMessage",
+          "documentation":"<p>A message that describes the status of the production variant.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the current status change.</p>"
+        }
+      },
+      "documentation":"<p>Describes the status of the production variant.</p>"
+    },
+    "ProductionVariantStatusList":{
+      "type":"list",
+      "member":{"shape":"ProductionVariantStatus"},
+      "max":5,
+      "min":0
+    },
     "ProductionVariantSummary":{
       "type":"structure",
       "required":["VariantName"],
@@ -20590,6 +20687,10 @@
         "DesiredInstanceCount":{
           "shape":"TaskCount",
           "documentation":"<p>The number of instances requested in the <code>UpdateEndpointWeightsAndCapacities</code> request. </p>"
+        },
+        "VariantStatus":{
+          "shape":"ProductionVariantStatusList",
+          "documentation":"<p>The endpoint variant status which describes the current deployment stage status or operational status.</p>"
         }
       },
       "documentation":"<p>Describes weight and capacities for a production variant associated with an endpoint. If you sent a request to the <code>UpdateEndpointWeightsAndCapacities</code> API and the endpoint status is <code>Updating</code>, you get different desired and current values. </p>"
@@ -22675,24 +22776,29 @@
       "members":{
         "Type":{
           "shape":"TrafficRoutingConfigType",
-          "documentation":"<p/>"
+          "documentation":"<p>Traffic routing strategy type.</p> <ul> <li> <p> <code>ALL_AT_ONCE</code>: Endpoint traffic shifts to the new fleet in a single step. </p> </li> <li> <p> <code>CANARY</code>: Endpoint traffic shifts to the new fleet in two steps. The first step is the canary, which is a small portion of the traffic. The second step is the remainder of the traffic. </p> </li> <li> <p> <code>LINEAR</code>: Endpoint traffic shifts to the new fleet in n steps of a configurable size. </p> </li> </ul>"
         },
         "WaitIntervalInSeconds":{
           "shape":"WaitIntervalInSeconds",
-          "documentation":"<p/>"
+          "documentation":"<p>The waiting time (in seconds) between incremental steps to turn on traffic on the new endpoint fleet.</p>"
         },
         "CanarySize":{
           "shape":"CapacitySize",
-          "documentation":"<p/>"
+          "documentation":"<p>Batch size for the first step to turn on traffic on the new endpoint fleet. <code>Value</code> must be less than or equal to 50% of the variant's total instance count.</p>"
+        },
+        "LinearStepSize":{
+          "shape":"CapacitySize",
+          "documentation":"<p>Batch size for each step to turn on traffic on the new endpoint fleet. <code>Value</code> must be 10-50% of the variant's total instance count.</p>"
         }
       },
-      "documentation":"<p>Currently, the <code>TrafficRoutingConfig</code> API is not supported.</p>"
+      "documentation":"<p>Defines the traffic routing strategy during an endpoint deployment to shift traffic from the old fleet to the new fleet.</p>"
     },
     "TrafficRoutingConfigType":{
       "type":"string",
       "enum":[
         "ALL_AT_ONCE",
-        "CANARY"
+        "CANARY",
+        "LINEAR"
       ]
     },
     "TrainingEnvironmentKey":{
@@ -24204,7 +24310,11 @@
         },
         "DeploymentConfig":{
           "shape":"DeploymentConfig",
-          "documentation":"<p>The deployment configuration for the endpoint to be updated.</p>"
+          "documentation":"<p>The deployment configuration for an endpoint, which contains the desired deployment strategy and rollback configurations.</p>"
+        },
+        "RetainDeploymentConfig":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to reuse the last deployment configuration. The default value is false (the configuration is not reused).</p>"
         }
       }
     },
@@ -24899,6 +25009,20 @@
         "DesiredWeight",
         "DataCaptureConfig"
       ]
+    },
+    "VariantStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Updating",
+        "Deleting",
+        "ActivatingTraffic",
+        "Baking"
+      ]
+    },
+    "VariantStatusMessage":{
+      "type":"string",
+      "max":1024
     },
     "VariantWeight":{
       "type":"float",

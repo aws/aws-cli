@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.3
+======
+
+* api-change:``backup``: AWS Backup SDK provides new options when scheduling backups: select supported services and resources that are assigned to a particular tag, linked to a combination of tags, or can be identified by a partial tag value, and exclude resources from their assignments.
+* api-change:``resiliencehub``: Initial release of AWS Resilience Hub, a managed service that enables you to define, validate, and track the resilience of your applications on AWS
+* api-change:``ecs``: This release adds support for container instance health.
+
+
 1.22.2
 ======
 

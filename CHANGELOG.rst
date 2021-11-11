@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.4
+======
+
+* api-change:``dynamodb``: Updated Help section for "dynamodb update-contributor-insights" API
+* api-change:``translate``: This release enables customers to import Multi-Directional Custom Terminology and use Multi-Directional Custom Terminology in both real-time translation and asynchronous batch translation.
+* api-change:``ec2``: This release provides an additional route target for the VPC route table.
+
+
 1.22.3
 ======
 

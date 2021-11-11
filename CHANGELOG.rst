@@ -2734,6 +2734,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.4
+======
+
+* api-change:``dynamodb``: Updated Help section for "dynamodb update-contributor-insights" API
+* api-change:``translate``: This release enables customers to import Multi-Directional Custom Terminology and use Multi-Directional Custom Terminology in both real-time translation and asynchronous batch translation.
+* api-change:``ec2``: This release provides an additional route target for the VPC route table.
+
+
+1.22.3
+======
+
+* api-change:``backup``: AWS Backup SDK provides new options when scheduling backups: select supported services and resources that are assigned to a particular tag, linked to a combination of tags, or can be identified by a partial tag value, and exclude resources from their assignments.
+* api-change:``resiliencehub``: Initial release of AWS Resilience Hub, a managed service that enables you to define, validate, and track the resilience of your applications on AWS
+* api-change:``ecs``: This release adds support for container instance health.
+
+
 1.22.2
 ======
 

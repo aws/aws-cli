@@ -315,13 +315,13 @@ class DeployCommand(BasicCommand):
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
-                           tags, parsed_args.disable_rollback,
-                           parsed_args.fail_on_empty_changeset)
+                           tags, parsed_args.fail_on_empty_changeset,
+                           parsed_args.disable_rollback)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
-               notification_arns, s3_uploader, tags, disable_rollback=False,
-               fail_on_empty_changeset=True):
+               notification_arns, s3_uploader, tags,
+               fail_on_empty_changeset=True, disable_rollback=False):
         try:
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,

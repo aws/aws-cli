@@ -407,6 +407,13 @@
       "documentation":"<p>The confidence that Amazon Comprehend accurately detected the source language is low. If a low confidence level is acceptable for your application, you can use the language in the exception to call Amazon Translate again. For more information, see the <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/API_DetectDominantLanguage.html\">DetectDominantLanguage</a> operation in the <i>Amazon Comprehend Developer Guide</i>. </p>",
       "exception":true
     },
+    "Directionality":{
+      "type":"string",
+      "enum":[
+        "UNI",
+        "MULTI"
+      ]
+    },
     "EncryptionKey":{
       "type":"structure",
       "required":[
@@ -468,10 +475,7 @@
     },
     "GetTerminologyRequest":{
       "type":"structure",
-      "required":[
-        "Name",
-        "TerminologyDataFormat"
-      ],
+      "required":["Name"],
       "members":{
         "Name":{
           "shape":"ResourceName",
@@ -479,7 +483,7 @@
         },
         "TerminologyDataFormat":{
           "shape":"TerminologyDataFormat",
-          "documentation":"<p>The data format of the custom terminology being retrieved, either CSV or TMX.</p>"
+          "documentation":"<p>The data format of the custom terminology being retrieved.</p> <p>If you don't specify this parameter, Amazon Translate returns a file that has the same format as the file that was imported to create the terminology. </p> <p>If you specify this parameter when you retrieve a multi-directional terminology resource, you must specify the same format as that of the input file that was imported to create it. Otherwise, Amazon Translate throws an error.</p>"
         }
       }
     },
@@ -493,6 +497,10 @@
         "TerminologyDataLocation":{
           "shape":"TerminologyDataLocation",
           "documentation":"<p>The data location of the custom terminology being retrieved. The custom terminology file is returned in a presigned url that has a 30 minute expiration.</p>"
+        },
+        "AuxiliaryDataLocation":{
+          "shape":"TerminologyDataLocation",
+          "documentation":"<p>The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30 minute expiration.</p>"
         }
       }
     },
@@ -538,6 +546,10 @@
         "TerminologyProperties":{
           "shape":"TerminologyProperties",
           "documentation":"<p>The properties of the custom terminology being imported.</p>"
+        },
+        "AuxiliaryDataLocation":{
+          "shape":"TerminologyDataLocation",
+          "documentation":"<p>The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30 minute expiration.</p>"
         }
       }
     },
@@ -1060,7 +1072,11 @@
         },
         "Format":{
           "shape":"TerminologyDataFormat",
-          "documentation":"<p>The data format of the custom terminology. Either CSV or TMX.</p>"
+          "documentation":"<p>The data format of the custom terminology.</p>"
+        },
+        "Directionality":{
+          "shape":"Directionality",
+          "documentation":"<p>The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional).</p> <dl> <dt>UNI</dt> <dd> <p>The terminology resource has one source language (for example, the first column in a CSV file), and all of its other languages are target languages. </p> </dd> <dt>MULTI</dt> <dd> <p>Any language in the terminology resource can be the source language or a target language. A single multi-directional terminology resource can be used for jobs that translate different language pairs. For example, if the terminology contains terms in English and Spanish, then it can be used for jobs that translate English to Spanish and jobs that translate Spanish to English.</p> </dd> </dl> <p>When you create a custom terminology resource without specifying the directionality, it behaves as uni-directional terminology, although this parameter will have a null value.</p>"
         }
       },
       "documentation":"<p>The data associated with the custom terminology.</p>"
@@ -1069,7 +1085,8 @@
       "type":"string",
       "enum":[
         "CSV",
-        "TMX"
+        "TMX",
+        "TSV"
       ]
     },
     "TerminologyDataLocation":{
@@ -1116,7 +1133,7 @@
         },
         "TargetLanguageCodes":{
           "shape":"LanguageCodeStringList",
-          "documentation":"<p>The language codes for the target languages available with the custom terminology file. All possible target languages are returned in array.</p>"
+          "documentation":"<p>The language codes for the target languages available with the custom terminology resource. All possible target languages are returned in array.</p>"
         },
         "EncryptionKey":{
           "shape":"EncryptionKey",
@@ -1137,6 +1154,22 @@
         "LastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the custom terminology was last update, based on the timestamp.</p>"
+        },
+        "Directionality":{
+          "shape":"Directionality",
+          "documentation":"<p>The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional). </p> <dl> <dt>UNI</dt> <dd> <p>The terminology resource has one source language (the first column in a CSV file), and all of its other languages are target languages.</p> </dd> <dt>MULTI</dt> <dd> <p>Any language in the terminology resource can be the source language.</p> </dd> </dl>"
+        },
+        "Message":{
+          "shape":"UnboundedLengthString",
+          "documentation":"<p>Additional information from Amazon Translate about the terminology resource.</p>"
+        },
+        "SkippedTermCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of terms in the input file that Amazon Translate skipped when you created or updated the terminology resource.</p>"
+        },
+        "Format":{
+          "shape":"TerminologyDataFormat",
+          "documentation":"<p>The format of the custom terminology input file.</p>"
         }
       },
       "documentation":"<p>The properties of the custom terminology.</p>"

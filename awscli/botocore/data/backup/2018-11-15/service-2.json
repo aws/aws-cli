@@ -1508,7 +1508,9 @@
         "ListOfTags":{
           "shape":"ListOfTags",
           "documentation":"<p>An array of conditions used to specify a set of resources to assign to a backup plan; for example, <code>\"StringEquals\": {\"ec2:ResourceTag/Department\": \"accounting\"</code>. Assigns the backup plan to every resource with at least one matching tag.</p>"
-        }
+        },
+        "NotResources":{"shape":"ResourceArns"},
+        "Conditions":{"shape":"Conditions"}
       },
       "documentation":"<p>Used to specify a set of resources to a backup plan.</p>"
     },
@@ -1673,11 +1675,31 @@
       "documentation":"<p>Contains an array of triplets made up of a condition type (such as <code>StringEquals</code>), a key, and a value. Conditions are used to filter resources in a selection that is assigned to a backup plan.</p>"
     },
     "ConditionKey":{"type":"string"},
+    "ConditionParameter":{
+      "type":"structure",
+      "members":{
+        "ConditionKey":{"shape":"ConditionKey"},
+        "ConditionValue":{"shape":"ConditionValue"}
+      }
+    },
+    "ConditionParameters":{
+      "type":"list",
+      "member":{"shape":"ConditionParameter"}
+    },
     "ConditionType":{
       "type":"string",
       "enum":["STRINGEQUALS"]
     },
     "ConditionValue":{"type":"string"},
+    "Conditions":{
+      "type":"structure",
+      "members":{
+        "StringEquals":{"shape":"ConditionParameters"},
+        "StringNotEquals":{"shape":"ConditionParameters"},
+        "StringLike":{"shape":"ConditionParameters"},
+        "StringNotLike":{"shape":"ConditionParameters"}
+      }
+    },
     "ConflictException":{
       "type":"structure",
       "members":{

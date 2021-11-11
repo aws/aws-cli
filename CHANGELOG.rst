@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.3.6
+=====
+
+* api-change:``resiliencehub``: Initial release of AWS Resilience Hub, a managed service that enables you to define, validate, and track the resilience of your applications on AWS
+* api-change:``backup``: AWS Backup SDK provides new options when scheduling backups: select supported services and resources that are assigned to a particular tag, linked to a combination of tags, or can be identified by a partial tag value, and exclude resources from their assignments.
+* api-change:``ecs``: This release adds support for container instance health.
+* api-change:``ec2``: This release provides an additional route target for the VPC route table.
+* api-change:``translate``: This release enables customers to import Multi-Directional Custom Terminology and use Multi-Directional Custom Terminology in both real-time translation and asynchronous batch translation.
+* api-change:``dynamodb``: Updated Help section for "dynamodb update-contributor-insights" API
+
+
 2.3.5
 =====
 

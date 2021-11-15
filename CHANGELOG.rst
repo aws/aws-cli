@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.22.6
+======
+
+* api-change:``eks``: Adding Tags support to Cluster Registrations.
+* api-change:``transfer``: AWS Transfer Family now supports integrating a custom identity provider using AWS Lambda
+* api-change:``ec2``: Adds a new VPC Subnet attribute "EnableDns64." When enabled on IPv6 Subnets, the Amazon-Provided DNS Resolver returns synthetic IPv6 addresses for IPv4-only destinations.
+* api-change:``ssm``: Adds support for Session Reason and Max Session Duration for Systems Manager Session Manager.
+* api-change:``migrationhubstrategy``: AWS SDK for Migration Hub Strategy Recommendations. It includes APIs to start the portfolio assessment, import portfolio data for assessment, and to retrieve recommendations. For more information, see the AWS Migration Hub documentation at https://docs.aws.amazon.com/migrationhub/index.html
+* api-change:``appstream``: This release includes support for images of AmazonLinux2 platform type.
+* api-change:``wafv2``: Your options for logging web ACL traffic now include Amazon CloudWatch Logs log groups and Amazon S3 buckets.
+* api-change:``dms``: Add Settings in JSON format for the source GCP MySQL endpoint
+
+
 1.22.5
 ======
 

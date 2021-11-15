@@ -1,4 +1,4 @@
-**To reject a Transit Gateway VPC attachment**
+**To reject a transit gateway VPC attachment**
 
 The following ``reject-transit-gateway-vpc-attachment`` example rejects the specified transit gateway VPC attachment. ::
 
@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Transit Gateway Attachments to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html>`__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Transit gateway attachments to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html>`__ in the *Transit Gateways Guide*.

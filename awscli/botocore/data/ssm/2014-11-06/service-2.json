@@ -2425,7 +2425,7 @@
         },
         "AutomationTargetParameterName":{
           "shape":"AutomationTargetParameterName",
-          "documentation":"<p>Specify the target for the association. This target is required for associations that use an Automation runbook and target resources by using rate controls. Automation is a capability of Amazon Web Services Systems Manager.</p>"
+          "documentation":"<p>Choose the parameter that will define how your automation will branch out. This target is required for associations that use an Automation runbook and target resources by using rate controls. Automation is a capability of Amazon Web Services Systems Manager.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -4389,7 +4389,7 @@
         },
         "AutomationTargetParameterName":{
           "shape":"AutomationTargetParameterName",
-          "documentation":"<p>Specify the target for the association. This target is required for associations that use an Automation runbook and target resources by using rate controls. Automation is a capability of Amazon Web Services Systems Manager.</p>"
+          "documentation":"<p>Choose the parameter that will define how your automation will branch out. This target is required for associations that use an Automation runbook and target resources by using rate controls. Automation is a capability of Amazon Web Services Systems Manager.</p>"
         },
         "MaxErrors":{
           "shape":"MaxErrors",
@@ -10877,6 +10877,12 @@
       "max":50,
       "min":5
     },
+    "MaxSessionDuration":{
+      "type":"string",
+      "max":4,
+      "min":1,
+      "pattern":"^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|1[0-4][0-3][0-9]|1440)$"
+    },
     "MetadataKey":{
       "type":"string",
       "max":256,
@@ -11018,7 +11024,8 @@
         "CENTOS",
         "ORACLE_LINUX",
         "DEBIAN",
-        "MACOS"
+        "MACOS",
+        "RASPBIAN"
       ]
     },
     "OpsAggregator":{
@@ -12278,7 +12285,7 @@
       "members":{
         "Key":{
           "shape":"ParameterStringFilterKey",
-          "documentation":"<p>The name of the filter.</p> <p>The <code>ParameterStringFilter</code> object is used by the <a>DescribeParameters</a> and <a>GetParametersByPath</a> API operations. However, not all of the pattern values listed for <code>Key</code> can be used with both operations.</p> <p>For <code>DescribeActions</code>, all of the listed patterns are valid except <code>Label</code>.</p> <p>For <code>GetParametersByPath</code>, the following patterns listed for <code>Key</code> aren't valid: <code>tag</code>, <code>DataType</code>, <code>Name</code>, <code>Path</code>, and <code>Tier</code>.</p> <p>For examples of Amazon Web Services CLI commands demonstrating valid parameter filter constructions, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html\">Searching for Systems Manager parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The name of the filter.</p> <p>The <code>ParameterStringFilter</code> object is used by the <a>DescribeParameters</a> and <a>GetParametersByPath</a> API operations. However, not all of the pattern values listed for <code>Key</code> can be used with both operations.</p> <p>For <code>DescribeParameters</code>, all of the listed patterns are valid except <code>Label</code>.</p> <p>For <code>GetParametersByPath</code>, the following patterns listed for <code>Key</code> aren't valid: <code>tag</code>, <code>DataType</code>, <code>Name</code>, <code>Path</code>, and <code>Tier</code>.</p> <p>For examples of Amazon Web Services CLI commands demonstrating valid parameter filter constructions, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html\">Searching for Systems Manager parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "Option":{
           "shape":"ParameterStringQueryOption",
@@ -14218,6 +14225,10 @@
           "shape":"SessionOwner",
           "documentation":"<p>The ID of the Amazon Web Services user account that started the session.</p>"
         },
+        "Reason":{
+          "shape":"SessionReason",
+          "documentation":"<p>The reason for connecting to the instance.</p>"
+        },
         "Details":{
           "shape":"SessionDetails",
           "documentation":"<p>Reserved for future use.</p>"
@@ -14225,6 +14236,10 @@
         "OutputUrl":{
           "shape":"SessionManagerOutputUrl",
           "documentation":"<p>Reserved for future use.</p>"
+        },
+        "MaxSessionDuration":{
+          "shape":"MaxSessionDuration",
+          "documentation":"<p>The maximum duration of a session before it terminates.</p>"
         }
       },
       "documentation":"<p>Information about a Session Manager connection to an instance.</p>"
@@ -14335,6 +14350,12 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "SessionReason":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^.{1,256}$"
     },
     "SessionState":{
       "type":"string",
@@ -14574,6 +14595,10 @@
         "DocumentName":{
           "shape":"DocumentARN",
           "documentation":"<p>The name of the SSM document to define the parameters and plugin settings for the session. For example, <code>SSM-SessionManagerRunShell</code>. You can call the <a>GetDocument</a> API to verify the document exists before attempting to start a session. If no document name is provided, a shell to the instance is launched by default.</p>"
+        },
+        "Reason":{
+          "shape":"SessionReason",
+          "documentation":"<p>The reason for connecting to the instance. This value is included in the details for the Amazon CloudWatch Events event created when you start the session.</p>"
         },
         "Parameters":{
           "shape":"SessionManagerParameters",
@@ -15165,7 +15190,7 @@
         },
         "AutomationTargetParameterName":{
           "shape":"AutomationTargetParameterName",
-          "documentation":"<p>Specify the target for the association. This target is required for associations that use an Automation runbook and target resources by using rate controls. Automation is a capability of Amazon Web Services Systems Manager.</p>"
+          "documentation":"<p>Choose the parameter that will define how your automation will branch out. This target is required for associations that use an Automation runbook and target resources by using rate controls. Automation is a capability of Amazon Web Services Systems Manager.</p>"
         },
         "MaxErrors":{
           "shape":"MaxErrors",

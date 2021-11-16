@@ -471,7 +471,7 @@
       "errors":[
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p>Returns the task assessment results from the Amazon S3 bucket that DMS creates in your Amazon Web Services account. This action always returns the latest results.</p> <p>For more information about DMS task assessments, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.AssessmentReport.html\">Creating a task assessment report</a> in the <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/dms/latest/userguide/Welcome.html\"> Database Migration Service User Guide</a>.</p>"
+      "documentation":"<p>Returns the task assessment results from the Amazon S3 bucket that DMS creates in your Amazon Web Services account. This action always returns the latest results.</p> <p>For more information about DMS task assessments, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.AssessmentReport.html\">Creating a task assessment report</a> in the <i>Database Migration Service User Guide</i>.</p>"
     },
     "DescribeReplicationTaskAssessmentRuns":{
       "name":"DescribeReplicationTaskAssessmentRuns",
@@ -995,7 +995,7 @@
         },
         "CertificateWallet":{
           "shape":"CertificateWallet",
-          "documentation":"<p>The location of an imported Oracle Wallet certificate for use with SSL.</p>"
+          "documentation":"<p>The location of an imported Oracle Wallet certificate for use with SSL. Example: <code>filebase64(\"${path.root}/rds-ca-2019-root.sso\")</code> </p>"
         },
         "CertificateArn":{
           "shape":"String",
@@ -1096,7 +1096,7 @@
         },
         "EngineName":{
           "shape":"String",
-          "documentation":"<p>The type of engine for the endpoint. Valid values, depending on the <code>EndpointType</code> value, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"docdb\"</code>, <code>\"sqlserver\"</code>, and <code>\"neptune\"</code>.</p>"
+          "documentation":"<p>The type of engine for the endpoint. Valid values, depending on the <code>EndpointType</code> value, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"opensearch\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"docdb\"</code>, <code>\"sqlserver\"</code>, and <code>\"neptune\"</code>.</p>"
         },
         "Username":{
           "shape":"String",
@@ -1172,7 +1172,7 @@
         },
         "ElasticsearchSettings":{
           "shape":"ElasticsearchSettings",
-          "documentation":"<p>Settings in JSON format for the target Elasticsearch endpoint. For more information about the available settings, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.Elasticsearch.html#CHAP_Target.Elasticsearch.Configuration\">Extra Connection Attributes When Using Elasticsearch as a Target for DMS</a> in the <i>Database Migration Service User Guide</i>.</p>"
+          "documentation":"<p>Settings in JSON format for the target OpenSearch endpoint. For more information about the available settings, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.Elasticsearch.html#CHAP_Target.Elasticsearch.Configuration\">Extra Connection Attributes When Using OpenSearch as a Target for DMS</a> in the <i>Database Migration Service User Guide</i>.</p>"
         },
         "NeptuneSettings":{
           "shape":"NeptuneSettings",
@@ -1211,6 +1211,10 @@
         "RedisSettings":{
           "shape":"RedisSettings",
           "documentation":"<p>Settings in JSON format for the target Redis endpoint.</p>"
+        },
+        "GcpMySQLSettings":{
+          "shape":"GcpMySQLSettings",
+          "documentation":"<p>Settings in JSON format for the source GCP MySQL endpoint.</p>"
         }
       },
       "documentation":"<p/>"
@@ -1498,7 +1502,7 @@
       "members":{
         "CertificateArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted certificate.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate.</p>"
         }
       }
     },
@@ -1734,7 +1738,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters applied to the certificates described in the form of key-value pairs.</p>"
+          "documentation":"<p>Filters applied to the certificates described in the form of key-value pairs. Valid values are <code>certificate-arn</code> and <code>certificate-id</code>.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -1919,7 +1923,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters applied to event subscriptions.</p>"
+          "documentation":"<p>Filters applied to event subscriptions.</p> <p>Valid filter names: event-subscription-arn | event-subscription-id </p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -1975,7 +1979,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters applied to events.</p>"
+          "documentation":"<p>Filters applied to events. The only valid filter is <code>replication-instance-id</code>.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -2493,18 +2497,18 @@
         },
         "EndpointUri":{
           "shape":"String",
-          "documentation":"<p>The endpoint for the Elasticsearch cluster. DMS uses HTTPS if a transport protocol (http/https) is not specified.</p>"
+          "documentation":"<p>The endpoint for the OpenSearch cluster. DMS uses HTTPS if a transport protocol (http/https) is not specified.</p>"
         },
         "FullLoadErrorPercentage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum percentage of records that can fail to be written before a full load operation stops.</p> <p>To avoid early failure, this counter is only effective after 1000 records are transferred. Elasticsearch also has the concept of error monitoring during the last 10 minutes of an Observation Window. If transfer of all records fail in the last 10 minutes, the full load operation stops. </p>"
+          "documentation":"<p>The maximum percentage of records that can fail to be written before a full load operation stops.</p> <p>To avoid early failure, this counter is only effective after 1000 records are transferred. OpenSearch also has the concept of error monitoring during the last 10 minutes of an Observation Window. If transfer of all records fail in the last 10 minutes, the full load operation stops. </p>"
         },
         "ErrorRetryDuration":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum number of seconds for which DMS retries failed API requests to the Elasticsearch cluster.</p>"
+          "documentation":"<p>The maximum number of seconds for which DMS retries failed API requests to the OpenSearch cluster.</p>"
         }
       },
-      "documentation":"<p>Provides information that defines an Elasticsearch endpoint.</p>"
+      "documentation":"<p>Provides information that defines an OpenSearch endpoint.</p>"
     },
     "EncodingTypeValue":{
       "type":"string",
@@ -2534,7 +2538,7 @@
         },
         "EngineName":{
           "shape":"String",
-          "documentation":"<p>The database engine name. Valid values, depending on the EndpointType, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"documentdb\"</code>, <code>\"sqlserver\"</code>, and <code>\"neptune\"</code>.</p>"
+          "documentation":"<p>The database engine name. Valid values, depending on the EndpointType, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"opensearch\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"documentdb\"</code>, <code>\"sqlserver\"</code>, and <code>\"neptune\"</code>.</p>"
         },
         "EngineDisplayName":{
           "shape":"String",
@@ -2602,7 +2606,7 @@
         },
         "DmsTransferSettings":{
           "shape":"DmsTransferSettings",
-          "documentation":"<p>The settings in JSON format for the DMS transfer type of source endpoint. </p> <p>Possible settings include the following:</p> <ul> <li> <p> <code>ServiceAccessRoleArn</code> - - The Amazon Resource Name (ARN) used by the service access IAM role. The role must allow the <code>iam:PassRole</code> action.</p> </li> <li> <p> <code>BucketName</code> - The name of the S3 bucket to use.</p> </li> </ul> <p>Shorthand syntax for these settings is as follows: <code>ServiceAccessRoleArn=string,BucketName=string,</code> </p> <p>JSON syntax for these settings is as follows: <code>{ \"ServiceAccessRoleArn\": \"string\", \"BucketName\": \"string\"} </code> </p>"
+          "documentation":"<p>The settings for the DMS Transfer type source. For more information, see the DmsTransferSettings structure. </p>"
         },
         "MongoDbSettings":{
           "shape":"MongoDbSettings",
@@ -2618,7 +2622,7 @@
         },
         "ElasticsearchSettings":{
           "shape":"ElasticsearchSettings",
-          "documentation":"<p>The settings for the Elasticsearch source endpoint. For more information, see the <code>ElasticsearchSettings</code> structure.</p>"
+          "documentation":"<p>The settings for the OpenSearch source endpoint. For more information, see the <code>ElasticsearchSettings</code> structure.</p>"
         },
         "NeptuneSettings":{
           "shape":"NeptuneSettings",
@@ -2656,6 +2660,10 @@
         "RedisSettings":{
           "shape":"RedisSettings",
           "documentation":"<p>The settings for the Redis target endpoint. For more information, see the <code>RedisSettings</code> structure.</p>"
+        },
+        "GcpMySQLSettings":{
+          "shape":"GcpMySQLSettings",
+          "documentation":"<p>Settings in JSON format for the source GCP MySQL endpoint.</p>"
         }
       },
       "documentation":"<p>Describes an endpoint of a database instance in response to operations such as the following:</p> <ul> <li> <p> <code>CreateEndpoint</code> </p> </li> <li> <p> <code>DescribeEndpoint</code> </p> </li> <li> <p> <code>ModifyEndpoint</code> </p> </li> </ul>"
@@ -2852,6 +2860,68 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "GcpMySQLSettings":{
+      "type":"structure",
+      "members":{
+        "AfterConnectScript":{
+          "shape":"String",
+          "documentation":"<p>Specifies a script to run immediately after DMS connects to the endpoint. The migration task continues running regardless if the SQL statement succeeds or fails.</p> <p>For this parameter, provide the code of the script itself, not the name of a file containing the script. </p>"
+        },
+        "CleanSourceMetadataOnMismatch":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Adjusts the behavior of DMS when migrating from an SQL Server source database that is hosted as part of an Always On availability group cluster. If you need DMS to poll all the nodes in the Always On cluster for transaction backups, set this attribute to <code>false</code>. </p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>Database name for the endpoint. For a MySQL source or target endpoint, don't explicitly specify the database using the <code>DatabaseName</code> request parameter on either the <code>CreateEndpoint</code> or <code>ModifyEndpoint</code> API call. Specifying <code>DatabaseName</code> when you create or modify a MySQL endpoint replicates all the task tables to this single database. For MySQL endpoints, you specify the database only when you specify the schema in the table-mapping rules of the DMS task. </p>"
+        },
+        "EventsPollInterval":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Specifies how often to check the binary log for new changes/events when the database is idle. The default is five seconds.</p> <p>Example: <code>eventsPollInterval=5;</code> </p> <p>In the example, DMS checks for changes in the binary logs every five seconds. </p>"
+        },
+        "TargetDbType":{
+          "shape":"TargetDbType",
+          "documentation":"<p>Specifies where to migrate source tables on the target, either to a single database or multiple databases.</p> <p>Example: <code>targetDbType=MULTIPLE_DATABASES</code> </p>"
+        },
+        "MaxFileSize":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Specifies the maximum size (in KB) of any .csv file used to transfer data to a MySQL-compatible database.</p> <p>Example: <code>maxFileSize=512</code> </p>"
+        },
+        "ParallelLoadThreads":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Improves performance when loading data into the MySQL-compatible target database. Specifies how many threads to use to load the data into the MySQL-compatible target database. Setting a large number of threads can have an adverse effect on database performance, because a separate connection is required for each thread. The default is one.</p> <p>Example: <code>parallelLoadThreads=1</code> </p>"
+        },
+        "Password":{
+          "shape":"SecretString",
+          "documentation":"<p>Endpoint connection password.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p/>"
+        },
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>Endpoint TCP port.</p>"
+        },
+        "ServerTimezone":{
+          "shape":"String",
+          "documentation":"<p>Specifies the time zone for the source MySQL database.</p> <p>Example: <code>serverTimezone=US/Pacific;</code> </p> <p>Note: Do not enclose time zones in single quotes.</p>"
+        },
+        "Username":{
+          "shape":"String",
+          "documentation":"<p>Endpoint connection user name.</p>"
+        },
+        "SecretsManagerAccessRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The full Amazon Resource Name (ARN) of the IAM role that specifies DMS as the trusted entity and grants the required permissions to access the value in <code>SecretsManagerSecret.</code> The role must allow the <code>iam:PassRole</code> action. <code>SecretsManagerSecret</code> has the value of the Amazon Web Services Secrets Manager secret that allows access to the MySQL endpoint.</p> <note> <p>You can specify one of two sets of values for these permissions. You can specify the values for this setting and <code>SecretsManagerSecretId</code>. Or you can specify clear-text values for <code>UserName</code>, <code>Password</code>, <code>ServerName</code>, and <code>Port</code>. You can't specify both. For more information on creating this <code>SecretsManagerSecret</code> and the <code>SecretsManagerAccessRoleArn</code> and <code>SecretsManagerSecretId</code> required to access it, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#security-iam-secretsmanager\">Using secrets to access Database Migration Service resources</a> in the Database Migration Service User Guide. </p> </note>"
+        },
+        "SecretsManagerSecretId":{
+          "shape":"String",
+          "documentation":"<p>The full ARN, partial ARN, or friendly name of the <code>SecretsManagerSecret</code> that contains the MySQL endpoint connection details. </p>"
+        }
+      },
+      "documentation":"<p>Settings in JSON format for the source GCP MySQL endpoint.</p>"
+    },
     "IBMDb2Settings":{
       "type":"structure",
       "members":{
@@ -2912,7 +2982,7 @@
         },
         "CertificateWallet":{
           "shape":"CertificateWallet",
-          "documentation":"<p>The location of an imported Oracle Wallet certificate for use with SSL. Provide the name of a <code>.sso</code> file using the <code>fileb://</code> prefix. You can't provide the certificate inline. </p>"
+          "documentation":"<p>The location of an imported Oracle Wallet certificate for use with SSL. Provide the name of a <code>.sso</code> file using the <code>fileb://</code> prefix. You can't provide the certificate inline.</p> <p>Example: <code>filebase64(\"${path.root}/rds-ca-2019-root.sso\")</code> </p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2997,7 +3067,7 @@
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The specified master key (CMK) isn't enabled.</p>",
+      "documentation":"<p>The specified KMS key isn't enabled.</p>",
       "exception":true
     },
     "KMSFault":{
@@ -3300,7 +3370,7 @@
         },
         "EngineName":{
           "shape":"String",
-          "documentation":"<p>The type of engine for the endpoint. Valid values, depending on the EndpointType, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"documentdb\"</code>, <code>\"sqlserver\"</code>, and <code>\"neptune\"</code>.</p>"
+          "documentation":"<p>The type of engine for the endpoint. Valid values, depending on the EndpointType, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"opensearch\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"documentdb\"</code>, <code>\"sqlserver\"</code>, and <code>\"neptune\"</code>.</p>"
         },
         "Username":{
           "shape":"String",
@@ -3368,7 +3438,7 @@
         },
         "ElasticsearchSettings":{
           "shape":"ElasticsearchSettings",
-          "documentation":"<p>Settings in JSON format for the target Elasticsearch endpoint. For more information about the available settings, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.Elasticsearch.html#CHAP_Target.Elasticsearch.Configuration\">Extra Connection Attributes When Using Elasticsearch as a Target for DMS</a> in the <i>Database Migration Service User Guide.</i> </p>"
+          "documentation":"<p>Settings in JSON format for the target OpenSearch endpoint. For more information about the available settings, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.Elasticsearch.html#CHAP_Target.Elasticsearch.Configuration\">Extra Connection Attributes When Using OpenSearch as a Target for DMS</a> in the <i>Database Migration Service User Guide.</i> </p>"
         },
         "NeptuneSettings":{
           "shape":"NeptuneSettings",
@@ -3410,6 +3480,10 @@
         "ExactSettings":{
           "shape":"BooleanOptional",
           "documentation":"<p>If this attribute is Y, the current call to <code>ModifyEndpoint</code> replaces all existing endpoint settings with the exact settings that you specify in this call. If this attribute is N, the current call to <code>ModifyEndpoint</code> does two things: </p> <ul> <li> <p>It replaces any endpoint settings that already exist with new values, for settings with the same names.</p> </li> <li> <p>It creates new endpoint settings that you specify in the call, for settings with different names. </p> </li> </ul> <p>For example, if you call <code>create-endpoint ... --endpoint-settings '{\"a\":1}' ...</code>, the endpoint has the following endpoint settings: <code>'{\"a\":1}'</code>. If you then call <code>modify-endpoint ... --endpoint-settings '{\"b\":2}' ...</code> for the same endpoint, the endpoint has the following settings: <code>'{\"a\":1,\"b\":2}'</code>. </p> <p>However, suppose that you follow this with a call to <code>modify-endpoint ... --endpoint-settings '{\"b\":2}' --exact-settings ...</code> for that same endpoint again. Then the endpoint has the following settings: <code>'{\"b\":2}'</code>. All existing settings are replaced with the exact settings that you specify. </p>"
+        },
+        "GcpMySQLSettings":{
+          "shape":"GcpMySQLSettings",
+          "documentation":"<p>Settings in JSON format for the source GCP MySQL endpoint.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3714,7 +3788,7 @@
         },
         "EventsPollInterval":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies how often to check the binary log for new changes/events when the database is idle.</p> <p>Example: <code>eventsPollInterval=5;</code> </p> <p>In the example, DMS checks for changes in the binary logs every five seconds.</p>"
+          "documentation":"<p>Specifies how often to check the binary log for new changes/events when the database is idle. The default is five seconds.</p> <p>Example: <code>eventsPollInterval=5;</code> </p> <p>In the example, DMS checks for changes in the binary logs every five seconds.</p>"
         },
         "TargetDbType":{
           "shape":"TargetDbType",
@@ -3726,7 +3800,7 @@
         },
         "ParallelLoadThreads":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Improves performance when loading data into the MySQL-compatible target database. Specifies how many threads to use to load the data into the MySQL-compatible target database. Setting a large number of threads can have an adverse effect on database performance, because a separate connection is required for each thread.</p> <p>Example: <code>parallelLoadThreads=1</code> </p>"
+          "documentation":"<p>Improves performance when loading data into the MySQL-compatible target database. Specifies how many threads to use to load the data into the MySQL-compatible target database. Setting a large number of threads can have an adverse effect on database performance, because a separate connection is required for each thread. The default is one.</p> <p>Example: <code>parallelLoadThreads=1</code> </p>"
         },
         "Password":{
           "shape":"SecretString",
@@ -4118,7 +4192,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Endpoint TCP port.</p>"
+          "documentation":"<p>Endpoint TCP port. The default is 5432.</p>"
         },
         "ServerName":{
           "shape":"String",
@@ -5133,6 +5207,10 @@
           "shape":"String",
           "documentation":"<p>Specifies the folder path of CDC files. For an S3 source, this setting is required if a task captures change data; otherwise, it's optional. If <code>CdcPath</code> is set, DMS reads CDC files from this path and replicates the data changes to the target endpoint. For an S3 target if you set <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_S3Settings.html#DMS-Type-S3Settings-PreserveTransactions\"> <code>PreserveTransactions</code> </a> to <code>true</code>, DMS verifies that you have set this parameter to a folder path on your S3 target where DMS can save the transaction order for the CDC load. DMS creates this CDC folder path in either your S3 target working directory or the S3 target location specified by <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_S3Settings.html#DMS-Type-S3Settings-BucketFolder\"> <code>BucketFolder</code> </a> and <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_S3Settings.html#DMS-Type-S3Settings-BucketName\"> <code>BucketName</code> </a>.</p> <p>For example, if you specify <code>CdcPath</code> as <code>MyChangedData</code>, and you specify <code>BucketName</code> as <code>MyTargetBucket</code> but do not specify <code>BucketFolder</code>, DMS creates the CDC folder path following: <code>MyTargetBucket/MyChangedData</code>.</p> <p>If you specify the same <code>CdcPath</code>, and you specify <code>BucketName</code> as <code>MyTargetBucket</code> and <code>BucketFolder</code> as <code>MyTargetData</code>, DMS creates the CDC folder path following: <code>MyTargetBucket/MyTargetData/MyChangedData</code>.</p> <p>For more information on CDC including transaction order on an S3 target, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html#CHAP_Target.S3.EndpointSettings.CdcPath\">Capturing data changes (CDC) including transaction order on the S3 target</a>.</p> <note> <p>This setting is supported in DMS versions 3.4.2 and later.</p> </note>"
         },
+        "UseTaskStartTimeForFullLoadTimestamp":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>When set to true, this parameter uses the task start time as the timestamp column value instead of the time data is written to target. For full load, when <code>useTaskStartTimeForFullLoadTimestamp</code> is set to <code>true</code>, each row of the timestamp column contains the task start time. For CDC loads, each row of the timestamp column contains the transaction commit time.</p> <p>When <code>useTaskStartTimeForFullLoadTimestamp</code> is set to <code>false</code>, the full load timestamp in the timestamp column increments with the time data arrives at the target. </p>"
+        },
         "CannedAclForObjects":{
           "shape":"CannedAclForObjectsValue",
           "documentation":"<p>A value that enables DMS to specify a predefined (canned) access control list for objects created in an Amazon S3 bucket as .csv or .parquet files. For more information about Amazon S3 canned ACLs, see <a href=\"http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl\">Canned ACL</a> in the <i>Amazon S3 Developer Guide.</i> </p> <p>The default value is NONE. Valid values include NONE, PRIVATE, PUBLIC_READ, PUBLIC_READ_WRITE, AUTHENTICATED_READ, AWS_EXEC_READ, BUCKET_OWNER_READ, and BUCKET_OWNER_FULL_CONTROL.</p>"
@@ -5313,7 +5391,7 @@
         },
         "StartReplicationTaskType":{
           "shape":"StartReplicationTaskTypeValue",
-          "documentation":"<p>A type of replication task.</p>"
+          "documentation":"<p>The type of replication task to start.</p> <p>When the migration type is <code>full-load</code> or <code>full-load-and-cdc</code>, the only valid value for the first run of the task is <code>start-replication</code>. You use <code>reload-target</code> to restart the task and <code>resume-processing</code> to resume the task.</p> <p>When the migration type is <code>cdc</code>, you use <code>start-replication</code> to start or restart the task, and <code>resume-processing</code> to resume the task. <code>reload-target</code> is not a valid value for a task with migration type of <code>cdc</code>.</p>"
         },
         "CdcStartTime":{
           "shape":"TStamp",
@@ -5461,7 +5539,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Endpoint TCP port.</p>"
+          "documentation":"<p>Endpoint TCP port. The default is 5000.</p>"
         },
         "ServerName":{
           "shape":"String",

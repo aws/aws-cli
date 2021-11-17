@@ -1665,7 +1665,7 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
             self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
 
             self.assertEqual(len(http_stubber.requests), 4)
-            initial_url = "https://foo.s3-fips.aws-global.amazonaws.com/bar"
+            initial_url = "https://foo.s3-fips.us-east-1.amazonaws.com/bar"
             self.assertEqual(http_stubber.requests[0].url, initial_url)
 
             fixed_url = "https://foo.s3-fips.us-east-2.amazonaws.com/bar"

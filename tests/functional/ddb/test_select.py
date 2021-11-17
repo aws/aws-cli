@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import pytest
 
 import ruamel.yaml as yaml
 
@@ -460,14 +461,16 @@ class TestSelect(BaseSelectTest):
             command, expected, expected_rc=0
         )
 
-    def test_select_unsupported_output(self):
-        unsupported_output = ['yaml-stream', 'json', 'text', 'table']
-        for output_type in unsupported_output:
-            cmdline=f'ddb select mytable --output {output_type}'
-            stdout, _, _ = self.assert_params_for_cmd(
-                cmdline, expected_rc=252,
-                stderr_contains=f'{output_type} output format is not supported',
-            )
+    @pytest.mark.parametrize(
+        "output_type", 
+        ['json', 'table', 'text', 'yaml-stream']
+    ) 
+    def test_select_unsupported_output(self, output_type):
+        cmdline = f'ddb select mytable --output {output_type}'
+        stdout, _, _ = self.assert_params_for_cmd(
+            cmdline, expected_rc=252,
+            stderr_contains = f'{output_type} output format is not supported',
+        )
 
     def test_select_parsing_error_rc(self):
         cmdline = 'ddb select mytable --filter a=?!f'

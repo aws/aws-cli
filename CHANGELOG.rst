@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.4.0
+=====
+
+* api-change:``drs``: Introducing AWS Elastic Disaster Recovery (AWS DRS), a new service that minimizes downtime and data loss with fast, reliable recovery of on-premises and cloud-based applications using affordable storage, minimal compute, and point-in-time recovery.
+* feature:Endpoints: Add support for resolving FIPS and Dualstack endpoints via AWS_USE_DUALSTACK_ENDPOINT and AWS_USE_FIPS_ENDPOINT environment variables as well as shared config file variables.
+* api-change:``kafka``: Amazon MSK has added a new API that allows you to update the connectivity settings for an existing cluster to enable public accessibility.
+* api-change:``forecast``: NEW CreateExplanability API that helps you understand how attributes such as price, promotion, etc. contributes to your forecasted values; NEW CreateAutoPredictor API that trains up to 40% more accurate forecasting model, saves up to 50% of retraining time, and provides model level explainability.
+* api-change:``chime-sdk-meetings``: Adds new Transcribe API parameters to StartMeetingTranscription, including support for content identification and redaction (PII & PHI), partial results stabilization, and custom language models.
+* api-change:``sns``: Amazon SNS introduces the PublishBatch API, which enables customers to publish up to 10 messages per API request. The new API is valid for Standard and FIFO topics.
+* api-change:``appconfigdata``: AWS AppConfig Data is a new service that allows you to retrieve configuration deployed by AWS AppConfig. See the AppConfig user guide for more details on getting started. https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html
+* api-change:``lambda``: Added support for CLIENT_CERTIFICATE_TLS_AUTH and SERVER_ROOT_CA_CERTIFICATE as SourceAccessType for MSK and Kafka event source mappings.
+* api-change:``ivs``: Add APIs for retrieving stream session information and support for filtering live streams by health.  For more information, see https://docs.aws.amazon.com/ivs/latest/userguide/stream-health.html
+* api-change:``auditmanager``: This release introduces a new feature for Audit Manager: Dashboard views. You can now view insights data for your active assessments, and quickly identify non-compliant evidence that needs to be remediated.
+* api-change:``appconfig``: Add Type to support feature flag configuration profiles
+* api-change:``chime``: Adds new Transcribe API parameters to StartMeetingTranscription, including support for content identification and redaction (PII & PHI), partial results stabilization, and custom language models.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``databrew``: This SDK release adds the following new features: 1) PII detection in profile jobs, 2) Data quality rules, enabling validation of data quality in profile jobs, 3) SQL query-based datasets for Amazon Redshift and Snowflake data sources, and 4) Connecting DataBrew datasets with Amazon AppFlow flows.
+* api-change:``amplifybackend``: New APIs to support the Amplify Storage category. Add and manage file storage in your Amplify app backend.
+
+
 2.3.7
 =====
 

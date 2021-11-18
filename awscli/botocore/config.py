@@ -148,6 +148,18 @@ class Config(object):
         Setting this to False disables the injection of operation parameters
         into the prefix of the hostname. This is useful for clients providing
         custom endpoints that should not have their host prefix modified.
+
+    :type use_dualstack_endpoint: bool
+    :param use_dualstack_endpoint: Setting to True enables dualstack
+        endpoint resolution.
+
+        Defaults to None.
+
+    :type use_fips_endpoint: bool
+    :param use_fips_endpoint: Setting to True enables fips
+        endpoint resolution.
+
+        Defaults to None.
     """
     OPTION_DEFAULTS = OrderedDict([
         ('region_name', None),
@@ -165,6 +177,8 @@ class Config(object):
         ('client_cert', None),
         ('inject_host_prefix', True),
         ('endpoint_discovery_enabled', None),
+        ('use_dualstack_endpoint', None),
+        ('use_fips_endpoint', None),
     ])
 
     def __init__(self, *args, **kwargs):

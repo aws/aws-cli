@@ -825,15 +825,6 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
                                      'ARNs in another region are not allowed'):
             self.client.list_objects(Bucket=s3_object_lambda_arn)
 
-        self.client, _ = self.create_stubbed_s3_client(
-            region_name='fips-us-gov-west-1',
-            config=Config(s3={'use_arn_region': True})
-        )
-        expected_exception = UnsupportedS3AccesspointConfigurationError
-        with self.assertRaisesRegex(
-                expected_exception, 'does not allow for cross-region calls'):
-            self.client.list_objects(Bucket=s3_object_lambda_arn)
-
     def test_s3_object_lambda_with_global_regions(self):
         s3_object_lambda_arn = (
             'arn:aws:s3-object-lambda:us-east-1:123456789012:'
@@ -891,8 +882,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3-outposts:us-gov-east-1:123456789012:outpost:'
             'op-01234567890123456:accesspoint:myaccesspoint'
         )
-        self.client, _ = self.create_stubbed_s3_client(
-            region_name='us-gov-east-1-fips')
+        self.client, _ = self.create_stubbed_s3_client(region_name="fips-east-1")
         expected_exception = UnsupportedS3AccesspointConfigurationError
         with self.assertRaisesRegex(expected_exception,
                                     'outpost ARNs do not support FIPS'):
@@ -912,13 +902,17 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
                                     'ARNs in another region are not allowed'):
             self.client.list_objects(Bucket=s3_accesspoint_arn)
 
+    def test_accesspoint_fips_raise_if_fips_in_arn(self):
+        s3_accesspoint_arn = (
+            "arn:aws-us-gov:s3:fips-us-gov-west-1:123456789012:" "accesspoint:myendpoint"
+        )
         self.client, _ = self.create_stubbed_s3_client(
-            region_name='fips-us-gov-west-1',
-            config=Config(s3={'use_arn_region': True})
+            region_name="fips-us-gov-west-1",
         )
         expected_exception = UnsupportedS3AccesspointConfigurationError
         with self.assertRaisesRegex(
-                expected_exception, 'does not allow for cross-region'):
+            expected_exception, "Invalid ARN, FIPS region not allowed in ARN."
+        ):
             self.client.list_objects(Bucket=s3_accesspoint_arn)
 
     def test_accesspoint_with_global_regions(self):
@@ -1543,6 +1537,168 @@ class TestRegionRedirect(BaseS3OperationTest):
                 self.fail('PermanentRedirect error should have been raised')
 
 
+class TestFipsRegionRedirect(BaseS3OperationTest):
+    def setUp(self):
+        super(TestFipsRegionRedirect, self).setUp()
+        self.client = self.session.create_client(
+            "s3",
+            "fips-us-west-2",
+            config=Config(
+                signature_version="s3v4",
+                s3={"addressing_style": "path"},
+            ),
+        )
+        self.http_stubber = ClientHTTPStubber(self.client)
+
+        self.redirect_response = {
+            "status": 301,
+            "headers": {"x-amz-bucket-region": "us-west-1"},
+            "body": (
+                b'<?xml version="1.0" encoding="UTF-8"?>\n'
+                b"<Error>"
+                b"    <Code>PermanentRedirect</Code>"
+                b"    <Message>The bucket you are attempting to access must be"
+                b"        addressed using the specified endpoint. Please send "
+                b"        all future requests to this endpoint."
+                b"    </Message>"
+                b"    <Bucket>foo</Bucket>"
+                b"    <Endpoint>foo.s3-fips.us-west-1.amazonaws.com</Endpoint>"
+                b"</Error>"
+            ),
+        }
+        self.success_response = {
+            "status": 200,
+            "headers": {},
+            "body": (
+                b'<?xml version="1.0" encoding="UTF-8"?>\n'
+                b"<ListBucketResult>"
+                b"    <Name>foo</Name>"
+                b"    <Prefix></Prefix>"
+                b"    <Marker></Marker>"
+                b"    <MaxKeys>1000</MaxKeys>"
+                b"    <EncodingType>url</EncodingType>"
+                b"    <IsTruncated>false</IsTruncated>"
+                b"</ListBucketResult>"
+            ),
+        }
+        self.bad_signing_region_response = {
+            "status": 400,
+            "headers": {"x-amz-bucket-region": "us-west-1"},
+            "body": (
+                b'<?xml version="1.0" encoding="UTF-8"?>'
+                b"<Error>"
+                b"  <Code>AuthorizationHeaderMalformed</Code>"
+                b"  <Message>the region us-west-2 is wrong; "
+                b"expecting us-west-1</Message>"
+                b"  <Region>us-west-1</Region>"
+                b"  <RequestId>BD9AA1730D454E39</RequestId>"
+                b"  <HostId></HostId>"
+                b"</Error>"
+            ),
+        }
+
+    def test_fips_region_redirect(self):
+        self.http_stubber.add_response(**self.redirect_response)
+        self.http_stubber.add_response(**self.success_response)
+        with self.http_stubber:
+            response = self.client.list_objects(Bucket="foo")
+        self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
+        self.assertEqual(len(self.http_stubber.requests), 2)
+
+        initial_url = "https://s3-fips.us-west-2.amazonaws.com/foo" "?encoding-type=url"
+        self.assertEqual(self.http_stubber.requests[0].url, initial_url)
+
+        fixed_url = "https://s3-fips.us-west-1.amazonaws.com/foo" "?encoding-type=url"
+        self.assertEqual(self.http_stubber.requests[1].url, fixed_url)
+
+    def test_fips_region_redirect_cache(self):
+        self.http_stubber.add_response(**self.redirect_response)
+        self.http_stubber.add_response(**self.success_response)
+        self.http_stubber.add_response(**self.success_response)
+
+        with self.http_stubber:
+            first_response = self.client.list_objects(Bucket="foo")
+            second_response = self.client.list_objects(Bucket="foo")
+
+        self.assertEqual(first_response["ResponseMetadata"]["HTTPStatusCode"], 200)
+        self.assertEqual(second_response["ResponseMetadata"]["HTTPStatusCode"], 200)
+
+        self.assertEqual(len(self.http_stubber.requests), 3)
+        initial_url = "https://s3-fips.us-west-2.amazonaws.com/foo" "?encoding-type=url"
+        self.assertEqual(self.http_stubber.requests[0].url, initial_url)
+
+        fixed_url = "https://s3-fips.us-west-1.amazonaws.com/foo" "?encoding-type=url"
+        self.assertEqual(self.http_stubber.requests[1].url, fixed_url)
+        self.assertEqual(self.http_stubber.requests[2].url, fixed_url)
+
+    def test_fips_resign_request_with_region_when_needed(self):
+
+        # Create a client with no explicit configuration so we can
+        # verify the default behavior.
+        client = self.session.create_client("s3", "fips-us-west-2")
+        with ClientHTTPStubber(client) as http_stubber:
+            http_stubber.add_response(**self.bad_signing_region_response)
+            http_stubber.add_response(**self.success_response)
+            first_response = client.list_objects(Bucket="foo")
+            self.assertEqual(first_response["ResponseMetadata"]["HTTPStatusCode"], 200)
+
+            self.assertEqual(len(http_stubber.requests), 2)
+            initial_url = "https://foo.s3-fips.us-west-2.amazonaws.com/" "?encoding-type=url"
+            self.assertEqual(http_stubber.requests[0].url, initial_url)
+
+            fixed_url = (
+                "https://foo.s3-fips.us-west-1.amazonaws.com/" "?encoding-type=url"
+            )
+            self.assertEqual(http_stubber.requests[1].url, fixed_url)
+
+    def test_fips_resign_request_in_us_east_1(self):
+        region_headers = {"x-amz-bucket-region": "us-east-2"}
+
+        # Verify that the default behavior in us-east-1 will redirect
+        client = self.session.create_client("s3", "fips-us-east-1")
+        with ClientHTTPStubber(client) as http_stubber:
+            http_stubber.add_response(status=400)
+            http_stubber.add_response(status=400, headers=region_headers)
+            http_stubber.add_response(headers=region_headers)
+            http_stubber.add_response()
+            response = client.head_object(Bucket="foo", Key="bar")
+            self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
+
+            self.assertEqual(len(http_stubber.requests), 4)
+            initial_url = "https://foo.s3-fips.us-east-1.amazonaws.com/bar"
+            self.assertEqual(http_stubber.requests[0].url, initial_url)
+
+            fixed_url = "https://foo.s3-fips.us-east-2.amazonaws.com/bar"
+            self.assertEqual(http_stubber.requests[-1].url, fixed_url)
+
+    def test_fips_resign_request_in_us_east_1_fails(self):
+        region_headers = {"x-amz-bucket-region": "us-east-2"}
+
+        # Verify that the final 400 response is propagated
+        # back to the user.
+        client = self.session.create_client("s3", "fips-us-east-1")
+        with ClientHTTPStubber(client) as http_stubber:
+            http_stubber.add_response(status=400)
+            http_stubber.add_response(status=400, headers=region_headers)
+            http_stubber.add_response(headers=region_headers)
+            # The final request still fails with a 400.
+            http_stubber.add_response(status=400)
+            with self.assertRaises(ClientError):
+                client.head_object(Bucket="foo", Key="bar")
+            self.assertEqual(len(http_stubber.requests), 4)
+
+    def test_fips_no_region_redirect_for_accesspoint(self):
+        self.http_stubber.add_response(**self.redirect_response)
+        accesspoint_arn = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
+        with self.http_stubber:
+            try:
+                self.client.list_objects(Bucket=accesspoint_arn)
+            except self.client.exceptions.ClientError as e:
+                self.assertEqual(e.response["Error"]["Code"], "PermanentRedirect")
+            else:
+                self.fail("PermanentRedirect error should have been raised")
+
+
 class TestGeneratePresigned(BaseS3OperationTest):
     def assert_is_v2_presigned_url(self, url):
         qs_components = parse_qs(urlsplit(url).query)
@@ -1630,6 +1786,19 @@ class TestGeneratePresigned(BaseS3OperationTest):
         # The url should be the accelerate endpoint
         self.assertEqual(
             'https://mybucket.s3-accelerate.amazonaws.com/mykey', url)
+
+    def test_presign_s3_accelerate_fails_with_fips(self):
+        config = Config(
+            signature_version=botocore.UNSIGNED, s3={"use_accelerate_endpoint": True}
+        )
+        client = self.session.create_client("s3", "fips-us-east-1", config=config)
+        expected_exception = UnsupportedS3ConfigurationError
+        with self.assertRaisesRegex(
+            expected_exception, "S3 Accelerate does not have any FIPS"
+        ):
+            client.generate_presigned_url(
+                ClientMethod="get_object", Params={"Bucket": "mybucket", "Key": "mykey"}
+            )
 
     def test_presign_post_s3_accelerate(self):
         config = Config(signature_version=botocore.UNSIGNED,
@@ -2171,6 +2340,9 @@ def _s3_addressing_test_cases():
     accesspoint_arn_gov = (
         'arn:aws-us-gov:s3:us-gov-west-1:123456789012:accesspoint:myendpoint'
     )
+    accesspoint_cross_region_arn_gov = (
+        "arn:aws-us-gov:s3:us-gov-east-1:123456789012:accesspoint:myendpoint"
+    )
     yield dict(
         region='us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
         expected_url=(
@@ -2189,9 +2361,41 @@ def _s3_addressing_test_cases():
         region='fips-us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
         s3_config={'use_arn_region': False},
         expected_url=(
-            'https://myendpoint-123456789012.s3-accesspoint-fips.'
-            'fips-us-gov-west-1.amazonaws.com/key'
-        )
+            "https://myendpoint-123456789012.s3-accesspoint-fips."
+            "us-gov-west-1.amazonaws.com/key"
+        ),
+    )
+    yield dict(
+        region="fips-us-gov-west-1",
+        bucket=accesspoint_cross_region_arn_gov,
+        s3_config={"use_arn_region": True},
+        key="key",
+        expected_url=(
+            "https://myendpoint-123456789012.s3-accesspoint-fips."
+            "us-gov-east-1.amazonaws.com/key"
+        ),
+    )
+    yield dict(
+        region="us-gov-west-1",
+        bucket=accesspoint_arn_gov,
+        key="key",
+        s3_config={"use_arn_region": False},
+        expected_url=(
+            "https://myendpoint-123456789012.s3-accesspoint-fips."
+            "us-gov-west-1.amazonaws.com/key"
+        ),
+        use_fips_endpoint=True,
+    )
+    yield dict(
+        region="us-gov-west-1",
+        bucket=accesspoint_cross_region_arn_gov,
+        key="key",
+        s3_config={"use_arn_region": True},
+        expected_url=(
+            "https://myendpoint-123456789012.s3-accesspoint-fips."
+            "us-gov-east-1.amazonaws.com/key"
+        ),
+        use_fips_endpoint=True,
     )
 
     yield dict(
@@ -2319,9 +2523,45 @@ def _s3_addressing_test_cases():
             'us-gov-west-1.amazonaws.com/key'
         )
     )
+    yield dict(
+        region="us-gov-west-1",
+        bucket=s3_object_lambda_arn_gov,
+        key="key",
+        expected_url=(
+            "https://mybanner-123456789012.s3-object-lambda-fips."
+            "us-gov-west-1.amazonaws.com/key"
+        ),
+        use_fips_endpoint=True,
+    )
+    s3_object_lambda_cross_region_arn_gov = (
+        "arn:aws-us-gov:s3-object-lambda:us-gov-east-1:"
+        "123456789012:accesspoint:mybanner"
+    )
+    yield dict(
+        region="fips-us-gov-west-1",
+        bucket=s3_object_lambda_cross_region_arn_gov,
+        key="key",
+        s3_config={"use_arn_region": True},
+        expected_url=(
+            "https://mybanner-123456789012.s3-object-lambda-fips."
+            "us-gov-east-1.amazonaws.com/key"
+        ),
+    )
+    yield dict(
+        region="us-gov-west-1",
+        bucket=s3_object_lambda_cross_region_arn_gov,
+        key="key",
+        s3_config={"use_arn_region": True},
+        expected_url=(
+            "https://mybanner-123456789012.s3-object-lambda-fips."
+            "us-gov-east-1.amazonaws.com/key"
+        ),
+        use_fips_endpoint=True,
+    )
+
     s3_object_lambda_arn = (
-        'arn:aws:s3-object-lambda:us-east-1:'
-        '123456789012:accesspoint:mybanner'
+        "arn:aws:s3-object-lambda:us-east-1:"
+        "123456789012:accesspoint:mybanner"
     )
     yield dict(
         region='aws-global', bucket=s3_object_lambda_arn, key='key',
@@ -2341,8 +2581,15 @@ def test_correct_url_used_for_s3(test_case):
 
 
 def _verify_expected_endpoint_url(
-    region=None, bucket='bucket', key='key', s3_config=None, is_secure=True,
-    customer_provided_endpoint=None, expected_url=None, signature_version=None
+    region=None,
+    bucket="bucket",
+    key="key",
+    s3_config=None,
+    is_secure=True,
+    customer_provided_endpoint=None,
+    expected_url=None,
+    signature_version=None,
+    use_fips_endpoint=None
 ):
     environ = {}
     with mock.patch('os.environ', environ):
@@ -2351,11 +2598,9 @@ def _verify_expected_endpoint_url(
         environ['AWS_CONFIG_FILE'] = 'no-exist-foo'
         environ['AWS_SHARED_CREDENTIALS_FILE'] = 'no-exist-foo'
         session = create_session()
-        session.config_filename = 'no-exist-foo'
-        config = Config(
-            signature_version=signature_version,
-            s3=s3_config
-        )
+        session.config_filename = "no-exist-foo"
+        config = Config(signature_version=signature_version, s3=s3_config,
+                        use_fips_endpoint=use_fips_endpoint)
         s3 = session.create_client('s3', region_name=region, use_ssl=is_secure,
                                    config=config,
                                    endpoint_url=customer_provided_endpoint)

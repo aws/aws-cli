@@ -129,6 +129,7 @@ class ClientArgsCreator(object):
             endpoint_bridge=endpoint_bridge,
             s3_config=s3_config,
         )
+        endpoint_variant_tags = endpoint_config['metadata'].get('tags', [])
         # Create a new client config to be passed to the client based
         # on the final values. We do not want the user to be able
         # to try to modify an existing client with a client config.
@@ -136,6 +137,10 @@ class ClientArgsCreator(object):
             region_name=endpoint_config['region_name'],
             signature_version=endpoint_config['signature_version'],
             user_agent=user_agent)
+        if 'dualstack' in endpoint_variant_tags:
+            config_kwargs.update(use_dualstack_endpoint=True)
+        if 'fips' in endpoint_variant_tags:
+            config_kwargs.update(use_fips_endpoint=True)
         if client_config is not None:
             config_kwargs.update(
                 connect_timeout=client_config.connect_timeout,
@@ -149,6 +154,14 @@ class ClientArgsCreator(object):
             )
         self._compute_retry_config(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
+
+        is_s3_service = service_name in ['s3', 's3-control']
+
+        if is_s3_service and 'dualstack' in endpoint_variant_tags:
+            if s3_config is None:
+                s3_config = {}
+            s3_config['use_dualstack_endpoint'] = True
+
         return {
             'service_name': service_name,
             'parameter_validation': parameter_validation,

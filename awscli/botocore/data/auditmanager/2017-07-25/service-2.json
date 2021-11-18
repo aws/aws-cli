@@ -327,7 +327,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns an assessment from Audit Manager. </p>"
+      "documentation":"<p>Returns an assessment from Audit Manager. </p>"
     },
     "GetAssessmentFramework":{
       "name":"GetAssessmentFramework",
@@ -343,7 +343,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns a framework from Audit Manager. </p>"
+      "documentation":"<p>Returns a framework from Audit Manager. </p>"
     },
     "GetAssessmentReportUrl":{
       "name":"GetAssessmentReportUrl",
@@ -488,6 +488,36 @@
       ],
       "documentation":"<p> Returns a list of evidence folders that are associated with a specified control of an assessment in Audit Manager. </p>"
     },
+    "GetInsights":{
+      "name":"GetInsights",
+      "http":{
+        "method":"GET",
+        "requestUri":"/insights"
+      },
+      "input":{"shape":"GetInsightsRequest"},
+      "output":{"shape":"GetInsightsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the latest analytics data for all your current active assessments. </p>"
+    },
+    "GetInsightsByAssessment":{
+      "name":"GetInsightsByAssessment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/insights/assessments/{assessmentId}"
+      },
+      "input":{"shape":"GetInsightsByAssessmentRequest"},
+      "output":{"shape":"GetInsightsByAssessmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the latest analytics data for a specific active assessment. </p>"
+    },
     "GetOrganizationAdminAccount":{
       "name":"GetOrganizationAdminAccount",
       "http":{
@@ -532,6 +562,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Returns the settings for the specified Amazon Web Services account. </p>"
+    },
+    "ListAssessmentControlInsightsByControlDomain":{
+      "name":"ListAssessmentControlInsightsByControlDomain",
+      "http":{
+        "method":"GET",
+        "requestUri":"/insights/controls-by-assessment"
+      },
+      "input":{"shape":"ListAssessmentControlInsightsByControlDomainRequest"},
+      "output":{"shape":"ListAssessmentControlInsightsByControlDomainResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the latest analytics data for controls within a specific control domain and a specific active assessment.</p> <note> <p>Control insights are listed only if the control belongs to the control domain and assessment that was specified. Moreover, the control must have collected evidence on the <code>lastUpdated</code> date of <code>controlInsightsByAssessment</code>. If neither of these conditions are met, no data is listed for that control. </p> </note>"
     },
     "ListAssessmentFrameworkShareRequests":{
       "name":"ListAssessmentFrameworkShareRequests",
@@ -592,6 +638,54 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Returns a list of current and past assessments from Audit Manager. </p>"
+    },
+    "ListControlDomainInsights":{
+      "name":"ListControlDomainInsights",
+      "http":{
+        "method":"GET",
+        "requestUri":"/insights/control-domains"
+      },
+      "input":{"shape":"ListControlDomainInsightsRequest"},
+      "output":{"shape":"ListControlDomainInsightsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the latest analytics data for control domains across all of your active assessments. </p> <note> <p>A control domain is listed only if at least one of the controls within that domain collected evidence on the <code>lastUpdated</code> date of <code>controlDomainInsights</code>. If this condition isn’t met, no data is listed for that control domain.</p> </note>"
+    },
+    "ListControlDomainInsightsByAssessment":{
+      "name":"ListControlDomainInsightsByAssessment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/insights/control-domains-by-assessment"
+      },
+      "input":{"shape":"ListControlDomainInsightsByAssessmentRequest"},
+      "output":{"shape":"ListControlDomainInsightsByAssessmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists analytics data for control domains within a specified active assessment.</p> <note> <p>A control domain is listed only if at least one of the controls within that domain collected evidence on the <code>lastUpdated</code> date of <code>controlDomainInsights</code>. If this condition isn’t met, no data is listed for that domain.</p> </note>"
+    },
+    "ListControlInsightsByControlDomain":{
+      "name":"ListControlInsightsByControlDomain",
+      "http":{
+        "method":"GET",
+        "requestUri":"/insights/controls"
+      },
+      "input":{"shape":"ListControlInsightsByControlDomainRequest"},
+      "output":{"shape":"ListControlInsightsByControlDomainResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the latest analytics data for controls within a specific control domain across all active assessments.</p> <note> <p>Control insights are listed only if the control belongs to the control domain that was specified and the control collected evidence on the <code>lastUpdated</code> date of <code>controlInsightsMetadata</code>. If neither of these conditions are met, no data is listed for that control. </p> </note>"
     },
     "ListControls":{
       "name":"ListControls",
@@ -1973,6 +2067,96 @@
       "max":1000,
       "pattern":"^[\\w\\W\\s\\S]*$"
     },
+    "ControlDomainInsights":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the control domain. </p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the control domain. </p>"
+        },
+        "controlsCountByNoncompliantEvidence":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of controls in the control domain that collected non-compliant evidence on the <code>lastUpdated</code> date. </p>"
+        },
+        "totalControlsCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The total number of controls in the control domain. </p>"
+        },
+        "evidenceInsights":{
+          "shape":"EvidenceInsights",
+          "documentation":"<p>A breakdown of the compliance check status for the evidence that’s associated with the control domain. </p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the control domain insights were last updated. </p>"
+        }
+      },
+      "documentation":"<p>A summary of the latest analytics data for a specific control domain.</p> <p>Control domain insights are grouped by control domain, and ranked by the highest total count of non-compliant evidence.</p>"
+    },
+    "ControlDomainInsightsList":{
+      "type":"list",
+      "member":{"shape":"ControlDomainInsights"}
+    },
+    "ControlInsightsMetadata":{
+      "type":"list",
+      "member":{"shape":"ControlInsightsMetadataItem"}
+    },
+    "ControlInsightsMetadataByAssessment":{
+      "type":"list",
+      "member":{"shape":"ControlInsightsMetadataByAssessmentItem"}
+    },
+    "ControlInsightsMetadataByAssessmentItem":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the assessment control. </p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the assessment control. </p>"
+        },
+        "evidenceInsights":{
+          "shape":"EvidenceInsights",
+          "documentation":"<p>A breakdown of the compliance check status for the evidence that’s associated with the assessment control. </p>"
+        },
+        "controlSetName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the control set that the assessment control belongs to. </p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the assessment control insights were last updated. </p>"
+        }
+      },
+      "documentation":"<p>A summary of the latest analytics data for a specific control in a specific active assessment.</p> <p>Control insights are grouped by control domain, and ranked by the highest total count of non-compliant evidence. </p>"
+    },
+    "ControlInsightsMetadataItem":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the control. </p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the control. </p>"
+        },
+        "evidenceInsights":{
+          "shape":"EvidenceInsights",
+          "documentation":"<p>A breakdown of the compliance check status for the evidence that’s associated with the control. </p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the control insights were last updated. </p>"
+        }
+      },
+      "documentation":"<p>A summary of the latest analytics data for a specific control. </p> <p>This data reflects the total counts for the specified control across all active assessments. Control insights are grouped by control domain, and ranked by the highest total count of non-compliant evidence.</p>"
+    },
     "ControlMappingSource":{
       "type":"structure",
       "members":{
@@ -2514,7 +2698,7 @@
       "members":{
         "frameworkId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the framework. </p>",
+          "documentation":"<p> The identifier for the custom framework. </p>",
           "location":"uri",
           "locationName":"frameworkId"
         }
@@ -2560,7 +2744,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
@@ -2600,7 +2784,7 @@
       "members":{
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the control. </p>",
+          "documentation":"<p> The unique identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         }
@@ -2648,13 +2832,13 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder in which evidence is stored. </p>"
+          "documentation":"<p> The unique identifier for the folder that the evidence is stored in. </p>"
         }
       }
     },
@@ -2771,6 +2955,24 @@
       "member":{"shape":"UUID"},
       "max":50,
       "min":0
+    },
+    "EvidenceInsights":{
+      "type":"structure",
+      "members":{
+        "noncompliantEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of compliance check evidence that Audit Manager classified as non-compliant. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. </p>"
+        },
+        "compliantEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of compliance check evidence that Audit Manager classified as compliant. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. </p>"
+        },
+        "inconclusiveEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of evidence that a compliance check ruling isn't available for. Evidence is inconclusive when the associated control uses Security Hub or Config as a data source but you didn't enable those services. This is also the case when a control uses a data source that doesn’t support compliance checks (for example, manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i> in the console, it's classified as <i>inconclusive</i> in <code>EvidenceInsights</code> data.</p> </note>"
+        }
+      },
+      "documentation":"<p>A breakdown of the latest compliance check status for the evidence in your Audit Manager assessments. </p>"
     },
     "EvidenceList":{
       "type":"list",
@@ -2943,13 +3145,13 @@
       "members":{
         "assessmentReportId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment report. </p>",
+          "documentation":"<p> The unique identifier for the assessment report. </p>",
           "location":"uri",
           "locationName":"assessmentReportId"
         },
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -2967,7 +3169,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p>The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         }
@@ -2986,19 +3188,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p>The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the control set. </p>",
+          "documentation":"<p> The unique identifier for the control set. </p>",
           "location":"querystring",
           "locationName":"controlSetId"
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the control. </p>",
+          "documentation":"<p> The unique identifier for the control. </p>",
           "location":"querystring",
           "locationName":"controlId"
         },
@@ -3010,7 +3212,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Represents the maximum number of results on a page or for an API request call. </p>",
+          "documentation":"<p>Represents the maximum number of results on a page or for an API request call. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -3021,11 +3223,11 @@
       "members":{
         "changeLogs":{
           "shape":"ChangeLogs",
-          "documentation":"<p> The list of user activity for the control. </p>"
+          "documentation":"<p>The list of user activity for the control. </p>"
         },
         "nextToken":{
           "shape":"Token",
-          "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -3143,19 +3345,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the control set. </p>",
+          "documentation":"<p> The unique identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>",
+          "documentation":"<p> The unique identifier for the folder that the evidence is stored in. </p>",
           "location":"uri",
           "locationName":"evidenceFolderId"
         }
@@ -3229,7 +3431,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
@@ -3271,25 +3473,25 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the control set. </p>",
+          "documentation":"<p> The unique identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "evidenceFolderId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the folder that the evidence is stored in. </p>",
+          "documentation":"<p> The unique identifier for the folder that the evidence is stored in. </p>",
           "location":"uri",
           "locationName":"evidenceFolderId"
         },
         "evidenceId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the evidence. </p>",
+          "documentation":"<p> The unique identifier for the evidence. </p>",
           "location":"uri",
           "locationName":"evidenceId"
         }
@@ -3301,6 +3503,41 @@
         "evidence":{
           "shape":"Evidence",
           "documentation":"<p> The evidence that the <code>GetEvidenceResponse</code> API returned. </p>"
+        }
+      }
+    },
+    "GetInsightsByAssessmentRequest":{
+      "type":"structure",
+      "required":["assessmentId"],
+      "members":{
+        "assessmentId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the assessment. </p>",
+          "location":"uri",
+          "locationName":"assessmentId"
+        }
+      }
+    },
+    "GetInsightsByAssessmentResponse":{
+      "type":"structure",
+      "members":{
+        "insights":{
+          "shape":"InsightsByAssessment",
+          "documentation":"<p> The assessment analytics data that the <code>GetInsightsByAssessment</code> API returned. </p>"
+        }
+      }
+    },
+    "GetInsightsRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "insights":{
+          "shape":"Insights",
+          "documentation":"<p>The analytics data that the <code>GetInsights</code> API returned. </p>"
         }
       }
     },
@@ -3369,6 +3606,70 @@
       "min":20,
       "pattern":"^arn:.*:iam:.*"
     },
+    "Insights":{
+      "type":"structure",
+      "members":{
+        "activeAssessmentsCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of active assessments in Audit Manager. </p>"
+        },
+        "noncompliantEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of compliance check evidence that Audit Manager classified as non-compliant on the <code>lastUpdated</code> date. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. </p>"
+        },
+        "compliantEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of compliance check evidence that Audit Manager classified as compliant on the <code>lastUpdated</code> date. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. </p>"
+        },
+        "inconclusiveEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of evidence without a compliance check ruling. Evidence is inconclusive when the associated control uses Security Hub or Config as a data source but you didn't enable those services. This is also the case when a control uses a data source that doesn’t support compliance checks (for example: manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i>, it's classed as <i>inconclusive</i> in <code>Insights</code> data.</p> </note>"
+        },
+        "assessmentControlsCountByNoncompliantEvidence":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of assessment controls that collected non-compliant evidence on the <code>lastUpdated</code> date. </p>"
+        },
+        "totalAssessmentControlsCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The total number of controls across all active assessments. </p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the cross-assessment insights were last updated. </p>"
+        }
+      },
+      "documentation":"<p>A summary of the latest analytics data for all your active assessments. </p> <p>This summary is a snapshot of the data that your active assessments collected on the <code>lastUpdated</code> date. It’s important to understand that the following totals are daily counts based on this date — they aren’t a total sum to date. </p> <p>The <code>Insights</code> data is eventually consistent. This means that, when you read data from <code>Insights</code>, the response might not instantly reflect the results of a recently completed write or update operation. If you repeat your read request after a few hours, the response should return the latest data.</p> <note> <p>If you delete an assessment or change its status to inactive, <code>InsightsByAssessment</code> includes data for that assessment as follows.</p> <ul> <li> <p> <b>Inactive assessments</b> - If Audit Manager collected evidence for your assessment before you changed it inactive, that evidence is included in the <code>InsightsByAssessment</code> counts for that day.</p> </li> <li> <p> <b>Deleted assessments</b> - If Audit Manager collected evidence for your assessment before you deleted it, that evidence isn't included in the <code>InsightsByAssessment</code> counts for that day.</p> </li> </ul> </note>"
+    },
+    "InsightsByAssessment":{
+      "type":"structure",
+      "members":{
+        "noncompliantEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of compliance check evidence that Audit Manager classified as non-compliant. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. </p>"
+        },
+        "compliantEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of compliance check evidence that Audit Manager classified as compliant. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. </p>"
+        },
+        "inconclusiveEvidenceCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The amount of evidence without a compliance check ruling. Evidence is inconclusive if the associated control uses Security Hub or Config as a data source and you didn't enable those services. This is also the case if a control uses a data source that doesn’t support compliance checks (for example, manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i>, it's classified as <i>inconclusive</i> in <code>InsightsByAssessment</code> data.</p> </note>"
+        },
+        "assessmentControlsCountByNoncompliantEvidence":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of assessment controls that collected non-compliant evidence on the <code>lastUpdated</code> date. </p>"
+        },
+        "totalAssessmentControlsCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The total number of controls in the assessment. </p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the assessment insights were last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the latest analytics data for a specific active assessment.</p> <p>This summary is a snapshot of the data that was collected on the <code>lastUpdated</code> date. It’s important to understand that the totals in <code>InsightsByAssessment</code> are daily counts based on this date — they aren’t a total sum to date. </p> <p>The <code>InsightsByAssessment</code> data is eventually consistent. This means that when you read data from <code>InsightsByAssessment</code>, the response might not instantly reflect the results of a recently completed write or update operation. If you repeat your read request after a few hours, the response returns the latest data.</p> <note> <p>If you delete an assessment or change its status to inactive, <code>InsightsByAssessment</code> includes data for that assessment as follows.</p> <ul> <li> <p> <b>Inactive assessments</b> - If Audit Manager collected evidence for your assessment before you changed it inactive, that evidence is included in the <code>InsightsByAssessment</code> counts for that day.</p> </li> <li> <p> <b>Deleted assessments</b> - If Audit Manager collected evidence for your assessment before you deleted it, that evidence isn't included in the <code>InsightsByAssessment</code> counts for that day.</p> </li> </ul> </note>"
+    },
     "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
@@ -3406,6 +3707,52 @@
       "max":100,
       "min":1,
       "pattern":"^[a-zA-Z0-9\\s-_()\\[\\]]+$"
+    },
+    "ListAssessmentControlInsightsByControlDomainRequest":{
+      "type":"structure",
+      "required":[
+        "controlDomainId",
+        "assessmentId"
+      ],
+      "members":{
+        "controlDomainId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the control domain. </p>",
+          "location":"querystring",
+          "locationName":"controlDomainId"
+        },
+        "assessmentId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the active assessment. </p>",
+          "location":"querystring",
+          "locationName":"assessmentId"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Represents the maximum number of results on a page or for an API request call. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAssessmentControlInsightsByControlDomainResponse":{
+      "type":"structure",
+      "members":{
+        "controlInsightsByAssessment":{
+          "shape":"ControlInsightsMetadataByAssessment",
+          "documentation":"<p>The assessment control analytics data that the <code>ListAssessmentControlInsightsByControlDomain</code> API returned. </p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>"
+        }
+      }
     },
     "ListAssessmentFrameworkShareRequestsRequest":{
       "type":"structure",
@@ -3518,6 +3865,12 @@
     "ListAssessmentsRequest":{
       "type":"structure",
       "members":{
+        "status":{
+          "shape":"AssessmentStatus",
+          "documentation":"<p> The current status of the assessment.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>",
@@ -3542,6 +3895,110 @@
         "nextToken":{
           "shape":"Token",
           "documentation":"<p> The pagination token that's used to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "ListControlDomainInsightsByAssessmentRequest":{
+      "type":"structure",
+      "required":["assessmentId"],
+      "members":{
+        "assessmentId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the active assessment. </p>",
+          "location":"querystring",
+          "locationName":"assessmentId"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Represents the maximum number of results on a page or for an API request call. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListControlDomainInsightsByAssessmentResponse":{
+      "type":"structure",
+      "members":{
+        "controlDomainInsights":{
+          "shape":"ControlDomainInsightsList",
+          "documentation":"<p>The control domain analytics data that the <code>ListControlDomainInsightsByAssessment</code> API returned. </p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "ListControlDomainInsightsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Represents the maximum number of results on a page or for an API request call. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListControlDomainInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "controlDomainInsights":{
+          "shape":"ControlDomainInsightsList",
+          "documentation":"<p>The control domain analytics data that the <code>ListControlDomainInsights</code> API returned. </p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "ListControlInsightsByControlDomainRequest":{
+      "type":"structure",
+      "required":["controlDomainId"],
+      "members":{
+        "controlDomainId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the control domain. </p>",
+          "location":"querystring",
+          "locationName":"controlDomainId"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Represents the maximum number of results on a page or for an API request call. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListControlInsightsByControlDomainResponse":{
+      "type":"structure",
+      "members":{
+        "controlInsightsMetadata":{
+          "shape":"ControlInsightsMetadata",
+          "documentation":"<p>The control analytics data that the <code>ListControlInsightsByControlDomain</code> API returned. </p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results. </p>"
         }
       }
     },
@@ -4212,19 +4669,19 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"ControlSetId",
-          "documentation":"<p> The identifier for the control set. </p>",
+          "documentation":"<p> The unique identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
         "controlId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the control. </p>",
+          "documentation":"<p> The unique identifier for the control. </p>",
           "location":"uri",
           "locationName":"controlId"
         },
@@ -4258,13 +4715,13 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
         "controlSetId":{
           "shape":"String",
-          "documentation":"<p> The identifier for the control set. </p>",
+          "documentation":"<p> The unique identifier for the control set. </p>",
           "location":"uri",
           "locationName":"controlSetId"
         },
@@ -4320,7 +4777,7 @@
       "members":{
         "frameworkId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the framework. </p>",
+          "documentation":"<p> The unique identifier for the framework. </p>",
           "location":"uri",
           "locationName":"frameworkId"
         },
@@ -4393,7 +4850,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },
@@ -4437,7 +4894,7 @@
       "members":{
         "assessmentId":{
           "shape":"UUID",
-          "documentation":"<p> The identifier for the assessment. </p>",
+          "documentation":"<p> The unique identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
         },

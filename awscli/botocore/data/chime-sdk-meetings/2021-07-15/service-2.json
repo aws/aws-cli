@@ -27,7 +27,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates a group of meeting attendees.</p>"
+      "documentation":"<p>Creates up to 100 attendees for an active Amazon Chime SDK meeting. For more information about the Amazon Chime SDK, see <a href=\"https://docs.aws.amazon.com/chime/latest/dg/meetings-sdk.html\">Using the Amazon Chime SDK</a> in the <i>Amazon Chime Developer Guide</i>.</p>"
     },
     "CreateAttendee":{
       "name":"CreateAttendee",
@@ -272,6 +272,7 @@
         }
       }
     },
+    "Boolean":{"type":"boolean"},
     "ClientRequestToken":{
       "type":"string",
       "max":64,
@@ -501,6 +502,10 @@
         "Region":{
           "shape":"TranscribeMedicalRegion",
           "documentation":"<p>The AWS Region passed to Amazon Transcribe Medical. If you don't specify a Region, Amazon Chime uses the meeting's Region.</p>"
+        },
+        "ContentIdentificationType":{
+          "shape":"TranscribeMedicalContentIdentificationType",
+          "documentation":"<p>Set this field to <code>PHI</code> to identify personal health information in the transcription output.</p>"
         }
       },
       "documentation":"<p>Settings specific to the Amazon Transcribe Medical engine.</p>"
@@ -528,6 +533,30 @@
         "Region":{
           "shape":"TranscribeRegion",
           "documentation":"<p>The AWS Region passed to Amazon Transcribe. If you don't specify a Region, Amazon Chime uses the meeting's Region.</p>"
+        },
+        "EnablePartialResultsStabilization":{
+          "shape":"Boolean",
+          "documentation":"<p>Generates partial transcription results that are less likely to change as meeting attendees speak. It does so by only allowing the last few words from the partial results to change.</p>"
+        },
+        "PartialResultsStability":{
+          "shape":"TranscribePartialResultsStability",
+          "documentation":"<p>The stabity level of a partial results transcription. Determines how stable you want the transcription results to be. A higher level means the transcription results are less likely to change.</p>"
+        },
+        "ContentIdentificationType":{
+          "shape":"TranscribeContentIdentificationType",
+          "documentation":"<p>Set this field to <code>PII</code> to identify personal health information in the transcription output.</p>"
+        },
+        "ContentRedactionType":{
+          "shape":"TranscribeContentRedactionType",
+          "documentation":"<p>Set this field to <code>PII</code> to redact personally identifiable information in the transcription output. Content redaction is performed only upon complete transcription of the audio segments.</p> <p>You can’t set both <code>ContentRedactionType</code> and <code>ContentIdentificationType</code> in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p>"
+        },
+        "PiiEntityTypes":{
+          "shape":"TranscribePiiEntityTypes",
+          "documentation":"<p>Lists the PII entity types you want to identify or redact. To specify entity types, you must enable <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p> <code>PIIEntityTypes</code> must be comma-separated. The available values are: <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING, CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, <code>SSN</code>, and <code>ALL</code>.</p> <p> <code>PiiEntityTypes</code> is an optional parameter with a default value of <code>ALL</code>.</p>"
+        },
+        "LanguageModelName":{
+          "shape":"TranscribeLanguageModelName",
+          "documentation":"<p>The name of the language model used during transcription.</p>"
         }
       },
       "documentation":"<p>Settings specific to the Amazon Transcribe engine.</p>"
@@ -833,6 +862,14 @@
       "type":"string",
       "max":4096
     },
+    "TranscribeContentIdentificationType":{
+      "type":"string",
+      "enum":["PII"]
+    },
+    "TranscribeContentRedactionType":{
+      "type":"string",
+      "enum":["PII"]
+    },
     "TranscribeLanguageCode":{
       "type":"string",
       "enum":[
@@ -849,6 +886,16 @@
         "ko-KR",
         "zh-CN"
       ]
+    },
+    "TranscribeLanguageModelName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "TranscribeMedicalContentIdentificationType":{
+      "type":"string",
+      "enum":["PHI"]
     },
     "TranscribeMedicalLanguageCode":{
       "type":"string",
@@ -883,6 +930,20 @@
         "CONVERSATION",
         "DICTATION"
       ]
+    },
+    "TranscribePartialResultsStability":{
+      "type":"string",
+      "enum":[
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "TranscribePiiEntityTypes":{
+      "type":"string",
+      "max":300,
+      "min":1,
+      "pattern":"^[A-Z_, ]+"
     },
     "TranscribeRegion":{
       "type":"string",
@@ -952,5 +1013,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>The Amazon Chime SDK meetings APIs in this section allow software developers to create Amazon Chime SDK meetings, set the AWS Regions for meetings, create and manage users, and send and receive meeting notifications. For more information about the meeting APIs, see <a href=\"http://amazonaws.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_meetings\">Amazon Chime SDK meetings</a>.</p>"
+  "documentation":"<p>The Amazon Chime SDK meetings APIs in this section allow software developers to create Amazon Chime SDK meetings, set the AWS Regions for meetings, create and manage users, and send and receive meeting notifications.</p>"
 }

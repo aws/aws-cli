@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.22.10
+=======
+
+* api-change:``redshift``: Added support of default IAM role for CreateCluster, RestoreFromClusterSnapshot and ModifyClusterIamRoles APIs
+* api-change:``appstream``: Includes APIs for managing resources for Elastic fleets: applications, app blocks, and application-fleet associations.
+* api-change:``application-insights``: Application Insights now supports monitoring for HANA
+* api-change:``lambda``: Add support for Lambda Function URLs. Customers can use Function URLs to create built-in HTTPS endpoints on their functions.
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``batch``: Documentation updates for AWS Batch.
+* api-change:``cloudformation``: The StackSets ManagedExecution feature will allow concurrency for non-conflicting StackSet operations and queuing the StackSet operations that conflict at a given time for later execution.
+* api-change:``medialive``: This release adds support for specifying a SCTE-35 PID on input. MediaLive now supports SCTE-35 PID selection on inputs containing one or more active SCTE-35 PIDs.
+
+
 1.22.9
 ======
 

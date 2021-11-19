@@ -1,6 +1,6 @@
 **To delete a timeline event**
 
-The following ``command-name`` example deletes a custom timeline event from the specified incident record. ::
+The following ``delete-timeline-event`` example deletes a custom timeline event from the specified incident record. ::
 
     aws ssm-incidents delete-timeline-event \
         --event-id "c0bcc885-a41d-eb01-b4ab-9d2de193643c" \

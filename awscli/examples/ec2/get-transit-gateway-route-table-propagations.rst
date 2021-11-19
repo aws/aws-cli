@@ -1,8 +1,8 @@
 **To display information about the route table propagations for the specified transit gateway route table**
 
- The following ``get-transit-gateway-route-table-propagations`` example returns the route table propagations for the specified route table. ::
- 
-     ec2 get-transit-gateway-route-table-propagations \
+The following ``get-transit-gateway-route-table-propagations`` example returns the route table propagations for the specified route table. ::
+
+    aws ec2 get-transit-gateway-route-table-propagations \
         --transit-gateway-route-table-id tgw-rtb-002573ed1eEXAMPLE
 
 Output::
@@ -30,4 +30,4 @@ Output::
         ]
     }
 
-For more information, see `View Transit Gateway Route Table Propagations<https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#view-tgw-route-propagations>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Transit gateway route tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html>`__ in the *Transit Gateways Guide*.

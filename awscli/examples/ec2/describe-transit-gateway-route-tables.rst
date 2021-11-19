@@ -1,6 +1,6 @@
 **To describe your transit gateway route tables**
 
-The following ``describe-transit-gateway-route-tables`` examples displays details for all of your transit gateway route tables. ::
+The following ``describe-transit-gateway-route-tables`` example displays details for your transit gateway route tables. ::
 
     aws ec2 describe-transit-gateway-route-tables
 
@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-For more information, see `View Transit Gateway Route Tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#view-tgw-route-tables>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `View transit gateway route tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#view-tgw-route-tables>`__ in the *Transit Gateways Guide*.

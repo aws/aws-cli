@@ -1,6 +1,6 @@
 **To associate a transit gateway with a multicast domain**
 
-This example returns the route table propagations for the specified route table. ::
+The following ``associate-transit-gateway-multicast-domain`` example associates the specified subnet and attachment with the specified multicast domain. ::
 
     aws ec2 associate-transit-gateway-multicast-domain \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef79d6e597 \
@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see 'Associate VPC Attachments and Subnets with a Transit Gateway Multicast Domain <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html#associate-attachment-to-domain>'__ in the *AWS Transit Gateways User Guide*.
+For more information, see `Managing multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/manage-domain.html>`__ in the *Transit Gateways Guide*.

@@ -1,6 +1,6 @@
 **To share a contact and engagements**
 
-The following ``command-name`` example adds a resource policy to the contact Akua that shares the contact and related engagements with the principal. ::
+The following ``put-contact-policy`` example adds a resource policy to the contact Akua that shares the contact and related engagements with the principal. ::
 
     aws ssm-contacts put-contact-policy \
         --contact-arn "arn:aws:ssm-contacts:us-east-1:111122223333:contact/akuam" \

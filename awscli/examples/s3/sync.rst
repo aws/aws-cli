@@ -37,7 +37,7 @@ Output::
     copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
     copy: s3://mybucket/test2.txt to s3://mybucket2/test2.txt
     
-**Sync from s3 bucket to local directory**
+**Sync from S3 bucket to local directory**
 
 The following ``sync`` command syncs files to a local directory from objects in a specified bucket and prefix by
 downloading s3 objects.  An s3 object will require downloading if one of the following conditions is true:

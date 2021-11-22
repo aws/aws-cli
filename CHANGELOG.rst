@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.22.11
+=======
+
+* api-change:``finspace-data``: Add new APIs for managing Datasets, Changesets, and Dataviews.
+* api-change:``braket``: This release adds support for Amazon Braket Hybrid Jobs.
+* api-change:``s3control``: Added Amazon CloudWatch publishing option for S3 Storage Lens metrics.
+* api-change:``chime-sdk-meetings``: Added new APIs for enabling Echo Reduction with Voice Focus.
+* api-change:``es``: This release adds an optional parameter dry-run for the UpdateElasticsearchDomainConfig API to perform basic validation checks, and detect the deployment type that will be required for the configuration change, without actually applying the change.
+* api-change:``connect``: This release adds support for UpdateContactFlowMetadata, DeleteContactFlow and module APIs. For details, see the Release Notes in the Amazon Connect Administrator Guide.
+* api-change:``ssm``: Adds new parameter to CreateActivation API . This parameter is for "internal use only".
+* api-change:``eks``: Adding missing exceptions to RegisterCluster operation
+* api-change:``dms``: Added new S3 endpoint settings to allow to convert the current UTC time into a specified time zone when a date partition folder is created. Using with 'DatePartitionedEnabled'.
+* api-change:``rds``: Adds local backup support to Amazon RDS on AWS Outposts.
+* api-change:``cloudformation``: This release include SDK changes for the feature launch of Stack Import to Service Managed StackSet.
+* api-change:``quicksight``: Add support for Exasol data source, 1 click enterprise embedding and email customization.
+
+
 1.22.10
 =======
 

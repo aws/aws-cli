@@ -2,6 +2,52 @@
 CHANGELOG
 =========
 
+2.4.1
+=====
+
+* api-change:``lambda``: Add support for Lambda Function URLs. Customers can use Function URLs to create built-in HTTPS endpoints on their functions.
+* api-change:``s3control``: Added Amazon CloudWatch publishing option for S3 Storage Lens metrics.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``rds``: Adds local backup support to Amazon RDS on AWS Outposts.
+* api-change:``backup``: This release adds new opt-in settings for advanced features for DynamoDB backups
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``sqs``: Amazon SQS adds a new queue attribute, SqsManagedSseEnabled, which enables server-side queue encryption using SQS owned encryption keys.
+* api-change:``ssm``: Adds new parameter to CreateActivation API . This parameter is for "internal use only".
+* api-change:``opensearch``: This release adds an optional parameter dry-run for the UpdateDomainConfig API to perform basic validation checks, and detect the deployment type that will be required for the configuration change, without actually applying the change.
+* api-change:``iotdeviceadvisor``: This release introduces a new feature for Device Advisor: ability to execute multiple test suites in parallel for given customer account. You can use GetEndpoint API to get the device-level test endpoint and call StartSuiteRun with "parallelRun=true" to run suites in parallel.
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``redshift``: This release adds support for reserved node exchange with restore/resize
+* api-change:``chime-sdk-meetings``: Added new APIs for enabling Echo Reduction with Voice Focus.
+* api-change:``dynamodb``: DynamoDB PartiQL now supports ReturnConsumedCapacity, which returns capacity units consumed by PartiQL APIs if the request specified returnConsumedCapacity parameter. PartiQL APIs include ExecuteStatement, BatchExecuteStatement, and ExecuteTransaction.
+* api-change:``s3``: Introduce two new Filters to S3 Lifecycle configurations - ObjectSizeGreaterThan and ObjectSizeLessThan. Introduce a new way to trigger actions on noncurrent versions by providing the number of newer noncurrent versions along with noncurrent days.
+* api-change:``finspace-data``: Update documentation for createChangeset API.
+* api-change:``appstream``: Includes APIs for managing resources for Elastic fleets: applications, app blocks, and application-fleet associations.
+* api-change:``cloudformation``: The StackSets ManagedExecution feature will allow concurrency for non-conflicting StackSet operations and queuing the StackSet operations that conflict at a given time for later execution.
+* api-change:``connect``: This release adds support for UpdateContactFlowMetadata, DeleteContactFlow and module APIs. For details, see the Release Notes in the Amazon Connect Administrator Guide.
+* api-change:``batch``: Documentation updates for AWS Batch.
+* api-change:``eks``: Adding missing exceptions to RegisterCluster operation
+* api-change:``es``: This release adds an optional parameter dry-run for the UpdateElasticsearchDomainConfig API to perform basic validation checks, and detect the deployment type that will be required for the configuration change, without actually applying the change.
+* api-change:``finspace-data``: Add new APIs for managing Datasets, Changesets, and Dataviews.
+* enhancement:``logs``: Add a JSON pretty print log format to the ``aws logs tail`` command.
+* api-change:``dms``: Added new S3 endpoint settings to allow to convert the current UTC time into a specified time zone when a date partition folder is created. Using with 'DatePartitionedEnabled'.
+* api-change:``quicksight``: Add support for Exasol data source, 1 click enterprise embedding and email customization.
+* api-change:``application-insights``: Application Insights now supports monitoring for HANA
+* api-change:``elasticache``: Adding support for r6gd instances for Redis with data tiering. In a cluster with data tiering enabled, when available memory capacity is exhausted, the least recently used data is automatically tiered to solid state drives for cost-effective capacity scaling with minimal performance impact.
+* api-change:``medialive``: This release adds support for specifying a SCTE-35 PID on input. MediaLive now supports SCTE-35 PID selection on inputs containing one or more active SCTE-35 PIDs.
+* api-change:``redshift``: Added support of default IAM role for CreateCluster, RestoreFromClusterSnapshot and ModifyClusterIamRoles APIs
+* api-change:``macie2``: Documentation updates for Amazon Macie
+* enhancement:``cloudformation``: Expand the ``~`` character for the template file argument in the ``aws cloudformation deploy`` command.
+* api-change:``iot``: This release introduces a new feature, Managed Job Template, for AWS IoT Jobs Service. Customers can now use service provided managed job templates to easily create jobs for supported standard job actions.
+* api-change:``iotwireless``: Two new APIs, GetNetworkAnalyzerConfiguration and UpdateNetworkAnalyzerConfiguration, are added for the newly released Network Analyzer feature which enables customers to view real-time frame information and logs from LoRaWAN devices and gateways.
+* api-change:``braket``: This release adds support for Amazon Braket Hybrid Jobs.
+* api-change:``lambda``: Release Lambda event source filtering for SQS, Kinesis Streams, and DynamoDB Streams.
+* api-change:``cloudformation``: This release include SDK changes for the feature launch of Stack Import to Service Managed StackSet.
+* api-change:``workspaces``: Documentation updates for Amazon WorkSpaces
+* api-change:``ecs``: Documentation update for ARM support on Amazon ECS.
+* api-change:``ec2``: This release adds a new parameter ipv6Native to the allow creation of IPv6-only subnets using the CreateSubnet operation, and the operation ModifySubnetAttribute includes new parameters to modify subnet attributes to use resource-based naming and enable DNS resolutions for Private DNS name.
+* api-change:``rds``: Adds support for Multi-AZ DB clusters for RDS for MySQL and RDS for PostgreSQL.
+
+
 2.4.0
 =====
 

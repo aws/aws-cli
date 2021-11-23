@@ -17,7 +17,7 @@
       "name":"CreateChangeset",
       "http":{
         "method":"POST",
-        "requestUri":"/datasets/{datasetId}/changesets"
+        "requestUri":"/datasets/{datasetId}/changesetsv2"
       },
       "input":{"shape":"CreateChangesetRequest"},
       "output":{"shape":"CreateChangesetResponse"},
@@ -26,9 +26,120 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a new changeset in a FinSpace dataset.</p>"
+      "documentation":"<p>Creates a new Changeset in a FinSpace Dataset.</p>"
+    },
+    "CreateDataView":{
+      "name":"CreateDataView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datasets/{datasetId}/dataviewsv2"
+      },
+      "input":{"shape":"CreateDataViewRequest"},
+      "output":{"shape":"CreateDataViewResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a Dataview for a Dataset.</p>"
+    },
+    "CreateDataset":{
+      "name":"CreateDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datasetsv2"
+      },
+      "input":{"shape":"CreateDatasetRequest"},
+      "output":{"shape":"CreateDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new FinSpace Dataset.</p>"
+    },
+    "DeleteDataset":{
+      "name":"DeleteDataset",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/datasetsv2/{datasetId}"
+      },
+      "input":{"shape":"DeleteDatasetRequest"},
+      "output":{"shape":"DeleteDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a FinSpace Dataset.</p>"
+    },
+    "GetChangeset":{
+      "name":"GetChangeset",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}/changesetsv2/{changesetId}"
+      },
+      "input":{"shape":"GetChangesetRequest"},
+      "output":{"shape":"GetChangesetResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Get information about a Changeset.</p>"
+    },
+    "GetDataView":{
+      "name":"GetDataView",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}/dataviewsv2/{dataviewId}"
+      },
+      "input":{"shape":"GetDataViewRequest"},
+      "output":{"shape":"GetDataViewResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Gets information about a Dataview.</p>"
+    },
+    "GetDataset":{
+      "name":"GetDataset",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasetsv2/{datasetId}"
+      },
+      "input":{"shape":"GetDatasetRequest"},
+      "output":{"shape":"GetDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Returns information about a Dataset.</p>"
     },
     "GetProgrammaticAccessCredentials":{
       "name":"GetProgrammaticAccessCredentials",
@@ -40,10 +151,11 @@
       "output":{"shape":"GetProgrammaticAccessCredentialsResponse"},
       "errors":[
         {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Request programmatic credentials to use with Habanero SDK.</p>"
+      "documentation":"<p>Request programmatic credentials to use with FinSpace SDK.</p>"
     },
     "GetWorkingLocation":{
       "name":"GetWorkingLocation",
@@ -59,7 +171,95 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>A temporary Amazon S3 location to copy your files from a source location to stage or use as a scratch space in Habanero notebook.</p>"
+      "documentation":"<p>A temporary Amazon S3 location, where you can copy your files from a source location to stage or use as a scratch space in FinSpace notebook.</p>"
+    },
+    "ListChangesets":{
+      "name":"ListChangesets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}/changesetsv2"
+      },
+      "input":{"shape":"ListChangesetsRequest"},
+      "output":{"shape":"ListChangesetsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Lists the FinSpace Changesets for a Dataset.</p>"
+    },
+    "ListDataViews":{
+      "name":"ListDataViews",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}/dataviewsv2"
+      },
+      "input":{"shape":"ListDataViewsRequest"},
+      "output":{"shape":"ListDataViewsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Lists all available Dataviews for a Dataset.</p>"
+    },
+    "ListDatasets":{
+      "name":"ListDatasets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasetsv2"
+      },
+      "input":{"shape":"ListDatasetsRequest"},
+      "output":{"shape":"ListDatasetsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all of the active Datasets that a user has access to.</p>"
+    },
+    "UpdateChangeset":{
+      "name":"UpdateChangeset",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/datasets/{datasetId}/changesetsv2/{changesetId}"
+      },
+      "input":{"shape":"UpdateChangesetRequest"},
+      "output":{"shape":"UpdateChangesetResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates a FinSpace Changeset.</p>"
+    },
+    "UpdateDataset":{
+      "name":"UpdateDataset",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/datasetsv2/{datasetId}"
+      },
+      "input":{"shape":"UpdateDatasetRequest"},
+      "output":{"shape":"UpdateDatasetResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a FinSpace Dataset.</p>"
     }
   },
   "shapes":{
@@ -72,135 +272,343 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "AliasString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^alias\\/\\S+"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "documentation":"Common Boolean data type"
+    },
     "ChangeType":{
       "type":"string",
+      "documentation":"Indicates how the given change will be applied to the dataset.",
       "enum":[
         "REPLACE",
         "APPEND",
         "MODIFY"
       ]
     },
-    "ChangesetInfo":{
+    "ChangesetArn":{
+      "type":"string",
+      "documentation":"Arn for a given Changeset"
+    },
+    "ChangesetErrorInfo":{
       "type":"structure",
       "members":{
-        "id":{
-          "shape":"IdType",
-          "documentation":"<p>Unique identifier for a changeset.</p>"
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The text of the error message.</p>"
+        },
+        "errorCategory":{
+          "shape":"ErrorCategory",
+          "documentation":"<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> -The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> - Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> - Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> - One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> - The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> - An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> - Cancelled.</p> </li> <li> <p> <code>USER_RECOVERABLE</code> - A user recoverable error has occurred.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The structure with error messages.</p>"
+    },
+    "ChangesetId":{
+      "type":"string",
+      "documentation":"ID used to identify a Changeset",
+      "max":26,
+      "min":1
+    },
+    "ChangesetList":{
+      "type":"list",
+      "member":{"shape":"ChangesetSummary"},
+      "documentation":"List of Changeset Summaries"
+    },
+    "ChangesetSummary":{
+      "type":"structure",
+      "members":{
+        "changesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier for a Changeset.</p>"
         },
         "changesetArn":{
-          "shape":"arn",
-          "documentation":"<p>The ARN identifier of the changeset.</p>"
+          "shape":"ChangesetArn",
+          "documentation":"<p>The ARN identifier of the Changeset.</p>"
         },
         "datasetId":{
-          "shape":"IdType",
-          "documentation":"<p>The unique identifier for the FinSpace dataset in which the changeset is created.</p>"
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset in which the Changeset is created.</p>"
         },
         "changeType":{
           "shape":"ChangeType",
-          "documentation":"<p>Change type indicates how a changeset is applied to a dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset is considered as a replacement to all prior loaded changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset is considered as an addition to the end of all prior loaded changesets.</p> </li> <li> <p> <code>MODIFY</code> - Changeset is considered as a replacement to a specific prior ingested changeset.</p> </li> </ul>"
-        },
-        "sourceType":{
-          "shape":"SourceType",
-          "documentation":"<p>Type of the data source from which the files to create the changeset are sourced.</p> <ul> <li> <p> <code>S3</code> - Amazon S3.</p> </li> </ul>"
+          "documentation":"<p>Type that indicates how a Changeset is applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset is considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset is considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> - Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>"
         },
         "sourceParams":{
-          "shape":"stringMap",
-          "documentation":"<p>Source path from which the files to create the changeset are sourced.</p>"
-        },
-        "formatType":{
-          "shape":"FormatType",
-          "documentation":"<p>Format type of the input files loaded into the changeset.</p>"
+          "shape":"SourceParams",
+          "documentation":"<p>Options that define the location of the data being ingested.</p>"
         },
         "formatParams":{
-          "shape":"stringMap",
-          "documentation":"<p>Structure of the source file(s).</p>"
+          "shape":"FormatParams",
+          "documentation":"<p>Options that define the structure of the source file(s).</p>"
         },
-        "createTimestamp":{
-          "shape":"Timestamp",
-          "documentation":"<p>The timestamp at which the changeset was created in FinSpace.</p>"
+        "createTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The timestamp at which the Changeset was created in FinSpace. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
         },
         "status":{
-          "shape":"ChangesetStatus",
-          "documentation":"<p>The status of changeset creation operation.</p>"
+          "shape":"IngestionStatus",
+          "documentation":"<p>Status of the Changeset ingestion.</p> <ul> <li> <p> <code>PENDING</code> - Changeset is pending creation.</p> </li> <li> <p> <code>FAILED</code> - Changeset creation has failed.</p> </li> <li> <p> <code>SUCCESS</code> - Changeset creation has succeeded.</p> </li> <li> <p> <code>RUNNING</code> - Changeset creation is running.</p> </li> <li> <p> <code>STOP_REQUESTED</code> - User requested Changeset creation to stop.</p> </li> </ul>"
         },
         "errorInfo":{
-          "shape":"ErrorInfo",
+          "shape":"ChangesetErrorInfo",
           "documentation":"<p>The structure with error messages.</p>"
         },
-        "changesetLabels":{
-          "shape":"stringMap",
-          "documentation":"<p>Tags associated with the changeset.</p>"
+        "activeUntilTimestamp":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>Time until which the Changeset is active. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
+          "box":true
         },
         "updatesChangesetId":{
-          "shape":"stringValue",
-          "documentation":"<p>Unique identifier of the changeset that is updated.</p>"
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier of the Changeset that is updated.</p>"
         },
         "updatedByChangesetId":{
-          "shape":"stringValue",
-          "documentation":"<p>Unique identifier of the changeset that is updated a changeset.</p>"
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier of the updated Changeset.</p>"
         }
       },
-      "documentation":"<p>A changeset is unit of data in a dataset.</p>"
+      "documentation":"<p>A Changeset is unit of data in a Dataset.</p>"
     },
-    "ChangesetStatus":{
+    "ClientToken":{
       "type":"string",
+      "documentation":"Idempotence Token for API operations",
+      "max":128,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ColumnDataType":{
+      "type":"string",
+      "documentation":"Data type of a column.",
       "enum":[
-        "PENDING",
-        "FAILED",
-        "SUCCESS",
-        "RUNNING",
-        "STOP_REQUESTED"
+        "STRING",
+        "CHAR",
+        "INTEGER",
+        "TINYINT",
+        "SMALLINT",
+        "BIGINT",
+        "FLOAT",
+        "DOUBLE",
+        "DATE",
+        "DATETIME",
+        "BOOLEAN",
+        "BINARY"
       ]
+    },
+    "ColumnDefinition":{
+      "type":"structure",
+      "members":{
+        "dataType":{
+          "shape":"ColumnDataType",
+          "documentation":"<p>Data type of a column.</p> <ul> <li> <p> <code>STRING</code> - A String data type.</p> <p> <code>CHAR</code> - A char data type.</p> <p> <code>INTEGER</code> - An integer data type.</p> <p> <code>TINYINT</code> - A tinyint data type.</p> <p> <code>SMALLINT</code> - A smallint data type.</p> <p> <code>BIGINT</code> - A bigint data type.</p> <p> <code>FLOAT</code> - A float data type.</p> <p> <code>DOUBLE</code> - A double data type.</p> <p> <code>DATE</code> - A date data type.</p> <p> <code>DATETIME</code> - A datetime data type.</p> <p> <code>BOOLEAN</code> - A boolean data type.</p> <p> <code>BINARY</code> - A binary data type.</p> </li> </ul>"
+        },
+        "columnName":{
+          "shape":"ColumnName",
+          "documentation":"<p>Name for a column.</p>"
+        },
+        "columnDescription":{
+          "shape":"ColumnDescription",
+          "documentation":"<p>Description for a column.</p>"
+        }
+      },
+      "documentation":"<p>The definition of a column in a tabular Dataset.</p>"
+    },
+    "ColumnDescription":{
+      "type":"string",
+      "documentation":"Column Description",
+      "max":512,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
+    "ColumnList":{
+      "type":"list",
+      "member":{"shape":"ColumnDefinition"},
+      "documentation":"List of Column Definitions"
+    },
+    "ColumnName":{
+      "type":"string",
+      "documentation":"Column Name",
+      "max":126,
+      "pattern":".*\\S.*"
+    },
+    "ColumnNameList":{
+      "type":"list",
+      "member":{"shape":"ColumnName"},
+      "documentation":"List of Column Names"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The request conflicts with an existing resource.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "CreateChangesetRequest":{
       "type":"structure",
       "required":[
         "datasetId",
         "changeType",
-        "sourceType",
-        "sourceParams"
+        "sourceParams",
+        "formatParams"
       ],
       "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
         "datasetId":{
-          "shape":"IdType",
-          "documentation":"<p>The unique identifier for the FinSpace dataset in which the changeset will be created.</p>",
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset where the Changeset will be created. </p>",
           "location":"uri",
           "locationName":"datasetId"
         },
         "changeType":{
           "shape":"ChangeType",
-          "documentation":"<p>Option to indicate how a changeset will be applied to a dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset will be considered as a replacement to all prior loaded changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset will be considered as an addition to the end of all prior loaded changesets.</p> </li> </ul>"
-        },
-        "sourceType":{
-          "shape":"SourceType",
-          "documentation":"<p>Type of the data source from which the files to create the changeset will be sourced.</p> <ul> <li> <p> <code>S3</code> - Amazon S3.</p> </li> </ul>"
+          "documentation":"<p>Option to indicate how a Changeset will be applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset will be considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset will be considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> - Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>"
         },
         "sourceParams":{
-          "shape":"stringMap",
-          "documentation":"<p>Source path from which the files to create the changeset will be sourced.</p>"
-        },
-        "formatType":{
-          "shape":"FormatType",
-          "documentation":"<p>Format type of the input files being loaded into the changeset.</p>"
+          "shape":"SourceParams",
+          "documentation":"<p>Options that define the location of the data being ingested.</p>"
         },
         "formatParams":{
-          "shape":"stringMap",
-          "documentation":"<p>Options that define the structure of the source file(s).</p>"
-        },
-        "tags":{
-          "shape":"stringMap",
-          "documentation":"<p>Metadata tags to apply to this changeset.</p>"
+          "shape":"FormatParams",
+          "documentation":"<p>Options that define the structure of the source file(s) including the format type (<code>formatType</code>), header row (<code>withHeader</code>), data separation character (<code>separator</code>) and the type of compression (<code>compression</code>). </p> <p> <code>formatType</code> is a required attribute and can have the following values: </p> <ul> <li> <p> <code>PARQUET</code> - Parquet source file format.</p> </li> <li> <p> <code>CSV</code> - CSV source file format.</p> </li> <li> <p> <code>JSON</code> - JSON source file format.</p> </li> <li> <p> <code>XML</code> - XML source file format.</p> </li> </ul> <p> For example, you could specify the following for <code>formatParams</code>: <code> \"formatParams\": { \"formatType\": \"CSV\", \"withHeader\": \"true\", \"separator\": \",\", \"compression\":\"None\" } </code> </p>"
         }
-      }
+      },
+      "documentation":"The request for a CreateChangeset operation."
     },
     "CreateChangesetResponse":{
       "type":"structure",
       "members":{
-        "changeset":{
-          "shape":"ChangesetInfo",
-          "documentation":"<p>Returns the changeset details.</p>"
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset where the Changeset is created.</p>"
+        },
+        "changesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier of the Changeset that is created.</p>"
         }
-      }
+      },
+      "documentation":"The response from a CreateChangeset operation."
+    },
+    "CreateDataViewRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "destinationTypeParams"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique Dataset identifier that is used to create a Dataview.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "autoUpdate":{
+          "shape":"Boolean",
+          "documentation":"<p>Flag to indicate Dataview should be updated automatically.</p>"
+        },
+        "sortColumns":{
+          "shape":"SortColumnList",
+          "documentation":"<p>Columns to be used for sorting the data.</p>"
+        },
+        "partitionColumns":{
+          "shape":"PartitionColumnList",
+          "documentation":"<p>Ordered set of column names used to partition data.</p>"
+        },
+        "asOfTimestamp":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>Beginning time to use for the Dataview. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
+          "box":true
+        },
+        "destinationTypeParams":{
+          "shape":"DataViewDestinationTypeParams",
+          "documentation":"<p>Options that define the destination type for the Dataview.</p>"
+        }
+      },
+      "documentation":"Request for creating a data view."
+    },
+    "CreateDataViewResponse":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the Dataset used for the Dataview.</p>"
+        },
+        "dataViewId":{
+          "shape":"DataViewId",
+          "documentation":"<p>The unique identifier for the created Dataview.</p>"
+        }
+      },
+      "documentation":"Response for creating a data view."
+    },
+    "CreateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetTitle",
+        "kind",
+        "datasetDescription",
+        "permissionGroupParams",
+        "alias"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "datasetTitle":{
+          "shape":"DatasetTitle",
+          "documentation":"<p>Display title for a FinSpace Dataset.</p>"
+        },
+        "kind":{
+          "shape":"DatasetKind",
+          "documentation":"<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> - Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> - Data is structured in a non-tabular format.</p> </li> </ul>"
+        },
+        "datasetDescription":{
+          "shape":"DatasetDescription",
+          "documentation":"<p>Description of a Dataset.</p>"
+        },
+        "ownerInfo":{
+          "shape":"DatasetOwnerInfo",
+          "documentation":"<p>Contact information for a Dataset owner.</p>"
+        },
+        "permissionGroupParams":{
+          "shape":"PermissionGroupParams",
+          "documentation":"<p>Permission group parameters for Dataset permissions.</p>"
+        },
+        "alias":{
+          "shape":"AliasString",
+          "documentation":"<p>The unique resource identifier for a Dataset.</p>"
+        },
+        "schemaDefinition":{
+          "shape":"SchemaUnion",
+          "documentation":"<p>Definition for a schema on a tabular Dataset.</p>"
+        }
+      },
+      "documentation":"The request for a CreateDataset operation"
+    },
+    "CreateDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the created Dataset.</p>"
+        }
+      },
+      "documentation":"The response from a CreateDataset operation"
     },
     "Credentials":{
       "type":"structure",
@@ -218,43 +626,506 @@
           "documentation":"<p>The session token.</p>"
         }
       },
-      "documentation":"<p>Set short term API credentials.</p>"
+      "documentation":"<p>Short term API credentials.</p>"
     },
-    "ErrorCategory":{
+    "DataViewArn":{
       "type":"string",
-      "enum":[
-        "The_inputs_to_this_request_are_invalid",
-        "Service_limits_have_been_exceeded",
-        "Missing_required_permission_to_perform_this_request",
-        "One_or_more_inputs_to_this_request_were_not_found",
-        "The_system_temporarily_lacks_sufficient_resources_to_process_the_request",
-        "An_internal_error_has_occurred",
-        "Cancelled",
-        "A_user_recoverable_error_has_occurred"
-      ]
+      "documentation":"Arn of a DataView"
     },
-    "ErrorInfo":{
+    "DataViewDestinationType":{
+      "type":"string",
+      "documentation":"DataView Destination Type"
+    },
+    "DataViewDestinationTypeParams":{
+      "type":"structure",
+      "required":["destinationType"],
+      "members":{
+        "destinationType":{
+          "shape":"DataViewDestinationType",
+          "documentation":"<p>Destination type for a Dataview.</p> <ul> <li> <p> <code>GLUE_TABLE</code> - Glue table destination type.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Structure for the Dataview destination type parameters.</p>"
+    },
+    "DataViewErrorInfo":{
       "type":"structure",
       "members":{
         "errorMessage":{
-          "shape":"stringValueMaxLength1000",
+          "shape":"ErrorMessage",
           "documentation":"<p>The text of the error message.</p>"
         },
         "errorCategory":{
           "shape":"ErrorCategory",
-          "documentation":"<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> -The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> - Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> - Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> - One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> - The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> - An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> - A user recoverable error has occurred.</p> </li> </ul>"
+          "documentation":"<p>The category of the error.</p> <ul> <li> <p> <code>VALIDATION</code> -The inputs to this request are invalid.</p> </li> <li> <p> <code>SERVICE_QUOTA_EXCEEDED</code> - Service quotas have been exceeded. Please contact AWS support to increase quotas.</p> </li> <li> <p> <code>ACCESS_DENIED</code> - Missing required permission to perform this request.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> - One or more inputs to this request were not found.</p> </li> <li> <p> <code>THROTTLING</code> - The system temporarily lacks sufficient resources to process the request.</p> </li> <li> <p> <code>INTERNAL_SERVICE_EXCEPTION</code> - An internal service error has occurred.</p> </li> <li> <p> <code>CANCELLED</code> - Cancelled.</p> </li> <li> <p> <code>USER_RECOVERABLE</code> - A user recoverable error has occurred.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Error message.</p>"
+      "documentation":"<p>The structure with error messages.</p>"
     },
-    "FormatType":{
+    "DataViewId":{
       "type":"string",
+      "documentation":"DataView ID",
+      "max":26,
+      "min":1
+    },
+    "DataViewList":{
+      "type":"list",
+      "member":{"shape":"DataViewSummary"},
+      "documentation":"List of Data Views"
+    },
+    "DataViewStatus":{
+      "type":"string",
+      "documentation":"Status of a DataView",
       "enum":[
-        "CSV",
-        "JSON",
-        "PARQUET",
-        "XML"
+        "RUNNING",
+        "STARTING",
+        "FAILED",
+        "CANCELLED",
+        "TIMEOUT",
+        "SUCCESS",
+        "PENDING",
+        "FAILED_CLEANUP_FAILED"
       ]
+    },
+    "DataViewSummary":{
+      "type":"structure",
+      "members":{
+        "dataViewId":{
+          "shape":"DataViewId",
+          "documentation":"<p>The unique identifier for the Dataview.</p>"
+        },
+        "dataViewArn":{
+          "shape":"DataViewArn",
+          "documentation":"<p>The ARN identifier of the Dataview.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>Th unique identifier for the Dataview Dataset.</p>"
+        },
+        "asOfTimestamp":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>Time range to use for the Dataview. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
+          "box":true
+        },
+        "partitionColumns":{
+          "shape":"PartitionColumnList",
+          "documentation":"<p>Ordered set of column names used to partition data.</p>"
+        },
+        "sortColumns":{
+          "shape":"SortColumnList",
+          "documentation":"<p>Columns to be used for sorting the data.</p>"
+        },
+        "status":{
+          "shape":"DataViewStatus",
+          "documentation":"<p>The status of a Dataview creation.</p> <ul> <li> <p> <code>RUNNING</code> - Dataview creation is running.</p> </li> <li> <p> <code>STARTING</code> - Dataview creation is starting.</p> </li> <li> <p> <code>FAILED</code> - Dataview creation has failed.</p> </li> <li> <p> <code>CANCELLED</code> - Dataview creation has been cancelled.</p> </li> <li> <p> <code>TIMEOUT</code> - Dataview creation has timed out.</p> </li> <li> <p> <code>SUCCESS</code> - Dataview creation has succeeded.</p> </li> <li> <p> <code>PENDING</code> - Dataview creation is pending.</p> </li> <li> <p> <code>FAILED_CLEANUP_FAILED</code> - Dataview creation failed and resource cleanup failed.</p> </li> </ul>"
+        },
+        "errorInfo":{
+          "shape":"DataViewErrorInfo",
+          "documentation":"<p>The structure with error messages.</p>"
+        },
+        "destinationTypeProperties":{
+          "shape":"DataViewDestinationTypeParams",
+          "documentation":"<p>Information about the Dataview destination.</p>"
+        },
+        "autoUpdate":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to indicate Dataview should be updated automatically.</p>"
+        },
+        "createTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The timestamp at which the Dataview was created in FinSpace. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The last time that a Dataview was modified. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        }
+      },
+      "documentation":"<p>Structure for the summary of a Dataview.</p>"
+    },
+    "Dataset":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>An identifier for a Dataset.</p>"
+        },
+        "datasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The ARN identifier of the Dataset.</p>"
+        },
+        "datasetTitle":{
+          "shape":"DatasetTitle",
+          "documentation":"<p>Display title for a Dataset.</p>"
+        },
+        "kind":{
+          "shape":"DatasetKind",
+          "documentation":"<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> - Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> - Data is structured in a non-tabular format.</p> </li> </ul>"
+        },
+        "datasetDescription":{
+          "shape":"DatasetDescription",
+          "documentation":"<p>Description for a Dataset.</p>"
+        },
+        "ownerInfo":{
+          "shape":"DatasetOwnerInfo",
+          "documentation":"<p>Contact information for a Dataset owner.</p>"
+        },
+        "createTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The timestamp at which the Dataset was created in FinSpace. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The last time that the Dataset was modified. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "schemaDefinition":{
+          "shape":"SchemaUnion",
+          "documentation":"<p>Definition for a schema on a tabular Dataset.</p>"
+        },
+        "alias":{
+          "shape":"AliasString",
+          "documentation":"<p>The unique resource identifier for a Dataset.</p>"
+        }
+      },
+      "documentation":"<p>The structure for a Dataset.</p>"
+    },
+    "DatasetArn":{
+      "type":"string",
+      "documentation":"Arn of a Dataset"
+    },
+    "DatasetDescription":{
+      "type":"string",
+      "documentation":"Description of a dataset",
+      "max":256,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
+    "DatasetId":{
+      "type":"string",
+      "documentation":"ID for a given Dataset",
+      "max":26,
+      "min":1
+    },
+    "DatasetKind":{
+      "type":"string",
+      "documentation":"Dataset Kind",
+      "enum":[
+        "TABULAR",
+        "NON_TABULAR"
+      ]
+    },
+    "DatasetList":{
+      "type":"list",
+      "member":{"shape":"Dataset"},
+      "documentation":"List of Dataset structures"
+    },
+    "DatasetOwnerInfo":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"OwnerName",
+          "documentation":"<p>Name of the Dataset owner.</p>"
+        },
+        "phoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>Phone number for the Dataset owner.</p>"
+        },
+        "email":{
+          "shape":"Email",
+          "documentation":"<p>Email address for the Dataset owner.</p>"
+        }
+      },
+      "documentation":"<p>A structure for Dataset owner info.</p>"
+    },
+    "DatasetStatus":{
+      "type":"string",
+      "documentation":"Status of the dataset process returned from scheduler service.",
+      "enum":[
+        "PENDING",
+        "FAILED",
+        "SUCCESS",
+        "RUNNING"
+      ]
+    },
+    "DatasetTitle":{
+      "type":"string",
+      "documentation":"Title for a given Dataset",
+      "max":255,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "DeleteDatasetRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token used to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the Dataset to be deleted.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      },
+      "documentation":"The request for a DeleteDataset operation."
+    },
+    "DeleteDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the deleted Dataset.</p>"
+        }
+      },
+      "documentation":"The response from an DeleteDataset operation"
+    },
+    "Email":{
+      "type":"string",
+      "documentation":"Email of Dataset Owner",
+      "max":320,
+      "min":4,
+      "pattern":"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
+    },
+    "ErrorCategory":{
+      "type":"string",
+      "documentation":"Changeset Error Category",
+      "enum":[
+        "VALIDATION",
+        "SERVICE_QUOTA_EXCEEDED",
+        "ACCESS_DENIED",
+        "RESOURCE_NOT_FOUND",
+        "THROTTLING",
+        "INTERNAL_SERVICE_EXCEPTION",
+        "CANCELLED",
+        "USER_RECOVERABLE"
+      ]
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "documentation":"Changeset Error Message",
+      "max":1000
+    },
+    "FormatParams":{
+      "type":"map",
+      "key":{"shape":"StringMapKey"},
+      "value":{"shape":"StringMapValue"},
+      "documentation":"Format Parameters of a Changeset"
+    },
+    "GetChangesetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "changesetId"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset where the Changeset is created.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "changesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier of the Changeset for which to get data.</p>",
+          "location":"uri",
+          "locationName":"changesetId"
+        }
+      },
+      "documentation":"Request to describe a changeset."
+    },
+    "GetChangesetResponse":{
+      "type":"structure",
+      "members":{
+        "changesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier for a Changeset.</p>"
+        },
+        "changesetArn":{
+          "shape":"ChangesetArn",
+          "documentation":"<p>The ARN identifier of the Changeset.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset where the Changeset is created.</p>"
+        },
+        "changeType":{
+          "shape":"ChangeType",
+          "documentation":"<p>Type that indicates how a Changeset is applied to a Dataset.</p> <ul> <li> <p> <code>REPLACE</code> - Changeset is considered as a replacement to all prior loaded Changesets.</p> </li> <li> <p> <code>APPEND</code> - Changeset is considered as an addition to the end of all prior loaded Changesets.</p> </li> <li> <p> <code>MODIFY</code> - Changeset is considered as a replacement to a specific prior ingested Changeset.</p> </li> </ul>"
+        },
+        "sourceParams":{
+          "shape":"SourceParams",
+          "documentation":"<p>Options that define the location of the data being ingested.</p>"
+        },
+        "formatParams":{
+          "shape":"FormatParams",
+          "documentation":"<p>Structure of the source file(s).</p>"
+        },
+        "createTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The timestamp at which the Changeset was created in FinSpace. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "status":{
+          "shape":"IngestionStatus",
+          "documentation":"<p>The status of Changeset creation operation.</p>"
+        },
+        "errorInfo":{
+          "shape":"ChangesetErrorInfo",
+          "documentation":"<p>The structure with error messages.</p>"
+        },
+        "activeUntilTimestamp":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>Time until which the Changeset is active. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
+          "box":true
+        },
+        "updatesChangesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier of the Changeset that is being updated.</p>"
+        },
+        "updatedByChangesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier of the updated Changeset.</p>"
+        }
+      },
+      "documentation":"The response from a describe changeset operation"
+    },
+    "GetDataViewRequest":{
+      "type":"structure",
+      "required":[
+        "dataViewId",
+        "datasetId"
+      ],
+      "members":{
+        "dataViewId":{
+          "shape":"DataViewId",
+          "documentation":"<p>The unique identifier for the Dataview.</p>",
+          "location":"uri",
+          "locationName":"dataviewId"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the Dataset used in the Dataview.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      },
+      "documentation":"Request for retrieving a data view detail. Grouped / accessible within a dataset by its dataset id."
+    },
+    "GetDataViewResponse":{
+      "type":"structure",
+      "members":{
+        "autoUpdate":{
+          "shape":"Boolean",
+          "documentation":"<p>Flag to indicate Dataview should be updated automatically.</p>"
+        },
+        "partitionColumns":{
+          "shape":"PartitionColumnList",
+          "documentation":"<p>Ordered set of column names used to partition data.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the Dataset used in the Dataview.</p>"
+        },
+        "asOfTimestamp":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>Time range to use for the Dataview. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
+          "box":true
+        },
+        "errorInfo":{
+          "shape":"DataViewErrorInfo",
+          "documentation":"<p>Information about an error that occurred for the Dataview.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The last time that a Dataview was modified. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "createTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The timestamp at which the Dataview was created in FinSpace. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "sortColumns":{
+          "shape":"SortColumnList",
+          "documentation":"<p>Columns to be used for sorting the data.</p>"
+        },
+        "dataViewId":{
+          "shape":"DataViewId",
+          "documentation":"<p>The unique identifier for the Dataview.</p>"
+        },
+        "dataViewArn":{
+          "shape":"DataViewArn",
+          "documentation":"<p>The ARN identifier of the Dataview.</p>"
+        },
+        "destinationTypeParams":{
+          "shape":"DataViewDestinationTypeParams",
+          "documentation":"<p>Options that define the destination type for the Dataview.</p>"
+        },
+        "status":{
+          "shape":"DataViewStatus",
+          "documentation":"<p>The status of a Dataview creation.</p> <ul> <li> <p> <code>RUNNING</code> - Dataview creation is running.</p> </li> <li> <p> <code>STARTING</code> - Dataview creation is starting.</p> </li> <li> <p> <code>FAILED</code> - Dataview creation has failed.</p> </li> <li> <p> <code>CANCELLED</code> - Dataview creation has been cancelled.</p> </li> <li> <p> <code>TIMEOUT</code> - Dataview creation has timed out.</p> </li> <li> <p> <code>SUCCESS</code> - Dataview creation has succeeded.</p> </li> <li> <p> <code>PENDING</code> - Dataview creation is pending.</p> </li> <li> <p> <code>FAILED_CLEANUP_FAILED</code> - Dataview creation failed and resource cleanup failed.</p> </li> </ul>"
+        }
+      },
+      "documentation":"Response from retrieving a dataview, which includes details on the target database and table name"
+    },
+    "GetDatasetRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"StringValueLength1to255",
+          "documentation":"<p>The unique identifier for a Dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      },
+      "documentation":"Request for the GetDataset operation."
+    },
+    "GetDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for a Dataset.</p>"
+        },
+        "datasetArn":{
+          "shape":"DatasetArn",
+          "documentation":"<p>The ARN identifier of the Dataset.</p>"
+        },
+        "datasetTitle":{
+          "shape":"DatasetTitle",
+          "documentation":"<p>Display title for a Dataset.</p>"
+        },
+        "kind":{
+          "shape":"DatasetKind",
+          "documentation":"<p>The format in which Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> - Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> - Data is structured in a non-tabular format.</p> </li> </ul>"
+        },
+        "datasetDescription":{
+          "shape":"DatasetDescription",
+          "documentation":"<p>A description of the Dataset.</p>"
+        },
+        "createTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The timestamp at which the Dataset was created in FinSpace. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p>The last time that the Dataset was modified. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "schemaDefinition":{
+          "shape":"SchemaUnion",
+          "documentation":"<p>Definition for a schema on a tabular Dataset.</p>"
+        },
+        "alias":{
+          "shape":"AliasString",
+          "documentation":"<p>The unique resource identifier for a Dataset.</p>"
+        },
+        "status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>Status of the Dataset creation.</p> <ul> <li> <p> <code>PENDING</code> - Dataset is pending creation.</p> </li> <li> <p> <code>FAILED</code> - Dataset creation has failed.</p> </li> <li> <p> <code>SUCCESS</code> - Dataset creation has succeeded.</p> </li> <li> <p> <code>RUNNING</code> - Dataset creation is running.</p> </li> </ul>"
+        }
+      },
+      "documentation":"Response for the GetDataset operation"
     },
     "GetProgrammaticAccessCredentialsRequest":{
       "type":"structure",
@@ -268,11 +1139,12 @@
         },
         "environmentId":{
           "shape":"IdType",
-          "documentation":"<p>The habanero environment identifier.</p>",
+          "documentation":"<p>The FinSpace environment identifier.</p>",
           "location":"querystring",
           "locationName":"environmentId"
         }
-      }
+      },
+      "documentation":"Request for GetProgrammaticAccessCredentials operation"
     },
     "GetProgrammaticAccessCredentialsResponse":{
       "type":"structure",
@@ -285,14 +1157,15 @@
           "shape":"SessionDuration",
           "documentation":"<p>Returns the duration in which the credentials will remain valid.</p>"
         }
-      }
+      },
+      "documentation":"Response for GetProgrammaticAccessCredentials operation"
     },
     "GetWorkingLocationRequest":{
       "type":"structure",
       "members":{
         "locationType":{
           "shape":"locationType",
-          "documentation":"<p>Specify the type of the working location.</p> <ul> <li> <p> <code>SAGEMAKER</code> - Use the Amazon S3 location as a temporary location to store data content when working with FinSpace Notebooks that run on SageMaker studio.</p> </li> <li> <p> <code>INGESTION</code> - Use the Amazon S3 location as a staging location to copy your data content and then use the location with the changeset creation operation.</p> </li> </ul>"
+          "documentation":"<p>Specify the type of the working location.</p> <ul> <li> <p> <code>SAGEMAKER</code> - Use the Amazon S3 location as a temporary location to store data content when working with FinSpace Notebooks that run on SageMaker studio.</p> </li> <li> <p> <code>INGESTION</code> - Use the Amazon S3 location as a staging location to copy your data content and then use the location with the Changeset creation operation.</p> </li> </ul>"
         }
       }
     },
@@ -318,6 +1191,17 @@
       "max":26,
       "min":1
     },
+    "IngestionStatus":{
+      "type":"string",
+      "documentation":"Status of the ingestion process returned from scheduler service.",
+      "enum":[
+        "PENDING",
+        "FAILED",
+        "SUCCESS",
+        "RUNNING",
+        "STOP_REQUESTED"
+      ]
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -326,6 +1210,170 @@
       "documentation":"<p>The request processing has failed because of an unknown error, exception or failure.</p>",
       "error":{"httpStatusCode":500},
       "exception":true
+    },
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>A limit has exceeded.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ListChangesetsRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset to which the Changeset belongs.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "maxResults":{
+          "shape":"ResultLimit",
+          "documentation":"<p>The maximum number of results per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token indicating where a results page should begin.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"Request to ListChangesetsRequest. It exposes minimal query filters."
+    },
+    "ListChangesetsResponse":{
+      "type":"structure",
+      "members":{
+        "changesets":{
+          "shape":"ChangesetList",
+          "documentation":"<p>List of Changesets found.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token indicating where a results page should begin.</p>"
+        }
+      },
+      "documentation":"Response to ListChangesetsResponse. This returns a list of dataset changesets that match the query criteria."
+    },
+    "ListDataViewsRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the Dataset for which to retrieve Dataviews.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token indicating where a results page should begin.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ResultLimit",
+          "documentation":"<p>The maximum number of results per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      },
+      "documentation":"Request for a list data views."
+    },
+    "ListDataViewsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token indicating where a results page should begin.</p>"
+        },
+        "dataViews":{
+          "shape":"DataViewList",
+          "documentation":"<p>A list of Dataviews.</p>"
+        }
+      }
+    },
+    "ListDatasetsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token indicating where a results page should begin.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ResultLimit",
+          "documentation":"<p>The maximum number of results per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      },
+      "documentation":"Request for the ListDatasets operation."
+    },
+    "ListDatasetsResponse":{
+      "type":"structure",
+      "members":{
+        "datasets":{
+          "shape":"DatasetList",
+          "documentation":"<p>List of Datasets.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token indicating where a results page should begin.</p>"
+        }
+      },
+      "documentation":"Response for the ListDatasets operation"
+    },
+    "OwnerName":{
+      "type":"string",
+      "documentation":"1 - 250 character String",
+      "max":250,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "PaginationToken":{
+      "type":"string",
+      "documentation":"Pagination token for list operations"
+    },
+    "PartitionColumnList":{
+      "type":"list",
+      "member":{"shape":"StringValueLength1to255"},
+      "documentation":"DataView Partition Column List"
+    },
+    "PermissionGroupId":{
+      "type":"string",
+      "documentation":"Id of the associated PermissionGroup",
+      "max":26,
+      "min":1
+    },
+    "PermissionGroupParams":{
+      "type":"structure",
+      "members":{
+        "permissionGroupId":{
+          "shape":"PermissionGroupId",
+          "documentation":"<p>The unique identifier of the PermissionGroup.</p>"
+        },
+        "datasetPermissions":{
+          "shape":"ResourcePermissionsList",
+          "documentation":"<p>List of resource permissions.</p>"
+        }
+      },
+      "documentation":"<p>Permission group parameters for Dataset permissions.</p>"
+    },
+    "PhoneNumber":{
+      "type":"string",
+      "documentation":"PhoneNumber of Dataset Owner",
+      "max":20,
+      "min":10,
+      "pattern":"^[\\+0-9\\#\\,\\(][\\+0-9\\-\\.\\/\\(\\)\\,\\#\\s]+$"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -336,14 +1384,90 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ResourcePermission":{
+      "type":"structure",
+      "members":{
+        "permission":{
+          "shape":"StringValueLength1to250",
+          "documentation":"<p>Permission for a resource.</p>"
+        }
+      },
+      "documentation":"<p>Resource permission for a Dataset.</p>"
+    },
+    "ResourcePermissionsList":{
+      "type":"list",
+      "member":{"shape":"ResourcePermission"},
+      "documentation":"List of Resource Permissions"
+    },
+    "ResultLimit":{
+      "type":"integer",
+      "documentation":"Maximum number of results to be returned as part of a list operation",
+      "max":100,
+      "min":1
+    },
+    "SchemaDefinition":{
+      "type":"structure",
+      "members":{
+        "columns":{
+          "shape":"ColumnList",
+          "documentation":"<p>List of column definitions.</p>"
+        },
+        "primaryKeyColumns":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>List of column names used for primary key.</p>"
+        }
+      },
+      "documentation":"<p>Definition for a schema on a tabular Dataset.</p>"
+    },
+    "SchemaUnion":{
+      "type":"structure",
+      "members":{
+        "tabularSchemaConfig":{
+          "shape":"SchemaDefinition",
+          "documentation":"<p>The configuration for a schema on a tabular Dataset.</p>"
+        }
+      },
+      "documentation":"<p>A union of schema types.</p>"
+    },
     "SessionDuration":{
       "type":"long",
       "max":720,
       "min":60
     },
-    "SourceType":{
+    "SortColumnList":{
+      "type":"list",
+      "member":{"shape":"StringValueLength1to255"},
+      "documentation":"DataView Sort Column List"
+    },
+    "SourceParams":{
+      "type":"map",
+      "key":{"shape":"StringMapKey"},
+      "value":{"shape":"StringMapValue"},
+      "documentation":"Source Parameters of a Changeset"
+    },
+    "StringMapKey":{
       "type":"string",
-      "enum":["S3"]
+      "max":128,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
+    "StringMapValue":{
+      "type":"string",
+      "max":1000,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
+    "StringValueLength1to250":{
+      "type":"string",
+      "documentation":"1 - 250 character String",
+      "max":250,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
+    "StringValueLength1to255":{
+      "type":"string",
+      "documentation":"1 - 255 character String",
+      "max":255,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -353,7 +1477,114 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
-    "Timestamp":{"type":"timestamp"},
+    "TimestampEpoch":{
+      "type":"long",
+      "documentation":"Milliseconds since UTC epoch"
+    },
+    "UpdateChangesetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "changesetId",
+        "sourceParams",
+        "formatParams"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset in which the Changeset is created.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "changesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier for the Changeset to update.</p>",
+          "location":"uri",
+          "locationName":"changesetId"
+        },
+        "sourceParams":{
+          "shape":"SourceParams",
+          "documentation":"<p>Options that define the location of the data being ingested.</p>"
+        },
+        "formatParams":{
+          "shape":"FormatParams",
+          "documentation":"<p>Options that define the structure of the source file(s).</p>"
+        }
+      },
+      "documentation":"Request to update an existing changeset."
+    },
+    "UpdateChangesetResponse":{
+      "type":"structure",
+      "members":{
+        "changesetId":{
+          "shape":"ChangesetId",
+          "documentation":"<p>The unique identifier for the Changeset to update.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the FinSpace Dataset in which the Changeset is created.</p>"
+        }
+      },
+      "documentation":"The response from a update changeset operation."
+    },
+    "UpdateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "datasetTitle",
+        "kind",
+        "alias"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the Dataset to update.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "datasetTitle":{
+          "shape":"DatasetTitle",
+          "documentation":"<p>A display title for the Dataset.</p>"
+        },
+        "kind":{
+          "shape":"DatasetKind",
+          "documentation":"<p>The format in which the Dataset data is structured.</p> <ul> <li> <p> <code>TABULAR</code> - Data is structured in a tabular format.</p> </li> <li> <p> <code>NON_TABULAR</code> - Data is structured in a non-tabular format.</p> </li> </ul>"
+        },
+        "datasetDescription":{
+          "shape":"DatasetDescription",
+          "documentation":"<p>A description for the Dataset.</p>"
+        },
+        "alias":{
+          "shape":"AliasString",
+          "documentation":"<p>The unique resource identifier for a Dataset.</p>"
+        },
+        "schemaDefinition":{
+          "shape":"SchemaUnion",
+          "documentation":"<p>Definition for a schema on a tabular Dataset.</p>"
+        }
+      },
+      "documentation":"The request for an UpdateDataset operation"
+    },
+    "UpdateDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for updated Dataset.</p>"
+        }
+      },
+      "documentation":"The response from an UpdateDataset operation"
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -363,11 +1594,6 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
-    "arn":{
-      "type":"string",
-      "max":2048,
-      "min":20
-    },
     "errorMessage":{"type":"string"},
     "locationType":{
       "type":"string",
@@ -376,14 +1602,6 @@
         "SAGEMAKER"
       ]
     },
-    "stringMap":{
-      "type":"map",
-      "key":{"shape":"stringMapKey"},
-      "value":{"shape":"stringMapValue"}
-    },
-    "stringMapKey":{"type":"string"},
-    "stringMapValue":{"type":"string"},
-    "stringValue":{"type":"string"},
     "stringValueLength1to1024":{
       "type":"string",
       "max":1024,
@@ -406,5 +1624,5 @@
       "max":1000
     }
   },
-  "documentation":"<p> The FinSpace APIs let you take actions inside the FinSpace environment. </p>"
+  "documentation":"<p> The FinSpace APIs let you take actions inside the FinSpace.</p>"
 }

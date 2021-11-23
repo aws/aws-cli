@@ -44,7 +44,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Creates a JSON document that specifies a set of resources to assign to a backup plan. Resources can be included by specifying patterns for a <code>ListOfTags</code> and selected <code>Resources</code>. </p> <p>For example, consider the following patterns:</p> <ul> <li> <p> <code>Resources: \"arn:aws:ec2:region:account-id:volume/volume-id\"</code> </p> </li> <li> <p> <code>ConditionKey:\"department\"</code> </p> <p> <code>ConditionValue:\"finance\"</code> </p> <p> <code>ConditionType:\"StringEquals\"</code> </p> </li> <li> <p> <code>ConditionKey:\"importance\"</code> </p> <p> <code>ConditionValue:\"critical\"</code> </p> <p> <code>ConditionType:\"StringEquals\"</code> </p> </li> </ul> <p>Using these patterns would back up all Amazon Elastic Block Store (Amazon EBS) volumes that are tagged as <code>\"department=finance\"</code>, <code>\"importance=critical\"</code>, in addition to an EBS volume with the specified volume ID.</p> <p>Resources and conditions are additive in that all resources that match the pattern are selected. This shouldn't be confused with a logical AND, where all conditions must match. The matching patterns are logically put together using the OR operator. In other words, all patterns that match are selected for backup.</p>",
+      "documentation":"<p>Creates a JSON document that specifies a set of resources to assign to a backup plan. For examples, see <a href=\"https://docs.aws.amazon.com/assigning-resources.html#assigning-resources-json\">Assigning resources programmatically</a>. </p>",
       "idempotent":true
     },
     "CreateBackupVault":{
@@ -858,7 +858,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Applies Backup Vault Lock to a backup vault, preventing attempts to delete any recovery point stored in or created in a backup vault. Vault Lock also prevents attempts to update the lifecycle policy that controls the retention period of any recovery point currently stored in a backup vault. If specified, Vault Lock enforces a minimum and maximum retention period for future backup and copy jobs that target a backup vault.</p>",
+      "documentation":"<p>Applies Backup Vault Lock to a backup vault, preventing attempts to delete any recovery point stored in or created in a backup vault. Vault Lock also prevents attempts to update the lifecycle policy that controls the retention period of any recovery point currently stored in a backup vault. If specified, Vault Lock enforces a minimum and maximum retention period for future backup and copy jobs that target a backup vault.</p> <note> <p>Backup Vault Lock has yet to receive a third-party assessment for SEC 17a-4(f) and CFTC.</p> </note>",
       "idempotent":true
     },
     "PutBackupVaultNotifications":{
@@ -1061,6 +1061,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
@@ -1274,7 +1275,7 @@
       "members":{
         "BackupPlanName":{
           "shape":"BackupPlanName",
-          "documentation":"<p>The display name of a backup plan.</p>"
+          "documentation":"<p>The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "Rules":{
           "shape":"BackupRules",
@@ -1296,7 +1297,7 @@
       "members":{
         "BackupPlanName":{
           "shape":"BackupPlanName",
-          "documentation":"<p>The optional display name of a backup plan.</p>"
+          "documentation":"<p>The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "Rules":{
           "shape":"BackupRulesInput",
@@ -1365,7 +1366,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "LastExecutionDate":{
           "shape":"timestamp",
@@ -1387,7 +1388,7 @@
       "members":{
         "RuleName":{
           "shape":"BackupRuleName",
-          "documentation":"<p>An optional display name for a backup rule.</p>"
+          "documentation":"<p>A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "TargetBackupVaultName":{
           "shape":"BackupVaultName",
@@ -1395,7 +1396,7 @@
         },
         "ScheduleExpression":{
           "shape":"CronExpression",
-          "documentation":"<p>A cron expression in UTC specifying when Backup initiates a backup job. For more information about cron expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html\">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide.</i>. Prior to specifying a value for this parameter, we recommend testing your cron expression using one of the many available cron generator and testing tools.</p>"
+          "documentation":"<p>A cron expression in UTC specifying when Backup initiates a backup job. For more information about Amazon Web Services cron expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html\">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide.</i>. Two examples of Amazon Web Services cron expressions are <code> 15 * ? * * *</code> (take a backup every hour at 15 minutes past the hour) and <code>0 12 * * ? *</code> (take a backup every day at 12 noon UTC). For a table of examples, click the preceding link and scroll down the page.</p>"
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
@@ -1437,7 +1438,7 @@
       "members":{
         "RuleName":{
           "shape":"BackupRuleName",
-          "documentation":"<p>An optional display name for a backup rule.</p>"
+          "documentation":"<p>A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "TargetBackupVaultName":{
           "shape":"BackupVaultName",
@@ -1495,7 +1496,7 @@
       "members":{
         "SelectionName":{
           "shape":"BackupSelectionName",
-          "documentation":"<p>The display name of a resource selection document.</p>"
+          "documentation":"<p>The display name of a resource selection document. Must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "IamRoleArn":{
           "shape":"IAMRoleArn",
@@ -1503,14 +1504,20 @@
         },
         "Resources":{
           "shape":"ResourceArns",
-          "documentation":"<p>An array of strings that contain Amazon Resource Names (ARNs) of resources to assign to a backup plan.</p>"
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p>"
         },
         "ListOfTags":{
           "shape":"ListOfTags",
-          "documentation":"<p>An array of conditions used to specify a set of resources to assign to a backup plan; for example, <code>\"StringEquals\": {\"ec2:ResourceTag/Department\": \"accounting\"</code>. Assigns the backup plan to every resource with at least one matching tag.</p>"
+          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": {\"Department\": \"accounting\"</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>"
         },
-        "NotResources":{"shape":"ResourceArns"},
-        "Conditions":{"shape":"Conditions"}
+        "NotResources":{
+          "shape":"ResourceArns",
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>"
+        },
+        "Conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": {\"Department\": \"accounting\"</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>"
+        }
       },
       "documentation":"<p>Used to specify a set of resources to a backup plan.</p>"
     },
@@ -1543,7 +1550,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "IamRoleArn":{
           "shape":"IAMRoleArn",
@@ -1601,7 +1608,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "NumberOfRecoveryPoints":{
           "shape":"long",
@@ -1661,26 +1668,33 @@
       "members":{
         "ConditionType":{
           "shape":"ConditionType",
-          "documentation":"<p>An operation, such as <code>StringEquals</code>, that is applied to a key-value pair used to filter resources in a selection.</p>"
+          "documentation":"<p>An operation applied to a key-value pair used to assign resources to your backup plan. Condition only supports <code>StringEquals</code>. For more flexible assignment options, incluidng <code>StringLike</code> and the ability to exclude resources from your backup plan, use <code>Conditions</code> (with an \"s\" on the end) for your <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BackupSelection.html\"> <code>BackupSelection</code> </a>.</p>"
         },
         "ConditionKey":{
           "shape":"ConditionKey",
-          "documentation":"<p>The key in a key-value pair. For example, in <code>\"ec2:ResourceTag/Department\": \"accounting\"</code>, <code>\"ec2:ResourceTag/Department\"</code> is the key.</p>"
+          "documentation":"<p>The key in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Department</code> is the key.</p>"
         },
         "ConditionValue":{
           "shape":"ConditionValue",
-          "documentation":"<p>The value in a key-value pair. For example, in <code>\"ec2:ResourceTag/Department\": \"accounting\"</code>, <code>\"accounting\"</code> is the value.</p>"
+          "documentation":"<p>The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.</p>"
         }
       },
-      "documentation":"<p>Contains an array of triplets made up of a condition type (such as <code>StringEquals</code>), a key, and a value. Conditions are used to filter resources in a selection that is assigned to a backup plan.</p>"
+      "documentation":"<p>Contains an array of triplets made up of a condition type (such as <code>StringEquals</code>), a key, and a value. Used to filter resources using their tags and assign them to a backup plan. Case sensitive.</p>"
     },
     "ConditionKey":{"type":"string"},
     "ConditionParameter":{
       "type":"structure",
       "members":{
-        "ConditionKey":{"shape":"ConditionKey"},
-        "ConditionValue":{"shape":"ConditionValue"}
-      }
+        "ConditionKey":{
+          "shape":"ConditionKey",
+          "documentation":"<p>The key in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Department</code> is the key.</p>"
+        },
+        "ConditionValue":{
+          "shape":"ConditionValue",
+          "documentation":"<p>The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.</p>"
+        }
+      },
+      "documentation":"<p>Includes information about tags you define to assign tagged resources to a backup plan.</p>"
     },
     "ConditionParameters":{
       "type":"list",
@@ -1694,11 +1708,24 @@
     "Conditions":{
       "type":"structure",
       "members":{
-        "StringEquals":{"shape":"ConditionParameters"},
-        "StringNotEquals":{"shape":"ConditionParameters"},
-        "StringLike":{"shape":"ConditionParameters"},
-        "StringNotLike":{"shape":"ConditionParameters"}
-      }
+        "StringEquals":{
+          "shape":"ConditionParameters",
+          "documentation":"<p>Filters the values of your tagged resources for only those resources that you tagged with the same value. Also called \"exact matching.\"</p>"
+        },
+        "StringNotEquals":{
+          "shape":"ConditionParameters",
+          "documentation":"<p>Filters the values of your tagged resources for only those resources that you tagged that do not have the same value. Also called \"negated matching.\"</p>"
+        },
+        "StringLike":{
+          "shape":"ConditionParameters",
+          "documentation":"<p>Filters the values of your tagged resources for matching tag values with the use of a wildcard character (*) anywhere in the string. For example, \"prod*\" or \"*rod*\" matches the tag value \"production\".</p>"
+        },
+        "StringNotLike":{
+          "shape":"ConditionParameters",
+          "documentation":"<p>Filters the values of your tagged resources for non-matching tag values with the use of a wildcard character (*) anywhere in the string.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about which resources to include or exclude from a backup plan using their tags. Conditions are case sensitive.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -1749,10 +1776,10 @@
         },
         "Tags":{
           "shape":"stringMap",
-          "documentation":"<p>Describes whether the control scope includes resources with one or more tags. Each tag is a key-value pair.</p>"
+          "documentation":"<p>The tag key-value pair applied to those Amazon Web Services resources that you want to trigger an evaluation for a rule. A maximum of one key-value pair can be provided. The tag value is optional, but it cannot be an empty string. The structure to assign a tag is: <code>[{\"Key\":\"string\",\"Value\":\"string\"}]</code>.</p>"
         }
       },
-      "documentation":"<p>A framework consists of one or more controls. Each control has its own control scope. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans.</p> <note> <p>To set a control scope that includes all of a particular resource, leave the <code>ControlScope</code> empty or do not pass it when calling <code>CreateFramework</code>.</p> </note>"
+      "documentation":"<p>A framework consists of one or more controls. Each control has its own control scope. The control scope can include one or more resource types, a combination of a tag key and value, or a combination of one resource type and one resource ID. If no scope is specified, evaluations for the rule are triggered when any resource in your recording group changes in configuration.</p> <note> <p>To set a control scope that includes all of a particular resource, leave the <code>ControlScope</code> empty or do not pass it when calling <code>CreateFramework</code>.</p> </note>"
     },
     "CopyAction":{
       "type":"structure",
@@ -1860,7 +1887,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>Identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p>"
+          "documentation":"<p>Identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         }
       }
     },
@@ -1908,7 +1935,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         }
       }
     },
@@ -1949,7 +1976,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         }
       }
     },
@@ -2615,6 +2642,10 @@
         "ResourceTypeOptInPreference":{
           "shape":"ResourceTypeOptInPreference",
           "documentation":"<p>Returns a list of all services along with the opt-in preferences in the Region.</p>"
+        },
+        "ResourceTypeManagementPreference":{
+          "shape":"ResourceTypeManagementPreference",
+          "documentation":"<p>Returns whether a DynamoDB recovery point was taken using <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html\"> Backup's advanced DynamoDB backup features</a>. </p>"
         }
       }
     },
@@ -3967,7 +3998,7 @@
         },
         "BackupVaultEvents":{
           "shape":"BackupVaultEvents",
-          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <note> <p>The following events are supported:</p> <p> <code>BACKUP_JOB_STARTED</code>, <code>BACKUP_JOB_COMPLETED</code>,</p> <p> <code>COPY_JOB_STARTED</code>, <code>COPY_JOB_SUCCESSFUL</code>, <code>COPY_JOB_FAILED</code>,</p> <p> <code>RESTORE_JOB_STARTED</code>, <code>RESTORE_JOB_COMPLETED</code>, and <code>RECOVERY_POINT_MODIFIED</code>.</p> <p>To find failed backup jobs, use <code>BACKUP_JOB_COMPLETED</code> and filter using event metadata.</p> <p>Other events in the following list are deprecated.</p> </note>"
+          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> </ul> <note> <p>Ignore the list below because it includes deprecated events. Refer to the list above.</p> </note>"
         }
       }
     },
@@ -4304,6 +4335,11 @@
       "type":"list",
       "member":{"shape":"ARN"}
     },
+    "ResourceTypeManagementPreference":{
+      "type":"map",
+      "key":{"shape":"ResourceType"},
+      "value":{"shape":"IsEnabled"}
+    },
     "ResourceTypeOptInPreference":{
       "type":"map",
       "key":{"shape":"ResourceType"},
@@ -4618,7 +4654,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>Key-value pairs that are used to help organize your resources. You can assign your own metadata to the resources you create.</p>"
+          "documentation":"<p>Key-value pairs that are used to help organize your resources. You can assign your own metadata to the resources you create. For clarity, this is the structure to assign tags: <code>[{\"Key\":\"string\",\"Value\":\"string\"}]</code>.</p>"
         }
       }
     },
@@ -4795,6 +4831,10 @@
         "ResourceTypeOptInPreference":{
           "shape":"ResourceTypeOptInPreference",
           "documentation":"<p>Updates the list of services along with the opt-in preferences for the Region.</p>"
+        },
+        "ResourceTypeManagementPreference":{
+          "shape":"ResourceTypeManagementPreference",
+          "documentation":"<p>Enables or disables <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html\"> Backup's advanced DynamoDB backup features</a> for the Region.</p>"
         }
       }
     },

@@ -194,6 +194,28 @@
       ],
       "documentation":"<p>Creates a contact flow for the specified Amazon Connect instance.</p> <p>You can also create and update contact flows using the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html\">Amazon Connect Flow language</a>.</p>"
     },
+    "CreateContactFlowModule":{
+      "name":"CreateContactFlowModule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact-flow-modules/{InstanceId}"
+      },
+      "input":{"shape":"CreateContactFlowModuleRequest"},
+      "output":{"shape":"CreateContactFlowModuleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidContactFlowModuleException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotencyException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates a contact flow module for the specified Amazon Connect instance. </p>"
+    },
     "CreateHoursOfOperation":{
       "name":"CreateHoursOfOperation",
       "http":{
@@ -211,7 +233,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Creates hours of operation. </p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates hours of operation. </p>"
     },
     "CreateInstance":{
       "name":"CreateInstance",
@@ -378,6 +400,41 @@
       ],
       "documentation":"<p>Creates a new user hierarchy group.</p>"
     },
+    "DeleteContactFlow":{
+      "name":"DeleteContactFlow",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/contact-flows/{InstanceId}/{ContactFlowId}"
+      },
+      "input":{"shape":"DeleteContactFlowRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a contact flow for the specified Amazon Connect instance.</p>"
+    },
+    "DeleteContactFlowModule":{
+      "name":"DeleteContactFlowModule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}"
+      },
+      "input":{"shape":"DeleteContactFlowModuleRequest"},
+      "output":{"shape":"DeleteContactFlowModuleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes the specified contact flow module.</p>"
+    },
     "DeleteHoursOfOperation":{
       "name":"DeleteHoursOfOperation",
       "http":{
@@ -392,7 +449,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Deletes an hours of operation.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Deletes an hours of operation.</p>"
     },
     "DeleteInstance":{
       "name":"DeleteInstance",
@@ -537,7 +594,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <p>Contact information is available in Amazon Connect for 24 months, and then it is deleted.</p> </important>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <p>Contact information remains available in Amazon Connect for 24 months, and then it is deleted.</p> </important>"
     },
     "DescribeContactFlow":{
       "name":"DescribeContactFlow",
@@ -557,6 +614,24 @@
       ],
       "documentation":"<p>Describes the specified contact flow.</p> <p>You can also create and update contact flows using the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html\">Amazon Connect Flow language</a>.</p>"
     },
+    "DescribeContactFlowModule":{
+      "name":"DescribeContactFlowModule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}"
+      },
+      "input":{"shape":"DescribeContactFlowModuleRequest"},
+      "output":{"shape":"DescribeContactFlowModuleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Describes the specified contact flow module.</p>"
+    },
     "DescribeHoursOfOperation":{
       "name":"DescribeHoursOfOperation",
       "http":{
@@ -572,7 +647,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Describes the hours of operation.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the hours of operation.</p>"
     },
     "DescribeInstance":{
       "name":"DescribeInstance",
@@ -985,6 +1060,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. </p>"
+    },
+    "ListContactFlowModules":{
+      "name":"ListContactFlowModules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-flow-modules-summary/{InstanceId}"
+      },
+      "input":{"shape":"ListContactFlowModulesRequest"},
+      "output":{"shape":"ListContactFlowModulesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Provides information about the contact flow modules for the specified Amazon Connect instance.</p>"
     },
     "ListContactFlows":{
       "name":"ListContactFlows",
@@ -1472,7 +1565,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Initiates a contact flow to start a new task immediately or at a future date and time.</p>"
+      "documentation":"<p>Initiates a contact flow to start a new task.</p>"
     },
     "StopContact":{
       "name":"StopContact",
@@ -1602,7 +1695,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Adds or updates user defined contact information associated with the specified contact. At least one field to be updated must be present in the request.</p> <important> <p>You can add or update user-defined contact information for both ongoing and completed contacts.</p> </important>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Adds or updates user-defined contact information associated with the specified contact. At least one field to be updated must be present in the request.</p> <important> <p>You can add or update user-defined contact information for both ongoing and completed contacts.</p> </important>"
     },
     "UpdateContactAttributes":{
       "name":"UpdateContactAttributes",
@@ -1636,6 +1729,60 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates the specified contact flow.</p> <p>You can also create and update contact flows using the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/flow-language.html\">Amazon Connect Flow language</a>.</p>"
+    },
+    "UpdateContactFlowMetadata":{
+      "name":"UpdateContactFlowMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact-flows/{InstanceId}/{ContactFlowId}/metadata"
+      },
+      "input":{"shape":"UpdateContactFlowMetadataRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates metadata about specified contact flow.</p>"
+    },
+    "UpdateContactFlowModuleContent":{
+      "name":"UpdateContactFlowModuleContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/content"
+      },
+      "input":{"shape":"UpdateContactFlowModuleContentRequest"},
+      "output":{"shape":"UpdateContactFlowModuleContentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidContactFlowModuleException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates specified contact flow module for the specified Amazon Connect instance. </p>"
+    },
+    "UpdateContactFlowModuleMetadata":{
+      "name":"UpdateContactFlowModuleMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/metadata"
+      },
+      "input":{"shape":"UpdateContactFlowModuleMetadataRequest"},
+      "output":{"shape":"UpdateContactFlowModuleMetadataResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates metadata about specified contact flow module.</p>"
     },
     "UpdateContactFlowName":{
       "name":"UpdateContactFlowName",
@@ -1687,7 +1834,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Updates the hours of operation.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates the hours of operation.</p>"
     },
     "UpdateInstanceAttribute":{
       "name":"UpdateInstanceAttribute",
@@ -2037,7 +2184,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "documentation":"<p>You do not have sufficient permissions to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
     },
@@ -2107,7 +2254,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>Contains information about an agent status.</p>"
@@ -2613,6 +2760,10 @@
           "shape":"ContactFlowType",
           "documentation":"<p>The type of the contact flow. For descriptions of the available types, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types\">Choose a Contact Flow Type</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
         },
+        "State":{
+          "shape":"ContactFlowState",
+          "documentation":"<p>The type of contact flow.</p>"
+        },
         "Description":{
           "shape":"ContactFlowDescription",
           "documentation":"<p>The description of the contact flow.</p>"
@@ -2634,6 +2785,106 @@
       "type":"string",
       "max":500
     },
+    "ContactFlowModule":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN).</p>"
+        },
+        "Id":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>"
+        },
+        "Name":{
+          "shape":"ContactFlowModuleName",
+          "documentation":"<p>The name of the contact flow module.</p>"
+        },
+        "Content":{
+          "shape":"ContactFlowModuleContent",
+          "documentation":"<p>The content of the contact flow module.</p>"
+        },
+        "Description":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the contact flow module.</p>"
+        },
+        "State":{
+          "shape":"ContactFlowModuleState",
+          "documentation":"<p>The type of contact flow module.</p>"
+        },
+        "Status":{
+          "shape":"ContactFlowModuleStatus",
+          "documentation":"<p>The status of the contact flow module.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a contact flow module.</p>"
+    },
+    "ContactFlowModuleContent":{
+      "type":"string",
+      "max":256000,
+      "min":1
+    },
+    "ContactFlowModuleDescription":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "pattern":".*\\S.*"
+    },
+    "ContactFlowModuleId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ContactFlowModuleName":{
+      "type":"string",
+      "max":127,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ContactFlowModuleState":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED"
+      ]
+    },
+    "ContactFlowModuleStatus":{
+      "type":"string",
+      "enum":[
+        "PUBLISHED",
+        "SAVED"
+      ]
+    },
+    "ContactFlowModuleSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact flow module.</p>"
+        },
+        "Name":{
+          "shape":"ContactFlowModuleName",
+          "documentation":"<p>The name of the contact flow module.</p>"
+        },
+        "State":{
+          "shape":"ContactFlowModuleState",
+          "documentation":"<p>The type of contact flow module.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a contact flow.</p>"
+    },
+    "ContactFlowModulesSummaryList":{
+      "type":"list",
+      "member":{"shape":"ContactFlowModuleSummary"}
+    },
     "ContactFlowName":{
       "type":"string",
       "min":1
@@ -2646,6 +2897,13 @@
       "documentation":"<p>The contact flow has not been published.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "ContactFlowState":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED"
+      ]
     },
     "ContactFlowSummary":{
       "type":"structure",
@@ -2664,6 +2922,10 @@
         },
         "ContactFlowType":{
           "shape":"ContactFlowType",
+          "documentation":"<p>The type of contact flow.</p>"
+        },
+        "ContactFlowState":{
+          "shape":"ContactFlowState",
           "documentation":"<p>The type of contact flow.</p>"
         }
       },
@@ -2758,7 +3020,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -2772,6 +3034,56 @@
         "AgentStatusId":{
           "shape":"AgentStatusId",
           "documentation":"<p>The identifier of the agent status.</p>"
+        }
+      }
+    },
+    "CreateContactFlowModuleRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"ContactFlowModuleName",
+          "documentation":"<p>The name of the contact flow module.</p>"
+        },
+        "Description":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the contact flow module. </p>"
+        },
+        "Content":{
+          "shape":"ContactFlowModuleContent",
+          "documentation":"<p>The content of the contact flow module.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateContactFlowModuleResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact flow module.</p>"
         }
       }
     },
@@ -2858,7 +3170,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -2958,7 +3270,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -3016,7 +3328,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -3061,7 +3373,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -3160,7 +3472,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -3203,7 +3515,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -3424,6 +3736,53 @@
       "max":9999,
       "min":0
     },
+    "DeleteContactFlowModuleRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        }
+      }
+    },
+    "DeleteContactFlowModuleResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteContactFlowRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the contact flow.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowId"
+        }
+      }
+    },
     "DeleteHoursOfOperationRequest":{
       "type":"structure",
       "required":[
@@ -3620,6 +3979,36 @@
         }
       }
     },
+    "DescribeContactFlowModuleRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        }
+      }
+    },
+    "DescribeContactFlowModuleResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModule":{
+          "shape":"ContactFlowModule",
+          "documentation":"<p>Information about the contact flow module.</p>"
+        }
+      }
+    },
     "DescribeContactFlowRequest":{
       "type":"structure",
       "required":[
@@ -3665,7 +4054,7 @@
         },
         "ContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the initial contact.</p>",
+          "documentation":"<p>The identifier of the contact.</p>",
           "location":"uri",
           "locationName":"ContactId"
         }
@@ -4770,7 +5159,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>Information about of the hours of operation.</p>"
@@ -4864,6 +5253,15 @@
         }
       },
       "documentation":"<p>The start time or end time for an hours of operation.</p>"
+    },
+    "IdempotencyException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>An entity with the same name already exists.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "InboundCallsEnabled":{"type":"boolean"},
     "Instance":{
@@ -5122,6 +5520,15 @@
         }
       },
       "documentation":"<p>The contact flow is not valid.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "InvalidContactFlowModuleException":{
+      "type":"structure",
+      "members":{
+        "Problems":{"shape":"Problems"}
+      },
+      "documentation":"<p>The problems with the module. Please fix before trying again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -5394,6 +5801,50 @@
         }
       }
     },
+    "ListContactFlowModulesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "ContactFlowModuleState":{
+          "shape":"ContactFlowModuleState",
+          "documentation":"<p>The state of the contact flow module.</p>",
+          "location":"querystring",
+          "locationName":"state"
+        }
+      }
+    },
+    "ListContactFlowModulesResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModulesSummaryList":{
+          "shape":"ContactFlowModulesSummaryList",
+          "documentation":"<p>Information about the contact flow module.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListContactFlowsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -5465,7 +5916,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p> <important> <p>This is not expected to be set since the value returned in the previous response is always null.</p> </important>",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p> <important> <p>This is not expected to be set, because the value returned in the previous response is always null.</p> </important>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -5649,7 +6100,7 @@
         },
         "IntegrationType":{
           "shape":"IntegrationType",
-          "documentation":"<p/>",
+          "documentation":"<p>The integration type.</p>",
           "location":"querystring",
           "locationName":"integrationType"
         },
@@ -6884,7 +7335,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>Contains information about a queue.</p>"
@@ -7026,7 +7477,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>Contains information about a quick connect.</p>"
@@ -7145,7 +7596,7 @@
       "members":{
         "Url":{
           "shape":"UrlReference",
-          "documentation":"<p>Information about Url reference if the <code>referenceType</code> is <code>URL</code>. Otherwise, null.</p>"
+          "documentation":"<p>Information about the URL reference if the <code>referenceType</code> is <code>URL</code>. Otherwise, null.</p>"
         },
         "Attachment":{
           "shape":"AttachmentReference",
@@ -7488,7 +7939,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       },
       "documentation":"<p>Contains information about a security profile.</p>"
@@ -8130,6 +8581,108 @@
           "shape":"ContactFlowContent",
           "documentation":"<p>The JSON string that represents contact flow’s content. For an example, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/flow-language-example.html\">Example contact flow in Amazon Connect Flow language</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
         }
+      }
+    },
+    "UpdateContactFlowMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the contact flow.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowId"
+        },
+        "Name":{
+          "shape":"ContactFlowName",
+          "documentation":"<p>TThe name of the contact flow.</p>"
+        },
+        "Description":{
+          "shape":"ContactFlowDescription",
+          "documentation":"<p>The description of the contact flow.</p>"
+        },
+        "ContactFlowState":{
+          "shape":"ContactFlowState",
+          "documentation":"<p>The state of contact flow.</p>"
+        }
+      }
+    },
+    "UpdateContactFlowModuleContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "Content":{
+          "shape":"ContactFlowModuleContent",
+          "documentation":"<p>The content of the contact flow module.</p>"
+        }
+      }
+    },
+    "UpdateContactFlowModuleContentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateContactFlowModuleMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the contact flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "Name":{
+          "shape":"ContactFlowModuleName",
+          "documentation":"<p>The name of the contact flow module.</p>"
+        },
+        "Description":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the contact flow module.</p>"
+        },
+        "State":{
+          "shape":"ContactFlowModuleState",
+          "documentation":"<p>The state of contact flow module.</p>"
+        }
+      }
+    },
+    "UpdateContactFlowModuleMetadataResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "UpdateContactFlowNameRequest":{

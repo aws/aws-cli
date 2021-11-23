@@ -601,7 +601,7 @@
         {"shape":"StackNotFoundException"},
         {"shape":"StaleRequestException"}
       ],
-      "documentation":"<p>Import existing stacks into a new stack sets. Use the stack import operation to import up to 10 stacks into a new stack set in the same account as the source stack or in a different administrator account and Region, by specifying the stack ID of the stack you intend to import.</p> <note> <p> <code>ImportStacksToStackSet</code> is only supported by self-managed permissions.</p> </note>"
+      "documentation":"<p>Use the stack import operations for self-managed or service-managed StackSets. For self-managed StackSets, the import operation can import stacks in the administrator account or in different target accounts and Amazon Web Services Regions. For service-managed StackSets, the import operation can import any stack in the same AWS Organizations as the management account. The import operation can import up to 10 stacks using inline stack IDs or up to 10,000 stacks using an Amazon S3 object.</p>"
     },
     "ListChangeSets":{
       "name":"ListChangeSets",
@@ -1789,6 +1789,10 @@
           "shape":"ClientRequestToken",
           "documentation":"<p>A unique identifier for this <code>CreateStackSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create another stack set with the same name. You might retry <code>CreateStackSet</code> requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p>",
           "idempotencyToken":true
+        },
+        "ManagedExecution":{
+          "shape":"ManagedExecution",
+          "documentation":"<p>Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.</p>"
         }
       }
     },
@@ -2995,10 +2999,7 @@
     },
     "ImportStacksToStackSetInput":{
       "type":"structure",
-      "required":[
-        "StackSetName",
-        "StackIds"
-      ],
+      "required":["StackSetName"],
       "members":{
         "StackSetName":{
           "shape":"StackSetNameOrId",
@@ -3006,7 +3007,15 @@
         },
         "StackIds":{
           "shape":"StackIdList",
-          "documentation":"<p>The IDs of the stacks you are importing into a stack set. You import up to 10 stacks per stack set at a time.</p>"
+          "documentation":"<p>The IDs of the stacks you are importing into a stack set. You import up to 10 stacks per stack set at a time.</p> <p>Specify either <code>StackIds</code> or <code>StackIdsUrl</code>.</p>"
+        },
+        "StackIdsUrl":{
+          "shape":"StackIdsUrl",
+          "documentation":"<p>The Amazon S3 URL which contains list of stack ids to be inputted.</p> <p>Specify either <code>StackIds</code> or <code>StackIdsUrl</code>.</p>"
+        },
+        "OrganizationalUnitIds":{
+          "shape":"OrganizationalUnitIdList",
+          "documentation":"<p>The list of OU ID’s to which the stacks being imported has to be mapped as deployment target.</p>"
         },
         "OperationPreferences":{"shape":"StackSetOperationPreferences"},
         "OperationId":{
@@ -3511,7 +3520,7 @@
         },
         "Filters":{
           "shape":"TypeFilters",
-          "documentation":"<p>Filter criteria to use in determining which extensions to return.</p> <p>If you specify a filter, CloudFormation ignores any specified <code>Visibility</code> value when returning the list of types.</p>"
+          "documentation":"<p>Filter criteria to use in determining which extensions to return.</p> <p>Filters must be compatible with <code>Visibility</code> to return valid results. For example, specifying <code>AWS_TYPES</code> for <code>Category</code> and <code>PRIVATE</code> for <code>Visibility</code> returns an empty list of types, but specifying <code>PUBLIC</code> for <code>Visibility</code> returns the desired list.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -3573,6 +3582,17 @@
       "max":100000,
       "min":1
     },
+    "ManagedExecution":{
+      "type":"structure",
+      "members":{
+        "Active":{
+          "shape":"ManagedExecutionNullable",
+          "documentation":"<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>"
+        }
+      },
+      "documentation":"<p>Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.</p>"
+    },
+    "ManagedExecutionNullable":{"type":"boolean"},
     "MaxConcurrentCount":{
       "type":"integer",
       "min":1
@@ -3753,7 +3773,7 @@
         },
         "ResolvedValue":{
           "shape":"ParameterValue",
-          "documentation":"<p>Read-only. The value that corresponds to a Systems Manager parameter key. This field is returned only for <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types\"> <code>SSM</code> parameter types</a> in the template.</p>"
+          "documentation":"<p>Read-only. Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types\"> <code>SSM</code> </a> parameter types in the template.</p>"
         }
       },
       "documentation":"<p>The Parameter data type.</p>"
@@ -3911,7 +3931,7 @@
         },
         "PublicVersionNumber":{
           "shape":"PublicVersionNumber",
-          "documentation":"<p>The version number to assign to this version of the extension.</p> <p>Use the following format, and adhere to semantic versioning when assigning a version number to your extension: </p> <p> <code>MAJOR.MINOR.PATCH</code> </p> <p>For more information, see <a href=\"https://semver.org/\">Semantic Versioning 2.0.0</a>.</p> <p>If you do not specify a version number, CloudFormation increments the version number by one minor version release.</p> <p>The first time you publish a type, CloudFormation sets the version number to <code>1.0.0</code>, regardless of the value you specify.</p>"
+          "documentation":"<p>The version number to assign to this version of the extension.</p> <p>Use the following format, and adhere to semantic versioning when assigning a version number to your extension: </p> <p> <code>MAJOR.MINOR.PATCH</code> </p> <p>For more information, see <a href=\"https://semver.org/\">Semantic Versioning 2.0.0</a>.</p> <p>If you do not specify a version number, CloudFormation increments the version number by one minor version release.</p> <p>You cannot specify a version number the first time you publish a type. CloudFormation automatically sets the first version number to be <code>1.0.0</code>.</p>"
         }
       }
     },
@@ -4446,7 +4466,7 @@
         },
         "Type":{
           "shape":"Type",
-          "documentation":"<p>The resource type of the rollback trigger. Currently, <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html\">AWS::CloudWatch::Alarm</a> is the only supported resource type.</p>"
+          "documentation":"<p>The resource type of the rollback trigger. Specify either <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html\">AWS::CloudWatch::Alarm</a> or <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudwatch-compositealarm.html\">AWS::CloudWatch::CompositeAlarm</a> resource types.</p>"
         }
       },
       "documentation":"<p>A rollback trigger CloudFormation monitors during creation and updating of stacks. If any of the alarms you specify goes to ALARM state during the stack operation or within the specified monitoring period afterwards, CloudFormation rolls back the entire stack operation. </p>"
@@ -4795,6 +4815,12 @@
     "StackIdList":{
       "type":"list",
       "member":{"shape":"StackId"}
+    },
+    "StackIdsUrl":{
+      "type":"string",
+      "max":5120,
+      "min":1,
+      "pattern":"(s3://|http(s?)://).+"
     },
     "StackInstance":{
       "type":"structure",
@@ -5339,6 +5365,10 @@
         "OrganizationalUnitIds":{
           "shape":"OrganizationalUnitIdList",
           "documentation":"<p>[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html\">DeploymentTargets</a>.</p>"
+        },
+        "ManagedExecution":{
+          "shape":"ManagedExecution",
+          "documentation":"<p>Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about a stack set. A stack set enables you to provision stacks into Amazon Web Services accounts and across Regions by using a single CloudFormation template. In the stack set, you specify the template to use, as well as any parameters and capabilities that the template requires. </p>"
@@ -5653,6 +5683,10 @@
         "LastDriftCheckTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>Most recent time when CloudFormation performed a drift detection operation on the stack set. This value will be <code>NULL</code> for any stack set on which drift detection has not yet been performed.</p>"
+        },
+        "ManagedExecution":{
+          "shape":"ManagedExecution",
+          "documentation":"<p>Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.</p>"
         }
       },
       "documentation":"<p>The structures that contain summary information about the specified stack set.</p>"
@@ -6065,11 +6099,11 @@
       "members":{
         "Category":{
           "shape":"Category",
-          "documentation":"<p>The category of extensions to return.</p> <ul> <li> <p> <code>REGISTERED</code>: Private extensions that have been registered for this account and region.</p> </li> <li> <p> <code>ACTIVATED</code>: Public extensions that have been activated for this account and region.</p> </li> <li> <p> <code>THIRD-PARTY</code>: Extensions available for use from publishers other than Amazon. This includes:</p> <ul> <li> <p>Private extensions registered in the account.</p> </li> <li> <p>Public extensions from publishers other than Amazon, whether activated or not.</p> </li> </ul> </li> <li> <p> <code>AWS-TYPES</code>: Extensions available for use from Amazon.</p> </li> </ul>"
+          "documentation":"<p>The category of extensions to return.</p> <ul> <li> <p> <code>REGISTERED</code>: Private extensions that have been registered for this account and region.</p> </li> <li> <p> <code>ACTIVATED</code>: Public extensions that have been activated for this account and region.</p> </li> <li> <p> <code>THIRD_PARTY</code>: Extensions available for use from publishers other than Amazon. This includes:</p> <ul> <li> <p>Private extensions registered in the account.</p> </li> <li> <p>Public extensions from publishers other than Amazon, whether activated or not.</p> </li> </ul> </li> <li> <p> <code>AWS_TYPES</code>: Extensions available for use from Amazon.</p> </li> </ul>"
         },
         "PublisherId":{
           "shape":"PublisherId",
-          "documentation":"<p>The id of the publisher of the extension. </p> <p>Extensions published by Amazon are not assigned a publisher ID. Use the <code>AWS-TYPES</code> category to specify a list of types published by Amazon.</p>"
+          "documentation":"<p>The id of the publisher of the extension. </p> <p>Extensions published by Amazon are not assigned a publisher ID. Use the <code>AWS_TYPE</code> category to specify a list of types published by Amazon.</p>"
         },
         "TypeNamePrefix":{
           "shape":"TypeNamePrefix",
@@ -6449,6 +6483,10 @@
         "CallAs":{
           "shape":"CallAs",
           "documentation":"<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization's management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html\">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>"
+        },
+        "ManagedExecution":{
+          "shape":"ManagedExecution",
+          "documentation":"<p>Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.</p>"
         }
       }
     },

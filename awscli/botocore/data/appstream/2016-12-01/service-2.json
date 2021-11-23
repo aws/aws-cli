@@ -13,6 +13,23 @@
     "uid":"appstream-2016-12-01"
   },
   "operations":{
+    "AssociateApplicationFleet":{
+      "name":"AssociateApplicationFleet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateApplicationFleetRequest"},
+      "output":{"shape":"AssociateApplicationFleetResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Associates the specified application with the specified fleet. This is only supported for Elastic fleets.</p>"
+    },
     "AssociateFleet":{
       "name":"AssociateFleet",
       "http":{
@@ -77,6 +94,39 @@
       ],
       "documentation":"<p>Copies the image within the same region or to a new region within the same AWS account. Note that any tags you added to the image will not be copied.</p>"
     },
+    "CreateAppBlock":{
+      "name":"CreateAppBlock",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAppBlockRequest"},
+      "output":{"shape":"CreateAppBlockResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceAlreadyExistsException"}
+      ],
+      "documentation":"<p>Creates an app block.</p> <p>App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
+    },
+    "CreateApplication":{
+      "name":"CreateApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateApplicationRequest"},
+      "output":{"shape":"CreateApplicationResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates an application.</p> <p>Applications are an Amazon AppStream 2.0 resource that stores the details about how to launch applications on Elastic fleet streaming instances. An application consists of the launch details, icon, and display name. Applications are associated with an app block that contains the application binaries and other files. The applications assigned to an Elastic fleet are the applications users can launch. </p> <p>This is only supported for Elastic fleets.</p>"
+    },
     "CreateDirectoryConfig":{
       "name":"CreateDirectoryConfig",
       "http":{
@@ -116,7 +166,7 @@
         {"shape":"IncompatibleImageException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Creates a fleet. A fleet consists of streaming instances that run a specified image.</p>"
+      "documentation":"<p>Creates a fleet. A fleet consists of streaming instances that run a specified image when using Always-On or On-Demand.</p>"
     },
     "CreateImageBuilder":{
       "name":"CreateImageBuilder",
@@ -241,6 +291,37 @@
       ],
       "documentation":"<p>Creates a new user in the user pool.</p>"
     },
+    "DeleteAppBlock":{
+      "name":"DeleteAppBlock",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAppBlockRequest"},
+      "output":{"shape":"DeleteAppBlockResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an app block.</p>"
+    },
+    "DeleteApplication":{
+      "name":"DeleteApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteApplicationRequest"},
+      "output":{"shape":"DeleteApplicationResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes an application.</p>"
+    },
     "DeleteDirectoryConfig":{
       "name":"DeleteDirectoryConfig",
       "http":{
@@ -356,6 +437,48 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes a user from the user pool.</p>"
+    },
+    "DescribeAppBlocks":{
+      "name":"DescribeAppBlocks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAppBlocksRequest"},
+      "output":{"shape":"DescribeAppBlocksResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes one or more app blocks.</p>"
+    },
+    "DescribeApplicationFleetAssociations":{
+      "name":"DescribeApplicationFleetAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeApplicationFleetAssociationsRequest"},
+      "output":{"shape":"DescribeApplicationFleetAssociationsResult"},
+      "errors":[
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes one or more application fleet associations. Either ApplicationArn or FleetName must be specified.</p>"
+    },
+    "DescribeApplications":{
+      "name":"DescribeApplications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeApplicationsRequest"},
+      "output":{"shape":"DescribeApplicationsResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes one or more applications.</p>"
     },
     "DescribeDirectoryConfigs":{
       "name":"DescribeDirectoryConfigs",
@@ -504,6 +627,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Disables the specified user in the user pool. Users can't sign in to AppStream 2.0 until they are re-enabled. This action does not delete the user. </p>"
+    },
+    "DisassociateApplicationFleet":{
+      "name":"DisassociateApplicationFleet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateApplicationFleetRequest"},
+      "output":{"shape":"DisassociateApplicationFleetResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Disassociates the specified application from the fleet.</p>"
     },
     "DisassociateFleet":{
       "name":"DisassociateFleet",
@@ -672,6 +810,21 @@
       ],
       "documentation":"<p>Disassociates one or more specified tags from the specified AppStream 2.0 resource.</p> <p>To list the current tags for your resources, use <a>ListTagsForResource</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
     },
+    "UpdateApplication":{
+      "name":"UpdateApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateApplicationRequest"},
+      "output":{"shape":"UpdateApplicationResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the specified application.</p>"
+    },
     "UpdateDirectoryConfig":{
       "name":"UpdateDirectoryConfig",
       "http":{
@@ -710,7 +863,7 @@
         {"shape":"IncompatibleImageException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Updates the specified fleet.</p> <p>If the fleet is in the <code>STOPPED</code> state, you can update any attribute except the fleet name. If the fleet is in the <code>RUNNING</code> state, you can update the <code>DisplayName</code>, <code>ComputeCapacity</code>, <code>ImageARN</code>, <code>ImageName</code>, <code>IdleDisconnectTimeoutInSeconds</code>, and <code>DisconnectTimeoutInSeconds</code> attributes. If the fleet is in the <code>STARTING</code> or <code>STOPPING</code> state, you can't update it.</p>"
+      "documentation":"<p>Updates the specified fleet.</p> <p>If the fleet is in the <code>STOPPED</code> state, you can update any attribute except the fleet name.</p> <p>If the fleet is in the <code>RUNNING</code> state, you can update the following based on the fleet type:</p> <ul> <li> <p>Always-On and On-Demand fleet types</p> <p>You can update the <code>DisplayName</code>, <code>ComputeCapacity</code>, <code>ImageARN</code>, <code>ImageName</code>, <code>IdleDisconnectTimeoutInSeconds</code>, and <code>DisconnectTimeoutInSeconds</code> attributes.</p> </li> <li> <p>Elastic fleet type</p> <p>You can update the <code>DisplayName</code>, <code>IdleDisconnectTimeoutInSeconds</code>, <code>DisconnectTimeoutInSeconds</code>, <code>MaxConcurrentSessions</code>, and <code>UsbDeviceFilterStrings</code> attributes.</p> </li> </ul> <p>If the fleet is in the <code>STARTING</code> or <code>STOPPED</code> state, you can't update it.</p>"
     },
     "UpdateImagePermissions":{
       "name":"UpdateImagePermissions",
@@ -798,6 +951,49 @@
         "DOMAIN_SMART_CARD_SIGNIN"
       ]
     },
+    "AppBlock":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "SetupScriptDetails"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the app block.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the app block.</p>"
+        },
+        "DisplayName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the app block.</p>"
+        },
+        "SourceS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The source S3 location of the app block.</p>"
+        },
+        "SetupScriptDetails":{
+          "shape":"ScriptDetails",
+          "documentation":"<p>The setup script details of the app block.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The created time of the app block.</p>"
+        }
+      },
+      "documentation":"<p>Describes an app block.</p> <p>App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
+    },
+    "AppBlocks":{
+      "type":"list",
+      "member":{"shape":"AppBlock"}
+    },
     "Application":{
       "type":"structure",
       "members":{
@@ -828,9 +1024,77 @@
         "Metadata":{
           "shape":"Metadata",
           "documentation":"<p>Additional attributes that describe the application.</p>"
+        },
+        "WorkingDirectory":{
+          "shape":"String",
+          "documentation":"<p>The working directory for the application.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the application.</p>"
+        },
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The app block ARN of the application.</p>"
+        },
+        "IconS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The S3 location of the application icon.</p>"
+        },
+        "Platforms":{
+          "shape":"Platforms",
+          "documentation":"<p>The platforms on which the application can run.</p>"
+        },
+        "InstanceFamilies":{
+          "shape":"StringList",
+          "documentation":"<p>The instance families for the application.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the application was created within the app block.</p>"
         }
       },
       "documentation":"<p>Describes an application in the application catalog.</p>"
+    },
+    "ApplicationAttribute":{
+      "type":"string",
+      "enum":[
+        "LAUNCH_PARAMETERS",
+        "WORKING_DIRECTORY"
+      ]
+    },
+    "ApplicationAttributes":{
+      "type":"list",
+      "member":{"shape":"ApplicationAttribute"},
+      "max":2
+    },
+    "ApplicationFleetAssociation":{
+      "type":"structure",
+      "required":[
+        "FleetName",
+        "ApplicationArn"
+      ],
+      "members":{
+        "FleetName":{
+          "shape":"String",
+          "documentation":"<p>The name of the fleet associated with the application.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the application associated with the fleet.</p>"
+        }
+      },
+      "documentation":"<p>Describes the application fleet association.</p>"
+    },
+    "ApplicationFleetAssociationList":{
+      "type":"list",
+      "member":{"shape":"ApplicationFleetAssociation"},
+      "max":25,
+      "min":1
     },
     "ApplicationSettings":{
       "type":"structure",
@@ -881,6 +1145,32 @@
     "ArnList":{
       "type":"list",
       "member":{"shape":"Arn"}
+    },
+    "AssociateApplicationFleetRequest":{
+      "type":"structure",
+      "required":[
+        "FleetName",
+        "ApplicationArn"
+      ],
+      "members":{
+        "FleetName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the fleet.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the application.</p>"
+        }
+      }
+    },
+    "AssociateApplicationFleetResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationFleetAssociation":{
+          "shape":"ApplicationFleetAssociation",
+          "documentation":"<p>If fleet name is specified, this returns the list of applications that are associated to it. If application ARN is specified, this returns the list of fleets to which it is associated.</p>"
+        }
+      }
     },
     "AssociateFleetRequest":{
       "type":"structure",
@@ -1039,6 +1329,112 @@
         }
       }
     },
+    "CreateAppBlockRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "SourceS3Location",
+        "SetupScriptDetails"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the app block.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the app block. This is not displayed to the user.</p>"
+        },
+        "SourceS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The source S3 location of the app block.</p>"
+        },
+        "SetupScriptDetails":{
+          "shape":"ScriptDetails",
+          "documentation":"<p>The setup script details of the app block.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags assigned to the app block.</p>"
+        }
+      }
+    },
+    "CreateAppBlockResult":{
+      "type":"structure",
+      "members":{
+        "AppBlock":{
+          "shape":"AppBlock",
+          "documentation":"<p>The app block.</p>"
+        }
+      }
+    },
+    "CreateApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "IconS3Location",
+        "LaunchPath",
+        "Platforms",
+        "InstanceFamilies",
+        "AppBlockArn"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the application. This name is visible to users when display name is not specified.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the application. This name is visible to users in the application catalog.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "IconS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The location in S3 of the application icon.</p>"
+        },
+        "LaunchPath":{
+          "shape":"String",
+          "documentation":"<p>The launch path of the application.</p>"
+        },
+        "WorkingDirectory":{
+          "shape":"String",
+          "documentation":"<p>The working directory of the application.</p>"
+        },
+        "LaunchParameters":{
+          "shape":"String",
+          "documentation":"<p>The launch parameters of the application.</p>"
+        },
+        "Platforms":{
+          "shape":"Platforms",
+          "documentation":"<p>The platforms the application supports. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets.</p>"
+        },
+        "InstanceFamilies":{
+          "shape":"StringList",
+          "documentation":"<p>The instance families the application supports. Valid values are GENERAL_PURPOSE and GRAPHICS_G4.</p>"
+        },
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The app block ARN to which the application should be associated</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags assigned to the application.</p>"
+        }
+      }
+    },
+    "CreateApplicationResult":{
+      "type":"structure",
+      "members":{
+        "Application":{"shape":"Application"}
+      }
+    },
     "CreateDirectoryConfigRequest":{
       "type":"structure",
       "required":[
@@ -1073,8 +1469,7 @@
       "type":"structure",
       "required":[
         "Name",
-        "InstanceType",
-        "ComputeCapacity"
+        "InstanceType"
       ],
       "members":{
         "Name":{
@@ -1091,7 +1486,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> </ul>"
         },
         "FleetType":{
           "shape":"FleetType",
@@ -1099,11 +1494,11 @@
         },
         "ComputeCapacity":{
           "shape":"ComputeCapacity",
-          "documentation":"<p>The desired capacity for the fleet.</p>"
+          "documentation":"<p>The desired capacity for the fleet. This is not allowed for Elastic fleets. For Elastic fleets, specify MaxConcurrentSessions instead.</p>"
         },
         "VpcConfig":{
           "shape":"VpcConfig",
-          "documentation":"<p>The VPC configuration for the fleet.</p>"
+          "documentation":"<p>The VPC configuration for the fleet. This is required for Elastic fleets, but not required for other fleet types. Elastic fleets require that you specify at least two subnets in different availability zones.</p>"
         },
         "MaxUserDurationInSeconds":{
           "shape":"Integer",
@@ -1127,7 +1522,7 @@
         },
         "DomainJoinInfo":{
           "shape":"DomainJoinInfo",
-          "documentation":"<p>The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. </p>"
+          "documentation":"<p>The name of the directory and organizational unit (OU) to use to join the fleet to a Microsoft Active Directory domain. This is not allowed for Elastic fleets. </p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1144,6 +1539,18 @@
         "StreamView":{
           "shape":"StreamView",
           "documentation":"<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
+        },
+        "Platform":{
+          "shape":"PlatformType",
+          "documentation":"<p>The fleet platform. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets. </p>"
+        },
+        "MaxConcurrentSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum concurrent sessions of the Elastic fleet. This is required for Elastic fleets, and not allowed for other fleet types.</p>"
+        },
+        "UsbDeviceFilterStrings":{
+          "shape":"UsbDeviceFilterStrings",
+          "documentation":"<p>The USB device filter strings that specify which USB devices a user can redirect to the fleet streaming session, when using the Windows native client. This is allowed but not required for Elastic fleets.</p>"
         }
       }
     },
@@ -1454,6 +1861,36 @@
       "members":{
       }
     },
+    "DeleteAppBlockRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block.</p>"
+        }
+      }
+    },
+    "DeleteAppBlockResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteApplicationRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the application.</p>"
+        }
+      }
+    },
+    "DeleteApplicationResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteDirectoryConfigRequest":{
       "type":"structure",
       "required":["DirectoryName"],
@@ -1589,6 +2026,100 @@
     "DeleteUserResult":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DescribeAppBlocksRequest":{
+      "type":"structure",
+      "members":{
+        "Arns":{
+          "shape":"ArnList",
+          "documentation":"<p>The ARNs of the app blocks.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results.</p>"
+        }
+      }
+    },
+    "DescribeAppBlocksResult":{
+      "type":"structure",
+      "members":{
+        "AppBlocks":{
+          "shape":"AppBlocks",
+          "documentation":"<p>The app blocks in the list.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeApplicationFleetAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "FleetName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the fleet.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the application.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeApplicationFleetAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationFleetAssociations":{
+          "shape":"ApplicationFleetAssociationList",
+          "documentation":"<p>The application fleet associations in the list.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeApplicationsRequest":{
+      "type":"structure",
+      "members":{
+        "Arns":{
+          "shape":"ArnList",
+          "documentation":"<p>The ARNs for the applications.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results.</p>"
+        }
+      }
+    },
+    "DescribeApplicationsResult":{
+      "type":"structure",
+      "members":{
+        "Applications":{
+          "shape":"Applications",
+          "documentation":"<p>The applications in the list.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
       }
     },
     "DescribeDirectoryConfigsRequest":{
@@ -1985,6 +2516,28 @@
       "members":{
       }
     },
+    "DisassociateApplicationFleetRequest":{
+      "type":"structure",
+      "required":[
+        "FleetName",
+        "ApplicationArn"
+      ],
+      "members":{
+        "FleetName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the fleet.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the application.</p>"
+        }
+      }
+    },
+    "DisassociateApplicationFleetResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DisassociateFleetRequest":{
       "type":"structure",
       "required":[
@@ -2182,6 +2735,18 @@
         "StreamView":{
           "shape":"StreamView",
           "documentation":"<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
+        },
+        "Platform":{
+          "shape":"PlatformType",
+          "documentation":"<p>The platform of the fleet.</p>"
+        },
+        "MaxConcurrentSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of concurrent sessions for the fleet.</p>"
+        },
+        "UsbDeviceFilterStrings":{
+          "shape":"UsbDeviceFilterStrings",
+          "documentation":"<p>The USB device filter strings associated with the fleet.</p>"
         }
       },
       "documentation":"<p>Describes a fleet.</p>"
@@ -2193,7 +2758,8 @@
         "VPC_CONFIGURATION",
         "VPC_CONFIGURATION_SECURITY_GROUP_IDS",
         "DOMAIN_JOIN_INFO",
-        "IAM_ROLE_ARN"
+        "IAM_ROLE_ARN",
+        "USB_DEVICE_FILTER_STRINGS"
       ]
     },
     "FleetAttributes":{
@@ -2272,7 +2838,8 @@
       "type":"string",
       "enum":[
         "ALWAYS_ON",
-        "ON_DEMAND"
+        "ON_DEMAND",
+        "ELASTIC"
       ]
     },
     "Image":{
@@ -2720,6 +3287,11 @@
         "AMAZON_LINUX2"
       ]
     },
+    "Platforms":{
+      "type":"list",
+      "member":{"shape":"PlatformType"},
+      "max":4
+    },
     "RedirectURL":{
       "type":"string",
       "max":1000
@@ -2796,6 +3368,62 @@
       },
       "documentation":"<p>The specified resource was not found.</p>",
       "exception":true
+    },
+    "S3Bucket":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"^[0-9a-z\\.\\-]*(?<!\\.)$"
+    },
+    "S3Key":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "S3Location":{
+      "type":"structure",
+      "required":[
+        "S3Bucket",
+        "S3Key"
+      ],
+      "members":{
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The S3 bucket of the S3 object.</p>"
+        },
+        "S3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>The S3 key of the S3 object.</p>"
+        }
+      },
+      "documentation":"<p>Describes the S3 location.</p>"
+    },
+    "ScriptDetails":{
+      "type":"structure",
+      "required":[
+        "ScriptS3Location",
+        "ExecutablePath",
+        "TimeoutInSeconds"
+      ],
+      "members":{
+        "ScriptS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The S3 object location for the script.</p>"
+        },
+        "ExecutablePath":{
+          "shape":"String",
+          "documentation":"<p>The run path for the script.</p>"
+        },
+        "ExecutableParameters":{
+          "shape":"String",
+          "documentation":"<p>The runtime parameters passed to the run path for the script.</p>"
+        },
+        "TimeoutInSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The run timeout, in seconds, for the script.</p>"
+        }
+      },
+      "documentation":"<p>Describes the details of the script.</p>"
     },
     "SecurityGroupIdList":{
       "type":"list",
@@ -3232,6 +3860,54 @@
       "members":{
       }
     },
+    "UpdateApplicationRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the application. This name is visible to users when display name is not specified.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the application. This name is visible to users in the application catalog.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "IconS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The icon S3 location of the application.</p>"
+        },
+        "LaunchPath":{
+          "shape":"String",
+          "documentation":"<p>The launch path of the application.</p>"
+        },
+        "WorkingDirectory":{
+          "shape":"String",
+          "documentation":"<p>The working directory of the application.</p>"
+        },
+        "LaunchParameters":{
+          "shape":"String",
+          "documentation":"<p>The launch parameters of the application.</p>"
+        },
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block.</p>"
+        },
+        "AttributesToDelete":{
+          "shape":"ApplicationAttributes",
+          "documentation":"<p>The attributes to delete for an application.</p>"
+        }
+      }
+    },
+    "UpdateApplicationResult":{
+      "type":"structure",
+      "members":{
+        "Application":{"shape":"Application"}
+      }
+    },
     "UpdateDirectoryConfigRequest":{
       "type":"structure",
       "required":["DirectoryName"],
@@ -3276,15 +3952,15 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> </ul>"
         },
         "ComputeCapacity":{
           "shape":"ComputeCapacity",
-          "documentation":"<p>The desired capacity for the fleet.</p>"
+          "documentation":"<p>The desired capacity for the fleet. This is not allowed for Elastic fleets.</p>"
         },
         "VpcConfig":{
           "shape":"VpcConfig",
-          "documentation":"<p>The VPC configuration for the fleet.</p>"
+          "documentation":"<p>The VPC configuration for the fleet. This is required for Elastic fleets, but not required for other fleet types. Elastic fleets require that you specify at least two subnets in different availability zones. </p>"
         },
         "MaxUserDurationInSeconds":{
           "shape":"Integer",
@@ -3330,6 +4006,18 @@
         "StreamView":{
           "shape":"StreamView",
           "documentation":"<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
+        },
+        "Platform":{
+          "shape":"PlatformType",
+          "documentation":"<p>The platform of the fleet. WINDOWS_SERVER_2019 and AMAZON_LINUX2 are supported for Elastic fleets. </p>"
+        },
+        "MaxConcurrentSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of concurrent sessions for a fleet.</p>"
+        },
+        "UsbDeviceFilterStrings":{
+          "shape":"UsbDeviceFilterStrings",
+          "documentation":"<p>The USB device filter strings that specify which USB devices a user can redirect to the fleet streaming session, when using the Windows native client. This is allowed but not required for Elastic fleets.</p>"
         }
       }
     },
@@ -3470,6 +4158,16 @@
     "UsageReportSubscriptionList":{
       "type":"list",
       "member":{"shape":"UsageReportSubscription"}
+    },
+    "UsbDeviceFilterString":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"^((\\w*)\\s*(\\w*)\\s*\\,\\s*(\\w*)\\s*\\,\\s*\\*?(\\w*)\\s*\\,\\s*\\*?(\\w*)\\s*\\,\\s*\\*?\\d*\\s*\\,\\s*\\*?\\d*\\s*\\,\\s*[0-1]\\s*\\,\\s*[0-1]\\s*)$"
+    },
+    "UsbDeviceFilterStrings":{
+      "type":"list",
+      "member":{"shape":"UsbDeviceFilterString"}
     },
     "User":{
       "type":"structure",

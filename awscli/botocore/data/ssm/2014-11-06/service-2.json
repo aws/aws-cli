@@ -86,6 +86,7 @@
       "input":{"shape":"CreateActivationRequest"},
       "output":{"shape":"CreateActivationResult"},
       "errors":[
+        {"shape":"InvalidParameters"},
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Generates an activation code and activation ID you can use to register your on-premises server or virtual machine (VM) with Amazon Web Services Systems Manager. Registering these machines with Systems Manager makes it possible to manage them using Systems Manager capabilities. You use the activation code and ID when installing SSM Agent on machines in your hybrid environment. For more information about requirements for managing on-premises instances and VMs using Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-managedinstances.html\">Setting up Amazon Web Services Systems Manager for hybrid environments</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>On-premises servers or VMs that are registered with Systems Manager and Amazon Elastic Compute Cloud (Amazon EC2) instances that you manage with Systems Manager are all called <i>managed instances</i>.</p> </note>"
@@ -3707,11 +3708,11 @@
       "members":{
         "key":{
           "shape":"CommandFilterKey",
-          "documentation":"<p>The name of the filter.</p>"
+          "documentation":"<p>The name of the filter.</p> <note> <p>The <code>ExecutionStage</code> filter can't be used with the <code>ListCommandInvocations</code> operation, only with <code>ListCommands</code>.</p> </note>"
         },
         "value":{
           "shape":"CommandFilterValue",
-          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p> <b>InvokedAfter</b>: Specify a timestamp to limit your results. For example, specify <code>2021-07-07T00:00:00Z</code> to see a list of command executions occurring July 7, 2021, and later.</p> </li> <li> <p> <b>InvokedBefore</b>: Specify a timestamp to limit your results. For example, specify <code>2021-07-07T00:00:00Z</code> to see a list of command executions from before July 7, 2021.</p> </li> <li> <p> <b>Status</b>: Specify a valid command status to see a list of all command executions with that status. The status choices depend on the API you call.</p> <p>The status values you can specify for <code>ListCommands</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Incomplete</code> </p> </li> <li> <p> <code>NoInstancesInTag</code> </p> </li> <li> <p> <code>LimitExceeded</code> </p> </li> </ul> <p>The status values you can specify for <code>ListCommandInvocations</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Delayed</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Undeliverable</code> </p> </li> <li> <p> <code>InvalidPlatform</code> </p> </li> <li> <p> <code>Terminated</code> </p> </li> </ul> </li> <li> <p> <b>DocumentName</b>: Specify name of the Amazon Web Services Systems Manager document (SSM document) for which you want to see command execution results. For example, specify <code>AWS-RunPatchBaseline</code> to see command executions that used this SSM document to perform security patching operations on instances. </p> </li> <li> <p> <b>ExecutionStage</b>: Specify one of the following values:</p> <ul> <li> <p> <code>Executing</code>: Returns a list of command executions that are currently still running.</p> </li> <li> <p> <code>Complete</code>: Returns a list of command executions that have already completed. </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p> <b>InvokedAfter</b>: Specify a timestamp to limit your results. For example, specify <code>2021-07-07T00:00:00Z</code> to see a list of command executions occurring July 7, 2021, and later.</p> </li> <li> <p> <b>InvokedBefore</b>: Specify a timestamp to limit your results. For example, specify <code>2021-07-07T00:00:00Z</code> to see a list of command executions from before July 7, 2021.</p> </li> <li> <p> <b>Status</b>: Specify a valid command status to see a list of all command executions with that status. The status choices depend on the API you call.</p> <p>The status values you can specify for <code>ListCommands</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Incomplete</code> </p> </li> <li> <p> <code>NoInstancesInTag</code> </p> </li> <li> <p> <code>LimitExceeded</code> </p> </li> </ul> <p>The status values you can specify for <code>ListCommandInvocations</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Delayed</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Undeliverable</code> </p> </li> <li> <p> <code>InvalidPlatform</code> </p> </li> <li> <p> <code>Terminated</code> </p> </li> </ul> </li> <li> <p> <b>DocumentName</b>: Specify name of the Amazon Web Services Systems Manager document (SSM document) for which you want to see command execution results. For example, specify <code>AWS-RunPatchBaseline</code> to see command executions that used this SSM document to perform security patching operations on instances. </p> </li> <li> <p> <b>ExecutionStage</b>: Specify one of the following values (<code>ListCommands</code> operations only):</p> <ul> <li> <p> <code>Executing</code>: Returns a list of command executions that are currently still running.</p> </li> <li> <p> <code>Complete</code>: Returns a list of command executions that have already completed. </p> </li> </ul> </li> </ul>"
         }
       },
       "documentation":"<p>Describes a command filter.</p> <note> <p>An instance ID can't be specified when a command status is <code>Pending</code> because the command hasn't run on the instance yet.</p> </note>"
@@ -4236,6 +4237,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Optional metadata that you assign to a resource. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment. For example, you might want to tag an activation to identify which servers or virtual machines (VMs) in your on-premises environment you intend to activate. In this case, you could specify the following key-value pairs:</p> <ul> <li> <p> <code>Key=OS,Value=Windows</code> </p> </li> <li> <p> <code>Key=Environment,Value=Production</code> </p> </li> </ul> <important> <p>When you install SSM Agent on your on-premises servers and VMs, you specify an activation ID and code. When you specify the activation ID and code, tags assigned to the activation are automatically applied to the on-premises servers or VMs.</p> </important> <p>You can't add tags to or delete tags from an existing activation. You can tag your on-premises servers and VMs after they connect to Systems Manager for the first time and are assigned a managed instance ID. This means they are listed in the Amazon Web Services Systems Manager console with an ID that is prefixed with \"mi-\". For information about how to add tags to your managed instances, see <a>AddTagsToResource</a>. For information about how to remove tags from your managed instances, see <a>RemoveTagsFromResource</a>.</p>"
+        },
+        "RegistrationMetadata":{
+          "shape":"RegistrationMetadataList",
+          "documentation":"<p>Reserved for internal use.</p>"
         }
       }
     },
@@ -10845,7 +10850,9 @@
     },
     "ManagedInstanceId":{
       "type":"string",
-      "pattern":"^mi-[0-9a-f]{17}$"
+      "max":124,
+      "min":20,
+      "pattern":"(^mi-[0-9a-f]{17}$)|(^eks_c:[0-9A-Za-z][A-Za-z0-9\\-_]{0,99}_\\w{17}$)"
     },
     "MaxConcurrency":{
       "type":"string",
@@ -12364,7 +12371,8 @@
     "Parameters":{
       "type":"map",
       "key":{"shape":"ParameterName"},
-      "value":{"shape":"ParameterValueList"}
+      "value":{"shape":"ParameterValueList"},
+      "sensitive":true
     },
     "ParametersFilter":{
       "type":"structure",
@@ -13149,7 +13157,7 @@
         },
         "Policies":{
           "shape":"ParameterPolicies",
-          "documentation":"<p>One or more policies to apply to a parameter. This operation takes a JSON array. Parameter Store, a capability of Amazon Web Services Systems Manager supports the following policy types:</p> <p>Expiration: This policy deletes the parameter after it expires. When you create the policy, you specify the expiration date. You can update the expiration date and time by updating the policy. Updating the <i>parameter</i> doesn't affect the expiration date and time. When the expiration time is reached, Parameter Store deletes the parameter.</p> <p>ExpirationNotification: This policy triggers an event in Amazon CloudWatch Events that notifies you about the expiration. By using this policy, you can receive notification before or after the expiration time is reached, in units of days or hours.</p> <p>NoChangeNotification: This policy triggers a CloudWatch Events event if a parameter hasn't been modified for a specified period of time. This policy type is useful when, for example, a secret needs to be changed within a period of time, but it hasn't been changed.</p> <p>All existing policies are preserved until you send new policies or an empty policy. For more information about parameter policies, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html\">Assigning parameter policies</a>. </p>"
+          "documentation":"<p>One or more policies to apply to a parameter. This operation takes a JSON array. Parameter Store, a capability of Amazon Web Services Systems Manager supports the following policy types:</p> <p>Expiration: This policy deletes the parameter after it expires. When you create the policy, you specify the expiration date. You can update the expiration date and time by updating the policy. Updating the <i>parameter</i> doesn't affect the expiration date and time. When the expiration time is reached, Parameter Store deletes the parameter.</p> <p>ExpirationNotification: This policy initiates an event in Amazon CloudWatch Events that notifies you about the expiration. By using this policy, you can receive notification before or after the expiration time is reached, in units of days or hours.</p> <p>NoChangeNotification: This policy initiates a CloudWatch Events event if a parameter hasn't been modified for a specified period of time. This policy type is useful when, for example, a secret needs to be changed within a period of time, but it hasn't been changed.</p> <p>All existing policies are preserved until you send new policies or an empty policy. For more information about parameter policies, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html\">Assigning parameter policies</a>. </p>"
         },
         "DataType":{
           "shape":"ParameterDataType",
@@ -13370,6 +13378,40 @@
       "type":"integer",
       "max":1000,
       "min":1
+    },
+    "RegistrationMetadataItem":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"RegistrationMetadataKey",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
+        "Value":{
+          "shape":"RegistrationMetadataValue",
+          "documentation":"<p>Reserved for internal use.</p>"
+        }
+      },
+      "documentation":"<p>Reserved for internal use.</p>"
+    },
+    "RegistrationMetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?!\\s*$).+"
+    },
+    "RegistrationMetadataList":{
+      "type":"list",
+      "member":{"shape":"RegistrationMetadataItem"}
+    },
+    "RegistrationMetadataValue":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(?!\\s*$).+"
     },
     "RegistrationsCount":{
       "type":"integer",

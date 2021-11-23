@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from collections import defaultdict
 from datetime import datetime, timedelta
+import json
 import re
 import time
 
@@ -25,7 +26,9 @@ from awscli.customizations.commands import BasicCommand
 
 
 class BaseLogEventsFormatter(object):
+
     _TIMESTAMP_COLOR = colorama.Fore.GREEN
+    _STREAM_NAME_COLOR = colorama.Fore.CYAN
 
     def __init__(self, output, colorize=True):
         self._output = output
@@ -63,8 +66,6 @@ class ShortLogEventsFormatter(BaseLogEventsFormatter):
 
 
 class DetailedLogEventsFormatter(BaseLogEventsFormatter):
-    _STREAM_NAME_COLOR = colorama.Fore.CYAN
-
     def display_log_event(self, log_event):
         log_event = '%s %s %s' % (
             self._format_timestamp(log_event['timestamp']),
@@ -73,6 +74,29 @@ class DetailedLogEventsFormatter(BaseLogEventsFormatter):
             log_event['message']
         )
         self._write_log_event(log_event)
+
+    def _format_timestamp(self, timestamp):
+        return self._color_if_configured(
+            timestamp.isoformat(), self._TIMESTAMP_COLOR)
+
+
+class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
+    def display_log_event(self, log_event):
+        log_event = '%s %s %s' % (
+            self._format_timestamp(log_event['timestamp']),
+            self._color_if_configured(
+                log_event['logStreamName'], self._STREAM_NAME_COLOR),
+            self._format_pretty_json(log_event['message'])
+        )
+        self._write_log_event(log_event)
+
+    def _format_pretty_json(self, log_message):
+        try:
+            loaded_json = json.loads(log_message)
+            return '\n%s' % json.dumps(loaded_json, indent=4)
+        except json.decoder.JSONDecodeError:
+            pass
+        return log_message
 
     def _format_timestamp(self, timestamp):
         return self._color_if_configured(
@@ -128,7 +152,7 @@ class TailCommand(BasicCommand):
         {
             'name': 'format',
             'default': 'detailed',
-            'choices': ['detailed', 'short'],
+            'choices': ['detailed', 'short', 'json'],
             'help_text': (
                 'The format to display the logs. The following formats are '
                 'supported:\n\n'
@@ -139,6 +163,8 @@ class TailCommand(BasicCommand):
                 '</li>'
                 '<li> short - A shortened format. It prints out the '
                 'a shortened timestamp and the log message.'
+                '</li>'
+                '<li> json - Pretty print any messages that are entirely JSON.'
                 '</li>'
                 '</ul>'
             )
@@ -176,7 +202,8 @@ class TailCommand(BasicCommand):
     ]
     _FORMAT_TO_FORMATTER_CLS = {
         'detailed': DetailedLogEventsFormatter,
-        'short': ShortLogEventsFormatter
+        'short': ShortLogEventsFormatter,
+        'json': PrettyJSONLogEventsFormatter,
     }
 
     def _run_main(self, parsed_args, parsed_globals):

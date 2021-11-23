@@ -149,6 +149,27 @@ class TestDeployCommand(BaseYAMLTest):
             result = self.deploy_command._run_main(self.parsed_args,
                                                   parsed_globals=self.parsed_globals)
 
+    @patch('awscli.customizations.cloudformation.deploy.os.path.expanduser')
+    def test_expands_user_for_template_file(self, expanduser):
+        contents = (
+            'Resource:\n'
+            '  Test:\n'
+            '    Type: AWS::Foo::Bar\n'
+        )
+        with tempfile.NamedTemporaryFile('w') as f:
+            f.write(contents)
+            f.flush()
+            fake_expanduser_path = f.name + '.expanduser-file'
+            with open(fake_expanduser_path, 'w') as f:
+                f.write(contents)
+        # The tempfile is now gone so if we weren't using os.path.expanduser()
+        # in the code, this test would fail to load the file with an
+        # InvalidTemplatePathError.
+        expanduser.return_value = fake_expanduser_path
+        parsed, template_str, _ = self.deploy_command.load_template_file(f.name)
+        self.assertEqual(parsed, {'Resource': {'Test': {'Type': 'AWS::Foo::Bar'}}})
+        self.assertEqual(template_str, contents)
+
     @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
     @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
     @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')

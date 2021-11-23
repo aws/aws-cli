@@ -307,14 +307,8 @@ class DeployCommand(BasicCommand):
                     endpoint_url=parsed_globals.endpoint_url,
                     verify=parsed_globals.verify_ssl)
 
-        template_path = parsed_args.template_file
-        if not os.path.isfile(template_path):
-            raise exceptions.InvalidTemplatePathError(
-                    template_path=template_path)
-
-        # Parse parameters
-        with compat_open(template_path, "r") as handle:
-            template_str = handle.read()
+        template_dict, template_str, template_size = self.load_template_file(
+            parsed_args.template_file)
 
         stack_name = parsed_args.stack_name
         parameter_overrides = self.parse_parameter_overrides(
@@ -324,11 +318,9 @@ class DeployCommand(BasicCommand):
         tags = [{"Key": key, "Value": value}
                 for key, value in tags_dict.items()]
 
-        template_dict = yaml_parse(template_str)
 
         parameters = self.merge_parameters(template_dict, parameter_overrides)
 
-        template_size = os.path.getsize(parsed_args.template_file)
         if template_size > 51200 and not parsed_args.s3_bucket:
             raise exceptions.DeployBucketRequiredError()
 
@@ -355,6 +347,17 @@ class DeployCommand(BasicCommand):
                            parsed_args.notification_arns, s3_uploader,
                            tags,
                            parsed_args.fail_on_empty_changeset)
+
+    def load_template_file(self, template_file):
+        template_path = os.path.expanduser(template_file)
+        if not os.path.isfile(template_path):
+            raise exceptions.InvalidTemplatePathError(
+                    template_path=template_path)
+        with compat_open(template_path, "r") as handle:
+            template_str = handle.read()
+        template_dict = yaml_parse(template_str)
+        template_size = os.path.getsize(template_path)
+        return template_dict, template_str, template_size
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,

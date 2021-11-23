@@ -108,7 +108,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Deletes the specified scheduling policy.</p> <p>You can't delete a scheduling policy that is used in any job queues.</p>"
+      "documentation":"<p>Deletes the specified scheduling policy.</p> <p>You can't delete a scheduling policy that's used in any job queues.</p>"
     },
     "DeregisterJobDefinition":{
       "name":"DeregisterJobDefinition",
@@ -552,7 +552,7 @@
       "members":{
         "computeEnvironmentName":{
           "shape":"String",
-          "documentation":"<p>The name of the compute environment. Up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the compute environment. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "computeEnvironmentArn":{
           "shape":"String",
@@ -987,7 +987,7 @@
       "members":{
         "computeEnvironmentName":{
           "shape":"String",
-          "documentation":"<p>The name for your compute environment. Up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name for your compute environment. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "type":{
           "shape":"CEType",
@@ -999,7 +999,7 @@
         },
         "unmanagedvCpus":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of vCPUs for an unmanaged compute environment. This parameter is only used for fair share scheduling to reserve vCPU capacity for new share identifiers. If this parameter is not provided for a fair share job queue, no vCPU capacity will be reserved.</p> <note> <p>This parameter is only supported when the <code>type</code> parameter is set to <code>UNMANAGED</code>/</p> </note>"
+          "documentation":"<p>The maximum number of vCPUs for an unmanaged compute environment. This parameter is only used for fair share scheduling to reserve vCPU capacity for new share identifiers. If this parameter isn't provided for a fair share job queue, no vCPU capacity is reserved.</p> <note> <p>This parameter is only supported when the <code>type</code> parameter is set to <code>UNMANAGED</code>/</p> </note>"
         },
         "computeResources":{
           "shape":"ComputeResource",
@@ -1021,7 +1021,7 @@
       "members":{
         "computeEnvironmentName":{
           "shape":"String",
-          "documentation":"<p>The name of the compute environment. Up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the compute environment. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "computeEnvironmentArn":{
           "shape":"String",
@@ -1039,7 +1039,7 @@
       "members":{
         "jobQueueName":{
           "shape":"String",
-          "documentation":"<p>The name of the job queue. Up to 128 letters (uppercase and lowercase), numbers, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the job queue. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "state":{
           "shape":"JQState",
@@ -1047,7 +1047,7 @@
         },
         "schedulingPolicyArn":{
           "shape":"String",
-          "documentation":"<p>Amazon Resource Name (ARN) of the fair share scheduling policy. If this parameter is specified, the job queue will use a fair share scheduling policy. If this parameter is not specified, the job queue will use a first in, first out (FIFO) scheduling policy. Once a job queue is created, the fair share scheduling policy can be replaced but not removed. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. For example, <code>aws:aws:batch:us-west-2:012345678910:scheduling-policy/MySchedulingPolicy</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the fair share scheduling policy. If this parameter is specified, the job queue uses a fair share scheduling policy. If this parameter isn't specified, the job queue uses a first in, first out (FIFO) scheduling policy. After a job queue is created, you can replace but can't remove the fair share scheduling policy. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. An example is <code>aws:aws:batch:us-west-2:012345678910:scheduling-policy/MySchedulingPolicy</code>.</p>"
         },
         "priority":{
           "shape":"Integer",
@@ -1087,7 +1087,7 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the scheduling policy. Up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the scheduling policy. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
@@ -1214,7 +1214,7 @@
       "members":{
         "jobDefinitions":{
           "shape":"StringList",
-          "documentation":"<p>A list of up to 100 job definitions. Each entry in the list can either be an ARN of the form <code>arn:aws:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code> or a short version using the form <code>${JobDefinitionName}:${Revision}</code>.</p>"
+          "documentation":"<p>A list of up to 100 job definitions. Each entry in the list can either be an ARN in the format <code>arn:aws:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code> or a short version using the form <code>${JobDefinitionName}:${Revision}</code>.</p>"
         },
         "maxResults":{
           "shape":"Integer",
@@ -1463,7 +1463,7 @@
       "members":{
         "shareDecaySeconds":{
           "shape":"Integer",
-          "documentation":"<p>The time period to use to calculate a fair share percentage for each fair share identifier in use, in seconds. A value of zero (0) indicates that only current usage should be measured; if there are four evenly weighted fair share identifiers then each can only use up to 25% of the available CPU resources, even if some of the fair share identifiers have no currently running jobs. The decay allows for more recently run jobs to have more weight than jobs that ran earlier. The maximum supported value is 604800 (1 week).</p>"
+          "documentation":"<p>The time period to use to calculate a fair share percentage for each fair share identifier in use, in seconds. A value of zero (0) indicates that only current usage should be measured. The decay allows for more recently run jobs to have more weight than jobs that ran earlier. The maximum supported value is 604800 (1 week).</p>"
         },
         "computeReservation":{
           "shape":"Integer",
@@ -1471,7 +1471,7 @@
         },
         "shareDistribution":{
           "shape":"ShareAttributesList",
-          "documentation":"<p>Array of <code>SharedIdentifier</code> objects that contain the weights for the fair share identifiers for the fair share policy. Fair share identifiers that are not included have a default weight of <code>1.0</code>.</p>"
+          "documentation":"<p>An array of <code>SharedIdentifier</code> objects that contain the weights for the fair share identifiers for the fair share policy. Fair share identifiers that aren't included have a default weight of <code>1.0</code>.</p>"
         }
       },
       "documentation":"<p>The fair share policy for a scheduling policy.</p>"
@@ -1557,7 +1557,7 @@
         },
         "schedulingPriority":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling priority of the job definition. This will only affect jobs in job queues with a fair share policy. Jobs with a higher scheduling priority will be scheduled before jobs with a lower scheduling priority.</p>"
+          "documentation":"<p>The scheduling priority of the job definition. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p>"
         },
         "parameters":{
           "shape":"ParametersMap",
@@ -1660,7 +1660,7 @@
         },
         "schedulingPriority":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling policy of the job definition. This will only affect jobs in job queues with a fair share policy. Jobs with a higher scheduling priority will be scheduled before jobs with a lower scheduling priority.</p>"
+          "documentation":"<p>The scheduling policy of the job definition. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p>"
         },
         "attempts":{
           "shape":"AttemptDetails",
@@ -1761,7 +1761,7 @@
         },
         "schedulingPolicyArn":{
           "shape":"String",
-          "documentation":"<p>Amazon Resource Name (ARN) of the scheduling policy. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. For example, <code>aws:aws:batch:us-west-2:012345678910:scheduling-policy/MySchedulingPolicy</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scheduling policy. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. For example, <code>aws:aws:batch:us-west-2:012345678910:scheduling-policy/MySchedulingPolicy</code>.</p>"
         },
         "status":{
           "shape":"JQStatus",
@@ -1823,7 +1823,7 @@
         },
         "createdAt":{
           "shape":"Long",
-          "documentation":"<p>The Unix timestamp for when the job was created. For non-array jobs and parent array jobs, this is when the job entered the <code>SUBMITTED</code> state (at the time <a>SubmitJob</a> was called). For array child jobs, this is when the child job was spawned by its parent and entered the <code>PENDING</code> state.</p>"
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the job was created. For non-array jobs and parent array jobs, this is when the job entered the <code>SUBMITTED</code> state (at the time <a>SubmitJob</a> was called). For array child jobs, this is when the child job was spawned by its parent and entered the <code>PENDING</code> state.</p>"
         },
         "status":{
           "shape":"JobStatus",
@@ -1983,7 +1983,7 @@
         },
         "filters":{
           "shape":"ListJobsFilterList",
-          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored. The filter doesn't apply to child jobs in an array or multi-node parallel (MNP) jobs. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter will match any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>JOB_DEFINITION</dt> <dd> <p>The value for the filter is the name or Amazon Resource Name (ARN) of the job definition. This corresponds to the <code>jobDefinition</code> value. The value is case sensitive. When the value for the filter is the job definition name, the results include all the jobs that used any revision of that job definition name. If the value ends with an asterisk (*), the filter will match any job definition name that begins with the string before the '*'. For example, <code>jd1</code> matches only <code>jd1</code>, and <code>jd1*</code> matches both <code>jd1</code> and <code>jd1A</code>. The version of the job definition that's used doesn't affect the sort order. When the <code>JOB_DEFINITION</code> filter is used and the ARN is used (which is in the form <code>arn:${Partition}:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code>), the results include jobs that used the specified revision of the job definition. Asterisk (*) is not supported when the ARN is used.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of seconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of seconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> </dl>"
+          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored. The filter doesn't apply to child jobs in an array or multi-node parallel (MNP) jobs. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter will match any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>JOB_DEFINITION</dt> <dd> <p>The value for the filter is the name or Amazon Resource Name (ARN) of the job definition. This corresponds to the <code>jobDefinition</code> value. The value is case sensitive. When the value for the filter is the job definition name, the results include all the jobs that used any revision of that job definition name. If the value ends with an asterisk (*), the filter will match any job definition name that begins with the string before the '*'. For example, <code>jd1</code> matches only <code>jd1</code>, and <code>jd1*</code> matches both <code>jd1</code> and <code>jd1A</code>. The version of the job definition that's used doesn't affect the sort order. When the <code>JOB_DEFINITION</code> filter is used and the ARN is used (which is in the form <code>arn:${Partition}:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code>), the results include jobs that used the specified revision of the job definition. Asterisk (*) is not supported when the ARN is used.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>ListJobs</code>.</p>"
@@ -2007,11 +2007,11 @@
       "members":{
         "maxResults":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of results returned by <code>ListSchedulingPolicies</code> in paginated output. When this parameter is used, <code>ListSchedulingPolicies</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListSchedulingPolicies</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListSchedulingPolicies</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+          "documentation":"<p>The maximum number of results that's returned by <code>ListSchedulingPolicies</code> in paginated output. When this parameter is used, <code>ListSchedulingPolicies</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. You can see the remaining results of the initial request by sending another <code>ListSchedulingPolicies</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, <code>ListSchedulingPolicies</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListSchedulingPolicies</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+          "documentation":"<p>The <code>nextToken</code> value that's returned from a previous paginated <code>ListSchedulingPolicies</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
         }
       }
     },
@@ -2272,7 +2272,7 @@
       "members":{
         "jobDefinitionName":{
           "shape":"String",
-          "documentation":"<p>The name of the job definition to register. Up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the job definition to register. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "type":{
           "shape":"JobDefinitionType",
@@ -2403,7 +2403,7 @@
         },
         "arn":{
           "shape":"String",
-          "documentation":"<p>Amazon Resource Name (ARN) of the scheduling policy. An example would be <code>arn:<i>aws</i>:batch:<i>us-east-1</i>:<i>123456789012</i>:scheduling-policy/<i>HighPriority</i> </code> </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scheduling policy. An example is <code>arn:<i>aws</i>:batch:<i>us-east-1</i>:<i>123456789012</i>:scheduling-policy/<i>HighPriority</i> </code>.</p>"
         },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
@@ -2411,10 +2411,10 @@
         },
         "tags":{
           "shape":"TagrisTagsMap",
-          "documentation":"<p>The tags that you apply to the scheduling policy to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The tags that you apply to the scheduling policy to categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
-      "documentation":"<p>An object representing a scheduling policy.</p>"
+      "documentation":"<p>An object that represents a scheduling policy.</p>"
     },
     "SchedulingPolicyDetailList":{
       "type":"list",
@@ -2429,7 +2429,7 @@
           "documentation":"<p>Amazon Resource Name (ARN) of the scheduling policy.</p>"
         }
       },
-      "documentation":"<p>An object containing the details of a scheduling policy returned in a <code>ListSchedulingPolicy</code> action.</p>"
+      "documentation":"<p>An object that contains the details of a scheduling policy that's returned in a <code>ListSchedulingPolicy</code> action.</p>"
     },
     "SchedulingPolicyListingDetailList":{
       "type":"list",
@@ -2473,14 +2473,14 @@
       "members":{
         "shareIdentifier":{
           "shape":"String",
-          "documentation":"<p>A fair share identifier or fair share identifier prefix. If the string ends with '*' then this entry specifies the weight factor to use for fair share identifiers that begin with that prefix. The list of fair share identifiers in a fair share policy cannot overlap. For example you cannot have one that specifies a <code>shareIdentifier</code> of <code>UserA*</code> and another that specifies a <code>shareIdentifier</code> of <code>UserA-1</code>.</p> <p>There can be no more than 500 fair share identifiers active in a job queue.</p> <p>The string is limited to 255 alphanumeric characters, optionally followed by '*'.</p>"
+          "documentation":"<p>A fair share identifier or fair share identifier prefix. If the string ends with an asterisk (*), this entry specifies the weight factor to use for fair share identifiers that start with that prefix. The list of fair share identifiers in a fair share policy cannot overlap. For example, you can't have one that specifies a <code>shareIdentifier</code> of <code>UserA*</code> and another that specifies a <code>shareIdentifier</code> of <code>UserA-1</code>.</p> <p>There can be no more than 500 fair share identifiers active in a job queue.</p> <p>The string is limited to 255 alphanumeric characters, optionally followed by an asterisk (*).</p>"
         },
         "weightFactor":{
           "shape":"Float",
-          "documentation":"<p>The weight factor for the fair share identifier. The default value is 1.0. A lower value has a higher priority for compute resources. For example, jobs using a share identifier with a weight factor of 0.125 (1/8) will get 8 times the compute resources of jobs using a share identifier with a weight factor of 1.</p> <p>The smallest supported value is 0.0001 and the largest supported value is 999.9999.</p>"
+          "documentation":"<p>The weight factor for the fair share identifier. The default value is 1.0. A lower value has a higher priority for compute resources. For example, jobs that use a share identifier with a weight factor of 0.125 (1/8) get 8 times the compute resources of jobs that use a share identifier with a weight factor of 1.</p> <p>The smallest supported value is 0.0001, and the largest supported value is 999.9999.</p>"
         }
       },
-      "documentation":"<p>Specifies the weights for the fair share identifiers for the fair share policy. Fair share identifiers that are not included have a default weight of <code>1.0</code>.</p>"
+      "documentation":"<p>Specifies the weights for the fair share identifiers for the fair share policy. Fair share identifiers that aren't included have a default weight of <code>1.0</code>.</p>"
     },
     "ShareAttributesList":{
       "type":"list",
@@ -2501,7 +2501,7 @@
       "members":{
         "jobName":{
           "shape":"String",
-          "documentation":"<p>The name of the job. The first character must be alphanumeric, and up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the job. It can be up to 128 letters long. The first character must be alphanumeric, can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "jobQueue":{
           "shape":"String",
@@ -2764,7 +2764,7 @@
       "members":{
         "computeEnvironmentName":{
           "shape":"String",
-          "documentation":"<p>The name of the compute environment. Up to 128 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed.</p>"
+          "documentation":"<p>The name of the compute environment. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "computeEnvironmentArn":{
           "shape":"String",
@@ -2840,7 +2840,7 @@
         },
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the volume. Up to 255 letters (uppercase and lowercase), numbers, hyphens, and underscores are allowed. This name is referenced in the <code>sourceVolume</code> parameter of container definition <code>mountPoints</code>.</p>"
+          "documentation":"<p>The name of the volume. It can be up to 255 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_). This name is referenced in the <code>sourceVolume</code> parameter of container definition <code>mountPoints</code>.</p>"
         },
         "efsVolumeConfiguration":{
           "shape":"EFSVolumeConfiguration",

@@ -222,6 +222,16 @@
       "type":"list",
       "member":{"shape":"Attendee"}
     },
+    "AudioFeatures":{
+      "type":"structure",
+      "members":{
+        "EchoReduction":{
+          "shape":"MeetingFeatureStatus",
+          "documentation":"<p>Makes echo reduction available to clients who connect to the meeting.</p>"
+        }
+      },
+      "documentation":"<p>An optional category of meeting features that contains audio-specific configurations, such as operating parameters for Amazon Voice Focus.</p>"
+    },
     "BadRequestException":{
       "type":"structure",
       "members":{
@@ -371,6 +381,10 @@
         "NotificationsConfiguration":{
           "shape":"NotificationsConfiguration",
           "documentation":"<p>The configuration for resource targets to receive notifications when meeting and attendee events occur.</p>"
+        },
+        "MeetingFeatures":{
+          "shape":"MeetingFeaturesConfiguration",
+          "documentation":"<p>Lists the audio and video features enabled for a meeting, such as echo reduction.</p>"
         }
       }
     },
@@ -408,6 +422,10 @@
         "ExternalMeetingId":{
           "shape":"ExternalMeetingId",
           "documentation":"<p>The external meeting ID.</p>"
+        },
+        "MeetingFeatures":{
+          "shape":"MeetingFeaturesConfiguration",
+          "documentation":"<p>Lists the audio and video features enabled for a meeting, such as echo reduction.</p>"
         },
         "NotificationsConfiguration":{
           "shape":"NotificationsConfiguration",
@@ -544,15 +562,15 @@
         },
         "ContentIdentificationType":{
           "shape":"TranscribeContentIdentificationType",
-          "documentation":"<p>Set this field to <code>PII</code> to identify personal health information in the transcription output.</p>"
+          "documentation":"<p>Set this field to <code>PII</code> to identify personally identifiable information in the transcription output.</p>"
         },
         "ContentRedactionType":{
           "shape":"TranscribeContentRedactionType",
-          "documentation":"<p>Set this field to <code>PII</code> to redact personally identifiable information in the transcription output. Content redaction is performed only upon complete transcription of the audio segments.</p> <p>You can’t set both <code>ContentRedactionType</code> and <code>ContentIdentificationType</code> in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p>"
+          "documentation":"<p>Set this field to <code>PII</code> to redact personally identifiable information in the transcription output. Content redaction is performed only upon complete transcription of the audio segments.</p> <p>You can’t set <code>ContentRedactionType</code> and <code>ContentIdentificationType</code> in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p>"
         },
         "PiiEntityTypes":{
           "shape":"TranscribePiiEntityTypes",
-          "documentation":"<p>Lists the PII entity types you want to identify or redact. To specify entity types, you must enable <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p> <code>PIIEntityTypes</code> must be comma-separated. The available values are: <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING, CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, <code>SSN</code>, and <code>ALL</code>.</p> <p> <code>PiiEntityTypes</code> is an optional parameter with a default value of <code>ALL</code>.</p>"
+          "documentation":"<p>Lists the PII entity types you want to identify or redact. To specify entity types, you must enable <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p>PIIEntityTypes must be comma-separated. The available values are: <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING, CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, <code>SSN</code>, and <code>ALL</code>.</p> <p> <code>PiiEntityTypes</code> is an optional parameter with a default value of <code>ALL</code>.</p>"
         },
         "LanguageModelName":{
           "shape":"TranscribeLanguageModelName",
@@ -764,9 +782,30 @@
         "MediaPlacement":{
           "shape":"MediaPlacement",
           "documentation":"<p>The media placement for the meeting.</p>"
+        },
+        "MeetingFeatures":{
+          "shape":"MeetingFeaturesConfiguration",
+          "documentation":"<p>The features available to a meeting, such as Amazon Voice Focus.</p>"
         }
       },
       "documentation":"<p>A meeting created using the Amazon Chime SDK.</p>"
+    },
+    "MeetingFeatureStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "UNAVAILABLE"
+      ]
+    },
+    "MeetingFeaturesConfiguration":{
+      "type":"structure",
+      "members":{
+        "Audio":{
+          "shape":"AudioFeatures",
+          "documentation":"<p>The configuration settings for the audio features available to a meeting. </p>"
+        }
+      },
+      "documentation":"<p>The configuration settings of the features available to a meeting.</p>"
     },
     "NotFoundException":{
       "type":"structure",
@@ -1013,5 +1052,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>The Amazon Chime SDK meetings APIs in this section allow software developers to create Amazon Chime SDK meetings, set the AWS Regions for meetings, create and manage users, and send and receive meeting notifications.</p>"
+  "documentation":"<p>The Amazon Chime SDK meetings APIs in this section allow software developers to create Amazon Chime SDK meetings, set the AWS Regions for meetings, create and manage users, and send and receive meeting notifications. For more information about the meeting APIs, see <a href=\"http://amazonaws.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_meetings\">Amazon Chime SDK meetings</a>.</p>"
 }

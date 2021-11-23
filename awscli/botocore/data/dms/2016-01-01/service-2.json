@@ -760,7 +760,7 @@
         {"shape":"InvalidResourceStateFault"},
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p> Starts the replication task assessment for unsupported data types in the source database. </p>"
+      "documentation":"<p> Starts the replication task assessment for unsupported data types in the source database. </p> <p>You can only use this operation for a task if the following conditions are true:</p> <ul> <li> <p>The task must be in the <code>stopped</code> state.</p> </li> <li> <p>The task must have successful connections to the source and target.</p> </li> </ul> <p>If either of these conditions are not met, an <code>InvalidResourceStateFault</code> error will result. </p> <p>For information about DMS task assessments, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.AssessmentReport.html\">Creating a task assessment report</a> in the <i>Database Migration Service User Guide</i>.</p>"
     },
     "StartReplicationTaskAssessmentRun":{
       "name":"StartReplicationTaskAssessmentRun",
@@ -5242,6 +5242,10 @@
         "Rfc4180":{
           "shape":"BooleanOptional",
           "documentation":"<p>For an S3 source, when this value is set to <code>true</code> or <code>y</code>, each leading double quotation mark has to be followed by an ending double quotation mark. This formatting complies with RFC 4180. When this value is set to <code>false</code> or <code>n</code>, string literals are copied to the target as is. In this case, a delimiter (row or column) signals the end of the field. Thus, you can't use a delimiter as part of the string, because it signals the end of the value.</p> <p>For an S3 target, an optional parameter used to set behavior to comply with RFC 4180 for data migrated to Amazon S3 using .csv file format only. When this value is set to <code>true</code> or <code>y</code> using Amazon S3 as a target, if the data has quotation marks or newline characters in it, DMS encloses the entire column with an additional pair of double quotation marks (\"). Every quotation mark within the data is repeated twice.</p> <p>The default value is <code>true</code>. Valid values include <code>true</code>, <code>false</code>, <code>y</code>, and <code>n</code>.</p>"
+        },
+        "DatePartitionTimezone":{
+          "shape":"String",
+          "documentation":"<p>When creating an S3 target endpoint, set <code>DatePartitionTimezone</code> to convert the current UTC time into a specified time zone. The conversion occurs when a date partition folder is created and a CDC filename is generated. The time zone format is Area/Location. Use this parameter when <code>DatePartitionedEnabled</code> is set to <code>true</code>, as shown in the following example.</p> <p> <code>s3-settings='{\"DatePartitionEnabled\": true, \"DatePartitionSequence\": \"YYYYMMDDHH\", \"DatePartitionDelimiter\": \"SLASH\", \"DatePartitionTimezone\":\"<i>Asia/Seoul</i>\", \"BucketName\": \"dms-nattarat-test\"}'</code> </p>"
         }
       },
       "documentation":"<p>Settings for exporting data to Amazon S3. </p>"

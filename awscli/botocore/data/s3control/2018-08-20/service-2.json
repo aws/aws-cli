@@ -1139,6 +1139,17 @@
         "locationName":"Arn"
       }
     },
+    "CloudWatchMetrics":{
+      "type":"structure",
+      "required":["IsEnabled"],
+      "members":{
+        "IsEnabled":{
+          "shape":"IsEnabled",
+          "documentation":"<p>A container that indicates whether CloudWatch publishing for S3 Storage Lens metrics is enabled. A value of <code>true</code> indicates that CloudWatch publishing for S3 Storage Lens metrics is enabled.</p>"
+        }
+      },
+      "documentation":"<p>A container for enabling Amazon CloudWatch publishing for S3 Storage Lens metrics.</p> <p>For more information about publishing S3 Storage Lens metrics to CloudWatch, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_view_metrics_cloudwatch.html\">Monitor S3 Storage Lens metrics in CloudWatch</a> in the <i>Amazon S3 User Guide</i>.</p>"
+    },
     "ConfigId":{
       "type":"string",
       "max":64,
@@ -4783,11 +4794,14 @@
     },
     "StorageLensDataExport":{
       "type":"structure",
-      "required":["S3BucketDestination"],
       "members":{
         "S3BucketDestination":{
           "shape":"S3BucketDestination",
           "documentation":"<p>A container for the bucket where the S3 Storage Lens metrics export will be located.</p> <note> <p>This bucket must be located in the same Region as the storage lens configuration. </p> </note>"
+        },
+        "CloudWatchMetrics":{
+          "shape":"CloudWatchMetrics",
+          "documentation":"<p>A container for enabling Amazon CloudWatch publishing for S3 Storage Lens metrics.</p>"
         }
       },
       "documentation":"<p>A container to specify the properties of your S3 Storage Lens metrics export, including the destination, schema, and format.</p>"

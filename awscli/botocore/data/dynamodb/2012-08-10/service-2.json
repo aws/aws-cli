@@ -1328,7 +1328,8 @@
         "Statements":{
           "shape":"PartiQLBatchRequest",
           "documentation":"<p>The list of PartiQL statements representing the batch to run.</p>"
-        }
+        },
+        "ReturnConsumedCapacity":{"shape":"ReturnConsumedCapacity"}
       }
     },
     "BatchExecuteStatementOutput":{
@@ -1337,6 +1338,10 @@
         "Responses":{
           "shape":"PartiQLBatchResponse",
           "documentation":"<p>The response to each PartiQL statement in the batch.</p>"
+        },
+        "ConsumedCapacity":{
+          "shape":"ConsumedCapacityMultiple",
+          "documentation":"<p>The capacity units consumed by the entire operation. The values of the list are ordered according to the ordering of the statements.</p>"
         }
       }
     },
@@ -2463,7 +2468,8 @@
         "NextToken":{
           "shape":"PartiQLNextToken",
           "documentation":"<p>Set this value to get remaining results, if <code>NextToken</code> was returned in the statement response.</p>"
-        }
+        },
+        "ReturnConsumedCapacity":{"shape":"ReturnConsumedCapacity"}
       }
     },
     "ExecuteStatementOutput":{
@@ -2476,7 +2482,8 @@
         "NextToken":{
           "shape":"PartiQLNextToken",
           "documentation":"<p>If the response of a read request exceeds the response payload limit DynamoDB will set this value in the response. If set, you can use that this value in the subsequent request to get the remaining results.</p>"
-        }
+        },
+        "ConsumedCapacity":{"shape":"ConsumedCapacity"}
       }
     },
     "ExecuteTransactionInput":{
@@ -2491,6 +2498,10 @@
           "shape":"ClientRequestToken",
           "documentation":"<p>Set this value to get remaining results, if <code>NextToken</code> was returned in the statement response.</p>",
           "idempotencyToken":true
+        },
+        "ReturnConsumedCapacity":{
+          "shape":"ReturnConsumedCapacity",
+          "documentation":"<p>Determines the level of detail about either provisioned or on-demand throughput consumption that is returned in the response. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TransactGetItems.html\">TransactGetItems</a> and <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TransactWriteItems.html\">TransactWriteItems</a>.</p>"
         }
       }
     },
@@ -2500,6 +2511,10 @@
         "Responses":{
           "shape":"ItemResponseList",
           "documentation":"<p>The response to a PartiQL transaction.</p>"
+        },
+        "ConsumedCapacity":{
+          "shape":"ConsumedCapacityMultiple",
+          "documentation":"<p>The capacity units consumed by the entire operation. The values of the list are ordered according to the ordering of the statements.</p>"
         }
       }
     },
@@ -4607,7 +4622,7 @@
     },
     "ReturnConsumedCapacity":{
       "type":"string",
-      "documentation":"<p>Determines the level of detail about provisioned throughput consumption that is returned in the response:</p> <ul> <li> <p> <code>INDEXES</code> - The response includes the aggregate <code>ConsumedCapacity</code> for the operation, together with <code>ConsumedCapacity</code> for each table and secondary index that was accessed.</p> <p>Note that some operations, such as <code>GetItem</code> and <code>BatchGetItem</code>, do not access any indexes at all. In these cases, specifying <code>INDEXES</code> will only return <code>ConsumedCapacity</code> information for table(s).</p> </li> <li> <p> <code>TOTAL</code> - The response includes only the aggregate <code>ConsumedCapacity</code> for the operation.</p> </li> <li> <p> <code>NONE</code> - No <code>ConsumedCapacity</code> details are included in the response.</p> </li> </ul>",
+      "documentation":"<p>Determines the level of detail about either provisioned or on-demand throughput consumption that is returned in the response:</p> <ul> <li> <p> <code>INDEXES</code> - The response includes the aggregate <code>ConsumedCapacity</code> for the operation, together with <code>ConsumedCapacity</code> for each table and secondary index that was accessed.</p> <p>Note that some operations, such as <code>GetItem</code> and <code>BatchGetItem</code>, do not access any indexes at all. In these cases, specifying <code>INDEXES</code> will only return <code>ConsumedCapacity</code> information for table(s).</p> </li> <li> <p> <code>TOTAL</code> - The response includes only the aggregate <code>ConsumedCapacity</code> for the operation.</p> </li> <li> <p> <code>NONE</code> - No <code>ConsumedCapacity</code> details are included in the response.</p> </li> </ul>",
       "enum":[
         "INDEXES",
         "TOTAL",

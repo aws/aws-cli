@@ -1435,6 +1435,11 @@
         "ELIGIBLE"
       ]
     },
+    "DeploymentType":{
+      "type":"string",
+      "max":128,
+      "min":2
+    },
     "DescribeDomainAutoTunesRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -1968,6 +1973,20 @@
       ]
     },
     "Double":{"type":"double"},
+    "DryRun":{"type":"boolean"},
+    "DryRunResults":{
+      "type":"structure",
+      "members":{
+        "DeploymentType":{
+          "shape":"DeploymentType",
+          "documentation":"<p> Specifies the deployment mechanism through which the update shall be applied on the domain. Possible responses are <code>Blue/Green</code> (The update will require a blue/green deployment.) <code>DynamicUpdate</code> (The update can be applied in-place without a Blue/Green deployment required.) <code>Undetermined</code> (The domain is undergoing an update which needs to complete before the deployment type can be predicted.) <code>None</code> (The configuration change matches the current configuration and will not result in any update.) </p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>Contains an optional message associated with the DryRunResults.</p>"
+        }
+      }
+    },
     "Duration":{
       "type":"structure",
       "members":{
@@ -2976,6 +2995,11 @@
       "type":"integer",
       "documentation":"<p> Maximum number of Instances that can be instantiated for given InstanceType. </p>"
     },
+    "Message":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "MinimumInstanceCount":{
       "type":"integer",
       "documentation":"<p> Minimum number of Instances that can be instantiated for given InstanceType. </p>"
@@ -3864,6 +3888,10 @@
         "AutoTuneOptions":{
           "shape":"AutoTuneOptions",
           "documentation":"<p>Specifies Auto-Tune options.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p> This flag, when set to True, specifies whether the <code>UpdateElasticsearchDomain</code> request should return the results of validation checks without actually applying the change. This flag, when set to True, specifies the deployment mechanism through which the update shall be applied on the domain. This will not actually perform the Update. </p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code><a>UpdateElasticsearchDomain</a></code> operation. Specifies the type and number of instances in the domain cluster.</p>"
@@ -3875,6 +3903,10 @@
         "DomainConfig":{
           "shape":"ElasticsearchDomainConfig",
           "documentation":"<p>The status of the updated Elasticsearch domain. </p>"
+        },
+        "DryRunResults":{
+          "shape":"DryRunResults",
+          "documentation":"<p>Contains result of DryRun. </p>"
         }
       },
       "documentation":"<p>The result of an <code>UpdateElasticsearchDomain</code> request. Contains the status of the Elasticsearch domain being updated.</p>"

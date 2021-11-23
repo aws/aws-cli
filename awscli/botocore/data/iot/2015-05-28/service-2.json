@@ -352,7 +352,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request.</p> <p> <b>Note:</b> The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-256 or NIST P-384 curves. </p> <p> <b>Note:</b> Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action.</p> <p>You can create multiple certificates in a batch by creating a directory, copying multiple .csr files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs.</p> <p>Assuming a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is:</p> <p>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the aws iot create-certificate-from-csr Amazon Web Services CLI command to create a certificate for the corresponding CSR.</p> <p>The aws iot create-certificate-from-csr part of the command can also be run in parallel to speed up the certificate creation process:</p> <p>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_}</p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\"</p>"
+      "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request.</p> <p> <b>Note:</b> The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-256, NIST P-384, or NIST P-512 curves. For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>.</p> <p> <b>Note:</b> Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action.</p> <p>You can create multiple certificates in a batch by creating a directory, copying multiple .csr files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs.</p> <p>Assuming a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is:</p> <p>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the aws iot create-certificate-from-csr Amazon Web Services CLI command to create a certificate for the corresponding CSR.</p> <p>The aws iot create-certificate-from-csr part of the command can also be run in parallel to speed up the certificate creation process:</p> <p>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_}</p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\"</p>"
     },
     "CreateCustomMetric":{
       "name":"CreateCustomMetric",
@@ -1685,6 +1685,22 @@
       ],
       "documentation":"<p>Returns information about a job template.</p>"
     },
+    "DescribeManagedJobTemplate":{
+      "name":"DescribeManagedJobTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managed-job-templates/{templateName}"
+      },
+      "input":{"shape":"DescribeManagedJobTemplateRequest"},
+      "output":{"shape":"DescribeManagedJobTemplateResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>View details of a managed job template.</p>"
+    },
     "DescribeMitigationAction":{
       "name":"DescribeMitigationAction",
       "http":{
@@ -2626,6 +2642,22 @@
       ],
       "documentation":"<p>Lists jobs.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListJobs</a> action.</p>"
     },
+    "ListManagedJobTemplates":{
+      "name":"ListManagedJobTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managed-job-templates"
+      },
+      "input":{"shape":"ListManagedJobTemplatesRequest"},
+      "output":{"shape":"ListManagedJobTemplatesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of managed job templates.</p>"
+    },
     "ListMitigationActions":{
       "name":"ListMitigationActions",
       "http":{
@@ -3216,7 +3248,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Register a certificate that does not have a certificate authority (CA).</p>"
+      "documentation":"<p>Register a certificate that does not have a certificate authority (CA). For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>. </p>"
     },
     "RegisterThing":{
       "name":"RegisterThing",
@@ -3269,7 +3301,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Removes the given thing from the billing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">RemoveThingFromBillingGroup</a> action.</p>"
+      "documentation":"<p>Removes the given thing from the billing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">RemoveThingFromBillingGroup</a> action.</p> <note> <p>This call is asynchronous. It might take several seconds for the detachment to propagate.</p> </note>"
     },
     "RemoveThingFromThingGroup":{
       "name":"RemoveThingFromThingGroup",
@@ -4246,7 +4278,7 @@
       "members":{
         "billingGroupName":{
           "shape":"BillingGroupName",
-          "documentation":"<p>The name of the billing group.</p>"
+          "documentation":"<p>The name of the billing group.</p> <note> <p>This call is asynchronous. It might take several seconds for the detachment to propagate.</p> </note>"
         },
         "billingGroupArn":{
           "shape":"BillingGroupArn",
@@ -6243,7 +6275,7 @@
         },
         "clientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p> Each audit supression must have a unique client request token. If you try to create a new audit suppression with the same token as one that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p> Each audit supression must have a unique client request token. If you try to create a new audit suppression with the same token as one that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request.</p>",
           "idempotencyToken":true
         }
       }
@@ -6710,6 +6742,10 @@
         "jobTemplateArn":{
           "shape":"JobTemplateArn",
           "documentation":"<p>The ARN of the job template used to create the job.</p>"
+        },
+        "documentParameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>Parameters of a managed template that you can specify to create the job document.</p>"
         }
       }
     },
@@ -7335,7 +7371,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role that allows the IoT service principal assumes to access your S3 files.</p>"
+          "documentation":"<p>An IAM role that allows the IoT service principal to access your S3 files.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -8951,6 +8987,57 @@
         "timeoutConfig":{"shape":"TimeoutConfig"}
       }
     },
+    "DescribeManagedJobTemplateRequest":{
+      "type":"structure",
+      "required":["templateName"],
+      "members":{
+        "templateName":{
+          "shape":"ManagedJobTemplateName",
+          "documentation":"<p>The unique name of a managed job template, which is required.</p>",
+          "location":"uri",
+          "locationName":"templateName"
+        },
+        "templateVersion":{
+          "shape":"ManagedTemplateVersion",
+          "documentation":"<p>An optional parameter to specify version of a managed template. If not specified, the pre-defined default version is returned.</p>",
+          "location":"querystring",
+          "locationName":"templateVersion"
+        }
+      }
+    },
+    "DescribeManagedJobTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "templateName":{
+          "shape":"ManagedJobTemplateName",
+          "documentation":"<p>The unique name of a managed template, such as <code>AWS-Reboot</code>.</p>"
+        },
+        "templateArn":{
+          "shape":"JobTemplateArn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) of the managed template.</p>"
+        },
+        "description":{
+          "shape":"JobDescription",
+          "documentation":"<p>The unique description of a managed template.</p>"
+        },
+        "templateVersion":{
+          "shape":"ManagedTemplateVersion",
+          "documentation":"<p>The version for a managed template.</p>"
+        },
+        "environments":{
+          "shape":"Environments",
+          "documentation":"<p>A list of environments that are supported with the managed job template.</p>"
+        },
+        "documentParameters":{
+          "shape":"DocumentParameters",
+          "documentation":"<p>A map of key-value pairs that you can use as guidance to specify the inputs for creating a job from a managed template.</p>"
+        },
+        "document":{
+          "shape":"JobDocument",
+          "documentation":"<p>The document schema for a managed job template.</p>"
+        }
+      }
+    },
     "DescribeMitigationActionRequest":{
       "type":"structure",
       "required":["actionName"],
@@ -9789,6 +9876,36 @@
       "documentation":"<p>The input for the DisableTopicRuleRequest operation.</p>"
     },
     "DisconnectReason":{"type":"string"},
+    "DocumentParameter":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"ParameterKey",
+          "documentation":"<p>Key of the map field containing the patterns that need to be replaced in a managed template job document schema.</p>"
+        },
+        "description":{
+          "shape":"JobDescription",
+          "documentation":"<p>Description of the map field containing the patterns that need to be replaced in a managed template job document schema.</p>"
+        },
+        "regex":{
+          "shape":"Regex",
+          "documentation":"<p>A regular expression of the patterns that need to be replaced in a managed template job document schema.</p>"
+        },
+        "example":{
+          "shape":"Example",
+          "documentation":"<p>An example illustrating a pattern that need to be replaced in a managed template job document schema.</p>"
+        },
+        "optional":{
+          "shape":"Optional",
+          "documentation":"<p>Specifies whether a pattern that needs to be replaced in a managed template job document schema is optional or required.</p>"
+        }
+      },
+      "documentation":"<p>A map of key-value pairs containing the patterns that need to be replaced in a managed template job document schema. You can use the description of each key as a guidance to specify the inputs during runtime when creating a job.</p>"
+    },
+    "DocumentParameters":{
+      "type":"list",
+      "member":{"shape":"DocumentParameter"}
+    },
     "DomainConfigurationArn":{"type":"string"},
     "DomainConfigurationName":{
       "type":"string",
@@ -10024,6 +10141,14 @@
       "type":"string",
       "max":128
     },
+    "Environment":{
+      "type":"string",
+      "pattern":"[^\\p{C}]+"
+    },
+    "Environments":{
+      "type":"list",
+      "member":{"shape":"Environment"}
+    },
     "ErrorCode":{"type":"string"},
     "ErrorInfo":{
       "type":"structure",
@@ -10067,6 +10192,10 @@
         "CERTIFICATE",
         "CA_CERTIFICATE"
       ]
+    },
+    "Example":{
+      "type":"string",
+      "pattern":"[^\\p{C}]+"
     },
     "ExecutionNamePrefix":{"type":"string"},
     "ExecutionNumber":{"type":"long"},
@@ -10353,7 +10482,7 @@
       "members":{
         "totalCount":{
           "shape":"Count",
-          "documentation":"<p>The total number of documents that fit the query string criteria and contain a value for the Aggregation field targeted in the request.</p>"
+          "documentation":"<p>The total number of things that fit the query string criteria.</p>"
         },
         "buckets":{
           "shape":"Buckets",
@@ -10920,7 +11049,7 @@
     "IncrementFactor":{
       "type":"double",
       "max":5,
-      "min":1
+      "min":1.1
     },
     "IndexName":{
       "type":"string",
@@ -10981,6 +11110,16 @@
         }
       },
       "documentation":"<p>An unexpected error has occurred.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>Internal error from the service that indicates an unexpected error or that the service is unavailable.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -11190,6 +11329,10 @@
         "jobTemplateArn":{
           "shape":"JobTemplateArn",
           "documentation":"<p>The ARN of the job template used to create the job.</p>"
+        },
+        "documentParameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>A key-value map that pairs the patterns that need to be replaced in a managed template job document schema. You can use the description of each key as a guidance to specify the inputs during runtime when creating a job.</p>"
         }
       },
       "documentation":"<p>The <code>Job</code> object contains details about a job.</p>"
@@ -12620,6 +12763,42 @@
         }
       }
     },
+    "ListManagedJobTemplatesRequest":{
+      "type":"structure",
+      "members":{
+        "templateName":{
+          "shape":"ManagedJobTemplateName",
+          "documentation":"<p>An optional parameter for template name. If specified, only the versions of the managed job templates that have the specified template name will be returned.</p>",
+          "location":"querystring",
+          "locationName":"templateName"
+        },
+        "maxResults":{
+          "shape":"LaserMaxResults",
+          "documentation":"<p>Maximum number of entries that can be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListManagedJobTemplatesResponse":{
+      "type":"structure",
+      "members":{
+        "managedJobTemplates":{
+          "shape":"ManagedJobTemplatesSummaryList",
+          "documentation":"<p>A list of managed job templates that are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "ListMitigationActionsRequest":{
       "type":"structure",
       "members":{
@@ -13941,6 +14120,45 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "ManagedJobTemplateName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ManagedJobTemplateSummary":{
+      "type":"structure",
+      "members":{
+        "templateArn":{
+          "shape":"JobTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for a managed template.</p>"
+        },
+        "templateName":{
+          "shape":"ManagedJobTemplateName",
+          "documentation":"<p>The unique Name for a managed template.</p>"
+        },
+        "description":{
+          "shape":"JobDescription",
+          "documentation":"<p>The description for a managed template.</p>"
+        },
+        "environments":{
+          "shape":"Environments",
+          "documentation":"<p>A list of environments that are supported with the managed job template.</p>"
+        },
+        "templateVersion":{
+          "shape":"ManagedTemplateVersion",
+          "documentation":"<p>The version for a managed template.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains information about the managed template.</p>"
+    },
+    "ManagedJobTemplatesSummaryList":{
+      "type":"list",
+      "member":{"shape":"ManagedJobTemplateSummary"}
+    },
+    "ManagedTemplateVersion":{
+      "type":"string",
+      "pattern":"^[1-9]+.[0-9]+"
+    },
     "Marker":{
       "type":"string",
       "max":1024,
@@ -14443,6 +14661,7 @@
       },
       "documentation":"<p>Describes an action that writes data to an Amazon OpenSearch Service domain.</p>"
     },
+    "Optional":{"type":"boolean"},
     "OptionalVersion":{"type":"long"},
     "OutgoingCertificate":{
       "type":"structure",
@@ -14485,6 +14704,23 @@
       "min":1
     },
     "Parameter":{"type":"string"},
+    "ParameterKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ParameterMap":{
+      "type":"map",
+      "key":{"shape":"ParameterKey"},
+      "value":{"shape":"ParameterValue"}
+    },
+    "ParameterValue":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[^\\p{C}]+"
+    },
     "Parameters":{
       "type":"map",
       "key":{"shape":"Parameter"},
@@ -14885,6 +15121,7 @@
     },
     "Recursive":{"type":"boolean"},
     "RecursiveWithoutDefault":{"type":"boolean"},
+    "Regex":{"type":"string"},
     "RegisterCACertificateRequest":{
       "type":"structure",
       "required":[
@@ -16132,7 +16369,7 @@
       "members":{
         "count":{
           "shape":"Count",
-          "documentation":"<p>The count of things that match the query.</p>"
+          "documentation":"<p>The count of things that match the query string criteria and contain a valid aggregation field value.</p>"
         },
         "average":{
           "shape":"Average",
@@ -16170,7 +16407,7 @@
           "box":true
         }
       },
-      "documentation":"<p>A map of key-value pairs for all supported statistics. Currently, only count is supported.</p>"
+      "documentation":"<p>A map of key-value pairs for all supported statistics. For issues with missing or unexpected values for this API, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/fleet-indexing-troubleshooting.html\"> Fleet indexing troubleshooting guide</a>.</p>"
     },
     "Status":{
       "type":"string",

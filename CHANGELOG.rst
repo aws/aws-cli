@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.22.13
+=======
+
+* api-change:``autoscaling``: Customers can now configure predictive scaling policies to proactively scale EC2 Auto Scaling groups based on any CloudWatch metrics that more accurately represent the load on the group than the four predefined metrics. They can also use math expressions to further customize the metrics.
+* api-change:``lambda``: Remove Lambda function url apis
+* api-change:``imagebuilder``: This release adds support for sharing AMIs with Organizations within an EC2 Image Builder Distribution Configuration.
+* api-change:``timestream-write``: This release adds support for multi-measure records and magnetic store writes. Multi-measure records allow customers to store multiple measures in a single table row. Magnetic store writes enable customers to write late arrival data (data with timestamp in the past) directly into the magnetic store.
+* api-change:``timestream-query``: Releasing Amazon Timestream Scheduled Queries. It makes real-time analytics more performant and cost-effective for customers by calculating and storing frequently accessed aggregates, and other computations, typically used in operational dashboards, business reports, and other analytics applications
+* api-change:``translate``: This release enables customers to use translation settings to mask profane words and phrases in their translation output.
+* api-change:``iotsitewise``: AWS IoT SiteWise now accepts data streams that aren't associated with any asset properties. You can organize data by updating data stream associations.
+* api-change:``proton``: This release adds APIs for getting the outputs and provisioned stacks for Environments, Pipelines, and ServiceInstances.  You can now add tags to EnvironmentAccountConnections.  It also adds APIs for working with PR-based provisioning.  Also, it adds APIs for syncing templates with a git repository.
+* api-change:``elasticache``: Doc only update for ElastiCache
+* api-change:``customer-profiles``: This release introduces a new auto-merging feature for profile matching. The auto-merging configurations can be set via CreateDomain API or UpdateDomain API. You can use GetIdentityResolutionJob API and ListIdentityResolutionJobs API to fetch job status.
+
+
 1.22.12
 =======
 

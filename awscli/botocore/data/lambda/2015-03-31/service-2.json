@@ -123,23 +123,6 @@
       ],
       "documentation":"<p>Creates a Lambda function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>You set the package type to <code>Image</code> if the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties. </p> <p>You set the package type to <code>Zip</code> if the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Function States</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set set of signing profiles, which define the trusted publishers for this function.</p> <p>If another account or an Amazon Web Services service invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based IAM policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Functions</a>.</p>"
     },
-    "CreateFunctionUrlConfig":{
-      "name":"CreateFunctionUrlConfig",
-      "http":{
-        "method":"POST",
-        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
-        "responseCode":201
-      },
-      "input":{"shape":"CreateFunctionUrlConfigRequest"},
-      "output":{"shape":"CreateFunctionUrlConfigResponse"},
-      "errors":[
-        {"shape":"ResourceConflictException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
-      ]
-    },
     "DeleteAlias":{
       "name":"DeleteAlias",
       "http":{
@@ -259,21 +242,6 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p>Deletes the configuration for asynchronous invocation for a function, version, or alias.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
-    },
-    "DeleteFunctionUrlConfig":{
-      "name":"DeleteFunctionUrlConfig",
-      "http":{
-        "method":"DELETE",
-        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
-        "responseCode":204
-      },
-      "input":{"shape":"DeleteFunctionUrlConfigRequest"},
-      "errors":[
-        {"shape":"ResourceConflictException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
-      ]
     },
     "DeleteLayerVersion":{
       "name":"DeleteLayerVersion",
@@ -455,22 +423,6 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Retrieves the configuration for asynchronous invocation for a function, version, or alias.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
-    },
-    "GetFunctionUrlConfig":{
-      "name":"GetFunctionUrlConfig",
-      "http":{
-        "method":"GET",
-        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
-        "responseCode":200
-      },
-      "input":{"shape":"GetFunctionUrlConfigRequest"},
-      "output":{"shape":"GetFunctionUrlConfigResponse"},
-      "errors":[
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"TooManyRequestsException"}
-      ]
     },
     "GetLayerVersion":{
       "name":"GetLayerVersion",
@@ -680,22 +632,6 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Retrieves a list of configurations for asynchronous invocation for a function.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
-    },
-    "ListFunctionUrlConfigs":{
-      "name":"ListFunctionUrlConfigs",
-      "http":{
-        "method":"GET",
-        "requestUri":"/2021-10-31/functions/{FunctionName}/urls",
-        "responseCode":200
-      },
-      "input":{"shape":"ListFunctionUrlConfigsRequest"},
-      "output":{"shape":"ListFunctionUrlConfigsResponse"},
-      "errors":[
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"TooManyRequestsException"}
-      ]
     },
     "ListFunctions":{
       "name":"ListFunctions",
@@ -1107,23 +1043,6 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p>Updates the configuration for asynchronous invocation for a function, version, or alias.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
-    },
-    "UpdateFunctionUrlConfig":{
-      "name":"UpdateFunctionUrlConfig",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
-        "responseCode":200
-      },
-      "input":{"shape":"UpdateFunctionUrlConfigRequest"},
-      "output":{"shape":"UpdateFunctionUrlConfigResponse"},
-      "errors":[
-        {"shape":"ResourceConflictException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
-      ]
     }
   },
   "shapes":{
@@ -1351,17 +1270,6 @@
       },
       "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-traffic-shifting-using-aliases.html\">traffic-shifting</a> configuration of a Lambda function alias.</p>"
     },
-    "AllowCredentials":{"type":"boolean"},
-    "AllowMethodsList":{
-      "type":"list",
-      "member":{"shape":"Method"},
-      "max":6
-    },
-    "AllowOriginsList":{
-      "type":"list",
-      "member":{"shape":"Origin"},
-      "max":100
-    },
     "AllowedPublishers":{
       "type":"structure",
       "required":["SigningProfileVersionArns"],
@@ -1389,13 +1297,6 @@
     "Arn":{
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
-    },
-    "AuthorizationType":{
-      "type":"string",
-      "enum":[
-        "NONE",
-        "AWS_IAM"
-      ]
     },
     "BatchSize":{
       "type":"integer",
@@ -1531,17 +1432,6 @@
         }
       }
     },
-    "Cors":{
-      "type":"structure",
-      "members":{
-        "AllowCredentials":{"shape":"AllowCredentials"},
-        "AllowHeaders":{"shape":"HeadersList"},
-        "AllowMethods":{"shape":"AllowMethodsList"},
-        "AllowOrigins":{"shape":"AllowOriginsList"},
-        "ExposeHeaders":{"shape":"HeadersList"},
-        "MaxAge":{"shape":"MaxAge"}
-      }
-    },
     "CreateAliasRequest":{
       "type":"structure",
       "required":[
@@ -1624,7 +1514,7 @@
         },
         "FilterCriteria":{
           "shape":"FilterCriteria",
-          "documentation":"<p>(Streams and Amazon SQS) A object that defines the filter criteria used to determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
+          "documentation":"<p>(Streams and Amazon SQS) An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -1680,7 +1570,7 @@
         },
         "FunctionResponseTypes":{
           "shape":"FunctionResponseTypeList",
-          "documentation":"<p>(Streams only) A list of current response type enums applied to the event source mapping.</p>"
+          "documentation":"<p>(Streams and Amazon SQS) A list of current response type enums applied to the event source mapping.</p>"
         }
       }
     },
@@ -1698,7 +1588,7 @@
         },
         "Runtime":{
           "shape":"Runtime",
-          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>.</p>"
+          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive. </p>"
         },
         "Role":{
           "shape":"RoleArn",
@@ -1706,7 +1596,7 @@
         },
         "Handler":{
           "shape":"Handler",
-          "documentation":"<p>The name of the method within your code that Lambda calls to execute your function. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/programming-model-v2.html\">Programming Model</a>.</p>"
+          "documentation":"<p>The name of the method within your code that Lambda calls to execute your function. Handler is required if the deployment package is a .zip file archive. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/programming-model-v2.html\">Programming Model</a>.</p>"
         },
         "Code":{
           "shape":"FunctionCode",
@@ -1776,43 +1666,6 @@
           "shape":"ArchitecturesList",
           "documentation":"<p>The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.</p>"
         }
-      }
-    },
-    "CreateFunctionUrlConfigRequest":{
-      "type":"structure",
-      "required":[
-        "FunctionName",
-        "AuthorizationType"
-      ],
-      "members":{
-        "FunctionName":{
-          "shape":"FunctionName",
-          "location":"uri",
-          "locationName":"FunctionName"
-        },
-        "Qualifier":{
-          "shape":"FunctionUrlQualifier",
-          "location":"querystring",
-          "locationName":"Qualifier"
-        },
-        "AuthorizationType":{"shape":"AuthorizationType"},
-        "Cors":{"shape":"Cors"}
-      }
-    },
-    "CreateFunctionUrlConfigResponse":{
-      "type":"structure",
-      "required":[
-        "FunctionUrl",
-        "FunctionArn",
-        "AuthorizationType",
-        "CreationTime"
-      ],
-      "members":{
-        "FunctionUrl":{"shape":"FunctionUrl"},
-        "FunctionArn":{"shape":"FunctionArn"},
-        "AuthorizationType":{"shape":"AuthorizationType"},
-        "Cors":{"shape":"Cors"},
-        "CreationTime":{"shape":"Timestamp"}
       }
     },
     "Date":{"type":"timestamp"},
@@ -1931,22 +1784,6 @@
         "Qualifier":{
           "shape":"Qualifier",
           "documentation":"<p>Specify a version to delete. You can't delete a version that's referenced by an alias.</p>",
-          "location":"querystring",
-          "locationName":"Qualifier"
-        }
-      }
-    },
-    "DeleteFunctionUrlConfigRequest":{
-      "type":"structure",
-      "required":["FunctionName"],
-      "members":{
-        "FunctionName":{
-          "shape":"FunctionName",
-          "location":"uri",
-          "locationName":"FunctionName"
-        },
-        "Qualifier":{
-          "shape":"FunctionUrlQualifier",
           "location":"querystring",
           "locationName":"Qualifier"
         }
@@ -2210,7 +2047,7 @@
         },
         "FilterCriteria":{
           "shape":"FilterCriteria",
-          "documentation":"<p>(Streams and Amazon SQS) A object that defines the filter criteria used to determine whether Lambda should process an event. For more information, see Event filtering.</p>"
+          "documentation":"<p>(Streams and Amazon SQS) An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
         },
         "FunctionArn":{
           "shape":"FunctionArn",
@@ -2326,10 +2163,10 @@
       "members":{
         "Pattern":{
           "shape":"Pattern",
-          "documentation":"<p> A filter pattern. For more information on the syntax of a filter pattern, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-syntax\"> Filter criteria syntax</a>. </p>"
+          "documentation":"<p> A filter pattern. For more information on the syntax of a filter pattern, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-syntax\"> Filter rule syntax</a>. </p>"
         }
       },
-      "documentation":"<p> An object that specifies a filter criteria. </p>"
+      "documentation":"<p> A structure within a <code>FilterCriteria</code> object that defines an event filtering pattern. </p>"
     },
     "FilterCriteria":{
       "type":"structure",
@@ -2339,7 +2176,7 @@
           "documentation":"<p> A list of filters. </p>"
         }
       },
-      "documentation":"<p> An object that contains the filters on the event source. </p>"
+      "documentation":"<p> An object that contains the filters for an event source. </p>"
     },
     "FilterList":{
       "type":"list",
@@ -2584,39 +2421,6 @@
       "max":1,
       "min":0
     },
-    "FunctionUrl":{
-      "type":"string",
-      "max":100,
-      "min":40
-    },
-    "FunctionUrlConfig":{
-      "type":"structure",
-      "required":[
-        "FunctionUrl",
-        "FunctionArn",
-        "CreationTime",
-        "LastModifiedTime",
-        "AuthorizationType"
-      ],
-      "members":{
-        "FunctionUrl":{"shape":"FunctionUrl"},
-        "FunctionArn":{"shape":"FunctionArn"},
-        "CreationTime":{"shape":"Timestamp"},
-        "LastModifiedTime":{"shape":"Timestamp"},
-        "Cors":{"shape":"Cors"},
-        "AuthorizationType":{"shape":"AuthorizationType"}
-      }
-    },
-    "FunctionUrlConfigList":{
-      "type":"list",
-      "member":{"shape":"FunctionUrlConfig"}
-    },
-    "FunctionUrlQualifier":{
-      "type":"string",
-      "max":128,
-      "min":1,
-      "pattern":"(^\\$LATEST$)|((?!^[0-9]+$)([a-zA-Z0-9-_]+))"
-    },
     "FunctionVersion":{
       "type":"string",
       "enum":["ALL"]
@@ -2819,40 +2623,6 @@
         }
       }
     },
-    "GetFunctionUrlConfigRequest":{
-      "type":"structure",
-      "required":["FunctionName"],
-      "members":{
-        "FunctionName":{
-          "shape":"FunctionName",
-          "location":"uri",
-          "locationName":"FunctionName"
-        },
-        "Qualifier":{
-          "shape":"FunctionUrlQualifier",
-          "location":"querystring",
-          "locationName":"Qualifier"
-        }
-      }
-    },
-    "GetFunctionUrlConfigResponse":{
-      "type":"structure",
-      "required":[
-        "FunctionUrl",
-        "FunctionArn",
-        "AuthorizationType",
-        "CreationTime",
-        "LastModifiedTime"
-      ],
-      "members":{
-        "FunctionUrl":{"shape":"FunctionUrl"},
-        "FunctionArn":{"shape":"FunctionArn"},
-        "AuthorizationType":{"shape":"AuthorizationType"},
-        "Cors":{"shape":"Cors"},
-        "CreationTime":{"shape":"Timestamp"},
-        "LastModifiedTime":{"shape":"Timestamp"}
-      }
-    },
     "GetLayerVersionByArnRequest":{
       "type":"structure",
       "required":["Arn"],
@@ -3046,16 +2816,6 @@
       "type":"string",
       "max":128,
       "pattern":"[^\\s]+"
-    },
-    "Header":{
-      "type":"string",
-      "max":1024,
-      "pattern":".*"
-    },
-    "HeadersList":{
-      "type":"list",
-      "member":{"shape":"Header"},
-      "max":100
     },
     "HttpStatus":{"type":"integer"},
     "ImageConfig":{
@@ -3692,35 +3452,6 @@
         }
       }
     },
-    "ListFunctionUrlConfigsRequest":{
-      "type":"structure",
-      "required":["FunctionName"],
-      "members":{
-        "FunctionName":{
-          "shape":"FunctionName",
-          "location":"uri",
-          "locationName":"FunctionName"
-        },
-        "Marker":{
-          "shape":"String",
-          "location":"querystring",
-          "locationName":"Marker"
-        },
-        "MaxItems":{
-          "shape":"MaxItems",
-          "location":"querystring",
-          "locationName":"MaxItems"
-        }
-      }
-    },
-    "ListFunctionUrlConfigsResponse":{
-      "type":"structure",
-      "required":["FunctionUrlConfigs"],
-      "members":{
-        "FunctionUrlConfigs":{"shape":"FunctionUrlConfigList"},
-        "NextMarker":{"shape":"String"}
-      }
-    },
     "ListFunctionsByCodeSigningConfigRequest":{
       "type":"structure",
       "required":["CodeSigningConfigArn"],
@@ -4004,17 +3735,7 @@
       "type":"string",
       "pattern":"ALL|[a-z]{2}(-gov)?-[a-z]+-\\d{1}"
     },
-    "MaxAge":{
-      "type":"integer",
-      "max":86400,
-      "min":0
-    },
     "MaxFunctionEventInvokeConfigListItems":{
-      "type":"integer",
-      "max":50,
-      "min":1
-    },
-    "MaxItems":{
       "type":"integer",
       "max":50,
       "min":1
@@ -4064,11 +3785,6 @@
       "max":10240,
       "min":128
     },
-    "Method":{
-      "type":"string",
-      "max":6,
-      "pattern":".*"
-    },
     "NameSpacedFunctionArn":{
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
@@ -4113,12 +3829,6 @@
       "type":"string",
       "max":34,
       "pattern":"o-[a-z0-9]{10,32}"
-    },
-    "Origin":{
-      "type":"string",
-      "max":253,
-      "min":1,
-      "pattern":".*"
     },
     "PackageType":{
       "type":"string",
@@ -4714,7 +4424,7 @@
       "members":{
         "Type":{
           "shape":"SourceAccessType",
-          "documentation":"<p>The type of authentication protocol, VPC components, or virtual host for your event source. For example: <code>\"Type\":\"SASL_SCRAM_512_AUTH\"</code>.</p> <ul> <li> <p> <code>BASIC_AUTH</code> - (Amazon MQ) The Secrets Manager secret that stores your broker credentials.</p> </li> <li> <p> <code>BASIC_AUTH</code> - (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL/PLAIN authentication of your Apache Kafka brokers.</p> </li> <li> <p> <code>VPC_SUBNET</code> - The subnets associated with your VPC. Lambda connects to these subnets to fetch data from your self-managed Apache Kafka cluster.</p> </li> <li> <p> <code>VPC_SECURITY_GROUP</code> - The VPC security group used to manage access to your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_256_AUTH</code> - The Secrets Manager ARN of your secret key used for SASL SCRAM-256 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_512_AUTH</code> - The Secrets Manager ARN of your secret key used for SASL SCRAM-512 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>VIRTUAL_HOST</code> - (Amazon MQ) The name of the virtual host in your RabbitMQ broker. Lambda uses this RabbitMQ host as the event source. This property cannot be specified in an UpdateEventSourceMapping API call.</p> </li> </ul>"
+          "documentation":"<p>The type of authentication protocol, VPC components, or virtual host for your event source. For example: <code>\"Type\":\"SASL_SCRAM_512_AUTH\"</code>.</p> <ul> <li> <p> <code>BASIC_AUTH</code> - (Amazon MQ) The Secrets Manager secret that stores your broker credentials.</p> </li> <li> <p> <code>BASIC_AUTH</code> - (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL/PLAIN authentication of your Apache Kafka brokers.</p> </li> <li> <p> <code>VPC_SUBNET</code> - The subnets associated with your VPC. Lambda connects to these subnets to fetch data from your self-managed Apache Kafka cluster.</p> </li> <li> <p> <code>VPC_SECURITY_GROUP</code> - The VPC security group used to manage access to your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_256_AUTH</code> - The Secrets Manager ARN of your secret key used for SASL SCRAM-256 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_512_AUTH</code> - The Secrets Manager ARN of your secret key used for SASL SCRAM-512 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>VIRTUAL_HOST</code> - (Amazon MQ) The name of the virtual host in your RabbitMQ broker. Lambda uses this RabbitMQ host as the event source. This property cannot be specified in an UpdateEventSourceMapping API call.</p> </li> <li> <p> <code>CLIENT_CERTIFICATE_TLS_AUTH</code> - (Amazon MSK, Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the certificate chain (X.509 PEM), private key (PKCS#8 PEM), and private key password (optional) used for mutual TLS authentication of your MSK/Apache Kafka brokers.</p> </li> <li> <p> <code>SERVER_ROOT_CA_CERTIFICATE</code> - (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the root CA certificate (X.509 PEM) used for TLS encryption of your Apache Kafka brokers. </p> </li> </ul>"
         },
         "URI":{
           "shape":"URI",
@@ -5045,7 +4755,7 @@
         },
         "FilterCriteria":{
           "shape":"FilterCriteria",
-          "documentation":"<p>(Streams and Amazon SQS) A object that defines the filter criteria used to determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
+          "documentation":"<p>(Streams and Amazon SQS) An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -5081,7 +4791,7 @@
         },
         "FunctionResponseTypes":{
           "shape":"FunctionResponseTypeList",
-          "documentation":"<p>(Streams only) A list of current response type enums applied to the event source mapping.</p>"
+          "documentation":"<p>(Streams and Amazon SQS) A list of current response type enums applied to the event source mapping.</p>"
         }
       }
     },
@@ -5149,7 +4859,7 @@
         },
         "Handler":{
           "shape":"Handler",
-          "documentation":"<p>The name of the method within your code that Lambda calls to execute your function. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/programming-model-v2.html\">Programming Model</a>.</p>"
+          "documentation":"<p>The name of the method within your code that Lambda calls to execute your function. Handler is required if the deployment package is a .zip file archive. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/programming-model-v2.html\">Programming Model</a>.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -5173,7 +4883,7 @@
         },
         "Runtime":{
           "shape":"Runtime",
-          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>.</p>"
+          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive. </p>"
         },
         "DeadLetterConfig":{
           "shape":"DeadLetterConfig",
@@ -5233,42 +4943,6 @@
           "shape":"DestinationConfig",
           "documentation":"<p>A destination for events after they have been sent to a function for processing.</p> <p class=\"title\"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of an SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of an SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>"
         }
-      }
-    },
-    "UpdateFunctionUrlConfigRequest":{
-      "type":"structure",
-      "required":["FunctionName"],
-      "members":{
-        "FunctionName":{
-          "shape":"FunctionName",
-          "location":"uri",
-          "locationName":"FunctionName"
-        },
-        "Qualifier":{
-          "shape":"FunctionUrlQualifier",
-          "location":"querystring",
-          "locationName":"Qualifier"
-        },
-        "AuthorizationType":{"shape":"AuthorizationType"},
-        "Cors":{"shape":"Cors"}
-      }
-    },
-    "UpdateFunctionUrlConfigResponse":{
-      "type":"structure",
-      "required":[
-        "FunctionUrl",
-        "FunctionArn",
-        "AuthorizationType",
-        "CreationTime",
-        "LastModifiedTime"
-      ],
-      "members":{
-        "FunctionUrl":{"shape":"FunctionUrl"},
-        "FunctionArn":{"shape":"FunctionArn"},
-        "AuthorizationType":{"shape":"AuthorizationType"},
-        "Cors":{"shape":"Cors"},
-        "CreationTime":{"shape":"Timestamp"},
-        "LastModifiedTime":{"shape":"Timestamp"}
       }
     },
     "Version":{

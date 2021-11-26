@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.22.14
+=======
+
+* api-change:``pinpoint``: Added a One-Time Password (OTP) management feature. You can use the Amazon Pinpoint API to generate OTP codes and send them to your users as SMS messages. Your apps can then call the API to verify the OTP codes that your users input
+* api-change:``iotdeviceadvisor``: Documentation update for Device Advisor GetEndpoint API
+* api-change:``ec2``: Documentation updates for EC2.
+* api-change:``outposts``: This release adds new APIs for working with Outpost sites and orders.
+* api-change:``autoscaling``: Documentation updates for Amazon EC2 Auto Scaling.
+* api-change:``mgn``: Application Migration Service now supports an additional replication method that does not require agent installation on each source server. This option is available for source servers running on VMware vCenter versions 6.7 and 7.0.
+
+
 1.22.13
 =======
 

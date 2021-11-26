@@ -4075,6 +4075,52 @@
       ],
       "documentation": "<p>Creates and sends a direct message.</p>"
     },
+    "SendOTPMessage": {
+      "name": "SendOTPMessage",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/apps/{application-id}/otp",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "SendOTPMessageRequest"
+      },
+      "output": {
+        "shape": "SendOTPMessageResponse",
+        "documentation": "<p>200 response</p>"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>400 response</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>500 response</p>"
+        },
+        {
+          "shape": "PayloadTooLargeException",
+          "documentation": "<p>413 response</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>403 response</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>404 response</p>"
+        },
+        {
+          "shape": "MethodNotAllowedException",
+          "documentation": "<p>405 response</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>429 response</p>"
+        }
+      ],
+      "documentation": "<p>Send an OTP message</p>"
+    },
     "SendUsersMessages": {
       "name": "SendUsersMessages",
       "http": {
@@ -5254,6 +5300,52 @@
         }
       ],
       "documentation": "<p>Updates an existing message template for messages that are sent through the voice channel.</p>"
+  },
+  "VerifyOTPMessage": {
+    "name": "VerifyOTPMessage",
+    "http": {
+      "method": "POST",
+      "requestUri": "/v1/apps/{application-id}/verify-otp",
+      "responseCode": 200
+    },
+    "input": {
+      "shape": "VerifyOTPMessageRequest"
+    },
+    "output": {
+      "shape": "VerifyOTPMessageResponse",
+      "documentation": "<p>200 response</p>"
+    },
+    "errors": [
+      {
+        "shape": "BadRequestException",
+        "documentation": "<p>400 response</p>"
+      },
+      {
+        "shape": "InternalServerErrorException",
+        "documentation": "<p>500 response</p>"
+      },
+      {
+        "shape": "PayloadTooLargeException",
+        "documentation": "<p>413 response</p>"
+      },
+      {
+        "shape": "ForbiddenException",
+        "documentation": "<p>403 response</p>"
+      },
+      {
+        "shape": "NotFoundException",
+        "documentation": "<p>404 response</p>"
+      },
+      {
+        "shape": "MethodNotAllowedException",
+        "documentation": "<p>405 response</p>"
+      },
+      {
+        "shape": "TooManyRequestsException",
+        "documentation": "<p>429 response</p>"
+      }
+    ],
+    "documentation": "<p>Verify an OTP</p>"
     }
   },
   "shapes": {
@@ -13521,6 +13613,94 @@
       ],
       "payload": "MessageResponse"
     },
+    "SendOTPMessageRequest": {
+      "type": "structure",
+      "members": {
+        "ApplicationId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "application-id",
+          "documentation": "<p>The unique ID of your Amazon Pinpoint application.</p>"
+        },
+        "SendOTPMessageRequestParameters": {
+          "shape": "SendOTPMessageRequestParameters"
+        }
+      },
+      "required": [
+        "ApplicationId",
+        "SendOTPMessageRequestParameters"
+      ],
+      "payload": "SendOTPMessageRequestParameters"
+    },
+    "SendOTPMessageRequestParameters": {
+      "type": "structure",
+      "members": {
+        "AllowedAttempts": {
+          "shape": "__integer",
+          "documentation": "<p>The attempts allowed to validate an OTP.</p>"
+        },
+        "BrandName": {
+          "shape": "__string",
+          "documentation": "<p>The brand name that will be substituted into the OTP message body. Should be owned by calling AWS account.</p>"
+        },
+        "Channel": {
+          "shape": "__string",
+          "documentation": "<p>Channel type for the OTP message. Supported values: [SMS].</p>"
+        },
+        "CodeLength": {
+          "shape": "__integer",
+          "documentation": "<p>The number of characters in the generated OTP.</p>"
+        },
+        "DestinationIdentity": {
+          "shape": "__string",
+          "documentation": "<p>The destination identity to send OTP to.</p>"
+        },
+        "EntityId": {
+          "shape": "__string",
+          "documentation": "<p>A unique Entity ID received from DLT after entity registration is approved.</p>"
+        },
+        "Language": {
+          "shape": "__string",
+          "documentation": "<p>The language to be used for the outgoing message body containing the OTP.</p>"
+        },
+        "OriginationIdentity": {
+          "shape": "__string",
+          "documentation": "<p>The origination identity used to send OTP from.</p>"
+        },
+        "ReferenceId": {
+          "shape": "__string",
+          "documentation": "<p>Developer-specified reference identifier. Required to match during OTP verification.</p>"
+        },
+        "TemplateId": {
+          "shape": "__string",
+          "documentation": "<p>A unique Template ID received from DLT after entity registration is approved.</p>"
+        },
+        "ValidityPeriod": {
+          "shape": "__integer",
+          "documentation": "<p>The time in minutes before the OTP is no longer valid.</p>"
+        }
+      },
+      "documentation": "<p>Send OTP message request parameters.</p>",
+      "required": [
+        "BrandName",
+        "ReferenceId",
+        "Channel",
+        "DestinationIdentity",
+        "OriginationIdentity"
+      ]
+    },
+    "SendOTPMessageResponse": {
+      "type": "structure",
+      "members": {
+        "MessageResponse": {
+          "shape": "MessageResponse"
+        }
+      },
+      "required": [
+        "MessageResponse"
+      ],
+      "payload": "MessageResponse"
+    },
     "SendUsersMessageRequest": {
       "type": "structure",
       "members": {
@@ -14965,6 +15145,70 @@
         "MessageBody"
       ],
       "payload": "MessageBody"
+    },
+    "VerificationResponse": {
+      "type": "structure",
+      "members": {
+        "Valid": {
+          "shape": "__boolean",
+          "documentation": "<p>Specifies whether the OTP is valid or not.</p>"
+        }
+      },
+      "documentation": "<p>Verify OTP Message Response.</p>"
+    },
+    "VerifyOTPMessageRequest": {
+      "type": "structure",
+      "members": {
+        "ApplicationId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "application-id",
+          "documentation": "<p>The unique ID of your Amazon Pinpoint application.</p>"
+        },
+        "VerifyOTPMessageRequestParameters": {
+          "shape": "VerifyOTPMessageRequestParameters"
+        }
+      },
+      "required": [
+        "ApplicationId",
+        "VerifyOTPMessageRequestParameters"
+      ],
+      "payload": "VerifyOTPMessageRequestParameters"
+    },
+    "VerifyOTPMessageRequestParameters": {
+      "type": "structure",
+      "members": {
+        "DestinationIdentity": {
+          "shape": "__string",
+          "documentation": "<p>The destination identity to send OTP to.</p>"
+        },
+        "Otp": {
+          "shape": "__string",
+          "documentation": "<p>The OTP the end user provided for verification.</p>"
+        },
+        "ReferenceId": {
+          "shape": "__string",
+          "documentation": "<p>The reference identifier provided when the OTP was previously sent.</p>"
+        }
+      },
+      "documentation": "<p>Verify OTP message request.</p>",
+      "required": [
+        "ReferenceId",
+        "Otp",
+        "DestinationIdentity"
+      ]
+    },
+    "VerifyOTPMessageResponse": {
+      "type": "structure",
+      "members": {
+        "VerificationResponse": {
+          "shape": "VerificationResponse"
+        }
+      },
+      "required": [
+        "VerificationResponse"
+      ],
+      "payload": "VerificationResponse"
     },
     "VoiceChannelRequest": {
       "type": "structure",

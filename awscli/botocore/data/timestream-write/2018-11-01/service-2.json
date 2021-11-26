@@ -29,9 +29,10 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"InvalidEndpointException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Creates a new Timestream database. If the KMS key is not specified, the database will be encrypted with a Timestream managed KMS key located in your account. Refer to <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">AWS managed KMS keys</a> for more info. Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>",
+      "documentation":"<p>Creates a new Timestream database. If the KMS key is not specified, the database will be encrypted with a Timestream managed KMS key located in your account. Refer to <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">Amazon Web Services managed KMS keys</a> for more info. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.create-db.html\">code sample</a> for details. </p>",
       "endpointdiscovery":{"required":true}
     },
     "CreateTable":{
@@ -49,10 +50,11 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
+        {"shape":"InvalidEndpointException"},
         {"shape":"InternalServerException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>The CreateTable operation adds a new table to an existing database in your account. In an AWS account, table names must be at least unique within each Region if they are in the same database. You may have identical table names in the same Region if the tables are in seperate databases. While creating the table, you must specify the table name, database name, and the retention properties. Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>",
+      "documentation":"<p>The CreateTable operation adds a new table to an existing database in your account. In an Amazon Web Services account, table names must be at least unique within each Region if they are in the same database. You may have identical table names in the same Region if the tables are in separate databases. While creating the table, you must specify the table name, database name, and the retention properties. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.create-table.html\">code sample</a> for details. </p>",
       "endpointdiscovery":{"required":true}
     },
     "DeleteDatabase":{
@@ -70,7 +72,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Deletes a given Timestream database. <i>This is an irreversible operation. After a database is deleted, the time series data from its tables cannot be recovered.</i> </p> <p>All tables in the database must be deleted first, or a ValidationException error will be thrown. </p> <p>Due to the nature of distributed retries, the operation can return either success or a ResourceNotFoundException. Clients should consider them equivalent.</p>",
+      "documentation":"<p>Deletes a given Timestream database. <i>This is an irreversible operation. After a database is deleted, the time series data from its tables cannot be recovered.</i> </p> <note> <p>All tables in the database must be deleted first, or a ValidationException error will be thrown. </p> <p>Due to the nature of distributed retries, the operation can return either success or a ResourceNotFoundException. Clients should consider them equivalent.</p> </note> <p>See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.delete-db.html\">code sample</a> for details.</p>",
       "endpointdiscovery":{"required":true}
     },
     "DeleteTable":{
@@ -88,7 +90,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Deletes a given Timestream table. This is an irreversible operation. After a Timestream database table is deleted, the time series data stored in the table cannot be recovered. </p> <p>Due to the nature of distributed retries, the operation can return either success or a ResourceNotFoundException. Clients should consider them equivalent.</p>",
+      "documentation":"<p>Deletes a given Timestream table. This is an irreversible operation. After a Timestream database table is deleted, the time series data stored in the table cannot be recovered. </p> <note> <p>Due to the nature of distributed retries, the operation can return either success or a ResourceNotFoundException. Clients should consider them equivalent.</p> </note> <p>See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.delete-table.html\">code sample</a> for details.</p>",
       "endpointdiscovery":{"required":true}
     },
     "DescribeDatabase":{
@@ -107,7 +109,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Returns information about the database, including the database name, time that the database was created, and the total number of tables found within the database. Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide.</p>",
+      "documentation":"<p>Returns information about the database, including the database name, time that the database was created, and the total number of tables found within the database. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.describe-db.html\">code sample</a> for details.</p>",
       "endpointdiscovery":{"required":true}
     },
     "DescribeEndpoints":{
@@ -123,7 +125,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>DescribeEndpoints returns a list of available endpoints to make Timestream API calls against. This API is available through both Write and Query.</p> <p>Because Timestream’s SDKs are designed to transparently work with the service’s architecture, including the management and mapping of the service endpoints, <i>it is not recommended that you use this API unless</i>:</p> <ul> <li> <p>Your application uses a programming language that does not yet have SDK support</p> </li> <li> <p>You require better control over the client-side implementation</p> </li> </ul> <p>For detailed information on how to use DescribeEndpoints, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/Using-API.endpoint-discovery.html\">The Endpoint Discovery Pattern and REST APIs</a>.</p>",
+      "documentation":"<p>DescribeEndpoints returns a list of available endpoints to make Timestream API calls against. This API is available through both Write and Query.</p> <p>Because the Timestream SDKs are designed to transparently work with the service’s architecture, including the management and mapping of the service endpoints, <i>it is not recommended that you use this API unless</i>:</p> <ul> <li> <p>You are using <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/VPCEndpoints\">VPC endpoints (Amazon Web Services PrivateLink) with Timestream</a> </p> </li> <li> <p>Your application uses a programming language that does not yet have SDK support</p> </li> <li> <p>You require better control over the client-side implementation</p> </li> </ul> <p>For detailed information on how and when to use and implement DescribeEndpoints, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/Using.API.html#Using-API.endpoint-discovery\">The Endpoint Discovery Pattern</a>.</p>",
       "endpointoperation":true
     },
     "DescribeTable":{
@@ -142,7 +144,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Returns information about the table, including the table name, database name, retention duration of the memory store and the magnetic store. Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>",
+      "documentation":"<p>Returns information about the table, including the table name, database name, retention duration of the memory store and the magnetic store. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.describe-table.html\">code sample</a> for details. </p>",
       "endpointdiscovery":{"required":true}
     },
     "ListDatabases":{
@@ -160,7 +162,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Returns a list of your Timestream databases. Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>",
+      "documentation":"<p>Returns a list of your Timestream databases. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.list-db.html\">code sample</a> for details. </p>",
       "endpointdiscovery":{"required":true}
     },
     "ListTables":{
@@ -179,7 +181,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>A list of tables, along with the name, status and retention properties of each table. </p>",
+      "documentation":"<p>A list of tables, along with the name, status and retention properties of each table. See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.list-table.html\">code sample</a> for details. </p>",
       "endpointdiscovery":{"required":true}
     },
     "ListTagsForResource":{
@@ -252,7 +254,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p> Modifies the KMS key for an existing database. While updating the database, you must specify the database name and the identifier of the new KMS key to be used (<code>KmsKeyId</code>). If there are any concurrent <code>UpdateDatabase</code> requests, first writer wins. </p>",
+      "documentation":"<p> Modifies the KMS key for an existing database. While updating the database, you must specify the database name and the identifier of the new KMS key to be used (<code>KmsKeyId</code>). If there are any concurrent <code>UpdateDatabase</code> requests, first writer wins. </p> <p>See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.update-db.html\">code sample</a> for details.</p>",
       "endpointdiscovery":{"required":true}
     },
     "UpdateTable":{
@@ -271,7 +273,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Modifies the retention duration of the memory store and magnetic store for your Timestream table. Note that the change in retention duration takes effect immediately. For example, if the retention period of the memory store was initially set to 2 hours and then changed to 24 hours, the memory store will be capable of holding 24 hours of data, but will be populated with 24 hours of data 22 hours after this change was made. Timestream does not retrieve data from the magnetic store to populate the memory store. </p> <p>Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide.</p>",
+      "documentation":"<p>Modifies the retention duration of the memory store and magnetic store for your Timestream table. Note that the change in retention duration takes effect immediately. For example, if the retention period of the memory store was initially set to 2 hours and then changed to 24 hours, the memory store will be capable of holding 24 hours of data, but will be populated with 24 hours of data 22 hours after this change was made. Timestream does not retrieve data from the magnetic store to populate the memory store. </p> <p>See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.update-table.html\">code sample</a> for details.</p>",
       "endpointdiscovery":{"required":true}
     },
     "WriteRecords":{
@@ -281,6 +283,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"WriteRecordsRequest"},
+      "output":{"shape":"WriteRecordsResponse"},
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
@@ -290,7 +293,7 @@
         {"shape":"RejectedRecordsException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>The WriteRecords operation enables you to write your time series data into Timestream. You can specify a single data point or a batch of data points to be inserted into the system. Timestream offers you with a flexible schema that auto detects the column names and data types for your Timestream tables based on the dimension names and data types of the data points you specify when invoking writes into the database. Timestream support eventual consistency read semantics. This means that when you query data immediately after writing a batch of data into Timestream, the query results might not reflect the results of a recently completed write operation. The results may also include some stale data. If you repeat the query request after a short time, the results should return the latest data. Service quotas apply. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>",
+      "documentation":"<p>The WriteRecords operation enables you to write your time series data into Timestream. You can specify a single data point or a batch of data points to be inserted into the system. Timestream offers you with a flexible schema that auto detects the column names and data types for your Timestream tables based on the dimension names and data types of the data points you specify when invoking writes into the database. Timestream support eventual consistency read semantics. This means that when you query data immediately after writing a batch of data into Timestream, the query results might not reflect the results of a recently completed write operation. The results may also include some stale data. If you repeat the query request after a short time, the results should return the latest data. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. </p> <p>See <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.write.html\">code sample</a> for details.</p> <p> <b>Upserts</b> </p> <p>You can use the <code>Version</code> parameter in a <code>WriteRecords</code> request to update data points. Timestream tracks a version number with each record. <code>Version</code> defaults to <code>1</code> when not specified for the record in the request. Timestream will update an existing record’s measure value along with its <code>Version</code> upon receiving a write request with a higher <code>Version</code> number for that record. Upon receiving an update request where the measure value is the same as that of the existing record, Timestream still updates <code>Version</code>, if it is greater than the existing value of <code>Version</code>. You can update a data point as many times as desired, as long as the value of <code>Version</code> continuously increases. </p> <p> For example, suppose you write a new record without indicating <code>Version</code> in the request. Timestream will store this record, and set <code>Version</code> to <code>1</code>. Now, suppose you try to update this record with a <code>WriteRecords</code> request of the same record with a different measure value but, like before, do not provide <code>Version</code>. In this case, Timestream will reject this update with a <code>RejectedRecordsException</code> since the updated record’s version is not greater than the existing value of Version. However, if you were to resend the update request with <code>Version</code> set to <code>2</code>, Timestream would then succeed in updating the record’s value, and the <code>Version</code> would be set to <code>2</code>. Next, suppose you sent a <code>WriteRecords</code> request with this same record and an identical measure value, but with <code>Version</code> set to <code>3</code>. In this case, Timestream would only update <code>Version</code> to <code>3</code>. Any further updates would need to send a version number greater than <code>3</code>, or the update requests would receive a <code>RejectedRecordsException</code>. </p>",
       "endpointdiscovery":{"required":true}
     }
   },
@@ -309,6 +312,7 @@
       "max":1011,
       "min":1
     },
+    "Boolean":{"type":"boolean"},
     "ConflictException":{
       "type":"structure",
       "required":["Message"],
@@ -323,12 +327,12 @@
       "required":["DatabaseName"],
       "members":{
         "DatabaseName":{
-          "shape":"ResourceName",
+          "shape":"ResourceCreateAPIName",
           "documentation":"<p>The name of the Timestream database.</p>"
         },
         "KmsKeyId":{
           "shape":"StringValue2048",
-          "documentation":"<p>The KMS key for the database. If the KMS key is not specified, the database will be encrypted with a Timestream managed KMS key located in your account. Refer to <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">AWS managed KMS keys</a> for more info.</p>"
+          "documentation":"<p>The KMS key for the database. If the KMS key is not specified, the database will be encrypted with a Timestream managed KMS key located in your account. Refer to <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">Amazon Web Services managed KMS keys</a> for more info.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -353,11 +357,11 @@
       ],
       "members":{
         "DatabaseName":{
-          "shape":"ResourceName",
+          "shape":"ResourceCreateAPIName",
           "documentation":"<p>The name of the Timestream database.</p>"
         },
         "TableName":{
-          "shape":"ResourceName",
+          "shape":"ResourceCreateAPIName",
           "documentation":"<p>The name of the Timestream table.</p>"
         },
         "RetentionProperties":{
@@ -367,6 +371,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p> A list of key-value pairs to label the table. </p>"
+        },
+        "MagneticStoreWriteProperties":{
+          "shape":"MagneticStoreWriteProperties",
+          "documentation":"<p>Contains properties to set on the table when enabling magnetic store writes.</p>"
         }
       }
     },
@@ -509,11 +517,11 @@
       ],
       "members":{
         "Name":{
-          "shape":"StringValue256",
+          "shape":"SchemaName",
           "documentation":"<p> Dimension represents the meta data attributes of the time series. For example, the name and availability zone of an EC2 instance or the name of the manufacturer of a wind turbine are dimensions. </p> <p>For constraints on Dimension names, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming\">Naming Constraints</a>.</p>"
         },
         "Value":{
-          "shape":"StringValue2048",
+          "shape":"SchemaValue",
           "documentation":"<p>The value of the dimension.</p>"
         },
         "DimensionValueType":{
@@ -555,6 +563,7 @@
       "member":{"shape":"Endpoint"}
     },
     "ErrorMessage":{"type":"string"},
+    "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
       "required":["Message"],
@@ -649,10 +658,58 @@
       }
     },
     "Long":{"type":"long"},
+    "MagneticStoreRejectedDataLocation":{
+      "type":"structure",
+      "members":{
+        "S3Configuration":{
+          "shape":"S3Configuration",
+          "documentation":"<p>Configuration of an S3 location to write error reports for records rejected, asynchronously, during magnetic store writes.</p>"
+        }
+      },
+      "documentation":"<p>The location to write error reports for records rejected, asynchronously, during magnetic store writes.</p>"
+    },
     "MagneticStoreRetentionPeriodInDays":{
       "type":"long",
       "max":73000,
       "min":1
+    },
+    "MagneticStoreWriteProperties":{
+      "type":"structure",
+      "required":["EnableMagneticStoreWrites"],
+      "members":{
+        "EnableMagneticStoreWrites":{
+          "shape":"Boolean",
+          "documentation":"<p>A flag to enable magnetic store writes.</p>"
+        },
+        "MagneticStoreRejectedDataLocation":{
+          "shape":"MagneticStoreRejectedDataLocation",
+          "documentation":"<p>The location to write error reports for records rejected asynchronously during magnetic store writes.</p>"
+        }
+      },
+      "documentation":"<p>The set of properties on a table for configuring magnetic store writes.</p>"
+    },
+    "MeasureValue":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value",
+        "Type"
+      ],
+      "members":{
+        "Name":{
+          "shape":"SchemaName",
+          "documentation":"<p> Name of the MeasureValue. </p> <p> For constraints on MeasureValue names, refer to <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming\"> Naming Constraints</a> in the Timestream developer guide.</p>"
+        },
+        "Value":{
+          "shape":"StringValue2048",
+          "documentation":"<p> Value for the MeasureValue. </p>"
+        },
+        "Type":{
+          "shape":"MeasureValueType",
+          "documentation":"<p>Contains the data type of the MeasureValue for the time series data point.</p>"
+        }
+      },
+      "documentation":"<p> MeasureValue represents the data attribute of the time series. For example, the CPU utilization of an EC2 instance or the RPM of a wind turbine are measures. MeasureValue has both name and value. </p> <p> MeasureValue is only allowed for type <code>MULTI</code>. Using <code>MULTI</code> type, you can pass multiple data attributes associated with the same time series in a single record </p>"
     },
     "MeasureValueType":{
       "type":"string",
@@ -660,8 +717,14 @@
         "DOUBLE",
         "BIGINT",
         "VARCHAR",
-        "BOOLEAN"
+        "BOOLEAN",
+        "TIMESTAMP",
+        "MULTI"
       ]
+    },
+    "MeasureValues":{
+      "type":"list",
+      "member":{"shape":"MeasureValue"}
     },
     "MemoryStoreRetentionPeriodInHours":{
       "type":"long",
@@ -682,7 +745,7 @@
           "documentation":"<p>Contains the list of dimensions for time series data points.</p>"
         },
         "MeasureName":{
-          "shape":"StringValue256",
+          "shape":"SchemaName",
           "documentation":"<p>Measure represents the data attribute of the time series. For example, the CPU utilization of an EC2 instance or the RPM of a wind turbine are measures. </p>"
         },
         "MeasureValue":{
@@ -691,7 +754,7 @@
         },
         "MeasureValueType":{
           "shape":"MeasureValueType",
-          "documentation":"<p> Contains the data type of the measure value for the time series data point. </p>"
+          "documentation":"<p> Contains the data type of the measure value for the time series data point. Default type is <code>DOUBLE</code>. </p>"
         },
         "Time":{
           "shape":"StringValue256",
@@ -699,15 +762,19 @@
         },
         "TimeUnit":{
           "shape":"TimeUnit",
-          "documentation":"<p> The granularity of the timestamp unit. It indicates if the time value is in seconds, milliseconds, nanoseconds or other supported values. </p>"
+          "documentation":"<p> The granularity of the timestamp unit. It indicates if the time value is in seconds, milliseconds, nanoseconds or other supported values. Default is <code>MILLISECONDS</code>. </p>"
         },
         "Version":{
           "shape":"RecordVersion",
-          "documentation":"<p>64-bit attribute used for record updates. Write requests for duplicate data with a higher version number will update the existing measure value and version. In cases where the measure value is the same, <code>Version</code> will still be updated . Default value is to 1.</p>",
+          "documentation":"<p>64-bit attribute used for record updates. Write requests for duplicate data with a higher version number will update the existing measure value and version. In cases where the measure value is the same, <code>Version</code> will still be updated . Default value is <code>1</code>.</p> <note> <p> <code>Version</code> must be <code>1</code> or greater, or you will receive a <code>ValidationException</code> error.</p> </note>",
           "box":true
+        },
+        "MeasureValues":{
+          "shape":"MeasureValues",
+          "documentation":"<p> Contains the list of MeasureValue for time series data points. </p> <p> This is only allowed for type <code>MULTI</code>. For scalar values, use <code>MeasureValue</code> attribute of the Record directly. </p>"
         }
       },
-      "documentation":"<p>Record represents a time series data point being written into Timestream. Each record contains an array of dimensions. Dimensions represent the meta data attributes of a time series data point such as the instance name or availability zone of an EC2 instance. A record also contains the measure name which is the name of the measure being collected for example the CPU utilization of an EC2 instance. A record also contains the measure value and the value type which is the data type of the measure value. In addition, the record contains the timestamp when the measure was collected that the timestamp unit which represents the granularity of the timestamp. </p>"
+      "documentation":"<p>Record represents a time series data point being written into Timestream. Each record contains an array of dimensions. Dimensions represent the meta data attributes of a time series data point such as the instance name or availability zone of an EC2 instance. A record also contains the measure name which is the name of the measure being collected for example the CPU utilization of an EC2 instance. A record also contains the measure value and the value type which is the data type of the measure value. In addition, the record contains the timestamp when the measure was collected that the timestamp unit which represents the granularity of the timestamp. </p> <p> Records have a <code>Version</code> field, which is a 64-bit <code>long</code> that you can use for updating data points. Writes of a duplicate record with the same dimension, timestamp, and measure name but different measure value will only succeed if the <code>Version</code> attribute of the record in the write request is higher than that of the existing record. Timestream defaults to a <code>Version</code> of <code>1</code> for records without the <code>Version</code> field. </p>"
     },
     "RecordIndex":{"type":"integer"},
     "RecordVersion":{"type":"long"},
@@ -716,6 +783,24 @@
       "member":{"shape":"Record"},
       "max":100,
       "min":1
+    },
+    "RecordsIngested":{
+      "type":"structure",
+      "members":{
+        "Total":{
+          "shape":"Integer",
+          "documentation":"<p>Total count of successfully ingested records.</p>"
+        },
+        "MemoryStore":{
+          "shape":"Integer",
+          "documentation":"<p>Count of records ingested into the memory store.</p>"
+        },
+        "MagneticStore":{
+          "shape":"Integer",
+          "documentation":"<p>Count of records ingested into the magnetic store.</p>"
+        }
+      },
+      "documentation":"<p>Information on the records ingested by this request.</p>"
     },
     "RejectedRecord":{
       "type":"structure",
@@ -726,7 +811,7 @@
         },
         "Reason":{
           "shape":"ErrorMessage",
-          "documentation":"<p> The reason why a record was not successfully inserted into Timestream. Possible causes of failure include: </p> <ul> <li> <p> Records with duplicate data where there are multiple records with the same dimensions, timestamps, and measure names but different measure values. </p> </li> <li> <p> Records with timestamps that lie outside the retention duration of the memory store </p> <note> <p>When the retention window is updated, you will receive a <code>RejectedRecords</code> exception if you immediately try to ingest data within the new window. To avoid a <code>RejectedRecords</code> exception, wait until the duration of the new window to ingest new data. For further information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html#configuration\"> Best Practices for Configuring Timestream</a> and <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/storage.html\">the explanation of how storage works in Timestream</a>.</p> </note> </li> <li> <p> Records with dimensions or measures that exceed the Timestream defined limits. </p> </li> </ul> <p> For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>"
+          "documentation":"<p> The reason why a record was not successfully inserted into Timestream. Possible causes of failure include: </p> <ul> <li> <p>Records with duplicate data where there are multiple records with the same dimensions, timestamps, and measure names but: </p> <ul> <li> <p>Measure values are different</p> </li> <li> <p>Version is not present in the request <i>or</i> the value of version in the new record is equal to or lower than the existing value</p> </li> </ul> <p> If Timestream rejects data for this case, the <code>ExistingVersion</code> field in the <code>RejectedRecords</code> response will indicate the current record’s version. To force an update, you can resend the request with a version for the record set to a value greater than the <code>ExistingVersion</code>.</p> </li> <li> <p> Records with timestamps that lie outside the retention duration of the memory store </p> <note> <p>When the retention window is updated, you will receive a <code>RejectedRecords</code> exception if you immediately try to ingest data within the new window. To avoid a <code>RejectedRecords</code> exception, wait until the duration of the new window to ingest new data. For further information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html#configuration\"> Best Practices for Configuring Timestream</a> and <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/storage.html\">the explanation of how storage works in Timestream</a>.</p> </note> </li> <li> <p> Records with dimensions or measures that exceed the Timestream defined limits. </p> </li> </ul> <p> For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>"
         },
         "ExistingVersion":{
           "shape":"RecordVersion",
@@ -746,15 +831,14 @@
         "Message":{"shape":"ErrorMessage"},
         "RejectedRecords":{"shape":"RejectedRecords"}
       },
-      "documentation":"<p> WriteRecords would throw this exception in the following cases: </p> <ul> <li> <p> Records with duplicate data where there are multiple records with the same dimensions, timestamps, and measure names but different measure values. </p> </li> <li> <p> Records with timestamps that lie outside the retention duration of the memory store </p> </li> <li> <p> Records with dimensions or measures that exceed the Timestream defined limits. </p> </li> </ul> <p> For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Access Management</a> in the Timestream Developer Guide. </p>",
+      "documentation":"<p> WriteRecords would throw this exception in the following cases: </p> <ul> <li> <p>Records with duplicate data where there are multiple records with the same dimensions, timestamps, and measure names but: </p> <ul> <li> <p>Measure values are different</p> </li> <li> <p>Version is not present in the request <i>or</i> the value of version in the new record is equal to or lower than the existing value</p> </li> </ul> <p> In this case, if Timestream rejects data, the <code>ExistingVersion</code> field in the <code>RejectedRecords</code> response will indicate the current record’s version. To force an update, you can resend the request with a version for the record set to a value greater than the <code>ExistingVersion</code>.</p> </li> <li> <p> Records with timestamps that lie outside the retention duration of the memory store </p> </li> <li> <p> Records with dimensions or measures that exceed the Timestream defined limits. </p> </li> </ul> <p> For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Quotas</a> in the Timestream Developer Guide. </p>",
       "exception":true
     },
-    "ResourceName":{
+    "ResourceCreateAPIName":{
       "type":"string",
-      "max":64,
-      "min":3,
       "pattern":"[a-zA-Z0-9_.-]+"
     },
+    "ResourceName":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -781,6 +865,52 @@
       },
       "documentation":"<p>Retention properties contain the duration for which your time series data must be stored in the magnetic store and the memory store. </p>"
     },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+    },
+    "S3Configuration":{
+      "type":"structure",
+      "members":{
+        "BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>&gt;Bucket name of the customer S3 bucket.</p>"
+        },
+        "ObjectKeyPrefix":{
+          "shape":"S3ObjectKeyPrefix",
+          "documentation":"<p>Object key preview for the customer S3 location.</p>"
+        },
+        "EncryptionOption":{
+          "shape":"S3EncryptionOption",
+          "documentation":"<p>Encryption option for the customer s3 location. Options are S3 server side encryption with an S3-managed key or KMS managed key.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"StringValue2048",
+          "documentation":"<p>KMS key id for the customer s3 location when encrypting with a KMS managed key.</p>"
+        }
+      },
+      "documentation":"<p>Configuration specifing an S3 location.</p>"
+    },
+    "S3EncryptionOption":{
+      "type":"string",
+      "enum":[
+        "SSE_S3",
+        "SSE_KMS"
+      ]
+    },
+    "S3ObjectKeyPrefix":{
+      "type":"string",
+      "max":928,
+      "min":1,
+      "pattern":"[a-zA-Z0-9|!\\-_*'\\(\\)]([a-zA-Z0-9]|[!\\-_*'\\(\\)\\/.])+"
+    },
+    "SchemaName":{
+      "type":"string",
+      "min":1
+    },
+    "SchemaValue":{"type":"string"},
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -830,6 +960,10 @@
         "LastUpdatedTime":{
           "shape":"Date",
           "documentation":"<p>The time when the Timestream table was last updated.</p>"
+        },
+        "MagneticStoreWriteProperties":{
+          "shape":"MagneticStoreWriteProperties",
+          "documentation":"<p>Contains properties to set on the table when enabling magnetic store writes.</p>"
         }
       },
       "documentation":"<p>Table represents a database table in Timestream. Tables contain one or more related time series. You can modify the retention duration of the memory store and the magnetic store for a table. </p>"
@@ -974,8 +1108,7 @@
       "type":"structure",
       "required":[
         "DatabaseName",
-        "TableName",
-        "RetentionProperties"
+        "TableName"
       ],
       "members":{
         "DatabaseName":{
@@ -984,11 +1117,15 @@
         },
         "TableName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the Timesream table.</p>"
+          "documentation":"<p>The name of the Timestream table.</p>"
         },
         "RetentionProperties":{
           "shape":"RetentionProperties",
           "documentation":"<p>The retention duration of the memory store and the magnetic store.</p>"
+        },
+        "MagneticStoreWriteProperties":{
+          "shape":"MagneticStoreWriteProperties",
+          "documentation":"<p>Contains properties to set on the table when enabling magnetic store writes.</p>"
         }
       }
     },
@@ -1024,18 +1161,27 @@
         },
         "TableName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the Timesream table.</p>"
+          "documentation":"<p>The name of the Timestream table.</p>"
         },
         "CommonAttributes":{
           "shape":"Record",
-          "documentation":"<p>A record containing the common measure and dimension attributes shared across all the records in the request. The measure and dimension attributes specified in here will be merged with the measure and dimension attributes in the records object when the data is written into Timestream. </p>"
+          "documentation":"<p>A record containing the common measure, dimension, time, and version attributes shared across all the records in the request. The measure and dimension attributes specified will be merged with the measure and dimension attributes in the records object when the data is written into Timestream. Dimensions may not overlap, or a <code>ValidationException</code> will be thrown. In other words, a record must contain dimensions with unique names. </p>"
         },
         "Records":{
           "shape":"Records",
-          "documentation":"<p>An array of records containing the unique dimension and measure attributes for each time series data point. </p>"
+          "documentation":"<p>An array of records containing the unique measure, dimension, time, and version attributes for each time series data point. </p>"
+        }
+      }
+    },
+    "WriteRecordsResponse":{
+      "type":"structure",
+      "members":{
+        "RecordsIngested":{
+          "shape":"RecordsIngested",
+          "documentation":"<p>Information on the records ingested by this request.</p>"
         }
       }
     }
   },
-  "documentation":"<p>Amazon Timestream is a fast, scalable, fully managed time series database service that makes it easy to store and analyze trillions of time series data points per day. With Timestream, you can easily store and analyze IoT sensor data to derive insights from your IoT applications. You can analyze industrial telemetry to streamline equipment management and maintenance. You can also store and analyze log data and metrics to improve the performance and availability of your applications. Timestream is built from the ground up to effectively ingest, process, and store time series data. It organizes data to optimize query processing. It automatically scales based on the volume of data ingested and on the query volume to ensure you receive optimal performance while inserting and querying data. As your data grows over time, Timestream’s adaptive query processing engine spans across storage tiers to provide fast analysis while reducing costs.</p>"
+  "documentation":"<fullname>Amazon Timestream Write</fullname> <p>Amazon Timestream is a fast, scalable, fully managed time series database service that makes it easy to store and analyze trillions of time series data points per day. With Timestream, you can easily store and analyze IoT sensor data to derive insights from your IoT applications. You can analyze industrial telemetry to streamline equipment management and maintenance. You can also store and analyze log data and metrics to improve the performance and availability of your applications. Timestream is built from the ground up to effectively ingest, process, and store time series data. It organizes data to optimize query processing. It automatically scales based on the volume of data ingested and on the query volume to ensure you receive optimal performance while inserting and querying data. As your data grows over time, Timestream’s adaptive query processing engine spans across storage tiers to provide fast analysis while reducing costs.</p>"
 }

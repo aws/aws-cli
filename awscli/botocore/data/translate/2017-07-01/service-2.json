@@ -423,11 +423,11 @@
       "members":{
         "Type":{
           "shape":"EncryptionKeyType",
-          "documentation":"<p>The type of encryption key used by Amazon Translate to encrypt custom terminologies.</p>"
+          "documentation":"<p>The type of encryption key used by Amazon Translate to encrypt this object.</p>"
         },
         "Id":{
           "shape":"EncryptionKeyID",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the encryption key being used to encrypt the custom terminology.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the encryption key being used to encrypt this object.</p>"
         }
       },
       "documentation":"<p>The encryption key used to encrypt this object.</p>"
@@ -461,7 +461,7 @@
         },
         "DataLocation":{
           "shape":"ParallelDataDataLocation",
-          "documentation":"<p>The Amazon S3 location of the most recent parallel data input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30 minute expiration.</p> <important> <p>Amazon Translate doesn't scan parallel data input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download a parallel data input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>"
+          "documentation":"<p>The Amazon S3 location of the most recent parallel data input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30 minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>"
         },
         "AuxiliaryDataLocation":{
           "shape":"ParallelDataDataLocation",
@@ -496,7 +496,7 @@
         },
         "TerminologyDataLocation":{
           "shape":"TerminologyDataLocation",
-          "documentation":"<p>The data location of the custom terminology being retrieved. The custom terminology file is returned in a presigned url that has a 30 minute expiration.</p>"
+          "documentation":"<p>The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30 minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>"
         },
         "AuxiliaryDataLocation":{
           "shape":"TerminologyDataLocation",
@@ -809,7 +809,7 @@
         },
         "Location":{
           "shape":"String",
-          "documentation":"<p>The Amazon S3 location of the parallel data input file. The location is returned as a presigned URL to that has a 30 minute expiration.</p> <important> <p>Amazon Translate doesn't scan parallel data input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download a parallel data input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>"
+          "documentation":"<p>The Amazon S3 location of the parallel data input file. The location is returned as a presigned URL to that has a 30 minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>"
         }
       },
       "documentation":"<p>The location of the most recent parallel data input file that was successfully imported into Amazon Translate.</p>"
@@ -907,6 +907,10 @@
         "FAILED"
       ]
     },
+    "Profanity":{
+      "type":"string",
+      "enum":["MASK"]
+    },
     "ResourceName":{
       "type":"string",
       "max":256,
@@ -986,6 +990,10 @@
           "shape":"ClientTokenString",
           "documentation":"<p>A unique identifier for the request. This token is auto-generated when using the Amazon Translate SDK.</p>",
           "idempotencyToken":true
+        },
+        "Settings":{
+          "shape":"TranslationSettings",
+          "documentation":"<p>Settings to configure your translation output, including the option to mask profane words and phrases.</p>"
         }
       }
     },
@@ -1102,7 +1110,7 @@
         },
         "Location":{
           "shape":"String",
-          "documentation":"<p>The location of the custom terminology data.</p>"
+          "documentation":"<p>The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30 minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>"
         }
       },
       "documentation":"<p>The location of the custom terminology data.</p>"
@@ -1266,6 +1274,10 @@
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of an AWS Identity Access and Management (IAM) role that granted Amazon Translate read access to the job's input data.</p>"
+        },
+        "Settings":{
+          "shape":"TranslationSettings",
+          "documentation":"<p>Settings that configure the translation output.</p>"
         }
       },
       "documentation":"<p>Provides information about a translation job.</p>"
@@ -1306,6 +1318,10 @@
         "TargetLanguageCode":{
           "shape":"LanguageCodeString",
           "documentation":"<p>The language code requested for the language of the target text. The language must be a language supported by Amazon Translate.</p>"
+        },
+        "Settings":{
+          "shape":"TranslationSettings",
+          "documentation":"<p>Settings to configure your translation output, including the option to mask profane words and phrases.</p>"
         }
       }
     },
@@ -1332,8 +1348,22 @@
         "AppliedTerminologies":{
           "shape":"AppliedTerminologyList",
           "documentation":"<p>The names of the custom terminologies applied to the input text by Amazon Translate for the translated text response.</p>"
+        },
+        "AppliedSettings":{
+          "shape":"TranslationSettings",
+          "documentation":"<p>Settings that configure the translation output.</p>"
         }
       }
+    },
+    "TranslationSettings":{
+      "type":"structure",
+      "members":{
+        "Profanity":{
+          "shape":"Profanity",
+          "documentation":"<p>Enable the profanity setting if you want Amazon Translate to mask profane words and phrases in your translation output.</p> <p>To mask profane words and phrases, Amazon Translate replaces them with the grawlix string “?$#@$“. This 5-character sequence is used for each profane word or phrase, regardless of the length or number of words.</p> <p>Amazon Translate does not detect profanity in all of its supported languages. For languages that support profanity detection, see <a href=\"https://docs.aws.amazon.com/translate/latest/dg/what-is.html#what-is-languages\">Supported Languages and Language Codes in the Amazon Translate Developer Guide</a>.</p>"
+        }
+      },
+      "documentation":"<p>Settings that configure the translation output.</p>"
     },
     "UnboundedLengthString":{"type":"string"},
     "UnsupportedLanguagePairException":{

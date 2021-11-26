@@ -53,7 +53,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
-      ]
+      ],
+      "documentation":"<p>Gets information about an Device Advisor endpoint.</p>"
     },
     "GetSuiteDefinition":{
       "name":"GetSuiteDefinition",
@@ -126,7 +127,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the runs of the specified Device Advisor test suite. You can list all runs of the test suite, or the runs of a specific version of the test suite.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListSuiteRuns</a> action.</p>"
+      "documentation":"<p>Lists runs of the specified Device Advisor test suite. You can list all runs of the test suite, or the runs of a specific version of the test suite.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListSuiteRuns</a> action.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -229,10 +230,10 @@
       "members":{
         "message":{
           "shape":"Message",
-          "documentation":"<p>Sends Conflict Exception message.</p>"
+          "documentation":"<p>Sends a Conflict Exception message.</p>"
         }
       },
-      "documentation":"<p>Sends Conflict Exception.</p>",
+      "documentation":"<p>Sends a Conflict Exception.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -299,7 +300,7 @@
           "documentation":"<p>Lists devices certificate ARN.</p>"
         }
       },
-      "documentation":"<p>Information of a test device. Required to provide either a thing ARN or a certificate ARN.</p>"
+      "documentation":"<p>Information of a test device. A thing ARN or a certificate ARN is required.</p>"
     },
     "DeviceUnderTestList":{
       "type":"list",
@@ -319,11 +320,13 @@
       "members":{
         "thingArn":{
           "shape":"AmazonResourceName",
+          "documentation":"<p>The thing ARN of the device. This is an optional parameter.</p>",
           "location":"querystring",
           "locationName":"thingArn"
         },
         "certificateArn":{
           "shape":"AmazonResourceName",
+          "documentation":"<p>The certificate ARN of the device. This is an optional parameter.</p>",
           "location":"querystring",
           "locationName":"certificateArn"
         }
@@ -332,7 +335,10 @@
     "GetEndpointResponse":{
       "type":"structure",
       "members":{
-        "endpoint":{"shape":"Endpoint"}
+        "endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The response of an Device Advisor endpoint.</p>"
+        }
       }
     },
     "GetSuiteDefinitionRequest":{
@@ -470,7 +476,7 @@
         },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Date (in Unix epoch time) when the test suite run was started.</p>"
+          "documentation":"<p>Date (in Unix epoch time) when the test suite run started.</p>"
         },
         "endTime":{
           "shape":"Timestamp",
@@ -520,10 +526,10 @@
       "members":{
         "message":{
           "shape":"Message",
-          "documentation":"<p>Sends Internal Failure Exception message.</p>"
+          "documentation":"<p>Sends an Internal Failure Exception message.</p>"
         }
       },
-      "documentation":"<p>Sends Internal Failure Exception.</p>",
+      "documentation":"<p>Sends an Internal Failure exception.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -569,7 +575,7 @@
         },
         "suiteDefinitionVersion":{
           "shape":"SuiteDefinitionVersion",
-          "documentation":"<p>Must be passed along with suiteDefinitionId. Lists the test suite runs of the specified test suite based on suite definition version.</p>",
+          "documentation":"<p>Must be passed along with <code>suiteDefinitionId</code>. Lists the test suite runs of the specified test suite based on suite definition version.</p>",
           "location":"querystring",
           "locationName":"suiteDefinitionVersion"
         },
@@ -639,10 +645,10 @@
       "members":{
         "message":{
           "shape":"Message",
-          "documentation":"<p>Sends Resource Not Found Exception message.</p>"
+          "documentation":"<p>Sends a Resource Not Found Exception message.</p>"
         }
       },
-      "documentation":"<p>Sends Resource Not Found Exception.</p>",
+      "documentation":"<p>Sends a Resource Not Found exception.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
@@ -769,7 +775,7 @@
         },
         "devicePermissionRoleArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>Gets device permission ARN.</p>"
+          "documentation":"<p>Gets the device permission ARN.</p>"
         }
       },
       "documentation":"<p>Gets Suite Definition Configuration.</p>"
@@ -787,7 +793,7 @@
         },
         "defaultDevices":{
           "shape":"DeviceUnderTestList",
-          "documentation":"<p>Specifies the devices under test for the test suite.</p>"
+          "documentation":"<p>Specifies the devices that are under test for the test suite.</p>"
         },
         "intendedForQualification":{
           "shape":"IntendedForQualificationBoolean",
@@ -825,7 +831,10 @@
           "shape":"SelectedTestList",
           "documentation":"<p>Gets test case list.</p>"
         },
-        "parallelRun":{"shape":"ParallelRun"}
+        "parallelRun":{
+          "shape":"ParallelRun",
+          "documentation":"<p>TRUE if multiple test suites run in parallel.</p>"
+        }
       },
       "documentation":"<p>Gets suite run configuration.</p>"
     },
@@ -941,19 +950,19 @@
       "members":{
         "testCaseRunId":{
           "shape":"UUID",
-          "documentation":"<p>Provides test case run ID.</p>"
+          "documentation":"<p>Provides the test case run ID.</p>"
         },
         "testCaseDefinitionId":{
           "shape":"UUID",
-          "documentation":"<p>Provides test case run definition ID.</p>"
+          "documentation":"<p>Provides the test case run definition ID.</p>"
         },
         "testCaseDefinitionName":{
           "shape":"TestCaseDefinitionName",
-          "documentation":"<p>Provides test case run definition Name.</p>"
+          "documentation":"<p>Provides the test case run definition name.</p>"
         },
         "status":{
           "shape":"Status",
-          "documentation":"<p>Provides test case run status.</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>"
+          "documentation":"<p>Provides the test case run status. Status is one of the following:</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running.</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>"
         },
         "startTime":{
           "shape":"Timestamp",
@@ -965,7 +974,7 @@
         },
         "logUrl":{
           "shape":"LogUrl",
-          "documentation":"<p>Provides test case run log Url.</p>"
+          "documentation":"<p>Provides test case run log URL.</p>"
         },
         "warnings":{
           "shape":"Warnings",
@@ -976,7 +985,7 @@
           "documentation":"<p>Provides test case run failure result.</p>"
         }
       },
-      "documentation":"<p>Provides test case run.</p>"
+      "documentation":"<p>Provides the test case run.</p>"
     },
     "TestCaseRuns":{
       "type":"list",
@@ -1079,10 +1088,10 @@
       "members":{
         "message":{
           "shape":"Message",
-          "documentation":"<p>Sends invalid request exception message.</p>"
+          "documentation":"<p>Sends a Validation Exception message.</p>"
         }
       },
-      "documentation":"<p>Sends invalid request exception.</p>",
+      "documentation":"<p>Sends a validation exception.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },

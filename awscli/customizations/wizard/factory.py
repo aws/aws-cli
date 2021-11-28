@@ -27,8 +27,8 @@ def create_default_executor(api_invoker, shared_config):
                 shared_config),
             core.DefineVariableStep.NAME: core.DefineVariableStep(),
             core.MergeDictStep.NAME: core.MergeDictStep(),
-            core.LoadDataStep.NAME: core.LoadDataStep(),
-            core.DumpDataStep.NAME: core.DumpDataStep(),
+            core.LoadDataExecutorStep.NAME: core.LoadDataExecutorStep(),
+            core.DumpDataExecutorStep.NAME: core.DumpDataExecutorStep(),
         }
     )
 
@@ -71,6 +71,8 @@ def create_wizard_app(definition, session, output=None, app_input=None):
             core.SharedConfigStep.NAME: core.SharedConfigStep(
                 config_api=shared_config),
             core.TemplateStep.NAME: core.TemplateStep(),
+            core.LoadDataStep.NAME: core.LoadDataStep(),
+            core.DumpDataStep.NAME: core.DumpDataStep(),
         },
         exception_handler=layout.error_bar.display_error
     )

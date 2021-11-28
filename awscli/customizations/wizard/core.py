@@ -283,6 +283,36 @@ class SharedConfigStep(BaseStep):
             )
 
 
+class LoadDataStep(BaseStep):
+    NAME = 'load-data'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        value = var_resolver.resolve_variables(
+            parameters, step_definition['value'],
+        )
+        load_type = step_definition['load_type']
+        if load_type == 'json':
+            return json.loads(value)
+        else:
+            raise ValueError(f'Unsupported load_type: {load_type}')
+
+
+class DumpDataStep(BaseStep):
+    NAME = 'dump-data'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        value = var_resolver.resolve_variables(
+            parameters, step_definition['value'],
+        )
+        dump_type = step_definition['dump_type']
+        if dump_type == 'json':
+            return json.dumps(value)
+        else:
+            raise ValueError(f'Unsupported load_type: {dump_type}')
+
+
 class VariableResolver(object):
 
     _VAR_MATCH = re.compile(r'^{(.*?)}$')
@@ -591,33 +621,17 @@ class MergeDictStep(ExecutorStep):
             return newvalue
 
 
-class LoadDataStep(ExecutorStep):
+class LoadDataExecutorStep(ExecutorStep):
     NAME = 'load-data'
 
     def run_step(self, step_definition, parameters):
-        var_resolver = VariableResolver()
-        value = var_resolver.resolve_variables(
-            parameters, step_definition['value'],
-        )
-        load_type = step_definition['load_type']
-        if load_type == 'json':
-            loaded_value = json.loads(value)
-            parameters[step_definition['output_var']] = loaded_value
-        else:
-            raise ValueError(f'Unsupported load_type: {load_type}')
+        loaded_value = LoadDataStep().run_step(step_definition, parameters)
+        parameters[step_definition['output_var']] = loaded_value
 
 
-class DumpDataStep(ExecutorStep):
+class DumpDataExecutorStep(ExecutorStep):
     NAME = 'dump-data'
 
     def run_step(self, step_definition, parameters):
-        var_resolver = VariableResolver()
-        value = var_resolver.resolve_variables(
-            parameters, step_definition['value'],
-        )
-        dump_type = step_definition['dump_type']
-        if dump_type == 'json':
-            dumped_value = json.dumps(value)
-            parameters[step_definition['output_var']] = dumped_value
-        else:
-            raise ValueError(f'Unsupported load_type: {dump_type}')
+        dumped_value = DumpDataStep().run_step(step_definition, parameters)
+        parameters[step_definition['output_var']] = dumped_value

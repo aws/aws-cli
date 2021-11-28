@@ -15,6 +15,7 @@ import ruamel.yaml as yaml
 
 from botocore.session import Session
 from botocore.paginate import Paginator
+import pytest
 
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
@@ -680,8 +681,8 @@ class TestExecutor(unittest.TestCase):
                 ),
                 'define-variable': core.DefineVariableStep(),
                 'merge-dict': core.MergeDictStep(),
-                'load-data': core.LoadDataStep(),
-                'dump-data': core.DumpDataStep(),
+                'load-data': core.LoadDataExecutorStep(),
+                'dump-data': core.DumpDataExecutorStep(),
             }
         )
 
@@ -1400,3 +1401,80 @@ more text"""
         value = step.run_step(step_definition, fake_wizard_values)
         self.assertEqual(fake_wizard_values, {'foo': 'foo', 'bar': 'bar'})
         self.assertEqual(value, 'foo bar')
+
+
+class TestDumpDataStep:
+    def test_dump_json_data(self):
+        value = core.DumpDataStep().run_step(
+            step_definition={
+                'type': 'dump-data',
+                'dump_type': 'json',
+                'value': {"key": "value"}
+            },
+            parameters=FakeWizardValues()
+        )
+        assert value == '{"key": "value"}'
+
+    def test_dump_data_resolves_variables(self):
+        wizard_values = FakeWizardValues()
+        wizard_values.values['replace-me'] = {"replaced": "value"}
+        value = core.DumpDataStep().run_step(
+            step_definition={
+                'type': 'dump-data',
+                'dump_type': 'json',
+                'value': '{replace-me}'
+            },
+            parameters=wizard_values
+        )
+        assert value == '{"replaced": "value"}'
+
+    def test_dump_unsupported_data_type(self):
+        with pytest.raises(ValueError, match='not-supported-type'):
+            core.DumpDataStep().run_step(
+                step_definition={
+                    'type': 'dump-data',
+                    'dump_type': 'not-supported-type',
+                    'value': {"key": "value"}
+                },
+                parameters=FakeWizardValues()
+            )
+
+
+class TestLoadDataStep:
+    def test_load_json_data(self):
+        # Note double brackets are needed in order to escape the parameter
+        # substitution as that is typically specified using brackets
+        # (e.g. {<replace-param>})
+        value = core.LoadDataStep().run_step(
+            step_definition={
+                'type': 'load-data',
+                'load_type': 'json',
+                'value': '{{"key": "value"}}'
+            },
+            parameters=FakeWizardValues()
+        )
+        assert value == {"key": "value"}
+
+    def test_load_data_resolves_variables(self):
+        wizard_values = FakeWizardValues()
+        wizard_values.values['replace-me'] = '{"replaced": "value"}'
+        value = core.LoadDataStep().run_step(
+            step_definition={
+                'type': 'load-data',
+                'load_type': 'json',
+                'value': '{replace-me}'
+            },
+            parameters=wizard_values
+        )
+        assert value == {"replaced": "value"}
+
+    def test_load_unknown_data(self):
+        with pytest.raises(ValueError, match='not-supported-type'):
+            core.LoadDataStep().run_step(
+                step_definition={
+                    'type': 'load-data',
+                    'load_type': 'not-supported-type',
+                    'value': '{"key": "value"}'
+                },
+                parameters=FakeWizardValues()
+            )

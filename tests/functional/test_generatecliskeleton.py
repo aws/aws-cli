@@ -87,10 +87,10 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         self.assertEqual(stdout, 'RegionName\n')
 
     def test_validates_at_command_line_level(self):
-        cmdline = 'ec2 create-vpc --generate-cli-skeleton output'
+        cmdline = 'ec2 start-instances --generate-cli-skeleton output'
         stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         self.assertIn('required', stderr)
-        self.assertIn('--cidr-block', stderr)
+        self.assertIn('--instance-ids', stderr)
         self.assertEqual('', stdout)
 
     def test_validates_at_client_level(self):

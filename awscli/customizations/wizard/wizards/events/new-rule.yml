@@ -25,10 +25,24 @@ plan:
             actual_value: schedule
 
       # Event pattern related prompts
-      service_for_event_pattern:
+      event_pattern_input_type:
+        type: prompt
         condition:
           variable: pattern_type
           equals: event_pattern
+        description: Select method to choose the event pattern
+        choices:
+          - display: Use pre-defined pattern by service
+            actual_value: predefined
+          - display: Use custom pattern
+            actual_value: custom
+
+      service_for_event_pattern:
+        condition:
+          - variable: pattern_type
+            equals: event_pattern
+          - variable: event_pattern_input_type
+            equals: predefined
         type: prompt
         description: Select a service to match events for
         choices:
@@ -47,9 +61,35 @@ plan:
         details:
           value: event_pattern_value
           description: "Event pattern"
+
+      custom_event_pattern_filename:
+        condition:
+          - variable: pattern_type
+            equals: event_pattern
+          - variable: event_pattern_input_type
+            equals: custom
+        type: prompt
+        description: Enter the filename with the custom event pattern
+        completer: file_completer
+
+      custom_event_pattern:
+        type: load-data
+        load_type: json
+        value:
+          __wizard__:File:
+            path: "{custom_event_pattern_filename}"
+
+      custom_event_pattern_as_normalized_json:
+        type: dump-data
+        dump_type: json
+        value: "{custom_event_pattern}"
+
       event_pattern_value:
         type: template
-        value: "{{\"source\": [\"aws.{service_for_event_pattern}\"]}}"
+        value: |
+          {% if {event_pattern_input_type} == predefined %}{{"source": ["aws.{service_for_event_pattern}"]}}{% endif %}
+          {% if {event_pattern_input_type} == custom %}{custom_event_pattern_as_normalized_json}{% endif %}
+
       # Schedule related prompts
       schedule_type:
         condition:
@@ -330,9 +370,7 @@ plan:
                 ScheduleExpression: {schedule_expression}
                 {% endif %}
                 {%if {pattern_type} == event_pattern %}
-                EventPattern:
-                  source:
-                    - aws.{service_for_event_pattern}
+                EventPattern: {event_pattern_value}
                 {% endif %}
                 Targets:
                   - Id: cli-wizard-0

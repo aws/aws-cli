@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.22.15
+=======
+
+* api-change:``migration-hub-refactor-spaces``: This is the initial SDK release for AWS Migration Hub Refactor Spaces
+* api-change:``textract``: This release adds support for synchronously analyzing identity documents through a new API: AnalyzeID
+* api-change:``personalize``: This release adds API support for Recommenders and BatchSegmentJobs.
+* api-change:``personalize-runtime``: This release adds inference support for Recommenders.
+
+
 1.22.14
 =======
 

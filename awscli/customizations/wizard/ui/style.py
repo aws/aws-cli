@@ -28,6 +28,7 @@ def get_default_style():
             ('wizard.section.tab.visited', ''),
             ('wizard.dialog', ''),
             ('wizard.dialog frame.label', 'white bold'),
+            ('wizard.dialog.save frame.label', 'black bold'),
             ('wizard.dialog.body', 'bg:#aaaaaa black'),
             ('wizard.error', 'bg:#550000 #ffffff'),
 

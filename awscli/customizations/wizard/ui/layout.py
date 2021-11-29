@@ -10,8 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.completion import PathCompleter
 from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.filters import has_focus, Condition
 from prompt_toolkit.formatted_text import HTML, to_formatted_text
@@ -26,7 +29,8 @@ from prompt_toolkit.layout.containers import (
     to_container, to_filter
 )
 from prompt_toolkit.widgets import (
-    HorizontalLine, Box, Button, Label, Shadow, Frame, VerticalLine
+    HorizontalLine, Box, Button, Label, Shadow, Frame, VerticalLine,
+    Dialog, TextArea
 )
 from prompt_toolkit.utils import is_windows
 
@@ -36,10 +40,11 @@ from awscli.customizations.wizard.ui.section import (
     WizardSectionTab, WizardSectionBody
 )
 from awscli.customizations.wizard.ui.keybindings import (
-    details_visible, prompt_has_details, error_bar_enabled
+    details_visible, prompt_has_details, error_bar_enabled,
+    save_details_visible
 )
 from awscli.customizations.wizard.ui.utils import (
-    move_to_previous_prompt, Spacer
+    move_to_previous_prompt, Spacer, get_ui_control_by_buffer_name
 )
 
 
@@ -141,22 +146,100 @@ class WizardDetailsPanel:
         return ConditionalContainer(
             HSplit([
                 TitleLine(self._get_title),
-                Window(
-                    content=BufferControl(
-                        buffer=Buffer(name='details_buffer', read_only=True),
+                VSplit([
+                    Window(
+                        content=BufferControl(
+                            buffer=Buffer(
+                                name='details_buffer', read_only=True),
+                        ),
+                        height=Dimension(
+                            max=self.DIMENSIONS['details_window_height_max'],
+                            preferred=self.DIMENSIONS[
+                                'details_window_height_pref']
+                        ),
+                        wrap_lines=True
                     ),
-                    height=Dimension(
-                        max=self.DIMENSIONS['details_window_height_max'],
-                        preferred=self.DIMENSIONS['details_window_height_pref']
-                    ),
-                    wrap_lines=True
-                )
+                    SaveFileDialogue(),
+                ])
             ]),
             details_visible
         )
 
     def __pt_container__(self):
         return self.container
+
+
+class SaveFileDialogue:
+    def __init__(self):
+        self.container = self._get_container()
+
+    def _get_container(self):
+        return ConditionalContainer(
+             self._create_dialog(),
+            save_details_visible
+        )
+
+    def __pt_container__(self):
+        return self.container
+
+    def _create_dialog(self):
+        textfield = self._create_textfield()
+        save_button = self._create_save_button(textfield)
+        cancel_button = self._create_cancel_button(textfield)
+        dialog = Dialog(
+            title='Save to file',
+            body=HSplit([
+                Label(text='Filename', dont_extend_height=True),
+                textfield,
+            ], padding=Dimension(preferred=1, max=1)),
+            buttons=[save_button, cancel_button],
+            with_background=True)
+        dialog.container.container.style = 'class:wizard.dialog.save'
+        dialog.container.body.container.style = 'class:wizard.dialog.body'
+        dialog.container.body.container.content.key_bindings.add(
+            Keys.Enter, filter=has_focus('save_details_dialogue'))(
+                save_button.handler)
+        return dialog
+
+    def _create_textfield(self):
+        text_area = TextArea(
+            multiline=False,
+            completer=PathCompleter(),
+            complete_while_typing=True,
+        )
+        text_area.buffer.name = 'save_details_dialogue'
+        return text_area
+
+    def _create_save_button(self, textfield):
+        def save_handler(*args, **kwargs):
+            app = get_app()
+            contents = app.layout.get_buffer_by_name(
+                'details_buffer').document.text
+            app.file_io.write_file_contents(textfield.text, contents)
+            app.save_details_visible = False
+            current_control = get_ui_control_by_buffer_name(
+                app.layout, app.traverser.get_current_prompt())
+            app.layout.focus(current_control)
+
+        return Button(text='Save', handler=save_handler)
+
+    def _create_cancel_button(self, textfield):
+        def cancel_handler(*args, **kwargs):
+            app = get_app()
+            app.save_details_visible = False
+            app.layout.focus('details_buffer')
+        return Button(text='Cancel', handler=cancel_handler)
+
+    def _create_key_bindings(self, save_button, cancel_button):
+        kb = KeyBindings()
+        first_selected = has_focus(save_button)
+        last_selected = has_focus(cancel_button)
+
+        kb.add(Keys.Left, filter=~first_selected)(focus_previous)
+        kb.add(Keys.Right, filter=~last_selected)(focus_next)
+        kb.add(Keys.Tab)(focus_next)
+        kb.add(Keys.BackTab)(focus_previous)
+        return kb
 
 
 class ToolbarView(BaseToolbarView):
@@ -183,10 +266,11 @@ class ToolbarView(BaseToolbarView):
         output = []
         if prompt_has_details():
             title = getattr(app, 'details_title', 'Details panel')
-            output.append(
-                f'{self.STYLE}[F2]</style> Switch to {title}{self.SPACING}'
-                f'{self.STYLE}[F3]</style> Show/Hide {title}'
-            )
+            output.extend([
+                f'{self.STYLE}[F2]</style> Switch to {title}',
+                f'{self.STYLE}[F3]</style> Show/Hide {title}',
+                f'{self.STYLE}[CTRL+S]</style> Save {title}',
+            ])
         if error_bar_enabled():
             output.append(
                 f'{self.STYLE}[F4]</style> Show/Hide error message'

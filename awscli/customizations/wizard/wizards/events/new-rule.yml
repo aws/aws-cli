@@ -367,6 +367,13 @@ plan:
                 Topics:
                   - {sns_topic_target}
             {% endif %}
+            {% if {target_type} == logs_group %}
+            LogsGroupPolicy:
+              Type: AWS::Logs::ResourcePolicy
+              Properties:
+                PolicyName: WriteEventLogs
+                PolicyDocument: '{logs_resource_policy}'
+            {% endif %}
 
   __DONE__:
 execute:

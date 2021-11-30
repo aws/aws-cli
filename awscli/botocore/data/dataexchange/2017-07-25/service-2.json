@@ -698,6 +698,47 @@
       "errors": [],
       "documentation": "<p>This operation lists the tags on the resource.</p>"
     },
+    "SendApiAsset": {
+      "name": "SendApiAsset",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "SendApiAssetRequest"
+      },
+      "output": {
+        "shape": "SendApiAssetResponse",
+        "documentation": "<p>200 response</p>"
+      },
+      "errors": [
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response</p>"
+        },
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>429 response</p>"
+        },
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>400 response</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>403 response</p>"
+        }
+      ],
+      "documentation": "<p>This operation invokes an API Gateway API asset. The request is proxied to the provider’s API Gateway API.</p>",
+      "endpoint": {
+        "hostPrefix": "api-fulfill."
+      }
+    },
     "StartJob": {
       "name": "StartJob",
       "http": {
@@ -955,6 +996,52 @@
       },
       "documentation": "<p>What occurs after a certain event.</p>"
     },
+    "ApiDescription": {
+      "type": "string",
+      "documentation": "<p>The description of the API.</p>"
+    },
+    "ApiGatewayApiAsset": {
+      "type": "structure",
+      "members": {
+        "ApiDescription": {
+          "shape": "ApiDescription",
+          "documentation": "<p>The API description of the API asset.</p>"
+        },
+        "ApiEndpoint": {
+          "shape": "__string",
+          "documentation": "<p>The API endpoint of the API asset.</p>"
+        },
+        "ApiId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier of the API asset.</p>"
+        },
+        "ApiKey": {
+          "shape": "__string",
+          "documentation": "<p>The API key of the API asset.</p>"
+        },
+        "ApiName": {
+          "shape": "__string",
+          "documentation": "<p>The API name of the API asset.</p>"
+        },
+        "ApiSpecificationDownloadUrl": {
+          "shape": "__string",
+          "documentation": "<p>The download URL of the API specification of the API asset.</p>"
+        },
+        "ApiSpecificationDownloadUrlExpiresAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the upload URL expires, in ISO 8601 format.</p>"
+        },
+        "ProtocolType": {
+          "shape": "ProtocolType",
+          "documentation": "<p>The protocol type of the API asset.</p>"
+        },
+        "Stage": {
+          "shape": "__string",
+          "documentation": "<p>The stage of the API asset.</p>"
+        }
+      },
+      "documentation": "<p>The API Gateway API that is the asset.</p>"
+    },
     "Arn": {
       "type": "string",
       "documentation": "<p>An Amazon Resource Name (ARN) that uniquely identifies an AWS resource.</p>"
@@ -991,6 +1078,10 @@
         "RedshiftDataShareAsset": {
           "shape": "RedshiftDataShareAsset",
           "documentation": "<p>The Amazon Redshift datashare that is the asset.</p>"
+        },
+        "ApiGatewayApiAsset": {
+          "shape": "ApiGatewayApiAsset",
+          "documentation": "<p>Information about the API Gateway API asset.</p>"
         }
       },
       "documentation": "<p>Information about the asset.</p>"
@@ -1024,7 +1115,7 @@
         },
         "Name": {
           "shape": "AssetName",
-          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key.</p>"
+          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name.</p>"
         },
         "RevisionId": {
           "shape": "Id",
@@ -1039,7 +1130,7 @@
           "documentation": "<p>The date and time that the asset was last updated, in ISO 8601 format.</p>"
         }
       },
-      "documentation": "<p>An asset in AWS Data Exchange is a piece of data. The asset can be a structured data file, an image file, or some other data file that can be stored as an S3 object, or an Amazon Redshift datashare (Preview). When you create an import job for your files, you create an asset in AWS Data Exchange for each of those files.</p>",
+      "documentation": "<p>An asset in AWS Data Exchange is a piece of data (S3 object) or a means of fulfilling data (Amazon Redshift datashare or Amazon API Gateway API). The asset can be a structured data file, an image file, or some other data file that can be stored as an S3 object, an Amazon API Gateway API, or an Amazon Redshift datashare (Preview). When you create an import job for your files, API Gateway APIs, or Amazon Redshift datashares, you create an asset in AWS Data Exchange.</p>",
       "required": [
         "AssetType",
         "CreatedAt",
@@ -1054,7 +1145,7 @@
     },
     "AssetName": {
       "type": "string",
-      "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key.</p>"
+      "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name.</p>"
     },
     "AssetSourceEntry": {
       "type": "structure",
@@ -1079,7 +1170,8 @@
       "documentation": "<p>The type of asset that is added to a data set.</p>",
       "enum": [
         "S3_SNAPSHOT",
-        "REDSHIFT_DATA_SHARE"
+        "REDSHIFT_DATA_SHARE",
+        "API_GATEWAY_API"
       ]
     },
     "AutoExportRevisionDestinationEntry": {
@@ -1845,7 +1937,7 @@
         },
         "Name": {
           "shape": "AssetName",
-          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key.</p>"
+          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name.</p>"
         },
         "RevisionId": {
           "shape": "Id",
@@ -2083,6 +2175,118 @@
     "Id": {
       "type": "string",
       "documentation": "<p>A unique identifier.</p>"
+    },
+    "ImportAssetFromApiGatewayApiRequestDetails": {
+      "type": "structure",
+      "members": {
+        "ApiDescription": {
+          "shape": "ApiDescription",
+          "documentation": "<p>The API description. Markdown supported.</p>"
+        },
+        "ApiId": {
+          "shape": "__string",
+          "documentation": "<p>The API Gateway API ID.</p>"
+        },
+        "ApiKey": {
+          "shape": "__string",
+          "documentation": "<p>The API Gateway API key.</p>"
+        },
+        "ApiName": {
+          "shape": "__string",
+          "documentation": "<p>The API name.</p>"
+        },
+        "ApiSpecificationMd5Hash": {
+          "shape": "__stringMin24Max24PatternAZaZ094AZaZ092AZaZ093",
+          "documentation": "<p>The Base64-encoded MD5 hash of the OpenAPI 3.0 JSON API specification file. It is used to ensure the integrity of the file.</p>"
+        },
+        "DataSetId": {
+          "shape": "Id",
+          "documentation": "<p>The data set ID.</p>"
+        },
+        "ProtocolType": {
+          "shape": "ProtocolType",
+          "documentation": "<p>The protocol type.</p>"
+        },
+        "RevisionId": {
+          "shape": "Id",
+          "documentation": "<p>The revision ID.</p>"
+        },
+        "Stage": {
+          "shape": "__string",
+          "documentation": "<p>The API stage.</p>"
+        }
+      },
+      "documentation": "<p>The request details.</p>",
+      "required": [
+        "ApiName",
+        "ProtocolType",
+        "ApiSpecificationMd5Hash",
+        "Stage",
+        "DataSetId",
+        "ApiId",
+        "RevisionId"
+      ]
+    },
+    "ImportAssetFromApiGatewayApiResponseDetails": {
+      "type": "structure",
+      "members": {
+        "ApiDescription": {
+          "shape": "ApiDescription",
+          "documentation": "<p>The API description.</p>"
+        },
+        "ApiId": {
+          "shape": "__string",
+          "documentation": "<p>The API ID.</p>"
+        },
+        "ApiKey": {
+          "shape": "__string",
+          "documentation": "<p>The API key.</p>"
+        },
+        "ApiName": {
+          "shape": "__string",
+          "documentation": "<p>The API name.</p>"
+        },
+        "ApiSpecificationMd5Hash": {
+          "shape": "__stringMin24Max24PatternAZaZ094AZaZ092AZaZ093",
+          "documentation": "<p>The Base64-encoded Md5 hash for the API asset, used to ensure the integrity of the API at that location.</p>"
+        },
+        "ApiSpecificationUploadUrl": {
+          "shape": "__string",
+          "documentation": "<p>The upload URL of the API specification.</p>"
+        },
+        "ApiSpecificationUploadUrlExpiresAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the upload URL expires, in ISO 8601 format.</p>"
+        },
+        "DataSetId": {
+          "shape": "Id",
+          "documentation": "<p>The data set ID.</p>"
+        },
+        "ProtocolType": {
+          "shape": "ProtocolType",
+          "documentation": "<p>The protocol type.</p>"
+        },
+        "RevisionId": {
+          "shape": "Id",
+          "documentation": "<p>The revision ID.</p>"
+        },
+        "Stage": {
+          "shape": "__string",
+          "documentation": "<p>The API stage.</p>"
+        }
+      },
+      "documentation": "<p>The response details.</p>",
+      "required": [
+        "ApiSpecificationUploadUrlExpiresAt",
+        "ApiName",
+        "ProtocolType",
+        "ApiSpecificationMd5Hash",
+        "Stage",
+        "DataSetId",
+        "ApiId",
+        "RevisionId",
+        "ApiSpecificationUploadUrl"
+      ]
     },
     "ImportAssetFromSignedUrlJobErrorDetails": {
       "type": "structure",
@@ -2393,7 +2597,10 @@
         "Amazon Redshift datashare assets per import job from Redshift",
         "Concurrent in progress jobs to import assets from Amazon Redshift datashares",
         "Revisions per Amazon Redshift datashare data set",
-        "Amazon Redshift datashare assets per revision"
+        "Amazon Redshift datashare assets per revision",
+        "Concurrent in progress jobs to import assets from an API Gateway API",
+        "Amazon API Gateway API assets per revision",
+        "Revisions per Amazon API Gateway API data set"
       ]
     },
     "ListDataSetRevisionsRequest": {
@@ -2681,6 +2888,12 @@
         "ProductId"
       ]
     },
+    "ProtocolType": {
+      "type": "string",
+      "enum": [
+        "REST"
+      ]
+    },
     "RedshiftDataShareAsset": {
       "type": "structure",
       "members": {
@@ -2733,6 +2946,10 @@
         "ImportAssetsFromRedshiftDataShares": {
           "shape": "ImportAssetsFromRedshiftDataSharesRequestDetails",
           "documentation": "<p>Details from an import from Amazon Redshift datashare request.</p>"
+        },
+        "ImportAssetFromApiGatewayApi": {
+          "shape": "ImportAssetFromApiGatewayApiRequestDetails",
+          "documentation": "<p>Information about the import asset from API Gateway API request.</p>"
         }
       },
       "documentation": "<p>The details for the request.</p>"
@@ -2798,6 +3015,10 @@
         "ImportAssetsFromRedshiftDataShares": {
           "shape": "ImportAssetsFromRedshiftDataSharesResponseDetails",
           "documentation": "<p>Details from an import from Amazon Redshift datashare response.</p>"
+        },
+        "ImportAssetFromApiGatewayApi": {
+          "shape": "ImportAssetFromApiGatewayApiResponseDetails",
+          "documentation": "<p>The response details.</p>"
         }
       },
       "documentation": "<p>Details for the response.</p>"
@@ -2894,6 +3115,79 @@
       "required": [
         "Size"
       ]
+    },
+    "SendApiAssetRequest": {
+      "type": "structure",
+      "members": {
+        "Body": {
+          "shape": "__string",
+          "documentation": "<p>The request body.</p>"
+        },
+        "QueryStringParameters": {
+          "shape": "MapOf__string",
+          "location": "querystring",
+          "documentation": "<p>Attach query string parameters to the end of the URI (for example, /v1/examplePath?exampleParam=exampleValue).</p>"
+        },
+        "AssetId": {
+          "shape": "__string",
+          "location": "header",
+          "locationName": "x-amzn-dataexchange-asset-id",
+          "documentation": "<p>Asset ID value for the API request.</p>"
+        },
+        "DataSetId": {
+          "shape": "__string",
+          "location": "header",
+          "locationName": "x-amzn-dataexchange-data-set-id",
+          "documentation": "<p>Data set ID value for the API request.</p>"
+        },
+        "RequestHeaders": {
+          "shape": "MapOf__string",
+          "location": "headers",
+          "locationName": "x-amzn-dataexchange-header-",
+          "documentation": "<p>Any header value prefixed with x-amzn-dataexchange-header- will have that stripped before sending the Asset API request. Use this when you want to override a header that AWS Data Exchange uses. Alternatively, you can use the header without a prefix to the HTTP request.</p>"
+        },
+        "Method": {
+          "shape": "__string",
+          "location": "header",
+          "locationName": "x-amzn-dataexchange-http-method",
+          "documentation": "<p>HTTP method value for the API request. Alternatively, you can use the appropriate verb in your request.</p>"
+        },
+        "Path": {
+          "shape": "__string",
+          "location": "header",
+          "locationName": "x-amzn-dataexchange-path",
+          "documentation": "<p>URI path value for the API request. Alternatively, you can set the URI path directly by invoking /v1/{pathValue}</p>"
+        },
+        "RevisionId": {
+          "shape": "__string",
+          "location": "header",
+          "locationName": "x-amzn-dataexchange-revision-id",
+          "documentation": "<p>Revision ID value for the API request.</p>"
+        }
+      },
+      "documentation": "<p>The request body for SendApiAsset.</p>",
+      "required": [
+        "DataSetId",
+        "RevisionId",
+        "AssetId"
+      ],
+      "payload": "Body"
+    },
+    "SendApiAssetResponse": {
+      "type": "structure",
+      "members": {
+        "Body": {
+          "shape": "__string",
+          "documentation": "<p>The response body from the underlying API tracked by the API asset.</p>"
+        },
+        "ResponseHeaders": {
+          "shape": "MapOf__string",
+          "documentation": "<p>The response headers from the underlying API tracked by the API asset.</p>",
+          "location": "headers",
+          "locationName": ""
+        }
+      },
+      "payload": "Body"
     },
     "ServerSideEncryptionTypes": {
       "type": "string",
@@ -3008,7 +3302,8 @@
         "EXPORT_ASSETS_TO_S3",
         "EXPORT_ASSET_TO_SIGNED_URL",
         "EXPORT_REVISIONS_TO_S3",
-        "IMPORT_ASSETS_FROM_REDSHIFT_DATA_SHARES"
+        "IMPORT_ASSETS_FROM_REDSHIFT_DATA_SHARES",
+        "IMPORT_ASSET_FROM_API_GATEWAY_API"
       ]
     },
     "UntagResourceRequest": {
@@ -3049,7 +3344,7 @@
         },
         "Name": {
           "shape": "AssetName",
-          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key.</p>"
+          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name.</p>"
         },
         "RevisionId": {
           "shape": "__string",
@@ -3095,7 +3390,7 @@
         },
         "Name": {
           "shape": "AssetName",
-          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key.</p>"
+          "documentation": "<p>The name of the asset. When importing from Amazon S3, the S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name.</p>"
         },
         "RevisionId": {
           "shape": "Id",

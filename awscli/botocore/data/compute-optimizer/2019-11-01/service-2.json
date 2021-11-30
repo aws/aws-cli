@@ -13,6 +13,26 @@
     "uid":"compute-optimizer-2019-11-01"
   },
   "operations":{
+    "DeleteRecommendationPreferences":{
+      "name":"DeleteRecommendationPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRecommendationPreferencesRequest"},
+      "output":{"shape":"DeleteRecommendationPreferencesResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a recommendation preference, such as enhanced infrastructure metrics.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+    },
     "DescribeRecommendationExportJobs":{
       "name":"DescribeRecommendationExportJobs",
       "http":{
@@ -193,6 +213,26 @@
       ],
       "documentation":"<p>Returns the projected utilization metrics of Amazon EC2 instance recommendations.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned when you run this action. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>"
     },
+    "GetEffectiveRecommendationPreferences":{
+      "name":"GetEffectiveRecommendationPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEffectiveRecommendationPreferencesRequest"},
+      "output":{"shape":"GetEffectiveRecommendationPreferencesResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the recommendation preferences that are in effect for a given resource, such as enhanced infrastructure metrics. Considers all applicable preferences that you might have set at the resource, account, and organization level.</p> <p>When you create a recommendation preference, you can set its status to <code>Active</code> or <code>Inactive</code>. Use this action to view the recommendation preferences that are in effect, or <code>Active</code>.</p>"
+    },
     "GetEnrollmentStatus":{
       "name":"GetEnrollmentStatus",
       "http":{
@@ -249,6 +289,26 @@
       ],
       "documentation":"<p>Returns Lambda function recommendations.</p> <p>Compute Optimizer generates recommendations for functions that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
+    "GetRecommendationPreferences":{
+      "name":"GetRecommendationPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRecommendationPreferencesRequest"},
+      "output":{"shape":"GetRecommendationPreferencesResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns existing recommendation preferences, such as enhanced infrastructure metrics.</p> <p>Use the <code>scope</code> parameter to specify which preferences to return. You can specify to return preferences for an organization, a specific account ID, or a specific EC2 instance or Auto Scaling group Amazon Resource Name (ARN).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+    },
     "GetRecommendationSummaries":{
       "name":"GetRecommendationSummaries",
       "http":{
@@ -267,6 +327,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the optimization findings for an account.</p> <p>It returns the number of:</p> <ul> <li> <p>Amazon EC2 instances in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> <li> <p>Auto Scaling groups in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon EBS volumes in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Lambda functions in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> </ul>"
+    },
+    "PutRecommendationPreferences":{
+      "name":"PutRecommendationPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutRecommendationPreferencesRequest"},
+      "output":{"shape":"PutRecommendationPreferencesResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new recommendation preference or updates an existing recommendation preference, such as enhanced infrastructure metrics.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
     "UpdateEnrollmentStatus":{
       "name":"UpdateEnrollmentStatus",
@@ -393,7 +473,15 @@
         },
         "lastRefreshTimestamp":{
           "shape":"LastRefreshTimestamp",
-          "documentation":"<p>The timestamp of when the Auto Scaling group recommendation was last refreshed.</p>"
+          "documentation":"<p>The timestamp of when the Auto Scaling group recommendation was last generated.</p>"
+        },
+        "currentPerformanceRisk":{
+          "shape":"CurrentPerformanceRisk",
+          "documentation":"<p>The risk of the current Auto Scaling group not meeting the performance needs of its workloads. The higher the risk, the more likely the current Auto Scaling group configuration has insufficient capacity and cannot meet workload requirements.</p>"
+        },
+        "effectiveRecommendationPreferences":{
+          "shape":"EffectiveRecommendationPreferences",
+          "documentation":"<p>An object that describes the effective recommendation preferences for the Auto Scaling group.</p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group recommendation.</p>"
@@ -416,6 +504,10 @@
         "rank":{
           "shape":"Rank",
           "documentation":"<p>The rank of the Auto Scaling group recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>"
+        },
+        "savingsOpportunity":{
+          "shape":"SavingsOpportunity",
+          "documentation":"<p>An object that describes the savings opportunity for the Auto Scaling group recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Auto Scaling group.</p>"
@@ -441,7 +533,71 @@
       "member":{"shape":"CpuVendorArchitecture"}
     },
     "CreationTimestamp":{"type":"timestamp"},
+    "Currency":{
+      "type":"string",
+      "enum":[
+        "USD",
+        "CNY"
+      ]
+    },
     "CurrentInstanceType":{"type":"string"},
+    "CurrentPerformanceRisk":{
+      "type":"string",
+      "enum":[
+        "VeryLow",
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "CurrentPerformanceRiskRatings":{
+      "type":"structure",
+      "members":{
+        "high":{
+          "shape":"High",
+          "documentation":"<p>A count of the applicable resource types with a high performance risk rating.</p>"
+        },
+        "medium":{
+          "shape":"Medium",
+          "documentation":"<p>A count of the applicable resource types with a medium performance risk rating.</p>"
+        },
+        "low":{
+          "shape":"Low",
+          "documentation":"<p>A count of the applicable resource types with a low performance risk rating.</p>"
+        },
+        "veryLow":{
+          "shape":"VeryLow",
+          "documentation":"<p>A count of the applicable resource types with a very low performance risk rating.</p>"
+        }
+      },
+      "documentation":"<p>Describes the performance risk ratings for a given resource type.</p> <p>Resources with a <code>high</code> or <code>medium</code> rating are at risk of not meeting the performance needs of their workloads, while resources with a <code>low</code> rating are performing well in their workloads.</p>"
+    },
+    "DeleteRecommendationPreferencesRequest":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "recommendationPreferenceNames"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The target resource type of the recommendation preference to delete.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>An object that describes the scope of the recommendation preference to delete.</p> <p>You can delete recommendation preferences that are created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "recommendationPreferenceNames":{
+          "shape":"RecommendationPreferenceNames",
+          "documentation":"<p>The name of the recommendation preference to delete.</p> <p>Enhanced infrastructure metrics (<code>EnhancedInfrastructureMetrics</code>) is the only feature that can be activated through preferences. Therefore, it is also the only recommendation preference that can be deleted.</p>"
+        }
+      }
+    },
+    "DeleteRecommendationPreferencesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DescribeRecommendationExportJobsRequest":{
       "type":"structure",
       "members":{
@@ -540,6 +696,27 @@
       "type":"list",
       "member":{"shape":"EBSUtilizationMetric"}
     },
+    "EffectiveRecommendationPreferences":{
+      "type":"structure",
+      "members":{
+        "cpuVendorArchitectures":{
+          "shape":"CpuVendorArchitectures",
+          "documentation":"<p>Describes the CPU vendor and architecture for an instance or Auto Scaling group recommendations.</p> <p>For example, when you specify <code>AWS_ARM64</code> with:</p> <ul> <li> <p>A <a>GetEC2InstanceRecommendations</a> or <a>GetAutoScalingGroupRecommendations</a> request, Compute Optimizer returns recommendations that consist of Graviton2 instance types only.</p> </li> <li> <p>A <a>GetEC2RecommendationProjectedMetrics</a> request, Compute Optimizer returns projected utilization metrics for Graviton2 instance type recommendations only.</p> </li> <li> <p>A <a>ExportEC2InstanceRecommendations</a> or <a>ExportAutoScalingGroupRecommendations</a> request, Compute Optimizer exports recommendations that consist of Graviton2 instance types only.</p> </li> </ul>"
+        },
+        "enhancedInfrastructureMetrics":{
+          "shape":"EnhancedInfrastructureMetrics",
+          "documentation":"<p>Describes the activation status of the enhanced infrastructure metrics preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p>"
+        }
+      },
+      "documentation":"<p>Describes the effective recommendation preferences for a resource.</p>"
+    },
+    "EnhancedInfrastructureMetrics":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Inactive"
+      ]
+    },
     "EnrollmentFilter":{
       "type":"structure",
       "members":{
@@ -563,6 +740,20 @@
       "member":{"shape":"EnrollmentFilter"}
     },
     "ErrorMessage":{"type":"string"},
+    "EstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the estimated monthly savings.</p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p>The value of the estimated monthly savings.</p>"
+        }
+      },
+      "documentation":"<p>Describes the estimated monthly savings amount possible for a given resource based on On-Demand instance pricing</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-ec2-recommendations.html#ec2-savings-calculation\">Estimated monthly savings and savings opportunities</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+    },
     "ExportAutoScalingGroupRecommendationsRequest":{
       "type":"structure",
       "required":["s3DestinationConfig"],
@@ -675,7 +866,7 @@
         },
         "s3DestinationConfig":{
           "shape":"S3DestinationConfig",
-          "documentation":"<p>An object to specify the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for the export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permissions policy policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the that you add to the S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html\">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+          "documentation":"<p>An object to specify the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for the export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permissions policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html\">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         },
         "fileFormat":{
           "shape":"FileFormat",
@@ -788,7 +979,13 @@
         "RecommendationOptionsMemory",
         "RecommendationOptionsStorage",
         "RecommendationOptionsNetwork",
-        "LastRefreshTimestamp"
+        "LastRefreshTimestamp",
+        "CurrentPerformanceRisk",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "EffectiveRecommendationPreferencesCpuVendorArchitectures",
+        "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
       ]
     },
     "ExportableAutoScalingGroupFields":{
@@ -840,7 +1037,13 @@
         "RecommendationOptionsStandardThreeYearNoUpfrontReservedPrice",
         "RecommendationsSourcesRecommendationSourceArn",
         "RecommendationsSourcesRecommendationSourceType",
-        "LastRefreshTimestamp"
+        "LastRefreshTimestamp",
+        "CurrentPerformanceRisk",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "EffectiveRecommendationPreferencesCpuVendorArchitectures",
+        "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
       ]
     },
     "ExportableInstanceFields":{
@@ -871,7 +1074,11 @@
         "RecommendationOptionsProjectedUtilizationMetricsDurationLowerBound",
         "RecommendationOptionsProjectedUtilizationMetricsDurationUpperBound",
         "RecommendationOptionsProjectedUtilizationMetricsDurationExpected",
-        "LastRefreshTimestamp"
+        "LastRefreshTimestamp",
+        "CurrentPerformanceRisk",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue"
       ]
     },
     "ExportableLambdaFunctionFields":{
@@ -904,7 +1111,11 @@
         "RecommendationOptionsConfigurationVolumeSize",
         "RecommendationOptionsMonthlyPrice",
         "RecommendationOptionsPerformanceRisk",
-        "LastRefreshTimestamp"
+        "LastRefreshTimestamp",
+        "CurrentPerformanceRisk",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue"
       ]
     },
     "ExportableVolumeFields":{
@@ -1148,6 +1359,25 @@
         }
       }
     },
+    "GetEffectiveRecommendationPreferencesRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to confirm effective recommendation preferences. Only EC2 instance and Auto Scaling group ARNs are currently supported.</p>"
+        }
+      }
+    },
+    "GetEffectiveRecommendationPreferencesResponse":{
+      "type":"structure",
+      "members":{
+        "enhancedInfrastructureMetrics":{
+          "shape":"EnhancedInfrastructureMetrics",
+          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference. Considers all applicable preferences that you might have set at the resource, account, and organization level.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetAutoScalingGroupRecommendations</a> and <a>GetEC2InstanceRecommendations</a> actions.</p>"
+        }
+      }
+    },
     "GetEnrollmentStatusRequest":{
       "type":"structure",
       "members":{
@@ -1268,6 +1498,41 @@
       "type":"list",
       "member":{"shape":"GetRecommendationError"}
     },
+    "GetRecommendationPreferencesRequest":{
+      "type":"structure",
+      "required":["resourceType"],
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The target resource type of the recommendation preference for which to return preferences.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>An object that describes the scope of the recommendation preference to return.</p> <p>You can return recommendation preferences that are created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to advance to the next page of recommendation preferences.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of recommendation preferences to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>"
+        }
+      }
+    },
+    "GetRecommendationPreferencesResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to advance to the next page of recommendation preferences.</p> <p>This value is null when there are no more pages of recommendation preferences to return.</p>"
+        },
+        "recommendationPreferencesDetails":{
+          "shape":"RecommendationPreferencesDetails",
+          "documentation":"<p>An array of objects that describe recommendation preferences.</p>"
+        }
+      }
+    },
     "GetRecommendationSummariesRequest":{
       "type":"structure",
       "members":{
@@ -1298,6 +1563,7 @@
         }
       }
     },
+    "High":{"type":"long"},
     "Identifier":{"type":"string"},
     "IncludeMemberAccounts":{"type":"boolean"},
     "InstanceArn":{"type":"string"},
@@ -1351,7 +1617,15 @@
         },
         "lastRefreshTimestamp":{
           "shape":"LastRefreshTimestamp",
-          "documentation":"<p>The timestamp of when the instance recommendation was last refreshed.</p>"
+          "documentation":"<p>The timestamp of when the instance recommendation was last generated.</p>"
+        },
+        "currentPerformanceRisk":{
+          "shape":"CurrentPerformanceRisk",
+          "documentation":"<p>The risk of the current instance not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function requires more memory.</p>"
+        },
+        "effectiveRecommendationPreferences":{
+          "shape":"EffectiveRecommendationPreferences",
+          "documentation":"<p>An object that describes the effective recommendation preferences for the instance.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon EC2 instance recommendation.</p>"
@@ -1403,6 +1677,10 @@
         "rank":{
           "shape":"Rank",
           "documentation":"<p>The rank of the instance recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>"
+        },
+        "savingsOpportunity":{
+          "shape":"SavingsOpportunity",
+          "documentation":"<p>An object that describes the savings opportunity for the instance recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon EC2 instance.</p>"
@@ -1517,6 +1795,10 @@
         "projectedUtilizationMetrics":{
           "shape":"LambdaFunctionMemoryProjectedMetrics",
           "documentation":"<p>An array of objects that describe the projected utilization metrics of the function recommendation option.</p>"
+        },
+        "savingsOpportunity":{
+          "shape":"SavingsOpportunity",
+          "documentation":"<p>An object that describes the savings opportunity for the Lambda function recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Lambda function.</p>"
@@ -1572,7 +1854,7 @@
         },
         "lastRefreshTimestamp":{
           "shape":"LastRefreshTimestamp",
-          "documentation":"<p>The timestamp of when the function recommendation was last refreshed.</p>"
+          "documentation":"<p>The timestamp of when the function recommendation was last generated.</p>"
         },
         "finding":{
           "shape":"LambdaFunctionRecommendationFinding",
@@ -1585,6 +1867,10 @@
         "memorySizeRecommendationOptions":{
           "shape":"LambdaFunctionMemoryRecommendationOptions",
           "documentation":"<p>An array of objects that describe the memory configuration recommendation options for the function.</p>"
+        },
+        "currentPerformanceRisk":{
+          "shape":"CurrentPerformanceRisk",
+          "documentation":"<p>The risk of the current Lambda function not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function configuration is underperforming in its workload.</p>"
         }
       },
       "documentation":"<p>Describes an Lambda function recommendation.</p>"
@@ -1673,11 +1959,13 @@
       "synthetic":true
     },
     "LookBackPeriodInDays":{"type":"double"},
+    "Low":{"type":"long"},
     "MaxResults":{
       "type":"integer",
       "box":true
     },
     "MaxSize":{"type":"integer"},
+    "Medium":{"type":"long"},
     "MemberAccountsEnrolled":{"type":"boolean"},
     "MemorySize":{"type":"integer"},
     "Message":{"type":"string"},
@@ -1782,6 +2070,29 @@
       "type":"list",
       "member":{"shape":"UtilizationMetric"}
     },
+    "PutRecommendationPreferencesRequest":{
+      "type":"structure",
+      "required":["resourceType"],
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The target resource type of the recommendation preference to create.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>An object that describes the scope of the recommendation preference to create.</p> <p>You can create recommendation preferences at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified the Auto Scaling group.</p> </note>"
+        },
+        "enhancedInfrastructureMetrics":{
+          "shape":"EnhancedInfrastructureMetrics",
+          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference to create or update.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p>"
+        }
+      }
+    },
+    "PutRecommendationPreferencesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Rank":{"type":"integer"},
     "ReasonCodeSummaries":{
       "type":"list",
@@ -1843,6 +2154,14 @@
       "type":"list",
       "member":{"shape":"InstanceRecommendationOption"}
     },
+    "RecommendationPreferenceName":{
+      "type":"string",
+      "enum":["EnhancedInfrastructureMetrics"]
+    },
+    "RecommendationPreferenceNames":{
+      "type":"list",
+      "member":{"shape":"RecommendationPreferenceName"}
+    },
     "RecommendationPreferences":{
       "type":"structure",
       "members":{
@@ -1851,7 +2170,29 @@
           "documentation":"<p>Specifies the CPU vendor and architecture for Amazon EC2 instance and Auto Scaling group recommendations.</p> <p>For example, when you specify <code>AWS_ARM64</code> with:</p> <ul> <li> <p>A <a>GetEC2InstanceRecommendations</a> or <a>GetAutoScalingGroupRecommendations</a> request, Compute Optimizer returns recommendations that consist of Graviton2 instance types only.</p> </li> <li> <p>A <a>GetEC2RecommendationProjectedMetrics</a> request, Compute Optimizer returns projected utilization metrics for Graviton2 instance type recommendations only.</p> </li> <li> <p>A <a>ExportEC2InstanceRecommendations</a> or <a>ExportAutoScalingGroupRecommendations</a> request, Compute Optimizer exports recommendations that consist of Graviton2 instance types only.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes preferences for recommendations.</p>"
+      "documentation":"<p>Describes the recommendation preferences to return in the response of a <a>GetAutoScalingGroupRecommendations</a>, <a>GetEC2InstanceRecommendations</a>, and <a>GetEC2RecommendationProjectedMetrics</a> request.</p>"
+    },
+    "RecommendationPreferencesDetail":{
+      "type":"structure",
+      "members":{
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>An object that describes the scope of the recommendation preference.</p> <p>Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The target resource type of the recommendation preference to create.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p>"
+        },
+        "enhancedInfrastructureMetrics":{
+          "shape":"EnhancedInfrastructureMetrics",
+          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p>"
+        }
+      },
+      "documentation":"<p>Describes a recommendation preference.</p>"
+    },
+    "RecommendationPreferencesDetails":{
+      "type":"list",
+      "member":{"shape":"RecommendationPreferencesDetail"}
     },
     "RecommendationSource":{
       "type":"structure",
@@ -1894,11 +2235,19 @@
         },
         "recommendationResourceType":{
           "shape":"RecommendationSourceType",
-          "documentation":"<p>The resource type of the recommendation.</p>"
+          "documentation":"<p>The resource type that the recommendation summary applies to.</p>"
         },
         "accountId":{
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID of the recommendation summary.</p>"
+        },
+        "savingsOpportunity":{
+          "shape":"SavingsOpportunity",
+          "documentation":"<p>An object that describes the savings opportunity for a given resource type. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
+        },
+        "currentPerformanceRiskRatings":{
+          "shape":"CurrentPerformanceRiskRatings",
+          "documentation":"<p>An object that describes the performance risk ratings for a given resource type.</p>"
         }
       },
       "documentation":"<p>A summary of a recommendation.</p>"
@@ -1926,6 +2275,7 @@
       "type":"list",
       "member":{"shape":"RecommendedOptionProjectedMetric"}
     },
+    "ResourceArn":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1976,6 +2326,44 @@
       },
       "documentation":"<p>Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for a recommendations export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permission policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html\">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
+    "SavingsOpportunity":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p>The estimated monthly savings possible as a percentage of monthly cost.</p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"EstimatedMonthlySavings",
+          "documentation":"<p>An object that describes the estimated monthly savings amount possible based on On-Demand instance pricing.</p>"
+        }
+      },
+      "documentation":"<p>Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource.</p> <p>Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation.</p> <important> <p>Savings opportunity data requires that you opt in to Cost Explorer, as well as activate <b>Receive Amazon EC2 resource recommendations</b> in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html\">Enabling Cost Explorer</a> and <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html\">Optimizing your cost with Rightsizing Recommendations</a> in the <i>Cost Management User Guide</i>.</p> </important>"
+    },
+    "SavingsOpportunityPercentage":{"type":"double"},
+    "Scope":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ScopeName",
+          "documentation":"<p>The name of the scope.</p> <p>The following scopes are possible:</p> <ul> <li> <p> <code>Organization</code> - Specifies that the recommendation preference applies at the organization level, for all member accounts of an organization.</p> </li> <li> <p> <code>AccountId</code> - Specifies that the recommendation preference applies at the account level, for all resources of a given resource type in an account.</p> </li> <li> <p> <code>ResourceArn</code> - Specifies that the recommendation preference applies at the individual resource level.</p> </li> </ul>"
+        },
+        "value":{
+          "shape":"ScopeValue",
+          "documentation":"<p>The value of the scope.</p> <p>If you specified the <code>name</code> of the scope as:</p> <ul> <li> <p> <code>Organization</code> - The <code>value</code> must be <code>ALL_ACCOUNTS</code>.</p> </li> <li> <p> <code>AccountId</code> - The <code>value</code> must be a 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>ResourceArn</code> - The <code>value</code> must be the Amazon Resource Name (ARN) of an EC2 instance or an Auto Scaling group.</p> </li> </ul> <p>Only EC2 instance and Auto Scaling group ARNs are currently supported.</p>"
+        }
+      },
+      "documentation":"<p>Describes the scope of a recommendation preference.</p> <p>Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified the Auto Scaling group.</p> </note>"
+    },
+    "ScopeName":{
+      "type":"string",
+      "enum":[
+        "Organization",
+        "AccountId",
+        "ResourceArn"
+      ]
+    },
+    "ScopeValue":{"type":"string"},
     "ServiceUnavailableException":{
       "type":"structure",
       "members":{
@@ -2082,6 +2470,8 @@
       "type":"list",
       "member":{"shape":"UtilizationMetric"}
     },
+    "Value":{"type":"double"},
+    "VeryLow":{"type":"long"},
     "VolumeArn":{"type":"string"},
     "VolumeArns":{
       "type":"list",
@@ -2154,7 +2544,11 @@
         },
         "lastRefreshTimestamp":{
           "shape":"LastRefreshTimestamp",
-          "documentation":"<p>The timestamp of when the volume recommendation was last refreshed.</p>"
+          "documentation":"<p>The timestamp of when the volume recommendation was last generated.</p>"
+        },
+        "currentPerformanceRisk":{
+          "shape":"CurrentPerformanceRisk",
+          "documentation":"<p>The risk of the current EBS volume not meeting the performance needs of its workloads. The higher the risk, the more likely the current EBS volume doesn't have sufficient capacity.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Elastic Block Store (Amazon EBS) volume recommendation.</p>"
@@ -2173,6 +2567,10 @@
         "rank":{
           "shape":"Rank",
           "documentation":"<p>The rank of the volume recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>"
+        },
+        "savingsOpportunity":{
+          "shape":"SavingsOpportunity",
+          "documentation":"<p>An object that describes the savings opportunity for the EBS volume recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon Elastic Block Store (Amazon EBS) instance.</p>"

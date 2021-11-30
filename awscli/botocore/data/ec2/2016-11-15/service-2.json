@@ -2564,6 +2564,16 @@
       "output":{"shape":"DescribeSnapshotAttributeResult"},
       "documentation":"<p>Describes the specified attribute of the specified snapshot. You can specify only one attribute at a time.</p> <p>For more information about EBS snapshots, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html\">Amazon EBS snapshots</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
+    "DescribeSnapshotTierStatus":{
+      "name":"DescribeSnapshotTierStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSnapshotTierStatusRequest"},
+      "output":{"shape":"DescribeSnapshotTierStatusResult"},
+      "documentation":"<p>Describes the storage tier status of one or more Amazon EBS snapshots.</p>"
+    },
     "DescribeSnapshots":{
       "name":"DescribeSnapshots",
       "http":{
@@ -3666,6 +3676,16 @@
       "output":{"shape":"ImportVolumeResult"},
       "documentation":"<p>Creates an import volume task using metadata from the specified disk image.</p> <p>This API action supports only single-volume VMs. To import multi-volume VMs, use <a>ImportImage</a> instead. To import a disk to a snapshot, use <a>ImportSnapshot</a> instead.</p> <p>This API action is not supported by the Command Line Interface (CLI). For information about using the Amazon EC2 CLI, which is deprecated, see <a href=\"https://awsdocs.s3.amazonaws.com/EC2/ec2-clt.pdf#importing-your-volumes-into-amazon-ebs\">Importing Disks to Amazon EBS</a> in the <i>Amazon EC2 CLI Reference</i> PDF file.</p> <p>For information about the import manifest referenced by this API action, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/manifest.html\">VM Import Manifest</a>.</p>"
     },
+    "ListSnapshotsInRecycleBin":{
+      "name":"ListSnapshotsInRecycleBin",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSnapshotsInRecycleBinRequest"},
+      "output":{"shape":"ListSnapshotsInRecycleBinResult"},
+      "documentation":"<p>Lists one or more snapshots that are currently in the Recycle Bin.</p>"
+    },
     "ModifyAddressAttribute":{
       "name":"ModifyAddressAttribute",
       "http":{
@@ -3929,6 +3949,16 @@
       },
       "input":{"shape":"ModifySnapshotAttributeRequest"},
       "documentation":"<p>Adds or removes permission settings for the specified snapshot. You may add or remove specified Amazon Web Services account IDs from a snapshot's list of create volume permissions, but you cannot do both in a single operation. If you need to both add and remove account IDs for a snapshot, you must use multiple operations. You can make up to 500 modifications to a snapshot in a single operation.</p> <p>Encrypted snapshots and snapshots with Amazon Web Services Marketplace product codes cannot be made public. Snapshots encrypted with your default KMS key cannot be shared with other accounts.</p> <p>For more information about modifying snapshot permissions, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-modifying-snapshot-permissions.html\">Share a snapshot</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+    },
+    "ModifySnapshotTier":{
+      "name":"ModifySnapshotTier",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifySnapshotTierRequest"},
+      "output":{"shape":"ModifySnapshotTierResult"},
+      "documentation":"<p>Archives an Amazon EBS snapshot. When you archive a snapshot, it is converted to a full snapshot that includes all of the blocks of data that were written to the volume at the time the snapshot was created, and moved from the standard tier to the archive tier. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-archive.html\">Archive Amazon EBS snapshots</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "ModifySpotFleetRequest":{
       "name":"ModifySpotFleetRequest",
@@ -4487,6 +4517,26 @@
       "input":{"shape":"RestoreManagedPrefixListVersionRequest"},
       "output":{"shape":"RestoreManagedPrefixListVersionResult"},
       "documentation":"<p>Restores the entries from a previous version of a managed prefix list to a new version of the prefix list.</p>"
+    },
+    "RestoreSnapshotFromRecycleBin":{
+      "name":"RestoreSnapshotFromRecycleBin",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreSnapshotFromRecycleBinRequest"},
+      "output":{"shape":"RestoreSnapshotFromRecycleBinResult"},
+      "documentation":"<p>Restores a snapshot from the Recycle Bin. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-snaps.html#recycle-bin-restore-snaps\">Restore snapshots from the Recycle Bin</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+    },
+    "RestoreSnapshotTier":{
+      "name":"RestoreSnapshotTier",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreSnapshotTierRequest"},
+      "output":{"shape":"RestoreSnapshotTierResult"},
+      "documentation":"<p>Restores an archived Amazon EBS snapshot for use temporarily or permanently, or modifies the restore period or restore type for a snapshot that was previously temporarily restored.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-snapshot-archiving.html#restore-archived-snapshot\"> Restore an archived snapshot</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-snapshot-archiving.html#modify-temp-restore-period\"> modify the restore period or restore type for a temporarily restored snapshot</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "RevokeClientVpnIngress":{
       "name":"RevokeClientVpnIngress",
@@ -18210,12 +18260,50 @@
         }
       }
     },
+    "DescribeSnapshotTierStatusMaxResults":{"type":"integer"},
+    "DescribeSnapshotTierStatusRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>last-tiering-operation</code> - The state of the last archive or restore action. (<code>archiving</code> | <code>archival_error</code> | <code>archival_complete</code> | <code>restoring</code> | <code>restore_error</code> | <code>restore_complete</code>)</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeSnapshotTierStatusMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        }
+      }
+    },
+    "DescribeSnapshotTierStatusResult":{
+      "type":"structure",
+      "members":{
+        "SnapshotTierStatuses":{
+          "shape":"snapshotTierStatusSet",
+          "documentation":"<p>Information about the snapshot's storage tier.</p>",
+          "locationName":"snapshotTierStatusSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeSnapshotsRequest":{
       "type":"structure",
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>description</code> - A description of the snapshot.</p> </li> <li> <p> <code>encrypted</code> - Indicates whether the snapshot is encrypted (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>owner-alias</code> - The owner alias, from an Amazon-maintained list (<code>amazon</code>). This is not the user-configured Amazon Web Services account alias set using the IAM console. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>progress</code> - The progress of the snapshot, as a percentage (for example, 80%).</p> </li> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>start-time</code> - The time stamp when the snapshot was initiated.</p> </li> <li> <p> <code>status</code> - The status of the snapshot (<code>pending</code> | <code>completed</code> | <code>error</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>volume-size</code> - The size of the volume, in GiB.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>description</code> - A description of the snapshot.</p> </li> <li> <p> <code>encrypted</code> - Indicates whether the snapshot is encrypted (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>owner-alias</code> - The owner alias, from an Amazon-maintained list (<code>amazon</code>). This is not the user-configured Amazon Web Services account alias set using the IAM console. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>progress</code> - The progress of the snapshot, as a percentage (for example, 80%).</p> </li> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>start-time</code> - The time stamp when the snapshot was initiated.</p> </li> <li> <p> <code>status</code> - The status of the snapshot (<code>pending</code> | <code>completed</code> | <code>error</code>).</p> </li> <li> <p> <code>storage-tier</code> - The storage tier of the snapshot (<code>archive</code> | <code>standard</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>volume-size</code> - The size of the volume, in GiB.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -28695,6 +28783,16 @@
         "m6gd.8xlarge",
         "m6gd.12xlarge",
         "m6gd.16xlarge",
+        "m6a.large",
+        "m6a.xlarge",
+        "m6a.2xlarge",
+        "m6a.4xlarge",
+        "m6a.8xlarge",
+        "m6a.12xlarge",
+        "m6a.16xlarge",
+        "m6a.24xlarge",
+        "m6a.32xlarge",
+        "m6a.48xlarge",
         "m6i.large",
         "m6i.xlarge",
         "m6i.2xlarge",
@@ -28717,6 +28815,12 @@
         "vt1.3xlarge",
         "vt1.6xlarge",
         "vt1.24xlarge",
+        "g5g.xlarge",
+        "g5g.2xlarge",
+        "g5g.4xlarge",
+        "g5g.8xlarge",
+        "g5g.16xlarge",
+        "g5g.metal",
         "g5.xlarge",
         "g5.2xlarge",
         "g5.4xlarge",
@@ -30807,6 +30911,48 @@
         "locationName":"item"
       }
     },
+    "ListSnapshotsInRecycleBinMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "ListSnapshotsInRecycleBinRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListSnapshotsInRecycleBinMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "SnapshotIds":{
+          "shape":"SnapshotIdStringList",
+          "documentation":"<p>The IDs of the snapshots to list. Omit this parameter to list all of the snapshots that are in the Recycle Bin.</p>",
+          "locationName":"SnapshotId"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ListSnapshotsInRecycleBinResult":{
+      "type":"structure",
+      "members":{
+        "Snapshots":{
+          "shape":"SnapshotRecycleBinInfoList",
+          "documentation":"<p>Information about the snapshots.</p>",
+          "locationName":"snapshotSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListingState":{
       "type":"string",
       "enum":[
@@ -32584,6 +32730,39 @@
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
           "locationName":"dryRun"
+        }
+      }
+    },
+    "ModifySnapshotTierRequest":{
+      "type":"structure",
+      "required":["SnapshotId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot.</p>"
+        },
+        "StorageTier":{
+          "shape":"TargetStorageTier",
+          "documentation":"<p>The name of the storage tier. You must specify <code>archive</code>.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifySnapshotTierResult":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "TieringStartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the archive process was started.</p>",
+          "locationName":"tieringStartTime"
         }
       }
     },
@@ -38685,6 +38864,123 @@
         }
       }
     },
+    "RestoreSnapshotFromRecycleBinRequest":{
+      "type":"structure",
+      "required":["SnapshotId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot to restore.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "RestoreSnapshotFromRecycleBinResult":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Outpost on which the snapshot is stored. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshots-outposts.html\">Amazon EBS local snapshots on Outposts</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
+          "locationName":"outpostArn"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description for the snapshot.</p>",
+          "locationName":"description"
+        },
+        "Encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the snapshot is encrypted.</p>",
+          "locationName":"encrypted"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the EBS snapshot.</p>",
+          "locationName":"ownerId"
+        },
+        "Progress":{
+          "shape":"String",
+          "documentation":"<p>The progress of the snapshot, as a percentage.</p>",
+          "locationName":"progress"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time stamp when the snapshot was initiated.</p>",
+          "locationName":"startTime"
+        },
+        "State":{
+          "shape":"SnapshotState",
+          "documentation":"<p>The state of the snapshot.</p>",
+          "locationName":"status"
+        },
+        "VolumeId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the volume that was used to create the snapshot.</p>",
+          "locationName":"volumeId"
+        },
+        "VolumeSize":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the volume, in GiB.</p>",
+          "locationName":"volumeSize"
+        }
+      }
+    },
+    "RestoreSnapshotTierRequest":{
+      "type":"structure",
+      "required":["SnapshotId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot to restore.</p>"
+        },
+        "TemporaryRestoreDays":{
+          "shape":"RestoreSnapshotTierRequestTemporaryRestoreDays",
+          "documentation":"<p>Specifies the number of days for which to temporarily restore an archived snapshot. Required for temporary restores only. The snapshot will be automatically re-archived after this period.</p> <p>To temporarily restore an archived snapshot, specify the number of days and omit the <b>PermanentRestore</b> parameter or set it to <code>false</code>.</p>"
+        },
+        "PermanentRestore":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to permanently restore an archived snapshot. To permanently restore an archived snapshot, specify <code>true</code> and omit the <b>RestoreSnapshotTierRequest$TemporaryRestoreDays</b> parameter.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "RestoreSnapshotTierRequestTemporaryRestoreDays":{"type":"integer"},
+    "RestoreSnapshotTierResult":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "RestoreStartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the snapshot restore process started.</p>",
+          "locationName":"restoreStartTime"
+        },
+        "RestoreDuration":{
+          "shape":"Integer",
+          "documentation":"<p>For temporary restores only. The number of days for which the archived snapshot is temporarily restored.</p>",
+          "locationName":"restoreDuration"
+        },
+        "IsPermanentRestore":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the snapshot is permanently restored. <code>true</code> indicates a permanent restore. <code>false</code> indicates a temporary restore.</p>",
+          "locationName":"isPermanentRestore"
+        }
+      }
+    },
     "ResultRange":{
       "type":"integer",
       "max":500,
@@ -40638,6 +40934,16 @@
           "shape":"TagList",
           "documentation":"<p>Any tags assigned to the snapshot.</p>",
           "locationName":"tagSet"
+        },
+        "StorageTier":{
+          "shape":"StorageTier",
+          "documentation":"<p>The storage tier in which the snapshot is stored. <code>standard</code> indicates that the snapshot is stored in the standard snapshot storage tier and that it is ready for use. <code>archive</code> indicates that the snapshot is currently archived and that it must be restored before it can be used.</p>",
+          "locationName":"storageTier"
+        },
+        "RestoreExpiryTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Only for archived snapshots that are temporarily restored. Indicates the date and time when a temporarily restored snapshot will be automatically re-archived.</p>",
+          "locationName":"restoreExpiryTime"
         }
       },
       "documentation":"<p>Describes a snapshot.</p>"
@@ -40810,6 +41116,44 @@
         "locationName":"item"
       }
     },
+    "SnapshotRecycleBinInfo":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "RecycleBinEnterTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the snaphsot entered the Recycle Bin.</p>",
+          "locationName":"recycleBinEnterTime"
+        },
+        "RecycleBinExitTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the snapshot is to be permanently deleted from the Recycle Bin.</p>",
+          "locationName":"recycleBinExitTime"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description for the snapshot.</p>",
+          "locationName":"description"
+        },
+        "VolumeId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the volume from which the snapshot was created.</p>",
+          "locationName":"volumeId"
+        }
+      },
+      "documentation":"<p>Information about a snapshot that is currently in the Recycle Bin.</p>"
+    },
+    "SnapshotRecycleBinInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"SnapshotRecycleBinInfo",
+        "locationName":"item"
+      }
+    },
     "SnapshotSet":{
       "type":"list",
       "member":{
@@ -40822,7 +41166,9 @@
       "enum":[
         "pending",
         "completed",
-        "error"
+        "error",
+        "recoverable",
+        "recovering"
       ]
     },
     "SnapshotTaskDetail":{
@@ -40885,6 +41231,72 @@
         }
       },
       "documentation":"<p>Details about the import snapshot task.</p>"
+    },
+    "SnapshotTierStatus":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the volume from which the snapshot was created.</p>",
+          "locationName":"volumeId"
+        },
+        "Status":{
+          "shape":"SnapshotState",
+          "documentation":"<p>The state of the snapshot.</p>",
+          "locationName":"status"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the snapshot.</p>",
+          "locationName":"ownerId"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags that are assigned to the snapshot.</p>",
+          "locationName":"tagSet"
+        },
+        "StorageTier":{
+          "shape":"StorageTier",
+          "documentation":"<p>The storage tier in which the snapshot is stored. <code>standard</code> indicates that the snapshot is stored in the standard snapshot storage tier and that it is ready for use. <code>archive</code> indicates that the snapshot is currently archived and that it must be restored before it can be used.</p>",
+          "locationName":"storageTier"
+        },
+        "LastTieringStartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the last archive or restore process was started.</p>",
+          "locationName":"lastTieringStartTime"
+        },
+        "LastTieringProgress":{
+          "shape":"Integer",
+          "documentation":"<p>The progress of the last archive or restore process, as a percentage.</p>",
+          "locationName":"lastTieringProgress"
+        },
+        "LastTieringOperationStatus":{
+          "shape":"TieringOperationStatus",
+          "documentation":"<p>The status of the last archive or restore process.</p>",
+          "locationName":"lastTieringOperationStatus"
+        },
+        "LastTieringOperationStatusDetail":{
+          "shape":"String",
+          "documentation":"<p>A message describing the status of the last archive or restore process.</p>",
+          "locationName":"lastTieringOperationStatusDetail"
+        },
+        "ArchivalCompleteTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the last archive process was completed.</p>",
+          "locationName":"archivalCompleteTime"
+        },
+        "RestoreExpiryTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Only for archived snapshots that are temporarily restored. Indicates the date and time when a temporarily restored snapshot will be automatically re-archived.</p>",
+          "locationName":"restoreExpiryTime"
+        }
+      },
+      "documentation":"<p>Provides information about a snapshot's storage tier.</p>"
     },
     "SpotAllocationStrategy":{
       "type":"string",
@@ -41963,6 +42375,13 @@
       },
       "documentation":"<p>Describes a storage location in Amazon S3.</p>"
     },
+    "StorageTier":{
+      "type":"string",
+      "enum":[
+        "archive",
+        "standard"
+      ]
+    },
     "StoreImageTaskResult":{
       "type":"structure",
       "members":{
@@ -42609,6 +43028,10 @@
         "locationName":"item"
       }
     },
+    "TargetStorageTier":{
+      "type":"string",
+      "enum":["archive"]
+    },
     "TelemetryStatus":{
       "type":"string",
       "enum":[
@@ -42727,6 +43150,20 @@
         "shape":"ThreadsPerCore",
         "locationName":"item"
       }
+    },
+    "TieringOperationStatus":{
+      "type":"string",
+      "enum":[
+        "archival-in-progress",
+        "archival-completed",
+        "archival-failed",
+        "temporary-restore-in-progress",
+        "temporary-restore-completed",
+        "temporary-restore-failed",
+        "permanent-restore-in-progress",
+        "permanent-restore-completed",
+        "permanent-restore-failed"
+      ]
     },
     "TotalLocalStorageGB":{
       "type":"structure",
@@ -46748,6 +47185,13 @@
         "Availability Zone",
         "Region"
       ]
+    },
+    "snapshotTierStatusSet":{
+      "type":"list",
+      "member":{
+        "shape":"SnapshotTierStatus",
+        "locationName":"item"
+      }
     },
     "totalFpgaMemory":{"type":"integer"},
     "totalGpuMemory":{"type":"integer"}

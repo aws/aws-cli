@@ -1,0 +1,999 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "endpointPrefix":"rum",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceFullName":"CloudWatch RUM",
+    "serviceId":"RUM",
+    "signatureVersion":"v4",
+    "signingName":"rum",
+    "uid":"rum-2018-05-10"
+  },
+  "operations":{
+    "CreateAppMonitor":{
+      "name":"CreateAppMonitor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/appmonitor",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAppMonitorRequest"},
+      "output":{"shape":"CreateAppMonitorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a Amazon CloudWatch RUM app monitor, which collects telemetry data from your application and sends that data to RUM. The data includes performance and reliability information such as page load time, client-side errors, and user behavior.</p> <p>You use this operation only to create a new app monitor. To update an existing app monitor, use <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_UpdateAppMonitor.html\">UpdateAppMonitor</a> instead.</p> <p>After you create an app monitor, sign in to the CloudWatch RUM console to get the JavaScript code snippet to add to your web application. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-find-code-snippet.html\">How do I find a code snippet that I've already generated?</a> </p>",
+      "idempotent":true
+    },
+    "DeleteAppMonitor":{
+      "name":"DeleteAppMonitor",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/appmonitor/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAppMonitorRequest"},
+      "output":{"shape":"DeleteAppMonitorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an existing app monitor. This immediately stops the collection of data.</p>",
+      "idempotent":true
+    },
+    "GetAppMonitor":{
+      "name":"GetAppMonitor",
+      "http":{
+        "method":"GET",
+        "requestUri":"/appmonitor/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAppMonitorRequest"},
+      "output":{"shape":"GetAppMonitorResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the complete configuration information for one app monitor.</p>"
+    },
+    "GetAppMonitorData":{
+      "name":"GetAppMonitorData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/appmonitor/{Name}/data",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAppMonitorDataRequest"},
+      "output":{"shape":"GetAppMonitorDataResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the raw performance events that RUM has collected from your web application, so that you can do your own processing or analysis of this data.</p>"
+    },
+    "ListAppMonitors":{
+      "name":"ListAppMonitors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/appmonitors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppMonitorsRequest"},
+      "output":{"shape":"ListAppMonitorsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of the Amazon CloudWatch RUM app monitors in the account.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Displays the tags associated with a CloudWatch RUM resource.</p>"
+    },
+    "PutRumEvents":{
+      "name":"PutRumEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/appmonitors/{Id}/",
+        "responseCode":200
+      },
+      "input":{"shape":"PutRumEventsRequest"},
+      "output":{"shape":"PutRumEventsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Sends telemetry events about your application performance and user behavior to CloudWatch RUM. The code snippet that RUM generates for you to add to your application includes <code>PutRumEvents</code> operations to send this data to RUM.</p> <p>Each <code>PutRumEvents</code> operation can send a batch of events from one user session.</p>",
+      "endpoint":{"hostPrefix":"dataplane."}
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified CloudWatch RUM resource. Currently, the only resources that can be tagged app monitors.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with a resource that already has tags. If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes one or more tags from the specified resource.</p>",
+      "idempotent":true
+    },
+    "UpdateAppMonitor":{
+      "name":"UpdateAppMonitor",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/appmonitor/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppMonitorRequest"},
+      "output":{"shape":"UpdateAppMonitorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing app monitor. When you use this operation, only the parts of the app monitor configuration that you specify in this operation are changed. For any parameters that you omit, the existing values are kept.</p> <p>You can't use this operation to change the tags of an existing app monitor. To change the tags of an existing app monitor, use <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_TagResource.html\">TagResource</a>.</p> <p>To create a new app monitor, use <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_CreateAppMonitor.html\">CreateAppMonitor</a>.</p> <p>After you update an app monitor, sign in to the CloudWatch RUM console to get the updated JavaScript code snippet to add to your web application. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-find-code-snippet.html\">How do I find a code snippet that I've already generated?</a> </p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have sufficient permissions to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AppMonitor":{
+      "type":"structure",
+      "members":{
+        "AppMonitorConfiguration":{
+          "shape":"AppMonitorConfiguration",
+          "documentation":"<p>A structure that contains much of the configuration data for the app monitor.</p>"
+        },
+        "Created":{
+          "shape":"ISOTimestampString",
+          "documentation":"<p>The date and time that this app monitor was created.</p>"
+        },
+        "DataStorage":{
+          "shape":"DataStorage",
+          "documentation":"<p>A structure that contains information about whether this app monitor stores a copy of the telemetry data that RUM collects using CloudWatch Logs.</p>"
+        },
+        "Domain":{
+          "shape":"AppMonitorDomain",
+          "documentation":"<p>The top-level internet domain name for which your application has administrative authority.</p>"
+        },
+        "Id":{
+          "shape":"AppMonitorId",
+          "documentation":"<p>The unique ID of this app monitor.</p>"
+        },
+        "LastModified":{
+          "shape":"ISOTimestampString",
+          "documentation":"<p>The date and time of the most recent changes to this app monitor's configuration.</p>"
+        },
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>The name of the app monitor.</p>"
+        },
+        "State":{
+          "shape":"StateEnum",
+          "documentation":"<p>The current state of the app monitor.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of tag keys and values associated with this app monitor.</p>"
+        }
+      },
+      "documentation":"<p>A RUM app monitor collects telemetry data from your application and sends that data to RUM. The data includes performance and reliability information such as page load time, client-side errors, and user behavior.</p>"
+    },
+    "AppMonitorConfiguration":{
+      "type":"structure",
+      "members":{
+        "AllowCookies":{
+          "shape":"Boolean",
+          "documentation":"<p>If you set this to <code>true</code>, the RUM web client sets two cookies, a session cookie and a user cookie. The cookies allow the RUM web client to collect data relating to the number of users an application has and the behavior of the application across a sequence of events. Cookies are stored in the top-level domain of the current page.</p>"
+        },
+        "EnableXRay":{
+          "shape":"Boolean",
+          "documentation":"<p>If you set this to <code>true</code>, RUM enables X-Ray tracing for the user sessions that RUM samples. RUM adds an X-Ray trace header to allowed HTTP requests. It also records an X-Ray segment for allowed HTTP requests. You can see traces and segments from these user sessions in the X-Ray console and the CloudWatch ServiceLens console. For more information, see <a href=\"https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html\">What is X-Ray?</a> </p>"
+        },
+        "ExcludedPages":{
+          "shape":"Pages",
+          "documentation":"<p>A list of URLs in your website or application to exclude from RUM data collection.</p> <p>You can't include both <code>ExcludedPages</code> and <code>IncludedPages</code> in the same operation.</p>"
+        },
+        "FavoritePages":{
+          "shape":"FavoritePages",
+          "documentation":"<p>A list of pages in the CloudWatch RUM console that are to be displayed with a \"favorite\" icon.</p>"
+        },
+        "GuestRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the guest IAM role that is attached to the Amazon Cognito identity pool that is used to authorize the sending of data to RUM.</p>"
+        },
+        "IdentityPoolId":{
+          "shape":"IdentityPoolId",
+          "documentation":"<p>The ID of the Amazon Cognito identity pool that is used to authorize the sending of data to RUM.</p>"
+        },
+        "IncludedPages":{
+          "shape":"Pages",
+          "documentation":"<p>If this app monitor is to collect data from only certain pages in your application, this structure lists those pages. </p> <pre><code> &lt;p&gt;You can't include both &lt;code&gt;ExcludedPages&lt;/code&gt; and &lt;code&gt;IncludedPages&lt;/code&gt; in the same operation.&lt;/p&gt; </code></pre>"
+        },
+        "SessionSampleRate":{
+          "shape":"SessionSampleRate",
+          "documentation":"<p>Specifies the percentage of user sessions to use for RUM data collection. Choosing a higher percentage gives you more data but also incurs more costs.</p> <p>The number you specify is the percentage of user sessions that will be used.</p> <p>If you omit this parameter, the default of 10 is used.</p>"
+        },
+        "Telemetries":{
+          "shape":"Telemetries",
+          "documentation":"<p>An array that lists the types of telemetry data that this app monitor is to collect.</p> <ul> <li> <p> <code>errors</code> indicates that RUM collects data about unhandled JavaScript errors raised by your application.</p> </li> <li> <p> <code>performance</code> indicates that RUM collects performance data about how your application and its resources are loaded and rendered. This includes Core Web Vitals.</p> </li> <li> <p> <code>http</code> indicates that RUM collects data about HTTP errors thrown by your application.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>This structure contains much of the configuration data for the app monitor.</p>"
+    },
+    "AppMonitorDetails":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the app monitor.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the app monitor.</p>"
+        },
+        "version":{
+          "shape":"String",
+          "documentation":"<p>The version of the app monitor.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about the RUM app monitor.</p>"
+    },
+    "AppMonitorDomain":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"^(localhost)|^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?![-.])([A-Za-z0-9-\\.\\-]{0,63})((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))\\.(?![-])[A-Za-z-0-9]{1,63}((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))|^(\\*\\.)(?![-.])([A-Za-z0-9-\\.\\-]{0,63})((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))\\.(?![-])[A-Za-z-0-9]{1,63}((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))"
+    },
+    "AppMonitorId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+    },
+    "AppMonitorName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(?!\\.)[\\.\\-_#A-Za-z0-9]+$"
+    },
+    "AppMonitorSummary":{
+      "type":"structure",
+      "members":{
+        "Created":{
+          "shape":"ISOTimestampString",
+          "documentation":"<p>The date and time that the app monitor was created.</p>"
+        },
+        "Id":{
+          "shape":"AppMonitorId",
+          "documentation":"<p>The unique ID of this app monitor.</p>"
+        },
+        "LastModified":{
+          "shape":"ISOTimestampString",
+          "documentation":"<p>The date and time of the most recent changes to this app monitor's configuration.</p>"
+        },
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>The name of this app monitor.</p>"
+        },
+        "State":{
+          "shape":"StateEnum",
+          "documentation":"<p>The current state of this app monitor.</p>"
+        }
+      },
+      "documentation":"<p>A structure that includes some data about app monitors and their settings.</p>"
+    },
+    "AppMonitorSummaryList":{
+      "type":"list",
+      "member":{"shape":"AppMonitorSummary"}
+    },
+    "Arn":{
+      "type":"string",
+      "pattern":"arn:[^:]*:[^:]*:[^:]*:[^:]*:.*"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceName"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource that is associated with the error.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that is associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>This operation attempted to create a resource that already exists.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateAppMonitorRequest":{
+      "type":"structure",
+      "required":[
+        "Domain",
+        "Name"
+      ],
+      "members":{
+        "AppMonitorConfiguration":{
+          "shape":"AppMonitorConfiguration",
+          "documentation":"<p>A structure that contains much of the configuration data for the app monitor. If you are using Amazon Cognito for authorization, you must include this structure in your request, and it must include the ID of the Amazon Cognito identity pool to use for authorization. If you don't include <code>AppMonitorConfiguration</code>, you must set up your own authorization method. For more information, see <a href=\"https://docs.aws.amazon.com/monitoring/CloudWatch-RUM-get-started-authorization.html\">Authorize your application to send data to Amazon Web Services</a>.</p> <p>If you omit this argument, the sample rate used for RUM is set to 10% of the user sessions.</p>"
+        },
+        "CwLogEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to Amazon CloudWatch Logs in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur Amazon CloudWatch Logs charges.</p> <p>If you omit this parameter, the default is <code>false</code>.</p>"
+        },
+        "Domain":{
+          "shape":"AppMonitorDomain",
+          "documentation":"<p>The top-level internet domain name for which your application has administrative authority.</p>"
+        },
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>A name for the app monitor.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Assigns one or more tags (key-value pairs) to the app monitor.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <pre><code> &lt;p&gt;You can associate as many as 50 tags with an app monitor.&lt;/p&gt; &lt;p&gt;For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html&quot;&gt;Tagging Amazon Web Services resources&lt;/a&gt;.&lt;/p&gt; </code></pre>"
+        }
+      }
+    },
+    "CreateAppMonitorResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AppMonitorId",
+          "documentation":"<p>The unique ID of the new app monitor.</p>"
+        }
+      }
+    },
+    "CwLog":{
+      "type":"structure",
+      "members":{
+        "CwLogEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicated whether the app monitor stores copies of the data that RUM collects in CloudWatch Logs.</p>"
+        },
+        "CwLogGroup":{
+          "shape":"String",
+          "documentation":"<p>The name of the log group where the copies are stored.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the information about whether the app monitor stores copies of the data that RUM collects in CloudWatch Logs. If it does, this structure also contains the name of the log group.</p>"
+    },
+    "DataStorage":{
+      "type":"structure",
+      "members":{
+        "CwLog":{
+          "shape":"CwLog",
+          "documentation":"<p>A structure that contains the information about whether the app monitor stores copies of the data that RUM collects in CloudWatch Logs. If it does, this structure also contains the name of the log group.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about whether this app monitor stores a copy of the telemetry data that RUM collects using CloudWatch Logs.</p>"
+    },
+    "DeleteAppMonitorRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>The name of the app monitor to delete.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "DeleteAppMonitorResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "EventData":{"type":"string"},
+    "EventDataList":{
+      "type":"list",
+      "member":{"shape":"EventData"}
+    },
+    "FavoritePages":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":0
+    },
+    "GetAppMonitorDataRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "TimeRange"
+      ],
+      "members":{
+        "Filters":{
+          "shape":"QueryFilters",
+          "documentation":"<p>An array of structures that you can use to filter the results to those that match one or more sets of key-value pairs that you specify.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxQueryResults",
+          "documentation":"<p>The maximum number of results to return in one operation. </p>"
+        },
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>The name of the app monitor that collected the data that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>Use the token returned by the previous operation to request the next page of results.</p>"
+        },
+        "TimeRange":{
+          "shape":"TimeRange",
+          "documentation":"<p>A structure that defines the time range that you want to retrieve results from.</p>"
+        }
+      }
+    },
+    "GetAppMonitorDataResponse":{
+      "type":"structure",
+      "members":{
+        "Events":{
+          "shape":"EventDataList",
+          "documentation":"<p>The events that RUM collected that match your request.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token that you can use in a subsequent operation to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "GetAppMonitorRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>The app monitor to retrieve information for.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "GetAppMonitorResponse":{
+      "type":"structure",
+      "members":{
+        "AppMonitor":{
+          "shape":"AppMonitor",
+          "documentation":"<p>A structure containing all the configuration information for the app monitor.</p>"
+        }
+      }
+    },
+    "ISOTimestampString":{
+      "type":"string",
+      "max":19,
+      "min":19,
+      "pattern":"/d{4}-[01]/d-[0-3]/dT[0-2]/d:[0-5]/d:[0-5]/d/./d+([+-][0-2]/d:[0-5]/d|Z)"
+    },
+    "IdentityPoolId":{
+      "type":"string",
+      "max":55,
+      "min":1,
+      "pattern":"[\\w-]+:[0-9a-f-]+"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The value of a parameter in the request caused an error.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>Internal service exception.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "JsonValue":{"type":"string"},
+    "ListAppMonitorsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in one operation. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Use the token returned by the previous operation to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAppMonitorsResponse":{
+      "type":"structure",
+      "members":{
+        "AppMonitorSummaries":{
+          "shape":"AppMonitorSummaryList",
+          "documentation":"<p>An array of structures that contain information about the returned app monitors.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token that you can use in a subsequent operation to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource that you want to see the tags of.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource that you are viewing.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of tag keys and values associated with the resource you specified.</p>"
+        }
+      }
+    },
+    "MaxQueryResults":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
+    "Pages":{
+      "type":"list",
+      "member":{"shape":"Url"},
+      "max":50,
+      "min":0
+    },
+    "PutRumEventsRequest":{
+      "type":"structure",
+      "required":[
+        "AppMonitorDetails",
+        "BatchId",
+        "Id",
+        "RumEvents",
+        "UserDetails"
+      ],
+      "members":{
+        "AppMonitorDetails":{
+          "shape":"AppMonitorDetails",
+          "documentation":"<p>A structure that contains information about the app monitor that collected this telemetry information.</p>"
+        },
+        "BatchId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for this batch of RUM event data.</p>"
+        },
+        "Id":{
+          "shape":"AppMonitorId",
+          "documentation":"<p>The ID of the app monitor that is sending this data.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "RumEvents":{
+          "shape":"RumEventList",
+          "documentation":"<p>An array of structures that contain the telemetry event data.</p>"
+        },
+        "UserDetails":{
+          "shape":"UserDetails",
+          "documentation":"<p>A structure that contains information about the user session that this batch of events was collected from.</p>"
+        }
+      }
+    },
+    "PutRumEventsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "QueryFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"QueryFilterKey",
+          "documentation":"<p>The name of a key to search for. The filter returns only the events that match the <code>Name</code> and <code>Values</code> that you specify. </p> <p>Valid values for <code>Name</code> are <code>Browser</code> | <code>Device</code> | <code>Country</code> | <code>Page</code> | <code>OS</code> | <code>EventType</code> | <code>Invert</code> </p>"
+        },
+        "Values":{
+          "shape":"QueryFilterValueList",
+          "documentation":"<p>The values of the <code>Name</code> that are to be be included in the returned results.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines a key and values that you can use to filter the results. The only performance events that are returned are those that have values matching the ones that you specify in one of your <code>QueryFilter</code> structures.</p> <p>For example, you could specify <code>Browser</code> as the <code>Name</code> and specify <code>Chrome,Firefox</code> as the <code>Values</code> to return events generated only from those browsers.</p> <p>Specifying <code>Invert</code> as the <code>Name</code> works as a \"not equal to\" filter. For example, specify <code>Invert</code> as the <code>Name</code> and specify <code>Chrome</code> as the value to return all events except events from user sessions with the Chrome browser.</p>"
+    },
+    "QueryFilterKey":{"type":"string"},
+    "QueryFilterValue":{"type":"string"},
+    "QueryFilterValueList":{
+      "type":"list",
+      "member":{"shape":"QueryFilterValue"}
+    },
+    "QueryFilters":{
+      "type":"list",
+      "member":{"shape":"QueryFilter"}
+    },
+    "QueryTimestamp":{"type":"long"},
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceName"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource that is associated with the error.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that is associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>Resource not found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RumEvent":{
+      "type":"structure",
+      "required":[
+        "details",
+        "id",
+        "timestamp",
+        "type"
+      ],
+      "members":{
+        "details":{
+          "shape":"JsonValue",
+          "documentation":"<p>A string containing details about the event.</p>",
+          "jsonvalue":true
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>A unique ID for this event.</p>"
+        },
+        "metadata":{
+          "shape":"JsonValue",
+          "documentation":"<p>Metadata about this event, which contains a JSON serialization of the identity of the user for this session. The user information comes from information such as the HTTP user-agent request header and document interface.</p>",
+          "jsonvalue":true
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The exact time that this event occurred.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The JSON schema that denotes the type of event this is, such as a page load or a new session.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the information for one performance event that RUM collects from a user session with your application.</p>"
+    },
+    "RumEventList":{
+      "type":"list",
+      "member":{"shape":"RumEvent"}
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>This request exceeds a service quota.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SessionSampleRate":{
+      "type":"double",
+      "max":1,
+      "min":0
+    },
+    "StateEnum":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "DELETING",
+        "ACTIVE"
+      ]
+    },
+    "String":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":0
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the CloudWatch RUM resource that you're adding tags to.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of key-value pairs to associate with the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Telemetries":{
+      "type":"list",
+      "member":{"shape":"Telemetry"}
+    },
+    "Telemetry":{
+      "type":"string",
+      "enum":[
+        "errors",
+        "performance",
+        "http"
+      ]
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service quota that was exceeded.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The value of a parameter in the request caused an error.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service that is associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>The request was throttled because of quota limits.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "TimeRange":{
+      "type":"structure",
+      "required":["After"],
+      "members":{
+        "After":{
+          "shape":"QueryTimestamp",
+          "documentation":"<p>The beginning of the time range to retrieve performance events from.</p>"
+        },
+        "Before":{
+          "shape":"QueryTimestamp",
+          "documentation":"<p>The end of the time range to retrieve performance events from. If you omit this, the time range extends to the time that this operation is performed.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines the time range that you want to retrieve results from.</p>"
+    },
+    "Timestamp":{"type":"timestamp"},
+    "Token":{"type":"string"},
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the CloudWatch RUM resource that you're removing tags from.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The list of tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateAppMonitorRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "AppMonitorConfiguration":{
+          "shape":"AppMonitorConfiguration",
+          "documentation":"<p>A structure that contains much of the configuration data for the app monitor. If you are using Amazon Cognito for authorization, you must include this structure in your request, and it must include the ID of the Amazon Cognito identity pool to use for authorization. If you don't include <code>AppMonitorConfiguration</code>, you must set up your own authorization method. For more information, see <a href=\"https://docs.aws.amazon.com/monitoring/CloudWatch-RUM-get-started-authorization.html\">Authorize your application to send data to Amazon Web Services</a>.</p>"
+        },
+        "CwLogEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to Amazon CloudWatch Logs in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur Amazon CloudWatch Logs charges.</p>"
+        },
+        "Domain":{
+          "shape":"AppMonitorDomain",
+          "documentation":"<p>The top-level internet domain name for which your application has administrative authority.</p>"
+        },
+        "Name":{
+          "shape":"AppMonitorName",
+          "documentation":"<p>The name of the app monitor to update.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "UpdateAppMonitorResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "Url":{
+      "type":"string",
+      "max":1260,
+      "min":1,
+      "pattern":"https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+    },
+    "UserDetails":{
+      "type":"structure",
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The session ID that the performance events are from.</p>"
+        },
+        "userId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the user for this user session. This ID is generated by RUM and does not include any personally identifiable information about the user.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about the user session that this batch of events was collected from.</p>"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>One of the arguments for the request is not valid.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>With Amazon CloudWatch RUM, you can perform real-user monitoring to collect client-side data about your web application performance from actual user sessions in real time. The data collected includes page load times, client-side errors, and user behavior. When you view this data, you can see it all aggregated together and also see breakdowns by the browsers and devices that your customers use.</p> <pre><code> &lt;p&gt;You can use the collected data to quickly identify and debug client-side performance issues. CloudWatch RUM helps you visualize anomalies in your application performance and find relevant debugging data such as error messages, stack traces, and user sessions. You can also use RUM to understand the range of end-user impact including the number of users, geolocations, and browsers used.&lt;/p&gt; </code></pre>"
+}

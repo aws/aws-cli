@@ -59,6 +59,22 @@
       ],
       "documentation":"<p>Gets detailed information for an image. Images are specified with either an <code>imageTag</code> or <code>imageDigest</code>.</p> <p>When an image is pulled, the BatchGetImage API is called once to retrieve the image manifest.</p>"
     },
+    "BatchGetRepositoryScanningConfiguration":{
+      "name":"BatchGetRepositoryScanningConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetRepositoryScanningConfigurationRequest"},
+      "output":{"shape":"BatchGetRepositoryScanningConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"RepositoryNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets the scanning configuration for one or more repositories.</p>"
+    },
     "CompleteLayerUpload":{
       "name":"CompleteLayerUpload",
       "http":{
@@ -79,6 +95,24 @@
         {"shape":"KmsException"}
       ],
       "documentation":"<p>Informs Amazon ECR that the image layer upload has completed for a specified registry, repository name, and upload ID. You can optionally provide a <code>sha256</code> digest of the image layer for data validation purposes.</p> <p>When an image is pushed, the CompleteLayerUpload API is called once per each new image layer to verify that the upload has completed.</p> <note> <p>This operation is used by the Amazon ECR proxy and is not generally used by customers for pulling and pushing images. In most cases, you should use the <code>docker</code> CLI to pull, tag, and push images.</p> </note>"
+    },
+    "CreatePullThroughCacheRule":{
+      "name":"CreatePullThroughCacheRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePullThroughCacheRuleRequest"},
+      "output":{"shape":"CreatePullThroughCacheRuleResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"PullThroughCacheRuleAlreadyExistsException"},
+        {"shape":"UnsupportedUpstreamRegistryException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates a pull through cache rule. A pull through cache rule provides a way to cache images from an external public registry in your Amazon ECR private registry.</p>"
     },
     "CreateRepository":{
       "name":"CreateRepository",
@@ -114,6 +148,22 @@
         {"shape":"LifecyclePolicyNotFoundException"}
       ],
       "documentation":"<p>Deletes the lifecycle policy associated with the specified repository.</p>"
+    },
+    "DeletePullThroughCacheRule":{
+      "name":"DeletePullThroughCacheRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeletePullThroughCacheRuleRequest"},
+      "output":{"shape":"DeletePullThroughCacheRuleResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"PullThroughCacheRuleNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a pull through cache rule.</p>"
     },
     "DeleteRegistryPolicy":{
       "name":"DeleteRegistryPolicy",
@@ -194,7 +244,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"RepositoryNotFoundException"},
         {"shape":"ImageNotFoundException"},
-        {"shape":"ScanNotFoundException"}
+        {"shape":"ScanNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns the scan findings for the specified image.</p>"
     },
@@ -213,6 +264,22 @@
         {"shape":"ImageNotFoundException"}
       ],
       "documentation":"<p>Returns metadata about the images in a repository.</p> <note> <p>Beginning with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size, so it may return a larger image size than the image sizes returned by <a>DescribeImages</a>.</p> </note>"
+    },
+    "DescribePullThroughCacheRules":{
+      "name":"DescribePullThroughCacheRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribePullThroughCacheRulesRequest"},
+      "output":{"shape":"DescribePullThroughCacheRulesResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"PullThroughCacheRuleNotFoundException"}
+      ],
+      "documentation":"<p>Returns the pull through cache rules for a registry.</p>"
     },
     "DescribeRegistry":{
       "name":"DescribeRegistry",
@@ -323,6 +390,21 @@
       ],
       "documentation":"<p>Retrieves the permissions policy for a registry.</p>"
     },
+    "GetRegistryScanningConfiguration":{
+      "name":"GetRegistryScanningConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRegistryScanningConfigurationRequest"},
+      "output":{"shape":"GetRegistryScanningConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the scanning configuration for a registry.</p>"
+    },
     "GetRepositoryPolicy":{
       "name":"GetRepositoryPolicy",
       "http":{
@@ -418,7 +500,8 @@
       "errors":[
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"RepositoryNotFoundException"}
+        {"shape":"RepositoryNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates the image scanning configuration for the specified repository.</p>"
     },
@@ -467,6 +550,21 @@
       ],
       "documentation":"<p>Creates or updates the permissions policy for your registry.</p> <p>A registry policy is used to specify permissions for another Amazon Web Services account and is used when configuring cross-account replication. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry-permissions.html\">Registry permissions</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>"
     },
+    "PutRegistryScanningConfiguration":{
+      "name":"PutRegistryScanningConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutRegistryScanningConfigurationRequest"},
+      "output":{"shape":"PutRegistryScanningConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates or updates the scanning configuration for your private registry.</p>"
+    },
     "PutReplicationConfiguration":{
       "name":"PutReplicationConfiguration",
       "http":{
@@ -511,7 +609,8 @@
         {"shape":"UnsupportedImageTypeException"},
         {"shape":"LimitExceededException"},
         {"shape":"RepositoryNotFoundException"},
-        {"shape":"ImageNotFoundException"}
+        {"shape":"ImageNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Starts an image vulnerability scan. An image scan can only be started once per 24 hours on an individual image. This limit includes if an image was scanned on initial push. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html\">Image scanning</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>"
     },
@@ -587,6 +686,7 @@
     }
   },
   "shapes":{
+    "Arch":{"type":"string"},
     "Arn":{"type":"string"},
     "Attribute":{
       "type":"structure",
@@ -619,6 +719,7 @@
       "max":256,
       "min":1
     },
+    "Author":{"type":"string"},
     "AuthorizationData":{
       "type":"structure",
       "members":{
@@ -641,10 +742,49 @@
       "type":"list",
       "member":{"shape":"AuthorizationData"}
     },
+    "AwsEcrContainerImageDetails":{
+      "type":"structure",
+      "members":{
+        "architecture":{
+          "shape":"Arch",
+          "documentation":"<p>The architecture of the Amazon ECR container image.</p>"
+        },
+        "author":{
+          "shape":"Author",
+          "documentation":"<p>The image author of the Amazon ECR container image.</p>"
+        },
+        "imageHash":{
+          "shape":"ImageDigest",
+          "documentation":"<p>The image hash of the Amazon ECR container image.</p>"
+        },
+        "imageTags":{
+          "shape":"ImageTagsList",
+          "documentation":"<p>The image tags attached to the Amazon ECR container image.</p>"
+        },
+        "platform":{
+          "shape":"Platform",
+          "documentation":"<p>The platform of the Amazon ECR container image.</p>"
+        },
+        "pushedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time the Amazon ECR container image was pushed.</p>"
+        },
+        "registry":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry the Amazon ECR container image belongs to.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository the Amazon ECR container image resides in.</p>"
+        }
+      },
+      "documentation":"<p>The image details of the Amazon ECR container image.</p>"
+    },
     "Base64":{
       "type":"string",
       "pattern":"^\\S+$"
     },
+    "BaseScore":{"type":"double"},
     "BatchCheckLayerAvailabilityRequest":{
       "type":"structure",
       "required":[
@@ -752,6 +892,29 @@
         }
       }
     },
+    "BatchGetRepositoryScanningConfigurationRequest":{
+      "type":"structure",
+      "required":["repositoryNames"],
+      "members":{
+        "repositoryNames":{
+          "shape":"ScanningConfigurationRepositoryNameList",
+          "documentation":"<p>One or more repository names to get the scanning configuration for.</p>"
+        }
+      }
+    },
+    "BatchGetRepositoryScanningConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "scanningConfigurations":{
+          "shape":"RepositoryScanningConfigurationList",
+          "documentation":"<p>The scanning configuration for the requested repositories.</p>"
+        },
+        "failures":{
+          "shape":"RepositoryScanningConfigurationFailureList",
+          "documentation":"<p>Any failures associated with the call.</p>"
+        }
+      }
+    },
     "BatchedOperationLayerDigest":{
       "type":"string",
       "max":1000,
@@ -810,13 +973,55 @@
         }
       }
     },
+    "CreatePullThroughCacheRuleRequest":{
+      "type":"structure",
+      "required":[
+        "ecrRepositoryPrefix",
+        "upstreamRegistryUrl"
+      ],
+      "members":{
+        "ecrRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The repository name prefix to use when caching images from the source registry.</p>"
+        },
+        "upstreamRegistryUrl":{
+          "shape":"Url",
+          "documentation":"<p>The registry URL of the upstream public registry to use as the source for the pull through cache rule.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry to create the pull through cache rule for. If you do not specify a registry, the default registry is assumed.</p>"
+        }
+      }
+    },
+    "CreatePullThroughCacheRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ecrRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The Amazon ECR repository prefix associated with the pull through cache rule.</p>"
+        },
+        "upstreamRegistryUrl":{
+          "shape":"Url",
+          "documentation":"<p>The upstream registry URL associated with the pull through cache rule.</p>"
+        },
+        "createdAt":{
+          "shape":"CreationTimestamp",
+          "documentation":"<p>The date and time, in JavaScript date format, when the pull through cache rule was created.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
+        }
+      }
+    },
     "CreateRepositoryRequest":{
       "type":"structure",
       "required":["repositoryName"],
       "members":{
         "registryId":{
           "shape":"RegistryId",
-          "documentation":"<p>The AWS account ID associated with the registry to create the repository. If you do not specify a registry, the default registry is assumed.</p>"
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry to create the repository. If you do not specify a registry, the default registry is assumed.</p>"
         },
         "repositoryName":{
           "shape":"RepositoryName",
@@ -850,6 +1055,77 @@
       }
     },
     "CreationTimestamp":{"type":"timestamp"},
+    "CvssScore":{
+      "type":"structure",
+      "members":{
+        "baseScore":{
+          "shape":"BaseScore",
+          "documentation":"<p>The base CVSS score used for the finding.</p>"
+        },
+        "scoringVector":{
+          "shape":"ScoringVector",
+          "documentation":"<p>The vector string of the CVSS score.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The source of the CVSS score.</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The version of CVSS used for the score.</p>"
+        }
+      },
+      "documentation":"<p>The CVSS score for a finding.</p>"
+    },
+    "CvssScoreAdjustment":{
+      "type":"structure",
+      "members":{
+        "metric":{
+          "shape":"Metric",
+          "documentation":"<p>The metric used to adjust the CVSS score.</p>"
+        },
+        "reason":{
+          "shape":"Reason",
+          "documentation":"<p>The reason the CVSS score has been adjustment.</p>"
+        }
+      },
+      "documentation":"<p>Details on adjustments Amazon Inspector made to the CVSS score for a finding.</p>"
+    },
+    "CvssScoreAdjustmentList":{
+      "type":"list",
+      "member":{"shape":"CvssScoreAdjustment"}
+    },
+    "CvssScoreDetails":{
+      "type":"structure",
+      "members":{
+        "adjustments":{
+          "shape":"CvssScoreAdjustmentList",
+          "documentation":"<p>An object that contains details about adjustment Amazon Inspector made to the CVSS score.</p>"
+        },
+        "score":{
+          "shape":"Score",
+          "documentation":"<p>The CVSS score.</p>"
+        },
+        "scoreSource":{
+          "shape":"Source",
+          "documentation":"<p>The source for the CVSS score.</p>"
+        },
+        "scoringVector":{
+          "shape":"ScoringVector",
+          "documentation":"<p>The vector for the CVSS score.</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The CVSS version used in scoring.</p>"
+        }
+      },
+      "documentation":"<p>Information about the CVSS score.</p>"
+    },
+    "CvssScoreList":{
+      "type":"list",
+      "member":{"shape":"CvssScore"}
+    },
+    "Date":{"type":"timestamp"},
     "DeleteLifecyclePolicyRequest":{
       "type":"structure",
       "required":["repositoryName"],
@@ -882,6 +1158,41 @@
         "lastEvaluatedAt":{
           "shape":"EvaluationTimestamp",
           "documentation":"<p>The time stamp of the last time that the lifecycle policy was run.</p>"
+        }
+      }
+    },
+    "DeletePullThroughCacheRuleRequest":{
+      "type":"structure",
+      "required":["ecrRepositoryPrefix"],
+      "members":{
+        "ecrRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The Amazon ECR repository prefix associated with the pull through cache rule to delete.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry that contains the pull through cache rule. If you do not specify a registry, the default registry is assumed.</p>"
+        }
+      }
+    },
+    "DeletePullThroughCacheRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ecrRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The Amazon ECR repository prefix associated with the request.</p>"
+        },
+        "upstreamRegistryUrl":{
+          "shape":"Url",
+          "documentation":"<p>The upstream registry URL associated with the pull through cache rule.</p>"
+        },
+        "createdAt":{
+          "shape":"CreationTimestamp",
+          "documentation":"<p>The timestamp associated with the pull through cache rule.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
         }
       }
     },
@@ -1098,6 +1409,40 @@
         }
       }
     },
+    "DescribePullThroughCacheRulesRequest":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry to return the pull through cache rules for. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "ecrRepositoryPrefixes":{
+          "shape":"PullThroughCacheRuleRepositoryPrefixList",
+          "documentation":"<p>The Amazon ECR repository prefixes associated with the pull through cache rules to return. If no repository prefix value is specified, all pull through cache rules are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>DescribePullThroughCacheRulesRequest</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of pull through cache rules returned by <code>DescribePullThroughCacheRulesRequest</code> in paginated output. When this parameter is used, <code>DescribePullThroughCacheRulesRequest</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribePullThroughCacheRulesRequest</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribePullThroughCacheRulesRequest</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.</p>"
+        }
+      }
+    },
+    "DescribePullThroughCacheRulesResponse":{
+      "type":"structure",
+      "members":{
+        "pullThroughCacheRules":{
+          "shape":"PullThroughCacheRuleList",
+          "documentation":"<p>The details of the pull through cache rules.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>DescribePullThroughCacheRulesRequest</code> request. When the results of a <code>DescribePullThroughCacheRulesRequest</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "DescribeRegistryRequest":{
       "type":"structure",
       "members":{
@@ -1167,7 +1512,7 @@
       "members":{
         "encryptionType":{
           "shape":"EncryptionType",
-          "documentation":"<p>The encryption type to use.</p> <p>If you use the <code>KMS</code> encryption type, the contents of the repository will be encrypted using server-side encryption with Key Management Service key stored in KMS. When you use KMS to encrypt your data, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you already created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html\">Protecting data using server-side encryption with an KMS key stored in Key Management Service (SSE-KMS)</a> in the <i>Amazon Simple Storage Service Console Developer Guide.</i>.</p> <p>If you use the <code>AES256</code> encryption type, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts the images in the repository using an AES-256 encryption algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html\">Protecting data using server-side encryption with Amazon S3-managed encryption keys (SSE-S3)</a> in the <i>Amazon Simple Storage Service Console Developer Guide.</i>.</p>"
+          "documentation":"<p>The encryption type to use.</p> <p>If you use the <code>KMS</code> encryption type, the contents of the repository will be encrypted using server-side encryption with Key Management Service key stored in KMS. When you use KMS to encrypt your data, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you already created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html\">Protecting data using server-side encryption with an KMS key stored in Key Management Service (SSE-KMS)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p> <p>If you use the <code>AES256</code> encryption type, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts the images in the repository using an AES-256 encryption algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html\">Protecting data using server-side encryption with Amazon S3-managed encryption keys (SSE-S3)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p>"
         },
         "kmsKey":{
           "shape":"KmsKey",
@@ -1183,9 +1528,82 @@
         "KMS"
       ]
     },
+    "EnhancedImageScanFinding":{
+      "type":"structure",
+      "members":{
+        "awsAccountId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the image.</p>"
+        },
+        "description":{
+          "shape":"FindingDescription",
+          "documentation":"<p>The description of the finding.</p>"
+        },
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the finding.</p>"
+        },
+        "firstObservedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the finding was first observed.</p>"
+        },
+        "lastObservedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the finding was last observed.</p>"
+        },
+        "packageVulnerabilityDetails":{
+          "shape":"PackageVulnerabilityDetails",
+          "documentation":"<p>An object that contains the details of a package vulnerability finding.</p>"
+        },
+        "remediation":{
+          "shape":"Remediation",
+          "documentation":"<p>An object that contains the details about how to remediate a finding.</p>"
+        },
+        "resources":{
+          "shape":"ResourceList",
+          "documentation":"<p>Contains information on the resources involved in a finding.</p>"
+        },
+        "score":{
+          "shape":"Score",
+          "documentation":"<p>The Amazon Inspector score given to the finding.</p>"
+        },
+        "scoreDetails":{
+          "shape":"ScoreDetails",
+          "documentation":"<p>An object that contains details of the Amazon Inspector score.</p>"
+        },
+        "severity":{
+          "shape":"Severity",
+          "documentation":"<p>The severity of the finding.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the finding.</p>"
+        },
+        "title":{
+          "shape":"Title",
+          "documentation":"<p>The title of the finding.</p>"
+        },
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>The type of the finding.</p>"
+        },
+        "updatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time the finding was last updated at.</p>"
+        }
+      },
+      "documentation":"<p>The details of an enhanced image scan. This is returned when enhanced scanning is enabled for your private registry.</p>"
+    },
+    "EnhancedImageScanFindingList":{
+      "type":"list",
+      "member":{"shape":"EnhancedImageScanFinding"}
+    },
+    "Epoch":{"type":"integer"},
     "EvaluationTimestamp":{"type":"timestamp"},
     "ExceptionMessage":{"type":"string"},
     "ExpirationTimestamp":{"type":"timestamp"},
+    "FilePath":{"type":"string"},
+    "FindingArn":{"type":"string"},
     "FindingDescription":{"type":"string"},
     "FindingName":{"type":"string"},
     "FindingSeverity":{
@@ -1378,6 +1796,24 @@
         "policyText":{
           "shape":"RegistryPolicyText",
           "documentation":"<p>The JSON text of the permissions policy for a registry.</p>"
+        }
+      }
+    },
+    "GetRegistryScanningConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetRegistryScanningConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The ID of the registry.</p>"
+        },
+        "scanningConfiguration":{
+          "shape":"RegistryScanningConfiguration",
+          "documentation":"<p>The scanning configuration for the registry.</p>"
         }
       }
     },
@@ -1597,7 +2033,7 @@
         },
         "registryId":{
           "shape":"RegistryId",
-          "documentation":"<p>The AWS account ID associated with the registry to which the image belongs.</p>"
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry to which the image belongs.</p>"
         },
         "status":{
           "shape":"ReplicationStatus",
@@ -1655,13 +2091,17 @@
           "shape":"VulnerabilitySourceUpdateTimestamp",
           "documentation":"<p>The time when the vulnerability data was last scanned.</p>"
         },
+        "findingSeverityCounts":{
+          "shape":"FindingSeverityCounts",
+          "documentation":"<p>The image vulnerability counts, sorted by severity.</p>"
+        },
         "findings":{
           "shape":"ImageScanFindingList",
           "documentation":"<p>The findings from the image scan.</p>"
         },
-        "findingSeverityCounts":{
-          "shape":"FindingSeverityCounts",
-          "documentation":"<p>The image vulnerability counts, sorted by severity.</p>"
+        "enhancedFindings":{
+          "shape":"EnhancedImageScanFindingList",
+          "documentation":"<p>Details about the enhanced scan findings from Amazon Inspector.</p>"
         }
       },
       "documentation":"<p>The details of an image scan.</p>"
@@ -1732,6 +2172,10 @@
         "MUTABLE",
         "IMMUTABLE"
       ]
+    },
+    "ImageTagsList":{
+      "type":"list",
+      "member":{"shape":"ImageTag"}
     },
     "InitiateLayerUploadRequest":{
       "type":"structure",
@@ -2156,12 +2600,115 @@
       "max":100,
       "min":1
     },
+    "Metric":{"type":"string"},
     "NextToken":{"type":"string"},
+    "PackageManager":{"type":"string"},
+    "PackageVulnerabilityDetails":{
+      "type":"structure",
+      "members":{
+        "cvss":{
+          "shape":"CvssScoreList",
+          "documentation":"<p>An object that contains details about the CVSS score of a finding.</p>"
+        },
+        "referenceUrls":{
+          "shape":"ReferenceUrlsList",
+          "documentation":"<p>One or more URLs that contain details about this vulnerability type.</p>"
+        },
+        "relatedVulnerabilities":{
+          "shape":"RelatedVulnerabilitiesList",
+          "documentation":"<p>One or more vulnerabilities related to the one identified in this finding.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The source of the vulnerability information.</p>"
+        },
+        "sourceUrl":{
+          "shape":"Url",
+          "documentation":"<p>A URL to the source of the vulnerability information.</p>"
+        },
+        "vendorCreatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that this vulnerability was first added to the vendor's database.</p>"
+        },
+        "vendorSeverity":{
+          "shape":"Severity",
+          "documentation":"<p>The severity the vendor has given to this vulnerability type.</p>"
+        },
+        "vendorUpdatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time the vendor last updated this vulnerability in their database.</p>"
+        },
+        "vulnerabilityId":{
+          "shape":"VulnerabilityId",
+          "documentation":"<p>The ID given to this vulnerability.</p>"
+        },
+        "vulnerablePackages":{
+          "shape":"VulnerablePackagesList",
+          "documentation":"<p>The packages impacted by this vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>Information about a package vulnerability finding.</p>"
+    },
     "PartSize":{
       "type":"long",
       "min":0
     },
+    "Platform":{"type":"string"},
     "ProxyEndpoint":{"type":"string"},
+    "PullThroughCacheRule":{
+      "type":"structure",
+      "members":{
+        "ecrRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The Amazon ECR repository prefix associated with the pull through cache rule.</p>"
+        },
+        "upstreamRegistryUrl":{
+          "shape":"Url",
+          "documentation":"<p>The upstream registry URL associated with the pull through cache rule.</p>"
+        },
+        "createdAt":{
+          "shape":"CreationTimestamp",
+          "documentation":"<p>The date and time the pull through cache was created.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry the pull through cache rule is associated with.</p>"
+        }
+      },
+      "documentation":"<p>The details of a pull through cache rule.</p>"
+    },
+    "PullThroughCacheRuleAlreadyExistsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>A pull through cache rule with these settings already exists for the private registry.</p>",
+      "exception":true
+    },
+    "PullThroughCacheRuleList":{
+      "type":"list",
+      "member":{"shape":"PullThroughCacheRule"}
+    },
+    "PullThroughCacheRuleNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The pull through cache rule was not found. Specify a valid pull through cache rule and try again.</p>",
+      "exception":true
+    },
+    "PullThroughCacheRuleRepositoryPrefix":{
+      "type":"string",
+      "max":20,
+      "min":2,
+      "pattern":"[a-z0-9]+(?:[._-][a-z0-9]+)*"
+    },
+    "PullThroughCacheRuleRepositoryPrefixList":{
+      "type":"list",
+      "member":{"shape":"PullThroughCacheRuleRepositoryPrefix"},
+      "max":100,
+      "min":1
+    },
     "PushTimestamp":{"type":"timestamp"},
     "PutImageRequest":{
       "type":"structure",
@@ -2342,6 +2889,28 @@
         }
       }
     },
+    "PutRegistryScanningConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "scanType":{
+          "shape":"ScanType",
+          "documentation":"<p>The scanning type to set for the registry.</p> <p>By default, the <code>BASIC</code> scan type is used. When basic scanning is set, you may specify filters to determine which individual repositories, or all repositories, are scanned when new images are pushed. Alternatively, you can do manual scans of images with basic scanning.</p> <p>When the <code>ENHANCED</code> scan type is set, Amazon Inspector provides automated, continuous scanning of all repositories in your registry.</p>"
+        },
+        "rules":{
+          "shape":"RegistryScanningRuleList",
+          "documentation":"<p>The scanning rules to use for the registry. A scanning rule is used to determine which repository filters are used and at what frequency scanning will occur.</p>"
+        }
+      }
+    },
+    "PutRegistryScanningConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "registryScanningConfiguration":{
+          "shape":"RegistryScanningConfiguration",
+          "documentation":"<p>The scanning configuration for your registry.</p>"
+        }
+      }
+    },
     "PutReplicationConfigurationRequest":{
       "type":"structure",
       "required":["replicationConfiguration"],
@@ -2360,6 +2929,26 @@
           "documentation":"<p>The contents of the replication configuration for the registry.</p>"
         }
       }
+    },
+    "Reason":{"type":"string"},
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"Url",
+          "documentation":"<p>The URL address to the CVE remediation recommendations.</p>"
+        },
+        "text":{
+          "shape":"RecommendationText",
+          "documentation":"<p>The recommended course of action to remediate the finding.</p>"
+        }
+      },
+      "documentation":"<p>Details about the recommended course of action to remediate the finding.</p>"
+    },
+    "RecommendationText":{"type":"string"},
+    "ReferenceUrlsList":{
+      "type":"list",
+      "member":{"shape":"Url"}
     },
     "ReferencedImagesNotFoundException":{
       "type":"structure",
@@ -2391,6 +2980,60 @@
       "type":"string",
       "max":10240,
       "min":0
+    },
+    "RegistryScanningConfiguration":{
+      "type":"structure",
+      "members":{
+        "scanType":{
+          "shape":"ScanType",
+          "documentation":"<p>The type of scanning configured for the registry.</p>"
+        },
+        "rules":{
+          "shape":"RegistryScanningRuleList",
+          "documentation":"<p>The scanning rules associated with the registry.</p>"
+        }
+      },
+      "documentation":"<p>The scanning configuration for a private registry.</p>"
+    },
+    "RegistryScanningRule":{
+      "type":"structure",
+      "required":[
+        "scanFrequency",
+        "repositoryFilters"
+      ],
+      "members":{
+        "scanFrequency":{
+          "shape":"ScanFrequency",
+          "documentation":"<p>The frequency that scans are performed at for a private registry.</p>"
+        },
+        "repositoryFilters":{
+          "shape":"ScanningRepositoryFilterList",
+          "documentation":"<p>The repository filters associated with the scanning configuration for a private registry.</p>"
+        }
+      },
+      "documentation":"<p>The details of a scanning rule for a private registry.</p>"
+    },
+    "RegistryScanningRuleList":{
+      "type":"list",
+      "member":{"shape":"RegistryScanningRule"},
+      "max":2,
+      "min":0
+    },
+    "RelatedVulnerabilitiesList":{
+      "type":"list",
+      "member":{"shape":"RelatedVulnerability"}
+    },
+    "RelatedVulnerability":{"type":"string"},
+    "Release":{"type":"string"},
+    "Remediation":{
+      "type":"structure",
+      "members":{
+        "recommendation":{
+          "shape":"Recommendation",
+          "documentation":"<p>An object that contains information about the recommended course of action to remediate the finding.</p>"
+        }
+      },
+      "documentation":"<p>Information on how to remediate a finding.</p>"
     },
     "ReplicationConfiguration":{
       "type":"structure",
@@ -2591,6 +3234,103 @@
       "max":10240,
       "min":0
     },
+    "RepositoryScanningConfiguration":{
+      "type":"structure",
+      "members":{
+        "repositoryArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the repository.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository.</p>"
+        },
+        "scanOnPush":{
+          "shape":"ScanOnPushFlag",
+          "documentation":"<p>Whether or not scan on push is configured for the repository.</p>"
+        },
+        "scanFrequency":{
+          "shape":"ScanFrequency",
+          "documentation":"<p>The scan frequency for the repository.</p>"
+        },
+        "appliedScanFilters":{
+          "shape":"ScanningRepositoryFilterList",
+          "documentation":"<p>The scan filters applied to the repository.</p>"
+        }
+      },
+      "documentation":"<p>The details of the scanning configuration for a repository.</p>"
+    },
+    "RepositoryScanningConfigurationFailure":{
+      "type":"structure",
+      "members":{
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository.</p>"
+        },
+        "failureCode":{
+          "shape":"ScanningConfigurationFailureCode",
+          "documentation":"<p>The failure code.</p>"
+        },
+        "failureReason":{
+          "shape":"ScanningConfigurationFailureReason",
+          "documentation":"<p>The reason for the failure.</p>"
+        }
+      },
+      "documentation":"<p>The details about any failures associated with the scanning configuration of a repository.</p>"
+    },
+    "RepositoryScanningConfigurationFailureList":{
+      "type":"list",
+      "member":{"shape":"RepositoryScanningConfigurationFailure"}
+    },
+    "RepositoryScanningConfigurationList":{
+      "type":"list",
+      "member":{"shape":"RepositoryScanningConfiguration"}
+    },
+    "Resource":{
+      "type":"structure",
+      "members":{
+        "details":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>An object that contains details about the resource involved in a finding.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags attached to the resource.</p>"
+        },
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>The type of resource.</p>"
+        }
+      },
+      "documentation":"<p>Details about the resource involved in a finding.</p>"
+    },
+    "ResourceDetails":{
+      "type":"structure",
+      "members":{
+        "awsEcrContainerImage":{
+          "shape":"AwsEcrContainerImageDetails",
+          "documentation":"<p>An object that contains details about the Amazon ECR container image involved in the finding.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the resource involved in the finding.</p>"
+    },
+    "ResourceId":{"type":"string"},
+    "ResourceList":{
+      "type":"list",
+      "member":{"shape":"Resource"}
+    },
+    "ScanFrequency":{
+      "type":"string",
+      "enum":[
+        "SCAN_ON_PUSH",
+        "CONTINUOUS_SCAN",
+        "MANUAL"
+      ]
+    },
     "ScanNotFoundException":{
       "type":"structure",
       "members":{
@@ -2605,11 +3345,80 @@
       "enum":[
         "IN_PROGRESS",
         "COMPLETE",
-        "FAILED"
+        "FAILED",
+        "UNSUPPORTED_IMAGE",
+        "ACTIVE",
+        "PENDING",
+        "SCAN_ELIGIBILITY_EXPIRED",
+        "FINDINGS_UNAVAILABLE"
       ]
     },
     "ScanStatusDescription":{"type":"string"},
     "ScanTimestamp":{"type":"timestamp"},
+    "ScanType":{
+      "type":"string",
+      "enum":[
+        "BASIC",
+        "ENHANCED"
+      ]
+    },
+    "ScanningConfigurationFailureCode":{
+      "type":"string",
+      "enum":["REPOSITORY_NOT_FOUND"]
+    },
+    "ScanningConfigurationFailureReason":{"type":"string"},
+    "ScanningConfigurationRepositoryNameList":{
+      "type":"list",
+      "member":{"shape":"RepositoryName"},
+      "max":25,
+      "min":1
+    },
+    "ScanningRepositoryFilter":{
+      "type":"structure",
+      "required":[
+        "filter",
+        "filterType"
+      ],
+      "members":{
+        "filter":{
+          "shape":"ScanningRepositoryFilterValue",
+          "documentation":"<p>The filter to use when scanning.</p>"
+        },
+        "filterType":{
+          "shape":"ScanningRepositoryFilterType",
+          "documentation":"<p>The type associated with the filter.</p>"
+        }
+      },
+      "documentation":"<p>The details of a scanning repository filter.</p>"
+    },
+    "ScanningRepositoryFilterList":{
+      "type":"list",
+      "member":{"shape":"ScanningRepositoryFilter"},
+      "max":100,
+      "min":0
+    },
+    "ScanningRepositoryFilterType":{
+      "type":"string",
+      "enum":["WILDCARD"]
+    },
+    "ScanningRepositoryFilterValue":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-z0-9*](?:[._\\-/a-z0-9*]?[a-z0-9*]+)*$"
+    },
+    "Score":{"type":"double"},
+    "ScoreDetails":{
+      "type":"structure",
+      "members":{
+        "cvss":{
+          "shape":"CvssScoreDetails",
+          "documentation":"<p>An object that contains details about the CVSS score given to a finding.</p>"
+        }
+      },
+      "documentation":"<p>Information about the Amazon Inspector score given to a finding.</p>"
+    },
+    "ScoringVector":{"type":"string"},
     "ServerException":{
       "type":"structure",
       "members":{
@@ -2664,10 +3473,13 @@
         }
       }
     },
+    "Severity":{"type":"string"},
     "SeverityCount":{
       "type":"integer",
       "min":0
     },
+    "Source":{"type":"string"},
+    "SourceLayerHash":{"type":"string"},
     "StartImageScanRequest":{
       "type":"structure",
       "required":[
@@ -2743,6 +3555,7 @@
         }
       }
     },
+    "Status":{"type":"string"},
     "Tag":{
       "type":"structure",
       "members":{
@@ -2797,6 +3610,12 @@
       ]
     },
     "TagValue":{"type":"string"},
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "Title":{"type":"string"},
     "TooManyTagsException":{
       "type":"structure",
       "members":{
@@ -2805,12 +3624,21 @@
       "documentation":"<p>The list of tags on the repository is over the limit. The maximum number of tags that can be applied to a repository is 50.</p>",
       "exception":true
     },
+    "Type":{"type":"string"},
     "UnsupportedImageTypeException":{
       "type":"structure",
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p>The image is of a type that cannot be scanned.</p>",
+      "exception":true
+    },
+    "UnsupportedUpstreamRegistryException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The specified upstream registry isn't supported.</p>",
       "exception":true
     },
     "UntagResourceRequest":{
@@ -2916,7 +3744,52 @@
       "documentation":"<p>There was an exception validating this request.</p>",
       "exception":true
     },
-    "VulnerabilitySourceUpdateTimestamp":{"type":"timestamp"}
+    "Version":{"type":"string"},
+    "VulnerabilityId":{"type":"string"},
+    "VulnerabilitySourceUpdateTimestamp":{"type":"timestamp"},
+    "VulnerablePackage":{
+      "type":"structure",
+      "members":{
+        "arch":{
+          "shape":"Arch",
+          "documentation":"<p>The architecture of the vulnerable package.</p>"
+        },
+        "epoch":{
+          "shape":"Epoch",
+          "documentation":"<p>The epoch of the vulnerable package.</p>"
+        },
+        "filePath":{
+          "shape":"FilePath",
+          "documentation":"<p>The file path of the vulnerable package.</p>"
+        },
+        "name":{
+          "shape":"VulnerablePackageName",
+          "documentation":"<p>The name of the vulnerable package.</p>"
+        },
+        "packageManager":{
+          "shape":"PackageManager",
+          "documentation":"<p>The package manager of the vulnerable package.</p>"
+        },
+        "release":{
+          "shape":"Release",
+          "documentation":"<p>The release of the vulnerable package.</p>"
+        },
+        "sourceLayerHash":{
+          "shape":"SourceLayerHash",
+          "documentation":"<p>The source layer hash of the vulnerable package.</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The version of the vulnerable package.</p>"
+        }
+      },
+      "documentation":"<p>Information on the vulnerable package identified by a finding.</p>"
+    },
+    "VulnerablePackageName":{"type":"string"},
+    "VulnerablePackagesList":{
+      "type":"list",
+      "member":{"shape":"VulnerablePackage"}
+    }
   },
   "documentation":"<fullname>Amazon Elastic Container Registry</fullname> <p>Amazon Elastic Container Registry (Amazon ECR) is a managed container image registry service. Customers can use the familiar Docker CLI, or their preferred client, to push, pull, and manage images. Amazon ECR provides a secure, scalable, and reliable registry for your Docker or Open Container Initiative (OCI) images. Amazon ECR supports private repositories with resource-based permissions using IAM so that specific users or Amazon EC2 instances can access repositories and images.</p> <p>Amazon ECR has service endpoints in each supported Region. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/ecr.html\">Amazon ECR endpoints</a> in the <i>Amazon Web Services General Reference</i>.</p>"
 }

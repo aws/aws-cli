@@ -53,7 +53,28 @@
         {"shape":"InternalServerError"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Analyzes an input document for financially related relationships between text.</p> <p>Information is returned as <code>ExpenseDocuments</code> and seperated as follows.</p> <ul> <li> <p> <code>LineItemGroups</code>- A data set containing <code>LineItems</code> which store information about the lines of text, such as an item purchased and its price on a receipt.</p> </li> <li> <p> <code>SummaryFields</code>- Contains all other information a receipt, such as header information or the vendors name.</p> </li> </ul>"
+      "documentation":"<p> <code>AnalyzeExpense</code> synchronously analyzes an input document for financially related relationships between text.</p> <p>Information is returned as <code>ExpenseDocuments</code> and seperated as follows.</p> <ul> <li> <p> <code>LineItemGroups</code>- A data set containing <code>LineItems</code> which store information about the lines of text, such as an item purchased and its price on a receipt.</p> </li> <li> <p> <code>SummaryFields</code>- Contains all other information a receipt, such as header information or the vendors name.</p> </li> </ul>"
+    },
+    "AnalyzeID":{
+      "name":"AnalyzeID",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AnalyzeIDRequest"},
+      "output":{"shape":"AnalyzeIDResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidS3ObjectException"},
+        {"shape":"UnsupportedDocumentException"},
+        {"shape":"DocumentTooLargeException"},
+        {"shape":"BadDocumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Analyzes identity documents for relevant information. This information is extracted and returned as <code>IdentityDocumentFields</code>, which records both the normalized field and value of the extracted text.</p>"
     },
     "DetectDocumentText":{
       "name":"DetectDocumentText",
@@ -276,6 +297,49 @@
         }
       }
     },
+    "AnalyzeIDDetections":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"String",
+          "documentation":"<p>Text of either the normalized field or value associated with it.</p>"
+        },
+        "NormalizedValue":{
+          "shape":"NormalizedValue",
+          "documentation":"<p>Only returned for dates, returns the type of value detected and the date written in a more machine readable way.</p>"
+        },
+        "Confidence":{
+          "shape":"Percent",
+          "documentation":"<p>The confidence score of the detected text.</p>"
+        }
+      },
+      "documentation":"<p>Used to contain the information detected by an AnalyzeID operation.</p>"
+    },
+    "AnalyzeIDRequest":{
+      "type":"structure",
+      "required":["DocumentPages"],
+      "members":{
+        "DocumentPages":{
+          "shape":"DocumentPages",
+          "documentation":"<p>The document being passed to AnalyzeID.</p>"
+        }
+      }
+    },
+    "AnalyzeIDResponse":{
+      "type":"structure",
+      "members":{
+        "IdentityDocuments":{
+          "shape":"IdentityDocumentList",
+          "documentation":"<p>The list of documents processed by AnalyzeID. Includes a number denoting their place in the list and the response structure for the document.</p>"
+        },
+        "DocumentMetadata":{"shape":"DocumentMetadata"},
+        "AnalyzeIDModelVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the AnalyzeIdentity API being used to process documents.</p>"
+        }
+      }
+    },
     "BadDocumentException":{
       "type":"structure",
       "members":{
@@ -462,6 +526,12 @@
       },
       "documentation":"<p>Information about the input document.</p>"
     },
+    "DocumentPages":{
+      "type":"list",
+      "member":{"shape":"Document"},
+      "max":2,
+      "min":1
+    },
     "DocumentTooLargeException":{
       "type":"structure",
       "members":{
@@ -538,7 +608,7 @@
           "documentation":"<p>The page number the value was detected on.</p>"
         }
       },
-      "documentation":"<p>Breakdown of detected information, seperated into the catagories Type, LableDetection, and ValueDetection</p>"
+      "documentation":"<p>Breakdown of detected information, seperated into the catagories Type, LabelDetection, and ValueDetection</p>"
     },
     "ExpenseFieldList":{
       "type":"list",
@@ -842,6 +912,36 @@
       "documentation":"<p>A <code>ClientRequestToken</code> input parameter was reused with an operation, but at least one of the other input parameters is different from the previous call to the operation. </p>",
       "exception":true
     },
+    "IdentityDocument":{
+      "type":"structure",
+      "members":{
+        "DocumentIndex":{
+          "shape":"UInteger",
+          "documentation":"<p>Denotes the placement of a document in the IdentityDocument list. The first document is marked 1, the second 2 and so on.</p>"
+        },
+        "IdentityDocumentFields":{
+          "shape":"IdentityDocumentFieldList",
+          "documentation":"<p>The structure used to record information extracted from identity documents. Contains both normalized field and value of the extracted text.</p>"
+        }
+      },
+      "documentation":"<p>The structure that lists each document processed in an AnalyzeID operation.</p>"
+    },
+    "IdentityDocumentField":{
+      "type":"structure",
+      "members":{
+        "Type":{"shape":"AnalyzeIDDetections"},
+        "ValueDetection":{"shape":"AnalyzeIDDetections"}
+      },
+      "documentation":"<p>Structure containing both the normalized type of the extracted information and the text associated with it. These are extracted as Type and Value respectively.</p>"
+    },
+    "IdentityDocumentFieldList":{
+      "type":"list",
+      "member":{"shape":"IdentityDocumentField"}
+    },
+    "IdentityDocumentList":{
+      "type":"list",
+      "member":{"shape":"IdentityDocument"}
+    },
     "ImageBlob":{
       "type":"blob",
       "max":10485760,
@@ -956,6 +1056,20 @@
     "NonEmptyString":{
       "type":"string",
       "pattern":".*\\S.*"
+    },
+    "NormalizedValue":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the date, written as Year-Month-DayTHour:Minute:Second.</p>"
+        },
+        "ValueType":{
+          "shape":"ValueType",
+          "documentation":"<p>The normalized type of the value detected. In this case, DATE.</p>"
+        }
+      },
+      "documentation":"<p>Contains information relating to dates in a document, including the type of value, and the value.</p>"
     },
     "NotificationChannel":{
       "type":"structure",
@@ -1260,8 +1374,12 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The format of the input document isn't supported. Documents for synchronous operations can be in PNG or JPEG format. Documents for asynchronous operations can also be in PDF format.</p>",
+      "documentation":"<p>The format of the input document isn't supported. Documents for synchronous operations can be in PNG or JPEG format only. Documents for asynchronous operations can be in PDF format.</p>",
       "exception":true
+    },
+    "ValueType":{
+      "type":"string",
+      "enum":["DATE"]
     },
     "Warning":{
       "type":"structure",

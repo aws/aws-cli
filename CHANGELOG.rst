@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.4.3
+=====
+
+* api-change:``personalize``: This release adds API support for Recommenders and BatchSegmentJobs.
+* api-change:``dataexchange``: This release enables providers and subscribers to use Data Set, Job, and Asset operations to work with API assets from Amazon API Gateway. In addition, this release enables subscribers to use the SendApiAsset operation to invoke a provider's Amazon API Gateway API that they are entitled to.
+* api-change:``s3``: Amazon S3 Event Notifications adds Amazon EventBridge as a destination and supports additional event types. The PutBucketNotificationConfiguration API can now skip validation of Amazon SQS, Amazon SNS and AWS Lambda destinations.
+* api-change:``ssm``: Added two new attributes to DescribeInstanceInformation called SourceId and SourceType along with new string filters SourceIds and SourceTypes to filter instance records.
+* api-change:``textract``: This release adds support for synchronously analyzing identity documents through a new API: AnalyzeID
+* api-change:``migration-hub-refactor-spaces``: This is the initial SDK release for AWS Migration Hub Refactor Spaces
+* api-change:``ecr``: This release adds supports for pull through cache rules and enhanced scanning.
+* api-change:``inspector2``: This release adds support for the new Amazon Inspector API. The new Amazon Inspector can automatically discover and scan Amazon EC2 instances and Amazon ECR container images for software vulnerabilities and unintended network exposure, and report centralized findings across multiple AWS accounts.
+* api-change:``evidently``: Introducing Amazon CloudWatch Evidently. This is the first public release of Amazon CloudWatch Evidently.
+* api-change:``rum``: This is the first public release of CloudWatch RUM
+* api-change:``ec2``: This release adds support for G5g and M6a instances. This release also adds support for Amazon EBS Snapshots Archive, a feature that enables you to archive your EBS snapshots; and Recycle Bin, a feature that enables you to protect your EBS snapshots against accidental deletion.
+* api-change:``rbin``: This release adds support for Recycle Bin.
+* enhancement:Wizards: Add save to file option for more details panel (`#6574 <https://github.com/aws/aws-cli/issues/6574>`__).
+* enhancement:``new-rule``: Add support for CloudWatch Logs as a target and CodeCommit as a source (`#6575 <https://github.com/aws/aws-cli/issues/6575>`__).
+* api-change:``wellarchitected``: This update provides support for Well-Architected API users to use custom lens features.
+* enhancement:``new-rule``: Add support for specifying custom event pattern for new-rule EventBridge wizard (`#6573 <https://github.com/aws/aws-cli/issues/6573>`__).
+* api-change:``personalize-runtime``: This release adds inference support for Recommenders.
+* api-change:``compute-optimizer``: Adds support for the enhanced infrastructure metrics paid feature. Also adds support for two new sets of resource efficiency metrics, including savings opportunity metrics and performance improvement opportunity metrics.
+* api-change:``iotsitewise``: AWS IoT SiteWise now supports retention configuration for the hot tier storage.
+
+
 2.4.2
 =====
 

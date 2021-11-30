@@ -3178,8 +3178,24 @@
         "s3:Replication:OperationFailedReplication",
         "s3:Replication:OperationNotTracked",
         "s3:Replication:OperationMissedThreshold",
-        "s3:Replication:OperationReplicatedAfterThreshold"
+        "s3:Replication:OperationReplicatedAfterThreshold",
+        "s3:ObjectRestore:Delete",
+        "s3:LifecycleTransition",
+        "s3:IntelligentTiering",
+        "s3:ObjectAcl:Put",
+        "s3:LifecycleExpiration:*",
+        "s3:LifecycleExpiration:Delete",
+        "s3:LifecycleExpiration:DeleteMarkerCreated",
+        "s3:ObjectTagging:*",
+        "s3:ObjectTagging:Put",
+        "s3:ObjectTagging:Delete"
       ]
+    },
+    "EventBridgeConfiguration":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A container for specifying the configuration for Amazon EventBridge.</p>"
     },
     "EventList":{
       "type":"list",
@@ -6402,6 +6418,10 @@
           "shape":"LambdaFunctionConfigurationList",
           "documentation":"<p>Describes the Lambda functions to invoke and the events for which to invoke them.</p>",
           "locationName":"CloudFunctionConfiguration"
+        },
+        "EventBridgeConfiguration":{
+          "shape":"EventBridgeConfiguration",
+          "documentation":"<p>Enables delivery of events to Amazon EventBridge.</p>"
         }
       },
       "documentation":"<p>A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.</p>"
@@ -7278,6 +7298,12 @@
           "documentation":"<p>The account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail with an HTTP <code>403 (Access Denied)</code> error.</p>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
+        },
+        "SkipDestinationValidation":{
+          "shape":"SkipValidation",
+          "documentation":"<p>Skips validation of Amazon SQS, Amazon SNS, and Lambda destinations. True or false value.</p>",
+          "location":"header",
+          "locationName":"x-amz-skip-destination-validation"
         }
       },
       "payload":"NotificationConfiguration"
@@ -8984,6 +9010,7 @@
     },
     "Setting":{"type":"boolean"},
     "Size":{"type":"integer"},
+    "SkipValidation":{"type":"boolean"},
     "SourceSelectionCriteria":{
       "type":"structure",
       "members":{

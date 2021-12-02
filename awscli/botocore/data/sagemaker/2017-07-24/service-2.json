@@ -353,6 +353,20 @@
       ],
       "documentation":"<p>Creates a version of the SageMaker image specified by <code>ImageName</code>. The version represents the Amazon Container Registry (ECR) container image specified by <code>BaseImage</code>.</p>"
     },
+    "CreateInferenceRecommendationsJob":{
+      "name":"CreateInferenceRecommendationsJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInferenceRecommendationsJobRequest"},
+      "output":{"shape":"CreateInferenceRecommendationsJobResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Starts a recommendation job. You can create either an instance recommendation or load test job.</p>"
+    },
     "CreateLabelingJob":{
       "name":"CreateLabelingJob",
       "http":{
@@ -1406,6 +1420,19 @@
       ],
       "documentation":"<p>Describes a version of a SageMaker image.</p>"
     },
+    "DescribeInferenceRecommendationsJob":{
+      "name":"DescribeInferenceRecommendationsJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInferenceRecommendationsJobRequest"},
+      "output":{"shape":"DescribeInferenceRecommendationsJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Provides the results of the Inference Recommender job. One or more recommendation jobs are returned.</p>"
+    },
     "DescribeLabelingJob":{
       "name":"DescribeLabelingJob",
       "http":{
@@ -1418,6 +1445,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Gets information about a labeling job.</p>"
+    },
+    "DescribeLineageGroup":{
+      "name":"DescribeLineageGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLineageGroupRequest"},
+      "output":{"shape":"DescribeLineageGroupResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Provides a list of properties for the requested lineage group. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/xaccount-lineage-tracking.html\"> Cross-Account Lineage Tracking </a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
     },
     "DescribeModel":{
       "name":"DescribeModel",
@@ -1734,6 +1774,19 @@
       "output":{"shape":"GetDeviceFleetReportResponse"},
       "documentation":"<p>Describes a fleet.</p>"
     },
+    "GetLineageGroupPolicy":{
+      "name":"GetLineageGroupPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetLineageGroupPolicyRequest"},
+      "output":{"shape":"GetLineageGroupPolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>The resource policy for the lineage group.</p>"
+    },
     "GetModelPackageGroupPolicy":{
       "name":"GetModelPackageGroupPolicy",
       "http":{
@@ -2032,6 +2085,16 @@
       "output":{"shape":"ListImagesResponse"},
       "documentation":"<p>Lists the images in your account and their properties. The list can be filtered by creation time or modified time, and whether the image name contains a specified string.</p>"
     },
+    "ListInferenceRecommendationsJobs":{
+      "name":"ListInferenceRecommendationsJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInferenceRecommendationsJobsRequest"},
+      "output":{"shape":"ListInferenceRecommendationsJobsResponse"},
+      "documentation":"<p>Lists recommendation jobs that satisfy various filters.</p>"
+    },
     "ListLabelingJobs":{
       "name":"ListLabelingJobs",
       "http":{
@@ -2055,6 +2118,16 @@
       ],
       "documentation":"<p>Gets a list of labeling jobs assigned to a specified work team.</p>"
     },
+    "ListLineageGroups":{
+      "name":"ListLineageGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListLineageGroupsRequest"},
+      "output":{"shape":"ListLineageGroupsResponse"},
+      "documentation":"<p>A list of lineage groups shared with your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/xaccount-lineage-tracking.html\"> Cross-Account Lineage Tracking </a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
+    },
     "ListModelBiasJobDefinitions":{
       "name":"ListModelBiasJobDefinitions",
       "http":{
@@ -2074,6 +2147,16 @@
       "input":{"shape":"ListModelExplainabilityJobDefinitionsRequest"},
       "output":{"shape":"ListModelExplainabilityJobDefinitionsResponse"},
       "documentation":"<p>Lists model explainability job definitions that satisfy various filters.</p>"
+    },
+    "ListModelMetadata":{
+      "name":"ListModelMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListModelMetadataRequest"},
+      "output":{"shape":"ListModelMetadataResponse"},
+      "documentation":"<p>Lists the domain, framework, task, and model name of standard machine learning models found in common model zoos.</p>"
     },
     "ListModelPackageGroups":{
       "name":"ListModelPackageGroups",
@@ -2356,6 +2439,19 @@
       "output":{"shape":"PutModelPackageGroupPolicyOutput"},
       "documentation":"<p>Adds a resouce policy to control access to a model group. For information about resoure policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_identity-vs-resource.html\">Identity-based policies and resource-based policies</a> in the <i>Amazon Web Services Identity and Access Management User Guide.</i>.</p>"
     },
+    "QueryLineage":{
+      "name":"QueryLineage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"QueryLineageRequest"},
+      "output":{"shape":"QueryLineageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Use this action to inspect your lineage and discover relationships between entities. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/querying-lineage-entities.html\"> Querying Lineage Entities</a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
+    },
     "RegisterDevices":{
       "name":"RegisterDevices",
       "http":{
@@ -2516,6 +2612,18 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops a running hyperparameter tuning job and all running training jobs that the tuning job launched.</p> <p>All model artifacts output from the training jobs are stored in Amazon Simple Storage Service (Amazon S3). All data that the training jobs write to Amazon CloudWatch Logs are still available in CloudWatch. After the tuning job moves to the <code>Stopped</code> state, it releases all reserved resources for the tuning job.</p>"
+    },
+    "StopInferenceRecommendationsJob":{
+      "name":"StopInferenceRecommendationsJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopInferenceRecommendationsJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops an Inference Recommender job.</p>"
     },
     "StopLabelingJob":{
       "name":"StopLabelingJob",
@@ -3067,6 +3175,50 @@
       "type":"list",
       "member":{"shape":"CodeRepositoryNameOrUrl"},
       "max":3
+    },
+    "AdditionalInferenceSpecificationDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Containers"
+      ],
+      "members":{
+        "Name":{
+          "shape":"EntityName",
+          "documentation":"<p>A unique name to identify the additional inference specification. The name must be unique within the list of your additional inference specifications for a particular model package.</p>"
+        },
+        "Description":{
+          "shape":"EntityDescription",
+          "documentation":"<p>A description of the additional Inference specification</p>"
+        },
+        "Containers":{
+          "shape":"ModelPackageContainerDefinitionList",
+          "documentation":"<p>The Amazon ECR registry path of the Docker image that contains the inference code.</p>"
+        },
+        "SupportedTransformInstanceTypes":{
+          "shape":"TransformInstanceTypes",
+          "documentation":"<p>A list of the instance types on which a transformation job can be run or on which an endpoint can be deployed.</p>"
+        },
+        "SupportedRealtimeInferenceInstanceTypes":{
+          "shape":"RealtimeInferenceInstanceTypes",
+          "documentation":"<p>A list of the instance types that are used to generate inferences in real-time.</p>"
+        },
+        "SupportedContentTypes":{
+          "shape":"ContentTypes",
+          "documentation":"<p>The supported MIME types for the input data.</p>"
+        },
+        "SupportedResponseMIMETypes":{
+          "shape":"ResponseMIMETypes",
+          "documentation":"<p>The supported MIME types for the output data.</p>"
+        }
+      },
+      "documentation":"<p>A structure of additional Inference Specification. Additional Inference Specification specifies details about inference jobs that can be run with models based on this model package</p>"
+    },
+    "AdditionalInferenceSpecifications":{
+      "type":"list",
+      "member":{"shape":"AdditionalInferenceSpecificationDefinition"},
+      "max":15,
+      "min":1
     },
     "AgentVersion":{
       "type":"structure",
@@ -4386,7 +4538,9 @@
         "Report":{
           "shape":"MetricsSource",
           "documentation":"<p>The bias report for a model</p>"
-        }
+        },
+        "PreTrainingReport":{"shape":"MetricsSource"},
+        "PostTrainingReport":{"shape":"MetricsSource"}
       },
       "documentation":"<p>Contains bias metrics for a model.</p>"
     },
@@ -4620,6 +4774,24 @@
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "CategoricalParameter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String64",
+          "documentation":"<p>The Name of the environment variable.</p>"
+        },
+        "Value":{
+          "shape":"CategoricalParameterRangeValues",
+          "documentation":"<p>The list of values you can pass.</p>"
+        }
+      },
+      "documentation":"<p>Environment parameters you want to benchmark your load test against.</p>"
+    },
     "CategoricalParameterRange":{
       "type":"structure",
       "required":[
@@ -4649,11 +4821,23 @@
       },
       "documentation":"<p>Defines the possible values for a categorical hyperparameter.</p>"
     },
+    "CategoricalParameterRangeValues":{
+      "type":"list",
+      "member":{"shape":"String128"},
+      "max":3,
+      "min":1
+    },
     "CategoricalParameterRanges":{
       "type":"list",
       "member":{"shape":"CategoricalParameterRange"},
       "max":20,
       "min":0
+    },
+    "CategoricalParameters":{
+      "type":"list",
+      "member":{"shape":"CategoricalParameter"},
+      "max":5,
+      "min":1
     },
     "Cents":{
       "type":"integer",
@@ -4770,6 +4954,44 @@
     "Cidrs":{
       "type":"list",
       "member":{"shape":"Cidr"}
+    },
+    "ClarifyCheckStepMetadata":{
+      "type":"structure",
+      "members":{
+        "CheckType":{
+          "shape":"String256",
+          "documentation":"<p>The type of the Clarify Check step</p>"
+        },
+        "BaselineUsedForDriftCheckConstraints":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of baseline constraints file to be used for the drift check.</p>"
+        },
+        "CalculatedBaselineConstraints":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of the newly calculated baseline constraints file.</p>"
+        },
+        "ModelPackageGroupName":{
+          "shape":"String256",
+          "documentation":"<p>The model package group name.</p>"
+        },
+        "ViolationReport":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of the violation report if violations are detected.</p>"
+        },
+        "CheckJobArn":{
+          "shape":"String256",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the check processing job that was run by this step's execution.</p>"
+        },
+        "SkipCheck":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag indicates if the drift check against the previous baseline will be skipped or not. If it is set to <code>False</code>, the previous baseline of the configured check type must be available.</p>"
+        },
+        "RegisterNewBaseline":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag indicates if a newly calculated baseline can be accessed through step properties <code>BaselineUsedForDriftCheckConstraints</code> and <code>BaselineUsedForDriftCheckStatistics</code>. If it is set to <code>False</code>, the previous baseline of the configured check type must also be available. These can be accessed through the <code>BaselineUsedForDriftCheckConstraints</code> property. </p>"
+        }
+      },
+      "documentation":"<p>The container for the metadata for the ClarifyCheck step. For more information, see the topic on <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#step-type-clarify-check\">ClarifyCheck step</a> in the <i>Amazon SageMaker Developer Guide</i>. </p>"
     },
     "ClientId":{
       "type":"string",
@@ -5119,6 +5341,10 @@
         "ModelPackageName":{
           "shape":"VersionedArnOrName",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the model package to use to create the model.</p>"
+        },
+        "InferenceSpecificationName":{
+          "shape":"InferenceSpecificationName",
+          "documentation":"<p>The inference specification name in the model package version.</p>"
         },
         "MultiModelConfig":{
           "shape":"MultiModelConfig",
@@ -5597,7 +5823,6 @@
       "required":[
         "CompilationJobName",
         "RoleArn",
-        "InputConfig",
         "OutputConfig",
         "StoppingCondition"
       ],
@@ -5609,6 +5834,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to perform tasks on your behalf. </p> <p>During model compilation, Amazon SageMaker needs your permission to:</p> <ul> <li> <p>Read input data from an S3 bucket</p> </li> <li> <p>Write model artifacts to an S3 bucket</p> </li> <li> <p>Write logs to Amazon CloudWatch Logs</p> </li> <li> <p>Publish metrics to Amazon CloudWatch</p> </li> </ul> <p>You grant permissions for all of these tasks to an IAM role. To pass this role to Amazon SageMaker, the caller of this API must have the <code>iam:PassRole</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html\">Amazon SageMaker Roles.</a> </p>"
+        },
+        "ModelPackageVersionArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a versioned model package. Provide either a <code>ModelPackageVersionArn</code> or an <code>InputConfig</code> object in the request syntax. The presence of both objects in the <code>CreateCompilationJob</code> request will return an exception.</p>"
         },
         "InputConfig":{
           "shape":"InputConfig",
@@ -6238,6 +6467,55 @@
         }
       }
     },
+    "CreateInferenceRecommendationsJobRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobType",
+        "RoleArn",
+        "InputConfig"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>A name for the recommendation job. The name must be unique within the Amazon Web Services Region and within your Amazon Web Services account.</p>"
+        },
+        "JobType":{
+          "shape":"RecommendationJobType",
+          "documentation":"<p>Defines the type of recommendation job. Specify <code>Default</code> to initiate an instance recommendation and <code>Advanced</code> to initiate a load test. If left unspecified, Amazon SageMaker Inference Recommender will run an instance recommendation (<code>DEFAULT</code>) job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
+        },
+        "InputConfig":{
+          "shape":"RecommendationJobInputConfig",
+          "documentation":"<p>Provides information about the versioned model package Amazon Resource Name (ARN), the traffic pattern, and endpoint configurations.</p>"
+        },
+        "JobDescription":{
+          "shape":"RecommendationJobDescription",
+          "documentation":"<p>Description of the recommendation job.</p>"
+        },
+        "StoppingConditions":{
+          "shape":"RecommendationJobStoppingConditions",
+          "documentation":"<p>A set of conditions for stopping a recommendation job. If any of the conditions are met, the job is automatically stopped.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata that you apply to Amazon Web Services resources to help you categorize and organize them. Each tag consists of a key and a value, both of which you define. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in the Amazon Web Services General Reference.</p>"
+        }
+      }
+    },
+    "CreateInferenceRecommendationsJobResponse":{
+      "type":"structure",
+      "required":["JobArn"],
+      "members":{
+        "JobArn":{
+          "shape":"RecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation job.</p>"
+        }
+      }
+    },
     "CreateLabelingJobRequest":{
       "type":"structure",
       "required":[
@@ -6540,6 +6818,26 @@
         "CustomerMetadataProperties":{
           "shape":"CustomerMetadataMap",
           "documentation":"<p>The metadata properties associated with the model package versions.</p>"
+        },
+        "DriftCheckBaselines":{
+          "shape":"DriftCheckBaselines",
+          "documentation":"<p>Represents the drift check baselines that can be used when the model monitor is set using the model package. For more information, see the topic on <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection\">Drift Detection against Previous Baselines in SageMaker Pipelines</a> in the <i>Amazon SageMaker Developer Guide</i>. </p>"
+        },
+        "Domain":{
+          "shape":"String",
+          "documentation":"<p>The machine learning domain of your model package and its components. Common machine learning domains include computer vision and natural language processing.</p>"
+        },
+        "Task":{
+          "shape":"String",
+          "documentation":"<p>The machine learning task your model package accomplishes. Common machine learning tasks include object detection and image classification.</p>"
+        },
+        "SamplePayloadUrl":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) path where the sample payload are stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix).</p>"
+        },
+        "AdditionalInferenceSpecifications":{
+          "shape":"AdditionalInferenceSpecifications",
+          "documentation":"<p>An array of additional Inference Specification objects. Each additional Inference Specification specifies artifacts based on this model package that can be used on inference endpoints. Generally used with SageMaker Neo to store the compiled artifacts. </p>"
         }
       }
     },
@@ -8378,7 +8676,7 @@
       "type":"structure",
       "members":{
         "ActionName":{
-          "shape":"ExperimentEntityName",
+          "shape":"ExperimentEntityNameOrArn",
           "documentation":"<p>The name of the action.</p>"
         },
         "ActionArn":{
@@ -8415,7 +8713,11 @@
           "documentation":"<p>When the action was last modified.</p>"
         },
         "LastModifiedBy":{"shape":"UserContext"},
-        "MetadataProperties":{"shape":"MetadataProperties"}
+        "MetadataProperties":{"shape":"MetadataProperties"},
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
+        }
       }
     },
     "DescribeAlgorithmInput":{
@@ -8610,7 +8912,7 @@
       "type":"structure",
       "members":{
         "ArtifactName":{
-          "shape":"ExperimentEntityName",
+          "shape":"ExperimentEntityNameOrArn",
           "documentation":"<p>The name of the artifact.</p>"
         },
         "ArtifactArn":{
@@ -8639,7 +8941,11 @@
           "documentation":"<p>When the artifact was last modified.</p>"
         },
         "LastModifiedBy":{"shape":"UserContext"},
-        "MetadataProperties":{"shape":"MetadataProperties"}
+        "MetadataProperties":{"shape":"MetadataProperties"},
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
+        }
       }
     },
     "DescribeAutoMLJobRequest":{
@@ -8847,6 +9153,10 @@
           "shape":"InferenceImage",
           "documentation":"<p>The inference image to use when compiling a model. Specify an image only if the target device is a cloud instance.</p>"
         },
+        "ModelPackageVersionArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the versioned model package that was provided to SageMaker Neo when you initiated a compilation job.</p>"
+        },
         "CreationTime":{
           "shape":"CreationTime",
           "documentation":"<p>The time that the model compilation job was created.</p>"
@@ -8890,7 +9200,7 @@
       "required":["ContextName"],
       "members":{
         "ContextName":{
-          "shape":"ExperimentEntityName",
+          "shape":"ExperimentEntityNameOrArn",
           "documentation":"<p>The name of the context to describe.</p>"
         }
       }
@@ -8931,7 +9241,11 @@
           "shape":"Timestamp",
           "documentation":"<p>When the context was last modified.</p>"
         },
-        "LastModifiedBy":{"shape":"UserContext"}
+        "LastModifiedBy":{"shape":"UserContext"},
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
+        }
       }
     },
     "DescribeDataQualityJobDefinitionRequest":{
@@ -9841,6 +10155,83 @@
         }
       }
     },
+    "DescribeInferenceRecommendationsJobRequest":{
+      "type":"structure",
+      "required":["JobName"],
+      "members":{
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of the job. The name must be unique within an Amazon Web Services Region in the Amazon Web Services account.</p>"
+        }
+      }
+    },
+    "DescribeInferenceRecommendationsJobResponse":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobType",
+        "JobArn",
+        "RoleArn",
+        "Status",
+        "CreationTime",
+        "LastModifiedTime",
+        "InputConfig"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of the job. The name must be unique within an Amazon Web Services Region in the Amazon Web Services account.</p>"
+        },
+        "JobDescription":{
+          "shape":"RecommendationJobDescription",
+          "documentation":"<p>The job description that you provided when you initiated the job.</p>"
+        },
+        "JobType":{
+          "shape":"RecommendationJobType",
+          "documentation":"<p>The job type that you provided when you initiated the job.</p>"
+        },
+        "JobArn":{
+          "shape":"RecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role you provided when you initiated the job.</p>"
+        },
+        "Status":{
+          "shape":"RecommendationJobStatus",
+          "documentation":"<p>The status of the job.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>A timestamp that shows when the job was created.</p>"
+        },
+        "CompletionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that shows when the job completed.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>A timestamp that shows when the job was last modified.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the job fails, provides information why the job failed.</p>"
+        },
+        "InputConfig":{
+          "shape":"RecommendationJobInputConfig",
+          "documentation":"<p>Returns information about the versioned model package Amazon Resource Name (ARN), the traffic pattern, and endpoint configurations you provided when you initiated the job.</p>"
+        },
+        "StoppingConditions":{
+          "shape":"RecommendationJobStoppingConditions",
+          "documentation":"<p>The stopping conditions that you provided when you initiated the job.</p>"
+        },
+        "InferenceRecommendations":{
+          "shape":"InferenceRecommendations",
+          "documentation":"<p>The recommendations made by Inference Recommender.</p>"
+        }
+      }
+    },
     "DescribeLabelingJobRequest":{
       "type":"structure",
       "required":["LabelingJobName"],
@@ -9939,6 +10330,47 @@
           "shape":"LabelingJobOutput",
           "documentation":"<p>The location of the output produced by the labeling job.</p>"
         }
+      }
+    },
+    "DescribeLineageGroupRequest":{
+      "type":"structure",
+      "required":["LineageGroupName"],
+      "members":{
+        "LineageGroupName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The name of the lineage group.</p>"
+        }
+      }
+    },
+    "DescribeLineageGroupResponse":{
+      "type":"structure",
+      "members":{
+        "LineageGroupName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The name of the lineage group.</p>"
+        },
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
+        },
+        "DisplayName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The display name of the lineage group.</p>"
+        },
+        "Description":{
+          "shape":"ExperimentDescription",
+          "documentation":"<p>The description of the lineage group.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of lineage group.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of the lineage group.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"}
       }
     },
     "DescribeModelBiasJobDefinitionRequest":{
@@ -10251,6 +10683,26 @@
         "CustomerMetadataProperties":{
           "shape":"CustomerMetadataMap",
           "documentation":"<p>The metadata properties associated with the model package versions.</p>"
+        },
+        "DriftCheckBaselines":{
+          "shape":"DriftCheckBaselines",
+          "documentation":"<p>Represents the drift check baselines that can be used when the model monitor is set using the model package. For more information, see the topic on <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection\">Drift Detection against Previous Baselines in SageMaker Pipelines</a> in the <i>Amazon SageMaker Developer Guide</i>. </p>"
+        },
+        "Domain":{
+          "shape":"String",
+          "documentation":"<p>The machine learning domain of the model package you specified. Common machine learning domains include computer vision and natural language processing.</p>"
+        },
+        "Task":{
+          "shape":"String",
+          "documentation":"<p>The machine learning task you specified that your model package accomplishes. Common machine learning tasks include object detection and image classification.</p>"
+        },
+        "SamplePayloadUrl":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) path where the sample payload are stored. This path points to a single gzip compressed tar archive (.tar.gz suffix).</p>"
+        },
+        "AdditionalInferenceSpecifications":{
+          "shape":"AdditionalInferenceSpecifications",
+          "documentation":"<p>An array of additional Inference Specification objects. Each additional Inference Specification specifies artifacts based on this model package that can be used on inference endpoints. Generally used with SageMaker Neo to store the compiled artifacts.</p>"
         }
       }
     },
@@ -11146,7 +11598,7 @@
       "required":["TrialComponentName"],
       "members":{
         "TrialComponentName":{
-          "shape":"ExperimentEntityName",
+          "shape":"ExperimentEntityNameOrArn",
           "documentation":"<p>The name of the trial component to describe.</p>"
         }
       }
@@ -11214,6 +11666,10 @@
         "Metrics":{
           "shape":"TrialComponentMetricSummaries",
           "documentation":"<p>The metrics for the component.</p>"
+        },
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
         }
       }
     },
@@ -11586,6 +12042,14 @@
         "Disabled"
       ]
     },
+    "Direction":{
+      "type":"string",
+      "enum":[
+        "Both",
+        "Ascendants",
+        "Descendants"
+      ]
+    },
     "DirectoryPath":{
       "type":"string",
       "max":4096,
@@ -11735,6 +12199,85 @@
       ]
     },
     "DoubleParameterValue":{"type":"double"},
+    "DriftCheckBaselines":{
+      "type":"structure",
+      "members":{
+        "Bias":{
+          "shape":"DriftCheckBias",
+          "documentation":"<p>Represents the drift check bias baselines that can be used when the model monitor is set using the model package. </p>"
+        },
+        "Explainability":{
+          "shape":"DriftCheckExplainability",
+          "documentation":"<p>Represents the drift check explainability baselines that can be used when the model monitor is set using the model package. </p>"
+        },
+        "ModelQuality":{
+          "shape":"DriftCheckModelQuality",
+          "documentation":"<p>Represents the drift check model quality baselines that can be used when the model monitor is set using the model package.</p>"
+        },
+        "ModelDataQuality":{
+          "shape":"DriftCheckModelDataQuality",
+          "documentation":"<p>Represents the drift check model data quality baselines that can be used when the model monitor is set using the model package.</p>"
+        }
+      },
+      "documentation":"<p>Represents the drift check baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "DriftCheckBias":{
+      "type":"structure",
+      "members":{
+        "ConfigFile":{
+          "shape":"FileSource",
+          "documentation":"<p>The bias config file for a model.</p>"
+        },
+        "PreTrainingConstraints":{"shape":"MetricsSource"},
+        "PostTrainingConstraints":{"shape":"MetricsSource"}
+      },
+      "documentation":"<p>Represents the drift check bias baselines that can be used when the model monitor is set using the model package.</p>"
+    },
+    "DriftCheckExplainability":{
+      "type":"structure",
+      "members":{
+        "Constraints":{"shape":"MetricsSource"},
+        "ConfigFile":{
+          "shape":"FileSource",
+          "documentation":"<p>The explainability config file for the model.</p>"
+        }
+      },
+      "documentation":"<p>Represents the drift check explainability baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "DriftCheckModelDataQuality":{
+      "type":"structure",
+      "members":{
+        "Statistics":{"shape":"MetricsSource"},
+        "Constraints":{"shape":"MetricsSource"}
+      },
+      "documentation":"<p>Represents the drift check data quality baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "DriftCheckModelQuality":{
+      "type":"structure",
+      "members":{
+        "Statistics":{"shape":"MetricsSource"},
+        "Constraints":{"shape":"MetricsSource"}
+      },
+      "documentation":"<p>Represents the drift check model quality baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "Edge":{
+      "type":"structure",
+      "members":{
+        "SourceArn":{
+          "shape":"AssociationEntityArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source lineage entity of the directed edge.</p>"
+        },
+        "DestinationArn":{
+          "shape":"AssociationEntityArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination lineage entity of the directed edge.</p>"
+        },
+        "AssociationType":{
+          "shape":"AssociationEdgeType",
+          "documentation":"<p>The type of the Association(Edge) between the source and destination. For example <code>ContributedTo</code>, <code>Produced</code>, or <code>DerivedFrom</code>.</p>"
+        }
+      },
+      "documentation":"<p>A directed edge connecting two lineage entities.</p>"
+    },
     "EdgeModel":{
       "type":"structure",
       "required":[
@@ -11961,6 +12504,10 @@
       "min":1,
       "pattern":"[a-zA-Z0-9\\ \\_\\.]+"
     },
+    "Edges":{
+      "type":"list",
+      "member":{"shape":"Edge"}
+    },
     "EfsUid":{
       "type":"string",
       "max":10,
@@ -12139,6 +12686,31 @@
       },
       "documentation":"<p>Input object for the endpoint</p>"
     },
+    "EndpointInputConfiguration":{
+      "type":"structure",
+      "required":["InstanceType"],
+      "members":{
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The instance types to use for the load test.</p>"
+        },
+        "InferenceSpecificationName":{
+          "shape":"InferenceSpecificationName",
+          "documentation":"<p>The inference specification name in the model package version.</p>"
+        },
+        "EnvironmentParameterRanges":{
+          "shape":"EnvironmentParameterRanges",
+          "documentation":"<p> The parameter you want to benchmark against.</p>"
+        }
+      },
+      "documentation":"<p>The endpoint configuration for the load test.</p>"
+    },
+    "EndpointInputConfigurations":{
+      "type":"list",
+      "member":{"shape":"EndpointInputConfiguration"},
+      "max":10,
+      "min":1
+    },
     "EndpointName":{
       "type":"string",
       "max":63,
@@ -12148,6 +12720,34 @@
       "type":"string",
       "max":63,
       "pattern":"[a-zA-Z0-9-]+"
+    },
+    "EndpointOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "EndpointName",
+        "VariantName",
+        "InstanceType",
+        "InitialInstanceCount"
+      ],
+      "members":{
+        "EndpointName":{
+          "shape":"String",
+          "documentation":"<p>The name of the endpoint made during a recommendation job.</p>"
+        },
+        "VariantName":{
+          "shape":"String",
+          "documentation":"<p>The name of the production variant (deployed model) made during a recommendation job.</p>"
+        },
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The instance type recommended by Amazon SageMaker Inference Recommender.</p>"
+        },
+        "InitialInstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances recommended to launch initially.</p>"
+        }
+      },
+      "documentation":"<p>The endpoint configuration made by Inference Recommender during a recommendation job.</p>"
     },
     "EndpointSortKey":{
       "type":"string",
@@ -12228,6 +12828,45 @@
       "key":{"shape":"EnvironmentKey"},
       "value":{"shape":"EnvironmentValue"},
       "max":16
+    },
+    "EnvironmentParameter":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "ValueType",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The environment key suggested by the Amazon SageMaker Inference Recommender.</p>"
+        },
+        "ValueType":{
+          "shape":"String",
+          "documentation":"<p>The value type suggested by the Amazon SageMaker Inference Recommender.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value suggested by the Amazon SageMaker Inference Recommender.</p>"
+        }
+      },
+      "documentation":"<p>A list of environment parameters suggested by the Amazon SageMaker Inference Recommender.</p>"
+    },
+    "EnvironmentParameterRanges":{
+      "type":"structure",
+      "members":{
+        "CategoricalParameterRanges":{
+          "shape":"CategoricalParameters",
+          "documentation":"<p>Specified a list of parameters for each category.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the range of environment parameters</p>"
+    },
+    "EnvironmentParameters":{
+      "type":"list",
+      "member":{"shape":"EnvironmentParameter"},
+      "max":10,
+      "min":1
     },
     "EnvironmentValue":{
       "type":"string",
@@ -12324,6 +12963,12 @@
       "max":120,
       "min":1,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,119}"
+    },
+    "ExperimentEntityNameOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:(experiment|experiment-trial|experiment-trial-component|artifact|action|context)\\/)?([a-zA-Z0-9](-*[a-zA-Z0-9]){0,119})"
     },
     "ExperimentSource":{
       "type":"structure",
@@ -12567,6 +13212,25 @@
         "Fractional",
         "String"
       ]
+    },
+    "FileSource":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The type of content stored in the file source.</p>"
+        },
+        "ContentDigest":{
+          "shape":"ContentDigest",
+          "documentation":"<p>The digest of the file source.</p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI for the file source.</p>"
+        }
+      },
+      "documentation":"<p>Contains details regarding the file source.</p>"
     },
     "FileSystemAccessMode":{
       "type":"string",
@@ -12899,6 +13563,29 @@
         }
       }
     },
+    "GetLineageGroupPolicyRequest":{
+      "type":"structure",
+      "required":["LineageGroupName"],
+      "members":{
+        "LineageGroupName":{
+          "shape":"LineageGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the lineage group.</p>"
+        }
+      }
+    },
+    "GetLineageGroupPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
+        },
+        "ResourcePolicy":{
+          "shape":"ResourcePolicyString",
+          "documentation":"<p>The resource policy that gives access to the lineage group in another account.</p>"
+        }
+      }
+    },
     "GetModelPackageGroupPolicyInput":{
       "type":"structure",
       "required":["ModelPackageGroupName"],
@@ -13135,11 +13822,11 @@
         },
         "TaskTimeLimitInSeconds":{
           "shape":"TaskTimeLimitInSeconds",
-          "documentation":"<p>The amount of time that a worker has to complete a task. </p> <p>If you create a custom labeling job, the maximum value for this parameter is 8 hours (28,800 seconds).</p> <p>If you create a labeling job using a <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-task-types.html\">built-in task type</a> the maximum for this parameter depends on the task type you use:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-images.html\">image</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-text.html\">text</a> labeling jobs, the maximum is 8 hours (28,800 seconds).</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-point-cloud.html\">3D point cloud</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-video.html\">video frame</a> labeling jobs, the maximum is 30 days (2952,000 seconds) for non-AL mode. For most users, the maximum is also 30 days. If you want to change these limits, contact Amazon Web Services Support.</p> </li> </ul>"
+          "documentation":"<p>The amount of time that a worker has to complete a task. </p> <p>If you create a custom labeling job, the maximum value for this parameter is 8 hours (28,800 seconds).</p> <p>If you create a labeling job using a <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-task-types.html\">built-in task type</a> the maximum for this parameter depends on the task type you use:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-images.html\">image</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-label-text.html\">text</a> labeling jobs, the maximum is 8 hours (28,800 seconds).</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-point-cloud.html\">3D point cloud</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-video.html\">video frame</a> labeling jobs, the maximum is 30 days (2952,000 seconds) for non-AL mode. For most users, the maximum is also 30 days.</p> </li> </ul>"
         },
         "TaskAvailabilityLifetimeInSeconds":{
           "shape":"TaskAvailabilityLifetimeInSeconds",
-          "documentation":"<p>The length of time that a task remains available for labeling by human workers. The default and maximum values for this parameter depend on the type of workforce you use.</p> <ul> <li> <p>If you choose the Amazon Mechanical Turk workforce, the maximum is 12 hours (43,200 seconds). The default is 6 hours (21,600 seconds).</p> </li> <li> <p>If you choose a private or vendor workforce, the default value is 30 days (2592,000 seconds) for non-AL mode. For most users, the maximum is also 30 days. If you want to change this limit, contact Amazon Web Services Support.</p> </li> </ul>"
+          "documentation":"<p>The length of time that a task remains available for labeling by human workers. The default and maximum values for this parameter depend on the type of workforce you use.</p> <ul> <li> <p>If you choose the Amazon Mechanical Turk workforce, the maximum is 12 hours (43,200 seconds). The default is 6 hours (21,600 seconds).</p> </li> <li> <p>If you choose a private or vendor workforce, the default value is 30 days (2592,000 seconds) for non-AL mode. For most users, the maximum is also 30 days.</p> </li> </ul>"
         },
         "MaxConcurrentTaskCount":{
           "shape":"MaxConcurrentTaskCount",
@@ -13878,6 +14565,95 @@
       "type":"string",
       "max":256
     },
+    "InferenceRecommendation":{
+      "type":"structure",
+      "required":[
+        "Metrics",
+        "EndpointConfiguration",
+        "ModelConfiguration"
+      ],
+      "members":{
+        "Metrics":{
+          "shape":"RecommendationMetrics",
+          "documentation":"<p>The metrics used to decide what recommendation to make.</p>"
+        },
+        "EndpointConfiguration":{
+          "shape":"EndpointOutputConfiguration",
+          "documentation":"<p>Defines the endpoint configuration parameters.</p>"
+        },
+        "ModelConfiguration":{
+          "shape":"ModelConfiguration",
+          "documentation":"<p>Defines the model configuration.</p>"
+        }
+      },
+      "documentation":"<p>A list of recommendations made by Amazon SageMaker Inference Recommender.</p>"
+    },
+    "InferenceRecommendations":{
+      "type":"list",
+      "member":{"shape":"InferenceRecommendation"},
+      "max":10,
+      "min":1
+    },
+    "InferenceRecommendationsJob":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "JobDescription",
+        "JobType",
+        "JobArn",
+        "Status",
+        "CreationTime",
+        "RoleArn",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "JobDescription":{
+          "shape":"RecommendationJobDescription",
+          "documentation":"<p>The job description.</p>"
+        },
+        "JobType":{
+          "shape":"RecommendationJobType",
+          "documentation":"<p>The recommendation job type.</p>"
+        },
+        "JobArn":{
+          "shape":"RecommendationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation job.</p>"
+        },
+        "Status":{
+          "shape":"RecommendationJobStatus",
+          "documentation":"<p>The status of the job.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>A timestamp that shows when the job was created.</p>"
+        },
+        "CompletionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that shows when the job completed.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>A timestamp that shows when the job was last modified.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the job fails, provides information why the job failed.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains a list of recommendation jobs.</p>"
+    },
+    "InferenceRecommendationsJobs":{
+      "type":"list",
+      "member":{"shape":"InferenceRecommendationsJob"}
+    },
     "InferenceSpecification":{
       "type":"structure",
       "required":[
@@ -13908,6 +14684,16 @@
         }
       },
       "documentation":"<p>Defines how to perform inference generation after a training job is run.</p>"
+    },
+    "InferenceSpecificationName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
+    },
+    "InitialNumberOfUsers":{
+      "type":"integer",
+      "min":1
     },
     "InitialTaskCount":{
       "type":"integer",
@@ -14089,6 +14875,10 @@
     "IotRoleAlias":{
       "type":"string",
       "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:rolealias/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
+    "JobDurationInSeconds":{
+      "type":"integer",
+      "min":1
     },
     "JobReferenceCode":{
       "type":"string",
@@ -14561,6 +15351,56 @@
       "key":{"shape":"StringParameterValue"},
       "value":{"shape":"StringParameterValue"},
       "max":30
+    },
+    "LineageGroupArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:lineage-group/.*"
+    },
+    "LineageGroupNameOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:lineage-group\\/)?([a-zA-Z0-9](-*[a-zA-Z0-9]){0,119})"
+    },
+    "LineageGroupSummaries":{
+      "type":"list",
+      "member":{"shape":"LineageGroupSummary"}
+    },
+    "LineageGroupSummary":{
+      "type":"structure",
+      "members":{
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group resource.</p>"
+        },
+        "LineageGroupName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the lineage group.</p>"
+        },
+        "DisplayName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The display name of the lineage group summary.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of the lineage group summary.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of the lineage group summary.</p>"
+        }
+      },
+      "documentation":"<p>Lists a summary of the properties of a lineage group. A lineage group provides a group of shareable lineage entity resources.</p>"
+    },
+    "LineageType":{
+      "type":"string",
+      "enum":[
+        "TrialComponent",
+        "Artifact",
+        "Context",
+        "Action"
+      ]
     },
     "ListActionsRequest":{
       "type":"structure",
@@ -15859,6 +16699,73 @@
         }
       }
     },
+    "ListInferenceRecommendationsJobsRequest":{
+      "type":"structure",
+      "members":{
+        "CreationTimeAfter":{
+          "shape":"CreationTime",
+          "documentation":"<p>A filter that returns only jobs created after the specified time (timestamp).</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"CreationTime",
+          "documentation":"<p>A filter that returns only jobs created before the specified time (timestamp).</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>A filter that returns only jobs that were last modified after the specified time (timestamp).</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>A filter that returns only jobs that were last modified before the specified time (timestamp).</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the job name. This filter returns only recommendations whose name contains the specified string.</p>"
+        },
+        "StatusEquals":{
+          "shape":"RecommendationJobStatus",
+          "documentation":"<p>A filter that retrieves only inference recommendations jobs with a specific status.</p>"
+        },
+        "SortBy":{
+          "shape":"ListInferenceRecommendationsJobsSortBy",
+          "documentation":"<p>The parameter by which to sort the results.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListInferenceRecommendationsJobsRequest</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of recommendations, use the token in the next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of recommendations to return in the response.</p>"
+        }
+      }
+    },
+    "ListInferenceRecommendationsJobsResponse":{
+      "type":"structure",
+      "required":["InferenceRecommendationsJobs"],
+      "members":{
+        "InferenceRecommendationsJobs":{
+          "shape":"InferenceRecommendationsJobs",
+          "documentation":"<p>The recommendations created from the Amazon SageMaker Inference Recommender job.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token for getting the next set of recommendations, if there are any.</p>"
+        }
+      }
+    },
+    "ListInferenceRecommendationsJobsSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
     "ListLabelingJobsForWorkteamRequest":{
       "type":"structure",
       "required":["WorkteamArn"],
@@ -15977,6 +16884,48 @@
       "type":"list",
       "member":{"shape":"StringParameterValue"}
     },
+    "ListLineageGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "CreatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp to filter against lineage groups created after a certain point in time.</p>"
+        },
+        "CreatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp to filter against lineage groups created before a certain point in time.</p>"
+        },
+        "SortBy":{
+          "shape":"SortLineageGroupsBy",
+          "documentation":"<p>The parameter by which to sort the results. The default is <code>CreationTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the results. The default is <code>Ascending</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of algorithms, use it in the subsequent request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of endpoints to return in the response. This value defaults to 10.</p>"
+        }
+      }
+    },
+    "ListLineageGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "LineageGroupSummaries":{
+          "shape":"LineageGroupSummaries",
+          "documentation":"<p>A list of lineage groups and their properties.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of algorithms, use it in the subsequent request.</p>"
+        }
+      }
+    },
     "ListMaxResults":{
       "type":"integer",
       "max":100
@@ -16080,6 +17029,37 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the response is truncated, Amazon SageMaker returns this token. To retrieve the next set of jobs, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListModelMetadataRequest":{
+      "type":"structure",
+      "members":{
+        "SearchExpression":{
+          "shape":"ModelMetadataSearchExpression",
+          "documentation":"<p>One or more filters that searches for the specified resource or resources in a search. All resource objects that satisfy the expression's condition are included in the search results. Specify the Framework, FrameworkVersion, Domain or Task to filter supported. Filter names and values are case-sensitive.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListModelMetadataResponse</code> request was truncated, the response includes a NextToken. To retrieve the next set of model metadata, use the token in the next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of models to return in the response.</p>"
+        }
+      }
+    },
+    "ListModelMetadataResponse":{
+      "type":"structure",
+      "required":["ModelMetadataSummaries"],
+      "members":{
+        "ModelMetadataSummaries":{
+          "shape":"ModelMetadataSummaries",
+          "documentation":"<p>A structure that holds model metadata.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token for getting the next set of recommendations, if there are any.</p>"
         }
       }
     },
@@ -17386,7 +18366,15 @@
       "type":"integer",
       "min":1
     },
+    "MaxNumberOfTests":{
+      "type":"integer",
+      "min":1
+    },
     "MaxNumberOfTrainingJobs":{
+      "type":"integer",
+      "min":1
+    },
+    "MaxParallelOfTests":{
       "type":"integer",
       "min":1
     },
@@ -17685,6 +18673,20 @@
       },
       "documentation":"<p>Configures the timeout and maximum number of retries for processing a transform job invocation.</p>"
     },
+    "ModelConfiguration":{
+      "type":"structure",
+      "members":{
+        "InferenceSpecificationName":{
+          "shape":"InferenceSpecificationName",
+          "documentation":"<p>The inference specification name in the model package version.</p>"
+        },
+        "EnvironmentParameters":{
+          "shape":"EnvironmentParameters",
+          "documentation":"<p>Defines the environment parameters that includes key, value types, and values.</p>"
+        }
+      },
+      "documentation":"<p>Defines the model configuration. Includes the specification name and environment parameters.</p>"
+    },
     "ModelDataQuality":{
       "type":"structure",
       "members":{
@@ -17773,6 +18775,117 @@
         "EndpointInput":{"shape":"EndpointInput"}
       },
       "documentation":"<p>Inputs for the model explainability job.</p>"
+    },
+    "ModelInput":{
+      "type":"structure",
+      "required":["DataInputConfig"],
+      "members":{
+        "DataInputConfig":{
+          "shape":"DataInputConfig",
+          "documentation":"<p>The input configuration object for the model.</p>"
+        }
+      },
+      "documentation":"<p>Input object for the model.</p>"
+    },
+    "ModelLatencyThreshold":{
+      "type":"structure",
+      "members":{
+        "Percentile":{
+          "shape":"String64",
+          "documentation":"<p>The model latency percentile threshold.</p>"
+        },
+        "ValueInMilliseconds":{
+          "shape":"Integer",
+          "documentation":"<p>The model latency percentile value in milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>The model latency threshold.</p>"
+    },
+    "ModelLatencyThresholds":{
+      "type":"list",
+      "member":{"shape":"ModelLatencyThreshold"},
+      "max":1,
+      "min":1
+    },
+    "ModelMetadataFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ModelMetadataFilterType",
+          "documentation":"<p>The name of the of the model to filter by.</p>"
+        },
+        "Value":{
+          "shape":"String256",
+          "documentation":"<p>The value to filter the model metadata.</p>"
+        }
+      },
+      "documentation":"<p>Part of the search expression. You can specify the name and value (domain, task, framework, framework version, task, and model).</p>"
+    },
+    "ModelMetadataFilterType":{
+      "type":"string",
+      "enum":[
+        "Domain",
+        "Framework",
+        "Task",
+        "FrameworkVersion"
+      ]
+    },
+    "ModelMetadataFilters":{
+      "type":"list",
+      "member":{"shape":"ModelMetadataFilter"},
+      "max":4,
+      "min":1
+    },
+    "ModelMetadataSearchExpression":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"ModelMetadataFilters",
+          "documentation":"<p>A list of filter objects.</p>"
+        }
+      },
+      "documentation":"<p>One or more filters that searches for the specified resource or resources in a search. All resource objects that satisfy the expression's condition are included in the search results</p>"
+    },
+    "ModelMetadataSummaries":{
+      "type":"list",
+      "member":{"shape":"ModelMetadataSummary"}
+    },
+    "ModelMetadataSummary":{
+      "type":"structure",
+      "required":[
+        "Domain",
+        "Framework",
+        "Task",
+        "Model",
+        "FrameworkVersion"
+      ],
+      "members":{
+        "Domain":{
+          "shape":"String",
+          "documentation":"<p>The machine learning domain of the model.</p>"
+        },
+        "Framework":{
+          "shape":"String",
+          "documentation":"<p>The machine learning framework of the model.</p>"
+        },
+        "Task":{
+          "shape":"String",
+          "documentation":"<p>The machine learning task of the model.</p>"
+        },
+        "Model":{
+          "shape":"String",
+          "documentation":"<p>The name of the model.</p>"
+        },
+        "FrameworkVersion":{
+          "shape":"String",
+          "documentation":"<p>The framework version of the model.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the model metadata.</p>"
     },
     "ModelMetrics":{
       "type":"structure",
@@ -17864,6 +18977,22 @@
           "shape":"ApprovalDescription",
           "documentation":"<p>A description provided when the model approval is set.</p>"
         },
+        "Domain":{
+          "shape":"String",
+          "documentation":"<p>The machine learning domain of your model package and its components. Common machine learning domains include computer vision and natural language processing.</p>"
+        },
+        "Task":{
+          "shape":"String",
+          "documentation":"<p>The machine learning task your model package accomplishes. Common machine learning tasks include object detection and image classification.</p>"
+        },
+        "SamplePayloadUrl":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Simple Storage Service path where the sample payload are stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix).</p>"
+        },
+        "AdditionalInferenceSpecifications":{
+          "shape":"AdditionalInferenceSpecifications",
+          "documentation":"<p>An array of additional Inference Specification objects.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tags associated with the model package. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
@@ -17871,6 +19000,10 @@
         "CustomerMetadataProperties":{
           "shape":"CustomerMetadataMap",
           "documentation":"<p>The metadata properties for the model package. </p>"
+        },
+        "DriftCheckBaselines":{
+          "shape":"DriftCheckBaselines",
+          "documentation":"<p>Represents the drift check baselines that can be used when the model monitor is set using the model package.</p>"
         }
       },
       "documentation":"<p>A versioned model that can be deployed for SageMaker inference.</p>"
@@ -17914,6 +19047,22 @@
         "Environment":{
           "shape":"EnvironmentMap",
           "documentation":"<p>The environment variables to set in the Docker container. Each key and value in the <code>Environment</code> string to string map can have length of up to 1024. We support up to 16 entries in the map.</p>"
+        },
+        "ModelInput":{
+          "shape":"ModelInput",
+          "documentation":"<p>A structure with Model Input details.</p>"
+        },
+        "Framework":{
+          "shape":"String",
+          "documentation":"<p>The machine learning framework of the model package container image.</p>"
+        },
+        "FrameworkVersion":{
+          "shape":"FrameworkVersion",
+          "documentation":"<p>The framework version of the Model Package Container Image.</p>"
+        },
+        "NearestModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of a pre-trained machine learning benchmarked by Amazon SageMaker Inference Recommender model that matches your model. You can find a list of benchmarked models by calling <code>ListModelMetadata</code>.</p>"
         }
       },
       "documentation":"<p>Describes the Docker container for the model package.</p>"
@@ -19658,6 +20807,14 @@
         "VariantStatus":{
           "shape":"ProductionVariantStatusList",
           "documentation":"<p>The endpoint variant status which describes the current deployment stage status or operational status.</p>"
+        },
+        "CurrentServerlessConfig":{
+          "shape":"ProductionVariantServerlessConfig",
+          "documentation":"<p>The serverless configuration for the endpoint.</p> <note> <p>Serverless Inference is in preview release for Amazon SageMaker and is subject to change. We do not recommend using this feature in production environments.</p> </note>"
+        },
+        "DesiredServerlessConfig":{
+          "shape":"ProductionVariantServerlessConfig",
+          "documentation":"<p>The serverless configuration requested for this deployment, as specified in the endpoint configuration for the endpoint.</p> <note> <p>Serverless Inference is in preview release for Amazon SageMaker and is subject to change. We do not recommend using this feature in production environments.</p> </note>"
         }
       },
       "documentation":"<p>The production variant summary for a deployment when an endpoint is creating or updating with the <code> <a>CreateEndpoint</a> </code> or <code> <a>UpdateEndpoint</a> </code> operations. Describes the <code>VariantStatus </code>, weight and capacity for a production variant associated with an endpoint. </p>"
@@ -19665,6 +20822,29 @@
     "PendingProductionVariantSummaryList":{
       "type":"list",
       "member":{"shape":"PendingProductionVariantSummary"},
+      "min":1
+    },
+    "Phase":{
+      "type":"structure",
+      "members":{
+        "InitialNumberOfUsers":{
+          "shape":"InitialNumberOfUsers",
+          "documentation":"<p>Specifies how many concurrent users to start with.</p>"
+        },
+        "SpawnRate":{
+          "shape":"SpawnRate",
+          "documentation":"<p>Specified how many new users to spawn in a minute.</p>"
+        },
+        "DurationInSeconds":{
+          "shape":"TrafficDurationInSeconds",
+          "documentation":"<p>Specifies how long traffic phase should be.</p>"
+        }
+      },
+      "documentation":"<p>Defines the traffic pattern.</p>"
+    },
+    "Phases":{
+      "type":"list",
+      "member":{"shape":"Phase"},
       "min":1
     },
     "Pipeline":{
@@ -19887,6 +21067,14 @@
         "Lambda":{
           "shape":"LambdaStepMetadata",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function that was run by this step execution and a list of output parameters.</p>"
+        },
+        "QualityCheck":{
+          "shape":"QualityCheckStepMetadata",
+          "documentation":"<p>The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted,</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
+        },
+        "ClarifyCheck":{
+          "shape":"ClarifyCheckStepMetadata",
+          "documentation":"<p>Container for the metadata for a Clarify check step. The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted,</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -20496,9 +21684,7 @@
       "type":"structure",
       "required":[
         "VariantName",
-        "ModelName",
-        "InitialInstanceCount",
-        "InstanceType"
+        "ModelName"
       ],
       "members":{
         "VariantName":{
@@ -20528,6 +21714,10 @@
         "CoreDumpConfig":{
           "shape":"ProductionVariantCoreDumpConfig",
           "documentation":"<p>Specifies configuration for a core dump from the model container when the process crashes.</p>"
+        },
+        "ServerlessConfig":{
+          "shape":"ProductionVariantServerlessConfig",
+          "documentation":"<p>The serverless configuration for an endpoint. Specifies a serverless endpoint configuration instead of an instance-based endpoint configuration.</p> <note> <p>Serverless Inference is in preview release for Amazon SageMaker and is subject to change. We do not recommend using this feature in production environments.</p> </note>"
         }
       },
       "documentation":"<p>Identifies a model that you want to host and the resources chosen to deploy for hosting it. If you are deploying multiple models, tell Amazon SageMaker how to distribute traffic among the models by specifying variant weights. </p>"
@@ -20635,6 +21825,24 @@
       "max":10,
       "min":1
     },
+    "ProductionVariantServerlessConfig":{
+      "type":"structure",
+      "required":[
+        "MemorySizeInMB",
+        "MaxConcurrency"
+      ],
+      "members":{
+        "MemorySizeInMB":{
+          "shape":"ServerlessMemorySizeInMB",
+          "documentation":"<p>The memory size of your serverless endpoint. Valid values are in 1 GB increments: 1024 MB, 2048 MB, 3072 MB, 4096 MB, 5120 MB, or 6144 MB.</p>"
+        },
+        "MaxConcurrency":{
+          "shape":"ServerlessMaxConcurrency",
+          "documentation":"<p>The maximum number of concurrent invocations your serverless endpoint can process.</p>"
+        }
+      },
+      "documentation":"<important> <p>Serverless Inference is in preview release for Amazon SageMaker and is subject to change. We do not recommend using this feature in production environments.</p> </important> <p>Specifies the serverless configuration for an endpoint variant.</p>"
+    },
     "ProductionVariantStatus":{
       "type":"structure",
       "required":["Status"],
@@ -20691,6 +21899,14 @@
         "VariantStatus":{
           "shape":"ProductionVariantStatusList",
           "documentation":"<p>The endpoint variant status which describes the current deployment stage status or operational status.</p>"
+        },
+        "CurrentServerlessConfig":{
+          "shape":"ProductionVariantServerlessConfig",
+          "documentation":"<p>The serverless configuration for the endpoint.</p> <note> <p>Serverless Inference is in preview release for Amazon SageMaker and is subject to change. We do not recommend using this feature in production environments.</p> </note>"
+        },
+        "DesiredServerlessConfig":{
+          "shape":"ProductionVariantServerlessConfig",
+          "documentation":"<p>The serverless configuration requested for the endpoint update.</p> <note> <p>Serverless Inference is in preview release for Amazon SageMaker and is subject to change. We do not recommend using this feature in production environments.</p> </note>"
         }
       },
       "documentation":"<p>Describes weight and capacities for a production variant associated with an endpoint. If you sent a request to the <code>UpdateEndpointWeightsAndCapacities</code> API and the endpoint status is <code>Updating</code>, you get different desired and current values. </p>"
@@ -21066,6 +22282,167 @@
         }
       }
     },
+    "QualityCheckStepMetadata":{
+      "type":"structure",
+      "members":{
+        "CheckType":{
+          "shape":"String256",
+          "documentation":"<p>The type of the Quality check step.</p>"
+        },
+        "BaselineUsedForDriftCheckStatistics":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of the baseline statistics file used for the drift check.</p>"
+        },
+        "BaselineUsedForDriftCheckConstraints":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of the baseline constraints file used for the drift check.</p>"
+        },
+        "CalculatedBaselineStatistics":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of the newly calculated baseline statistics file.</p>"
+        },
+        "CalculatedBaselineConstraints":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of the newly calculated baseline constraints file.</p>"
+        },
+        "ModelPackageGroupName":{
+          "shape":"String256",
+          "documentation":"<p>The model package group name.</p>"
+        },
+        "ViolationReport":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 URI of violation report if violations are detected.</p>"
+        },
+        "CheckJobArn":{
+          "shape":"String256",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Quality check processing job that was run by this step execution.</p>"
+        },
+        "SkipCheck":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag indicates if the drift check against the previous baseline will be skipped or not. If it is set to <code>False</code>, the previous baseline of the configured check type must be available.</p>"
+        },
+        "RegisterNewBaseline":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag indicates if a newly calculated baseline can be accessed through step properties <code>BaselineUsedForDriftCheckConstraints</code> and <code>BaselineUsedForDriftCheckStatistics</code>. If it is set to <code>False</code>, the previous baseline of the configured check type must also be available. These can be accessed through the <code>BaselineUsedForDriftCheckConstraints</code> and <code> BaselineUsedForDriftCheckStatistics</code> properties. </p>"
+        }
+      },
+      "documentation":"<p>Container for the metadata for a Quality check step. For more information, see the topic on <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#step-type-quality-check\">QualityCheck step</a> in the <i>Amazon SageMaker Developer Guide</i>. </p>"
+    },
+    "QueryFilters":{
+      "type":"structure",
+      "members":{
+        "Types":{
+          "shape":"QueryTypes",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code> by type. For example: <code>DataSet</code>, <code>Model</code>, <code>Endpoint</code>, or <code>ModelDeployment</code>.</p>"
+        },
+        "LineageTypes":{
+          "shape":"QueryLineageTypes",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code>(s) by the type of the lineage entity.</p>"
+        },
+        "CreatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code>(s) by created date.</p>"
+        },
+        "CreatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code>(s) after the create date.</p>"
+        },
+        "ModifiedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code>(s) before the last modified date.</p>"
+        },
+        "ModifiedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code>(s) after the last modified date.</p>"
+        },
+        "Properties":{
+          "shape":"QueryProperties",
+          "documentation":"<p>Filter the lineage entities connected to the <code>StartArn</code>(s) by a set if property key value pairs. If multiple pairs are provided, an entity will be included in the results if it matches any of the provided pairs.</p>"
+        }
+      },
+      "documentation":"<p>A set of filters to narrow the set of lineage entities connected to the <code>StartArn</code>(s) returned by the <code>QueryLineage</code> API action.</p>"
+    },
+    "QueryLineageMaxDepth":{
+      "type":"integer",
+      "max":10
+    },
+    "QueryLineageMaxResults":{
+      "type":"integer",
+      "max":50
+    },
+    "QueryLineageRequest":{
+      "type":"structure",
+      "required":["StartArns"],
+      "members":{
+        "StartArns":{
+          "shape":"QueryLineageStartArns",
+          "documentation":"<p>A list of resource Amazon Resource Name (ARN) that represent the starting point for your lineage query.</p>"
+        },
+        "Direction":{
+          "shape":"Direction",
+          "documentation":"<p>Associations between lineage entities are directed. This parameter determines the direction from the StartArn(s) the query will look.</p>"
+        },
+        "IncludeEdges":{
+          "shape":"Boolean",
+          "documentation":"<p> Setting this value to <code>True</code> will retrieve not only the entities of interest but also the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/lineage-tracking-entities.html\">Associations</a> and lineage entities on the path. Set to <code>False</code> to only return lineage entities that match your query.</p>"
+        },
+        "Filters":{
+          "shape":"QueryFilters",
+          "documentation":"<p>A set of filtering parameters that allow you to specify which entities should be returned.</p> <ul> <li> <p>Properties - Key-value pairs to match on the lineage entities' properties.</p> </li> <li> <p>LineageTypes - A set of lineage entity types to match on. For example: <code>TrialComponent</code>, <code>Artifact</code>, or <code>Context</code>.</p> </li> <li> <p>CreatedBefore - Filter entities created before this date.</p> </li> <li> <p>ModifiedBefore - Filter entities modified before this date.</p> </li> <li> <p>ModifiedAfter - Filter entities modified after this date.</p> </li> </ul>"
+        },
+        "MaxDepth":{
+          "shape":"QueryLineageMaxDepth",
+          "documentation":"<p>The maximum depth in lineage relationships from the <code>StartArns</code> that will be traversed. Depth is a measure of the number of <code>Associations</code> from the <code>StartArn</code> entity to the matched results.</p>"
+        },
+        "MaxResults":{
+          "shape":"QueryLineageMaxResults",
+          "documentation":"<p>Limits the number of vertices in the results. Use the <code>NextToken</code> in a response to to retrieve the next page of results.</p>"
+        },
+        "NextToken":{
+          "shape":"String8192",
+          "documentation":"<p>Limits the number of vertices in the request. Use the <code>NextToken</code> in a response to to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "QueryLineageResponse":{
+      "type":"structure",
+      "members":{
+        "Vertices":{
+          "shape":"Vertices",
+          "documentation":"<p>A list of vertices connected to the start entity(ies) in the lineage graph.</p>"
+        },
+        "Edges":{
+          "shape":"Edges",
+          "documentation":"<p>A list of edges that connect vertices in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"String8192",
+          "documentation":"<p>Limits the number of vertices in the response. Use the <code>NextToken</code> in a response to to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "QueryLineageStartArns":{
+      "type":"list",
+      "member":{"shape":"AssociationEntityArn"},
+      "max":1,
+      "min":1
+    },
+    "QueryLineageTypes":{
+      "type":"list",
+      "member":{"shape":"LineageType"},
+      "max":4
+    },
+    "QueryProperties":{
+      "type":"map",
+      "key":{"shape":"String256"},
+      "value":{"shape":"String256"},
+      "max":5
+    },
+    "QueryTypes":{
+      "type":"list",
+      "member":{"shape":"String40"},
+      "max":5
+    },
     "RSessionAppSettings":{
       "type":"structure",
       "members":{
@@ -21135,6 +22512,122 @@
     "RealtimeInferenceInstanceTypes":{
       "type":"list",
       "member":{"shape":"ProductionVariantInstanceType"}
+    },
+    "RecommendationJobArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:inference-recommendations-job/.*"
+    },
+    "RecommendationJobDescription":{
+      "type":"string",
+      "max":128
+    },
+    "RecommendationJobInputConfig":{
+      "type":"structure",
+      "required":["ModelPackageVersionArn"],
+      "members":{
+        "ModelPackageVersionArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a versioned model package.</p>"
+        },
+        "JobDurationInSeconds":{
+          "shape":"JobDurationInSeconds",
+          "documentation":"<p>Specifies the maximum duration of the job, in seconds.&gt;</p>"
+        },
+        "TrafficPattern":{
+          "shape":"TrafficPattern",
+          "documentation":"<p>Specifies the traffic pattern of the job.</p>"
+        },
+        "ResourceLimit":{
+          "shape":"RecommendationJobResourceLimit",
+          "documentation":"<p>Defines the resource limit of the job.</p>"
+        },
+        "EndpointConfigurations":{
+          "shape":"EndpointInputConfigurations",
+          "documentation":"<p>Specifies the endpoint configuration to use for a job.</p>"
+        }
+      },
+      "documentation":"<p>The input configuration of the recommendation job.</p>"
+    },
+    "RecommendationJobName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+    },
+    "RecommendationJobResourceLimit":{
+      "type":"structure",
+      "members":{
+        "MaxNumberOfTests":{
+          "shape":"MaxNumberOfTests",
+          "documentation":"<p>Defines the maximum number of load tests.</p>"
+        },
+        "MaxParallelOfTests":{
+          "shape":"MaxParallelOfTests",
+          "documentation":"<p>Defines the maximum number of parallel load tests.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the maximum number of jobs that can run in parallel and the maximum number of jobs that can run.</p>"
+    },
+    "RecommendationJobStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "RecommendationJobStoppingConditions":{
+      "type":"structure",
+      "members":{
+        "MaxInvocations":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of requests per minute expected for the endpoint.</p>"
+        },
+        "ModelLatencyThresholds":{
+          "shape":"ModelLatencyThresholds",
+          "documentation":"<p>The interval of time taken by a model to respond as viewed from SageMaker. The interval includes the local communication time taken to send the request and to fetch the response from the container of a model and the time taken to complete the inference in the container.</p>"
+        }
+      },
+      "documentation":"<p>Specifies conditions for stopping a job. When a job reaches a stopping condition limit, SageMaker ends the job.</p>"
+    },
+    "RecommendationJobType":{
+      "type":"string",
+      "enum":[
+        "Default",
+        "Advanced"
+      ]
+    },
+    "RecommendationMetrics":{
+      "type":"structure",
+      "required":[
+        "CostPerHour",
+        "CostPerInference",
+        "MaxInvocations",
+        "ModelLatency"
+      ],
+      "members":{
+        "CostPerHour":{
+          "shape":"Float",
+          "documentation":"<p>Defines the cost per hour for the instance. </p>"
+        },
+        "CostPerInference":{
+          "shape":"Float",
+          "documentation":"<p>Defines the cost per inference for the instance .</p>"
+        },
+        "MaxInvocations":{
+          "shape":"Integer",
+          "documentation":"<p>The expected maximum number of requests per minute for the instance.</p>"
+        },
+        "ModelLatency":{
+          "shape":"Integer",
+          "documentation":"<p>The expected model latency at maximum invocation per minute for the instance.</p>"
+        }
+      },
+      "documentation":"<p>The metrics of recommendations.</p>"
     },
     "RecordWrapper":{
       "type":"string",
@@ -21442,6 +22935,11 @@
       },
       "documentation":"<p>Resource being access is not found.</p>",
       "exception":true
+    },
+    "ResourcePolicyString":{
+      "type":"string",
+      "max":20480,
+      "pattern":".*(?:[ \\r\\n\\t].*)*"
     },
     "ResourcePropertyName":{
       "type":"string",
@@ -21929,6 +23427,16 @@
         }
       }
     },
+    "ServerlessMaxConcurrency":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ServerlessMemorySizeInMB":{
+      "type":"integer",
+      "max":6144,
+      "min":1024
+    },
     "ServiceCatalogEntityId":{
       "type":"string",
       "max":100,
@@ -22072,6 +23580,13 @@
         "CreationTime"
       ]
     },
+    "SortLineageGroupsBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime"
+      ]
+    },
     "SortOrder":{
       "type":"string",
       "enum":[
@@ -22158,6 +23673,10 @@
       "type":"string",
       "max":2048,
       "pattern":".*"
+    },
+    "SpawnRate":{
+      "type":"integer",
+      "min":0
     },
     "SplitType":{
       "type":"string",
@@ -22289,6 +23808,16 @@
         }
       }
     },
+    "StopInferenceRecommendationsJobRequest":{
+      "type":"structure",
+      "required":["JobName"],
+      "members":{
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of the job you want to stop.</p>"
+        }
+      }
+    },
     "StopLabelingJobRequest":{
       "type":"structure",
       "required":["LabelingJobName"],
@@ -22395,6 +23924,10 @@
       "type":"string",
       "max":1024
     },
+    "String128":{
+      "type":"string",
+      "max":128
+    },
     "String200":{
       "type":"string",
       "max":200,
@@ -22409,9 +23942,17 @@
       "type":"string",
       "max":256
     },
+    "String40":{
+      "type":"string",
+      "max":40
+    },
     "String64":{
       "type":"string",
       "max":64
+    },
+    "String8192":{
+      "type":"string",
+      "max":8192
     },
     "StringParameterValue":{
       "type":"string",
@@ -22767,6 +24308,24 @@
       "pattern":"[a-zA-Z0-9:_-]+"
     },
     "Timestamp":{"type":"timestamp"},
+    "TrafficDurationInSeconds":{
+      "type":"integer",
+      "min":1
+    },
+    "TrafficPattern":{
+      "type":"structure",
+      "members":{
+        "TrafficType":{
+          "shape":"TrafficType",
+          "documentation":"<p>Defines the traffic patterns.</p>"
+        },
+        "Phases":{
+          "shape":"Phases",
+          "documentation":"<p>Defines the phases traffic specification.</p>"
+        }
+      },
+      "documentation":"<p>Defines the traffic pattern of the load test.</p>"
+    },
     "TrafficRoutingConfig":{
       "type":"structure",
       "required":[
@@ -22800,6 +24359,10 @@
         "CANARY",
         "LINEAR"
       ]
+    },
+    "TrafficType":{
+      "type":"string",
+      "enum":["PHASES"]
     },
     "TrainingEnvironmentKey":{
       "type":"string",
@@ -23675,6 +25238,10 @@
           "shape":"TrialComponentSourceDetail",
           "documentation":"<p>Details of the source of the component.</p>"
         },
+        "LineageGroupArn":{
+          "shape":"LineageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group resource.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The list of tags that are associated with the component. You can use <a>Search</a> API to search on the tags.</p>"
@@ -24440,6 +26007,10 @@
         "CustomerMetadataPropertiesToRemove":{
           "shape":"CustomerMetadataKeyList",
           "documentation":"<p>The metadata properties associated with the model package versions to remove.</p>"
+        },
+        "AdditionalInferenceSpecificationsToAdd":{
+          "shape":"AdditionalInferenceSpecifications",
+          "documentation":"<p>An array of additional Inference Specification objects to be added to the existing array additional Inference Specification. Total number of additional Inference Specifications can not exceed 15. Each additional Inference Specification specifies artifacts based on this model package that can be used on inference endpoints. Generally used with SageMaker Neo to store the compiled artifacts.</p>"
         }
       }
     },
@@ -24881,7 +26452,7 @@
           "documentation":"<p>The domain associated with the user.</p>"
         }
       },
-      "documentation":"<p>Information about the user who created or modified an experiment, trial, trial component, or project.</p>"
+      "documentation":"<p>Information about the user who created or modified an experiment, trial, trial component, lineage group, or project.</p>"
     },
     "UserProfileArn":{
       "type":"string",
@@ -25033,6 +26604,28 @@
       "max":176,
       "min":1,
       "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:[a-z\\-]*\\/)?([a-zA-Z0-9]([a-zA-Z0-9-]){0,62})(?<!-)(\\/[0-9]{1,5})?$"
+    },
+    "Vertex":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"AssociationEntityArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lineage entity resource.</p>"
+        },
+        "Type":{
+          "shape":"String40",
+          "documentation":"<p>The type of the lineage entity resource. For example: <code>DataSet</code>, <code>Model</code>, <code>Endpoint</code>, etc...</p>"
+        },
+        "LineageType":{
+          "shape":"LineageType",
+          "documentation":"<p>The type of resource of the lineage entity.</p>"
+        }
+      },
+      "documentation":"<p>A lineage entity connected to the starting entity(ies).</p>"
+    },
+    "Vertices":{
+      "type":"list",
+      "member":{"shape":"Vertex"}
     },
     "VolumeSizeInGB":{
       "type":"integer",

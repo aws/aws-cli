@@ -73,7 +73,9 @@
         {"shape":"InvalidInputException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InternalServiceException"},
-        {"shape":"OperationTimeoutException"}
+        {"shape":"OperationTimeoutException"},
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ResourceNotReadyException"}
       ],
       "documentation":"<p>Deletes multiple tables at once.</p> <note> <p>After completing this operation, you no longer have access to the table versions and partitions that belong to the deleted table. Glue deletes these \"orphaned\" resources asynchronously in a timely manner, at the discretion of the service.</p> <p>To ensure the immediate deletion of all related resources, before calling <code>BatchDeleteTable</code>, use <code>DeleteTableVersion</code> or <code>BatchDeleteTableVersion</code>, and <code>DeletePartition</code> or <code>BatchDeletePartition</code>, to delete any resources that belong to the table.</p> </note>"
     },
@@ -166,7 +168,8 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"InvalidStateException"}
       ],
       "documentation":"<p>Retrieves partitions in a batch request.</p>"
     },
@@ -526,7 +529,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"GlueEncryptionException"},
-        {"shape":"ConcurrentModificationException"}
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotReadyException"}
       ],
       "documentation":"<p>Creates a new table definition in the Data Catalog.</p>"
     },
@@ -872,7 +876,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
-        {"shape":"ConcurrentModificationException"}
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotReadyException"}
       ],
       "documentation":"<p>Removes a table definition from the Data Catalog.</p> <note> <p>After completing this operation, you no longer have access to the table versions and partitions that belong to the deleted table. Glue deletes these \"orphaned\" resources asynchronously in a timely manner, at the discretion of the service.</p> <p>To ensure the immediate deletion of all related resources, before calling <code>DeleteTable</code>, use <code>DeleteTableVersion</code> or <code>BatchDeleteTableVersion</code>, and <code>DeletePartition</code> or <code>BatchDeletePartition</code>, to delete any resources that belong to the table.</p> </note>"
     },
@@ -1437,7 +1442,9 @@
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"InvalidStateException"},
+        {"shape":"ResourceNotReadyException"}
       ],
       "documentation":"<p>Retrieves information about the partitions in a table.</p>"
     },
@@ -1613,7 +1620,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ResourceNotReadyException"}
       ],
       "documentation":"<p>Retrieves the <code>Table</code> definition in a Data Catalog for a specified table.</p>"
     },
@@ -2671,7 +2679,8 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"ConcurrentModificationException"},
         {"shape":"ResourceNumberLimitExceededException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ResourceNotReadyException"}
       ],
       "documentation":"<p>Updates a metadata table in the Data Catalog.</p>"
     },
@@ -2949,6 +2958,10 @@
         "TablesToDelete":{
           "shape":"BatchDeleteTableNameList",
           "documentation":"<p>A list of the table to delete.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to delete the table contents.</p>"
         }
       }
     },
@@ -5447,6 +5460,10 @@
         "PartitionIndexes":{
           "shape":"PartitionIndexList",
           "documentation":"<p>A list of partition indexes, <code>PartitionIndex</code> structures, to create in the table.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The ID of the transaction.</p>"
         }
       }
     },
@@ -6293,6 +6310,10 @@
         "Name":{
           "shape":"NameString",
           "documentation":"<p>The name of the table to be deleted. For Hive compatibility, this name is entirely lowercase.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to delete the table contents.</p>"
         }
       }
     },
@@ -7883,6 +7904,14 @@
         "ExcludeColumnSchema":{
           "shape":"BooleanNullable",
           "documentation":"<p>When true, specifies not returning the partition column schema. Useful when you are interested only in other partition attributes such as partition values or location. This approach avoids the problem of a large response by not returning duplicate data.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to read the partition contents.</p>"
+        },
+        "QueryAsOfTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time as of when to read the partition contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.</p>"
         }
       }
     },
@@ -8302,6 +8331,14 @@
         "Name":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to retrieve the definition. For Hive compatibility, this name is entirely lowercase.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to read the table contents. </p>"
+        },
+        "QueryAsOfTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.</p>"
         }
       }
     },
@@ -8417,6 +8454,14 @@
         "MaxResults":{
           "shape":"CatalogGetterPageSize",
           "documentation":"<p>The maximum number of tables to return in a single response.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to read the table contents.</p>"
+        },
+        "QueryAsOfTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.</p>"
         }
       }
     },
@@ -8903,6 +8948,17 @@
         }
       },
       "documentation":"<p>The input provided was not valid.</p>",
+      "exception":true
+    },
+    "InvalidStateException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>An error that indicates your data is in an invalid state.</p>",
       "exception":true
     },
     "IsVersionValid":{"type":"boolean"},
@@ -10984,6 +11040,17 @@
         }
       }
     },
+    "ResourceNotReadyException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>A resource was not ready for a transaction.</p>",
+      "exception":true
+    },
     "ResourceNumberLimitExceededException":{
       "type":"structure",
       "members":{
@@ -12441,6 +12508,12 @@
       "max":10,
       "min":1
     },
+    "TransactionIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\p{L}\\p{N}\\p{P}]*"
+    },
     "TransformEncryption":{
       "type":"structure",
       "members":{
@@ -13321,6 +13394,10 @@
         "SkipArchive":{
           "shape":"BooleanNullable",
           "documentation":"<p>By default, <code>UpdateTable</code> always creates an archived version of the table before updating it. However, if <code>skipArchive</code> is set to true, <code>UpdateTable</code> does not create the archived version.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to update the table contents. </p>"
         }
       }
     },

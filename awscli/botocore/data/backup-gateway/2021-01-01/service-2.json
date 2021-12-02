@@ -1,0 +1,1012 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2021-01-01",
+    "endpointPrefix":"backup-gateway",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "serviceFullName":"AWS Backup Gateway",
+    "serviceId":"Backup Gateway",
+    "signatureVersion":"v4",
+    "signingName":"backup-gateway",
+    "targetPrefix":"BackupOnPremises_v20210101",
+    "uid":"backup-gateway-2021-01-01"
+  },
+  "operations":{
+    "AssociateGatewayToServer":{
+      "name":"AssociateGatewayToServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateGatewayToServerInput"},
+      "output":{"shape":"AssociateGatewayToServerOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Associates a backup gateway with your server. After you complete the association process, you can back up and restore your VMs through the gateway.</p>"
+    },
+    "CreateGateway":{
+      "name":"CreateGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGatewayInput"},
+      "output":{"shape":"CreateGatewayOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a backup gateway. After you create a gateway, you can associate it with a server using the <code>AssociateGatewayToServer</code> operation.</p>"
+    },
+    "DeleteGateway":{
+      "name":"DeleteGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGatewayInput"},
+      "output":{"shape":"DeleteGatewayOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a backup gateway.</p>",
+      "idempotent":true
+    },
+    "DeleteHypervisor":{
+      "name":"DeleteHypervisor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteHypervisorInput"},
+      "output":{"shape":"DeleteHypervisorOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a hypervisor.</p>",
+      "idempotent":true
+    },
+    "DisassociateGatewayFromServer":{
+      "name":"DisassociateGatewayFromServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateGatewayFromServerInput"},
+      "output":{"shape":"DisassociateGatewayFromServerOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates a backup gateway from the specified server. After the disassociation process finishes, the gateway can no longer access the virtual machines on the server.</p>"
+    },
+    "ImportHypervisorConfiguration":{
+      "name":"ImportHypervisorConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportHypervisorConfigurationInput"},
+      "output":{"shape":"ImportHypervisorConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Connect to a hypervisor by importing its configuration.</p>"
+    },
+    "ListGateways":{
+      "name":"ListGateways",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGatewaysInput"},
+      "output":{"shape":"ListGatewaysOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists backup gateways owned by an Amazon Web Services account in an Amazon Web Services Region. The returned list is ordered by gateway Amazon Resource Name (ARN).</p>"
+    },
+    "ListHypervisors":{
+      "name":"ListHypervisors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListHypervisorsInput"},
+      "output":{"shape":"ListHypervisorsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists your hypervisors.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the tags applied to the resource identified by its Amazon Resource Name (ARN).</p>"
+    },
+    "ListVirtualMachines":{
+      "name":"ListVirtualMachines",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListVirtualMachinesInput"},
+      "output":{"shape":"ListVirtualMachinesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists your virtual machines.</p>"
+    },
+    "PutMaintenanceStartTime":{
+      "name":"PutMaintenanceStartTime",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutMaintenanceStartTimeInput"},
+      "output":{"shape":"PutMaintenanceStartTimeOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Set the maintenance start time for a gateway.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tag the resource.</p>"
+    },
+    "TestHypervisorConfiguration":{
+      "name":"TestHypervisorConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestHypervisorConfigurationInput"},
+      "output":{"shape":"TestHypervisorConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tests your hypervisor configuration to validate that backup gateway can connect with the hypervisor and its resources.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes tags from the resource.</p>"
+    },
+    "UpdateGatewayInformation":{
+      "name":"UpdateGatewayInformation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGatewayInformationInput"},
+      "output":{"shape":"UpdateGatewayInformationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a gateway's name. Specify which gateway to update using the Amazon Resource Name (ARN) of the gateway in your request.</p>"
+    },
+    "UpdateHypervisor":{
+      "name":"UpdateHypervisor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHypervisorInput"},
+      "output":{"shape":"UpdateHypervisorOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a hypervisor metadata, including its host, username, and password. Specify which hypervisor to update using the Amazon Resource Name (ARN) of the hypervisor in your request.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["ErrorCode"],
+      "members":{
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>A description of why you have insufficient permissions.</p>"
+        },
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The operation cannot proceed because you have insufficient permissions.</p>",
+      "exception":true
+    },
+    "ActivationKey":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z\\-]+$"
+    },
+    "AssociateGatewayToServerInput":{
+      "type":"structure",
+      "required":[
+        "GatewayArn",
+        "ServerArn"
+      ],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway. Use the <code>ListGateways</code> operation to return a list of gateways for your account and Amazon Web Services Region.</p>"
+        },
+        "ServerArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the server that hosts your virtual machines.</p>"
+        }
+      }
+    },
+    "AssociateGatewayToServerOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a gateway.</p>"
+        }
+      }
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["ErrorCode"],
+      "members":{
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>A description of why the operation is not supported.</p>"
+        },
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The operation cannot proceed because it is not supported.</p>",
+      "exception":true
+    },
+    "CreateGatewayInput":{
+      "type":"structure",
+      "required":[
+        "ActivationKey",
+        "GatewayDisplayName",
+        "GatewayType"
+      ],
+      "members":{
+        "ActivationKey":{
+          "shape":"ActivationKey",
+          "documentation":"<p>The activation key of the created gateway.</p>"
+        },
+        "GatewayDisplayName":{
+          "shape":"Name",
+          "documentation":"<p>The display name of the created gateway.</p>"
+        },
+        "GatewayType":{
+          "shape":"GatewayType",
+          "documentation":"<p>The type of created gateway.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of up to 50 tags to assign to the gateway. Each tag is a key-value pair.</p>"
+        }
+      }
+    },
+    "CreateGatewayOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway you create.</p>"
+        }
+      }
+    },
+    "DayOfMonth":{
+      "type":"integer",
+      "box":true,
+      "max":31,
+      "min":1
+    },
+    "DayOfWeek":{
+      "type":"integer",
+      "box":true,
+      "max":6,
+      "min":0
+    },
+    "DeleteGatewayInput":{
+      "type":"structure",
+      "required":["GatewayArn"],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway to delete.</p>"
+        }
+      }
+    },
+    "DeleteGatewayOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway you deleted.</p>"
+        }
+      }
+    },
+    "DeleteHypervisorInput":{
+      "type":"structure",
+      "required":["HypervisorArn"],
+      "members":{
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor to delete.</p>"
+        }
+      }
+    },
+    "DeleteHypervisorOutput":{
+      "type":"structure",
+      "members":{
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor you deleted.</p>"
+        }
+      }
+    },
+    "DisassociateGatewayFromServerInput":{
+      "type":"structure",
+      "required":["GatewayArn"],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway to disassociate.</p>"
+        }
+      }
+    },
+    "DisassociateGatewayFromServerOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway you disassociated.</p>"
+        }
+      }
+    },
+    "Gateway":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway. Use the <code>ListGateways</code> operation to return a list of gateways for your account and Amazon Web Services Region.</p>"
+        },
+        "GatewayDisplayName":{
+          "shape":"Name",
+          "documentation":"<p>The display name of the gateway.</p>"
+        },
+        "GatewayType":{
+          "shape":"GatewayType",
+          "documentation":"<p>The type of the gateway.</p>"
+        },
+        "HypervisorId":{
+          "shape":"HypervisorId",
+          "documentation":"<p>The hypervisor ID of the gateway.</p>"
+        },
+        "LastSeenTime":{
+          "shape":"Time",
+          "documentation":"<p>The last time Backup gateway communicated with the gateway, in Unix format and UTC time.</p>"
+        }
+      },
+      "documentation":"<p>A gateway is an Backup Gateway appliance that runs on the customer's network to provide seamless connectivity to backup storage in the Amazon Web Services Cloud.</p>"
+    },
+    "GatewayArn":{
+      "type":"string",
+      "max":500,
+      "min":50,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):backup-gateway(:[a-zA-Z-0-9]+){3}\\/[a-zA-Z-0-9]+$"
+    },
+    "GatewayType":{
+      "type":"string",
+      "enum":["BACKUP_VM"]
+    },
+    "Gateways":{
+      "type":"list",
+      "member":{"shape":"Gateway"}
+    },
+    "Host":{
+      "type":"string",
+      "max":128,
+      "min":3,
+      "pattern":"^.+$"
+    },
+    "HourOfDay":{
+      "type":"integer",
+      "box":true,
+      "max":23,
+      "min":0
+    },
+    "Hypervisor":{
+      "type":"structure",
+      "members":{
+        "Host":{
+          "shape":"Host",
+          "documentation":"<p>The server host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).</p>"
+        },
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service used to encrypt the hypervisor.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the hypervisor.</p>"
+        },
+        "State":{
+          "shape":"HypervisorState",
+          "documentation":"<p>The state of the hypervisor.</p>"
+        }
+      },
+      "documentation":"<p>Represents the hypervisor's permissions to which the gateway will connect.</p> <p>A hypervisor is hardware, software, or firmware that creates and manages virtual machines, and allocates resources to them.</p>"
+    },
+    "HypervisorId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "HypervisorState":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "ONLINE",
+        "OFFLINE",
+        "ERROR"
+      ]
+    },
+    "Hypervisors":{
+      "type":"list",
+      "member":{"shape":"Hypervisor"}
+    },
+    "ImportHypervisorConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "Host",
+        "Name"
+      ],
+      "members":{
+        "Host":{
+          "shape":"Host",
+          "documentation":"<p>The server host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Key Management Service for the hypervisor.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the hypervisor.</p>"
+        },
+        "Password":{
+          "shape":"Password",
+          "documentation":"<p>The password for the hypervisor.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags of the hypervisor configuration to import.</p>"
+        },
+        "Username":{
+          "shape":"Username",
+          "documentation":"<p>The username for the hypervisor.</p>"
+        }
+      }
+    },
+    "ImportHypervisorConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor you disassociated.</p>"
+        }
+      }
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>A description of which internal error occured.</p>"
+        },
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The operation did not succeed because an internal error occurred. Try again later.</p>",
+      "exception":true,
+      "fault":true
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":500,
+      "min":50,
+      "pattern":"^(^arn:(aws|aws-cn|aws-us-gov):kms:([a-zA-Z0-9-]+):([0-9]+):(key|alias)/(\\S+)$)|(^alias/(\\S+)$)$"
+    },
+    "ListGatewaysInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of gateways to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListGatewaysOutput":{
+      "type":"structure",
+      "members":{
+        "Gateways":{
+          "shape":"Gateways",
+          "documentation":"<p>A list of your gateways.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListHypervisorsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of hypervisors to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListHypervisorsOutput":{
+      "type":"structure",
+      "members":{
+        "Hypervisors":{
+          "shape":"Hypervisors",
+          "documentation":"<p>A list of your <code>Hypervisor</code> objects, ordered by their Amazon Resource Names (ARNs).</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource's tags to list.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource's tags that you listed.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of the resource's tags.</p>"
+        }
+      }
+    },
+    "ListVirtualMachinesInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of virtual machines to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListVirtualMachinesOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        },
+        "VirtualMachines":{
+          "shape":"VirtualMachines",
+          "documentation":"<p>A list of your <code>VirtualMachine</code> objects, ordered by their Amazon Resource Names (ARNs).</p>"
+        }
+      }
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "MinuteOfHour":{
+      "type":"integer",
+      "box":true,
+      "max":59,
+      "min":0
+    },
+    "Name":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-]*$"
+    },
+    "NextToken":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^.+$"
+    },
+    "Password":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[ -~]+$",
+      "sensitive":true
+    },
+    "Path":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"^[^\\x00]+$"
+    },
+    "PutMaintenanceStartTimeInput":{
+      "type":"structure",
+      "required":[
+        "GatewayArn",
+        "HourOfDay",
+        "MinuteOfHour"
+      ],
+      "members":{
+        "DayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month start maintenance on a gateway.</p> <p>Valid values range from <code>Sunday</code> to <code>Saturday</code>.</p>"
+        },
+        "DayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week to start maintenance on a gateway.</p>"
+        },
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the gateway, used to specify its maintenance start time.</p>"
+        },
+        "HourOfDay":{
+          "shape":"HourOfDay",
+          "documentation":"<p>The hour of the day to start maintenance on a gateway.</p>"
+        },
+        "MinuteOfHour":{
+          "shape":"MinuteOfHour",
+          "documentation":"<p>The minute of the hour to start maintenance on a gateway.</p>"
+        }
+      }
+    },
+    "PutMaintenanceStartTimeOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a gateway for which you set the maintenance start time.</p>"
+        }
+      }
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":500,
+      "min":50,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):backup-gateway(:[a-zA-Z-0-9]+){3}\\/[a-zA-Z-0-9]+$"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>A description of which resource wasn't found.</p>"
+        },
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>A resource that is required for the action wasn't found.</p>",
+      "exception":true
+    },
+    "ServerArn":{
+      "type":"string",
+      "max":500,
+      "min":50,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):backup-gateway(:[a-zA-Z-0-9]+){3}\\/[a-zA-Z-0-9]+$"
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key part of a tag's key-value pair. The key can't start with <code>aws:</code>.</p>"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>The key part of a value's key-value pair.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters, numbers, spaces, and the following characters: + - = . _ : /.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to tag.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource you tagged.</p>"
+        }
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^[^\\x00]*$"
+    },
+    "Tags":{
+      "type":"list",
+      "member":{"shape":"Tag"}
+    },
+    "TestHypervisorConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "GatewayArn",
+        "Host"
+      ],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway to the hypervisor to test.</p>"
+        },
+        "Host":{
+          "shape":"Host",
+          "documentation":"<p>The server host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).</p>"
+        },
+        "Password":{
+          "shape":"Password",
+          "documentation":"<p>The password for the hypervisor.</p>"
+        },
+        "Username":{
+          "shape":"Username",
+          "documentation":"<p>The username for the hypervisor.</p>"
+        }
+      }
+    },
+    "TestHypervisorConfigurationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "Time":{"type":"timestamp"},
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>The list of tag keys specifying which tags to remove.</p>"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which you removed tags.</p>"
+        }
+      }
+    },
+    "UpdateGatewayInformationInput":{
+      "type":"structure",
+      "required":["GatewayArn"],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway to update.</p>"
+        },
+        "GatewayDisplayName":{
+          "shape":"Name",
+          "documentation":"<p>The updated display name of the gateway.</p>"
+        }
+      }
+    },
+    "UpdateGatewayInformationOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway you updated.</p>"
+        }
+      }
+    },
+    "UpdateHypervisorInput":{
+      "type":"structure",
+      "required":["HypervisorArn"],
+      "members":{
+        "Host":{
+          "shape":"Host",
+          "documentation":"<p>The updated host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).</p>"
+        },
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor to update.</p>"
+        },
+        "Password":{
+          "shape":"Password",
+          "documentation":"<p>The updated password for the hypervisor.</p>"
+        },
+        "Username":{
+          "shape":"Username",
+          "documentation":"<p>The updated username for the hypervisor.</p>"
+        }
+      }
+    },
+    "UpdateHypervisorOutput":{
+      "type":"structure",
+      "members":{
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor you updated.</p>"
+        }
+      }
+    },
+    "Username":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[ -\\.0-\\[\\]-~]*[!-\\.0-\\[\\]-~][ -\\.0-\\[\\]-~]*$",
+      "sensitive":true
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>A description of what caused the validation error.</p>"
+        },
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The operation did not succeed because a validation error occurred.</p>",
+      "exception":true
+    },
+    "VirtualMachine":{
+      "type":"structure",
+      "members":{
+        "HostName":{
+          "shape":"Name",
+          "documentation":"<p>The host name of the virtual machine.</p>"
+        },
+        "HypervisorId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the virtual machine's hypervisor.</p>"
+        },
+        "LastBackupDate":{
+          "shape":"Time",
+          "documentation":"<p>The most recent date a virtual machine was backed up, in Unix format and UTC time.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the virtual machine.</p>"
+        },
+        "Path":{
+          "shape":"Path",
+          "documentation":"<p>The path of the virtual machine.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the virtual machine.</p>"
+        }
+      },
+      "documentation":"<p>A virtual machine that is on a hypervisor.</p>"
+    },
+    "VirtualMachines":{
+      "type":"list",
+      "member":{"shape":"VirtualMachine"}
+    },
+    "string":{"type":"string"}
+  },
+  "documentation":"<p><fullname>Backup gateway</fullname> <p>Backup gateway connects Backup to your hypervisor, so you can create, store, and restore backups of your virtual machines (VMs) anywhere, whether on-premises or in the VMware Cloud (VMC) on Amazon Web Services.</p> <p>Add on-premises resources by connecting to a hypervisor through a gateway. Backup will automatically discover the resources in your hypervisor.</p> <p>Use Backup to assign virtual or on-premises resources to a backup plan, or run on-demand backups. Once you have backed up your resources, you can view them and restore them like any resource supported by Backup.</p> <p>To download the Amazon Web Services software to get started, navigate to the Backup console, choose <b>Gateways</b>, then choose <b>Create gateway</b>.</p></p>"
+}

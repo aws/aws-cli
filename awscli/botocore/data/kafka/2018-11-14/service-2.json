@@ -95,6 +95,51 @@
       ],
       "documentation": "\n            <p>Creates a new MSK cluster.</p>\n         "
     },
+    "CreateClusterV2": {
+      "name": "CreateClusterV2",
+      "http": {
+        "method": "POST",
+        "requestUri": "/api/v2/clusters",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateClusterV2Request"
+      },
+      "output": {
+        "shape": "CreateClusterV2Response"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>This cluster name already exists. Retry your request using another name.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Creates a new MSK cluster.</p>\n         "
+    },
     "CreateConfiguration": {
       "name": "CreateConfiguration",
       "http": {
@@ -221,6 +266,44 @@
       },
       "output": {
         "shape": "DescribeClusterResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns a description of the MSK cluster whose Amazon Resource Name (ARN) is specified in the request.</p>\n         "
+    },
+    "DescribeClusterV2": {
+      "name": "DescribeClusterV2",
+      "http": {
+        "method": "GET",
+        "requestUri": "/api/v2/clusters/{clusterArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeClusterV2Request"
+      },
+      "output": {
+        "shape": "DescribeClusterV2Response",
         "documentation": "\n            <p>Successful response.</p>\n         "
       },
       "errors": [
@@ -538,6 +621,40 @@
       },
       "output": {
         "shape": "ListClustersResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns a list of all the MSK clusters in the current Region.</p>\n         "
+    },
+    "ListClustersV2": {
+      "name": "ListClustersV2",
+      "http": {
+        "method": "GET",
+        "requestUri": "/api/v2/clusters",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListClustersV2Request"
+      },
+      "output": {
+        "shape": "ListClustersV2Response",
         "documentation": "\n            <p>Successful response.</p>\n         "
       },
       "errors": [
@@ -1453,6 +1570,17 @@
       },
       "documentation" : "\n            <p>Includes all client authentication information.</p>\n         "
     },
+    "ServerlessClientAuthentication" : {
+      "type" : "structure",
+      "members" : {
+        "Sasl" : {
+          "shape" : "ServerlessSasl",
+          "locationName" : "sasl",
+          "documentation" : "\n            <p>Details for ClientAuthentication using SASL.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Includes all client authentication information.</p>\n         "
+    },
     "ClientBroker": {
       "type": "string",
       "documentation": "\n            <p>Client-broker encryption in transit setting.</p>\n         ",
@@ -1570,6 +1698,67 @@
       },
       "documentation": "\n            <p>Returns information about a cluster.</p>\n         "
     },
+    "Cluster": {
+      "type": "structure",
+      "members": {
+        "ActiveOperationArn": {
+          "shape": "__string",
+          "locationName": "activeOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies a cluster operation.</p>\n         "
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "\n            <p>Cluster Type.</p>\n         "
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "ClusterName": {
+          "shape": "__string",
+          "locationName": "clusterName",
+          "documentation": "\n            <p>The name of the cluster.</p>\n         "
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>The time when the cluster was created.</p>\n         "
+        },
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The current version of the MSK cluster.</p>\n         "
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "\n            <p>The state of the cluster. The possible states are ACTIVE, CREATING, DELETING, FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.</p>\n         "
+        },
+        "StateInfo" : {
+          "shape" : "StateInfo",
+          "locationName" : "stateInfo",
+          "documentation": "\n            <p>State Info for the Amazon MSK cluster.</p>\n         "
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "\n            <p>Tags attached to the cluster.</p>\n         "
+        },
+        "Provisioned": {
+          "shape": "Provisioned",
+          "locationName": "provisioned",
+          "documentation": "\n            <p>Information about the provisioned cluster.</p>\n         "
+        },
+        "Serverless": {
+          "shape": "Serverless",
+          "locationName": "serverless",
+          "documentation": "\n            <p>Information about the serverless cluster.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about a cluster.</p>\n         "
+    },
     "ClusterOperationInfo": {
       "type": "structure",
       "members": {
@@ -1670,6 +1859,187 @@
         "MAINTENANCE",
         "REBOOTING_BROKER",
         "UPDATING"
+      ]
+    },
+    "ClusterType": {
+      "type": "string",
+      "documentation": "\n            <p>The type of cluster.</p>\n         ",
+      "enum": [
+        "PROVISIONED",
+        "SERVERLESS"
+      ]
+    },
+    "ProvisionedRequest": {
+      "type" : "structure",
+      "documentation": "\n            <p>Provisioned cluster request.</p>\n         ",
+      "members" : {
+        "BrokerNodeGroupInfo": {
+          "shape": "BrokerNodeGroupInfo",
+          "locationName": "brokerNodeGroupInfo",
+          "documentation": "\n            <p>Information about the brokers.</p>\n         "
+        },
+        "ClientAuthentication": {
+          "shape": "ClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
+        },
+        "ConfigurationInfo": {
+          "shape": "ConfigurationInfo",
+          "locationName": "configurationInfo",
+          "documentation": "\n            <p>Represents the configuration that you want Amazon MSK to use for the brokers in a cluster.</p>\n         "
+        },
+        "EncryptionInfo": {
+          "shape": "EncryptionInfo",
+          "locationName": "encryptionInfo",
+          "documentation": "\n            <p>Includes all encryption-related information.</p>\n         "
+        },
+        "EnhancedMonitoring": {
+          "shape": "EnhancedMonitoring",
+          "locationName": "enhancedMonitoring",
+          "documentation": "\n            <p>Specifies the level of monitoring for the MSK cluster. The possible values are DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION.</p>\n         "
+        },
+        "OpenMonitoring" : {
+          "shape" : "OpenMonitoringInfo",
+          "locationName" : "openMonitoring",
+          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        },
+        "KafkaVersion": {
+          "shape": "__stringMin1Max128",
+          "locationName": "kafkaVersion",
+          "documentation": "\n            <p>The Apache Kafka version that you want for the cluster.</p>\n         "
+        },
+        "LoggingInfo": {
+          "shape": "LoggingInfo",
+          "locationName": "loggingInfo",
+          "documentation": "\n            <p>Log delivery information for the cluster.</p>\n         "
+        },
+        "NumberOfBrokerNodes": {
+          "shape": "__integerMin1Max15",
+          "locationName": "numberOfBrokerNodes",
+          "documentation": "\n            <p>The number of broker nodes in the cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "BrokerNodeGroupInfo",
+        "KafkaVersion",
+        "NumberOfBrokerNodes"
+      ]
+    },
+    "Provisioned": {
+      "type" : "structure",
+      "documentation": "\n            <p>Provisioned cluster.</p>\n         ",
+      "members" : {
+        "BrokerNodeGroupInfo": {
+          "shape": "BrokerNodeGroupInfo",
+          "locationName": "brokerNodeGroupInfo",
+          "documentation": "\n            <p>Information about the brokers.</p>\n         "
+        },
+        "CurrentBrokerSoftwareInfo": {
+          "shape": "BrokerSoftwareInfo",
+          "locationName": "currentBrokerSoftwareInfo",
+          "documentation": "\n            <p>Information about the Apache Kafka version deployed on the brokers.</p>\n         "
+        },
+        "ClientAuthentication": {
+          "shape": "ClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
+        },
+        "EncryptionInfo": {
+          "shape": "EncryptionInfo",
+          "locationName": "encryptionInfo",
+          "documentation": "\n            <p>Includes all encryption-related information.</p>\n         "
+        },
+        "EnhancedMonitoring": {
+          "shape": "EnhancedMonitoring",
+          "locationName": "enhancedMonitoring",
+          "documentation": "\n            <p>Specifies the level of monitoring for the MSK cluster. The possible values are DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION.</p>\n         "
+        },
+        "OpenMonitoring" : {
+          "shape" : "OpenMonitoringInfo",
+          "locationName" : "openMonitoring",
+          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        },
+        "LoggingInfo": {
+          "shape": "LoggingInfo",
+          "locationName": "loggingInfo",
+          "documentation": "\n            <p>Log delivery information for the cluster.</p>\n         "
+        },
+        "NumberOfBrokerNodes": {
+          "shape": "__integerMin1Max15",
+          "locationName": "numberOfBrokerNodes",
+          "documentation": "\n            <p>The number of broker nodes in the cluster.</p>\n         "
+        },
+        "ZookeeperConnectString": {
+          "shape": "__string",
+          "locationName": "zookeeperConnectString",
+          "documentation": "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster.</p>\n         "
+        },
+        "ZookeeperConnectStringTls" : {
+          "shape" : "__string",
+          "locationName" : "zookeeperConnectStringTls",
+          "documentation" : "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster on a TLS port.</p>\n         "
+        }
+      },
+      "required": [
+        "BrokerNodeGroupInfo",
+        "NumberOfBrokerNodes"
+      ]
+    },
+    "VpcConfig": {
+      "type" : "structure",
+      "documentation": "\n            <p>The configuration of the Amazon VPCs for the cluster.</p>\n         ",
+      "members": {
+        "SubnetIds": {
+          "shape": "__listOf__string",
+          "locationName": "subnetIds",
+          "documentation" : "\n            <p>The IDs of the subnets associated with the cluster.</p>\n         "
+        },
+        "SecurityGroupIds": {
+          "shape": "__listOf__string",
+          "locationName": "securityGroupIds",
+          "documentation" : "\n            <p>The IDs of the security groups associated with the cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "SubnetIds"
+      ]
+    },
+    "ServerlessRequest": {
+      "type" : "structure",
+      "documentation": "\n            <p>Serverless cluster request.</p>\n         ",
+      "members" : {
+        "VpcConfigs": {
+          "shape": "__listOfVpcConfig",
+          "locationName": "vpcConfigs",
+          "documentation": "\n            <p>The configuration of the Amazon VPCs for the cluster.</p>\n         "
+        },
+        "ClientAuthentication": {
+          "shape": "ServerlessClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
+        }
+      },
+      "required": [
+        "VpcConfigs"
+      ]
+    },
+    "Serverless": {
+      "type" : "structure",
+      "documentation": "\n            <p>Serverless cluster.</p>\n         ",
+      "members" : {
+        "VpcConfigs": {
+          "shape": "__listOfVpcConfig",
+          "locationName": "vpcConfigs",
+          "documentation": "\n            <p>The configuration of the Amazon VPCs for the cluster.</p>\n         "
+        },
+        "ClientAuthentication": {
+          "shape": "ServerlessClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
+        }
+      },
+      "required": [
+        "VpcConfigs"
       ]
     },
     "CompatibleKafkaVersion" : {
@@ -1813,15 +2183,43 @@
       }
     },
     "ConnectivityInfo" : {
-      "type" : "structure",
-      "members" : {
-        "PublicAccess" : {
-          "shape" : "PublicAccess",
-          "locationName" : "publicAccess",
-          "documentation" : "\n            <p>Public access control for brokers.</p>\n         "
+      "type": "structure",
+      "members": {
+        "PublicAccess": {
+          "shape": "PublicAccess",
+          "locationName": "publicAccess",
+          "documentation": "\n            <p>Public access control for brokers.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Information about the broker access configuration.</p>\n         "
+      "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
+    },
+    "CreateClusterV2Request": {
+      "type": "structure",
+      "members": {
+        "ClusterName": {
+          "shape": "__stringMin1Max64",
+          "locationName": "clusterName",
+          "documentation": "\n            <p>The name of the cluster.</p>\n         "
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "\n            <p>A map of tags that you want the cluster to have.</p>\n         "
+        },
+        "Provisioned": {
+          "shape": "ProvisionedRequest",
+          "locationName": "provisioned",
+          "documentation": "\n            <p>Information about the provisioned cluster.</p>\n         "
+        },
+        "Serverless": {
+          "shape": "ServerlessRequest",
+          "locationName": "serverless",
+          "documentation": "\n            <p>Information about the serverless cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterName"
+      ]
     },
     "CreateClusterRequest": {
       "type": "structure",
@@ -1905,6 +2303,31 @@
           "shape": "ClusterState",
           "locationName": "state",
           "documentation": "\n            <p>The state of the cluster. The possible states are ACTIVE, CREATING, DELETING, FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.</p>\n         "
+        }
+      }
+    },
+    "CreateClusterV2Response": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "ClusterName": {
+          "shape": "__string",
+          "locationName": "clusterName",
+          "documentation": "\n            <p>The name of the MSK cluster.</p>\n         "
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "\n            <p>The state of the cluster. The possible states are ACTIVE, CREATING, DELETING, FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.</p>\n         "
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "\n            <p>The type of the cluster. The possible states are PROVISIONED or SERVERLESS.</p>\n         "
         }
       }
     },
@@ -2069,11 +2492,35 @@
         "ClusterArn"
       ]
     },
+    "DescribeClusterV2Request": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
     "DescribeClusterResponse": {
       "type": "structure",
       "members": {
         "ClusterInfo": {
           "shape": "ClusterInfo",
+          "locationName": "clusterInfo",
+          "documentation": "\n            <p>The cluster information.</p>\n         "
+        }
+      }
+    },
+    "DescribeClusterV2Response": {
+      "type": "structure",
+      "members": {
+        "ClusterInfo": {
+          "shape": "Cluster",
           "locationName": "clusterInfo",
           "documentation": "\n            <p>The cluster information.</p>\n         "
         }
@@ -2529,11 +2976,55 @@
         }
       }
     },
+    "ListClustersV2Request": {
+      "type": "structure",
+      "members": {
+        "ClusterNameFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "clusterNameFilter",
+          "documentation": "\n            <p>Specify a prefix of the names of the clusters that you want to list. The service lists all the clusters whose names start with this prefix.</p>\n         "
+        },
+        "ClusterTypeFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "clusterTypeFilter",
+          "documentation": "\n            <p>Specify either PROVISIONED or SERVERLESS.</p>\n         "
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
     "ListClustersResponse": {
       "type": "structure",
       "members": {
         "ClusterInfoList": {
           "shape": "__listOfClusterInfo",
+          "locationName": "clusterInfoList",
+          "documentation": "\n            <p>Information on each of the MSK clusters in the response.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of a ListClusters operation is truncated, the call returns NextToken in the response. \n               To get another batch of clusters, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
+    "ListClustersV2Response": {
+      "type": "structure",
+      "members": {
+        "ClusterInfoList": {
+          "shape": "__listOfCluster",
           "locationName": "clusterInfoList",
           "documentation": "\n            <p>Information on each of the MSK clusters in the response.</p>\n         "
         },
@@ -2992,6 +3483,17 @@
         }
       },
       "required" : [ "Enabled" ]
+    },
+    "ServerlessSasl" : {
+      "type" : "structure",
+      "members" : {
+        "Iam" : {
+          "shape" : "Iam",
+          "locationName" : "iam",
+          "documentation" : "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Details for client authentication using SASL.</p>\n         "
     },
     "Sasl" : {
       "type" : "structure",
@@ -3704,6 +4206,12 @@
         "shape": "ClusterInfo"
       }
     },
+    "__listOfCluster": {
+      "type": "list",
+      "member": {
+        "shape": "Cluster"
+      }
+    },
     "__listOfClusterOperationInfo": {
       "type": "list",
       "member": {
@@ -3720,6 +4228,12 @@
       "type" : "list",
       "member" : {
         "shape" : "CompatibleKafkaVersion"
+      }
+    },
+    "__listOfVpcConfig" : {
+      "type" : "list",
+      "member" : {
+        "shape" : "VpcConfig"
       }
     },
     "__listOfConfiguration": {

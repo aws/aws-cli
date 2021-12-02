@@ -8877,7 +8877,7 @@
         },
         "schema":{
           "shape":"IndexSchema",
-          "documentation":"<p>Contains a value that specifies the type of indexing performed. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains only registry data.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry data and shadow data.</p> </li> <li> <p>REGISTRY_AND_CONNECTIVITY_STATUS - Your thing index contains registry data and thing connectivity status data.</p> </li> <li> <p>REGISTRY_AND_SHADOW_AND_CONNECTIVITY_STATUS - Your thing index contains registry data, shadow data, and thing connectivity status data.</p> </li> </ul>"
+          "documentation":"<p>Contains a value that specifies the type of indexing performed. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains only registry data.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry data and shadow data.</p> </li> <li> <p>REGISTRY_AND_CONNECTIVITY_STATUS - Your thing index contains registry data and thing connectivity status data.</p> </li> <li> <p>REGISTRY_AND_SHADOW_AND_CONNECTIVITY_STATUS - Your thing index contains registry data, shadow data, and thing connectivity status data.</p> </li> <li> <p>MULTI_INDEXING_MODE - Your thing index contains multiple data sources. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_GetIndexingConfiguration.html\">GetIndexingConfiguration</a>.</p> </li> </ul>"
         }
       }
     },
@@ -9822,6 +9822,13 @@
     "DeviceCertificateUpdateAction":{
       "type":"string",
       "enum":["DEACTIVATE"]
+    },
+    "DeviceDefenderIndexingMode":{
+      "type":"string",
+      "enum":[
+        "OFF",
+        "VIOLATIONS"
+      ]
     },
     "DeviceDefenderThingName":{
       "type":"string",
@@ -14428,6 +14435,13 @@
       "max":65535,
       "min":1
     },
+    "NamedShadowIndexingMode":{
+      "type":"string",
+      "enum":[
+        "OFF",
+        "ON"
+      ]
+    },
     "NamespaceId":{
       "type":"string",
       "max":64,
@@ -16962,7 +16976,11 @@
         },
         "shadow":{
           "shape":"JsonDocument",
-          "documentation":"<p>The shadow.</p>"
+          "documentation":"<p>The unnamed shadow and named shadow.</p> <p>For more information about shadows, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html\">IoT Device Shadow service.</a> </p>"
+        },
+        "deviceDefender":{
+          "shape":"JsonDocument",
+          "documentation":"<p>Contains Device Defender data.</p> <p>For more information about Device Defender, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/device-defender.html\">Device Defender</a>. </p>"
         },
         "connectivity":{
           "shape":"ThingConnectivity",
@@ -17111,6 +17129,14 @@
         "thingConnectivityIndexingMode":{
           "shape":"ThingConnectivityIndexingMode",
           "documentation":"<p>Thing connectivity indexing mode. Valid values are: </p> <ul> <li> <p>STATUS – Your thing index contains connectivity status. To enable thing connectivity indexing, <i>thingIndexMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Thing connectivity status indexing is disabled.</p> </li> </ul>"
+        },
+        "deviceDefenderIndexingMode":{
+          "shape":"DeviceDefenderIndexingMode",
+          "documentation":"<p>Device Defender indexing mode. Valid values are:</p> <ul> <li> <p>VIOLATIONS – Your thing index contains Device Defender violations. To enable Device Defender indexing, <i>deviceDefenderIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Device Defender indexing is disabled.</p> </li> </ul> <p>For more information about Device Defender violations, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html\">Device Defender Detect.</a> </p>"
+        },
+        "namedShadowIndexingMode":{
+          "shape":"NamedShadowIndexingMode",
+          "documentation":"<p>Named shadow indexing mode. Valid values are:</p> <ul> <li> <p>ON – Your thing index contains named shadow. To enable thing named shadow indexing, <i>namedShadowIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Named shadow indexing is disabled.</p> </li> </ul> <p>For more information about Shadows, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html\">IoT Device Shadow service.</a> </p>"
         },
         "managedFields":{
           "shape":"Fields",
@@ -18120,7 +18146,7 @@
         },
         "unit":{
           "shape":"FleetMetricUnit",
-          "documentation":"<p>Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">CW metric</a>.</p>"
+          "documentation":"<p>Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">CW metric</a>.</p>"
         },
         "expectedVersion":{
           "shape":"OptionalVersion",

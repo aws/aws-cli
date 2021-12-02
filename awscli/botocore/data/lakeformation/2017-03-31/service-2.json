@@ -4,12 +4,11 @@
     "apiVersion":"2017-03-31",
     "endpointPrefix":"lakeformation",
     "jsonVersion":"1.1",
-    "protocol":"json",
+    "protocol":"rest-json",
     "serviceFullName":"AWS Lake Formation",
     "serviceId":"LakeFormation",
     "signatureVersion":"v4",
     "signingName":"lakeformation",
-    "targetPrefix":"AWSLakeFormation",
     "uid":"lakeformation-2017-03-31"
   },
   "operations":{
@@ -17,7 +16,7 @@
       "name":"AddLFTagsToResource",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/AddLFTagsToResource"
       },
       "input":{"shape":"AddLFTagsToResourceRequest"},
       "output":{"shape":"AddLFTagsToResourceResponse"},
@@ -29,13 +28,13 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConcurrentModificationException"}
       ],
-      "documentation":"<p>Attaches one or more tags to an existing resource.</p>"
+      "documentation":"<p>Attaches one or more LF-tags to an existing resource.</p>"
     },
     "BatchGrantPermissions":{
       "name":"BatchGrantPermissions",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/BatchGrantPermissions"
       },
       "input":{"shape":"BatchGrantPermissionsRequest"},
       "output":{"shape":"BatchGrantPermissionsResponse"},
@@ -49,7 +48,7 @@
       "name":"BatchRevokePermissions",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/BatchRevokePermissions"
       },
       "input":{"shape":"BatchRevokePermissionsRequest"},
       "output":{"shape":"BatchRevokePermissionsResponse"},
@@ -59,11 +58,67 @@
       ],
       "documentation":"<p>Batch operation to revoke permissions from the principal.</p>"
     },
+    "CancelTransaction":{
+      "name":"CancelTransaction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CancelTransaction"
+      },
+      "input":{"shape":"CancelTransactionRequest"},
+      "output":{"shape":"CancelTransactionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"TransactionCommittedException"},
+        {"shape":"TransactionCommitInProgressException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Attempts to cancel the specified transaction. Returns an exception if the transaction was previously committed.</p>"
+    },
+    "CommitTransaction":{
+      "name":"CommitTransaction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CommitTransaction"
+      },
+      "input":{"shape":"CommitTransactionRequest"},
+      "output":{"shape":"CommitTransactionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"TransactionCanceledException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Attempts to commit the specified transaction. Returns an exception if the transaction was previously aborted. This API action is idempotent if called multiple times for the same transaction.</p>"
+    },
+    "CreateDataCellsFilter":{
+      "name":"CreateDataCellsFilter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateDataCellsFilter"
+      },
+      "input":{"shape":"CreateDataCellsFilterRequest"},
+      "output":{"shape":"CreateDataCellsFilterResponse"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a data cell filter to allow one to grant access to certain columns on certain rows.</p>"
+    },
     "CreateLFTag":{
       "name":"CreateLFTag",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/CreateLFTag"
       },
       "input":{"shape":"CreateLFTagRequest"},
       "output":{"shape":"CreateLFTagResponse"},
@@ -75,13 +130,30 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a tag with the specified name and values.</p>"
+      "documentation":"<p>Creates an LF-tag with the specified name and values.</p>"
+    },
+    "DeleteDataCellsFilter":{
+      "name":"DeleteDataCellsFilter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteDataCellsFilter"
+      },
+      "input":{"shape":"DeleteDataCellsFilterRequest"},
+      "output":{"shape":"DeleteDataCellsFilterResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a data cell filter.</p>"
     },
     "DeleteLFTag":{
       "name":"DeleteLFTag",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/DeleteLFTag"
       },
       "input":{"shape":"DeleteLFTagRequest"},
       "output":{"shape":"DeleteLFTagResponse"},
@@ -92,13 +164,33 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified tag key name. If the attribute key does not exist or the tag does not exist, then the operation will not do anything. If the attribute key exists, then the operation checks if any resources are tagged with this attribute key, if yes, the API throws a 400 Exception with the message \"Delete not allowed\" as the tag key is still attached with resources. You can consider untagging resources with this tag key.</p>"
+      "documentation":"<p>Deletes the specified LF-tag key name. If the attribute key does not exist or the LF-tag does not exist, then the operation will not do anything. If the attribute key exists, then the operation checks if any resources are tagged with this attribute key, if yes, the API throws a 400 Exception with the message \"Delete not allowed\" as the LF-tag key is still attached with resources. You can consider untagging resources with this LF-tag key.</p>"
+    },
+    "DeleteObjectsOnCancel":{
+      "name":"DeleteObjectsOnCancel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteObjectsOnCancel"
+      },
+      "input":{"shape":"DeleteObjectsOnCancelRequest"},
+      "output":{"shape":"DeleteObjectsOnCancelResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"TransactionCommittedException"},
+        {"shape":"TransactionCanceledException"},
+        {"shape":"ResourceNotReadyException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>For a specific governed table, provides a list of Amazon S3 objects that will be written during the current transaction and that can be automatically deleted if the transaction is canceled. Without this call, no Amazon S3 objects are automatically deleted when a transaction cancels. </p> <p> The Glue ETL library function <code>write_dynamic_frame.from_catalog()</code> includes an option to automatically call <code>DeleteObjectsOnCancel</code> before writes. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/transactions-data-operations.html#rolling-back-writes\">Rolling Back Amazon S3 Writes</a>. </p>"
     },
     "DeregisterResource":{
       "name":"DeregisterResource",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/DeregisterResource"
       },
       "input":{"shape":"DeregisterResourceRequest"},
       "output":{"shape":"DeregisterResourceResponse"},
@@ -114,7 +206,7 @@
       "name":"DescribeResource",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/DescribeResource"
       },
       "input":{"shape":"DescribeResourceRequest"},
       "output":{"shape":"DescribeResourceResponse"},
@@ -124,13 +216,48 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"EntityNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the current data access role for the given resource registered in AWS Lake Formation.</p>"
+      "documentation":"<p>Retrieves the current data access role for the given resource registered in Lake Formation.</p>"
+    },
+    "DescribeTransaction":{
+      "name":"DescribeTransaction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeTransaction"
+      },
+      "input":{"shape":"DescribeTransactionRequest"},
+      "output":{"shape":"DescribeTransactionResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Returns the details of a single transaction.</p>"
+    },
+    "ExtendTransaction":{
+      "name":"ExtendTransaction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ExtendTransaction"
+      },
+      "input":{"shape":"ExtendTransactionRequest"},
+      "output":{"shape":"ExtendTransactionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"TransactionCommittedException"},
+        {"shape":"TransactionCanceledException"},
+        {"shape":"TransactionCommitInProgressException"}
+      ],
+      "documentation":"<p>Indicates to the service that the specified transaction is still active and should not be treated as idle and aborted.</p> <p>Write transactions that remain idle for a long period are automatically aborted unless explicitly extended.</p>"
     },
     "GetDataLakeSettings":{
       "name":"GetDataLakeSettings",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/GetDataLakeSettings"
       },
       "input":{"shape":"GetDataLakeSettingsRequest"},
       "output":{"shape":"GetDataLakeSettingsResponse"},
@@ -145,7 +272,7 @@
       "name":"GetEffectivePermissionsForPath",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/GetEffectivePermissionsForPath"
       },
       "input":{"shape":"GetEffectivePermissionsForPathRequest"},
       "output":{"shape":"GetEffectivePermissionsForPathResponse"},
@@ -161,7 +288,7 @@
       "name":"GetLFTag",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/GetLFTag"
       },
       "input":{"shape":"GetLFTagRequest"},
       "output":{"shape":"GetLFTagResponse"},
@@ -172,13 +299,50 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns a tag definition.</p>"
+      "documentation":"<p>Returns an LF-tag definition.</p>"
+    },
+    "GetQueryState":{
+      "name":"GetQueryState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetQueryState",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryStateRequest"},
+      "output":{"shape":"GetQueryStateResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the state of a query previously submitted. Clients are expected to poll <code>GetQueryState</code> to monitor the current state of the planning before retrieving the work units. A query state is only visible to the principal that made the initial call to <code>StartQueryPlanning</code>.</p>",
+      "endpoint":{"hostPrefix":"query-"}
+    },
+    "GetQueryStatistics":{
+      "name":"GetQueryStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetQueryStatistics",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryStatisticsRequest"},
+      "output":{"shape":"GetQueryStatisticsResponse"},
+      "errors":[
+        {"shape":"StatisticsNotReadyYetException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ExpiredException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p>Retrieves statistics on the planning and execution of a query.</p>",
+      "endpoint":{"hostPrefix":"query-"}
     },
     "GetResourceLFTags":{
       "name":"GetResourceLFTags",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/GetResourceLFTags"
       },
       "input":{"shape":"GetResourceLFTagsRequest"},
       "output":{"shape":"GetResourceLFTagsResponse"},
@@ -190,13 +354,70 @@
         {"shape":"GlueEncryptionException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the tags applied to a resource.</p>"
+      "documentation":"<p>Returns the LF-tags applied to a resource.</p>"
+    },
+    "GetTableObjects":{
+      "name":"GetTableObjects",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTableObjects"
+      },
+      "input":{"shape":"GetTableObjectsRequest"},
+      "output":{"shape":"GetTableObjectsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"TransactionCommittedException"},
+        {"shape":"TransactionCanceledException"},
+        {"shape":"ResourceNotReadyException"}
+      ],
+      "documentation":"<p>Returns the set of Amazon S3 objects that make up the specified governed table. A transaction ID or timestamp can be specified for time-travel queries.</p>"
+    },
+    "GetWorkUnitResults":{
+      "name":"GetWorkUnitResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetWorkUnitResults",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkUnitResultsRequest"},
+      "output":{"shape":"GetWorkUnitResultsResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ExpiredException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p>Returns the work units resulting from the query. Work units can be executed in any order and in parallel. </p>",
+      "endpoint":{"hostPrefix":"data-"}
+    },
+    "GetWorkUnits":{
+      "name":"GetWorkUnits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetWorkUnits",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkUnitsRequest"},
+      "output":{"shape":"GetWorkUnitsResponse"},
+      "errors":[
+        {"shape":"WorkUnitsNotReadyYetException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ExpiredException"}
+      ],
+      "documentation":"<p>Retrieves the work units generated by the <code>StartQueryPlanning</code> operation.</p>",
+      "endpoint":{"hostPrefix":"query-"}
     },
     "GrantPermissions":{
       "name":"GrantPermissions",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/GrantPermissions"
       },
       "input":{"shape":"GrantPermissionsRequest"},
       "output":{"shape":"GrantPermissionsResponse"},
@@ -207,11 +428,27 @@
       ],
       "documentation":"<p>Grants permissions to the principal to access metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3.</p> <p>For information about permissions, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
     },
+    "ListDataCellsFilter":{
+      "name":"ListDataCellsFilter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListDataCellsFilter"
+      },
+      "input":{"shape":"ListDataCellsFilterRequest"},
+      "output":{"shape":"ListDataCellsFilterResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all the data cell filters on a table.</p>"
+    },
     "ListLFTags":{
       "name":"ListLFTags",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/ListLFTags"
       },
       "input":{"shape":"ListLFTagsRequest"},
       "output":{"shape":"ListLFTagsResponse"},
@@ -219,15 +456,16 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"InvalidInputException"},
         {"shape":"InternalServiceException"},
-        {"shape":"OperationTimeoutException"}
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists tags that the requester has permission to view. </p>"
+      "documentation":"<p>Lists LF-tags that the requester has permission to view. </p>"
     },
     "ListPermissions":{
       "name":"ListPermissions",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/ListPermissions"
       },
       "input":{"shape":"ListPermissionsRequest"},
       "output":{"shape":"ListPermissionsResponse"},
@@ -242,7 +480,7 @@
       "name":"ListResources",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/ListResources"
       },
       "input":{"shape":"ListResourcesRequest"},
       "output":{"shape":"ListResourcesResponse"},
@@ -253,11 +491,42 @@
       ],
       "documentation":"<p>Lists the resources registered to be managed by the Data Catalog.</p>"
     },
+    "ListTableStorageOptimizers":{
+      "name":"ListTableStorageOptimizers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListTableStorageOptimizers"
+      },
+      "input":{"shape":"ListTableStorageOptimizersRequest"},
+      "output":{"shape":"ListTableStorageOptimizersResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns the configuration of all storage optimizers associated with a specified table.</p>"
+    },
+    "ListTransactions":{
+      "name":"ListTransactions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListTransactions"
+      },
+      "input":{"shape":"ListTransactionsRequest"},
+      "output":{"shape":"ListTransactionsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Returns metadata about transactions and their status. To prevent the response from growing indefinitely, only uncommitted transactions and those available for time-travel queries are returned.</p> <p>This operation can help you identify uncommitted transactions or to get information about transactions.</p>"
+    },
     "PutDataLakeSettings":{
       "name":"PutDataLakeSettings",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/PutDataLakeSettings"
       },
       "input":{"shape":"PutDataLakeSettingsRequest"},
       "output":{"shape":"PutDataLakeSettingsResponse"},
@@ -271,7 +540,7 @@
       "name":"RegisterResource",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/RegisterResource"
       },
       "input":{"shape":"RegisterResourceRequest"},
       "output":{"shape":"RegisterResourceResponse"},
@@ -279,15 +548,18 @@
         {"shape":"InvalidInputException"},
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
-        {"shape":"AlreadyExistsException"}
+        {"shape":"AlreadyExistsException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Registers the resource as managed by the Data Catalog.</p> <p>To add or update data, Lake Formation needs read/write access to the chosen Amazon S3 path. Choose a role that you know has permission to do this, or choose the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you register the first Amazon S3 path, the service-linked role and a new inline policy are created on your behalf. Lake Formation adds the first path to the inline policy and attaches it to the service-linked role. When you register subsequent paths, Lake Formation adds the path to the existing policy.</p> <p>The following request registers a new location and gives AWS Lake Formation permission to use the service-linked role to access that location.</p> <p> <code>ResourceArn = arn:aws:s3:::my-bucket UseServiceLinkedRole = true</code> </p> <p>If <code>UseServiceLinkedRole</code> is not set to true, you must provide or set the <code>RoleArn</code>:</p> <p> <code>arn:aws:iam::12345:role/my-data-access-role</code> </p>"
+      "documentation":"<p>Registers the resource as managed by the Data Catalog.</p> <p>To add or update data, Lake Formation needs read/write access to the chosen Amazon S3 path. Choose a role that you know has permission to do this, or choose the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you register the first Amazon S3 path, the service-linked role and a new inline policy are created on your behalf. Lake Formation adds the first path to the inline policy and attaches it to the service-linked role. When you register subsequent paths, Lake Formation adds the path to the existing policy.</p> <p>The following request registers a new location and gives Lake Formation permission to use the service-linked role to access that location.</p> <p> <code>ResourceArn = arn:aws:s3:::my-bucket UseServiceLinkedRole = true</code> </p> <p>If <code>UseServiceLinkedRole</code> is not set to true, you must provide or set the <code>RoleArn</code>:</p> <p> <code>arn:aws:iam::12345:role/my-data-access-role</code> </p>"
     },
     "RemoveLFTagsFromResource":{
       "name":"RemoveLFTagsFromResource",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/RemoveLFTagsFromResource"
       },
       "input":{"shape":"RemoveLFTagsFromResourceRequest"},
       "output":{"shape":"RemoveLFTagsFromResourceResponse"},
@@ -300,13 +572,13 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConcurrentModificationException"}
       ],
-      "documentation":"<p>Removes a tag from the resource. Only database, table, or tableWithColumns resource are allowed. To tag columns, use the column inclusion list in <code>tableWithColumns</code> to specify column input.</p>"
+      "documentation":"<p>Removes an LF-tag from the resource. Only database, table, or tableWithColumns resource are allowed. To tag columns, use the column inclusion list in <code>tableWithColumns</code> to specify column input.</p>"
     },
     "RevokePermissions":{
       "name":"RevokePermissions",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/RevokePermissions"
       },
       "input":{"shape":"RevokePermissionsRequest"},
       "output":{"shape":"RevokePermissionsResponse"},
@@ -321,7 +593,7 @@
       "name":"SearchDatabasesByLFTags",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/SearchDatabasesByLFTags"
       },
       "input":{"shape":"SearchDatabasesByLFTagsRequest"},
       "output":{"shape":"SearchDatabasesByLFTagsResponse"},
@@ -339,7 +611,7 @@
       "name":"SearchTablesByLFTags",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/SearchTablesByLFTags"
       },
       "input":{"shape":"SearchTablesByLFTagsRequest"},
       "output":{"shape":"SearchTablesByLFTagsResponse"},
@@ -351,13 +623,45 @@
         {"shape":"GlueEncryptionException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This operation allows a search on <code>TABLE</code> resources by <code>LFTag</code>s. This will be used by admins who want to grant user permissions on certain LFTags. Before making a grant, the admin can use <code>SearchTablesByLFTags</code> to find all resources where the given <code>LFTag</code>s are valid to verify whether the returned resources can be shared.</p>"
+      "documentation":"<p>This operation allows a search on <code>TABLE</code> resources by <code>LFTag</code>s. This will be used by admins who want to grant user permissions on certain LF-tags. Before making a grant, the admin can use <code>SearchTablesByLFTags</code> to find all resources where the given <code>LFTag</code>s are valid to verify whether the returned resources can be shared.</p>"
+    },
+    "StartQueryPlanning":{
+      "name":"StartQueryPlanning",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartQueryPlanning",
+        "responseCode":200
+      },
+      "input":{"shape":"StartQueryPlanningRequest"},
+      "output":{"shape":"StartQueryPlanningResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p>Submits a request to process a query statement.</p> <p>This operation generates work units that can be retrieved with the <code>GetWorkUnits</code> operation as soon as the query state is WORKUNITS_AVAILABLE or FINISHED.</p>",
+      "endpoint":{"hostPrefix":"query-"}
+    },
+    "StartTransaction":{
+      "name":"StartTransaction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartTransaction"
+      },
+      "input":{"shape":"StartTransactionRequest"},
+      "output":{"shape":"StartTransactionResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Starts a new transaction and returns its transaction ID. Transaction IDs are opaque objects that you can use to identify a transaction.</p>"
     },
     "UpdateLFTag":{
       "name":"UpdateLFTag",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/UpdateLFTag"
       },
       "input":{"shape":"UpdateLFTagRequest"},
       "output":{"shape":"UpdateLFTagResponse"},
@@ -369,13 +673,13 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates the list of possible values for the specified tag key. If the tag does not exist, the operation throws an EntityNotFoundException. The values in the delete key values will be deleted from list of possible values. If any value in the delete key values is attached to a resource, then API errors out with a 400 Exception - \"Update not allowed\". Untag the attribute before deleting the tag key's value. </p>"
+      "documentation":"<p>Updates the list of possible values for the specified LF-tag key. If the LF-tag does not exist, the operation throws an EntityNotFoundException. The values in the delete key values will be deleted from list of possible values. If any value in the delete key values is attached to a resource, then API errors out with a 400 Exception - \"Update not allowed\". Untag the attribute before deleting the LF-tag key's value. </p>"
     },
     "UpdateResource":{
       "name":"UpdateResource",
       "http":{
         "method":"POST",
-        "requestUri":"/"
+        "requestUri":"/UpdateResource"
       },
       "input":{"shape":"UpdateResourceRequest"},
       "output":{"shape":"UpdateResourceResponse"},
@@ -385,7 +689,44 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"EntityNotFoundException"}
       ],
-      "documentation":"<p>Updates the data access role used for vending access to the given (registered) resource in AWS Lake Formation. </p>"
+      "documentation":"<p>Updates the data access role used for vending access to the given (registered) resource in Lake Formation. </p>"
+    },
+    "UpdateTableObjects":{
+      "name":"UpdateTableObjects",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateTableObjects"
+      },
+      "input":{"shape":"UpdateTableObjectsRequest"},
+      "output":{"shape":"UpdateTableObjectsResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"TransactionCommittedException"},
+        {"shape":"TransactionCanceledException"},
+        {"shape":"TransactionCommitInProgressException"},
+        {"shape":"ResourceNotReadyException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Updates the manifest of Amazon S3 objects that make up the specified governed table.</p>"
+    },
+    "UpdateTableStorageOptimizer":{
+      "name":"UpdateTableStorageOptimizer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateTableStorageOptimizer"
+      },
+      "input":{"shape":"UpdateTableStorageOptimizerRequest"},
+      "output":{"shape":"UpdateTableStorageOptimizerResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the configuration of the storage optimizers for a table.</p>"
     }
   },
   "shapes":{
@@ -398,6 +739,10 @@
         }
       },
       "documentation":"<p>Access to a resource was denied.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AddLFTagsToResourceRequest":{
@@ -409,15 +754,15 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Resource":{
           "shape":"Resource",
-          "documentation":"<p>The resource to which to attach a tag.</p>"
+          "documentation":"<p>The database, table, or column resource to which to attach an LF-tag.</p>"
         },
         "LFTags":{
           "shape":"LFTagsList",
-          "documentation":"<p>The tags to attach to the resource.</p>"
+          "documentation":"<p>The LF-tags to attach to the resource.</p>"
         }
       }
     },
@@ -429,6 +774,39 @@
           "documentation":"<p>A list of failures to tag the resource.</p>"
         }
       }
+    },
+    "AddObjectInput":{
+      "type":"structure",
+      "required":[
+        "Uri",
+        "ETag",
+        "Size"
+      ],
+      "members":{
+        "Uri":{
+          "shape":"URI",
+          "documentation":"<p>The Amazon S3 location of the object.</p>"
+        },
+        "ETag":{
+          "shape":"ETagString",
+          "documentation":"<p>The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.</p>"
+        },
+        "Size":{
+          "shape":"ObjectSize",
+          "documentation":"<p>The size of the Amazon S3 object in bytes.</p>"
+        },
+        "PartitionValues":{
+          "shape":"PartitionValuesList",
+          "documentation":"<p>A list of partition values for the object. A value must be specified for each partition key associated with the table.</p> <p>The supported data types are integer, long, date(yyyy-MM-dd), timestamp(yyyy-MM-dd HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss\"), string and decimal.</p>"
+        }
+      },
+      "documentation":"<p>A new object to add to the governed table.</p>"
+    },
+    "AllRowsWildcard":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A structure that you pass to indicate you want all rows in a filter. </p>"
     },
     "AlreadyExistsException":{
       "type":"structure",
@@ -447,7 +825,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Entries":{
           "shape":"BatchPermissionsRequestEntryList",
@@ -519,7 +897,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Entries":{
           "shape":"BatchPermissionsRequestEntryList",
@@ -537,6 +915,21 @@
       }
     },
     "BooleanNullable":{"type":"boolean"},
+    "CancelTransactionRequest":{
+      "type":"structure",
+      "required":["TransactionId"],
+      "members":{
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction to cancel.</p>"
+        }
+      }
+    },
+    "CancelTransactionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CatalogIdString":{
       "type":"string",
       "max":255,
@@ -558,10 +951,10 @@
         },
         "LFTags":{
           "shape":"LFTagsList",
-          "documentation":"<p>The tags attached to a column resource.</p>"
+          "documentation":"<p>The LF-tags attached to a column resource.</p>"
         }
       },
-      "documentation":"<p>A structure containing the name of a column resource and the tags attached to it.</p>"
+      "documentation":"<p>A structure containing the name of a column resource and the LF-tags attached to it.</p>"
     },
     "ColumnLFTagsList":{
       "type":"list",
@@ -580,6 +973,25 @@
         }
       },
       "documentation":"<p>A wildcard object, consisting of an optional list of excluded column names or indexes.</p>"
+    },
+    "CommitTransactionRequest":{
+      "type":"structure",
+      "required":["TransactionId"],
+      "members":{
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction to commit.</p>"
+        }
+      }
+    },
+    "CommitTransactionResponse":{
+      "type":"structure",
+      "members":{
+        "TransactionStatus":{
+          "shape":"TransactionStatus",
+          "documentation":"<p>The status of the transaction.</p>"
+        }
+      }
     },
     "ComparisonOperator":{
       "type":"string",
@@ -608,6 +1020,21 @@
       "documentation":"<p>Two processes are trying to modify a resource simultaneously.</p>",
       "exception":true
     },
+    "CreateDataCellsFilterRequest":{
+      "type":"structure",
+      "required":["TableData"],
+      "members":{
+        "TableData":{
+          "shape":"DataCellsFilter",
+          "documentation":"<p>A <code>DataCellsFilter</code> structure containing information about the data cells filter.</p>"
+        }
+      }
+    },
+    "CreateDataCellsFilterResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CreateLFTagRequest":{
       "type":"structure",
       "required":[
@@ -617,11 +1044,11 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag.</p>"
+          "documentation":"<p>The key-name for the LF-tag.</p>"
         },
         "TagValues":{
           "shape":"TagValueList",
@@ -634,12 +1061,78 @@
       "members":{
       }
     },
+    "DataCellsFilter":{
+      "type":"structure",
+      "required":[
+        "TableCatalogId",
+        "DatabaseName",
+        "TableName",
+        "Name"
+      ],
+      "members":{
+        "TableCatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the catalog to which the table belongs.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>A database in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>A table in the database.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name given by the user to the data filter cell.</p>"
+        },
+        "RowFilter":{
+          "shape":"RowFilter",
+          "documentation":"<p>A PartiQL predicate.</p>"
+        },
+        "ColumnNames":{
+          "shape":"ColumnNames",
+          "documentation":"<p>A list of column names.</p>"
+        },
+        "ColumnWildcard":{
+          "shape":"ColumnWildcard",
+          "documentation":"<p>A wildcard with exclusions.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes certain columns on certain rows.</p>"
+    },
+    "DataCellsFilterList":{
+      "type":"list",
+      "member":{"shape":"DataCellsFilter"}
+    },
+    "DataCellsFilterResource":{
+      "type":"structure",
+      "members":{
+        "TableCatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the catalog to which the table belongs.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>A database in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data cells filter. </p>"
+        }
+      },
+      "documentation":"<p>A structure for a data cells filter resource. </p>"
+    },
     "DataLakePrincipal":{
       "type":"structure",
       "members":{
         "DataLakePrincipalIdentifier":{
           "shape":"DataLakePrincipalString",
-          "documentation":"<p>An identifier for the AWS Lake Formation principal.</p>"
+          "documentation":"<p>An identifier for the Lake Formation principal.</p>"
         }
       },
       "documentation":"<p>The AWS Lake Formation principal. Supported principals are IAM users or IAM roles.</p>"
@@ -673,22 +1166,22 @@
       "members":{
         "DataLakeAdmins":{
           "shape":"DataLakePrincipalList",
-          "documentation":"<p>A list of AWS Lake Formation principals. Supported principals are IAM users or IAM roles.</p>"
+          "documentation":"<p>A list of Lake Formation principals. Supported principals are IAM users or IAM roles.</p>"
         },
         "CreateDatabaseDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
-          "documentation":"<p>A structure representing a list of up to three principal permissions entries for default create database permissions.</p>"
+          "documentation":"<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions. You can override this default setting when you create a database.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting \"Use only IAM access control,\" and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html\">Changing the Default Security Settings for Your Data Lake</a>.</p>"
         },
         "CreateTableDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
-          "documentation":"<p>A structure representing a list of up to three principal permissions entries for default create table permissions.</p>"
+          "documentation":"<p>Specifies whether access control on newly created table is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting \"Use only IAM access control,\" and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html\">Changing the Default Security Settings for Your Data Lake</a>.</p>"
         },
         "TrustedResourceOwners":{
           "shape":"TrustedResourceOwners",
-          "documentation":"<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's AWS CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>"
+          "documentation":"<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>"
         }
       },
-      "documentation":"<p>A structure representing a list of AWS Lake Formation principals designated as data lake administrators and lists of principal permission entries for default create database and default create table permissions.</p>"
+      "documentation":"<p>A structure representing a list of Lake Formation principals designated as data lake administrators and lists of principal permission entries for default create database and default create table permissions.</p>"
     },
     "DataLocationResource":{
       "type":"structure",
@@ -696,7 +1189,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog where the location is registered with AWS Lake Formation. By default, it is the account ID of the caller.</p>"
+          "documentation":"<p>The identifier for the Data Catalog where the location is registered with Lake Formation. By default, it is the account ID of the caller.</p>"
         },
         "ResourceArn":{
           "shape":"ResourceArnString",
@@ -724,21 +1217,106 @@
       },
       "documentation":"<p>A structure for the database object.</p>"
     },
+    "DateTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "DeleteDataCellsFilterRequest":{
+      "type":"structure",
+      "members":{
+        "TableCatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the catalog to which the table belongs.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>A database in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>A table in the database.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name given by the user to the data filter cell.</p>"
+        }
+      }
+    },
+    "DeleteDataCellsFilterResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteLFTagRequest":{
       "type":"structure",
       "required":["TagKey"],
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag to delete.</p>"
+          "documentation":"<p>The key-name for the LF-tag to delete.</p>"
         }
       }
     },
     "DeleteLFTagResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteObjectInput":{
+      "type":"structure",
+      "required":["Uri"],
+      "members":{
+        "Uri":{
+          "shape":"URI",
+          "documentation":"<p>The Amazon S3 location of the object to delete.</p>"
+        },
+        "ETag":{
+          "shape":"ETagString",
+          "documentation":"<p>The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.</p>"
+        },
+        "PartitionValues":{
+          "shape":"PartitionValuesList",
+          "documentation":"<p>A list of partition values for the object. A value must be specified for each partition key associated with the governed table.</p>"
+        }
+      },
+      "documentation":"<p>An object to delete from the governed table.</p>"
+    },
+    "DeleteObjectsOnCancelRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName",
+        "TransactionId",
+        "Objects"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The Glue data catalog that contains the governed table. Defaults to the current account ID.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The database that contains the governed table.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the governed table.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>ID of the transaction that the writes occur in.</p>"
+        },
+        "Objects":{
+          "shape":"VirtualObjectList",
+          "documentation":"<p>A list of VirtualObject structures, which indicates the Amazon S3 objects to be deleted if the transaction cancels.</p>"
+        }
+      }
+    },
+    "DeleteObjectsOnCancelResponse":{
       "type":"structure",
       "members":{
       }
@@ -773,7 +1351,26 @@
       "members":{
         "ResourceInfo":{
           "shape":"ResourceInfo",
-          "documentation":"<p>A structure containing information about an AWS Lake Formation resource.</p>"
+          "documentation":"<p>A structure containing information about an Lake Formation resource.</p>"
+        }
+      }
+    },
+    "DescribeTransactionRequest":{
+      "type":"structure",
+      "required":["TransactionId"],
+      "members":{
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction for which to return status.</p>"
+        }
+      }
+    },
+    "DescribeTransactionResponse":{
+      "type":"structure",
+      "members":{
+        "TransactionDescription":{
+          "shape":"TransactionDescription",
+          "documentation":"<p>Returns a <code>TransactionDescription</code> object containing information about the transaction.</p>"
         }
       }
     },
@@ -788,10 +1385,16 @@
       "members":{
         "ResourceShare":{
           "shape":"ResourceShareList",
-          "documentation":"<p>A resource share ARN for a catalog resource shared through AWS Resource Access Manager (AWS RAM).</p>"
+          "documentation":"<p>A resource share ARN for a catalog resource shared through RAM.</p>"
         }
       },
-      "documentation":"<p>A structure containing the additional details to be returned in the <code>AdditionalDetails</code> attribute of <code>PrincipalResourcePermissions</code>.</p> <p>If a catalog resource is shared through AWS Resource Access Manager (AWS RAM), then there will exist a corresponding RAM resource share ARN.</p>"
+      "documentation":"<p>A structure containing the additional details to be returned in the <code>AdditionalDetails</code> attribute of <code>PrincipalResourcePermissions</code>.</p> <p>If a catalog resource is shared through Resource Access Manager (RAM), then there will exist a corresponding RAM resource share ARN.</p>"
+    },
+    "ETagString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\p{L}\\p{N}\\p{P}]*"
     },
     "EntityNotFoundException":{
       "type":"structure",
@@ -818,11 +1421,59 @@
       },
       "documentation":"<p>Contains details about an error.</p>"
     },
+    "ErrorMessageString":{"type":"string"},
+    "ExecutionStatistics":{
+      "type":"structure",
+      "members":{
+        "AverageExecutionTimeMillis":{
+          "shape":"NumberOfMilliseconds",
+          "documentation":"<p>The average time the request took to be executed.</p>"
+        },
+        "DataScannedBytes":{
+          "shape":"NumberOfBytes",
+          "documentation":"<p>The amount of data that was scanned in bytes.</p>"
+        },
+        "WorkUnitsExecutedCount":{
+          "shape":"NumberOfItems",
+          "documentation":"<p>The number of work units executed.</p>"
+        }
+      },
+      "documentation":"<p>Statistics related to the processing of a query statement.</p>"
+    },
+    "ExpiredException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error where the query request expired.</p>",
+      "error":{
+        "httpStatusCode":410,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "Expression":{
       "type":"list",
       "member":{"shape":"LFTag"},
       "max":5,
       "min":1
+    },
+    "ExtendTransactionRequest":{
+      "type":"structure",
+      "members":{
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction to extend.</p>"
+        }
+      }
+    },
+    "ExtendTransactionResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "FieldNameString":{
       "type":"string",
@@ -861,7 +1512,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         }
       }
     },
@@ -870,7 +1521,7 @@
       "members":{
         "DataLakeSettings":{
           "shape":"DataLakeSettings",
-          "documentation":"<p>A structure representing a list of AWS Lake Formation principals designated as data lake administrators.</p>"
+          "documentation":"<p>A structure representing a list of Lake Formation principals designated as data lake administrators.</p>"
         }
       }
     },
@@ -880,7 +1531,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "ResourceArn":{
           "shape":"ResourceArnString",
@@ -915,11 +1566,11 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag.</p>"
+          "documentation":"<p>The key-name for the LF-tag.</p>"
         }
       }
     },
@@ -928,15 +1579,77 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag.</p>"
+          "documentation":"<p>The key-name for the LF-tag.</p>"
         },
         "TagValues":{
           "shape":"TagValueList",
           "documentation":"<p>A list of possible values an attribute can take.</p>"
+        }
+      }
+    },
+    "GetQueryStateRequest":{
+      "type":"structure",
+      "required":["QueryId"],
+      "members":{
+        "QueryId":{
+          "shape":"GetQueryStateRequestQueryIdString",
+          "documentation":"<p>The ID of the plan query operation.</p>"
+        }
+      }
+    },
+    "GetQueryStateRequestQueryIdString":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
+    "GetQueryStateResponse":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "Error":{
+          "shape":"ErrorMessageString",
+          "documentation":"<p>An error message when the operation fails.</p>"
+        },
+        "State":{
+          "shape":"QueryStateString",
+          "documentation":"<p>The state of a query previously submitted. The possible states are:</p> <ul> <li> <p>PENDING: the query is pending.</p> </li> <li> <p>WORKUNITS_AVAILABLE: some work units are ready for retrieval and execution.</p> </li> <li> <p>FINISHED: the query planning finished successfully, and all work units are ready for retrieval and execution.</p> </li> <li> <p>ERROR: an error occurred with the query, such as an invalid query ID or a backend error.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A structure for the output.</p>"
+    },
+    "GetQueryStatisticsRequest":{
+      "type":"structure",
+      "required":["QueryId"],
+      "members":{
+        "QueryId":{
+          "shape":"GetQueryStatisticsRequestQueryIdString",
+          "documentation":"<p>The ID of the plan query operation.</p>"
+        }
+      }
+    },
+    "GetQueryStatisticsRequestQueryIdString":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
+    "GetQueryStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "ExecutionStatistics":{
+          "shape":"ExecutionStatistics",
+          "documentation":"<p>An <code>ExecutionStatistics</code> structure containing execution statistics.</p>"
+        },
+        "PlanningStatistics":{
+          "shape":"PlanningStatistics",
+          "documentation":"<p>A <code>PlanningStatistics</code> structure containing query planning statistics.</p>"
+        },
+        "QuerySubmissionTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The time that the query was submitted.</p>"
         }
       }
     },
@@ -946,15 +1659,15 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Resource":{
           "shape":"Resource",
-          "documentation":"<p>The resource for which you want to return tags.</p>"
+          "documentation":"<p>The database, table, or column resource for which you want to return LF-tags.</p>"
         },
         "ShowAssignedLFTags":{
           "shape":"BooleanNullable",
-          "documentation":"<p>Indicates whether to show the assigned tags.</p>"
+          "documentation":"<p>Indicates whether to show the assigned LF-tags.</p>"
         }
       }
     },
@@ -963,17 +1676,158 @@
       "members":{
         "LFTagOnDatabase":{
           "shape":"LFTagsList",
-          "documentation":"<p>A list of tags applied to a database resource.</p>"
+          "documentation":"<p>A list of LF-tags applied to a database resource.</p>"
         },
         "LFTagsOnTable":{
           "shape":"LFTagsList",
-          "documentation":"<p>A list of tags applied to a table resource.</p>"
+          "documentation":"<p>A list of LF-tags applied to a table resource.</p>"
         },
         "LFTagsOnColumns":{
           "shape":"ColumnLFTagsList",
-          "documentation":"<p>A list of tags applied to a column resource.</p>"
+          "documentation":"<p>A list of LF-tags applied to a column resource.</p>"
         }
       }
+    },
+    "GetTableObjectsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The catalog containing the governed table. Defaults to the caller’s account.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The database containing the governed table.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The governed table for which to retrieve objects.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to read the governed table contents. If this transaction has aborted, an error is returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.</p>"
+        },
+        "QueryAsOfTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time as of when to read the governed table contents. If not set, the most recent transaction commit time is used. Cannot be specified along with <code>TransactionId</code>.</p>"
+        },
+        "PartitionPredicate":{
+          "shape":"PredicateString",
+          "documentation":"<p>A predicate to filter the objects returned based on the partition keys defined in the governed table.</p> <ul> <li> <p>The comparison operators supported are: =, &gt;, &lt;, &gt;=, &lt;=</p> </li> <li> <p>The logical operators supported are: AND</p> </li> <li> <p>The data types supported are integer, long, date(yyyy-MM-dd), timestamp(yyyy-MM-dd HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss\"), string and decimal.</p> </li> </ul>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>Specifies how many values to return in a page.</p>"
+        },
+        "NextToken":{
+          "shape":"TokenString",
+          "documentation":"<p>A continuation token if this is not the first call to retrieve these objects.</p>"
+        }
+      }
+    },
+    "GetTableObjectsResponse":{
+      "type":"structure",
+      "members":{
+        "Objects":{
+          "shape":"PartitionedTableObjectsList",
+          "documentation":"<p>A list of objects organized by partition keys.</p>"
+        },
+        "NextToken":{
+          "shape":"TokenString",
+          "documentation":"<p>A continuation token indicating whether additional data is available.</p>"
+        }
+      }
+    },
+    "GetWorkUnitResultsRequest":{
+      "type":"structure",
+      "required":[
+        "QueryId",
+        "WorkUnitId",
+        "WorkUnitToken"
+      ],
+      "members":{
+        "QueryId":{
+          "shape":"GetWorkUnitResultsRequestQueryIdString",
+          "documentation":"<p>The ID of the plan query operation for which to get results.</p>"
+        },
+        "WorkUnitId":{
+          "shape":"GetWorkUnitResultsRequestWorkUnitIdLong",
+          "documentation":"<p>The work unit ID for which to get results. Value generated by enumerating <code>WorkUnitIdMin</code> to <code>WorkUnitIdMax</code> (inclusive) from the <code>WorkUnitRange</code> in the output of <code>GetWorkUnits</code>.</p>"
+        },
+        "WorkUnitToken":{
+          "shape":"SyntheticGetWorkUnitResultsRequestWorkUnitTokenString",
+          "documentation":"<p>A work token used to query the execution service. Token output from <code>GetWorkUnits</code>.</p>"
+        }
+      }
+    },
+    "GetWorkUnitResultsRequestQueryIdString":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
+    "GetWorkUnitResultsRequestWorkUnitIdLong":{
+      "type":"long",
+      "min":0
+    },
+    "GetWorkUnitResultsResponse":{
+      "type":"structure",
+      "members":{
+        "ResultStream":{
+          "shape":"ResultStream",
+          "documentation":"<p>Rows returned from the <code>GetWorkUnitResults</code> operation as a stream of Apache Arrow v1.0 messages.</p>"
+        }
+      },
+      "documentation":"<p>A structure for the output.</p>",
+      "payload":"ResultStream"
+    },
+    "GetWorkUnitsRequest":{
+      "type":"structure",
+      "required":["QueryId"],
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "PageSize":{
+          "shape":"Integer",
+          "documentation":"<p>The size of each page to get in the Amazon Web Services service call. This does not affect the number of items returned in the command's output. Setting a smaller page size results in more calls to the Amazon Web Services service, retrieving fewer items in each call. This can help prevent the Amazon Web Services service calls from timing out.</p>"
+        },
+        "QueryId":{
+          "shape":"GetWorkUnitsRequestQueryIdString",
+          "documentation":"<p>The ID of the plan query operation.</p>"
+        }
+      }
+    },
+    "GetWorkUnitsRequestQueryIdString":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
+    "GetWorkUnitsResponse":{
+      "type":"structure",
+      "required":[
+        "QueryId",
+        "WorkUnitRanges"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.</p>"
+        },
+        "QueryId":{
+          "shape":"QueryIdString",
+          "documentation":"<p>The ID of the plan query operation.</p>"
+        },
+        "WorkUnitRanges":{
+          "shape":"WorkUnitRangeList",
+          "documentation":"<p>A <code>WorkUnitRangeList</code> object that specifies the valid range of work unit IDs for querying the execution service.</p>"
+        }
+      },
+      "documentation":"<p>A structure for the output.</p>"
     },
     "GlueEncryptionException":{
       "type":"structure",
@@ -996,7 +1850,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Principal":{
           "shape":"DataLakePrincipal",
@@ -1004,11 +1858,11 @@
         },
         "Resource":{
           "shape":"Resource",
-          "documentation":"<p>The resource to which permissions are to be granted. Resources in AWS Lake Formation are the Data Catalog, databases, and tables.</p>"
+          "documentation":"<p>The resource to which permissions are to be granted. Resources in Lake Formation are the Data Catalog, databases, and tables.</p>"
         },
         "Permissions":{
           "shape":"PermissionList",
-          "documentation":"<p>The permissions granted to the principal on the resource. AWS Lake Formation defines privileges to grant and revoke access to metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3. AWS Lake Formation requires that each principal be authorized to perform a specific task on AWS Lake Formation resources. </p>"
+          "documentation":"<p>The permissions granted to the principal on the resource. Lake Formation defines privileges to grant and revoke access to metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3. Lake Formation requires that each principal be authorized to perform a specific task on Lake Formation resources. </p>"
         },
         "PermissionsWithGrantOption":{
           "shape":"PermissionList",
@@ -1030,6 +1884,10 @@
       "max":255,
       "min":1
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServiceException":{
       "type":"structure",
       "members":{
@@ -1039,6 +1897,7 @@
         }
       },
       "documentation":"<p>An internal service error occurred.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -1051,6 +1910,10 @@
         }
       },
       "documentation":"<p>The input provided was not valid.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "LFTag":{
@@ -1062,25 +1925,25 @@
       "members":{
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag.</p>"
+          "documentation":"<p>The key-name for the LF-tag.</p>"
         },
         "TagValues":{
           "shape":"TagValueList",
           "documentation":"<p>A list of possible values an attribute can take.</p>"
         }
       },
-      "documentation":"<p>A structure that allows an admin to grant user permissions on certain conditions. For example, granting a role access to all columns not tagged 'PII' of tables tagged 'Prod'.</p>"
+      "documentation":"<p>A structure that allows an admin to grant user permissions on certain conditions. For example, granting a role access to all columns that do not have the LF-tag 'PII' in tables that have the LF-tag 'Prod'.</p>"
     },
     "LFTagError":{
       "type":"structure",
       "members":{
         "LFTag":{
           "shape":"LFTagPair",
-          "documentation":"<p>The key-name of the tag.</p>"
+          "documentation":"<p>The key-name of the LF-tag.</p>"
         },
         "Error":{
           "shape":"ErrorDetail",
-          "documentation":"<p>An error that occurred with the attachment or detachment of the tag.</p>"
+          "documentation":"<p>An error that occurred with the attachment or detachment of the LF-tag.</p>"
         }
       },
       "documentation":"<p>A structure containing an error related to a <code>TagResource</code> or <code>UnTagResource</code> operation.</p>"
@@ -1104,18 +1967,18 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"NameString",
-          "documentation":"<p>The key-name for the tag.</p>"
+          "documentation":"<p>The key-name for the LF-tag.</p>"
         },
         "TagValues":{
           "shape":"TagValueList",
           "documentation":"<p>A list of possible values an attribute can take.</p>"
         }
       },
-      "documentation":"<p>A structure containing a tag key and values for a resource.</p>"
+      "documentation":"<p>A structure containing an LF-tag key and values for a resource.</p>"
     },
     "LFTagPair":{
       "type":"structure",
@@ -1126,18 +1989,18 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag.</p>"
+          "documentation":"<p>The key-name for the LF-tag.</p>"
         },
         "TagValues":{
           "shape":"TagValueList",
           "documentation":"<p>A list of possible values an attribute can take.</p>"
         }
       },
-      "documentation":"<p>A structure containing a tag key-value pair.</p>"
+      "documentation":"<p>A structure containing an LF-tag key-value pair.</p>"
     },
     "LFTagPolicyResource":{
       "type":"structure",
@@ -1148,18 +2011,18 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type for which the tag policy applies.</p>"
+          "documentation":"<p>The resource type for which the LF-tag policy applies.</p>"
         },
         "Expression":{
           "shape":"Expression",
-          "documentation":"<p>A list of tag conditions that apply to the resource's tag policy.</p>"
+          "documentation":"<p>A list of LF-tag conditions that apply to the resource's LF-tag policy.</p>"
         }
       },
-      "documentation":"<p>A structure containing a list of tag conditions that apply to a resource's tag policy.</p>"
+      "documentation":"<p>A structure containing a list of LF-tag conditions that apply to a resource's LF-tag policy.</p>"
     },
     "LFTagValue":{
       "type":"string",
@@ -1174,16 +2037,46 @@
       "min":1
     },
     "LastModifiedTimestamp":{"type":"timestamp"},
+    "ListDataCellsFilterRequest":{
+      "type":"structure",
+      "members":{
+        "Table":{
+          "shape":"TableResource",
+          "documentation":"<p>A table in the Glue Data Catalog.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum size of the response.</p>"
+        }
+      }
+    },
+    "ListDataCellsFilterResponse":{
+      "type":"structure",
+      "members":{
+        "DataCellsFilters":{
+          "shape":"DataCellsFilterList",
+          "documentation":"<p>A list of <code>DataCellFilter</code> structures.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if not all requested data cell filters have been returned.</p>"
+        }
+      }
+    },
     "ListLFTagsRequest":{
       "type":"structure",
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "ResourceShareType":{
           "shape":"ResourceShareType",
-          "documentation":"<p>If resource share type is <code>ALL</code>, returns both in-account tags and shared tags that the requester has permission to view. If resource share type is <code>FOREIGN</code>, returns all share tags that the requester can view. If no resource share type is passed, lists tags in the given catalog ID that the requester has permission to view.</p>"
+          "documentation":"<p>If resource share type is <code>ALL</code>, returns both in-account LF-tags and shared LF-tags that the requester has permission to view. If resource share type is <code>FOREIGN</code>, returns all share LF-tags that the requester can view. If no resource share type is passed, lists LF-tags in the given catalog ID that the requester has permission to view.</p>"
         },
         "MaxResults":{
           "shape":"PageSize",
@@ -1200,7 +2093,7 @@
       "members":{
         "LFTags":{
           "shape":"LFTagsList",
-          "documentation":"<p>A list of tags that the requested has permission to view.</p>"
+          "documentation":"<p>A list of LF-tags that the requested has permission to view.</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -1213,7 +2106,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Principal":{
           "shape":"DataLakePrincipal",
@@ -1234,6 +2127,10 @@
         "MaxResults":{
           "shape":"PageSize",
           "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "IncludeRelated":{
+          "shape":"TrueFalseString",
+          "documentation":"<p>Indicates that related permissions should be included in the results.</p>"
         }
       }
     },
@@ -1280,6 +2177,86 @@
         }
       }
     },
+    "ListTableStorageOptimizersRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The Catalog ID of the table.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the database where the table is present.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the table.</p>"
+        },
+        "StorageOptimizerType":{
+          "shape":"OptimizerType",
+          "documentation":"<p>The specific type of storage optimizers to list. The supported value is <code>compaction</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The number of storage optimizers to return on each call.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListTableStorageOptimizersResponse":{
+      "type":"structure",
+      "members":{
+        "StorageOptimizerList":{
+          "shape":"StorageOptimizerList",
+          "documentation":"<p>A list of the storage optimizers associated with a table.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.</p>"
+        }
+      }
+    },
+    "ListTransactionsRequest":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The catalog for which to list transactions. Defaults to the account ID of the caller.</p>"
+        },
+        "StatusFilter":{
+          "shape":"TransactionStatusFilter",
+          "documentation":"<p> A filter indicating the status of transactions to return. Options are ALL | COMPLETED | COMMITTED | ABORTED | ACTIVE. The default is <code>ALL</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of transactions to return in a single call.</p>"
+        },
+        "NextToken":{
+          "shape":"TokenString",
+          "documentation":"<p>A continuation token if this is not the first call to retrieve transactions.</p>"
+        }
+      }
+    },
+    "ListTransactionsResponse":{
+      "type":"structure",
+      "members":{
+        "Transactions":{
+          "shape":"TransactionDescriptionList",
+          "documentation":"<p>A list of transactions. The record for each transaction is a <code>TransactionDescription</code> object.</p>"
+        },
+        "NextToken":{
+          "shape":"TokenString",
+          "documentation":"<p>A continuation token indicating whether additional data is available.</p>"
+        }
+      }
+    },
     "MessageString":{"type":"string"},
     "NameString":{
       "type":"string",
@@ -1291,6 +2268,10 @@
       "type":"boolean",
       "box":true
     },
+    "NumberOfBytes":{"type":"long"},
+    "NumberOfItems":{"type":"long"},
+    "NumberOfMilliseconds":{"type":"long"},
+    "ObjectSize":{"type":"long"},
     "OperationTimeoutException":{
       "type":"structure",
       "members":{
@@ -1302,11 +2283,47 @@
       "documentation":"<p>The operation timed out.</p>",
       "exception":true
     },
+    "OptimizerType":{
+      "type":"string",
+      "enum":[
+        "COMPACTION",
+        "GARBAGE_COLLECTION",
+        "ALL"
+      ]
+    },
     "PageSize":{
       "type":"integer",
       "box":true,
       "max":1000,
       "min":1
+    },
+    "PartitionObjects":{
+      "type":"structure",
+      "members":{
+        "PartitionValues":{
+          "shape":"PartitionValuesList",
+          "documentation":"<p>A list of partition values.</p>"
+        },
+        "Objects":{
+          "shape":"TableObjectList",
+          "documentation":"<p>A list of table objects</p>"
+        }
+      },
+      "documentation":"<p>A structure containing a list of partition values and table objects.</p>"
+    },
+    "PartitionValueString":{
+      "type":"string",
+      "max":1024
+    },
+    "PartitionValuesList":{
+      "type":"list",
+      "member":{"shape":"PartitionValueString"},
+      "max":100,
+      "min":1
+    },
+    "PartitionedTableObjectsList":{
+      "type":"list",
+      "member":{"shape":"PartitionObjects"}
     },
     "Permission":{
       "type":"string",
@@ -1331,6 +2348,34 @@
     "PermissionList":{
       "type":"list",
       "member":{"shape":"Permission"}
+    },
+    "PlanningStatistics":{
+      "type":"structure",
+      "members":{
+        "EstimatedDataToScanBytes":{
+          "shape":"NumberOfBytes",
+          "documentation":"<p>An estimate of the data that was scanned in bytes.</p>"
+        },
+        "PlanningTimeMillis":{
+          "shape":"NumberOfMilliseconds",
+          "documentation":"<p>The time that it took to process the request.</p>"
+        },
+        "QueueTimeMillis":{
+          "shape":"NumberOfMilliseconds",
+          "documentation":"<p>The time the request was in queue to be processed.</p>"
+        },
+        "WorkUnitsGeneratedCount":{
+          "shape":"NumberOfItems",
+          "documentation":"<p>The number of work units generated.</p>"
+        }
+      },
+      "documentation":"<p>Statistics related to the processing of a query statement.</p>"
+    },
+    "PredicateString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
     },
     "PrincipalPermissions":{
       "type":"structure",
@@ -1386,11 +2431,11 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "DataLakeSettings":{
           "shape":"DataLakeSettings",
-          "documentation":"<p>A structure representing a list of AWS Lake Formation principals designated as data lake administrators.</p>"
+          "documentation":"<p>A structure representing a list of Lake Formation principals designated as data lake administrators.</p>"
         }
       }
     },
@@ -1398,6 +2443,54 @@
       "type":"structure",
       "members":{
       }
+    },
+    "QueryIdString":{"type":"string"},
+    "QueryParameterMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "QueryPlanningContext":{
+      "type":"structure",
+      "required":["DatabaseName"],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.</p>"
+        },
+        "DatabaseName":{
+          "shape":"QueryPlanningContextDatabaseNameString",
+          "documentation":"<p>The database containing the table.</p>"
+        },
+        "QueryAsOfTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.</p>"
+        },
+        "QueryParameters":{
+          "shape":"QueryParameterMap",
+          "documentation":"<p>A map consisting of key-value pairs.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction ID at which to read the table contents. If this transaction is not committed, the read will be treated as part of that transaction and will see its writes. If this transaction has aborted, an error will be returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about the query plan.</p>"
+    },
+    "QueryPlanningContextDatabaseNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "QueryStateString":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "WORKUNITS_AVAILABLE",
+        "ERROR",
+        "FINISHED",
+        "EXPIRED"
+      ]
     },
     "RAMResourceShareArn":{"type":"string"},
     "RegisterResourceRequest":{
@@ -1410,7 +2503,7 @@
         },
         "UseServiceLinkedRole":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Designates an AWS Identity and Access Management (IAM) service-linked role by registering this role with the Data Catalog. A service-linked role is a unique type of IAM role that is linked directly to Lake Formation.</p> <p>For more information, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/service-linked-roles.html\">Using Service-Linked Roles for Lake Formation</a>.</p>"
+          "documentation":"<p>Designates an Identity and Access Management (IAM) service-linked role by registering this role with the Data Catalog. A service-linked role is a unique type of IAM role that is linked directly to Lake Formation.</p> <p>For more information, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/service-linked-roles.html\">Using Service-Linked Roles for Lake Formation</a>.</p>"
         },
         "RoleArn":{
           "shape":"IAMRoleArn",
@@ -1432,15 +2525,15 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Resource":{
           "shape":"Resource",
-          "documentation":"<p>The resource where you want to remove a tag.</p>"
+          "documentation":"<p>The database, table, or column resource where you want to remove an LF-tag.</p>"
         },
         "LFTags":{
           "shape":"LFTagsList",
-          "documentation":"<p>The tags to be removed from the resource.</p>"
+          "documentation":"<p>The LF-tags to be removed from the resource.</p>"
         }
       }
     },
@@ -1458,7 +2551,7 @@
       "members":{
         "Catalog":{
           "shape":"CatalogResource",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Database":{
           "shape":"DatabaseResource",
@@ -1476,13 +2569,17 @@
           "shape":"DataLocationResource",
           "documentation":"<p>The location of an Amazon S3 path where permissions are granted or revoked. </p>"
         },
+        "DataCellsFilter":{
+          "shape":"DataCellsFilterResource",
+          "documentation":"<p>A data cell filter.</p>"
+        },
         "LFTag":{
           "shape":"LFTagKeyResource",
-          "documentation":"<p>The tag key and values attached to a resource.</p>"
+          "documentation":"<p>The LF-tag key and values attached to a resource.</p>"
         },
         "LFTagPolicy":{
           "shape":"LFTagPolicyResource",
-          "documentation":"<p>A list of tag conditions that define a resource's tag policy.</p>"
+          "documentation":"<p>A list of LF-tag conditions that define a resource's LF-tag policy.</p>"
         }
       },
       "documentation":"<p>A structure for the resource.</p>"
@@ -1504,11 +2601,23 @@
           "documentation":"<p>The date and time the resource was last modified.</p>"
         }
       },
-      "documentation":"<p>A structure containing information about an AWS Lake Formation resource.</p>"
+      "documentation":"<p>A structure containing information about an Lake Formation resource.</p>"
     },
     "ResourceInfoList":{
       "type":"list",
       "member":{"shape":"ResourceInfo"}
+    },
+    "ResourceNotReadyException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error related to a resource which is not ready for a transaction.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "ResourceNumberLimitExceededException":{
       "type":"structure",
@@ -1539,6 +2648,11 @@
         "TABLE"
       ]
     },
+    "Result":{"type":"string"},
+    "ResultStream":{
+      "type":"blob",
+      "streaming":true
+    },
     "RevokePermissionsRequest":{
       "type":"structure",
       "required":[
@@ -1549,7 +2663,7 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Principal":{
           "shape":"DataLakePrincipal",
@@ -1574,6 +2688,20 @@
       "members":{
       }
     },
+    "RowFilter":{
+      "type":"structure",
+      "members":{
+        "FilterExpression":{
+          "shape":"PredicateString",
+          "documentation":"<p>A filter expression.</p>"
+        },
+        "AllRowsWildcard":{
+          "shape":"AllRowsWildcard",
+          "documentation":"<p>A wildcard for all rows.</p>"
+        }
+      },
+      "documentation":"<p>A PartiQL predicate.</p>"
+    },
     "SearchDatabasesByLFTagsRequest":{
       "type":"structure",
       "required":["Expression"],
@@ -1588,7 +2716,7 @@
         },
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Expression":{
           "shape":"Expression",
@@ -1605,7 +2733,7 @@
         },
         "DatabaseList":{
           "shape":"DatabaseLFTagsList",
-          "documentation":"<p>A list of databases that meet the tag conditions.</p>"
+          "documentation":"<p>A list of databases that meet the LF-tag conditions.</p>"
         }
       }
     },
@@ -1623,7 +2751,7 @@
         },
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "Expression":{
           "shape":"Expression",
@@ -1640,18 +2768,154 @@
         },
         "TableList":{
           "shape":"TableLFTagsList",
-          "documentation":"<p>A list of tables that meet the tag conditions.</p>"
+          "documentation":"<p>A list of tables that meet the LF-tag conditions.</p>"
         }
       }
     },
+    "StartQueryPlanningRequest":{
+      "type":"structure",
+      "required":[
+        "QueryPlanningContext",
+        "QueryString"
+      ],
+      "members":{
+        "QueryPlanningContext":{
+          "shape":"QueryPlanningContext",
+          "documentation":"<p>A structure containing information about the query plan.</p>"
+        },
+        "QueryString":{
+          "shape":"SyntheticStartQueryPlanningRequestQueryString",
+          "documentation":"<p>A PartiQL query statement used as an input to the planner service.</p>"
+        }
+      }
+    },
+    "StartQueryPlanningResponse":{
+      "type":"structure",
+      "required":["QueryId"],
+      "members":{
+        "QueryId":{
+          "shape":"QueryIdString",
+          "documentation":"<p>The ID of the plan query operation can be used to fetch the actual work unit descriptors that are produced as the result of the operation. The ID is also used to get the query state and as an input to the <code>Execute</code> operation.</p>"
+        }
+      },
+      "documentation":"<p>A structure for the output.</p>"
+    },
+    "StartTransactionRequest":{
+      "type":"structure",
+      "members":{
+        "TransactionType":{
+          "shape":"TransactionType",
+          "documentation":"<p>Indicates whether this transaction should be read only or read and write. Writes made using a read-only transaction ID will be rejected. Read-only transactions do not need to be committed. </p>"
+        }
+      }
+    },
+    "StartTransactionResponse":{
+      "type":"structure",
+      "members":{
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>An opaque identifier for the transaction.</p>"
+        }
+      }
+    },
+    "StatisticsNotReadyYetException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error related to statistics not being ready.</p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "StorageOptimizer":{
+      "type":"structure",
+      "members":{
+        "StorageOptimizerType":{
+          "shape":"OptimizerType",
+          "documentation":"<p>The specific type of storage optimizer. The supported value is <code>compaction</code>.</p>"
+        },
+        "Config":{
+          "shape":"StorageOptimizerConfig",
+          "documentation":"<p>A map of the storage optimizer configuration. Currently contains only one key-value pair: <code>is_enabled</code> indicates true or false for acceleration.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"MessageString",
+          "documentation":"<p>A message that contains information about any error (if present).</p> <p>When an acceleration result has an enabled status, the error message is empty.</p> <p>When an acceleration result has a disabled status, the message describes an error or simply indicates \"disabled by the user\".</p>"
+        },
+        "Warnings":{
+          "shape":"MessageString",
+          "documentation":"<p>A message that contains information about any warnings (if present).</p>"
+        },
+        "LastRunDetails":{
+          "shape":"MessageString",
+          "documentation":"<p>When an acceleration result has an enabled status, contains the details of the last job run.</p>"
+        }
+      },
+      "documentation":"<p>A structure describing the configuration and details of a storage optimizer.</p>"
+    },
+    "StorageOptimizerConfig":{
+      "type":"map",
+      "key":{"shape":"StorageOptimizerConfigKey"},
+      "value":{"shape":"StorageOptimizerConfigValue"}
+    },
+    "StorageOptimizerConfigKey":{"type":"string"},
+    "StorageOptimizerConfigMap":{
+      "type":"map",
+      "key":{"shape":"OptimizerType"},
+      "value":{"shape":"StorageOptimizerConfig"}
+    },
+    "StorageOptimizerConfigValue":{"type":"string"},
+    "StorageOptimizerList":{
+      "type":"list",
+      "member":{"shape":"StorageOptimizer"}
+    },
+    "String":{"type":"string"},
     "StringValue":{"type":"string"},
     "StringValueList":{
       "type":"list",
       "member":{"shape":"StringValue"}
     },
+    "SyntheticGetWorkUnitResultsRequestWorkUnitTokenString":{
+      "type":"string",
+      "min":1,
+      "sensitive":true
+    },
+    "SyntheticStartQueryPlanningRequestQueryString":{
+      "type":"string",
+      "min":1,
+      "sensitive":true
+    },
     "TableLFTagsList":{
       "type":"list",
       "member":{"shape":"TaggedTable"}
+    },
+    "TableObject":{
+      "type":"structure",
+      "members":{
+        "Uri":{
+          "shape":"URI",
+          "documentation":"<p>The Amazon S3 location of the object.</p>"
+        },
+        "ETag":{
+          "shape":"ETagString",
+          "documentation":"<p>The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.</p>"
+        },
+        "Size":{
+          "shape":"ObjectSize",
+          "documentation":"<p>The size of the Amazon S3 object in bytes.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the details of a governed table.</p>"
+    },
+    "TableObjectList":{
+      "type":"list",
+      "member":{"shape":"TableObject"}
     },
     "TableResource":{
       "type":"structure",
@@ -1723,41 +2987,168 @@
       "members":{
         "Database":{
           "shape":"DatabaseResource",
-          "documentation":"<p>A database that has tags attached to it.</p>"
+          "documentation":"<p>A database that has LF-tags attached to it.</p>"
         },
         "LFTags":{
           "shape":"LFTagsList",
-          "documentation":"<p>A list of tags attached to the database.</p>"
+          "documentation":"<p>A list of LF-tags attached to the database.</p>"
         }
       },
-      "documentation":"<p>A structure describing a database resource with tags.</p>"
+      "documentation":"<p>A structure describing a database resource with LF-tags.</p>"
     },
     "TaggedTable":{
       "type":"structure",
       "members":{
         "Table":{
           "shape":"TableResource",
-          "documentation":"<p>A table that has tags attached to it.</p>"
+          "documentation":"<p>A table that has LF-tags attached to it.</p>"
         },
         "LFTagOnDatabase":{
           "shape":"LFTagsList",
-          "documentation":"<p>A list of tags attached to the database where the table resides.</p>"
+          "documentation":"<p>A list of LF-tags attached to the database where the table resides.</p>"
         },
         "LFTagsOnTable":{
           "shape":"LFTagsList",
-          "documentation":"<p>A list of tags attached to the table.</p>"
+          "documentation":"<p>A list of LF-tags attached to the table.</p>"
         },
         "LFTagsOnColumns":{
           "shape":"ColumnLFTagsList",
-          "documentation":"<p>A list of tags attached to columns in the table.</p>"
+          "documentation":"<p>A list of LF-tags attached to columns in the table.</p>"
         }
       },
-      "documentation":"<p>A structure describing a table resource with tags.</p>"
+      "documentation":"<p>A structure describing a table resource with LF-tags.</p>"
     },
+    "ThrottledException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error where the query request was throttled.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
     "Token":{"type":"string"},
+    "TokenString":{
+      "type":"string",
+      "max":4096
+    },
+    "TransactionCanceledException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error related to a transaction that was cancelled.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "TransactionCommitInProgressException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error related to a transaction commit that was in progress.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "TransactionCommittedException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error where the specified transaction has already been committed and cannot be used for <code>UpdateTableObjects</code>.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "TransactionDescription":{
+      "type":"structure",
+      "members":{
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The ID of the transaction.</p>"
+        },
+        "TransactionStatus":{
+          "shape":"TransactionStatus",
+          "documentation":"<p>A status of ACTIVE, COMMITTED, or ABORTED.</p>"
+        },
+        "TransactionStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the transaction started.</p>"
+        },
+        "TransactionEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the transaction committed or aborted, if it is not currently active.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a transaction.</p>"
+    },
+    "TransactionDescriptionList":{
+      "type":"list",
+      "member":{"shape":"TransactionDescription"}
+    },
+    "TransactionIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\p{L}\\p{N}\\p{P}]*"
+    },
+    "TransactionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "COMMITTED",
+        "ABORTED",
+        "COMMIT_IN_PROGRESS"
+      ]
+    },
+    "TransactionStatusFilter":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "COMPLETED",
+        "ACTIVE",
+        "COMMITTED",
+        "ABORTED"
+      ]
+    },
+    "TransactionType":{
+      "type":"string",
+      "enum":[
+        "READ_AND_WRITE",
+        "READ_ONLY"
+      ]
+    },
+    "TrueFalseString":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
     "TrustedResourceOwners":{
       "type":"list",
       "member":{"shape":"CatalogIdString"}
+    },
+    "URI":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
     },
     "UpdateLFTagRequest":{
       "type":"structure",
@@ -1765,19 +3156,19 @@
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
-          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your AWS Lake Formation environment. </p>"
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
         },
         "TagKey":{
           "shape":"LFTagKey",
-          "documentation":"<p>The key-name for the tag for which to add or delete values.</p>"
+          "documentation":"<p>The key-name for the LF-tag for which to add or delete values.</p>"
         },
         "TagValuesToDelete":{
           "shape":"TagValueList",
-          "documentation":"<p>A list of tag values to delete from the tag.</p>"
+          "documentation":"<p>A list of LF-tag values to delete from the LF-tag.</p>"
         },
         "TagValuesToAdd":{
           "shape":"TagValueList",
-          "documentation":"<p>A list of tag values to add from the tag.</p>"
+          "documentation":"<p>A list of LF-tag values to add from the LF-tag.</p>"
         }
       }
     },
@@ -1795,7 +3186,7 @@
       "members":{
         "RoleArn":{
           "shape":"IAMRoleArn",
-          "documentation":"<p>The new role to use for the given resource registered in AWS Lake Formation.</p>"
+          "documentation":"<p>The new role to use for the given resource registered in Lake Formation.</p>"
         },
         "ResourceArn":{
           "shape":"ResourceArnString",
@@ -1807,7 +3198,163 @@
       "type":"structure",
       "members":{
       }
+    },
+    "UpdateTableObjectsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName",
+        "TransactionId",
+        "WriteOperations"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The catalog containing the governed table to update. Defaults to the caller’s account ID.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The database containing the governed table to update.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The governed table to update.</p>"
+        },
+        "TransactionId":{
+          "shape":"TransactionIdString",
+          "documentation":"<p>The transaction at which to do the write.</p>"
+        },
+        "WriteOperations":{
+          "shape":"WriteOperationList",
+          "documentation":"<p>A list of <code>WriteOperation</code> objects that define an object to add to or delete from the manifest for a governed table.</p>"
+        }
+      }
+    },
+    "UpdateTableObjectsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateTableStorageOptimizerRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName",
+        "StorageOptimizerConfig"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The Catalog ID of the table.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the database where the table is present.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the table for which to enable the storage optimizer.</p>"
+        },
+        "StorageOptimizerConfig":{
+          "shape":"StorageOptimizerConfigMap",
+          "documentation":"<p>Name of the table for which to enable the storage optimizer.</p>"
+        }
+      }
+    },
+    "UpdateTableStorageOptimizerResponse":{
+      "type":"structure",
+      "members":{
+        "Result":{
+          "shape":"Result",
+          "documentation":"<p>A response indicating the success of failure of the operation.</p>"
+        }
+      }
+    },
+    "VirtualObject":{
+      "type":"structure",
+      "required":["Uri"],
+      "members":{
+        "Uri":{
+          "shape":"URI",
+          "documentation":"<p>The path to the Amazon S3 object. Must start with s3://</p>"
+        },
+        "ETag":{
+          "shape":"ETagString",
+          "documentation":"<p>The ETag of the Amazon S3 object.</p>"
+        }
+      },
+      "documentation":"<p>An object that defines an Amazon S3 object to be deleted if a transaction cancels, provided that <code>VirtualPut</code> was called before writing the object.</p>"
+    },
+    "VirtualObjectList":{
+      "type":"list",
+      "member":{"shape":"VirtualObject"},
+      "max":100,
+      "min":1
+    },
+    "WorkUnitIdLong":{"type":"long"},
+    "WorkUnitRange":{
+      "type":"structure",
+      "required":[
+        "WorkUnitIdMax",
+        "WorkUnitIdMin",
+        "WorkUnitToken"
+      ],
+      "members":{
+        "WorkUnitIdMax":{
+          "shape":"WorkUnitIdLong",
+          "documentation":"<p>Defines the maximum work unit ID in the range. The maximum value is inclusive.</p>"
+        },
+        "WorkUnitIdMin":{
+          "shape":"WorkUnitIdLong",
+          "documentation":"<p>Defines the minimum work unit ID in the range.</p>"
+        },
+        "WorkUnitToken":{
+          "shape":"WorkUnitTokenString",
+          "documentation":"<p>A work token used to query the execution service.</p>"
+        }
+      },
+      "documentation":"<p>Defines the valid range of work unit IDs for querying the execution service.</p>"
+    },
+    "WorkUnitRangeList":{
+      "type":"list",
+      "member":{"shape":"WorkUnitRange"}
+    },
+    "WorkUnitTokenString":{"type":"string"},
+    "WorkUnitsNotReadyYetException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error related to work units not being ready.</p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "WriteOperation":{
+      "type":"structure",
+      "members":{
+        "AddObject":{
+          "shape":"AddObjectInput",
+          "documentation":"<p>A new object to add to the governed table.</p>"
+        },
+        "DeleteObject":{
+          "shape":"DeleteObjectInput",
+          "documentation":"<p>An object to delete from the governed table.</p>"
+        }
+      },
+      "documentation":"<p>Defines an object to add to or delete from a governed table.</p>"
+    },
+    "WriteOperationList":{
+      "type":"list",
+      "member":{"shape":"WriteOperation"},
+      "max":100,
+      "min":1
     }
   },
-  "documentation":"<fullname>AWS Lake Formation</fullname> <p>Defines the public endpoint for the AWS Lake Formation service.</p>"
+  "documentation":"<fullname>Lake Formation</fullname> <p>Defines the public endpoint for the Lake Formation service.</p>"
 }

@@ -102,6 +102,16 @@
       "output":{"shape":"AllocateHostsResult"},
       "documentation":"<p>Allocates a Dedicated Host to your account. At a minimum, specify the supported instance type or instance family, the Availability Zone in which to allocate the host, and the number of hosts to allocate.</p>"
     },
+    "AllocateIpamPoolCidr":{
+      "name":"AllocateIpamPoolCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AllocateIpamPoolCidrRequest"},
+      "output":{"shape":"AllocateIpamPoolCidrResult"},
+      "documentation":"<p>Allocate a CIDR from an IPAM pool. In IPAM, an allocation is a CIDR assignment from an IPAM pool to another resource or IPAM pool. For more information, see <a href=\"/vpc/latest/ipam/allocate-cidrs-ipam.html\">Allocate CIDRs</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
     "ApplySecurityGroupsToClientVpnTargetNetwork":{
       "name":"ApplySecurityGroupsToClientVpnTargetNetwork",
       "http":{
@@ -638,6 +648,36 @@
       "output":{"shape":"CreateInternetGatewayResult"},
       "documentation":"<p>Creates an internet gateway for use with a VPC. After creating the internet gateway, you attach it to a VPC using <a>AttachInternetGateway</a>.</p> <p>For more information about your VPC and internet gateway, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon Virtual Private Cloud User Guide</a>.</p>"
     },
+    "CreateIpam":{
+      "name":"CreateIpam",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamRequest"},
+      "output":{"shape":"CreateIpamResult"},
+      "documentation":"<p>Create an IPAM. Amazon VCP IP Address Manager (IPAM) is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across Amazon Web Services Regions and accounts throughout your Amazon Web Services Organization.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "CreateIpamPool":{
+      "name":"CreateIpamPool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamPoolRequest"},
+      "output":{"shape":"CreateIpamPoolResult"},
+      "documentation":"<p>Create an IP address pool for Amazon VPC IP Address Manager (IPAM). In IPAM, a pool is a collection of contiguous IP addresses CIDRs. Pools enable you to organize your IP addresses according to your routing and security needs. For example, if you have separate routing and security needs for development and production applications, you can create a pool for each.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/create-top-ipam.html\">Create a top-level pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "CreateIpamScope":{
+      "name":"CreateIpamScope",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamScopeRequest"},
+      "output":{"shape":"CreateIpamScopeResult"},
+      "documentation":"<p>Create an IPAM scope. In IPAM, a scope is the highest-level container within IPAM. An IPAM contains two default scopes. Each scope represents the IP space for a single network. The private scope is intended for all private IP address space. The public scope is intended for all public IP address space. Scopes enable you to reuse IP addresses across multiple unconnected networks without causing IP address overlap or conflict.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/add-scope-ipam.html\">Add a scope</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
     "CreateKeyPair":{
       "name":"CreateKeyPair",
       "http":{
@@ -727,6 +767,16 @@
       "input":{"shape":"CreateNetworkAclEntryRequest"},
       "documentation":"<p>Creates an entry (a rule) in a network ACL with the specified rule number. Each network ACL has a set of numbered ingress rules and a separate set of numbered egress rules. When determining whether a packet should be allowed in or out of a subnet associated with the ACL, we process the entries in the ACL according to the rule numbers, in ascending order. Each network ACL has a set of ingress rules and a separate set of egress rules.</p> <p>We recommend that you leave room between the rule numbers (for example, 100, 110, 120, ...), and not number them one right after the other (for example, 101, 102, 103, ...). This makes it easier to add a rule between existing ones without having to renumber the rules.</p> <p>After you add an entry, you can't modify it; you must either replace it, or create an entry and delete the old one.</p> <p>For more information about network ACLs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_ACLs.html\">Network ACLs</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
     },
+    "CreateNetworkInsightsAccessScope":{
+      "name":"CreateNetworkInsightsAccessScope",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateNetworkInsightsAccessScopeRequest"},
+      "output":{"shape":"CreateNetworkInsightsAccessScopeResult"},
+      "documentation":"<p>Creates a Network Access Scope.</p> <p>Amazon Web Services Network Access Analyzer enables cloud networking and cloud operations teams to verify that their networks on Amazon Web Services conform to their network security and governance objectives. For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/network-access-analyzer/\">Amazon Web Services Network Access Analyzer Guide</a>.</p>"
+    },
     "CreateNetworkInsightsPath":{
       "name":"CreateNetworkInsightsPath",
       "http":{
@@ -766,6 +816,16 @@
       "input":{"shape":"CreatePlacementGroupRequest"},
       "output":{"shape":"CreatePlacementGroupResult"},
       "documentation":"<p>Creates a placement group in which to launch instances. The strategy of the placement group determines how the instances are organized within the group. </p> <p>A <code>cluster</code> placement group is a logical grouping of instances within a single Availability Zone that benefit from low network latency, high network throughput. A <code>spread</code> placement group places instances on distinct hardware. A <code>partition</code> placement group places groups of instances in different partitions, where instances in one partition do not share the same hardware with instances in another partition.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "CreatePublicIpv4Pool":{
+      "name":"CreatePublicIpv4Pool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePublicIpv4PoolRequest"},
+      "output":{"shape":"CreatePublicIpv4PoolResult"},
+      "documentation":"<p>Creates a public IPv4 address pool. A public IPv4 pool is an EC2 IP address pool required for the public IPv4 CIDRs that you own and bring to Amazon Web Services to manage with IPAM. IPv6 addresses you bring to Amazon Web Services, however, use IPAM pools only. To monitor the status of pool creation, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribePublicIpv4Pools.html\">DescribePublicIpv4Pools</a>.</p>"
     },
     "CreateReplaceRootVolumeTask":{
       "name":"CreateReplaceRootVolumeTask",
@@ -1222,6 +1282,36 @@
       "input":{"shape":"DeleteInternetGatewayRequest"},
       "documentation":"<p>Deletes the specified internet gateway. You must detach the internet gateway from the VPC before you can delete it.</p>"
     },
+    "DeleteIpam":{
+      "name":"DeleteIpam",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamRequest"},
+      "output":{"shape":"DeleteIpamResult"},
+      "documentation":"<p>Delete an IPAM. Deleting an IPAM removes all monitored data associated with the IPAM including the historical data for CIDRs.</p> <note> <p>You cannot delete an IPAM if there are CIDRs provisioned to pools or if there are allocations in the pools within the IPAM. To deprovision pool CIDRs, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeprovisionIpamPoolCidr.html\">DeprovisionIpamPoolCidr</a>. To release allocations, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ReleaseIpamPoolAllocation.html\">ReleaseIpamPoolAllocation</a>. </p> </note> <p>For more information, see <a href=\"/vpc/latest/ipam/delete-ipam.html\">Delete an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "DeleteIpamPool":{
+      "name":"DeleteIpamPool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamPoolRequest"},
+      "output":{"shape":"DeleteIpamPoolResult"},
+      "documentation":"<p>Delete an IPAM pool.</p> <note> <p>You cannot delete an IPAM pool if there are allocations in it or CIDRs provisioned to it. To release allocations, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ReleaseIpamPoolAllocation.html\">ReleaseIpamPoolAllocation</a>. To deprovision pool CIDRs, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeprovisionIpamPoolCidr.html\">DeprovisionIpamPoolCidr</a>.</p> </note> <p>For more information, see <a href=\"/vpc/latest/ipam/delete-pool-ipam.html\">Delete a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "DeleteIpamScope":{
+      "name":"DeleteIpamScope",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamScopeRequest"},
+      "output":{"shape":"DeleteIpamScopeResult"},
+      "documentation":"<p>Delete the scope for an IPAM. You cannot delete the default scopes.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/delete-scope-ipam.html\">Delete a scope</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
     "DeleteKeyPair":{
       "name":"DeleteKeyPair",
       "http":{
@@ -1309,6 +1399,26 @@
       "input":{"shape":"DeleteNetworkAclEntryRequest"},
       "documentation":"<p>Deletes the specified ingress or egress entry (rule) from the specified network ACL.</p>"
     },
+    "DeleteNetworkInsightsAccessScope":{
+      "name":"DeleteNetworkInsightsAccessScope",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNetworkInsightsAccessScopeRequest"},
+      "output":{"shape":"DeleteNetworkInsightsAccessScopeResult"},
+      "documentation":"<p>Deletes the specified Network Access Scope.</p>"
+    },
+    "DeleteNetworkInsightsAccessScopeAnalysis":{
+      "name":"DeleteNetworkInsightsAccessScopeAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNetworkInsightsAccessScopeAnalysisRequest"},
+      "output":{"shape":"DeleteNetworkInsightsAccessScopeAnalysisResult"},
+      "documentation":"<p>Deletes the specified Network Access Scope analysis.</p>"
+    },
     "DeleteNetworkInsightsAnalysis":{
       "name":"DeleteNetworkInsightsAnalysis",
       "http":{
@@ -1356,6 +1466,16 @@
       },
       "input":{"shape":"DeletePlacementGroupRequest"},
       "documentation":"<p>Deletes the specified placement group. You must terminate all instances in the placement group before you can delete the placement group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "DeletePublicIpv4Pool":{
+      "name":"DeletePublicIpv4Pool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeletePublicIpv4PoolRequest"},
+      "output":{"shape":"DeletePublicIpv4PoolResult"},
+      "documentation":"<p>Delete a public IPv4 pool. A public IPv4 pool is an EC2 IP address pool required for the public IPv4 CIDRs that you own and bring to Amazon Web Services to manage with IPAM. IPv6 addresses you bring to Amazon Web Services, however, use IPAM pools only.</p>"
     },
     "DeleteQueuedReservedInstances":{
       "name":"DeleteQueuedReservedInstances",
@@ -1664,6 +1784,26 @@
       "input":{"shape":"DeprovisionByoipCidrRequest"},
       "output":{"shape":"DeprovisionByoipCidrResult"},
       "documentation":"<p>Releases the specified address range that you provisioned for use with your Amazon Web Services resources through bring your own IP addresses (BYOIP) and deletes the corresponding address pool.</p> <p>Before you can release an address range, you must stop advertising it using <a>WithdrawByoipCidr</a> and you must not have any IP addresses allocated from its address range.</p>"
+    },
+    "DeprovisionIpamPoolCidr":{
+      "name":"DeprovisionIpamPoolCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeprovisionIpamPoolCidrRequest"},
+      "output":{"shape":"DeprovisionIpamPoolCidrResult"},
+      "documentation":"<p>Deprovision a CIDR provisioned from an IPAM pool. If you deprovision a CIDR from a pool that has a source pool, the CIDR is recycled back into the source pool. For more information, see <a href=\"/vpc/latest/ipam/depro-pool-cidr-ipam.html\">Deprovision pool CIDRs</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "DeprovisionPublicIpv4PoolCidr":{
+      "name":"DeprovisionPublicIpv4PoolCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeprovisionPublicIpv4PoolCidrRequest"},
+      "output":{"shape":"DeprovisionPublicIpv4PoolCidrResult"},
+      "documentation":"<p>Deprovision a CIDR from a public IPv4 pool.</p>"
     },
     "DeregisterImage":{
       "name":"DeregisterImage",
@@ -2204,6 +2344,36 @@
       "output":{"shape":"DescribeInternetGatewaysResult"},
       "documentation":"<p>Describes one or more of your internet gateways.</p>"
     },
+    "DescribeIpamPools":{
+      "name":"DescribeIpamPools",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPoolsRequest"},
+      "output":{"shape":"DescribeIpamPoolsResult"},
+      "documentation":"<p>Get information about your IPAM pools.</p>"
+    },
+    "DescribeIpamScopes":{
+      "name":"DescribeIpamScopes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamScopesRequest"},
+      "output":{"shape":"DescribeIpamScopesResult"},
+      "documentation":"<p>Get information about your IPAM scopes.</p>"
+    },
+    "DescribeIpams":{
+      "name":"DescribeIpams",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamsRequest"},
+      "output":{"shape":"DescribeIpamsResult"},
+      "documentation":"<p>Get information about your IPAM pools.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
     "DescribeIpv6Pools":{
       "name":"DescribeIpv6Pools",
       "http":{
@@ -2343,6 +2513,26 @@
       "input":{"shape":"DescribeNetworkAclsRequest"},
       "output":{"shape":"DescribeNetworkAclsResult"},
       "documentation":"<p>Describes one or more of your network ACLs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_ACLs.html\">Network ACLs</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
+    "DescribeNetworkInsightsAccessScopeAnalyses":{
+      "name":"DescribeNetworkInsightsAccessScopeAnalyses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeNetworkInsightsAccessScopeAnalysesRequest"},
+      "output":{"shape":"DescribeNetworkInsightsAccessScopeAnalysesResult"},
+      "documentation":"<p>Describes the specified Network Access Scope analyses.</p>"
+    },
+    "DescribeNetworkInsightsAccessScopes":{
+      "name":"DescribeNetworkInsightsAccessScopes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeNetworkInsightsAccessScopesRequest"},
+      "output":{"shape":"DescribeNetworkInsightsAccessScopesResult"},
+      "documentation":"<p>Describes the specified Network Access Scopes.</p>"
     },
     "DescribeNetworkInsightsAnalyses":{
       "name":"DescribeNetworkInsightsAnalyses",
@@ -3051,6 +3241,16 @@
       "output":{"shape":"DisableImageDeprecationResult"},
       "documentation":"<p>Cancels the deprecation of the specified AMI.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-deprecate.html\">Deprecate an AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
+    "DisableIpamOrganizationAdminAccount":{
+      "name":"DisableIpamOrganizationAdminAccount",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableIpamOrganizationAdminAccountRequest"},
+      "output":{"shape":"DisableIpamOrganizationAdminAccountResult"},
+      "documentation":"<p>Disable the IPAM account. For more information, see <a href=\"/vpc/latest/ipam/enable-integ-ipam.html\">Enable integration with Organizations</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
     "DisableSerialConsoleAccess":{
       "name":"DisableSerialConsoleAccess",
       "http":{
@@ -3237,6 +3437,16 @@
       "input":{"shape":"EnableImageDeprecationRequest"},
       "output":{"shape":"EnableImageDeprecationResult"},
       "documentation":"<p>Enables deprecation of the specified AMI at the specified date and time.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-deprecate.html\">Deprecate an AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+    },
+    "EnableIpamOrganizationAdminAccount":{
+      "name":"EnableIpamOrganizationAdminAccount",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableIpamOrganizationAdminAccountRequest"},
+      "output":{"shape":"EnableIpamOrganizationAdminAccountResult"},
+      "documentation":"<p>Enable an Organizations member account as the IPAM admin account. You cannot select the Organizations management account as the IPAM admin account. For more information, see <a href=\"/vpc/latest/ipam/enable-integ-ipam.html\">Enable integration with Organizations</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
     "EnableSerialConsoleAccess":{
       "name":"EnableSerialConsoleAccess",
@@ -3466,6 +3676,46 @@
       "output":{"shape":"GetInstanceTypesFromInstanceRequirementsResult"},
       "documentation":"<p>Returns a list of instance types with the specified instance attributes. You can use the response to preview the instance types without launching instances. Note that the response does not consider capacity.</p> <p>When you specify multiple parameters, you get instance types that satisfy all of the specified parameters. If you specify multiple values for a parameter, you get instance types that satisfy any of the specified values.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-attribute-based-instance-type-selection.html#spotfleet-get-instance-types-from-instance-requirements\">Preview instance types with specified attributes</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html\">Attribute-based instance type selection for EC2 Fleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-attribute-based-instance-type-selection.html\">Attribute-based instance type selection for Spot Fleet</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html\">Spot placement score</a> in the <i>Amazon EC2 User Guide</i>, and <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-instance-type-requirements.html\">Creating an Auto Scaling group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
+    "GetIpamAddressHistory":{
+      "name":"GetIpamAddressHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamAddressHistoryRequest"},
+      "output":{"shape":"GetIpamAddressHistoryResult"},
+      "documentation":"<p>Retrieve historical information about a CIDR within an IPAM scope. For more information, see <a href=\"/vpc/latest/ipam/view-history-cidr-ipam.html\">View the history of IP addresses</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "GetIpamPoolAllocations":{
+      "name":"GetIpamPoolAllocations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPoolAllocationsRequest"},
+      "output":{"shape":"GetIpamPoolAllocationsResult"},
+      "documentation":"<p>Get a list of all the CIDR allocations in an IPAM pool.</p>"
+    },
+    "GetIpamPoolCidrs":{
+      "name":"GetIpamPoolCidrs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPoolCidrsRequest"},
+      "output":{"shape":"GetIpamPoolCidrsResult"},
+      "documentation":"<p>Get the CIDRs provisioned to an IPAM pool.</p>"
+    },
+    "GetIpamResourceCidrs":{
+      "name":"GetIpamResourceCidrs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamResourceCidrsRequest"},
+      "output":{"shape":"GetIpamResourceCidrsResult"},
+      "documentation":"<p>Get information about the resources in a scope.</p>"
+    },
     "GetLaunchTemplateData":{
       "name":"GetLaunchTemplateData",
       "http":{
@@ -3495,6 +3745,26 @@
       "input":{"shape":"GetManagedPrefixListEntriesRequest"},
       "output":{"shape":"GetManagedPrefixListEntriesResult"},
       "documentation":"<p>Gets information about the entries for a specified managed prefix list.</p>"
+    },
+    "GetNetworkInsightsAccessScopeAnalysisFindings":{
+      "name":"GetNetworkInsightsAccessScopeAnalysisFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetNetworkInsightsAccessScopeAnalysisFindingsRequest"},
+      "output":{"shape":"GetNetworkInsightsAccessScopeAnalysisFindingsResult"},
+      "documentation":"<p>Gets the findings for the specified Network Access Scope analysis.</p>"
+    },
+    "GetNetworkInsightsAccessScopeContent":{
+      "name":"GetNetworkInsightsAccessScopeContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetNetworkInsightsAccessScopeContentRequest"},
+      "output":{"shape":"GetNetworkInsightsAccessScopeContentResult"},
+      "documentation":"<p>Gets the content for the specified Network Access Scope.</p>"
     },
     "GetPasswordData":{
       "name":"GetPasswordData",
@@ -3882,6 +4152,46 @@
       "output":{"shape":"ModifyInstancePlacementResult"},
       "documentation":"<p>Modifies the placement attributes for a specified instance. You can do the following:</p> <ul> <li> <p>Modify the affinity between an instance and a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html\">Dedicated Host</a>. When affinity is set to <code>host</code> and the instance is not associated with a specific Dedicated Host, the next time the instance is launched, it is automatically associated with the host on which it lands. If the instance is restarted or rebooted, this relationship persists.</p> </li> <li> <p>Change the Dedicated Host with which an instance is associated.</p> </li> <li> <p>Change the instance tenancy of an instance.</p> </li> <li> <p>Move an instance to or from a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">placement group</a>.</p> </li> </ul> <p>At least one attribute for affinity, host ID, tenancy, or placement group name must be specified in the request. Affinity and tenancy can be modified in the same request.</p> <p>To modify the host ID, tenancy, placement group, or partition for an instance, the instance must be in the <code>stopped</code> state.</p>"
     },
+    "ModifyIpam":{
+      "name":"ModifyIpam",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamRequest"},
+      "output":{"shape":"ModifyIpamResult"},
+      "documentation":"<p>Modify the configurations of an IPAM. </p>"
+    },
+    "ModifyIpamPool":{
+      "name":"ModifyIpamPool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPoolRequest"},
+      "output":{"shape":"ModifyIpamPoolResult"},
+      "documentation":"<p>Modify the configurations of an IPAM pool.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/mod-pool-ipam.html\">Modify a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "ModifyIpamResourceCidr":{
+      "name":"ModifyIpamResourceCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamResourceCidrRequest"},
+      "output":{"shape":"ModifyIpamResourceCidrResult"},
+      "documentation":"<p>Modify a resource CIDR. You can use this action to transfer resource CIDRs between scopes and ignore resource CIDRs that you do not want to manage. If set to false, the resource will not be tracked for overlap, it cannot be auto-imported into a pool, and it will be removed from any pool it has an allocation in.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/move-resource-ipam.html\">Move resource CIDRs between scopes</a> and <a href=\"/vpc/latest/ipam/change-monitoring-state-ipam.html\">Change the monitoring state of resource CIDRs</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "ModifyIpamScope":{
+      "name":"ModifyIpamScope",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamScopeRequest"},
+      "output":{"shape":"ModifyIpamScopeResult"},
+      "documentation":"<p>Modify an IPAM scope.</p>"
+    },
     "ModifyLaunchTemplate":{
       "name":"ModifyLaunchTemplate",
       "http":{
@@ -3977,7 +4287,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"ModifySubnetAttributeRequest"},
-      "documentation":"<p>Modifies a subnet attribute. You can only modify one attribute at a time.</p>"
+      "documentation":"<p>Modifies a subnet attribute. You can only modify one attribute at a time.</p> <p>Use this action to modify subnets on Amazon Web Services Outposts.</p> <ul> <li> <p>To modify a subnet on an Outpost rack, set both <code>MapCustomerOwnedIpOnLaunch</code> and <code>CustomerOwnedIpv4Pool</code>. These two parameters act as a single attribute.</p> </li> <li> <p>To modify a subnet on an Outpost server, set either <code>EnableLniAtDeviceIndex</code> or <code>DisableLniAtDeviceIndex</code>.</p> </li> </ul> <p>For more information about Amazon Web Services Outposts, see the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/how-servers-work.html\">Outpost servers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/how-racks-work.html\">Outpost racks</a> </p> </li> </ul>"
     },
     "ModifyTrafficMirrorFilterNetworkServices":{
       "name":"ModifyTrafficMirrorFilterNetworkServices",
@@ -4187,6 +4497,16 @@
       "output":{"shape":"MoveAddressToVpcResult"},
       "documentation":"<p>Moves an Elastic IP address from the EC2-Classic platform to the EC2-VPC platform. The Elastic IP address must be allocated to your account for more than 24 hours, and it must not be associated with an instance. After the Elastic IP address is moved, it is no longer available for use in the EC2-Classic platform, unless you move it back using the <a>RestoreAddressToClassic</a> request. You cannot move an Elastic IP address that was originally allocated for use in the EC2-VPC platform to the EC2-Classic platform. </p>"
     },
+    "MoveByoipCidrToIpam":{
+      "name":"MoveByoipCidrToIpam",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"MoveByoipCidrToIpamRequest"},
+      "output":{"shape":"MoveByoipCidrToIpamResult"},
+      "documentation":"<p>Move an BYOIP IPv4 CIDR to IPAM from a public IPv4 pool.</p>"
+    },
     "ProvisionByoipCidr":{
       "name":"ProvisionByoipCidr",
       "http":{
@@ -4196,6 +4516,26 @@
       "input":{"shape":"ProvisionByoipCidrRequest"},
       "output":{"shape":"ProvisionByoipCidrResult"},
       "documentation":"<p>Provisions an IPv4 or IPv6 address range for use with your Amazon Web Services resources through bring your own IP addresses (BYOIP) and creates a corresponding address pool. After the address range is provisioned, it is ready to be advertised using <a>AdvertiseByoipCidr</a>.</p> <p>Amazon Web Services verifies that you own the address range and are authorized to advertise it. You must ensure that the address range is registered to you and that you created an RPKI ROA to authorize Amazon ASNs 16509 and 14618 to advertise the address range. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>Provisioning an address range is an asynchronous operation, so the call returns immediately, but the address range is not ready to use until its status changes from <code>pending-provision</code> to <code>provisioned</code>. To monitor the status of an address range, use <a>DescribeByoipCidrs</a>. To allocate an Elastic IP address from your IPv4 address pool, use <a>AllocateAddress</a> with either the specific address from the address pool or the ID of the address pool.</p>"
+    },
+    "ProvisionIpamPoolCidr":{
+      "name":"ProvisionIpamPoolCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ProvisionIpamPoolCidrRequest"},
+      "output":{"shape":"ProvisionIpamPoolCidrResult"},
+      "documentation":"<p>Provision a CIDR to an IPAM pool. You can use thsi action to provision new CIDRs to a top-level pool or to transfer a CIDR from a top-level pool to a pool within it.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/prov-cidr-ipam.html\">Provision CIDRs to pools</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "ProvisionPublicIpv4PoolCidr":{
+      "name":"ProvisionPublicIpv4PoolCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ProvisionPublicIpv4PoolCidrRequest"},
+      "output":{"shape":"ProvisionPublicIpv4PoolCidrResult"},
+      "documentation":"<p>Provision a CIDR to a public IPv4 pool.</p> <p>For more information about IPAM, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
     "PurchaseHostReservation":{
       "name":"PurchaseHostReservation",
@@ -4344,6 +4684,16 @@
       "input":{"shape":"ReleaseHostsRequest"},
       "output":{"shape":"ReleaseHostsResult"},
       "documentation":"<p>When you no longer want to use an On-Demand Dedicated Host it can be released. On-Demand billing is stopped and the host goes into <code>released</code> state. The host ID of Dedicated Hosts that have been released can no longer be specified in another request, for example, to modify the host. You must stop or terminate all instances on a host before it can be released.</p> <p>When Dedicated Hosts are released, it may take some time for them to stop counting toward your limit and you may receive capacity errors when trying to allocate new Dedicated Hosts. Wait a few minutes and then try again.</p> <p>Released hosts still appear in a <a>DescribeHosts</a> response.</p>"
+    },
+    "ReleaseIpamPoolAllocation":{
+      "name":"ReleaseIpamPoolAllocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReleaseIpamPoolAllocationRequest"},
+      "output":{"shape":"ReleaseIpamPoolAllocationResult"},
+      "documentation":"<p>Release an allocation within an IPAM pool. You can only use this action to release manual allocations. To remove an allocation for a resource without deleting the resource, set its monitored state to false using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyIpamResourceCidr.html\">ModifyIpamResourceCidr</a>. For more information, see <a href=\"/vpc/latest/ipam/release-pool-alloc-ipam.html\">Release an allocation</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
     "ReplaceIamInstanceProfileAssociation":{
       "name":"ReplaceIamInstanceProfileAssociation",
@@ -4636,6 +4986,16 @@
       "input":{"shape":"StartInstancesRequest"},
       "output":{"shape":"StartInstancesResult"},
       "documentation":"<p>Starts an Amazon EBS-backed instance that you've previously stopped.</p> <p>Instances that use Amazon EBS volumes as their root devices can be quickly stopped and started. When an instance is stopped, the compute resources are released and you are not billed for instance usage. However, your root partition Amazon EBS volume remains and continues to persist your data, and you are charged for Amazon EBS volume usage. You can restart your instance at any time. Every time you start your instance, Amazon EC2 charges a one-minute minimum for instance usage, and thereafter charges per second for instance usage.</p> <p>Before stopping an instance, make sure it is in a state from which it can be restarted. Stopping an instance does not preserve data stored in RAM.</p> <p>Performing this operation on an instance that uses an instance store as its root device returns an error.</p> <p>If you attempt to start a T3 instance with <code>host</code> tenancy and the <code>unlimted</code> CPU credit option, the request fails. The <code>unlimited</code> CPU credit option is not supported on Dedicated Hosts. Before you start the instance, either change its CPU credit option to <code>standard</code>, or change its tenancy to <code>default</code> or <code>dedicated</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html\">Stop and start your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "StartNetworkInsightsAccessScopeAnalysis":{
+      "name":"StartNetworkInsightsAccessScopeAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartNetworkInsightsAccessScopeAnalysisRequest"},
+      "output":{"shape":"StartNetworkInsightsAccessScopeAnalysisResult"},
+      "documentation":"<p>Starts analyzing the specified Network Access Scope.</p>"
     },
     "StartNetworkInsightsAnalysis":{
       "name":"StartNetworkInsightsAnalysis",
@@ -5025,6 +5385,93 @@
         }
       }
     },
+    "AccessScopeAnalysisFinding":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisId":{
+          "shape":"NetworkInsightsAccessScopeAnalysisId",
+          "documentation":"<p>The ID of the Network Access Scope analysis.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysisId"
+        },
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScopeId"
+        },
+        "FindingId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the finding.</p>",
+          "locationName":"findingId"
+        },
+        "FindingComponents":{
+          "shape":"PathComponentList",
+          "documentation":"<p>The finding components.</p>",
+          "locationName":"findingComponentSet"
+        }
+      },
+      "documentation":"<p>Describes a finding for a Network Access Scope.</p>"
+    },
+    "AccessScopeAnalysisFindingList":{
+      "type":"list",
+      "member":{
+        "shape":"AccessScopeAnalysisFinding",
+        "locationName":"item"
+      }
+    },
+    "AccessScopePath":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"PathStatement",
+          "documentation":"<p>The source.</p>",
+          "locationName":"source"
+        },
+        "Destination":{
+          "shape":"PathStatement",
+          "documentation":"<p>The destination.</p>",
+          "locationName":"destination"
+        },
+        "ThroughResources":{
+          "shape":"ThroughResourcesStatementList",
+          "documentation":"<p>The through resources.</p>",
+          "locationName":"throughResourceSet"
+        }
+      },
+      "documentation":"<p>Describes a path.</p>"
+    },
+    "AccessScopePathList":{
+      "type":"list",
+      "member":{
+        "shape":"AccessScopePath",
+        "locationName":"item"
+      }
+    },
+    "AccessScopePathListRequest":{
+      "type":"list",
+      "member":{
+        "shape":"AccessScopePathRequest",
+        "locationName":"item"
+      }
+    },
+    "AccessScopePathRequest":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"PathStatementRequest",
+          "documentation":"<p>The source.</p>"
+        },
+        "Destination":{
+          "shape":"PathStatementRequest",
+          "documentation":"<p>The destination.</p>"
+        },
+        "ThroughResources":{
+          "shape":"ThroughResourcesStatementRequestList",
+          "documentation":"<p>The through resources.</p>",
+          "locationName":"ThroughResource"
+        }
+      },
+      "documentation":"<p>Describes a path.</p>"
+    },
     "AccountAttribute":{
       "type":"structure",
       "members":{
@@ -5121,6 +5568,22 @@
         "pending_termination",
         "fulfilled"
       ]
+    },
+    "AddIpamOperatingRegion":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the operating Region.</p>"
+        }
+      },
+      "documentation":"<p>Add an operating Region to an IPAM. Operating Regions are Amazon Web Services Regions where the IPAM is allowed to manage IP address CIDRs. IPAM only discovers and monitors resources in the Amazon Web Services Regions you select as operating Regions.</p> <p>For more information about operating Regions, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "AddIpamOperatingRegionSet":{
+      "type":"list",
+      "member":{"shape":"AddIpamOperatingRegion"},
+      "max":50,
+      "min":0
     },
     "AddPrefixListEntries":{
       "type":"list",
@@ -5248,6 +5711,13 @@
     "AddressAttributeName":{
       "type":"string",
       "enum":["domain-name"]
+    },
+    "AddressFamily":{
+      "type":"string",
+      "enum":[
+        "ipv4",
+        "ipv6"
+      ]
     },
     "AddressList":{
       "type":"list",
@@ -5437,6 +5907,56 @@
       },
       "documentation":"<p>Contains the output of AllocateHosts.</p>"
     },
+    "AllocateIpamPoolCidrRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool from which you would like to allocate a CIDR.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR you would like to allocate from the IPAM pool. Note the following:</p> <ul> <li> <p>If there is no DefaultNetmaskLength allocation rule set on the pool, you must specify either the NetmaskLength or the CIDR.</p> </li> <li> <p>If the DefaultNetmaskLength allocation rule is set on the pool, you can specify either the NetmaskLength or the CIDR and the DefaultNetmaskLength allocation rule will be ignored.</p> </li> </ul> <p>Possible values: Any available IPv4 or IPv6 CIDR.</p>"
+        },
+        "NetmaskLength":{
+          "shape":"Integer",
+          "documentation":"<p>The netmask length of the CIDR you would like to allocate from the IPAM pool. Note the following:</p> <ul> <li> <p>If there is no DefaultNetmaskLength allocation rule set on the pool, you must specify either the NetmaskLength or the CIDR.</p> </li> <li> <p>If the DefaultNetmaskLength allocation rule is set on the pool, you can specify either the NetmaskLength or the CIDR and the DefaultNetmaskLength allocation rule will be ignored.</p> </li> </ul> <p>Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the allocation.</p>"
+        },
+        "PreviewNextCidr":{
+          "shape":"Boolean",
+          "documentation":"<p>A preview of the next available CIDR in a pool.</p>"
+        },
+        "DisallowedCidrs":{
+          "shape":"IpamPoolAllocationDisallowedCidrs",
+          "documentation":"<p>Exclude a particular CIDR range from being returned by the pool.</p>",
+          "locationName":"DisallowedCidr"
+        }
+      }
+    },
+    "AllocateIpamPoolCidrResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolAllocation":{
+          "shape":"IpamPoolAllocation",
+          "documentation":"<p>Information about the allocation created.</p>",
+          "locationName":"ipamPoolAllocation"
+        }
+      }
+    },
     "AllocationId":{"type":"string"},
     "AllocationIdList":{
       "type":"list",
@@ -5573,6 +6093,11 @@
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the component.</p>",
           "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the analysis component.</p>",
+          "locationName":"name"
         }
       },
       "documentation":"<p>Describes a path component.</p>"
@@ -6385,6 +6910,22 @@
         "Ipv6CidrBlock":{
           "shape":"String",
           "documentation":"<p>An IPv6 CIDR block from the IPv6 address pool. You must also specify <code>Ipv6Pool</code> in the request.</p> <p>To let Amazon choose the IPv6 CIDR block for you, omit this parameter.</p>"
+        },
+        "Ipv4IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>Associate a CIDR allocated from an IPv4 IPAM pool to a VPC. For more information about Amazon VPC IP Address Manager (IPAM), see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+        },
+        "Ipv4NetmaskLength":{
+          "shape":"NetmaskLength",
+          "documentation":"<p>The netmask length of the IPv4 CIDR you would like to associate from an Amazon VPC IP Address Manager (IPAM) pool. For more information about IPAM, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+        },
+        "Ipv6IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>Associates a CIDR allocated from an IPv6 IPAM pool to a VPC. For more information about Amazon VPC IP Address Manager (IPAM), see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+        },
+        "Ipv6NetmaskLength":{
+          "shape":"NetmaskLength",
+          "documentation":"<p>The netmask length of the IPv6 CIDR you would like to associate from an Amazon VPC IP Address Manager (IPAM) pool. For more information about IPAM, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
         }
       }
     },
@@ -7266,6 +7807,7 @@
         "uefi"
       ]
     },
+    "BoxedDouble":{"type":"double"},
     "BundleId":{"type":"string"},
     "BundleIdStringList":{
       "type":"list",
@@ -10448,6 +10990,161 @@
         }
       }
     },
+    "CreateIpamPoolRequest":{
+      "type":"structure",
+      "required":["IpamScopeId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the scope in which you would like to create the IPAM pool.</p>"
+        },
+        "Locale":{
+          "shape":"String",
+          "documentation":"<p>In IPAM, the locale is the Amazon Web Services Region where you want to make an IPAM pool available for allocations. Only resources in the same Region as the locale of the pool can get IP address allocations from the pool. You can only allocate a CIDR for a VPC, for example, from an IPAM pool that shares a locale with the VPC’s Region. Note that once you choose a Locale for a pool, you cannot modify it. If you do not choose a locale, resources in Regions others than the IPAM's home region cannot use CIDRs from this pool.</p> <p>Possible values: Any Amazon Web Services Region, such as us-east-1.</p>"
+        },
+        "SourceIpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the source IPAM pool. Use this option to create a pool within an existing pool. Note that the CIDR you provision for the pool within the source pool must be available in the source pool's CIDR range.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the IPAM pool.</p>"
+        },
+        "AddressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The IP protocol assigned to this IPAM pool. You must choose either IPv4 or IPv6 protocol for a pool.</p>"
+        },
+        "AutoImport":{
+          "shape":"Boolean",
+          "documentation":"<p>If selected, IPAM will continuously look for resources within the CIDR range of this pool and automatically import them as allocations into your IPAM. The CIDRs that will be allocated for these resources must not already be allocated to other resources in order for the import to succeed. IPAM will import a CIDR regardless of its compliance with the pool's allocation rules, so a resource might be imported and subsequently marked as noncompliant. If IPAM discovers multiple CIDRs that overlap, IPAM will import the largest CIDR only. If IPAM discovers multiple CIDRs with matching CIDRs, IPAM will randomly import one of them only. </p> <p>A locale must be set on the pool for this feature to work.</p>"
+        },
+        "PubliclyAdvertisable":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines if the pool is publicly advertisable. This option is not available for pools with AddressFamily set to <code>ipv4</code>.</p>"
+        },
+        "AllocationMinNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The minimum netmask length required for CIDR allocations in this IPAM pool to be compliant. The minimum netmask length must be less than the maximum netmask length. Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128.</p>"
+        },
+        "AllocationMaxNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The maximum netmask length possible for CIDR allocations in this IPAM pool to be compliant. The maximum netmask length must be greater than the minimum netmask length. Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128.</p>"
+        },
+        "AllocationDefaultNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The default netmask length for allocations added to this pool. If, for example, the CIDR assigned to this pool is 10.0.0.0/8 and you enter 16 here, new allocations will default to 10.0.0.0/16.</p>"
+        },
+        "AllocationResourceTags":{
+          "shape":"RequestIpamResourceTagList",
+          "documentation":"<p>Tags that are required for resources that use CIDRs from this IPAM pool. Resources that do not have these tags will not be allowed to allocate space from the pool. If the resources have their tags changed after they have allocated space or if the allocation tagging requirements are changed on the pool, the resource may be marked as noncompliant.</p>",
+          "locationName":"AllocationResourceTag"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "AwsService":{
+          "shape":"IpamPoolAwsService",
+          "documentation":"<p>Limits which service in Amazon Web Services that the pool can be used in. \"ec2\", for example, allows users to use space for Elastic IP addresses and VPCs.</p>"
+        }
+      }
+    },
+    "CreateIpamPoolResult":{
+      "type":"structure",
+      "members":{
+        "IpamPool":{
+          "shape":"IpamPool",
+          "documentation":"<p>Information about the IPAM pool created.</p>",
+          "locationName":"ipamPool"
+        }
+      }
+    },
+    "CreateIpamRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the IPAM.</p>"
+        },
+        "OperatingRegions":{
+          "shape":"AddIpamOperatingRegionSet",
+          "documentation":"<p>The operating Regions for the IPAM. Operating Regions are Amazon Web Services Regions where the IPAM is allowed to manage IP address CIDRs. IPAM only discovers and monitors resources in the Amazon Web Services Regions you select as operating Regions.</p> <p>For more information about operating Regions, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>",
+          "locationName":"OperatingRegion"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring Idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamResult":{
+      "type":"structure",
+      "members":{
+        "Ipam":{
+          "shape":"Ipam",
+          "documentation":"<p>Information about the IPAM created.</p>",
+          "locationName":"ipam"
+        }
+      }
+    },
+    "CreateIpamScopeRequest":{
+      "type":"structure",
+      "required":["IpamId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM for which you're creating this scope.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the scope you're creating.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring Idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamScopeResult":{
+      "type":"structure",
+      "members":{
+        "IpamScope":{
+          "shape":"IpamScope",
+          "documentation":"<p>Information about the created scope.</p>",
+          "locationName":"ipamScope"
+        }
+      }
+    },
     "CreateKeyPairRequest":{
       "type":"structure",
       "required":["KeyName"],
@@ -10833,6 +11530,51 @@
         }
       }
     },
+    "CreateNetworkInsightsAccessScopeRequest":{
+      "type":"structure",
+      "required":["ClientToken"],
+      "members":{
+        "MatchPaths":{
+          "shape":"AccessScopePathListRequest",
+          "documentation":"<p>The paths to match.</p>",
+          "locationName":"MatchPath"
+        },
+        "ExcludePaths":{
+          "shape":"AccessScopePathListRequest",
+          "documentation":"<p>The paths to exclude.</p>",
+          "locationName":"ExcludePath"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateNetworkInsightsAccessScopeResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScope":{
+          "shape":"NetworkInsightsAccessScope",
+          "documentation":"<p>The Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScope"
+        },
+        "NetworkInsightsAccessScopeContent":{
+          "shape":"NetworkInsightsAccessScopeContent",
+          "documentation":"<p>The Network Access Scope content.</p>",
+          "locationName":"networkInsightsAccessScopeContent"
+        }
+      }
+    },
     "CreateNetworkInsightsPathRequest":{
       "type":"structure",
       "required":[
@@ -11068,6 +11810,30 @@
         "PlacementGroup":{
           "shape":"PlacementGroup",
           "locationName":"placementGroup"
+        }
+      }
+    },
+    "CreatePublicIpv4PoolRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreatePublicIpv4PoolResult":{
+      "type":"structure",
+      "members":{
+        "PoolId":{
+          "shape":"Ipv4PoolEc2Id",
+          "documentation":"<p>The ID of the public IPv4 pool.</p>",
+          "locationName":"poolId"
         }
       }
     },
@@ -12561,7 +13327,6 @@
     },
     "CreateVpcRequest":{
       "type":"structure",
-      "required":["CidrBlock"],
       "members":{
         "CidrBlock":{
           "shape":"String",
@@ -12579,6 +13344,22 @@
         "Ipv6CidrBlock":{
           "shape":"String",
           "documentation":"<p>The IPv6 CIDR block from the IPv6 address pool. You must also specify <code>Ipv6Pool</code> in the request.</p> <p>To let Amazon choose the IPv6 CIDR block for you, omit this parameter.</p>"
+        },
+        "Ipv4IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of an IPv4 IPAM pool you want to use for allocating this VPC's CIDR. For more information, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+        },
+        "Ipv4NetmaskLength":{
+          "shape":"NetmaskLength",
+          "documentation":"<p>The netmask length of the IPv4 CIDR you want to allocate to this VPC from an Amazon VPC IP Address Manager (IPAM) pool. For more information about IPAM, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+        },
+        "Ipv6IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of an IPv6 IPAM pool which will be used to allocate this VPC an IPv6 CIDR. IPAM is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across Amazon Web Services Regions and accounts throughout your Amazon Web Services Organization. For more information, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+        },
+        "Ipv6NetmaskLength":{
+          "shape":"NetmaskLength",
+          "documentation":"<p>The netmask length of the IPv6 CIDR you want to allocate to this VPC from an Amazon VPC IP Address Manager (IPAM) pool. For more information about IPAM, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -13203,6 +13984,78 @@
         }
       }
     },
+    "DeleteIpamPoolRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the pool to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamPoolResult":{
+      "type":"structure",
+      "members":{
+        "IpamPool":{
+          "shape":"IpamPool",
+          "documentation":"<p>Information about the results of the deletion.</p>",
+          "locationName":"ipamPool"
+        }
+      }
+    },
+    "DeleteIpamRequest":{
+      "type":"structure",
+      "required":["IpamId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamResult":{
+      "type":"structure",
+      "members":{
+        "Ipam":{
+          "shape":"Ipam",
+          "documentation":"<p>Information about the results of the deletion.</p>",
+          "locationName":"ipam"
+        }
+      }
+    },
+    "DeleteIpamScopeRequest":{
+      "type":"structure",
+      "required":["IpamScopeId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the scope to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamScopeResult":{
+      "type":"structure",
+      "members":{
+        "IpamScope":{
+          "shape":"IpamScope",
+          "documentation":"<p>Information about the results of the deletion.</p>",
+          "locationName":"ipamScope"
+        }
+      }
+    },
     "DeleteKeyPairRequest":{
       "type":"structure",
       "members":{
@@ -13496,6 +14349,54 @@
         }
       }
     },
+    "DeleteNetworkInsightsAccessScopeAnalysisRequest":{
+      "type":"structure",
+      "required":["NetworkInsightsAccessScopeAnalysisId"],
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisId":{
+          "shape":"NetworkInsightsAccessScopeAnalysisId",
+          "documentation":"<p>The ID of the Network Access Scope analysis.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteNetworkInsightsAccessScopeAnalysisResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisId":{
+          "shape":"NetworkInsightsAccessScopeAnalysisId",
+          "documentation":"<p>The ID of the Network Access Scope analysis.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysisId"
+        }
+      }
+    },
+    "DeleteNetworkInsightsAccessScopeRequest":{
+      "type":"structure",
+      "required":["NetworkInsightsAccessScopeId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>"
+        }
+      }
+    },
+    "DeleteNetworkInsightsAccessScopeResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScopeId"
+        }
+      }
+    },
     "DeleteNetworkInsightsAnalysisRequest":{
       "type":"structure",
       "required":["NetworkInsightsAnalysisId"],
@@ -13604,6 +14505,30 @@
           "shape":"PlacementGroupName",
           "documentation":"<p>The name of the placement group.</p>",
           "locationName":"groupName"
+        }
+      }
+    },
+    "DeletePublicIpv4PoolRequest":{
+      "type":"structure",
+      "required":["PoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "PoolId":{
+          "shape":"Ipv4PoolEc2Id",
+          "documentation":"<p>The ID of the public IPv4 pool you want to delete.</p>"
+        }
+      }
+    },
+    "DeletePublicIpv4PoolResult":{
+      "type":"structure",
+      "members":{
+        "ReturnValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Information about the result of deleting the public IPv4 pool.</p>",
+          "locationName":"returnValue"
         }
       }
     },
@@ -14351,6 +15276,77 @@
           "documentation":"<p>Information about the address range.</p>",
           "locationName":"byoipCidr"
         }
+      }
+    },
+    "DeprovisionIpamPoolCidrRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the pool that has the CIDR you want to deprovision.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR which you want to deprovision from the pool.</p>"
+        }
+      }
+    },
+    "DeprovisionIpamPoolCidrResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolCidr":{
+          "shape":"IpamPoolCidr",
+          "documentation":"<p>The deprovisioned pool CIDR.</p>",
+          "locationName":"ipamPoolCidr"
+        }
+      }
+    },
+    "DeprovisionPublicIpv4PoolCidrRequest":{
+      "type":"structure",
+      "required":[
+        "PoolId",
+        "Cidr"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "PoolId":{
+          "shape":"Ipv4PoolEc2Id",
+          "documentation":"<p>The ID of the pool that you want to deprovision the CIDR from.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR you want to deprovision from the pool.</p>"
+        }
+      }
+    },
+    "DeprovisionPublicIpv4PoolCidrResult":{
+      "type":"structure",
+      "members":{
+        "PoolId":{
+          "shape":"Ipv4PoolEc2Id",
+          "documentation":"<p>The ID of the pool that you deprovisioned the CIDR from.</p>",
+          "locationName":"poolId"
+        },
+        "DeprovisionedAddresses":{
+          "shape":"DeprovisionedAddressSet",
+          "documentation":"<p>The deprovisioned CIDRs.</p>",
+          "locationName":"deprovisionedAddressSet"
+        }
+      }
+    },
+    "DeprovisionedAddressSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
       }
     },
     "DeregisterImageRequest":{
@@ -16627,6 +17623,132 @@
         }
       }
     },
+    "DescribeIpamPoolsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamPoolIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM pools you would like information on.</p>",
+          "locationName":"IpamPoolId"
+        }
+      }
+    },
+    "DescribeIpamPoolsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamPools":{
+          "shape":"IpamPoolSet",
+          "documentation":"<p>Information about the IPAM pools.</p>",
+          "locationName":"ipamPoolSet"
+        }
+      }
+    },
+    "DescribeIpamScopesRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamScopeIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the scopes you want information on.</p>",
+          "locationName":"IpamScopeId"
+        }
+      }
+    },
+    "DescribeIpamScopesResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamScopes":{
+          "shape":"IpamScopeSet",
+          "documentation":"<p>The scopes you want information on.</p>",
+          "locationName":"ipamScopeSet"
+        }
+      }
+    },
+    "DescribeIpamsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAMs you want information on.</p>",
+          "locationName":"IpamId"
+        }
+      }
+    },
+    "DescribeIpamsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "Ipams":{
+          "shape":"IpamSet",
+          "documentation":"<p>Information about the IPAMs.</p>",
+          "locationName":"ipamSet"
+        }
+      }
+    },
     "DescribeIpv6PoolsRequest":{
       "type":"structure",
       "members":{
@@ -17244,6 +18366,102 @@
           "shape":"NetworkAclList",
           "documentation":"<p>Information about one or more network ACLs.</p>",
           "locationName":"networkAclSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeNetworkInsightsAccessScopeAnalysesRequest":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisIds":{
+          "shape":"NetworkInsightsAccessScopeAnalysisIdList",
+          "documentation":"<p>The IDs of the Network Access Scope analyses.</p>",
+          "locationName":"NetworkInsightsAccessScopeAnalysisId"
+        },
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>"
+        },
+        "AnalysisStartTimeBegin":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Filters the results based on the start time. The analysis must have started on or after this time.</p>"
+        },
+        "AnalysisStartTimeEnd":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Filters the results based on the start time. The analysis must have started on or before this time.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>There are no supported filters.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"NetworkInsightsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeNetworkInsightsAccessScopeAnalysesResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalyses":{
+          "shape":"NetworkInsightsAccessScopeAnalysisList",
+          "documentation":"<p>The Network Access Scope analyses.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysisSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeNetworkInsightsAccessScopesRequest":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeIds":{
+          "shape":"NetworkInsightsAccessScopeIdList",
+          "documentation":"<p>The IDs of the Network Access Scopes.</p>",
+          "locationName":"NetworkInsightsAccessScopeId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>There are no supported filters.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"NetworkInsightsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeNetworkInsightsAccessScopesResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopes":{
+          "shape":"NetworkInsightsAccessScopeList",
+          "documentation":"<p>The Network Access Scopes.</p>",
+          "locationName":"networkInsightsAccessScopeSet"
         },
         "NextToken":{
           "shape":"String",
@@ -20528,6 +21746,30 @@
         }
       }
     },
+    "DisableIpamOrganizationAdminAccountRequest":{
+      "type":"structure",
+      "required":["DelegatedAdminAccountId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "DelegatedAdminAccountId":{
+          "shape":"String",
+          "documentation":"<p>The Organizations member account ID that you want to disable as IPAM account.</p>"
+        }
+      }
+    },
+    "DisableIpamOrganizationAdminAccountResult":{
+      "type":"structure",
+      "members":{
+        "Success":{
+          "shape":"Boolean",
+          "documentation":"<p>The result of disabling the IPAM account.</p>",
+          "locationName":"success"
+        }
+      }
+    },
     "DisableSerialConsoleAccessRequest":{
       "type":"structure",
       "members":{
@@ -21811,6 +23053,30 @@
         }
       }
     },
+    "EnableIpamOrganizationAdminAccountRequest":{
+      "type":"structure",
+      "required":["DelegatedAdminAccountId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "DelegatedAdminAccountId":{
+          "shape":"String",
+          "documentation":"<p>The Organizations member account ID that you want to enable as the IPAM account.</p>"
+        }
+      }
+    },
+    "EnableIpamOrganizationAdminAccountResult":{
+      "type":"structure",
+      "members":{
+        "Success":{
+          "shape":"Boolean",
+          "documentation":"<p>The result of enabling the IPAM account.</p>",
+          "locationName":"success"
+        }
+      }
+    },
     "EnableSerialConsoleAccessRequest":{
       "type":"structure",
       "members":{
@@ -22815,6 +24081,14 @@
         "shape":"Filter",
         "locationName":"Filter"
       }
+    },
+    "FindingsFound":{
+      "type":"string",
+      "enum":[
+        "true",
+        "false",
+        "unknown"
+      ]
     },
     "FleetActivityStatus":{
       "type":"string",
@@ -24147,6 +25421,214 @@
         }
       }
     },
+    "GetIpamAddressHistoryRequest":{
+      "type":"structure",
+      "required":[
+        "Cidr",
+        "IpamScopeId"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR you want the history of. The CIDR can be an IPv4 or IPv6 IP address range. If you enter a /16 IPv4 CIDR, you will get records that match it exactly. You will not get records for any subnets within the /16 CIDR.</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM scope that the CIDR is in.</p>"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC you want your history records filtered by.</p>"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The start of the time period for which you are looking for history. If you omit this option, it will default to the value of EndTime.</p>"
+        },
+        "EndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The end of the time period for which you are looking for history. If you omit this option, it will default to the current time.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamAddressHistoryMaxResults",
+          "documentation":"<p>The maximum number of historical results you would like returned per page. Defaults to 100.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamAddressHistoryResult":{
+      "type":"structure",
+      "members":{
+        "HistoryRecords":{
+          "shape":"IpamAddressHistoryRecordSet",
+          "documentation":"<p>A historical record for a CIDR within an IPAM scope. If the CIDR is associated with an EC2 instance, you will see an object in the response for the instance and one for the network interface.</p>",
+          "locationName":"historyRecordSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPoolAllocationsMaxResults":{
+      "type":"integer",
+      "max":100000,
+      "min":1000
+    },
+    "GetIpamPoolAllocationsRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool you want to see the allocations for.</p>"
+        },
+        "IpamPoolAllocationId":{
+          "shape":"IpamPoolAllocationId",
+          "documentation":"<p>The ID of the allocation.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"GetIpamPoolAllocationsMaxResults",
+          "documentation":"<p>The maximum number of results you would like returned per page.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPoolAllocationsResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolAllocations":{
+          "shape":"IpamPoolAllocationSet",
+          "documentation":"<p>The IPAM pool allocations you want information on.</p>",
+          "locationName":"ipamPoolAllocationSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPoolCidrsRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool you want the CIDR for.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPoolCidrsResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolCidrs":{
+          "shape":"IpamPoolCidrSet",
+          "documentation":"<p>Information about the CIDRs provisioned to an IPAM pool.</p>",
+          "locationName":"ipamPoolCidrSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamResourceCidrsRequest":{
+      "type":"structure",
+      "required":["IpamScopeId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the scope that the resource is in.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool that the resource is in.</p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"IpamResourceType",
+          "documentation":"<p>The resource type.</p>"
+        },
+        "ResourceTag":{"shape":"RequestIpamResourceTag"},
+        "ResourceOwner":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the resource.</p>"
+        }
+      }
+    },
+    "GetIpamResourceCidrsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamResourceCidrs":{
+          "shape":"IpamResourceCidrSet",
+          "documentation":"<p>The resource CIDRs.</p>",
+          "locationName":"ipamResourceCidrSet"
+        }
+      }
+    },
     "GetLaunchTemplateDataRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -24251,6 +25733,77 @@
           "shape":"NextToken",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"nextToken"
+        }
+      }
+    },
+    "GetNetworkInsightsAccessScopeAnalysisFindingsRequest":{
+      "type":"structure",
+      "required":["NetworkInsightsAccessScopeAnalysisId"],
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisId":{
+          "shape":"NetworkInsightsAccessScopeAnalysisId",
+          "documentation":"<p>The ID of the Network Access Scope analysis.</p>"
+        },
+        "MaxResults":{
+          "shape":"NetworkInsightsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetNetworkInsightsAccessScopeAnalysisFindingsResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisId":{
+          "shape":"NetworkInsightsAccessScopeAnalysisId",
+          "documentation":"<p>The ID of the Network Access Scope analysis.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysisId"
+        },
+        "AnalysisStatus":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status of Network Access Scope Analysis.</p>",
+          "locationName":"analysisStatus"
+        },
+        "AnalysisFindings":{
+          "shape":"AccessScopeAnalysisFindingList",
+          "documentation":"<p>The findings associated with Network Access Scope Analysis.</p>",
+          "locationName":"analysisFindingSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetNetworkInsightsAccessScopeContentRequest":{
+      "type":"structure",
+      "required":["NetworkInsightsAccessScopeId"],
+      "members":{
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetNetworkInsightsAccessScopeContentResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeContent":{
+          "shape":"NetworkInsightsAccessScopeContent",
+          "documentation":"<p>The Network Access Scope content.</p>",
+          "locationName":"networkInsightsAccessScopeContent"
         }
       }
     },
@@ -28815,6 +30368,18 @@
         "vt1.3xlarge",
         "vt1.6xlarge",
         "vt1.24xlarge",
+        "im4gn.16xlarge",
+        "im4gn.2xlarge",
+        "im4gn.4xlarge",
+        "im4gn.8xlarge",
+        "im4gn.large",
+        "im4gn.xlarge",
+        "is4gen.2xlarge",
+        "is4gen.4xlarge",
+        "is4gen.8xlarge",
+        "is4gen.large",
+        "is4gen.medium",
+        "is4gen.xlarge",
         "g5g.xlarge",
         "g5g.2xlarge",
         "g5g.4xlarge",
@@ -29241,6 +30806,718 @@
         "shape":"String",
         "locationName":"item"
       }
+    },
+    "Ipam":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the IPAM.</p>",
+          "locationName":"ownerId"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM.</p>",
+          "locationName":"ipamId"
+        },
+        "IpamArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the IPAM.</p>",
+          "locationName":"ipamArn"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the IPAM.</p>",
+          "locationName":"ipamRegion"
+        },
+        "PublicDefaultScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM's default public scope.</p>",
+          "locationName":"publicDefaultScopeId"
+        },
+        "PrivateDefaultScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM's default private scope.</p>",
+          "locationName":"privateDefaultScopeId"
+        },
+        "ScopeCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of scopes in the IPAM. The scope quota is 5. For more information on quotas, see <a href=\"/vpc/latest/ipam/quotas-ipam.html\">Quotas in IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>",
+          "locationName":"scopeCount"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description for the IPAM.</p>",
+          "locationName":"description"
+        },
+        "OperatingRegions":{
+          "shape":"IpamOperatingRegionSet",
+          "documentation":"<p>The operating Regions for an IPAM. Operating Regions are Amazon Web Services Regions where the IPAM is allowed to manage IP address CIDRs. IPAM only discovers and monitors resources in the Amazon Web Services Regions you select as operating Regions.</p> <p>For more information about operating Regions, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"operatingRegionSet"
+        },
+        "State":{
+          "shape":"IpamState",
+          "documentation":"<p>The state of the IPAM.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>IPAM is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across Amazon Web Services Regions and accounts throughout your Amazon Web Services Organization. For more information, see <a href=\"/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "IpamAddressHistoryMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "IpamAddressHistoryRecord":{
+      "type":"structure",
+      "members":{
+        "ResourceOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource owner.</p>",
+          "locationName":"resourceOwnerId"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the resource.</p>",
+          "locationName":"resourceRegion"
+        },
+        "ResourceType":{
+          "shape":"IpamAddressHistoryResourceType",
+          "documentation":"<p>The type of the resource.</p>",
+          "locationName":"resourceType"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource.</p>",
+          "locationName":"resourceId"
+        },
+        "ResourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR of the resource.</p>",
+          "locationName":"resourceCidr"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource.</p>",
+          "locationName":"resourceName"
+        },
+        "ResourceComplianceStatus":{
+          "shape":"IpamComplianceStatus",
+          "documentation":"<p>The compliance status of a resource. For more information on compliance statuses, see <a href=\"/vpc/latest/ipam/monitor-cidr-compliance-ipam.html\">Monitor CIDR usage by resource</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"resourceComplianceStatus"
+        },
+        "ResourceOverlapStatus":{
+          "shape":"IpamOverlapStatus",
+          "documentation":"<p>The overlap status of an IPAM resource. The overlap status tells you if the CIDR for a resource overlaps with another CIDR in the scope. For more information on overlap statuses, see <a href=\"/vpc/latest/ipam/monitor-cidr-compliance-ipam.html\">Monitor CIDR usage by resource</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"resourceOverlapStatus"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The VPC ID of the resource.</p>",
+          "locationName":"vpcId"
+        },
+        "SampledStartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Sampled start time of the resource-to-CIDR association within the IPAM scope. Changes are picked up in periodic snapshots, so the start time may have occurred before this specific time.</p>",
+          "locationName":"sampledStartTime"
+        },
+        "SampledEndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Sampled end time of the resource-to-CIDR association within the IPAM scope. Changes are picked up in periodic snapshots, so the end time may have occurred before this specific time.</p>",
+          "locationName":"sampledEndTime"
+        }
+      },
+      "documentation":"<p>The historical record of a CIDR within an IPAM scope. For more information, see <a href=\"/vpc/latest/ipam/view-history-cidr-ipam.html\">View the history of IP addresses</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "IpamAddressHistoryRecordSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamAddressHistoryRecord",
+        "locationName":"item"
+      }
+    },
+    "IpamAddressHistoryResourceType":{
+      "type":"string",
+      "enum":[
+        "eip",
+        "vpc",
+        "subnet",
+        "network-interface",
+        "instance"
+      ]
+    },
+    "IpamCidrAuthorizationContext":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The plain-text authorization message for the prefix and account.</p>"
+        },
+        "Signature":{
+          "shape":"String",
+          "documentation":"<p>The signed authorization message for the prefix and account.</p>"
+        }
+      },
+      "documentation":"<p>A signed document that proves that you are authorized to bring the specified IP address range to Amazon using BYOIP.</p>"
+    },
+    "IpamComplianceStatus":{
+      "type":"string",
+      "enum":[
+        "compliant",
+        "noncompliant",
+        "unmanaged",
+        "ignored"
+      ]
+    },
+    "IpamId":{"type":"string"},
+    "IpamManagementState":{
+      "type":"string",
+      "enum":[
+        "managed",
+        "unmanaged",
+        "ignored"
+      ]
+    },
+    "IpamMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "IpamNetmaskLength":{
+      "type":"integer",
+      "max":128,
+      "min":0
+    },
+    "IpamOperatingRegion":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the operating Region.</p>",
+          "locationName":"regionName"
+        }
+      },
+      "documentation":"<p>The operating Regions for an IPAM. Operating Regions are Amazon Web Services Regions where the IPAM is allowed to manage IP address CIDRs. IPAM only discovers and monitors resources in the Amazon Web Services Regions you select as operating Regions.</p> <p>For more information about operating Regions, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "IpamOperatingRegionSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamOperatingRegion",
+        "locationName":"item"
+      }
+    },
+    "IpamOverlapStatus":{
+      "type":"string",
+      "enum":[
+        "overlapping",
+        "nonoverlapping",
+        "ignored"
+      ]
+    },
+    "IpamPool":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the IPAM pool.</p>",
+          "locationName":"ownerId"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool.</p>",
+          "locationName":"ipamPoolId"
+        },
+        "SourceIpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the source IPAM pool. You can use this option to create an IPAM pool within an existing source pool.</p>",
+          "locationName":"sourceIpamPoolId"
+        },
+        "IpamPoolArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the IPAM pool.</p>",
+          "locationName":"ipamPoolArn"
+        },
+        "IpamScopeArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the scope of the IPAM pool.</p>",
+          "locationName":"ipamScopeArn"
+        },
+        "IpamScopeType":{
+          "shape":"IpamScopeType",
+          "documentation":"<p>In IPAM, a scope is the highest-level container within IPAM. An IPAM contains two default scopes. Each scope represents the IP space for a single network. The private scope is intended for all private IP address space. The public scope is intended for all public IP address space. Scopes enable you to reuse IP addresses across multiple unconnected networks without causing IP address overlap or conflict.</p>",
+          "locationName":"ipamScopeType"
+        },
+        "IpamArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the IPAM.</p>",
+          "locationName":"ipamArn"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the IPAM pool.</p>",
+          "locationName":"ipamRegion"
+        },
+        "Locale":{
+          "shape":"String",
+          "documentation":"<p>The locale of the IPAM pool. In IPAM, the locale is the Amazon Web Services Region where you want to make an IPAM pool available for allocations. Only resources in the same Region as the locale of the pool can get IP address allocations from the pool. You can only allocate a CIDR for a VPC, for example, from an IPAM pool that shares a locale with the VPC’s Region. Note that once you choose a Locale for a pool, you cannot modify it. If you choose an Amazon Web Services Region for locale that has not been configured as an operating Region for the IPAM, you'll get an error.</p>",
+          "locationName":"locale"
+        },
+        "PoolDepth":{
+          "shape":"Integer",
+          "documentation":"<p>The depth of pools in your IPAM pool. The pool depth quota is 10. For more information, see <a href=\"/vpc/latest/ipam/quotas-ipam.html\">Quotas in IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>",
+          "locationName":"poolDepth"
+        },
+        "State":{
+          "shape":"IpamPoolState",
+          "documentation":"<p>The state of the IPAM pool.</p>",
+          "locationName":"state"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "documentation":"<p>A message related to the failed creation of an IPAM pool.</p>",
+          "locationName":"stateMessage"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the IPAM pool.</p>",
+          "locationName":"description"
+        },
+        "AutoImport":{
+          "shape":"Boolean",
+          "documentation":"<p>If selected, IPAM will continuously look for resources within the CIDR range of this pool and automatically import them as allocations into your IPAM. The CIDRs that will be allocated for these resources must not already be allocated to other resources in order for the import to succeed. IPAM will import a CIDR regardless of its compliance with the pool's allocation rules, so a resource might be imported and subsequently marked as noncompliant. If IPAM discovers multiple CIDRs that overlap, IPAM will import the largest CIDR only. If IPAM discovers multiple CIDRs with matching CIDRs, IPAM will randomly import one of them only. </p> <p>A locale must be set on the pool for this feature to work.</p>",
+          "locationName":"autoImport"
+        },
+        "PubliclyAdvertisable":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines if a pool is publicly advertisable. This option is not available for pools with AddressFamily set to <code>ipv4</code>.</p>",
+          "locationName":"publiclyAdvertisable"
+        },
+        "AddressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family of the pool.</p>",
+          "locationName":"addressFamily"
+        },
+        "AllocationMinNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The minimum netmask length required for CIDR allocations in this IPAM pool to be compliant. The minimum netmask length must be less than the maximum netmask length. Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128.</p>",
+          "locationName":"allocationMinNetmaskLength"
+        },
+        "AllocationMaxNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The maximum netmask length possible for CIDR allocations in this IPAM pool to be compliant. The maximum netmask length must be greater than the minimum netmask length. Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128.</p>",
+          "locationName":"allocationMaxNetmaskLength"
+        },
+        "AllocationDefaultNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The default netmask length for allocations added to this pool. If, for example, the CIDR assigned to this pool is 10.0.0.0/8 and you enter 16 here, new allocations will default to 10.0.0.0/16.</p>",
+          "locationName":"allocationDefaultNetmaskLength"
+        },
+        "AllocationResourceTags":{
+          "shape":"IpamResourceTagList",
+          "documentation":"<p>Tags that are required for resources that use CIDRs from this IPAM pool. Resources that do not have these tags will not be allowed to allocate space from the pool. If the resources have their tags changed after they have allocated space or if the allocation tagging requirements are changed on the pool, the resource may be marked as noncompliant.</p>",
+          "locationName":"allocationResourceTagSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"tagSet"
+        },
+        "AwsService":{
+          "shape":"IpamPoolAwsService",
+          "documentation":"<p>Limits which service in Amazon Web Services that the pool can be used in. \"ec2\", for example, allows users to use space for Elastic IP addresses and VPCs.</p>",
+          "locationName":"awsService"
+        }
+      },
+      "documentation":"<p>In IPAM, a pool is a collection of contiguous IP addresses CIDRs. Pools enable you to organize your IP addresses according to your routing and security needs. For example, if you have separate routing and security needs for development and production applications, you can create a pool for each.</p>"
+    },
+    "IpamPoolAllocation":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR for the allocation. A CIDR is a representation of an IP address and its associated network mask (or netmask) and refers to a range of IP addresses. An IPv4 CIDR example is <code>10.24.34.0/23</code>. An IPv6 CIDR example is <code>2001:DB8::/32</code>.</p>",
+          "locationName":"cidr"
+        },
+        "IpamPoolAllocationId":{
+          "shape":"IpamPoolAllocationId",
+          "documentation":"<p>The ID of an allocation.</p>",
+          "locationName":"ipamPoolAllocationId"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the pool allocation.</p>",
+          "locationName":"description"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource.</p>",
+          "locationName":"resourceId"
+        },
+        "ResourceType":{
+          "shape":"IpamPoolAllocationResourceType",
+          "documentation":"<p>The type of the resource.</p>",
+          "locationName":"resourceType"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the resource.</p>",
+          "locationName":"resourceRegion"
+        },
+        "ResourceOwner":{
+          "shape":"String",
+          "documentation":"<p>The owner of the resource.</p>",
+          "locationName":"resourceOwner"
+        }
+      },
+      "documentation":"<p>In IPAM, an allocation is a CIDR assignment from an IPAM pool to another resource or IPAM pool.</p>"
+    },
+    "IpamPoolAllocationDisallowedCidrs":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
+    },
+    "IpamPoolAllocationId":{"type":"string"},
+    "IpamPoolAllocationResourceType":{
+      "type":"string",
+      "enum":[
+        "ipam-pool",
+        "vpc",
+        "ec2-public-ipv4-pool",
+        "custom"
+      ]
+    },
+    "IpamPoolAllocationSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPoolAllocation",
+        "locationName":"item"
+      }
+    },
+    "IpamPoolAwsService":{
+      "type":"string",
+      "enum":["ec2"]
+    },
+    "IpamPoolCidr":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR provisioned to the IPAM pool. A CIDR is a representation of an IP address and its associated network mask (or netmask) and refers to a range of IP addresses. An IPv4 CIDR example is <code>10.24.34.0/23</code>. An IPv6 CIDR example is <code>2001:DB8::/32</code>.</p>",
+          "locationName":"cidr"
+        },
+        "State":{
+          "shape":"IpamPoolCidrState",
+          "documentation":"<p>The state of the CIDR.</p>",
+          "locationName":"state"
+        },
+        "FailureReason":{
+          "shape":"IpamPoolCidrFailureReason",
+          "documentation":"<p>Details related to why an IPAM pool CIDR failed to be provisioned.</p>",
+          "locationName":"failureReason"
+        }
+      },
+      "documentation":"<p>A CIDR provisioned to an IPAM pool.</p>"
+    },
+    "IpamPoolCidrFailureCode":{
+      "type":"string",
+      "enum":["cidr-not-available"]
+    },
+    "IpamPoolCidrFailureReason":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"IpamPoolCidrFailureCode",
+          "documentation":"<p>An error code related to why an IPAM pool CIDR failed to be provisioned.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message related to why an IPAM pool CIDR failed to be provisioned.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>Details related to why an IPAM pool CIDR failed to be provisioned.</p>"
+    },
+    "IpamPoolCidrSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPoolCidr",
+        "locationName":"item"
+      }
+    },
+    "IpamPoolCidrState":{
+      "type":"string",
+      "enum":[
+        "pending-provision",
+        "provisioned",
+        "failed-provision",
+        "pending-deprovision",
+        "deprovisioned",
+        "failed-deprovision",
+        "pending-import",
+        "failed-import"
+      ]
+    },
+    "IpamPoolId":{"type":"string"},
+    "IpamPoolSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPool",
+        "locationName":"item"
+      }
+    },
+    "IpamPoolState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
+    },
+    "IpamResourceCidr":{
+      "type":"structure",
+      "members":{
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The IPAM ID for an IPAM resource.</p>",
+          "locationName":"ipamId"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The scope ID for an IPAM resource.</p>",
+          "locationName":"ipamScopeId"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The pool ID for an IPAM resource.</p>",
+          "locationName":"ipamPoolId"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region for an IPAM resource.</p>",
+          "locationName":"resourceRegion"
+        },
+        "ResourceOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account number of the owner of an IPAM resource.</p>",
+          "locationName":"resourceOwnerId"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of an IPAM resource.</p>",
+          "locationName":"resourceId"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of an IPAM resource.</p>",
+          "locationName":"resourceName"
+        },
+        "ResourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR for an IPAM resource.</p>",
+          "locationName":"resourceCidr"
+        },
+        "ResourceType":{
+          "shape":"IpamResourceType",
+          "documentation":"<p>The type of IPAM resource.</p>",
+          "locationName":"resourceType"
+        },
+        "ResourceTags":{
+          "shape":"IpamResourceTagList",
+          "documentation":"<p>The tags for an IPAM resource.</p>",
+          "locationName":"resourceTagSet"
+        },
+        "IpUsage":{
+          "shape":"BoxedDouble",
+          "documentation":"<p>The IP address space in the IPAM pool that is allocated to this resource. To convert the decimal to a percentage, multiply the decimal by 100.</p>",
+          "locationName":"ipUsage"
+        },
+        "ComplianceStatus":{
+          "shape":"IpamComplianceStatus",
+          "documentation":"<p>The compliance status of the IPAM resource. For more information on compliance statuses, see <a href=\"/vpc/latest/ipam/monitor-cidr-compliance-ipam.html\">Monitor CIDR usage by resource</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"complianceStatus"
+        },
+        "ManagementState":{
+          "shape":"IpamManagementState",
+          "documentation":"<p>The management state of the resource. For more information about management states, see <a href=\"/vpc/latest/ipam/monitor-cidr-compliance-ipam.html\">Monitor CIDR usage by resource</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"managementState"
+        },
+        "OverlapStatus":{
+          "shape":"IpamOverlapStatus",
+          "documentation":"<p>The overlap status of an IPAM resource. The overlap status tells you if the CIDR for a resource overlaps with another CIDR in the scope. For more information on overlap statuses, see <a href=\"/vpc/latest/ipam/monitor-cidr-compliance-ipam.html\">Monitor CIDR usage by resource</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"overlapStatus"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of a VPC.</p>",
+          "locationName":"vpcId"
+        }
+      },
+      "documentation":"<p>The CIDR for an IPAM resource.</p>"
+    },
+    "IpamResourceCidrSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamResourceCidr",
+        "locationName":"item"
+      }
+    },
+    "IpamResourceTag":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p>",
+          "locationName":"key"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the tag.</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>"
+    },
+    "IpamResourceTagList":{
+      "type":"list",
+      "member":{
+        "shape":"IpamResourceTag",
+        "locationName":"item"
+      }
+    },
+    "IpamResourceType":{
+      "type":"string",
+      "enum":[
+        "vpc",
+        "subnet",
+        "eip",
+        "public-ipv4-pool",
+        "ipv6-pool"
+      ]
+    },
+    "IpamScope":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the scope.</p>",
+          "locationName":"ownerId"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the scope.</p>",
+          "locationName":"ipamScopeId"
+        },
+        "IpamScopeArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the scope.</p>",
+          "locationName":"ipamScopeArn"
+        },
+        "IpamArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the IPAM.</p>",
+          "locationName":"ipamArn"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the IPAM scope.</p>",
+          "locationName":"ipamRegion"
+        },
+        "IpamScopeType":{
+          "shape":"IpamScopeType",
+          "documentation":"<p>The type of the scope.</p>",
+          "locationName":"ipamScopeType"
+        },
+        "IsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Defines if the scope is the default scope or not.</p>",
+          "locationName":"isDefault"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the scope.</p>",
+          "locationName":"description"
+        },
+        "PoolCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pools in the scope.</p>",
+          "locationName":"poolCount"
+        },
+        "State":{
+          "shape":"IpamScopeState",
+          "documentation":"<p>The state of the IPAM scope.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>In IPAM, a scope is the highest-level container within IPAM. An IPAM contains two default scopes. Each scope represents the IP space for a single network. The private scope is intended for all private IP address space. The public scope is intended for all public IP address space. Scopes enable you to reuse IP addresses across multiple unconnected networks without causing IP address overlap or conflict.</p> <p>For more information, see <a href=\"/vpc/latest/ipam/how-it-works-ipam.html\">How IPAM works</a> in the <i>Amazon VPC IPAM User Guide</i> </p>"
+    },
+    "IpamScopeId":{"type":"string"},
+    "IpamScopeSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamScope",
+        "locationName":"item"
+      }
+    },
+    "IpamScopeState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
+    },
+    "IpamScopeType":{
+      "type":"string",
+      "enum":[
+        "public",
+        "private"
+      ]
+    },
+    "IpamSet":{
+      "type":"list",
+      "member":{
+        "shape":"Ipam",
+        "locationName":"item"
+      }
+    },
+    "IpamState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
     },
     "Ipv4PoolEc2Id":{"type":"string"},
     "Ipv4PrefixList":{
@@ -32474,6 +34751,179 @@
         }
       }
     },
+    "ModifyIpamPoolRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool you want to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the IPAM pool you want to modify.</p>"
+        },
+        "AutoImport":{
+          "shape":"Boolean",
+          "documentation":"<p>If true, IPAM will continuously look for resources within the CIDR range of this pool and automatically import them as allocations into your IPAM. The CIDRs that will be allocated for these resources must not already be allocated to other resources in order for the import to succeed. IPAM will import a CIDR regardless of its compliance with the pool's allocation rules, so a resource might be imported and subsequently marked as noncompliant. If IPAM discovers multiple CIDRs that overlap, IPAM will import the largest CIDR only. If IPAM discovers multiple CIDRs with matching CIDRs, IPAM will randomly import one of them only. </p> <p>A locale must be set on the pool for this feature to work.</p>"
+        },
+        "AllocationMinNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The minimum netmask length required for CIDR allocations in this IPAM pool to be compliant. Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128. The minimum netmask length must be less than the maximum netmask length.</p>"
+        },
+        "AllocationMaxNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The maximum netmask length possible for CIDR allocations in this IPAM pool to be compliant. Possible netmask lengths for IPv4 addresses are 0 - 32. Possible netmask lengths for IPv6 addresses are 0 - 128.The maximum netmask length must be greater than the minimum netmask length.</p>"
+        },
+        "AllocationDefaultNetmaskLength":{
+          "shape":"IpamNetmaskLength",
+          "documentation":"<p>The default netmask length for allocations added to this pool. If, for example, the CIDR assigned to this pool is 10.0.0.0/8 and you enter 16 here, new allocations will default to 10.0.0.0/16.</p>"
+        },
+        "ClearAllocationDefaultNetmaskLength":{
+          "shape":"Boolean",
+          "documentation":"<p>Clear the default netmask length allocation rule for this pool.</p>"
+        },
+        "AddAllocationResourceTags":{
+          "shape":"RequestIpamResourceTagList",
+          "documentation":"<p>Add tag allocation rules to a pool. For more information about allocation rules, see <a href=\"/vpc/latest/ipam/create-top-ipam.html\">Create a top-level pool</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"AddAllocationResourceTag"
+        },
+        "RemoveAllocationResourceTags":{
+          "shape":"RequestIpamResourceTagList",
+          "documentation":"<p>Remove tag allocation rules from a pool.</p>",
+          "locationName":"RemoveAllocationResourceTag"
+        }
+      }
+    },
+    "ModifyIpamPoolResult":{
+      "type":"structure",
+      "members":{
+        "IpamPool":{
+          "shape":"IpamPool",
+          "documentation":"<p>The results of the modification.</p>",
+          "locationName":"ipamPool"
+        }
+      }
+    },
+    "ModifyIpamRequest":{
+      "type":"structure",
+      "required":["IpamId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM you want to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the IPAM you want to modify.</p>"
+        },
+        "AddOperatingRegions":{
+          "shape":"AddIpamOperatingRegionSet",
+          "documentation":"<p>Choose the operating Regions for the IPAM. Operating Regions are Amazon Web Services Regions where the IPAM is allowed to manage IP address CIDRs. IPAM only discovers and monitors resources in the Amazon Web Services Regions you select as operating Regions.</p> <p>For more information about operating Regions, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"AddOperatingRegion"
+        },
+        "RemoveOperatingRegions":{
+          "shape":"RemoveIpamOperatingRegionSet",
+          "documentation":"<p>The operating Regions to remove.</p>",
+          "locationName":"RemoveOperatingRegion"
+        }
+      }
+    },
+    "ModifyIpamResourceCidrRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "ResourceCidr",
+        "ResourceRegion",
+        "CurrentIpamScopeId",
+        "Monitored"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource you want to modify.</p>"
+        },
+        "ResourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR of the resource you want to modify.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the resource you want to modify.</p>"
+        },
+        "CurrentIpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the current scope that the resource CIDR is in.</p>"
+        },
+        "DestinationIpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the scope you want to transfer the resource CIDR to.</p>"
+        },
+        "Monitored":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines if the resource is monitored by IPAM. If a resource is monitored, the resource is discovered by IPAM and you can view details about the resource’s CIDR.</p>"
+        }
+      }
+    },
+    "ModifyIpamResourceCidrResult":{
+      "type":"structure",
+      "members":{
+        "IpamResourceCidr":{
+          "shape":"IpamResourceCidr",
+          "locationName":"ipamResourceCidr"
+        }
+      }
+    },
+    "ModifyIpamResult":{
+      "type":"structure",
+      "members":{
+        "Ipam":{
+          "shape":"Ipam",
+          "documentation":"<p>The results of the modification.</p>",
+          "locationName":"ipam"
+        }
+      }
+    },
+    "ModifyIpamScopeRequest":{
+      "type":"structure",
+      "required":["IpamScopeId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the scope you want to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the scope you want to modify.</p>"
+        }
+      }
+    },
+    "ModifyIpamScopeResult":{
+      "type":"structure",
+      "members":{
+        "IpamScope":{
+          "shape":"IpamScope",
+          "documentation":"<p>The results of the modification.</p>",
+          "locationName":"ipamScope"
+        }
+      }
+    },
     "ModifyLaunchTemplateRequest":{
       "type":"structure",
       "members":{
@@ -32852,6 +35302,14 @@
         "EnableResourceNameDnsAAAARecordOnLaunch":{
           "shape":"AttributeBooleanValue",
           "documentation":"<p>Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records.</p>"
+        },
+        "EnableLniAtDeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the device position for local network interfaces in this subnet. For example, <code>1</code> indicates local network interfaces in this subnet are the secondary network interface (eth1). A local network interface cannot be the primary network interface (eth0). </p>"
+        },
+        "DisableLniAtDeviceIndex":{
+          "shape":"AttributeBooleanValue",
+          "documentation":"<p> Specify <code>true</code> to indicate that local network interfaces at the current position should be disabled. </p>"
         }
       }
     },
@@ -33811,6 +36269,36 @@
         }
       }
     },
+    "MoveByoipCidrToIpamRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The BYOIP CIDR.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The IPAM pool ID.</p>"
+        },
+        "IpamPoolOwner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the IPAM pool.</p>"
+        }
+      }
+    },
+    "MoveByoipCidrToIpamResult":{
+      "type":"structure",
+      "members":{
+        "ByoipCidr":{
+          "shape":"ByoipCidr",
+          "locationName":"byoipCidr"
+        }
+      }
+    },
     "MoveStatus":{
       "type":"string",
       "enum":[
@@ -33972,6 +36460,7 @@
         "deleted"
       ]
     },
+    "NetmaskLength":{"type":"integer"},
     "NetworkAcl":{
       "type":"structure",
       "members":{
@@ -34205,6 +36694,149 @@
       },
       "documentation":"<p>Describes the networking features of the instance type.</p>"
     },
+    "NetworkInsightsAccessScope":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScopeId"
+        },
+        "NetworkInsightsAccessScopeArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScopeArn"
+        },
+        "CreatedDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The creation date.</p>",
+          "locationName":"createdDate"
+        },
+        "UpdatedDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The last updated date.</p>",
+          "locationName":"updatedDate"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a Network Access Scope.</p>"
+    },
+    "NetworkInsightsAccessScopeAnalysis":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalysisId":{
+          "shape":"NetworkInsightsAccessScopeAnalysisId",
+          "documentation":"<p>The ID of the Network Access Scope analysis.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysisId"
+        },
+        "NetworkInsightsAccessScopeAnalysisArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Network Access Scope analysis.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysisArn"
+        },
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScopeId"
+        },
+        "Status":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status.</p>",
+          "locationName":"status"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message.</p>",
+          "locationName":"statusMessage"
+        },
+        "WarningMessage":{
+          "shape":"String",
+          "documentation":"<p>The warning message.</p>",
+          "locationName":"warningMessage"
+        },
+        "StartDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The analysis start date.</p>",
+          "locationName":"startDate"
+        },
+        "EndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The analysis end date.</p>",
+          "locationName":"endDate"
+        },
+        "FindingsFound":{
+          "shape":"FindingsFound",
+          "documentation":"<p>Indicates whether there are findings.</p>",
+          "locationName":"findingsFound"
+        },
+        "AnalyzedEniCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of network interfaces analyzed.</p>",
+          "locationName":"analyzedEniCount"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a Network Access Scope analysis.</p>"
+    },
+    "NetworkInsightsAccessScopeAnalysisId":{"type":"string"},
+    "NetworkInsightsAccessScopeAnalysisIdList":{
+      "type":"list",
+      "member":{
+        "shape":"NetworkInsightsAccessScopeAnalysisId",
+        "locationName":"item"
+      }
+    },
+    "NetworkInsightsAccessScopeAnalysisList":{
+      "type":"list",
+      "member":{
+        "shape":"NetworkInsightsAccessScopeAnalysis",
+        "locationName":"item"
+      }
+    },
+    "NetworkInsightsAccessScopeContent":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>",
+          "locationName":"networkInsightsAccessScopeId"
+        },
+        "MatchPaths":{
+          "shape":"AccessScopePathList",
+          "documentation":"<p>The paths to match.</p>",
+          "locationName":"matchPathSet"
+        },
+        "ExcludePaths":{
+          "shape":"AccessScopePathList",
+          "documentation":"<p>The paths to exclude.</p>",
+          "locationName":"excludePathSet"
+        }
+      },
+      "documentation":"<p>Describes the Network Access Scope content.</p>"
+    },
+    "NetworkInsightsAccessScopeId":{"type":"string"},
+    "NetworkInsightsAccessScopeIdList":{
+      "type":"list",
+      "member":{
+        "shape":"NetworkInsightsAccessScopeId",
+        "locationName":"item"
+      }
+    },
+    "NetworkInsightsAccessScopeList":{
+      "type":"list",
+      "member":{
+        "shape":"NetworkInsightsAccessScope",
+        "locationName":"item"
+      }
+    },
     "NetworkInsightsAnalysis":{
       "type":"structure",
       "members":{
@@ -34242,6 +36874,11 @@
           "shape":"String",
           "documentation":"<p>The status message, if the status is <code>failed</code>.</p>",
           "locationName":"statusMessage"
+        },
+        "WarningMessage":{
+          "shape":"String",
+          "documentation":"<p>The warning message.</p>",
+          "locationName":"warningMessage"
         },
         "NetworkPathFound":{
           "shape":"Boolean",
@@ -34972,6 +37609,88 @@
         "locationName":"Owner"
       }
     },
+    "PacketHeaderStatement":{
+      "type":"structure",
+      "members":{
+        "SourceAddresses":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source addresses.</p>",
+          "locationName":"sourceAddressSet"
+        },
+        "DestinationAddresses":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination addresses.</p>",
+          "locationName":"destinationAddressSet"
+        },
+        "SourcePorts":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source ports.</p>",
+          "locationName":"sourcePortSet"
+        },
+        "DestinationPorts":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination ports.</p>",
+          "locationName":"destinationPortSet"
+        },
+        "SourcePrefixLists":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source prefix lists.</p>",
+          "locationName":"sourcePrefixListSet"
+        },
+        "DestinationPrefixLists":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination prefix lists.</p>",
+          "locationName":"destinationPrefixListSet"
+        },
+        "Protocols":{
+          "shape":"ProtocolList",
+          "documentation":"<p>The protocols.</p>",
+          "locationName":"protocolSet"
+        }
+      },
+      "documentation":"<p>Describes a packet header statement.</p>"
+    },
+    "PacketHeaderStatementRequest":{
+      "type":"structure",
+      "members":{
+        "SourceAddresses":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source addresses.</p>",
+          "locationName":"SourceAddress"
+        },
+        "DestinationAddresses":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination addresses.</p>",
+          "locationName":"DestinationAddress"
+        },
+        "SourcePorts":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source ports.</p>",
+          "locationName":"SourcePort"
+        },
+        "DestinationPorts":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination ports.</p>",
+          "locationName":"DestinationPort"
+        },
+        "SourcePrefixLists":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source prefix lists.</p>",
+          "locationName":"SourcePrefixList"
+        },
+        "DestinationPrefixLists":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination prefix lists.</p>",
+          "locationName":"DestinationPrefixList"
+        },
+        "Protocols":{
+          "shape":"ProtocolList",
+          "documentation":"<p>The protocols.</p>",
+          "locationName":"Protocol"
+        }
+      },
+      "documentation":"<p>Describes a packet header statement.</p>"
+    },
     "PartitionLoadFrequency":{
       "type":"string",
       "enum":[
@@ -34993,6 +37712,11 @@
           "shape":"AnalysisAclRule",
           "documentation":"<p>The network ACL rule.</p>",
           "locationName":"aclRule"
+        },
+        "AttachedTo":{
+          "shape":"AnalysisComponent",
+          "documentation":"<p>The resource to which the path component is attached.</p>",
+          "locationName":"attachedTo"
         },
         "Component":{
           "shape":"AnalysisComponent",
@@ -35048,6 +37772,36 @@
         "shape":"PathComponent",
         "locationName":"item"
       }
+    },
+    "PathStatement":{
+      "type":"structure",
+      "members":{
+        "PacketHeaderStatement":{
+          "shape":"PacketHeaderStatement",
+          "documentation":"<p>The packet header statement.</p>",
+          "locationName":"packetHeaderStatement"
+        },
+        "ResourceStatement":{
+          "shape":"ResourceStatement",
+          "documentation":"<p>The resource statement.</p>",
+          "locationName":"resourceStatement"
+        }
+      },
+      "documentation":"<p>Describes a path statement.</p>"
+    },
+    "PathStatementRequest":{
+      "type":"structure",
+      "members":{
+        "PacketHeaderStatement":{
+          "shape":"PacketHeaderStatementRequest",
+          "documentation":"<p>The packet header statement.</p>"
+        },
+        "ResourceStatement":{
+          "shape":"ResourceStatementRequest",
+          "documentation":"<p>The resource statement.</p>"
+        }
+      },
+      "documentation":"<p>Describes a path statement.</p>"
     },
     "PaymentOption":{
       "type":"string",
@@ -36056,6 +38810,13 @@
         "udp"
       ]
     },
+    "ProtocolList":{
+      "type":"list",
+      "member":{
+        "shape":"Protocol",
+        "locationName":"item"
+      }
+    },
     "ProtocolValue":{
       "type":"string",
       "enum":["gre"]
@@ -36102,6 +38863,78 @@
           "shape":"ByoipCidr",
           "documentation":"<p>Information about the address range.</p>",
           "locationName":"byoipCidr"
+        }
+      }
+    },
+    "ProvisionIpamPoolCidrRequest":{
+      "type":"structure",
+      "required":["IpamPoolId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool to which you want to assign a CIDR.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR you want to assign to the IPAM pool.</p>"
+        },
+        "CidrAuthorizationContext":{
+          "shape":"IpamCidrAuthorizationContext",
+          "documentation":"<p>A signed document that proves that you are authorized to bring a specified IP address range to Amazon using BYOIP. This option applies to public pools only.</p>"
+        }
+      }
+    },
+    "ProvisionIpamPoolCidrResult":{
+      "type":"structure",
+      "members":{
+        "IpamPoolCidr":{
+          "shape":"IpamPoolCidr",
+          "documentation":"<p>Information about the provisioned CIDR.</p>",
+          "locationName":"ipamPoolCidr"
+        }
+      }
+    },
+    "ProvisionPublicIpv4PoolCidrRequest":{
+      "type":"structure",
+      "required":[
+        "IpamPoolId",
+        "PoolId",
+        "NetmaskLength"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool you would like to use to allocate this CIDR.</p>"
+        },
+        "PoolId":{
+          "shape":"Ipv4PoolEc2Id",
+          "documentation":"<p>The ID of the public IPv4 pool you would like to use for this CIDR.</p>"
+        },
+        "NetmaskLength":{
+          "shape":"Integer",
+          "documentation":"<p>The netmask length of the CIDR you would like to allocate to the public IPv4 pool.</p>"
+        }
+      }
+    },
+    "ProvisionPublicIpv4PoolCidrResult":{
+      "type":"structure",
+      "members":{
+        "PoolId":{
+          "shape":"Ipv4PoolEc2Id",
+          "documentation":"<p>The ID of the pool that you want to provision the CIDR to.</p>",
+          "locationName":"poolId"
+        },
+        "PoolAddressRange":{
+          "shape":"PublicIpv4PoolRange",
+          "locationName":"poolAddressRange"
         }
       }
     },
@@ -36980,6 +39813,57 @@
         }
       }
     },
+    "ReleaseIpamPoolAllocationRequest":{
+      "type":"structure",
+      "required":[
+        "IpamPoolId",
+        "Cidr"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool which contains the allocation you want to release.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR of the allocation you want to release.</p>"
+        },
+        "IpamPoolAllocationId":{
+          "shape":"IpamPoolAllocationId",
+          "documentation":"<p>The ID of the allocation.</p>"
+        }
+      }
+    },
+    "ReleaseIpamPoolAllocationResult":{
+      "type":"structure",
+      "members":{
+        "Success":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if the release was successful.</p>",
+          "locationName":"success"
+        }
+      }
+    },
+    "RemoveIpamOperatingRegion":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the operating Region you want to remove.</p>"
+        }
+      },
+      "documentation":"<p>Remove an operating Region from an IPAM. Operating Regions are Amazon Web Services Regions where the IPAM is allowed to manage IP address CIDRs. IPAM only discovers and monitors resources in the Amazon Web Services Regions you select as operating Regions.</p> <p>For more information about operating Regions, see <a href=\"/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i> </p>"
+    },
+    "RemoveIpamOperatingRegionSet":{
+      "type":"list",
+      "member":{"shape":"RemoveIpamOperatingRegion"},
+      "max":50,
+      "min":0
+    },
     "RemovePrefixListEntries":{
       "type":"list",
       "member":{"shape":"RemovePrefixListEntry"},
@@ -37437,6 +40321,27 @@
       "locationName":"InstanceType",
       "max":100,
       "min":0
+    },
+    "RequestIpamResourceTag":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value for the tag.</p>"
+        }
+      },
+      "documentation":"<p>A tag on an IPAM resource.</p>"
+    },
+    "RequestIpamResourceTagList":{
+      "type":"list",
+      "member":{
+        "shape":"RequestIpamResourceTag",
+        "locationName":"item"
+      }
     },
     "RequestLaunchTemplateData":{
       "type":"structure",
@@ -38545,6 +41450,38 @@
         "locationName":"item"
       }
     },
+    "ResourceStatement":{
+      "type":"structure",
+      "members":{
+        "Resources":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The resources.</p>",
+          "locationName":"resourceSet"
+        },
+        "ResourceTypes":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The resource types.</p>",
+          "locationName":"resourceTypeSet"
+        }
+      },
+      "documentation":"<p>Describes a resource statement.</p>"
+    },
+    "ResourceStatementRequest":{
+      "type":"structure",
+      "members":{
+        "Resources":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The resources.</p>",
+          "locationName":"Resource"
+        },
+        "ResourceTypes":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The resource types.</p>",
+          "locationName":"ResourceType"
+        }
+      },
+      "documentation":"<p>Describes a resource statement.</p>"
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -38568,6 +41505,9 @@
         "instance",
         "instance-event-window",
         "internet-gateway",
+        "ipam",
+        "ipam-pool",
+        "ipam-scope",
         "ipv4pool-ec2",
         "ipv6pool-ec2",
         "key-pair",
@@ -38583,6 +41523,8 @@
         "network-interface",
         "network-insights-analysis",
         "network-insights-path",
+        "network-insights-access-scope",
+        "network-insights-access-scope-analysis",
         "placement-group",
         "prefix-list",
         "replace-root-volume-task",
@@ -42193,6 +45135,43 @@
         }
       }
     },
+    "StartNetworkInsightsAccessScopeAnalysisRequest":{
+      "type":"structure",
+      "required":[
+        "NetworkInsightsAccessScopeId",
+        "ClientToken"
+      ],
+      "members":{
+        "NetworkInsightsAccessScopeId":{
+          "shape":"NetworkInsightsAccessScopeId",
+          "documentation":"<p>The ID of the Network Access Scope.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartNetworkInsightsAccessScopeAnalysisResult":{
+      "type":"structure",
+      "members":{
+        "NetworkInsightsAccessScopeAnalysis":{
+          "shape":"NetworkInsightsAccessScopeAnalysis",
+          "documentation":"<p>The Network Access Scope analysis.</p>",
+          "locationName":"networkInsightsAccessScopeAnalysis"
+        }
+      }
+    },
     "StartNetworkInsightsAnalysisRequest":{
       "type":"structure",
       "required":[
@@ -42465,6 +45444,11 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether this is the default subnet for the Availability Zone.</p>",
           "locationName":"defaultForAz"
+        },
+        "EnableLniAtDeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the device position for local network interfaces in this subnet. For example, <code>1</code> indicates local network interfaces in this subnet are the secondary network interface (eth1). </p>",
+          "locationName":"enableLniAtDeviceIndex"
         },
         "MapPublicIpOnLaunch":{
           "shape":"Boolean",
@@ -43148,6 +46132,41 @@
       "type":"list",
       "member":{
         "shape":"ThreadsPerCore",
+        "locationName":"item"
+      }
+    },
+    "ThroughResourcesStatement":{
+      "type":"structure",
+      "members":{
+        "ResourceStatement":{
+          "shape":"ResourceStatement",
+          "documentation":"<p>The resource statement.</p>",
+          "locationName":"resourceStatement"
+        }
+      },
+      "documentation":"<p>Describes a through resource statement.</p>"
+    },
+    "ThroughResourcesStatementList":{
+      "type":"list",
+      "member":{
+        "shape":"ThroughResourcesStatement",
+        "locationName":"item"
+      }
+    },
+    "ThroughResourcesStatementRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceStatement":{
+          "shape":"ResourceStatementRequest",
+          "documentation":"<p>The resource statement.</p>"
+        }
+      },
+      "documentation":"<p>Describes a through resource statement.</p>"
+    },
+    "ThroughResourcesStatementRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ThroughResourcesStatementRequest",
         "locationName":"item"
       }
     },

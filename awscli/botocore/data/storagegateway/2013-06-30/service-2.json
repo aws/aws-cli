@@ -1303,7 +1303,7 @@
         },
         "GatewayType":{
           "shape":"GatewayType",
-          "documentation":"<p>A value that defines the type of gateway to activate. The type specified is critical to all later functions of the gateway and cannot be changed after activation. The default value is <code>CACHED</code>.</p> <p>Valid Values: <code>STORED</code> | <code>CACHED</code> | <code>VTL</code> | <code>FILE_S3</code> | <code>FILE_FSX_SMB|</code> </p>"
+          "documentation":"<p>A value that defines the type of gateway to activate. The type specified is critical to all later functions of the gateway and cannot be changed after activation. The default value is <code>CACHED</code>.</p> <p>Valid Values: <code>STORED</code> | <code>CACHED</code> | <code>VTL</code> | <code>VTL_SNOW</code> | <code>FILE_S3</code> | <code>FILE_FSX_SMB</code> </p>"
         },
         "TapeDriveType":{
           "shape":"TapeDriveType",
@@ -2921,7 +2921,7 @@
         },
         "HostEnvironment":{
           "shape":"HostEnvironment",
-          "documentation":"<p>The type of hypervisor environment used by the host.</p>"
+          "documentation":"<p>The type of hardware or software platform on which the gateway is running.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -2942,6 +2942,10 @@
         "SupportedGatewayCapacities":{
           "shape":"SupportedGatewayCapacities",
           "documentation":"<p>A list of the metadata cache sizes that the gateway can support based on its current hardware specifications.</p>"
+        },
+        "HostEnvironmentId":{
+          "shape":"HostEnvironmentId",
+          "documentation":"<p>A unique identifier for the specific instance of the host platform running the gateway. This value is only available for certain host environments, and its format depends on the host environment type.</p>"
         }
       },
       "documentation":"<p>A JSON object containing the following fields:</p>"
@@ -3792,6 +3796,14 @@
         "Ec2InstanceRegion":{
           "shape":"Ec2InstanceRegion",
           "documentation":"<p>The Amazon Web Services Region where the Amazon EC2 instance is located.</p>"
+        },
+        "HostEnvironment":{
+          "shape":"HostEnvironment",
+          "documentation":"<p>The type of hardware or software platform on which the gateway is running.</p>"
+        },
+        "HostEnvironmentId":{
+          "shape":"HostEnvironmentId",
+          "documentation":"<p>A unique identifier for the specific instance of the host platform running the gateway. This value is only available for certain host environments, and its format depends on the host environment type.</p>"
         }
       },
       "documentation":"<p>Describes a gateway object.</p>"
@@ -3844,8 +3856,14 @@
         "HYPER-V",
         "EC2",
         "KVM",
-        "OTHER"
+        "OTHER",
+        "SNOWBALL"
       ]
+    },
+    "HostEnvironmentId":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "Hosts":{
       "type":"list",

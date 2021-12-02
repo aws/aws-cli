@@ -1889,6 +1889,10 @@
         "GlobalSecondaryIndexes":{
           "shape":"ReplicaGlobalSecondaryIndexList",
           "documentation":"<p>Replica-specific global secondary index settings.</p>"
+        },
+        "TableClassOverride":{
+          "shape":"TableClass",
+          "documentation":"<p>Replica-specific table class. If not specified, uses the source table's table class.</p>"
         }
       },
       "documentation":"<p>Represents a replica to be created.</p>"
@@ -1940,6 +1944,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of key-value pairs to label the table. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tagging.html\">Tagging for DynamoDB</a>.</p>"
+        },
+        "TableClass":{
+          "shape":"TableClass",
+          "documentation":"<p>The table class of the new table. Valid values are <code>STANDARD</code> and <code>STANDARD_INFREQUENT_ACCESS</code>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateTable</code> operation.</p>"
@@ -4177,7 +4185,8 @@
         "ReplicaInaccessibleDateTime":{
           "shape":"Date",
           "documentation":"<p>The time at which the replica was first detected as inaccessible. To determine cause of inaccessibility check the <code>ReplicaStatus</code> property.</p>"
-        }
+        },
+        "ReplicaTableClassSummary":{"shape":"TableClassSummary"}
       },
       "documentation":"<p>Contains the details of the replica.</p>"
     },
@@ -4365,7 +4374,8 @@
         "ReplicaGlobalSecondaryIndexSettings":{
           "shape":"ReplicaGlobalSecondaryIndexSettingsDescriptionList",
           "documentation":"<p>Replica global secondary index settings for the global table.</p>"
-        }
+        },
+        "ReplicaTableClassSummary":{"shape":"TableClassSummary"}
       },
       "documentation":"<p>Represents the properties of a replica.</p>"
     },
@@ -4392,6 +4402,10 @@
         "ReplicaGlobalSecondaryIndexSettingsUpdate":{
           "shape":"ReplicaGlobalSecondaryIndexSettingsUpdateList",
           "documentation":"<p>Represents the settings of a global secondary index for a global table that will be modified.</p>"
+        },
+        "ReplicaTableClass":{
+          "shape":"TableClass",
+          "documentation":"<p>Replica-specific table class. If not specified, uses the source table's table class.</p>"
         }
       },
       "documentation":"<p>Represents the settings for a global table in a Region that will be modified.</p>"
@@ -4990,6 +5004,27 @@
       },
       "documentation":"<p>Represents the auto scaling configuration for a global table.</p>"
     },
+    "TableClass":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "STANDARD_INFREQUENT_ACCESS"
+      ]
+    },
+    "TableClassSummary":{
+      "type":"structure",
+      "members":{
+        "TableClass":{
+          "shape":"TableClass",
+          "documentation":"<p>The table class of the specified table. Valid values are <code>STANDARD</code> and <code>STANDARD_INFREQUENT_ACCESS</code>.</p>"
+        },
+        "LastUpdateDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time at which the table class was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details of the table class.</p>"
+    },
     "TableCreationDateTime":{"type":"timestamp"},
     "TableDescription":{
       "type":"structure",
@@ -5077,6 +5112,10 @@
         "ArchivalSummary":{
           "shape":"ArchivalSummary",
           "documentation":"<p>Contains information about the table archive.</p>"
+        },
+        "TableClassSummary":{
+          "shape":"TableClassSummary",
+          "documentation":"<p>Contains details of the table class.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a table.</p>"
@@ -5658,6 +5697,10 @@
         "GlobalSecondaryIndexes":{
           "shape":"ReplicaGlobalSecondaryIndexList",
           "documentation":"<p>Replica-specific global secondary index settings.</p>"
+        },
+        "TableClassOverride":{
+          "shape":"TableClass",
+          "documentation":"<p>Replica-specific table class. If not specified, uses the source table's table class.</p>"
         }
       },
       "documentation":"<p>Represents a replica to be modified.</p>"
@@ -5697,6 +5740,10 @@
         "ReplicaUpdates":{
           "shape":"ReplicationGroupUpdateList",
           "documentation":"<p>A list of replica update actions (create, delete, or update) for the table.</p> <note> <p>This property only applies to <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables.V2.html\">Version 2019.11.21</a> of global tables.</p> </note>"
+        },
+        "TableClass":{
+          "shape":"TableClass",
+          "documentation":"<p>The table class of the table to be updated. Valid values are <code>STANDARD</code> and <code>STANDARD_INFREQUENT_ACCESS</code>.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateTable</code> operation.</p>"

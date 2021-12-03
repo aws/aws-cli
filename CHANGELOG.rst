@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.4.5
+=====
+
+* api-change:``networkmanager``: This release adds API support for AWS Cloud WAN.
+* api-change:``rekognition``: This release added new KnownGender types for Celebrity Recognition.
+* api-change:``amplifyuibuilder``: This release introduces the actions and data types for the new Amplify UI Builder API. The Amplify UI Builder API provides a programmatic interface for creating and configuring user interface (UI) component libraries and themes for use in Amplify applications.
+* api-change:``ram``: This release adds the ability to use the new ResourceRegionScope parameter on List operations that return lists of resources or resource types. This new parameter filters the results by letting you differentiate between global or regional resource types.
+
+
 2.4.4
 =====
 

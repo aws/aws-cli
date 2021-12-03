@@ -1,0 +1,1693 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2021-08-11",
+    "endpointPrefix":"amplifyuibuilder",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceFullName":"AWS Amplify UI Builder",
+    "serviceId":"AmplifyUIBuilder",
+    "signatureVersion":"v4",
+    "signingName":"amplifyuibuilder",
+    "uid":"amplifyuibuilder-2021-08-11"
+  },
+  "operations":{
+    "CreateComponent":{
+      "name":"CreateComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app/{appId}/environment/{environmentName}/components",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateComponentRequest"},
+      "output":{"shape":"CreateComponentResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a new component for an Amplify app.</p>",
+      "idempotent":true
+    },
+    "CreateTheme":{
+      "name":"CreateTheme",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app/{appId}/environment/{environmentName}/themes",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateThemeRequest"},
+      "output":{"shape":"CreateThemeResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a theme to apply to the components in an Amplify app.</p>",
+      "idempotent":true
+    },
+    "DeleteComponent":{
+      "name":"DeleteComponent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app/{appId}/environment/{environmentName}/components/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteComponentRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a component from an Amplify app.</p>",
+      "idempotent":true
+    },
+    "DeleteTheme":{
+      "name":"DeleteTheme",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app/{appId}/environment/{environmentName}/themes/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteThemeRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a theme from an Amplify app.</p>",
+      "idempotent":true
+    },
+    "ExchangeCodeForToken":{
+      "name":"ExchangeCodeForToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tokens/{provider}",
+        "responseCode":200
+      },
+      "input":{"shape":"ExchangeCodeForTokenRequest"},
+      "output":{"shape":"ExchangeCodeForTokenResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Exchanges an access code for a token.</p>"
+    },
+    "ExportComponents":{
+      "name":"ExportComponents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/export/app/{appId}/environment/{environmentName}/components",
+        "responseCode":200
+      },
+      "input":{"shape":"ExportComponentsRequest"},
+      "output":{"shape":"ExportComponentsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Exports component configurations to code that is ready to integrate into an Amplify app.</p>"
+    },
+    "ExportThemes":{
+      "name":"ExportThemes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/export/app/{appId}/environment/{environmentName}/themes",
+        "responseCode":200
+      },
+      "input":{"shape":"ExportThemesRequest"},
+      "output":{"shape":"ExportThemesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Exports theme configurations to code that is ready to integrate into an Amplify app.</p>"
+    },
+    "GetComponent":{
+      "name":"GetComponent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/components/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetComponentRequest"},
+      "output":{"shape":"GetComponentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns an existing component for an Amplify app.</p>"
+    },
+    "GetTheme":{
+      "name":"GetTheme",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/themes/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetThemeRequest"},
+      "output":{"shape":"GetThemeResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns an existing theme for an Amplify app.</p>"
+    },
+    "ListComponents":{
+      "name":"ListComponents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/components",
+        "responseCode":200
+      },
+      "input":{"shape":"ListComponentsRequest"},
+      "output":{"shape":"ListComponentsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a list of components for a specified Amplify app and backend environment.</p>"
+    },
+    "ListThemes":{
+      "name":"ListThemes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/themes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListThemesRequest"},
+      "output":{"shape":"ListThemesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a list of themes for a specified Amplify app and backend environment.</p>"
+    },
+    "RefreshToken":{
+      "name":"RefreshToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tokens/{provider}/refresh",
+        "responseCode":200
+      },
+      "input":{"shape":"RefreshTokenRequest"},
+      "output":{"shape":"RefreshTokenResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Refreshes a previously issued access token that might have expired.</p>"
+    },
+    "UpdateComponent":{
+      "name":"UpdateComponent",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/app/{appId}/environment/{environmentName}/components/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateComponentRequest"},
+      "output":{"shape":"UpdateComponentResponse"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates an existing component.</p>",
+      "idempotent":true
+    },
+    "UpdateTheme":{
+      "name":"UpdateTheme",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/app/{appId}/environment/{environmentName}/themes/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateThemeRequest"},
+      "output":{"shape":"UpdateThemeResponse"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates an existing theme.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "Component":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "bindingProperties",
+        "componentType",
+        "createdAt",
+        "environmentName",
+        "id",
+        "name",
+        "overrides",
+        "properties",
+        "variants"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the component.</p>"
+        },
+        "bindingProperties":{
+          "shape":"ComponentBindingProperties",
+          "documentation":"<p>The information to connect a component's properties to data at runtime.</p>"
+        },
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>A list of the component's <code>ComponentChild</code> instances.</p>"
+        },
+        "collectionProperties":{
+          "shape":"ComponentCollectionProperties",
+          "documentation":"<p>The data binding configuration for the component's properties. Use this for a collection component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the component was created.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the component.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the component was modified.</p>"
+        },
+        "name":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>Describes the component's properties that can be overriden in a customized instance of the component.</p>"
+        },
+        "properties":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>Describes the component's properties.</p>"
+        },
+        "sourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the component.</p>"
+        },
+        "variants":{
+          "shape":"ComponentVariants",
+          "documentation":"<p>A list of the component's variants. A variant is a unique style configuration of a main component.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration settings for a user interface (UI) element for an Amplify app. A component is configured as a primary, stand-alone UI element. Use <code>ComponentChild</code> to configure an instance of a <code>Component</code>. A <code>ComponentChild</code> instance inherits the configuration of the main <code>Component</code>.</p>"
+    },
+    "ComponentBindingProperties":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ComponentBindingPropertiesValue"}
+    },
+    "ComponentBindingPropertiesValue":{
+      "type":"structure",
+      "members":{
+        "bindingProperties":{
+          "shape":"ComponentBindingPropertiesValueProperties",
+          "documentation":"<p>Describes the properties to customize with data at runtime.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value of the property.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The property type.</p>"
+        }
+      },
+      "documentation":"<p>Represents the data binding configuration for a component at runtime. You can use <code>ComponentBindingPropertiesValue</code> to add exposed properties to a component to allow different values to be entered when a component is reused in different places in an app.</p>"
+    },
+    "ComponentBindingPropertiesValueProperties":{
+      "type":"structure",
+      "members":{
+        "bucket":{
+          "shape":"String",
+          "documentation":"<p>An Amazon S3 bucket.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value to assign to the property.</p>"
+        },
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The field to bind the data to.</p>"
+        },
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The storage key for an Amazon S3 bucket.</p>"
+        },
+        "model":{
+          "shape":"String",
+          "documentation":"<p>An Amplify DataStore model.</p>"
+        },
+        "predicates":{
+          "shape":"PredicateList",
+          "documentation":"<p>A list of predicates for binding a component's properties to data.</p>"
+        },
+        "userAttribute":{
+          "shape":"String",
+          "documentation":"<p>An authenticated user attribute.</p>"
+        }
+      },
+      "documentation":"<p>Represents the data binding configuration for a specific property using data stored in Amazon Web Services. For Amazon Web Services connected properties, you can bind a property to data stored in an Amazon S3 bucket, an Amplify DataStore model or an authenticated user attribute.</p>"
+    },
+    "ComponentChild":{
+      "type":"structure",
+      "required":[
+        "componentType",
+        "name",
+        "properties"
+      ],
+      "members":{
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>The list of <code>ComponentChild</code> instances for this component.</p>"
+        },
+        "componentType":{
+          "shape":"String",
+          "documentation":"<p>The type of the child component. </p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the child component.</p>"
+        },
+        "properties":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>Describes the properties of the child component.</p>"
+        }
+      },
+      "documentation":"<p>A nested UI configuration within a parent <code>Component</code>.</p>"
+    },
+    "ComponentChildList":{
+      "type":"list",
+      "member":{"shape":"ComponentChild"}
+    },
+    "ComponentCollectionProperties":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ComponentDataConfiguration"}
+    },
+    "ComponentConditionProperty":{
+      "type":"structure",
+      "members":{
+        "else":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The value to assign to the property if the condition is not met.</p>"
+        },
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The name of a field. Specify this when the property is a data model.</p>"
+        },
+        "operand":{
+          "shape":"String",
+          "documentation":"<p>The value of the property to evaluate.</p>"
+        },
+        "operator":{
+          "shape":"String",
+          "documentation":"<p>The operator to use to perform the evaluation, such as <code>eq</code> to represent equals.</p>"
+        },
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The name of the conditional property.</p>"
+        },
+        "then":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The value to assign to the property if the condition is met.</p>"
+        }
+      },
+      "documentation":"<p>Represents a conditional expression to set a component property. Use <code>ComponentConditionProperty</code> to set a property to different values conditionally, based on the value of another property.</p>"
+    },
+    "ComponentDataConfiguration":{
+      "type":"structure",
+      "required":["model"],
+      "members":{
+        "identifiers":{
+          "shape":"IdentifierList",
+          "documentation":"<p>A list of IDs to use to bind data to a component. Use this property to bind specifically chosen data, rather than data retrieved from a query.</p>"
+        },
+        "model":{
+          "shape":"String",
+          "documentation":"<p>The name of the data model to use to bind data to a component.</p>"
+        },
+        "predicate":{
+          "shape":"Predicate",
+          "documentation":"<p>Represents the conditional logic to use when binding data to a component. Use this property to retrieve only a subset of the data in a collection.</p>"
+        },
+        "sort":{
+          "shape":"SortPropertyList",
+          "documentation":"<p>Describes how to sort the component's properties.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for binding a component's properties to data.</p>"
+    },
+    "ComponentList":{
+      "type":"list",
+      "member":{"shape":"Component"}
+    },
+    "ComponentName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ComponentOverrides":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ComponentOverridesValue"}
+    },
+    "ComponentOverridesValue":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "ComponentProperties":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ComponentProperty"}
+    },
+    "ComponentProperty":{
+      "type":"structure",
+      "members":{
+        "bindingProperties":{
+          "shape":"ComponentPropertyBindingProperties",
+          "documentation":"<p>The information to bind the component property to data at runtime.</p>"
+        },
+        "bindings":{
+          "shape":"FormBindings",
+          "documentation":"<p>The information to bind the component property to form data.</p>"
+        },
+        "collectionBindingProperties":{
+          "shape":"ComponentPropertyBindingProperties",
+          "documentation":"<p>The information to bind the component property to data at runtime. Use this for collection components.</p>"
+        },
+        "concat":{
+          "shape":"ComponentPropertyList",
+          "documentation":"<p>A list of component properties to concatenate to create the value to assign to this component property.</p>"
+        },
+        "condition":{
+          "shape":"ComponentConditionProperty",
+          "documentation":"<p>The conditional expression to use to assign a value to the component property..</p>"
+        },
+        "configured":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the user configured the property in Amplify Studio after importing it.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value to assign to the component property.</p>"
+        },
+        "event":{
+          "shape":"String",
+          "documentation":"<p>An event that occurs in your app. Use this for workflow data binding.</p>"
+        },
+        "importedValue":{
+          "shape":"String",
+          "documentation":"<p>The default value assigned to property when the component is imported into an app.</p>"
+        },
+        "model":{
+          "shape":"String",
+          "documentation":"<p>The data model to use to assign a value to the component property.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The component type.</p>"
+        },
+        "userAttribute":{
+          "shape":"String",
+          "documentation":"<p>An authenticated user attribute to use to assign a value to the component property.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value to assign to the component property.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for all of a component's properties. Use <code>ComponentProperty</code> to specify the values to render or bind by default.</p>"
+    },
+    "ComponentPropertyBindingProperties":{
+      "type":"structure",
+      "required":["property"],
+      "members":{
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The data field to bind the property to.</p>"
+        },
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The component property to bind to the data field.</p>"
+        }
+      },
+      "documentation":"<p>Associates a component property to a binding property. This enables exposed properties on the top level component to propagate data to the component's property values.</p>"
+    },
+    "ComponentPropertyList":{
+      "type":"list",
+      "member":{"shape":"ComponentProperty"}
+    },
+    "ComponentSummary":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "componentType",
+        "environmentName",
+        "id",
+        "name"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The component type.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the component.</p>"
+        },
+        "name":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of a component. This is a read-only data type that is returned by <code>ListComponents</code>.</p>"
+    },
+    "ComponentSummaryList":{
+      "type":"list",
+      "member":{"shape":"ComponentSummary"}
+    },
+    "ComponentType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ComponentVariant":{
+      "type":"structure",
+      "members":{
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>The properties of the component variant that can be overriden when customizing an instance of the component.</p>"
+        },
+        "variantValues":{
+          "shape":"ComponentVariantValues",
+          "documentation":"<p>The combination of variants that comprise this variant.</p>"
+        }
+      },
+      "documentation":"<p>Describes the style configuration of a unique variation of a main component.</p>"
+    },
+    "ComponentVariantValues":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "ComponentVariants":{
+      "type":"list",
+      "member":{"shape":"ComponentVariant"}
+    },
+    "CreateComponentData":{
+      "type":"structure",
+      "required":[
+        "bindingProperties",
+        "componentType",
+        "name",
+        "overrides",
+        "properties",
+        "variants"
+      ],
+      "members":{
+        "bindingProperties":{
+          "shape":"ComponentBindingProperties",
+          "documentation":"<p>The data binding information for the component's properties.</p>"
+        },
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>A list of child components that are instances of the main component.</p>"
+        },
+        "collectionProperties":{
+          "shape":"ComponentCollectionProperties",
+          "documentation":"<p>The data binding configuration for customizing a component's properties. Use this for a collection component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The component type. This can be an Amplify custom UI component or another custom component.</p>"
+        },
+        "name":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>Describes the component properties that can be overriden to customize an instance of the component.</p>"
+        },
+        "properties":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>Describes the component's properties.</p>"
+        },
+        "sourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the component data.</p>"
+        },
+        "variants":{
+          "shape":"ComponentVariants",
+          "documentation":"<p>A list of the unique variants of this component.</p>"
+        }
+      },
+      "documentation":"<p>Represents all of the information that is required to create a component.</p>"
+    },
+    "CreateComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "componentToCreate",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app to associate with the component.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "componentToCreate":{
+          "shape":"CreateComponentData",
+          "documentation":"<p>Represents the configuration of the component to create.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        }
+      },
+      "payload":"componentToCreate"
+    },
+    "CreateComponentResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"Component",
+          "documentation":"<p>Describes the configuration of the new component.</p>"
+        }
+      },
+      "payload":"entity"
+    },
+    "CreateThemeData":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"ThemeName",
+          "documentation":"<p>The name of the theme.</p>"
+        },
+        "overrides":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>Describes the properties that can be overriden to customize an instance of the theme.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the theme data.</p>"
+        },
+        "values":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that deﬁnes the properties of the theme.</p>"
+        }
+      },
+      "documentation":"<p>Represents all of the information that is required to create a theme.</p>"
+    },
+    "CreateThemeRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "themeToCreate"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the theme.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "themeToCreate":{
+          "shape":"CreateThemeData",
+          "documentation":"<p>Represents the configuration of the theme to create.</p>"
+        }
+      },
+      "payload":"themeToCreate"
+    },
+    "CreateThemeResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"Theme",
+          "documentation":"<p>Describes the configuration of the new theme.</p>"
+        }
+      },
+      "payload":"entity"
+    },
+    "DeleteComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the component to delete.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the component to delete.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "DeleteThemeRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the theme to delete.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the theme to delete.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "ExchangeCodeForTokenRequest":{
+      "type":"structure",
+      "required":[
+        "provider",
+        "request"
+      ],
+      "members":{
+        "provider":{
+          "shape":"TokenProviders",
+          "documentation":"<p>The third-party provider for the token. The only valid value is <code>figma</code>.</p>",
+          "location":"uri",
+          "locationName":"provider"
+        },
+        "request":{
+          "shape":"ExchangeCodeForTokenRequestBody",
+          "documentation":"<p>Describes the configuration of the request.</p>"
+        }
+      },
+      "payload":"request"
+    },
+    "ExchangeCodeForTokenRequestBody":{
+      "type":"structure",
+      "required":[
+        "code",
+        "redirectUri"
+      ],
+      "members":{
+        "code":{
+          "shape":"SyntheticExchangeCodeForTokenRequestBodyString",
+          "documentation":"<p>The access code to send in the request.</p>"
+        },
+        "redirectUri":{
+          "shape":"String",
+          "documentation":"<p>The location of the application that will receive the access code.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a request to exchange an access code for a token.</p>"
+    },
+    "ExchangeCodeForTokenResponse":{
+      "type":"structure",
+      "required":[
+        "accessToken",
+        "expiresIn",
+        "refreshToken"
+      ],
+      "members":{
+        "accessToken":{
+          "shape":"SyntheticExchangeCodeForTokenResponseString",
+          "documentation":"<p>The access token.</p>"
+        },
+        "expiresIn":{
+          "shape":"Integer",
+          "documentation":"<p>The date and time when the new access token expires.</p>"
+        },
+        "refreshToken":{
+          "shape":"SyntheticExchangeCodeForTokenResponseString",
+          "documentation":"<p>The token to use to refresh a previously issued access token that might have expired.</p>"
+        }
+      }
+    },
+    "ExportComponentsRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app to export components to.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        }
+      }
+    },
+    "ExportComponentsResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"ComponentList",
+          "documentation":"<p>Represents the configuration of the exported components.</p>"
+        }
+      }
+    },
+    "ExportThemesRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app to export the themes to.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        }
+      }
+    },
+    "ExportThemesResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"ThemeList",
+          "documentation":"<p>Represents the configuration of the exported themes.</p>"
+        }
+      }
+    },
+    "FormBindingElement":{
+      "type":"structure",
+      "required":[
+        "element",
+        "property"
+      ],
+      "members":{
+        "element":{
+          "shape":"String",
+          "documentation":"<p>The name of the component to retrieve a value from.</p>"
+        },
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The property to retrieve a value from.</p>"
+        }
+      },
+      "documentation":"<p>Describes how to bind a component property to form data.</p>"
+    },
+    "FormBindings":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"FormBindingElement"}
+    },
+    "GetComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the component.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetComponentResponse":{
+      "type":"structure",
+      "members":{
+        "component":{
+          "shape":"Component",
+          "documentation":"<p>Represents the configuration settings for the component.</p>"
+        }
+      },
+      "payload":"component"
+    },
+    "GetThemeRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID for the theme.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetThemeResponse":{
+      "type":"structure",
+      "members":{
+        "theme":{
+          "shape":"Theme",
+          "documentation":"<p>Represents the configuration settings for the theme.</p>"
+        }
+      },
+      "payload":"theme"
+    },
+    "IdentifierList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal error has occurred. Please retry your request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "InvalidParameterException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An invalid or out-of-range value was supplied for the input parameter.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ListComponentsLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListComponentsRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "maxResults":{
+          "shape":"ListComponentsLimit",
+          "documentation":"<p>The maximum number of components to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListComponentsResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"ComponentSummaryList",
+          "documentation":"<p>The list of components for the Amplify app.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
+    "ListThemesLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListThemesRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "maxResults":{
+          "shape":"ListThemesLimit",
+          "documentation":"<p>The maximum number of theme results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListThemesResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"ThemeSummaryList",
+          "documentation":"<p>The list of themes for the Amplify app.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's returned if more results are available.</p>"
+        }
+      }
+    },
+    "Predicate":{
+      "type":"structure",
+      "members":{
+        "and":{
+          "shape":"PredicateList",
+          "documentation":"<p>A list of predicates to combine logically.</p>"
+        },
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The field to query.</p>"
+        },
+        "operand":{
+          "shape":"String",
+          "documentation":"<p>The value to use when performing the evaluation.</p>"
+        },
+        "operator":{
+          "shape":"String",
+          "documentation":"<p>The operator to use to perform the evaluation.</p>"
+        },
+        "or":{
+          "shape":"PredicateList",
+          "documentation":"<p>A list of predicates to combine logically.</p>"
+        }
+      },
+      "documentation":"<p>Stores information for generating Amplify DataStore queries. Use a <code>Predicate</code> to retrieve a subset of the data in a collection.</p>"
+    },
+    "PredicateList":{
+      "type":"list",
+      "member":{"shape":"Predicate"}
+    },
+    "RefreshTokenRequest":{
+      "type":"structure",
+      "required":[
+        "provider",
+        "refreshTokenBody"
+      ],
+      "members":{
+        "provider":{
+          "shape":"TokenProviders",
+          "documentation":"<p>The third-party provider for the token. The only valid value is <code>figma</code>.</p>",
+          "location":"uri",
+          "locationName":"provider"
+        },
+        "refreshTokenBody":{
+          "shape":"RefreshTokenRequestBody",
+          "documentation":"<p>Information about the refresh token request.</p>"
+        }
+      },
+      "payload":"refreshTokenBody"
+    },
+    "RefreshTokenRequestBody":{
+      "type":"structure",
+      "required":["token"],
+      "members":{
+        "token":{
+          "shape":"SyntheticRefreshTokenRequestBodyString",
+          "documentation":"<p>The token to use to refresh a previously issued access token that might have expired.</p>"
+        }
+      },
+      "documentation":"<p>Describes a refresh token.</p>"
+    },
+    "RefreshTokenResponse":{
+      "type":"structure",
+      "required":[
+        "accessToken",
+        "expiresIn"
+      ],
+      "members":{
+        "accessToken":{
+          "shape":"SyntheticRefreshTokenResponseString",
+          "documentation":"<p>The access token.</p>"
+        },
+        "expiresIn":{
+          "shape":"Integer",
+          "documentation":"<p>The date and time when the new access token expires.</p>"
+        }
+      }
+    },
+    "ResourceConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The resource specified in the request conflicts with an existing resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The requested resource does not exist, or access was denied.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You exceeded your service quota. Service quotas, also referred to as limits, are the maximum number of service resources or operations for your Amazon Web Services account. </p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SortDirection":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "SortProperty":{
+      "type":"structure",
+      "required":[
+        "direction",
+        "field"
+      ],
+      "members":{
+        "direction":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction of the sort, either ascending or descending.</p>"
+        },
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The field to perform the sort on.</p>"
+        }
+      },
+      "documentation":"<p>Describes how to sort the data that you bind to a component.</p>"
+    },
+    "SortPropertyList":{
+      "type":"list",
+      "member":{"shape":"SortProperty"}
+    },
+    "String":{"type":"string"},
+    "SyntheticExchangeCodeForTokenRequestBodyString":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SyntheticExchangeCodeForTokenResponseString":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SyntheticRefreshTokenRequestBodyString":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SyntheticRefreshTokenResponseString":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "Theme":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "createdAt",
+        "environmentName",
+        "id",
+        "name",
+        "values"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app associated with the theme.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the theme was created.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID for the theme.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the theme was modified.</p>"
+        },
+        "name":{
+          "shape":"ThemeName",
+          "documentation":"<p>The name of the theme.</p>"
+        },
+        "overrides":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>Describes the properties that can be overriden to customize a theme.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the theme.</p>"
+        },
+        "values":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that defines the properties of the theme.</p>"
+        }
+      },
+      "documentation":"<p>A theme is a collection of style settings that apply globally to the components associated with an Amplify application.</p>"
+    },
+    "ThemeList":{
+      "type":"list",
+      "member":{"shape":"Theme"}
+    },
+    "ThemeName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ThemeSummary":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id",
+        "name"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the app associated with the theme summary.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the theme.</p>"
+        },
+        "name":{
+          "shape":"ThemeName",
+          "documentation":"<p>The name of the theme.</p>"
+        }
+      },
+      "documentation":"<p>Describes the basic information about a theme.</p>"
+    },
+    "ThemeSummaryList":{
+      "type":"list",
+      "member":{"shape":"ThemeSummary"}
+    },
+    "ThemeValue":{
+      "type":"structure",
+      "members":{
+        "children":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that define the theme's properties.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of a theme property.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a theme's properties.</p>"
+    },
+    "ThemeValues":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The name of the property.</p>"
+        },
+        "value":{
+          "shape":"ThemeValue",
+          "documentation":"<p>The value of the property.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair that defines a property of a theme.</p>"
+    },
+    "ThemeValuesList":{
+      "type":"list",
+      "member":{"shape":"ThemeValues"}
+    },
+    "TokenProviders":{
+      "type":"string",
+      "enum":["figma"]
+    },
+    "UpdateComponentData":{
+      "type":"structure",
+      "members":{
+        "bindingProperties":{
+          "shape":"ComponentBindingProperties",
+          "documentation":"<p>The data binding information for the component's properties.</p>"
+        },
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>The components that are instances of the main component.</p>"
+        },
+        "collectionProperties":{
+          "shape":"ComponentCollectionProperties",
+          "documentation":"<p>The configuration for binding a component's properties to a data model. Use this for a collection component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the component to update.</p>"
+        },
+        "name":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component to update.</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>Describes the properties that can be overriden to customize the component.</p>"
+        },
+        "properties":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>Describes the component's properties.</p>"
+        },
+        "sourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
+        },
+        "variants":{
+          "shape":"ComponentVariants",
+          "documentation":"<p>A list of the unique variants of the main component being updated.</p>"
+        }
+      },
+      "documentation":"<p>Updates and saves all of the information about a component, based on component ID.</p>"
+    },
+    "UpdateComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id",
+        "updatedComponent"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID for the component.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "updatedComponent":{
+          "shape":"UpdateComponentData",
+          "documentation":"<p>The configuration of the updated component.</p>"
+        }
+      },
+      "payload":"updatedComponent"
+    },
+    "UpdateComponentResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"Component",
+          "documentation":"<p>Describes the configuration of the updated component.</p>"
+        }
+      },
+      "payload":"entity"
+    },
+    "UpdateThemeData":{
+      "type":"structure",
+      "required":["values"],
+      "members":{
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the theme to update.</p>"
+        },
+        "name":{
+          "shape":"ThemeName",
+          "documentation":"<p>The name of the theme to update.</p>"
+        },
+        "overrides":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>Describes the properties that can be overriden to customize the theme.</p>"
+        },
+        "values":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that define the theme's properties.</p>"
+        }
+      },
+      "documentation":"<p>Saves the data binding information for a theme.</p>"
+    },
+    "UpdateThemeRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id",
+        "updatedTheme"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID for the theme.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "updatedTheme":{
+          "shape":"UpdateThemeData",
+          "documentation":"<p>The configuration of the updated theme.</p>"
+        }
+      },
+      "payload":"updatedTheme"
+    },
+    "UpdateThemeResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"Theme",
+          "documentation":"<p>Describes the configuration of the updated theme.</p>"
+        }
+      },
+      "payload":"entity"
+    },
+    "Uuid":{"type":"string"}
+  },
+  "documentation":"<p>The Amplify UI Builder API provides a programmatic interface for creating and configuring user interface (UI) component libraries and themes for use in your Amplify applications. You can then connect these UI components to an application's backend Amazon Web Services resources.</p> <p>You can also use the Amplify Studio visual designer to create UI components and model data for an app. For more information, see <a href=\"https://docs.amplify.aws/console/adminui/intro\">Introduction</a> in the <i>Amplify Docs</i>.</p> <p>The Amplify Framework is a comprehensive set of SDKs, libraries, tools, and documentation for client app development. For more information, see the <a href=\"https://docs.amplify.aws/\">Amplify Framework</a>. For more information about deploying an Amplify application to Amazon Web Services, see the <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html\">Amplify Console User Guide</a>.</p>"
+}

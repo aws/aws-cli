@@ -32,7 +32,7 @@
         {"shape":"InvalidClientTokenException"},
         {"shape":"IdempotentParameterMismatchException"}
       ],
-      "documentation":"<p>Accepts an invitation to a resource share from another Amazon Web Services account.</p>"
+      "documentation":"<p>Accepts an invitation to a resource share from another Amazon Web Services account. After you accept the invitation, the resources included in the resource share are available to interact with in the relevant Amazon Web Services Management Consoles and tools.</p>"
     },
     "AssociateResourceShare":{
       "name":"AssociateResourceShare",
@@ -54,9 +54,10 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"},
-        {"shape":"UnknownResourceException"}
+        {"shape":"UnknownResourceException"},
+        {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Associates the specified resource share with the specified principals and resources.</p>"
+      "documentation":"<p>Adds the specified list of principals and list of resources to a resource share. Principals that already have access to this resource share immediately receive access to the added resources. Newly added principals immediately receive access to the resources shared in this resource share. </p>"
     },
     "AssociateResourceSharePermission":{
       "name":"AssociateResourceSharePermission",
@@ -75,7 +76,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Associates a permission with a resource share.</p>"
+      "documentation":"<p>Adds or replaces the RAM permission for a resource type included in a resource share. You can have exactly one permission associated with each resource type in the resource share. You can add a new RAM permission only if there are currently no resources of that resource type currently in the resource share.</p>"
     },
     "CreateResourceShare":{
       "name":"CreateResourceShare",
@@ -98,7 +99,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Creates a resource share. You must provide a list of the Amazon Resource Names (ARNs) for the resources you want to share. You must also specify who you want to share the resources with, and the permissions that you grant them.</p> <note> <p>Sharing a resource makes it available for use by principals outside of the Amazon Web Services account that created the resource. Sharing doesn't change any permissions or quotas that apply to the resource in the account that created it.</p> </note>"
+      "documentation":"<p>Creates a resource share. You can provide a list of the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> for the resources that you want to share, a list of principals you want to share the resources with, and the permissions to grant those principals.</p> <note> <p>Sharing a resource makes it available for use by principals outside of the Amazon Web Services account that created the resource. Sharing doesn't change any permissions or quotas that apply to the resource in the account that created it.</p> </note>"
     },
     "DeleteResourceShare":{
       "name":"DeleteResourceShare",
@@ -119,7 +120,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Deletes the specified resource share.</p>"
+      "documentation":"<p>Deletes the specified resource share. This doesn't delete any of the resources that were associated with the resource share; it only stops the sharing of those resources outside of the Amazon Web Services account that created them.</p>"
     },
     "DisassociateResourceShare":{
       "name":"DisassociateResourceShare",
@@ -161,7 +162,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidStateTransitionException"}
       ],
-      "documentation":"<p>Disassociates an RAM permission from a resource share.</p>"
+      "documentation":"<p>Disassociates an RAM permission from a resource share. Permission changes take effect immediately. You can remove a RAM permission from a resource share only if there are currently no resources of the relevant resource type currently attached to the resource share.</p>"
     },
     "EnableSharingWithAwsOrganization":{
       "name":"EnableSharingWithAwsOrganization",
@@ -176,7 +177,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Enables resource sharing within your organization in Organizations.</p> <p>The caller must be the master account for the organization.</p>"
+      "documentation":"<p>Enables resource sharing within your organization in Organizations. Calling this operation enables RAM to retrieve information about the organization and its structure. This lets you share resources with all of the accounts in an organization by specifying the organization's ID, or all of the accounts in an organizational unit (OU) by specifying the OU's ID. Until you enable sharing within the organization, you can specify only individual Amazon Web Services accounts, or for supported resource types, IAM users and roles.</p> <p>You must call this operation from an IAM user or role in the organization's management account.</p>"
     },
     "GetPermission":{
       "name":"GetPermission",
@@ -212,7 +213,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Gets the policies for the specified resources that you own and have shared.</p>"
+      "documentation":"<p>Retrieves the resource policies for the specified resources that you own and have shared.</p>"
     },
     "GetResourceShareAssociations":{
       "name":"GetResourceShareAssociations",
@@ -231,7 +232,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Gets the resources or principals for the resource shares that you own.</p>"
+      "documentation":"<p>Retrieves the resource and principal associations for resource shares that you own.</p>"
     },
     "GetResourceShareInvitations":{
       "name":"GetResourceShareInvitations",
@@ -251,7 +252,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Gets the invitations that you have received for resource shares.</p>"
+      "documentation":"<p>Retrieves details about invitations that you have received for resource shares.</p>"
     },
     "GetResourceShares":{
       "name":"GetResourceShares",
@@ -269,7 +270,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Gets the resource shares that you own or the resource shares that are shared with you.</p>"
+      "documentation":"<p>Retrieves details about the resource shares that you own or that are shared with you.</p>"
     },
     "ListPendingInvitationResources":{
       "name":"ListPendingInvitationResources",
@@ -290,7 +291,7 @@
         {"shape":"ResourceShareInvitationAlreadyRejectedException"},
         {"shape":"ResourceShareInvitationExpiredException"}
       ],
-      "documentation":"<p>Lists the resources in a resource share that is shared with you but that the invitation is still pending for.</p>"
+      "documentation":"<p>Lists the resources in a resource share that is shared with you but for which the invitation is still <code>PENDING</code>. That means that you haven't accepted or rejected the invitation and the invitation hasn't expired.</p>"
     },
     "ListPermissions":{
       "name":"ListPermissions",
@@ -307,7 +308,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Lists the RAM permissions.</p>"
+      "documentation":"<p>Retrieves a list of available RAM permissions that you can use for the supported resource types. </p>"
     },
     "ListPrincipals":{
       "name":"ListPrincipals",
@@ -325,7 +326,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Lists the principals that you have shared resources with or that have shared resources with you.</p>"
+      "documentation":"<p>Lists the principals that you are sharing resources with or that are sharing resources with you.</p>"
     },
     "ListResourceSharePermissions":{
       "name":"ListResourceSharePermissions",
@@ -360,7 +361,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Lists the shareable resource types supported by RAM.</p>"
+      "documentation":"<p>Lists the resource types that can be shared by RAM.</p>"
     },
     "ListResources":{
       "name":"ListResources",
@@ -399,7 +400,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"UnknownResourceException"}
       ],
-      "documentation":"<p>Resource shares that were created by attaching a policy to a resource are visible only to the resource share owner, and the resource share cannot be modified in RAM.</p> <p>Use this API action to promote the resource share. When you promote the resource share, it becomes:</p> <ul> <li> <p>Visible to all principals that it is shared with.</p> </li> <li> <p>Modifiable in RAM.</p> </li> </ul>"
+      "documentation":"<p>When you attach a resource-based permission policy to a resource, it automatically creates a resource share. However, resource shares created this way are visible only to the resource share owner, and the resource share can't be modified in RAM.</p> <p>You can use this operation to promote the resource share to a full RAM resource share. When you promote a resource share, you can then manage the resource share in RAM and it becomes visible to all of the principals you shared it with.</p>"
     },
     "RejectResourceShareInvitation":{
       "name":"RejectResourceShareInvitation",
@@ -441,7 +442,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Adds the specified tags to the specified resource share that you own.</p>"
+      "documentation":"<p>Adds the specified tag keys and values to the specified resource share. The tags are attached only to the resource share, not to the resources that are in the resource share.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -456,7 +457,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Removes the specified tags from the specified resource share that you own.</p>"
+      "documentation":"<p>Removes the specified tag key and value pairs from the specified resource share.</p>"
     },
     "UpdateResourceShare":{
       "name":"UpdateResourceShare",
@@ -477,7 +478,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Updates the specified resource share that you own.</p>"
+      "documentation":"<p>Modifies some of the properties of the specified resource share.</p>"
     }
   },
   "shapes":{
@@ -487,11 +488,11 @@
       "members":{
         "resourceShareInvitationArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the invitation.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the invitation that you want to accept.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         }
       }
     },
@@ -500,11 +501,11 @@
       "members":{
         "resourceShareInvitation":{
           "shape":"ResourceShareInvitation",
-          "documentation":"<p>Information about the invitation.</p>"
+          "documentation":"<p>An object that contains information about the specified invitation.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -517,23 +518,23 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share to which you want to add or replace permissions.</p>"
         },
         "permissionArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the RAM permission to associate with the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the RAM permission to associate with the resource share. To find the ARN for a permission, use either the <a>ListPermissions</a> operation or go to the <a href=\"https://console.aws.amazon.com/ram/home#Permissions:\">Permissions library</a> page in the RAM console and then choose the name of the permission. The ARN is displayed on the detail page.</p>"
         },
         "replace":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the permission should replace the permissions that are currently associated with the resource share. Use <code>true</code> to replace the current permissions. Use <code>false</code> to add the permission to the current permission.</p>"
+          "documentation":"<p>Specifies whether the specified permission should replace or add to the existing permission associated with the resource share. Use <code>true</code> to replace the current permissions. Use <code>false</code> to add the permission to the current permission. The default value is <code>false</code>.</p> <note> <p>A resource share can have only one permission per resource type. If a resource share already has a permission for the specified resource type and you don't set <code>replace</code> to <code>true</code> then the operation returns an error. This helps prevent accidental overwriting of a permission.</p> </note>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         },
         "permissionVersion":{
           "shape":"Integer",
-          "documentation":"<p>The version of the RAM permissions to associate with the resource share.</p>"
+          "documentation":"<p>Specifies the version of the RAM permission to associate with the resource share. If you don't specify this parameter, the operation uses the version designated as the default.</p>"
         }
       }
     },
@@ -542,11 +543,11 @@
       "members":{
         "returnValue":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the request succeeded.</p>"
+          "documentation":"<p>A return value of <code>true</code> indicates that the request succeeded. A value of <code>false</code> indicates that the request failed.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -556,19 +557,19 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share that you want to add principals or resources to.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the resources.</p>"
+          "documentation":"<p>Specifies a list of <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of the resources that you want to share. This can be <code>null</code> if you want to add only principals.</p>"
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>The principals to associate with the resource share. The possible values are:</p> <ul> <li> <p>An Amazon Web Services account ID</p> </li> <li> <p>An Amazon Resource Name (ARN) of an organization in Organizations</p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations</p> </li> <li> <p>An ARN of an IAM role</p> </li> <li> <p>An ARN of an IAM user</p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and IAM users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and IAM users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies a list of principals to whom you want to the resource share. This can be <code>null</code> if you want to add only resources.</p> <p>What the principals can do with the resources in the share is determined by the RAM permissions that you associate with the resource share. See <a>AssociateResourceSharePermission</a>.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         }
       }
     },
@@ -577,11 +578,11 @@
       "members":{
         "resourceShareAssociations":{
           "shape":"ResourceShareAssociationList",
-          "documentation":"<p>Information about the associations.</p>"
+          "documentation":"<p>An array of objects that contain information about the associations.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -592,31 +593,31 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the resource share.</p>"
+          "documentation":"<p>Specifies the name of the resource share.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The ARNs of the resources to associate with the resource share.</p>"
+          "documentation":"<p>Specifies a list of one or more ARNs of the resources to associate with the resource share.</p>"
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>The principals to associate with the resource share. The possible values are:</p> <ul> <li> <p>An Amazon Web Services account ID</p> </li> <li> <p>An Amazon Resource Name (ARN) of an organization in Organizations</p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations</p> </li> <li> <p>An ARN of an IAM role</p> </li> <li> <p>An ARN of an IAM user</p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and IAM users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and IAM users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies a list of one or more principals to associate with the resource share.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>Specifies one or more tags to attach to the resource share itself. It doesn't attach the tags to the resources associated with the resource share.</p>"
         },
         "allowExternalPrincipals":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether principals outside your organization in Organizations can be associated with a resource share.</p>"
+          "documentation":"<p>Specifies whether principals outside your organization in Organizations can be associated with a resource share. A value of <code>true</code> lets you share with individual Amazon Web Services accounts that are <i>not</i> in your organization. A value of <code>false</code> only has meaning if your account is a member of an Amazon Web Services Organization. The default value is <code>true</code>.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         },
         "permissionArns":{
           "shape":"PermissionArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the permissions to associate with the resource share. If you do not specify an ARN for the permission, RAM automatically attaches the default version of the permission for each resource type. Only one permission can be associated with each resource type in a resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of the RAM permission to associate with the resource share. If you do not specify an ARN for the permission, RAM automatically attaches the default version of the permission for each resource type. You can associate only one permission with each resource type included in the resource share.</p>"
         }
       }
     },
@@ -625,11 +626,11 @@
       "members":{
         "resourceShare":{
           "shape":"ResourceShare",
-          "documentation":"<p>Information about the resource share.</p>"
+          "documentation":"<p>An object with information about the new resource share.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -640,13 +641,13 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>",
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share to delete.</p>",
           "location":"querystring",
           "locationName":"resourceShareArn"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>",
           "location":"querystring",
           "locationName":"clientToken"
         }
@@ -657,11 +658,11 @@
       "members":{
         "returnValue":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the request succeeded.</p>"
+          "documentation":"<p>A return value of <code>true</code> indicates that the request succeeded. A value of <code>false</code> indicates that the request failed.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -674,15 +675,15 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share from which you want to disassociate a permission.</p>"
         },
         "permissionArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the permission to disassociate from the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the permission to disassociate from the resource share. Changes to permissions take effect immediately.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         }
       }
     },
@@ -691,11 +692,11 @@
       "members":{
         "returnValue":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the request succeeded.</p>"
+          "documentation":"<p>A return value of <code>true</code> indicates that the request succeeded. A value of <code>false</code> indicates that the request failed.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -705,19 +706,19 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share that you want to remove resources from.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the resources.</p>"
+          "documentation":"<p>Specifies a list of <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> for one or more resources that you want to remove from the resource share. After the operation runs, these resources are no longer shared with principals outside of the Amazon Web Services account that created the resources.</p>"
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>The principals.</p>"
+          "documentation":"<p>Specifies a list of one or more principals that no longer are to have access to the resources in this resource share.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         }
       }
     },
@@ -726,11 +727,11 @@
       "members":{
         "resourceShareAssociations":{
           "shape":"ResourceShareAssociationList",
-          "documentation":"<p>Information about the associations.</p>"
+          "documentation":"<p>An array of objects that contain information about the updated associations for this resource share.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -744,7 +745,7 @@
       "members":{
         "returnValue":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the request succeeded.</p>"
+          "documentation":"<p>A return value of <code>true</code> indicates that the request succeeded. A value of <code>false</code> indicates that the request failed.</p>"
         }
       }
     },
@@ -754,11 +755,11 @@
       "members":{
         "permissionArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the permission.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the permission whose contents you want to retrieve. To find the ARN for a permission, use either the <a>ListPermissions</a> operation or go to the <a href=\"https://console.aws.amazon.com/ram/home#Permissions:\">Permissions library</a> page in the RAM console and then choose the name of the permission. The ARN is displayed on the detail page.</p>"
         },
         "permissionVersion":{
           "shape":"Integer",
-          "documentation":"<p>The identifier for the version of the permission.</p>"
+          "documentation":"<p>Specifies identifier for the version of the RAM permission to retrieve. If you don't specify this parameter, the operation retrieves the default version.</p>"
         }
       }
     },
@@ -767,7 +768,7 @@
       "members":{
         "permission":{
           "shape":"ResourceSharePermissionDetail",
-          "documentation":"<p>Information about the permission.</p>"
+          "documentation":"<p>An object that contains information about the permission.</p>"
         }
       }
     },
@@ -777,19 +778,19 @@
       "members":{
         "resourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the resources.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of the resources whose policies you want to retrieve.</p>"
         },
         "principal":{
           "shape":"String",
-          "documentation":"<p>The principal.</p>"
+          "documentation":"<p>Specifies the principal.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -798,11 +799,11 @@
       "members":{
         "policies":{
           "shape":"PolicyList",
-          "documentation":"<p>A key policy document, in JSON format.</p>"
+          "documentation":"<p>An array of resource policy documents in JSON format.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -812,31 +813,31 @@
       "members":{
         "associationType":{
           "shape":"ResourceShareAssociationType",
-          "documentation":"<p>The association type. Specify <code>PRINCIPAL</code> to list the principals that are associated with the specified resource share. Specify <code>RESOURCE</code> to list the resources that are associated with the specified resource share.</p>"
+          "documentation":"<p>Specifies whether you want to retrieve the associations that involve a specified resource or principal.</p> <ul> <li> <p> <code>PRINCIPAL</code> – list the principals that are associated with the specified resource share.</p> </li> <li> <p> <code>RESOURCE</code> – list the resources that are associated with the specified resource share.</p> </li> </ul>"
         },
         "resourceShareArns":{
           "shape":"ResourceShareArnList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of the resource shares.</p>"
+          "documentation":"<p>Specifies a list of <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of the resource share whose associations you want to retrieve.</p>"
         },
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. You cannot specify this parameter if the association type is <code>PRINCIPAL</code>.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource whose resource shares you want to retrieve.</p> <p>You cannot specify this parameter if the association type is <code>PRINCIPAL</code>.</p>"
         },
         "principal":{
           "shape":"String",
-          "documentation":"<p>The principal. You cannot specify this parameter if the association type is <code>RESOURCE</code>.</p>"
+          "documentation":"<p>Specifies the ID of the principal whose resource shares you want to retrieve. This can be an Amazon Web Services account ID, an organization ID, an organizational unit ID, or the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of an individual IAM user or role.</p> <p>You cannot specify this parameter if the association type is <code>RESOURCE</code>.</p>"
         },
         "associationStatus":{
           "shape":"ResourceShareAssociationStatus",
-          "documentation":"<p>The association status.</p>"
+          "documentation":"<p>Specifies that you want to retrieve only associations with this status.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -845,11 +846,11 @@
       "members":{
         "resourceShareAssociations":{
           "shape":"ResourceShareAssociationList",
-          "documentation":"<p>Information about the associations.</p>"
+          "documentation":"<p>An array of objects that contain the details about the associations.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -858,19 +859,19 @@
       "members":{
         "resourceShareInvitationArns":{
           "shape":"ResourceShareInvitationArnList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of the invitations.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of the resource share invitations you want information about.</p>"
         },
         "resourceShareArns":{
           "shape":"ResourceShareArnList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of the resource shares.</p>"
+          "documentation":"<p>Specifies that you want details about invitations only for the resource shares described by this list of <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> </p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -879,11 +880,11 @@
       "members":{
         "resourceShareInvitations":{
           "shape":"ResourceShareInvitationList",
-          "documentation":"<p>Information about the invitations.</p>"
+          "documentation":"<p>An array of objects that contain the details about the invitations.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -893,35 +894,35 @@
       "members":{
         "resourceShareArns":{
           "shape":"ResourceShareArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the resource shares.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of individual resource shares that you want information about.</p>"
         },
         "resourceShareStatus":{
           "shape":"ResourceShareStatus",
-          "documentation":"<p>The status of the resource share.</p>"
+          "documentation":"<p>Specifies that you want to retrieve details of only those resource shares that have this status.</p>"
         },
         "resourceOwner":{
           "shape":"ResourceOwner",
-          "documentation":"<p>The type of owner.</p>"
+          "documentation":"<p>Specifies that you want to retrieve details of only those resource shares that match the following:</p> <ul> <li> <p> <b> <code>SELF</code> </b> – resources that you are sharing</p> </li> <li> <p> <b> <code>OTHER-ACCOUNTS</code> </b> – resources that other accounts share with you</p> </li> </ul>"
         },
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the resource share.</p>"
+          "documentation":"<p>Specifies the name of an individual resource share that you want to retrieve details about.</p>"
         },
         "tagFilters":{
           "shape":"TagFilters",
-          "documentation":"<p>One or more tag filters.</p>"
+          "documentation":"<p>Specifies that you want to retrieve details of only those resource shares that match the specified tag keys and values.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         },
         "permissionArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the RAM permission that is associated with the resource share.</p>"
+          "documentation":"<p>Specifies that you want to retrieve details of only those resource shares that use the RAM permission with this <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a>.</p>"
         }
       }
     },
@@ -930,11 +931,11 @@
       "members":{
         "resourceShares":{
           "shape":"ResourceShareList",
-          "documentation":"<p>Information about the resource shares.</p>"
+          "documentation":"<p>An array of objects that contain the information about the resource shares.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -944,7 +945,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>A client token input parameter was reused with an operation, but at least one of the other input parameters is different from the previous call to the operation.</p>",
+      "documentation":"<p>The client token input parameter was matched one used with a previous call to the operation, but at least one of the other input parameters is different from the previous call.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -955,7 +956,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>A client token is not valid.</p>",
+      "documentation":"<p>The client token is not valid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -965,7 +966,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The specified value for MaxResults is not valid.</p>",
+      "documentation":"<p>The specified value for <code>MaxResults</code> is not valid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -975,7 +976,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The specified value for NextToken is not valid.</p>",
+      "documentation":"<p>The specified value for <code>NextToken</code> is not valid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1015,15 +1016,19 @@
       "members":{
         "resourceShareInvitationArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the invitation.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the invitation. You can use <a>GetResourceShareInvitations</a> to find the ARN of the invitation.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+        },
+        "resourceRegionScope":{
+          "shape":"ResourceRegionScopeFilter",
+          "documentation":"<p>Specifies that you want the results to include only resources that have the specified scope.</p> <ul> <li> <p> <code>ALL</code> – the results include both global and regional resources or resource types.</p> </li> <li> <p> <code>GLOBAL</code> – the results include only global resources or resource types.</p> </li> <li> <p> <code>REGIONAL</code> – the results include only regional resources or resource types.</p> </li> </ul> <p>The default value is <code>ALL</code>.</p>"
         }
       }
     },
@@ -1032,11 +1037,11 @@
       "members":{
         "resources":{
           "shape":"ResourceList",
-          "documentation":"<p>Information about the resources included the resource share.</p>"
+          "documentation":"<p>An array of objects that contain the information about the resources included the specified resource share.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -1045,15 +1050,15 @@
       "members":{
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>Specifies the resource type for which to list permissions. For example, to list only permissions that apply to EC2 subnets, specify <code>ec2:Subnet</code>.</p>"
+          "documentation":"<p>Specifies that you want to list permissions for only the specified resource type. For example, to list only permissions that apply to EC2 subnets, specify <code>ec2:Subnet</code>. You can use the <a>ListResourceTypes</a> operation to get the specific string required.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -1062,11 +1067,11 @@
       "members":{
         "permissions":{
           "shape":"ResourceSharePermissionList",
-          "documentation":"<p>Information about the permissions.</p>"
+          "documentation":"<p>An array of objects with information about the permissions.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -1076,31 +1081,31 @@
       "members":{
         "resourceOwner":{
           "shape":"ResourceOwner",
-          "documentation":"<p>The type of owner.</p>"
+          "documentation":"<p>Specifies that you want to list information for only resource shares that match the following:</p> <ul> <li> <p> <b> <code>SELF</code> </b> – resources that you are sharing</p> </li> <li> <p> <b> <code>OTHER-ACCOUNTS</code> </b> – resources that other accounts share with you</p> </li> </ul>"
         },
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+          "documentation":"<p>Specifies that you want to list principal information for the resource share with the specified <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a>.</p>"
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>The principals.</p>"
+          "documentation":"<p>Specifies that you want to list information for only the listed principals.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>The resource type.</p> <p>Valid values: <code>acm-pca:CertificateAuthority</code> | <code>appmesh:Mesh</code> | <code>codebuild:Project</code> | <code>codebuild:ReportGroup</code> | <code>ec2:CapacityReservation</code> | <code>ec2:DedicatedHost</code> | <code>ec2:LocalGatewayRouteTable</code> | <code>ec2:PrefixList</code> | <code>ec2:Subnet</code> | <code>ec2:TrafficMirrorTarget</code> | <code>ec2:TransitGateway</code> | <code>imagebuilder:Component</code> | <code>imagebuilder:Image</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code> | <code>glue:Catalog</code> | <code>glue:Database</code> | <code>glue:Table</code> | <code>license-manager:LicenseConfiguration</code> I <code>network-firewall:FirewallPolicy</code> | <code>network-firewall:StatefulRuleGroup</code> | <code>network-firewall:StatelessRuleGroup</code> | <code>outposts:Outpost</code> | <code>resource-groups:Group</code> | <code>rds:Cluster</code> | <code>route53resolver:FirewallRuleGroup</code> |<code>route53resolver:ResolverQueryLogConfig</code> | <code>route53resolver:ResolverRule</code> | <code>s3-outposts:Outpost</code> | <code>ssm-contacts:Contact</code> | <code>ssm-incidents:ResponsePlan</code> </p>"
+          "documentation":"<p>Specifies that you want to list information for only principals associated with resource shares that include the specified resource type.</p> <p>For a list of valid values, query the <a>ListResourceTypes</a> operation.</p>"
         },
         "resourceShareArns":{
           "shape":"ResourceShareArnList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of the resource shares.</p>"
+          "documentation":"<p>Specifies that you want to list information for only principals associated with the resource shares specified by a list the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a>.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -1109,11 +1114,11 @@
       "members":{
         "principals":{
           "shape":"PrincipalList",
-          "documentation":"<p>The principals.</p>"
+          "documentation":"<p>An array of objects that contain the details about the principals.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -1123,15 +1128,15 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share for which you want to retrieve the associated permissions.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -1140,11 +1145,11 @@
       "members":{
         "permissions":{
           "shape":"ResourceSharePermissionList",
-          "documentation":"<p>The permissions associated with the resource share.</p>"
+          "documentation":"<p>An array of objects that describe the permissions associated with the resource share.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -1153,11 +1158,15 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+        },
+        "resourceRegionScope":{
+          "shape":"ResourceRegionScopeFilter",
+          "documentation":"<p>Specifies that you want the results to include only resources that have the specified scope.</p> <ul> <li> <p> <code>ALL</code> – the results include both global and regional resources or resource types.</p> </li> <li> <p> <code>GLOBAL</code> – the results include only global resources or resource types.</p> </li> <li> <p> <code>REGIONAL</code> – the results include only regional resources or resource types.</p> </li> </ul> <p>The default value is <code>ALL</code>.</p>"
         }
       }
     },
@@ -1166,11 +1175,11 @@
       "members":{
         "resourceTypes":{
           "shape":"ServiceNameAndResourceTypeList",
-          "documentation":"<p>The shareable resource types supported by RAM.</p>"
+          "documentation":"<p>An array of objects that contain information about the resource types that can be shared using RAM.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -1180,31 +1189,35 @@
       "members":{
         "resourceOwner":{
           "shape":"ResourceOwner",
-          "documentation":"<p>The type of owner.</p>"
+          "documentation":"<p>Specifies that you want to list only the resource shares that match the following:</p> <ul> <li> <p> <b> <code>SELF</code> </b> – resources that you are sharing</p> </li> <li> <p> <b> <code>OTHER-ACCOUNTS</code> </b> – resources that other accounts share with you</p> </li> </ul>"
         },
         "principal":{
           "shape":"String",
-          "documentation":"<p>The principal.</p>"
+          "documentation":"<p>Specifies that you want to list only the resource shares that are associated with the specified principal.</p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>The resource type.</p> <p>Valid values: <code>acm-pca:CertificateAuthority</code> | <code>appmesh:Mesh</code> | <code>codebuild:Project</code> | <code>codebuild:ReportGroup</code> | <code>ec2:CapacityReservation</code> | <code>ec2:DedicatedHost</code> | <code>ec2:LocalGatewayRouteTable</code> | <code>ec2:PrefixList</code> | <code>ec2:Subnet</code> | <code>ec2:TrafficMirrorTarget</code> | <code>ec2:TransitGateway</code> | <code>imagebuilder:Component</code> | <code>imagebuilder:Image</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code> | <code>glue:Catalog</code> | <code>glue:Database</code> | <code>glue:Table</code> | <code>license-manager:LicenseConfiguration</code> I <code>network-firewall:FirewallPolicy</code> | <code>network-firewall:StatefulRuleGroup</code> | <code>network-firewall:StatelessRuleGroup</code> | <code>outposts:Outpost</code> | <code>resource-groups:Group</code> | <code>rds:Cluster</code> | <code>route53resolver:FirewallRuleGroup</code> |<code>route53resolver:ResolverQueryLogConfig</code> | <code>route53resolver:ResolverRule</code> | <code>s3-outposts:Outpost</code> | <code>ssm-contacts:Contact</code> | <code>ssm-incidents:ResponsePlan</code> </p>"
+          "documentation":"<p>Specifies that you want to list only the resource shares that include resources of the specified resource type.</p> <p>For valid values, query the <a>ListResourceTypes</a> operation.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the resources.</p>"
+          "documentation":"<p>Specifies that you want to list only the resource shares that include resources with the specified <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a>.</p>"
         },
         "resourceShareArns":{
           "shape":"ResourceShareArnList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of the resource shares.</p>"
+          "documentation":"<p>Specifies that you want to list only resources in the resource shares identified by the specified <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a>.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+        },
+        "resourceRegionScope":{
+          "shape":"ResourceRegionScopeFilter",
+          "documentation":"<p>Specifies that you want the results to include only resources that have the specified scope.</p> <ul> <li> <p> <code>ALL</code> – the results include both global and regional resources or resource types.</p> </li> <li> <p> <code>GLOBAL</code> – the results include only global resources or resource types.</p> </li> <li> <p> <code>REGIONAL</code> – the results include only regional resources or resource types.</p> </li> </ul> <p>The default value is <code>ALL</code>.</p>"
         }
       }
     },
@@ -1213,11 +1226,11 @@
       "members":{
         "resources":{
           "shape":"ResourceList",
-          "documentation":"<p>Information about the resources.</p>"
+          "documentation":"<p>An array of objects that contain information about the resources.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -1274,15 +1287,15 @@
         },
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of a resource share the principal is associated with.</p>"
         },
         "creationTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the principal was associated with the resource share.</p>"
+          "documentation":"<p>The date and time when the principal was associated with the resource share.</p>"
         },
         "lastUpdatedTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the association was last updated.</p>"
+          "documentation":"<p>The date and time when the association was last updated.</p>"
         },
         "external":{
           "shape":"Boolean",
@@ -1305,7 +1318,7 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share to promote.</p>",
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share to promote.</p>",
           "location":"querystring",
           "locationName":"resourceShareArn"
         }
@@ -1316,7 +1329,7 @@
       "members":{
         "returnValue":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the request succeeded.</p>"
+          "documentation":"<p>A return value of <code>true</code> indicates that the request succeeded. A value of <code>false</code> indicates that the request failed.</p>"
         }
       }
     },
@@ -1326,11 +1339,11 @@
       "members":{
         "resourceShareInvitationArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the invitation.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the invitation that you want to reject.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         }
       }
     },
@@ -1339,11 +1352,11 @@
       "members":{
         "resourceShareInvitation":{
           "shape":"ResourceShareInvitation",
-          "documentation":"<p>Information about the invitation.</p>"
+          "documentation":"<p>An object that contains the details about the rejected invitation.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     },
@@ -1352,23 +1365,23 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource.</p>"
         },
         "type":{
           "shape":"String",
-          "documentation":"<p>The resource type.</p>"
+          "documentation":"<p>The resource type. This takes the form of: <code>service-code</code>:<code>resource-code</code> </p>"
         },
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share this resource is associated with.</p>"
         },
         "resourceGroupArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource group. This value is returned only if the resource is a resource group.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource group. This value is available only if the resource is part of a resource group.</p>"
         },
         "status":{
           "shape":"ResourceStatus",
-          "documentation":"<p>The status of the resource.</p>"
+          "documentation":"<p>The current status of the resource.</p>"
         },
         "statusMessage":{
           "shape":"String",
@@ -1376,14 +1389,18 @@
         },
         "creationTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the resource was associated with the resource share.</p>"
+          "documentation":"<p>The date and time when the resource was associated with the resource share.</p>"
         },
         "lastUpdatedTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the association was last updated.</p>"
+          "documentation":"<p>The date an time when the association was last updated.</p>"
+        },
+        "resourceRegionScope":{
+          "shape":"ResourceRegionScope",
+          "documentation":"<p>Specifies the scope of visibility of this resource:</p> <ul> <li> <p> <b>REGIONAL</b> – The resource can be accessed only by using requests that target the Amazon Web Services Region in which the resource exists.</p> </li> <li> <p> <b>GLOBAL</b> – The resource can be accessed from any Amazon Web Services Region.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes a resource associated with a resource share.</p>"
+      "documentation":"<p>Describes a resource associated with a resource share in RAM.</p>"
     },
     "ResourceArnList":{
       "type":"list",
@@ -1395,7 +1412,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>An Amazon Resource Name (ARN) was not found.</p>",
+      "documentation":"<p>The specified Amazon Resource Name (ARN) was not found.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1410,12 +1427,27 @@
         "OTHER-ACCOUNTS"
       ]
     },
+    "ResourceRegionScope":{
+      "type":"string",
+      "enum":[
+        "REGIONAL",
+        "GLOBAL"
+      ]
+    },
+    "ResourceRegionScopeFilter":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "REGIONAL",
+        "GLOBAL"
+      ]
+    },
     "ResourceShare":{
       "type":"structure",
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share</p>"
         },
         "name":{
           "shape":"String",
@@ -1431,7 +1463,7 @@
         },
         "status":{
           "shape":"ResourceShareStatus",
-          "documentation":"<p>The status of the resource share.</p>"
+          "documentation":"<p>The current status of the resource share.</p>"
         },
         "statusMessage":{
           "shape":"String",
@@ -1439,22 +1471,22 @@
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags for the resource share.</p>"
+          "documentation":"<p>The tag key and value pairs attached to the resource share.</p>"
         },
         "creationTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the resource share was created.</p>"
+          "documentation":"<p>The date and time when the resource share was created.</p>"
         },
         "lastUpdatedTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the resource share was last updated.</p>"
+          "documentation":"<p>The date and time when the resource share was last updated.</p>"
         },
         "featureSet":{
           "shape":"ResourceShareFeatureSet",
-          "documentation":"<p>Indicates how the resource share was created. Possible values include:</p> <ul> <li> <p> <code>CREATED_FROM_POLICY</code> - Indicates that the resource share was created from an Amazon Web Services Identity and Access Management (Amazon Web Services IAM) policy attached to a resource. These resource shares are visible only to the Amazon Web Services account that created it. They cannot be modified in RAM.</p> </li> <li> <p> <code>PROMOTING_TO_STANDARD</code> - The resource share is in the process of being promoted. For more information, see <a>PromoteResourceShareCreatedFromPolicy</a>.</p> </li> <li> <p> <code>STANDARD</code> - Indicates that the resource share was created in RAM using the console or APIs. These resource shares are visible to all principals. They can be modified in RAM.</p> </li> </ul>"
+          "documentation":"<p>Indicates how the resource share was created. Possible values include:</p> <ul> <li> <p> <code>CREATED_FROM_POLICY</code> - Indicates that the resource share was created from an Identity and Access Management (IAM) resource-based permission policy attached to the resource. This type of resource share is visible only to the Amazon Web Services account that created it. You can't modify it in RAM unless you promote it. For more information, see <a>PromoteResourceShareCreatedFromPolicy</a>.</p> </li> <li> <p> <code>PROMOTING_TO_STANDARD</code> - The resource share is in the process of being promoted. For more information, see <a>PromoteResourceShareCreatedFromPolicy</a>.</p> </li> <li> <p> <code>STANDARD</code> - Indicates that the resource share was created in RAM using the console or APIs. These resource shares are visible to all principals you share the resource share with. You can modify these resource shares in RAM using the console or APIs.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes a resource share.</p>"
+      "documentation":"<p>Describes a resource share in RAM.</p>"
     },
     "ResourceShareArnList":{
       "type":"list",
@@ -1465,7 +1497,7 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share.</p>"
         },
         "resourceShareName":{
           "shape":"String",
@@ -1473,15 +1505,15 @@
         },
         "associatedEntity":{
           "shape":"String",
-          "documentation":"<p>The associated entity. For resource associations, this is the Amazon Resource Name (ARN) of the resource. For principal associations, this is one of the following:</p> <ul> <li> <p>An Amazon Web Services account ID</p> </li> <li> <p>An ARN of an organization in Organizations</p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations</p> </li> <li> <p>An ARN of an IAM role</p> </li> <li> <p>An ARN of an IAM user</p> </li> </ul>"
+          "documentation":"<p>The associated entity. This can be either of the following:</p> <ul> <li> <p>For a resource association, this is the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource.</p> </li> <li> <p>For principal associations, this is one of the following:</p> <ul> <li> <p>The ID of an Amazon Web Services account</p> </li> <li> <p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of an organization in Organizations</p> </li> <li> <p>The ARN of an organizational unit (OU) in Organizations</p> </li> <li> <p>The ARN of an IAM role</p> </li> <li> <p>The ARN of an IAM user</p> </li> </ul> </li> </ul>"
         },
         "associationType":{
           "shape":"ResourceShareAssociationType",
-          "documentation":"<p>The association type.</p>"
+          "documentation":"<p>The type of entity included in this association.</p>"
         },
         "status":{
           "shape":"ResourceShareAssociationStatus",
-          "documentation":"<p>The status of the association.</p>"
+          "documentation":"<p>The current status of the association.</p>"
         },
         "statusMessage":{
           "shape":"String",
@@ -1489,18 +1521,18 @@
         },
         "creationTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the association was created.</p>"
+          "documentation":"<p>The date and time when the association was created.</p>"
         },
         "lastUpdatedTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time when the association was last updated.</p>"
+          "documentation":"<p>The date and time when the association was last updated.</p>"
         },
         "external":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the principal belongs to the same organization in Organizations as the Amazon Web Services account that owns the resource share.</p>"
         }
       },
-      "documentation":"<p>Describes an association with a resource share.</p>"
+      "documentation":"<p>Describes an association with a resource share and either a principal or a resource.</p>"
     },
     "ResourceShareAssociationList":{
       "type":"list",
@@ -1536,7 +1568,7 @@
       "members":{
         "resourceShareInvitationArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the invitation.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the invitation.</p>"
         },
         "resourceShareName":{
           "shape":"String",
@@ -1544,7 +1576,7 @@
         },
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share</p>"
         },
         "senderAccountId":{
           "shape":"String",
@@ -1560,20 +1592,20 @@
         },
         "status":{
           "shape":"ResourceShareInvitationStatus",
-          "documentation":"<p>The status of the invitation.</p>"
+          "documentation":"<p>The current status of the invitation.</p>"
         },
         "resourceShareAssociations":{
           "shape":"ResourceShareAssociationList",
-          "documentation":"<p>To view the resources associated with a pending resource share invitation, use <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_ListPendingInvitationResources.html\"> ListPendingInvitationResources</a>.</p>",
+          "documentation":"<p>To view the resources associated with a pending resource share invitation, use <a>ListPendingInvitationResources</a>.</p>",
           "deprecated":true,
           "deprecatedMessage":"This member has been deprecated. Use ListPendingInvitationResources."
         },
         "receiverArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM user or IAM role that received the invitation.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the IAM user or role that received the invitation.</p>"
         }
       },
-      "documentation":"<p>Describes an invitation to join a resource share.</p>"
+      "documentation":"<p>Describes an invitation for an Amazon Web Services account to join a resource share.</p>"
     },
     "ResourceShareInvitationAlreadyAcceptedException":{
       "type":"structure",
@@ -1581,7 +1613,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The invitation was already accepted.</p>",
+      "documentation":"<p>The specified invitation was already accepted.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1591,7 +1623,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The invitation was already rejected.</p>",
+      "documentation":"<p>The specified invitation was already rejected.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1605,7 +1637,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The Amazon Resource Name (ARN) for an invitation was not found.</p>",
+      "documentation":"<p>The specified Amazon Resource Name (ARN) for an invitation was not found.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1615,7 +1647,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The invitation is expired.</p>",
+      "documentation":"<p>The specified invitation is expired.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1638,7 +1670,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The requested resource share exceeds the limit for your account.</p>",
+      "documentation":"<p>This request would exceed the limit for resource shares for your account.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1651,27 +1683,27 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the permission.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of this RAM permission.</p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The identifier for the version of the permission.</p>"
+          "documentation":"<p>The version of the permission represented in this structure.</p>"
         },
         "defaultVersion":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the version of the permission is set to the default version for this permission.</p>"
+          "documentation":"<p>Specifies whether the version of the permission represented in this structure is the default version for this permission.</p>"
         },
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the permission.</p>"
+          "documentation":"<p>The name of this permission.</p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>The resource type to which the permission applies.</p>"
+          "documentation":"<p>The resource type to which this permission applies.</p>"
         },
         "permission":{
           "shape":"String",
-          "documentation":"<p>The permission's effect and actions in JSON format. The <code>effect</code> indicates whether the actions are allowed or denied. The <code>actions</code> list the API actions to which the principal is granted or denied access.</p>"
+          "documentation":"<p>The permission's effect and actions in JSON format. The <code>effect</code> indicates whether the specified actions are allowed or denied. The <code>actions</code> list the operations to which the principal is granted or denied access.</p>"
         },
         "creationTime":{
           "shape":"DateTime",
@@ -1683,7 +1715,7 @@
         },
         "isResourceTypeDefault":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the version of the permission is set to the default version for this resource type.</p>"
+          "documentation":"<p>Specifies whether the version of the permission represented in this structure is the default version for all resources of this resource type.</p>"
         }
       },
       "documentation":"<p>Information about an RAM permission.</p>"
@@ -1697,23 +1729,23 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the permission.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the permission you want information about.</p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The identifier for the version of the permission.</p>"
+          "documentation":"<p>The version of the permission represented in this structure.</p>"
         },
         "defaultVersion":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the version of the permission is set to the default version for this permission.</p>"
+          "documentation":"<p>Specifies whether the version of the permission represented in this structure is the default version for this permission.</p>"
         },
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the permission.</p>"
+          "documentation":"<p>The name of this permission.</p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>The type of resource to which the permission applies.</p>"
+          "documentation":"<p>The type of resource to which this permission applies.</p>"
         },
         "status":{
           "shape":"String",
@@ -1729,10 +1761,10 @@
         },
         "isResourceTypeDefault":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the version of the permission is set to the default version for this resource type.</p>"
+          "documentation":"<p>Specifies whether the version of the permission represented in this structure is the default version for all resources of this resource type.</p>"
         }
       },
-      "documentation":"<p>Information about a permission that is associated with a resource share.</p>"
+      "documentation":"<p>Information about an RAM permission that is associated with a resource share and any of its resources of a specified type.</p>"
     },
     "ResourceShareStatus":{
       "type":"string",
@@ -1769,14 +1801,18 @@
       "members":{
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>The shareable resource types.</p>"
+          "documentation":"<p>The type of the resource.</p>"
         },
         "serviceName":{
           "shape":"String",
-          "documentation":"<p>The name of the Amazon Web Services services to which the resources belong.</p>"
+          "documentation":"<p>The name of the Amazon Web Services service to which resources of this type belong.</p>"
+        },
+        "resourceRegionScope":{
+          "shape":"ResourceRegionScope",
+          "documentation":"<p>Specifies the scope of visibility of resources of this type:</p> <ul> <li> <p> <b>REGIONAL</b> – The resource can be accessed only by using requests that target the Amazon Web Services Region in which the resource exists.</p> </li> <li> <p> <b>GLOBAL</b> – The resource can be accessed from any Amazon Web Services Region.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Information about the shareable resource types and the Amazon Web Services services to which they belong.</p>"
+      "documentation":"<p>Information about a shareable resource type and the Amazon Web Services service to which resources of that type belong.</p>"
     },
     "ServiceNameAndResourceTypeList":{
       "type":"list",
@@ -1798,28 +1834,28 @@
       "members":{
         "key":{
           "shape":"TagKey",
-          "documentation":"<p>The key of the tag.</p>"
+          "documentation":"<p>The key, or name, attached to the tag. Every tag must have a key. Key names are case sensitive.</p>"
         },
         "value":{
           "shape":"TagValue",
-          "documentation":"<p>The value of the tag.</p>"
+          "documentation":"<p>The string value attached to the tag. The value can be an empty string. Key values are case sensitive.</p>"
         }
       },
-      "documentation":"<p>Information about a tag.</p>"
+      "documentation":"<p>A structure containing a tag. A tag is metadata that you can attach to your resources to help organize and categorize them. You can also use them to help you secure your resources. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Controlling access to Amazon Web Services resources using tags</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
     },
     "TagFilter":{
       "type":"structure",
       "members":{
         "tagKey":{
           "shape":"TagKey",
-          "documentation":"<p>The tag key.</p>"
+          "documentation":"<p>The tag key. This must have a valid string value and can't be empty.</p>"
         },
         "tagValues":{
           "shape":"TagValueList",
-          "documentation":"<p>The tag values.</p>"
+          "documentation":"<p>A list of zero or more tag values. If no values are provided, then the filter matches any tag with the specified key, regardless of its value.</p>"
         }
       },
-      "documentation":"<p>Used to filter information based on tags.</p>"
+      "documentation":"<p>A tag key and optional list of possible values that you can use to filter results for tagged resources.</p>"
     },
     "TagFilters":{
       "type":"list",
@@ -1836,7 +1872,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The requested tags exceed the limit for your account.</p>",
+      "documentation":"<p>This request would exceed the limit for tags for your account.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1850,7 +1886,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The specified tag is a reserved word and cannot be used.</p>",
+      "documentation":"<p>The specified tag key is a reserved word and can't be used.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1863,11 +1899,11 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share that you want to add tags to.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>A list of one or more tag key and value pairs. The tag key must be present and not be an empty string. The tag value must be present but can be an empty string.</p>"
         }
       }
     },
@@ -1880,6 +1916,16 @@
     "TagValueList":{
       "type":"list",
       "member":{"shape":"TagValue"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You exceeded the rate at which you are allowed to perform this operation. Please try again later.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
     },
     "UnknownResourceException":{
       "type":"structure",
@@ -1900,11 +1946,11 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share that you want to remove tags from. The tags are removed from the resource share, not the resources in the resource share.</p>"
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>The tag keys of the tags to remove.</p>"
+          "documentation":"<p>Specifies a list of one or more tag keys that you want to remove.</p>"
         }
       }
     },
@@ -1919,19 +1965,19 @@
       "members":{
         "resourceShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share.</p>"
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the resource share that you want to modify.</p>"
         },
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the resource share.</p>"
+          "documentation":"<p>If specified, the new name that you want to attach to the resource share.</p>"
         },
         "allowExternalPrincipals":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether principals outside your organization in Organizations can be associated with a resource share.</p>"
+          "documentation":"<p>Specifies whether principals outside your organization in Organizations can be associated with a resource share.</p>"
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p>"
         }
       }
     },
@@ -1944,10 +1990,10 @@
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
     }
   },
-  "documentation":"<p>This is the <i>Resource Access Manager API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in RAM. RAM is a service that helps you securely share your Amazon Web Services resources across Amazon Web Services accounts and within your organization or organizational units (OUs) in Organizations. For supported resource types, you can also share resources with IAM roles and IAM users. If you have multiple Amazon Web Services accounts, you can use RAM to share those resources with other accounts.</p> <p>To learn more about RAM, see the following resources:</p> <ul> <li> <p> <a href=\"http://aws.amazon.com/ram\">Resource Access Manager product page</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/\">Resource Access Manager User Guide</a> </p> </li> </ul>"
+  "documentation":"<p>This is the <i>Resource Access Manager API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in RAM. RAM is a service that helps you securely share your Amazon Web Services resources across Amazon Web Services accounts. If you have multiple Amazon Web Services accounts, you can use RAM to share those resources with other accounts. If you use Organizations to manage your accounts, then you share your resources with your organization or organizational units (OUs). For supported resource types, you can also share resources with individual Identity and Access Management (IAM) roles an users. </p> <p>To learn more about RAM, see the following resources:</p> <ul> <li> <p> <a href=\"http://aws.amazon.com/ram\">Resource Access Manager product page</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/\">Resource Access Manager User Guide</a> </p> </li> </ul>"
 }

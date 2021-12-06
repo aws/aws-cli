@@ -60,31 +60,77 @@ General Options
 
 The AWS CLI has a few general options:
 
-==================== =========== ===================== ===================== ============================
-Variable             Option      Config Entry          Environment Variable  Description
-==================== =========== ===================== ===================== ============================
-profile              --profile   N/A                   AWS_PROFILE           Default profile name
--------------------- ----------- --------------------- --------------------- ----------------------------
-region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
--------------------- ----------- --------------------- --------------------- ----------------------------
-output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- ----------- --------------------- --------------------- ----------------------------
-ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
--------------------- ----------- --------------------- --------------------- ----------------------------
-parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
--------------------- ----------- --------------------- --------------------- ----------------------------
-tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
--------------------- ----------- --------------------- --------------------- ----------------------------
-max_attempts         N/A         max_attempts          AWS_MAX_ATTEMPTS      Number of total requests
--------------------- ----------- --------------------- --------------------- ----------------------------
-retry_mode           N/A         retry_mode            AWS_RETRY_MODE        Type of retries performed
-==================== =========== ===================== ===================== ============================
+* ``Default profile name``
 
-The third column, Config Entry, is the value you would specify in the AWS CLI
+  * ``Variable``: profile
+  * ``Option``: --profile
+  * ``Config Entry``: N/A
+  * ``Environment Variable``: AWS_PROFILE       
+
+* ``Default AWS Region``
+
+  * ``Variable``: region
+  * ``Option``: --region   
+  * ``Config Entry``: region
+  * ``Environment Variable``: AWS_DEFAULT_REGION
+
+* ``Default output style``
+
+  * ``Variable``: output
+  * ``Option``: --output   
+  * ``Config Entry``: output
+  * ``Environment Variable``: AWS_DEFAULT_OUTPUT
+
+* ``Output format of timestamps``
+
+  * ``Variable``: cli_timestamp_format
+  * ``Option``: N/A        
+  * ``Config Entry``: cli_timestamp_format
+  * ``Environment Variable``: N/A               
+
+* ``Fetch URL url parameters``
+
+  * ``Variable``: cli_follow_urlparam
+  * ``Option``: N/A        
+  * ``Config Entry``: cli_follow_urlparam
+  * ``Environment Variable``: N/A               
+
+* ``CA Certificate Bundle``
+
+  * ``Variable``: ca_bundle
+  * ``Option``: --ca-bundle
+  * ``Config Entry``: ca_bundle
+  * ``Environment Variable``: AWS_CA_BUNDLE     
+
+* ``Toggles parameter validation``
+
+  * ``Variable``: parameter_validation
+  * ``Option``: N/A        
+  * ``Config Entry``: parameter_validation
+  * ``Environment Variable``: N/A               
+
+* ``Toggles TCP Keep-Alive``
+
+  * ``Variable``: tcp_keepalive
+  * ``Option``: N/A        
+  * ``Config Entry``: tcp_keepalive
+  * ``Environment Variable``: N/A               
+
+* ``Number of total requests``
+
+  * ``Variable``: max_attempts
+  * ``Option``: N/A        
+  * ``Config Entry``: max_attempts
+  * ``Environment Variable``: AWS_MAX_ATTEMPTS  
+
+* ``Type of retries performed``
+
+  * ``Variable``: retry_mode
+  * ``Option``: N/A        
+  * ``Config Entry``: retry_mode
+  * ``Environment Variable``: AWS_RETRY_MODE    
+
+The 'Config Entry' value specifies the name that you can specify in AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
 change this value, you can set the ``AWS_CONFIG_FILE`` environment variable
 to change this location.
@@ -146,21 +192,38 @@ Credentials can be specified in several ways:
 * The AWS Shared Credential File
 * The AWS CLI config file
 
-============================= ============================= ================================= ==============================
-Variable                      Creds/Config Entry            Environment Variable              Description
-============================= ============================= ================================= ==============================
-access_key                    aws_access_key_id             AWS_ACCESS_KEY_ID                 AWS Access Key
------------------------------ ----------------------------- --------------------------------- ------------------------------
-secret_key                    aws_secret_access_key         AWS_SECRET_ACCESS_KEY             AWS Secret Key
------------------------------ ----------------------------- --------------------------------- ------------------------------
-token                         aws_session_token             AWS_SESSION_TOKEN                 AWS Token (temp credentials)
------------------------------ ----------------------------- --------------------------------- ------------------------------
-metadata_service_timeout      metadata_service_timeout      AWS_METADATA_SERVICE_TIMEOUT      EC2 metadata creds timeout
------------------------------ ----------------------------- --------------------------------- ------------------------------
-metadata_service_num_attempts metadata_service_num_attempts AWS_METADATA_SERVICE_NUM_ATTEMPTS EC2 metadata creds retry count
-============================= ============================= ================================= ==============================
 
-The second column specifies the name that you can specify in either the AWS CLI
+* ``AWS Access Key``
+
+  * ``Variable``: access_key        
+  * ``Creds/Config Entry``: aws_access_key_id            
+  * ``Environment Variable``: AWS_ACCESS_KEY_ID
+
+* ``AWS Secret Key``
+
+  * ``Variable``: secret_key                   
+  * ``Creds/Config Entry``: aws_secret_access_key            
+  * ``Environment Variable``: AWS_SECRET_ACCESS_KEY
+
+* ``AWS Token (temp credentials)``
+
+  * ``Variable``: token                        
+  * ``Creds/Config Entry``: aws_session_token            
+  * ``Environment Variable``: AWS_SESSION_TOKEN
+
+* ``EC2 metadata creds timeout``
+
+  * ``Variable``: metadata_service_timeout     
+  * ``Creds/Config Entry``: metadata_service_timeout            
+  * ``Environment Variable``: AWS_METADATA_SERVICE_TIMEOUT
+
+* ``EC2 metadata creds retry count``
+
+  * ``Variable``: metadata_service_num_attempts
+  * ``Creds/Config Entry``: metadata_service_num_attempts 
+  * ``Environment Variable``: AWS_METADATA_SERVICE_NUM_ATTEMPTS
+
+The 'Creds/Config Entry' value specifies the name that you can specify in either the AWS CLI
 config file or the AWS Shared credentials file (``~/.aws/credentials``).
 
 

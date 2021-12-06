@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.21
+=======
+
+* api-change:``route53``: Add PriorRequestNotComplete exception to UpdateHostedZoneComment API
+* api-change:``location``: This release adds support for Accuracy position filtering, position metadata and autocomplete for addresses and points of interest based on partial or misspelled free-form text.
+* api-change:``appsync``: AWS AppSync now supports custom domain names, allowing you to associate a domain name that you own with an AppSync API in your account.
+
+
 1.22.20
 =======
 

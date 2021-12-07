@@ -68,6 +68,9 @@ class FileInfo(object):
         where S3 is the source (the delete will actually succeed, but we do
         not want fail to transfer the file and then successfully delete it).
 
+        GLACIER_IR storage class doesn't require restore. Thus, this method
+        will return True for all operations with GLACIER_IR storage class.
+
         :returns: True if the FileInfo's operation will not fail because the
             operation is on a glacier object. False if it will fail.
         """
@@ -80,11 +83,18 @@ class FileInfo(object):
         return True
 
     def _is_glacier_object(self, response_data):
-        glacier_storage_classes = ['GLACIER', 'DEEP_ARCHIVE']
+        glacier_storage_classes = ['GLACIER', 'DEEP_ARCHIVE', 'GLACIER_IR']
         if response_data:
             if response_data.get('StorageClass') in glacier_storage_classes \
+                    and self._is_restore_required(response_data) \
                     and not self._is_restored(response_data):
                 return True
+        return False
+
+    def _is_restore_required(self, response_data):
+        restore_required_storage_classes = ['GLACIER', 'DEEP_ARCHIVE']
+        if response_data:
+            return response_data.get('StorageClass') in restore_required_storage_classes
         return False
 
     def _is_restored(self, response_data):

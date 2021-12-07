@@ -18,6 +18,27 @@ class TestIsGlacierCompatible(unittest.TestCase):
     def setUp(self):
         self.file_info = FileInfo('bucket/key')
         self.file_info.associated_response_data = {'StorageClass': 'GLACIER'}
+        self._glacier_ir_response_data = {'StorageClass': 'GLACIER_IR'}
+
+    def test_copy_operation_is_glacier_ir_compatible(self):
+        self.file_info.operation_name = 'copy'
+        self.file_info.associated_response_data = self._glacier_ir_response_data
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_download_operation_is_glacier_ir_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = self._glacier_ir_response_data
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_delete_operation_is_glacier_ir_compatible(self):
+        self.file_info.operation_name = 'delete'
+        self.file_info.associated_response_data = self._glacier_ir_response_data
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_move_operation_is_glacier_ir_compatible(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.associated_response_data = self._glacier_ir_response_data
+        self.assertTrue(self.file_info.is_glacier_compatible())
 
     def test_operation_is_glacier_compatible(self):
         self.file_info.operation_name = 'delete'

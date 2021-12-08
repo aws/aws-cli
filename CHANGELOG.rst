@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.22.22
+=======
+
+* api-change:``health``: Documentation updates for AWS Health
+* api-change:``logs``: This release adds AWS Organizations support as condition key in destination policy for cross account Subscriptions in CloudWatch Logs.
+* api-change:``iot``: This release allows customer to enable caching of custom authorizer on HTTP protocol for clients that use persistent or Keep-Alive connection in order to reduce the number of Lambda invocations.
+* api-change:``sagemaker``: This release added a new Ambarella device(amba_cv2) compilation support for Sagemaker Neo.
+* api-change:``outposts``: This release adds the UpdateOutpost API.
+* api-change:``lookoutvision``: This release adds new APIs for packaging an Amazon Lookout for Vision model as an AWS IoT Greengrass component.
+* api-change:``comprehendmedical``: This release adds a new set of APIs (synchronous and batch) to support the SNOMED-CT ontology.
+* api-change:``support``: Documentation updates for AWS Support.
+
+
 1.22.21
 =======
 

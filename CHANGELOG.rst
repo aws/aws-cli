@@ -2917,6 +2917,40 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.23
+=======
+
+* api-change:``savingsplans``: Adds the ability to specify Savings Plans hourly commitments using five digits after the decimal point.
+* api-change:``sms``: This release adds SMS discontinuation information to the API and CLI references.
+* api-change:``ec2``: Adds waiters support for internet gateways.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``route53domains``: Amazon Route 53 domain registration APIs now support filtering and sorting in the ListDomains API, deleting a domain by using the DeleteDomain API and getting domain pricing information by using the ListPrices API.
+* api-change:``route53-recovery-control-config``: This release adds tagging supports to Route53 Recovery Control Configuration. New APIs: TagResource, UntagResource and ListTagsForResource. Updates: add optional field `tags` to support tagging while calling CreateCluster, CreateControlPanel and CreateSafetyRule.
+* api-change:``network-firewall``: This release adds support for managed rule groups.
+* bugfix:s3: Support for S3 Glacer Instant Retrieval storage class.  Fixes `#6587 <https://github.com/aws/aws-cli/issues/6587>`__
+
+
+1.22.22
+=======
+
+* api-change:``health``: Documentation updates for AWS Health
+* api-change:``logs``: This release adds AWS Organizations support as condition key in destination policy for cross account Subscriptions in CloudWatch Logs.
+* api-change:``iot``: This release allows customer to enable caching of custom authorizer on HTTP protocol for clients that use persistent or Keep-Alive connection in order to reduce the number of Lambda invocations.
+* api-change:``sagemaker``: This release added a new Ambarella device(amba_cv2) compilation support for Sagemaker Neo.
+* api-change:``outposts``: This release adds the UpdateOutpost API.
+* api-change:``lookoutvision``: This release adds new APIs for packaging an Amazon Lookout for Vision model as an AWS IoT Greengrass component.
+* api-change:``comprehendmedical``: This release adds a new set of APIs (synchronous and batch) to support the SNOMED-CT ontology.
+* api-change:``support``: Documentation updates for AWS Support.
+
+
+1.22.21
+=======
+
+* api-change:``route53``: Add PriorRequestNotComplete exception to UpdateHostedZoneComment API
+* api-change:``location``: This release adds support for Accuracy position filtering, position metadata and autocomplete for addresses and points of interest based on partial or misspelled free-form text.
+* api-change:``appsync``: AWS AppSync now supports custom domain names, allowing you to associate a domain name that you own with an AppSync API in your account.
+
+
 1.22.20
 =======
 

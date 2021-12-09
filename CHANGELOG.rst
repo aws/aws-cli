@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.22.23
+=======
+
+* api-change:``savingsplans``: Adds the ability to specify Savings Plans hourly commitments using five digits after the decimal point.
+* api-change:``sms``: This release adds SMS discontinuation information to the API and CLI references.
+* api-change:``ec2``: Adds waiters support for internet gateways.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``route53domains``: Amazon Route 53 domain registration APIs now support filtering and sorting in the ListDomains API, deleting a domain by using the DeleteDomain API and getting domain pricing information by using the ListPrices API.
+* api-change:``route53-recovery-control-config``: This release adds tagging supports to Route53 Recovery Control Configuration. New APIs: TagResource, UntagResource and ListTagsForResource. Updates: add optional field `tags` to support tagging while calling CreateCluster, CreateControlPanel and CreateSafetyRule.
+* api-change:``network-firewall``: This release adds support for managed rule groups.
+* bugfix:s3: Support for S3 Glacer Instant Retrieval storage class.  Fixes `#6587 <https://github.com/aws/aws-cli/issues/6587>`__
+
+
 1.22.22
 =======
 

@@ -13,6 +13,22 @@
     "uid":"appsync-2017-07-25"
   },
   "operations":{
+    "AssociateApi":{
+      "name":"AssociateApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/domainnames/{domainName}/apiassociation"
+      },
+      "input":{"shape":"AssociateApiRequest"},
+      "output":{"shape":"AssociateApiResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Maps an endpoint to your custom domain.</p>"
+    },
     "CreateApiCache":{
       "name":"CreateApiCache",
       "http":{
@@ -48,7 +64,7 @@
         {"shape":"ApiKeyLimitExceededException"},
         {"shape":"ApiKeyValidityOutOfBoundsException"}
       ],
-      "documentation":"<p>Creates a unique key that you can distribute to clients who are executing your API.</p>"
+      "documentation":"<p>Creates a unique key that you can distribute to clients who invoke your API.</p>"
     },
     "CreateDataSource":{
       "name":"CreateDataSource",
@@ -67,6 +83,21 @@
       ],
       "documentation":"<p>Creates a <code>DataSource</code> object.</p>"
     },
+    "CreateDomainName":{
+      "name":"CreateDomainName",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/domainnames"
+      },
+      "input":{"shape":"CreateDomainNameRequest"},
+      "output":{"shape":"CreateDomainNameResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a custom <code>DomainName</code> object.</p>"
+    },
     "CreateFunction":{
       "name":"CreateFunction",
       "http":{
@@ -81,7 +112,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a <code>Function</code> object.</p> <p>A function is a reusable entity. Multiple functions can be used to compose the resolver logic.</p>"
+      "documentation":"<p>Creates a <code>Function</code> object.</p> <p>A function is a reusable entity. You can use multiple functions to compose the resolver logic.</p>"
     },
     "CreateGraphqlApi":{
       "name":"CreateGraphqlApi",
@@ -115,7 +146,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a <code>Resolver</code> object.</p> <p>A resolver converts incoming requests into a format that a data source can understand and converts the data source's responses into GraphQL.</p>"
+      "documentation":"<p>Creates a <code>Resolver</code> object.</p> <p>A resolver converts incoming requests into a format that a data source can understand, and converts the data source's responses into GraphQL.</p>"
     },
     "CreateType":{
       "name":"CreateType",
@@ -184,6 +215,23 @@
       ],
       "documentation":"<p>Deletes a <code>DataSource</code> object.</p>"
     },
+    "DeleteDomainName":{
+      "name":"DeleteDomainName",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/domainnames/{domainName}"
+      },
+      "input":{"shape":"DeleteDomainNameRequest"},
+      "output":{"shape":"DeleteDomainNameResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Deletes a custom <code>DomainName</code> object.</p>"
+    },
     "DeleteFunction":{
       "name":"DeleteFunction",
       "http":{
@@ -251,6 +299,23 @@
       ],
       "documentation":"<p>Deletes a <code>Type</code> object.</p>"
     },
+    "DisassociateApi":{
+      "name":"DisassociateApi",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/domainnames/{domainName}/apiassociation"
+      },
+      "input":{"shape":"DisassociateApiRequest"},
+      "output":{"shape":"DisassociateApiResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Removes an <code>ApiAssociation</code> object from a custom domain.</p>"
+    },
     "FlushApiCache":{
       "name":"FlushApiCache",
       "http":{
@@ -267,6 +332,22 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Flushes an <code>ApiCache</code> object.</p>"
+    },
+    "GetApiAssociation":{
+      "name":"GetApiAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/domainnames/{domainName}/apiassociation"
+      },
+      "input":{"shape":"GetApiAssociationRequest"},
+      "output":{"shape":"GetApiAssociationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Retrieves an <code>ApiAssociation</code> object.</p>"
     },
     "GetApiCache":{
       "name":"GetApiCache",
@@ -301,6 +382,22 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Retrieves a <code>DataSource</code> object.</p>"
+    },
+    "GetDomainName":{
+      "name":"GetDomainName",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/domainnames/{domainName}"
+      },
+      "input":{"shape":"GetDomainNameRequest"},
+      "output":{"shape":"GetDomainNameResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a custom <code>DomainName</code> object.</p>"
     },
     "GetFunction":{
       "name":"GetFunction",
@@ -429,6 +526,21 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the data sources for a given API.</p>"
+    },
+    "ListDomainNames":{
+      "name":"ListDomainNames",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/domainnames"
+      },
+      "input":{"shape":"ListDomainNamesRequest"},
+      "output":{"shape":"ListDomainNamesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists multiple custom domain names.</p>"
     },
     "ListFunctions":{
       "name":"ListFunctions",
@@ -614,7 +726,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ApiKeyValidityOutOfBoundsException"}
       ],
-      "documentation":"<p>Updates an API key. The key can be updated while it is not deleted.</p>"
+      "documentation":"<p>Updates an API key. You can update the key as long as it's not deleted.</p>"
     },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
@@ -632,6 +744,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a <code>DataSource</code> object.</p>"
+    },
+    "UpdateDomainName":{
+      "name":"UpdateDomainName",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/domainnames/{domainName}"
+      },
+      "input":{"shape":"UpdateDomainNameRequest"},
+      "output":{"shape":"UpdateDomainNameResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Updates a custom <code>DomainName</code> object.</p>"
     },
     "UpdateFunction":{
       "name":"UpdateFunction",
@@ -707,7 +836,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>You do not have access to perform this operation on this resource.</p>",
+      "documentation":"<p>You don't have access to perform this operation on this resource.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
     },
@@ -716,11 +845,11 @@
       "members":{
         "authenticationType":{
           "shape":"AuthenticationType",
-          "documentation":"<p>The authentication type: API key, Identity and Access Management, OIDC, Amazon Cognito user pools, or Amazon Web Services Lambda.</p>"
+          "documentation":"<p>The authentication type: API key, Identity and Access Management (IAM), OpenID Connect (OIDC), Amazon Cognito user pools, or Lambda.</p>"
         },
         "openIDConnectConfig":{
           "shape":"OpenIDConnectConfig",
-          "documentation":"<p>The OpenID Connect configuration.</p>"
+          "documentation":"<p>The OIDC configuration.</p>"
         },
         "userPoolConfig":{
           "shape":"CognitoUserPoolConfig",
@@ -728,7 +857,7 @@
         },
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
-          "documentation":"<p>Configuration for Amazon Web Services Lambda function authorization.</p>"
+          "documentation":"<p>Configuration for Lambda function authorization.</p>"
         }
       },
       "documentation":"<p>Describes an additional authentication provider.</p>"
@@ -737,12 +866,34 @@
       "type":"list",
       "member":{"shape":"AdditionalAuthenticationProvider"}
     },
+    "ApiAssociation":{
+      "type":"structure",
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>"
+        },
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The API ID.</p>"
+        },
+        "associationStatus":{
+          "shape":"AssociationStatus",
+          "documentation":"<p>Identifies the status of an association.</p> <ul> <li> <p> <b>PROCESSING</b>: The API association is being created. You cannot modify association requests during processing.</p> </li> <li> <p> <b>SUCCESS</b>: The API association was successful. You can modify associations after success.</p> </li> <li> <p> <b>FAILED</b>: The API association has failed. You can modify associations after failure.</p> </li> </ul>"
+        },
+        "deploymentDetail":{
+          "shape":"String",
+          "documentation":"<p>Details about the last deployment status.</p>"
+        }
+      },
+      "documentation":"<p>Describes an <code>ApiAssociation</code> object.</p>"
+    },
     "ApiCache":{
       "type":"structure",
       "members":{
         "ttl":{
           "shape":"Long",
-          "documentation":"<p>TTL in seconds for cache entries.</p> <p>Valid values are between 1 and 3600 seconds.</p>"
+          "documentation":"<p>TTL in seconds for cache entries.</p> <p>Valid values are 1–3,600 seconds.</p>"
         },
         "apiCachingBehavior":{
           "shape":"ApiCachingBehavior",
@@ -750,11 +901,11 @@
         },
         "transitEncryptionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Transit encryption flag when connecting to cache. This setting cannot be updated after creation.</p>"
+          "documentation":"<p>Transit encryption flag when connecting to cache. You cannot update this setting after creation.</p>"
         },
         "atRestEncryptionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>At rest encryption flag for cache. This setting cannot be updated after creation.</p>"
+          "documentation":"<p>At-rest encryption flag for cache. You cannot update this setting after creation.</p>"
         },
         "type":{
           "shape":"ApiCacheType",
@@ -824,7 +975,7 @@
           "documentation":"<p>The time after which the API key is deleted. The date is represented as seconds since the epoch, rounded down to the nearest hour.</p>"
         }
       },
-      "documentation":"<p>Describes an API key.</p> <p>Customers invoke AppSync GraphQL API operations with API keys as an identity mechanism. There are two key versions:</p> <p> <b>da1</b>: This version was introduced at launch in November 2017. These keys always expire after 7 days. Key expiration is managed by Amazon DynamoDB TTL. The keys ceased to be valid after February 21, 2018 and should not be used after that date.</p> <ul> <li> <p> <code>ListApiKeys</code> returns the expiration time in milliseconds.</p> </li> <li> <p> <code>CreateApiKey</code> returns the expiration time in milliseconds.</p> </li> <li> <p> <code>UpdateApiKey</code> is not available for this key version.</p> </li> <li> <p> <code>DeleteApiKey</code> deletes the item from the table.</p> </li> <li> <p>Expiration is stored in Amazon DynamoDB as milliseconds. This results in a bug where keys are not automatically deleted because DynamoDB expects the TTL to be stored in seconds. As a one-time action, we will delete these keys from the table after February 21, 2018.</p> </li> </ul> <p> <b>da2</b>: This version was introduced in February 2018 when AppSync added support to extend key expiration.</p> <ul> <li> <p> <code>ListApiKeys</code> returns the expiration time and deletion time in seconds.</p> </li> <li> <p> <code>CreateApiKey</code> returns the expiration time and deletion time in seconds and accepts a user-provided expiration time in seconds.</p> </li> <li> <p> <code>UpdateApiKey</code> returns the expiration time and and deletion time in seconds and accepts a user-provided expiration time in seconds. Expired API keys are kept for 60 days after the expiration time. Key expiration time can be updated while the key is not deleted. </p> </li> <li> <p> <code>DeleteApiKey</code> deletes the item from the table.</p> </li> <li> <p>Expiration is stored in Amazon DynamoDB as seconds. After the expiration time, using the key to authenticate will fail. But the key can be reinstated before deletion.</p> </li> <li> <p>Deletion is stored in Amazon DynamoDB as seconds. The key will be deleted after deletion time. </p> </li> </ul>"
+      "documentation":"<p>Describes an API key.</p> <p>Customers invoke AppSync GraphQL API operations with API keys as an identity mechanism. There are two key versions:</p> <p> <b>da1</b>: We introduced this version at launch in November 2017. These keys always expire after 7 days. Amazon DynamoDB TTL manages key expiration. These keys ceased to be valid after February 21, 2018, and they should no longer be used.</p> <ul> <li> <p> <code>ListApiKeys</code> returns the expiration time in milliseconds.</p> </li> <li> <p> <code>CreateApiKey</code> returns the expiration time in milliseconds.</p> </li> <li> <p> <code>UpdateApiKey</code> is not available for this key version.</p> </li> <li> <p> <code>DeleteApiKey</code> deletes the item from the table.</p> </li> <li> <p>Expiration is stored in DynamoDB as milliseconds. This results in a bug where keys are not automatically deleted because DynamoDB expects the TTL to be stored in seconds. As a one-time action, we deleted these keys from the table on February 21, 2018.</p> </li> </ul> <p> <b>da2</b>: We introduced this version in February 2018 when AppSync added support to extend key expiration.</p> <ul> <li> <p> <code>ListApiKeys</code> returns the expiration time and deletion time in seconds.</p> </li> <li> <p> <code>CreateApiKey</code> returns the expiration time and deletion time in seconds and accepts a user-provided expiration time in seconds.</p> </li> <li> <p> <code>UpdateApiKey</code> returns the expiration time and and deletion time in seconds and accepts a user-provided expiration time in seconds. Expired API keys are kept for 60 days after the expiration time. You can update the key expiration time as long as the key isn't deleted.</p> </li> <li> <p> <code>DeleteApiKey</code> deletes the item from the table.</p> </li> <li> <p>Expiration is stored in DynamoDB as seconds. After the expiration time, using the key to authenticate will fail. However, you can reinstate the key before deletion.</p> </li> <li> <p>Deletion is stored in DynamoDB as seconds. The key is deleted after deletion time.</p> </li> </ul>"
     },
     "ApiKeyLimitExceededException":{
       "type":"structure",
@@ -857,6 +1008,42 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "AssociateApiRequest":{
+      "type":"structure",
+      "required":[
+        "domainName",
+        "apiId"
+      ],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>",
+          "location":"uri",
+          "locationName":"domainName"
+        },
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The API ID.</p>"
+        }
+      }
+    },
+    "AssociateApiResponse":{
+      "type":"structure",
+      "members":{
+        "apiAssociation":{
+          "shape":"ApiAssociation",
+          "documentation":"<p>The <code>ApiAssociation</code> object.</p>"
+        }
+      }
+    },
+    "AssociationStatus":{
+      "type":"string",
+      "enum":[
+        "PROCESSING",
+        "FAILED",
+        "SUCCESS"
+      ]
+    },
     "AuthenticationType":{
       "type":"string",
       "enum":[
@@ -873,14 +1060,14 @@
       "members":{
         "authorizationType":{
           "shape":"AuthorizationType",
-          "documentation":"<p>The authorization type required by the HTTP endpoint.</p> <ul> <li> <p> <b>AWS_IAM</b>: The authorization type is Sigv4.</p> </li> </ul>"
+          "documentation":"<p>The authorization type that the HTTP endpoint requires.</p> <ul> <li> <p> <b>AWS_IAM</b>: The authorization type is Signature Version 4 (SigV4).</p> </li> </ul>"
         },
         "awsIamConfig":{
           "shape":"AwsIamConfig",
-          "documentation":"<p>The Identity and Access Management settings.</p>"
+          "documentation":"<p>The Identity and Access Management (IAM) settings.</p>"
         }
       },
-      "documentation":"<p>The authorization config in case the HTTP endpoint requires authorization.</p>"
+      "documentation":"<p>The authorization configuration in case the HTTP endpoint requires authorization.</p>"
     },
     "AuthorizationType":{
       "type":"string",
@@ -891,21 +1078,21 @@
       "members":{
         "signingRegion":{
           "shape":"String",
-          "documentation":"<p>The signing region for Identity and Access Management authorization.</p>"
+          "documentation":"<p>The signing Amazon Web Services Region for IAM authorization.</p>"
         },
         "signingServiceName":{
           "shape":"String",
-          "documentation":"<p>The signing service name for Identity and Access Management authorization.</p>"
+          "documentation":"<p>The signing service name for IAM authorization.</p>"
         }
       },
-      "documentation":"<p>The Identity and Access Management configuration.</p>"
+      "documentation":"<p>The Identity and Access Management (IAM) configuration.</p>"
     },
     "BadRequestException":{
       "type":"structure",
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The request is not well formed. For example, a value is invalid or a required field is missing. Check the field values, and then try again. </p>",
+      "documentation":"<p>The request is not well formed. For example, a value is invalid or a required field is missing. Check the field values, and then try again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -917,18 +1104,24 @@
       "members":{
         "ttl":{
           "shape":"Long",
-          "documentation":"<p>The TTL in seconds for a resolver that has caching enabled.</p> <p>Valid values are between 1 and 3600 seconds.</p>"
+          "documentation":"<p>The TTL in seconds for a resolver that has caching activated.</p> <p>Valid values are 1–3,600 seconds.</p>"
         },
         "cachingKeys":{
           "shape":"CachingKeys",
-          "documentation":"<p>The caching keys for a resolver that has caching enabled.</p> <p>Valid values are entries from the <code>$context.arguments</code>, <code>$context.source</code>, and <code>$context.identity</code> maps.</p>"
+          "documentation":"<p>The caching keys for a resolver that has caching activated.</p> <p>Valid values are entries from the <code>$context.arguments</code>, <code>$context.source</code>, and <code>$context.identity</code> maps.</p>"
         }
       },
-      "documentation":"<p>The caching configuration for a resolver that has caching enabled.</p>"
+      "documentation":"<p>The caching configuration for a resolver that has caching activated.</p>"
     },
     "CachingKeys":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "CertificateArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[a-z-]*:(acm|iam):[a-z0-9-]*:\\d{12}:(certificate|server-certificate)/[0-9A-Za-z_/-]*$"
     },
     "CognitoUserPoolConfig":{
       "type":"structure",
@@ -957,7 +1150,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Another modification is in progress at this time and it must complete before you can make your change. </p>",
+      "documentation":"<p>Another modification is in progress at this time and it must complete before you can make your change.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -988,21 +1181,21 @@
       "members":{
         "apiId":{
           "shape":"String",
-          "documentation":"<p>The GraphQL API Id.</p>",
+          "documentation":"<p>The GraphQL API ID.</p>",
           "location":"uri",
           "locationName":"apiId"
         },
         "ttl":{
           "shape":"Long",
-          "documentation":"<p>TTL in seconds for cache entries.</p> <p>Valid values are between 1 and 3600 seconds.</p>"
+          "documentation":"<p>TTL in seconds for cache entries.</p> <p>Valid values are 1–3,600 seconds.</p>"
         },
         "transitEncryptionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Transit encryption flag when connecting to cache. This setting cannot be updated after creation.</p>"
+          "documentation":"<p>Transit encryption flag when connecting to cache. You cannot update this setting after creation.</p>"
         },
         "atRestEncryptionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>At rest encryption flag for cache. This setting cannot be updated after creation.</p>"
+          "documentation":"<p>At-rest encryption flag for cache. You cannot update this setting after creation.</p>"
         },
         "apiCachingBehavior":{
           "shape":"ApiCachingBehavior",
@@ -1041,7 +1234,7 @@
         },
         "expires":{
           "shape":"Long",
-          "documentation":"<p>The time from creation time after which the API key expires. The date is represented as seconds since the epoch, rounded down to the nearest hour. The default value for this parameter is 7 days from creation time. For more information, see .</p>"
+          "documentation":"<p>From the creation time, the time after which the API key expires. The date is represented as seconds since the epoch, rounded down to the nearest hour. The default value for this parameter is 7 days from creation time. For more information, see .</p>"
         }
       }
     },
@@ -1082,7 +1275,7 @@
         },
         "serviceRoleArn":{
           "shape":"String",
-          "documentation":"<p>The Identity and Access Management service role ARN for the data source. The system assumes this role when accessing the data source.</p>"
+          "documentation":"<p>The Identity and Access Management (IAM) service role Amazon Resource Name (ARN) for the data source. The system assumes this role when accessing the data source.</p>"
         },
         "dynamodbConfig":{
           "shape":"DynamodbDataSourceConfig",
@@ -1090,7 +1283,7 @@
         },
         "lambdaConfig":{
           "shape":"LambdaDataSourceConfig",
-          "documentation":"<p>Amazon Web Services Lambda settings.</p>"
+          "documentation":"<p>Lambda settings.</p>"
         },
         "elasticsearchConfig":{
           "shape":"ElasticsearchDataSourceConfig",
@@ -1116,6 +1309,36 @@
         "dataSource":{
           "shape":"DataSource",
           "documentation":"<p>The <code>DataSource</code> object.</p>"
+        }
+      }
+    },
+    "CreateDomainNameRequest":{
+      "type":"structure",
+      "required":[
+        "domainName",
+        "certificateArn"
+      ],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>"
+        },
+        "certificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate. This can be an Certificate Manager (ACM) certificate or an Identity and Access Management (IAM) server certificate.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the <code>DomainName</code>.</p>"
+        }
+      }
+    },
+    "CreateDomainNameResponse":{
+      "type":"structure",
+      "members":{
+        "domainNameConfig":{
+          "shape":"DomainNameConfig",
+          "documentation":"<p>The configuration for the <code>DomainName</code>.</p>"
         }
       }
     },
@@ -1152,11 +1375,11 @@
         },
         "responseMappingTemplate":{
           "shape":"MappingTemplate",
-          "documentation":"<p>The <code>Function</code> response mapping template. </p>"
+          "documentation":"<p>The <code>Function</code> response mapping template.</p>"
         },
         "functionVersion":{
           "shape":"String",
-          "documentation":"<p>The <code>version</code> of the request mapping template. Currently the supported value is 2018-05-29. </p>"
+          "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29.</p>"
         },
         "syncConfig":{"shape":"SyncConfig"}
       }
@@ -1187,7 +1410,7 @@
         },
         "authenticationType":{
           "shape":"AuthenticationType",
-          "documentation":"<p>The authentication type: API key, Identity and Access Management, OIDC, Amazon Cognito user pools, or Amazon Web Services Lambda.</p>"
+          "documentation":"<p>The authentication type: API key, Identity and Access Management (IAM), OpenID Connect (OIDC), Amazon Cognito user pools, or Lambda.</p>"
         },
         "userPoolConfig":{
           "shape":"UserPoolConfig",
@@ -1195,7 +1418,7 @@
         },
         "openIDConnectConfig":{
           "shape":"OpenIDConnectConfig",
-          "documentation":"<p>The OpenID Connect configuration.</p>"
+          "documentation":"<p>The OIDC configuration.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1207,11 +1430,11 @@
         },
         "xrayEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>A flag indicating whether to enable X-Ray tracing for the <code>GraphqlApi</code>.</p>"
+          "documentation":"<p>A flag indicating whether to use X-Ray tracing for the <code>GraphqlApi</code>.</p>"
         },
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
-          "documentation":"<p>Configuration for Amazon Web Services Lambda function authorization.</p>"
+          "documentation":"<p>Configuration for Lambda function authorization.</p>"
         }
       }
     },
@@ -1254,15 +1477,15 @@
         },
         "requestMappingTemplate":{
           "shape":"MappingTemplate",
-          "documentation":"<p>The mapping template to be used for requests.</p> <p>A resolver uses a request mapping template to convert a GraphQL expression into a format that a data source can understand. Mapping templates are written in Apache Velocity Template Language (VTL).</p> <p>VTL request mapping templates are optional when using a Lambda data source. For all other data sources, VTL request and response mapping templates are required.</p>"
+          "documentation":"<p>The mapping template to use for requests.</p> <p>A resolver uses a request mapping template to convert a GraphQL expression into a format that a data source can understand. Mapping templates are written in Apache Velocity Template Language (VTL).</p> <p>VTL request mapping templates are optional when using an Lambda data source. For all other data sources, VTL request and response mapping templates are required.</p>"
         },
         "responseMappingTemplate":{
           "shape":"MappingTemplate",
-          "documentation":"<p>The mapping template to be used for responses from the data source.</p>"
+          "documentation":"<p>The mapping template to use for responses from the data source.</p>"
         },
         "kind":{
           "shape":"ResolverKind",
-          "documentation":"<p>The resolver type.</p> <ul> <li> <p> <b>UNIT</b>: A UNIT resolver type. A UNIT resolver is the default resolver type. A UNIT resolver enables you to execute a GraphQL query against a single data source.</p> </li> <li> <p> <b>PIPELINE</b>: A PIPELINE resolver type. A PIPELINE resolver enables you to execute a series of <code>Function</code> in a serial manner. You can use a pipeline resolver to execute a GraphQL query against multiple data sources.</p> </li> </ul>"
+          "documentation":"<p>The resolver type.</p> <ul> <li> <p> <b>UNIT</b>: A UNIT resolver type. A UNIT resolver is the default resolver type. You can use a UNIT resolver to run a GraphQL query against a single data source.</p> </li> <li> <p> <b>PIPELINE</b>: A PIPELINE resolver type. You can use a PIPELINE resolver to invoke a series of <code>Function</code> objects in a serial manner. You can use a pipeline resolver to run a GraphQL query against multiple data sources.</p> </li> </ul>"
         },
         "pipelineConfig":{
           "shape":"PipelineConfig",
@@ -1270,7 +1493,7 @@
         },
         "syncConfig":{
           "shape":"SyncConfig",
-          "documentation":"<p>The <code>SyncConfig</code> for a resolver attached to a versioned datasource.</p>"
+          "documentation":"<p>The <code>SyncConfig</code> for a resolver attached to a versioned data source.</p>"
         },
         "cachingConfig":{
           "shape":"CachingConfig",
@@ -1325,7 +1548,7 @@
       "members":{
         "dataSourceArn":{
           "shape":"String",
-          "documentation":"<p>The data source ARN.</p>"
+          "documentation":"<p>The data source Amazon Resource Name (ARN).</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -1337,19 +1560,19 @@
         },
         "type":{
           "shape":"DataSourceType",
-          "documentation":"<p>The type of the data source.</p> <ul> <li> <p> <b>AWS_LAMBDA</b>: The data source is an Amazon Web Services Lambda function.</p> </li> <li> <p> <b>AMAZON_DYNAMODB</b>: The data source is an Amazon DynamoDB table.</p> </li> <li> <p> <b>AMAZON_ELASTICSEARCH</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>AMAZON_OPENSEARCH_SERVICE</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>NONE</b>: There is no data source. This type is used when you wish to invoke a GraphQL operation without connecting to a data source, such as performing data transformation with resolvers or triggering a subscription to be invoked from a mutation.</p> </li> <li> <p> <b>HTTP</b>: The data source is an HTTP endpoint.</p> </li> <li> <p> <b>RELATIONAL_DATABASE</b>: The data source is a relational database.</p> </li> </ul>"
+          "documentation":"<p>The type of the data source.</p> <ul> <li> <p> <b>AWS_LAMBDA</b>: The data source is an Lambda function.</p> </li> <li> <p> <b>AMAZON_DYNAMODB</b>: The data source is an Amazon DynamoDB table.</p> </li> <li> <p> <b>AMAZON_ELASTICSEARCH</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>AMAZON_OPENSEARCH_SERVICE</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>NONE</b>: There is no data source. Use this type when you want to invoke a GraphQL operation without connecting to a data source, such as when you're performing data transformation with resolvers or invoking a subscription from a mutation.</p> </li> <li> <p> <b>HTTP</b>: The data source is an HTTP endpoint.</p> </li> <li> <p> <b>RELATIONAL_DATABASE</b>: The data source is a relational database.</p> </li> </ul>"
         },
         "serviceRoleArn":{
           "shape":"String",
-          "documentation":"<p>The Identity and Access Management service role ARN for the data source. The system assumes this role when accessing the data source.</p>"
+          "documentation":"<p>The Identity and Access Management (IAM) service role Amazon Resource Name (ARN) for the data source. The system assumes this role when accessing the data source.</p>"
         },
         "dynamodbConfig":{
           "shape":"DynamodbDataSourceConfig",
-          "documentation":"<p>Amazon DynamoDB settings.</p>"
+          "documentation":"<p>DynamoDB settings.</p>"
         },
         "lambdaConfig":{
           "shape":"LambdaDataSourceConfig",
-          "documentation":"<p>Amazon Web Services Lambda settings.</p>"
+          "documentation":"<p>Lambda settings.</p>"
         },
         "elasticsearchConfig":{
           "shape":"ElasticsearchDataSourceConfig",
@@ -1464,6 +1687,23 @@
       "members":{
       }
     },
+    "DeleteDomainNameRequest":{
+      "type":"structure",
+      "required":["domainName"],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>",
+          "location":"uri",
+          "locationName":"domainName"
+        }
+      }
+    },
+    "DeleteDomainNameResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteFunctionRequest":{
       "type":"structure",
       "required":[
@@ -1571,7 +1811,7 @@
       "members":{
         "baseTableTTL":{
           "shape":"Long",
-          "documentation":"<p>The number of minutes an Item is stored in the datasource.</p>"
+          "documentation":"<p>The number of minutes that an Item is stored in the data source.</p>"
         },
         "deltaSyncTableName":{
           "shape":"String",
@@ -1579,10 +1819,69 @@
         },
         "deltaSyncTableTTL":{
           "shape":"Long",
-          "documentation":"<p>The number of minutes a Delta Sync log entry is stored in the Delta Sync table.</p>"
+          "documentation":"<p>The number of minutes that a Delta Sync log entry is stored in the Delta Sync table.</p>"
         }
       },
       "documentation":"<p>Describes a Delta Sync configuration.</p>"
+    },
+    "Description":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "DisassociateApiRequest":{
+      "type":"structure",
+      "required":["domainName"],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>",
+          "location":"uri",
+          "locationName":"domainName"
+        }
+      }
+    },
+    "DisassociateApiResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DomainName":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"^(\\*[\\w\\d-]*\\.)?([\\w\\d-]+\\.)+[\\w\\d-]+$"
+    },
+    "DomainNameConfig":{
+      "type":"structure",
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the <code>DomainName</code> configuration.</p>"
+        },
+        "certificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate. This can be an Certificate Manager (ACM) certificate or an Identity and Access Management (IAM) server certificate.</p>"
+        },
+        "appsyncDomainName":{
+          "shape":"String",
+          "documentation":"<p>The domain name that AppSync provides.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of your Amazon Route 53 hosted zone.</p>"
+        }
+      },
+      "documentation":"<p>Describes a configuration for a custom domain.</p>"
+    },
+    "DomainNameConfigs":{
+      "type":"list",
+      "member":{"shape":"DomainNameConfig"}
     },
     "DynamodbDataSourceConfig":{
       "type":"structure",
@@ -1605,7 +1904,7 @@
         },
         "deltaSyncConfig":{
           "shape":"DeltaSyncConfig",
-          "documentation":"<p>The <code>DeltaSyncConfig</code> for a versioned datasource.</p>"
+          "documentation":"<p>The <code>DeltaSyncConfig</code> for a versioned data source.</p>"
         },
         "versioned":{
           "shape":"Boolean",
@@ -1669,7 +1968,7 @@
         },
         "functionArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the <code>Function</code> object.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the <code>Function</code> object.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -1693,11 +1992,11 @@
         },
         "functionVersion":{
           "shape":"String",
-          "documentation":"<p>The version of the request mapping template. Currently only the 2018-05-29 version of the template is supported.</p>"
+          "documentation":"<p>The version of the request mapping template. Currently, only the 2018-05-29 version of the template is supported.</p>"
         },
         "syncConfig":{"shape":"SyncConfig"}
       },
-      "documentation":"<p>A function is a reusable entity. Multiple functions can be used to compose the resolver logic.</p>"
+      "documentation":"<p>A function is a reusable entity. You can use multiple functions to compose the resolver logic.</p>"
     },
     "Functions":{
       "type":"list",
@@ -1706,6 +2005,27 @@
     "FunctionsIds":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "GetApiAssociationRequest":{
+      "type":"structure",
+      "required":["domainName"],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>",
+          "location":"uri",
+          "locationName":"domainName"
+        }
+      }
+    },
+    "GetApiAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "apiAssociation":{
+          "shape":"ApiAssociation",
+          "documentation":"<p>The <code>ApiAssociation</code> object.</p>"
+        }
+      }
     },
     "GetApiCacheRequest":{
       "type":"structure",
@@ -1757,6 +2077,27 @@
         "dataSource":{
           "shape":"DataSource",
           "documentation":"<p>The <code>DataSource</code> object.</p>"
+        }
+      }
+    },
+    "GetDomainNameRequest":{
+      "type":"structure",
+      "required":["domainName"],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>",
+          "location":"uri",
+          "locationName":"domainName"
+        }
+      }
+    },
+    "GetDomainNameResponse":{
+      "type":"structure",
+      "members":{
+        "domainNameConfig":{
+          "shape":"DomainNameConfig",
+          "documentation":"<p>The configuration for the <code>DomainName</code>.</p>"
         }
       }
     },
@@ -1985,7 +2326,7 @@
         },
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN).</p>"
         },
         "uris":{
           "shape":"MapOfStringToString",
@@ -2001,15 +2342,15 @@
         },
         "xrayEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>A flag representing whether X-Ray tracing is enabled for this <code>GraphqlApi</code>.</p>"
+          "documentation":"<p>A flag indicating whether to use X-Ray tracing for this <code>GraphqlApi</code>.</p>"
         },
         "wafWebAclArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the WAF ACL associated with this <code>GraphqlApi</code>, if one exists.</p>"
+          "documentation":"<p>The ARN of the WAF access control list (ACL) associated with this <code>GraphqlApi</code>, if one exists.</p>"
         },
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
-          "documentation":"<p>Configuration for Amazon Web Services Lambda function authorization.</p>"
+          "documentation":"<p>Configuration for Lambda function authorization.</p>"
         }
       },
       "documentation":"<p>Describes a GraphQL API.</p>"
@@ -2023,11 +2364,11 @@
       "members":{
         "endpoint":{
           "shape":"String",
-          "documentation":"<p>The HTTP URL endpoint. You can either specify the domain name or IP, and port combination, and the URL scheme must be HTTP or HTTPS. If the port is not specified, AppSync uses the default port 80 for the HTTP endpoint and port 443 for HTTPS endpoints.</p>"
+          "documentation":"<p>The HTTP URL endpoint. You can specify either the domain name or IP, and port combination, and the URL scheme must be HTTP or HTTPS. If you don't specify the port, AppSync uses the default port 80 for the HTTP endpoint and port 443 for HTTPS endpoints.</p>"
         },
         "authorizationConfig":{
           "shape":"AuthorizationConfig",
-          "documentation":"<p>The authorization config in case the HTTP endpoint requires authorization.</p>"
+          "documentation":"<p>The authorization configuration in case the HTTP endpoint requires authorization.</p>"
         }
       },
       "documentation":"<p>Describes an HTTP data source configuration.</p>"
@@ -2052,24 +2393,24 @@
         },
         "authorizerUri":{
           "shape":"String",
-          "documentation":"<p>The ARN of the Lambda function to be called for authorization. This may be a standard Lambda ARN, a version ARN (<code>.../v3</code>) or alias ARN. </p> <p> <i>Note</i>: This Lambda function must have the following resource-based policy assigned to it. When configuring Lambda authorizers in the Console, this is done for you. To do so with the Amazon Web Services CLI, run the following:</p> <p> <code>aws lambda add-permission --function-name \"arn:aws:lambda:us-east-2:111122223333:function:my-function\" --statement-id \"appsync\" --principal appsync.amazonaws.com --action lambda:InvokeFunction</code> </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function to be called for authorization. This can be a standard Lambda ARN, a version ARN (<code>.../v3</code>), or an alias ARN. </p> <p> <b>Note</b>: This Lambda function must have the following resource-based policy assigned to it. When configuring Lambda authorizers in the console, this is done for you. To use the Command Line Interface (CLI), run the following:</p> <p> <code>aws lambda add-permission --function-name \"arn:aws:lambda:us-east-2:111122223333:function:my-function\" --statement-id \"appsync\" --principal appsync.amazonaws.com --action lambda:InvokeFunction</code> </p>"
         },
         "identityValidationExpression":{
           "shape":"String",
           "documentation":"<p>A regular expression for validation of tokens before the Lambda function is called.</p>"
         }
       },
-      "documentation":"<p>A <code>LambdaAuthorizerConfig</code> holds configuration on how to authorize AppSync API access when using the <code>AWS_LAMBDA</code> authorizer mode. Be aware that an AppSync API may have only one Lambda authorizer configured at a time.</p>"
+      "documentation":"<p>A <code>LambdaAuthorizerConfig</code> specifies how to authorize AppSync API access when using the <code>AWS_LAMBDA</code> authorizer mode. Be aware that an AppSync API can have only one Lambda authorizer configured at a time.</p>"
     },
     "LambdaConflictHandlerConfig":{
       "type":"structure",
       "members":{
         "lambdaConflictHandlerArn":{
           "shape":"String",
-          "documentation":"<p>The Arn for the Lambda function to use as the Conflict Handler.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Lambda function to use as the Conflict Handler.</p>"
         }
       },
-      "documentation":"<p>The <code>LambdaConflictHandlerConfig</code> object when configuring LAMBDA as the Conflict Handler.</p>"
+      "documentation":"<p>The <code>LambdaConflictHandlerConfig</code> object when configuring <code>LAMBDA</code> as the Conflict Handler.</p>"
     },
     "LambdaDataSourceConfig":{
       "type":"structure",
@@ -2077,10 +2418,10 @@
       "members":{
         "lambdaFunctionArn":{
           "shape":"String",
-          "documentation":"<p>The ARN for the Lambda function.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Lambda function.</p>"
         }
       },
-      "documentation":"<p>Describes an Amazon Web Services Lambda data source configuration.</p>"
+      "documentation":"<p>Describes an Lambda data source configuration.</p>"
     },
     "LimitExceededException":{
       "type":"structure",
@@ -2103,13 +2444,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2124,7 +2465,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier to be passed in the next request to this operation to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier to pass in the next request to this operation to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2140,13 +2481,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list. </p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2161,7 +2502,37 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier to be passed in the next request to this operation to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier to pass in the next request to this operation to return the next set of items in the list.</p>"
+        }
+      }
+    },
+    "ListDomainNamesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The API token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListDomainNamesResponse":{
+      "type":"structure",
+      "members":{
+        "domainNameConfigs":{
+          "shape":"DomainNameConfigs",
+          "documentation":"<p>Lists configurations for multiple domain names.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The API token.</p>"
         }
       }
     },
@@ -2177,13 +2548,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2198,7 +2569,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2207,13 +2578,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list. </p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2228,7 +2599,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier to be passed in the next request to this operation to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier to pass in the next request to this operation to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2247,7 +2618,7 @@
         },
         "functionId":{
           "shape":"String",
-          "documentation":"<p>The Function ID.</p>",
+          "documentation":"<p>The function ID.</p>",
           "location":"uri",
           "locationName":"functionId"
         },
@@ -2259,7 +2630,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2274,7 +2645,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that can be used to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier that you can use to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2299,13 +2670,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list. </p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2320,7 +2691,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier to be passed in the next request to this operation to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier to pass in the next request to this operation to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2330,7 +2701,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The <code>GraphqlApi</code> ARN.</p>",
+          "documentation":"<p>The <code>GraphqlApi</code> Amazon Resource Name (ARN).</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -2366,13 +2737,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list. </p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results you want the request to return.</p>",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -2387,7 +2758,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>An identifier to be passed in the next request to this operation to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier to pass in the next request to this operation to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2400,18 +2771,18 @@
       "members":{
         "fieldLogLevel":{
           "shape":"FieldLogLevel",
-          "documentation":"<p>The field logging level. Values can be NONE, ERROR, or ALL. </p> <ul> <li> <p> <b>NONE</b>: No field-level logs are captured.</p> </li> <li> <p> <b>ERROR</b>: Logs the following information only for the fields that are in error:</p> <ul> <li> <p>The error section in the server response.</p> </li> <li> <p>Field-level errors.</p> </li> <li> <p>The generated request/response functions that got resolved for error fields.</p> </li> </ul> </li> <li> <p> <b>ALL</b>: The following information is logged for all fields in the query:</p> <ul> <li> <p>Field-level tracing information.</p> </li> <li> <p>The generated request/response functions that got resolved for each field.</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The field logging level. Values can be NONE, ERROR, or ALL.</p> <ul> <li> <p> <b>NONE</b>: No field-level logs are captured.</p> </li> <li> <p> <b>ERROR</b>: Logs the following information only for the fields that are in error:</p> <ul> <li> <p>The error section in the server response.</p> </li> <li> <p>Field-level errors.</p> </li> <li> <p>The generated request/response functions that got resolved for error fields.</p> </li> </ul> </li> <li> <p> <b>ALL</b>: The following information is logged for all fields in the query:</p> <ul> <li> <p>Field-level tracing information.</p> </li> <li> <p>The generated request/response functions that got resolved for each field.</p> </li> </ul> </li> </ul>"
         },
         "cloudWatchLogsRoleArn":{
           "shape":"String",
-          "documentation":"<p>The service role that AppSync will assume to publish to Amazon CloudWatch logs in your account. </p>"
+          "documentation":"<p>The service role that AppSync assumes to publish to CloudWatch logs in your account.</p>"
         },
         "excludeVerboseContent":{
           "shape":"Boolean",
           "documentation":"<p>Set to TRUE to exclude sections that contain information such as headers, context, and evaluated mapping templates, regardless of logging level.</p>"
         }
       },
-      "documentation":"<p>The CloudWatch Logs configuration.</p>"
+      "documentation":"<p>The Amazon CloudWatch Logs configuration.</p>"
     },
     "Long":{"type":"long"},
     "MapOfStringToString":{
@@ -2444,22 +2815,22 @@
       "members":{
         "issuer":{
           "shape":"String",
-          "documentation":"<p>The issuer for the OpenID Connect configuration. The issuer returned by discovery must exactly match the value of <code>iss</code> in the ID token.</p>"
+          "documentation":"<p>The issuer for the OIDC configuration. The issuer returned by discovery must exactly match the value of <code>iss</code> in the ID token.</p>"
         },
         "clientId":{
           "shape":"String",
-          "documentation":"<p>The client identifier of the Relying party at the OpenID identity provider. This identifier is typically obtained when the Relying party is registered with the OpenID identity provider. You can specify a regular expression so the AppSync can validate against multiple client identifiers at a time.</p>"
+          "documentation":"<p>The client identifier of the relying party at the OpenID identity provider. This identifier is typically obtained when the relying party is registered with the OpenID identity provider. You can specify a regular expression so that AppSync can validate against multiple client identifiers at a time.</p>"
         },
         "iatTTL":{
           "shape":"Long",
-          "documentation":"<p>The number of milliseconds a token is valid after being issued to a user.</p>"
+          "documentation":"<p>The number of milliseconds that a token is valid after it's issued to a user.</p>"
         },
         "authTTL":{
           "shape":"Long",
-          "documentation":"<p>The number of milliseconds a token is valid after being authenticated.</p>"
+          "documentation":"<p>The number of milliseconds that a token is valid after being authenticated.</p>"
         }
       },
-      "documentation":"<p>Describes an OpenID Connect configuration.</p>"
+      "documentation":"<p>Describes an OpenID Connect (OIDC) configuration.</p>"
     },
     "OpenSearchServiceDataSourceConfig":{
       "type":"structure",
@@ -2507,11 +2878,11 @@
       "members":{
         "awsRegion":{
           "shape":"String",
-          "documentation":"<p>Amazon Web Services Region for RDS HTTP endpoint.</p>"
+          "documentation":"<p>Amazon Web Services Region for Amazon RDS HTTP endpoint.</p>"
         },
         "dbClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>Amazon RDS cluster ARN.</p>"
+          "documentation":"<p>Amazon RDS cluster Amazon Resource Name (ARN).</p>"
         },
         "databaseName":{
           "shape":"String",
@@ -2523,17 +2894,17 @@
         },
         "awsSecretStoreArn":{
           "shape":"String",
-          "documentation":"<p>Amazon Web Services secret store ARN for database credentials.</p>"
+          "documentation":"<p>Amazon Web Services secret store Amazon Resource Name (ARN) for database credentials.</p>"
         }
       },
-      "documentation":"<p>The Amazon RDS HTTP endpoint configuration.</p>"
+      "documentation":"<p>The Amazon Relational Database Service (Amazon RDS) HTTP endpoint configuration.</p>"
     },
     "RelationalDatabaseDataSourceConfig":{
       "type":"structure",
       "members":{
         "relationalDatabaseSourceType":{
           "shape":"RelationalDatabaseSourceType",
-          "documentation":"<p>Source type for the relational database.</p> <ul> <li> <p> <b>RDS_HTTP_ENDPOINT</b>: The relational database source type is an Amazon RDS HTTP endpoint.</p> </li> </ul>"
+          "documentation":"<p>Source type for the relational database.</p> <ul> <li> <p> <b>RDS_HTTP_ENDPOINT</b>: The relational database source type is an Amazon Relational Database Service (Amazon RDS) HTTP endpoint.</p> </li> </ul>"
         },
         "rdsHttpEndpointConfig":{
           "shape":"RdsHttpEndpointConfig",
@@ -2563,7 +2934,7 @@
         },
         "resolverArn":{
           "shape":"String",
-          "documentation":"<p>The resolver ARN.</p>"
+          "documentation":"<p>The resolver Amazon Resource Name (ARN).</p>"
         },
         "requestMappingTemplate":{
           "shape":"MappingTemplate",
@@ -2575,7 +2946,7 @@
         },
         "kind":{
           "shape":"ResolverKind",
-          "documentation":"<p>The resolver type.</p> <ul> <li> <p> <b>UNIT</b>: A UNIT resolver type. A UNIT resolver is the default resolver type. A UNIT resolver enables you to execute a GraphQL query against a single data source.</p> </li> <li> <p> <b>PIPELINE</b>: A PIPELINE resolver type. A PIPELINE resolver enables you to execute a series of <code>Function</code> in a serial manner. You can use a pipeline resolver to execute a GraphQL query against multiple data sources.</p> </li> </ul>"
+          "documentation":"<p>The resolver type.</p> <ul> <li> <p> <b>UNIT</b>: A UNIT resolver type. A UNIT resolver is the default resolver type. You can use a UNIT resolver to run a GraphQL query against a single data source.</p> </li> <li> <p> <b>PIPELINE</b>: A PIPELINE resolver type. You can use a PIPELINE resolver to invoke a series of <code>Function</code> objects in a serial manner. You can use a pipeline resolver to run a GraphQL query against multiple data sources.</p> </li> </ul>"
         },
         "pipelineConfig":{
           "shape":"PipelineConfig",
@@ -2583,7 +2954,7 @@
         },
         "syncConfig":{
           "shape":"SyncConfig",
-          "documentation":"<p>The <code>SyncConfig</code> for a resolver attached to a versioned datasource.</p>"
+          "documentation":"<p>The <code>SyncConfig</code> for a resolver attached to a versioned data source.</p>"
         },
         "cachingConfig":{
           "shape":"CachingConfig",
@@ -2660,18 +3031,18 @@
       "members":{
         "conflictHandler":{
           "shape":"ConflictHandlerType",
-          "documentation":"<p>The Conflict Resolution strategy to perform in the event of a conflict.</p> <ul> <li> <p> <b>OPTIMISTIC_CONCURRENCY</b>: Resolve conflicts by rejecting mutations when versions do not match the latest version at the server.</p> </li> <li> <p> <b>AUTOMERGE</b>: Resolve conflicts with the Automerge conflict resolution strategy.</p> </li> <li> <p> <b>LAMBDA</b>: Resolve conflicts with a Lambda function supplied in the LambdaConflictHandlerConfig.</p> </li> </ul>"
+          "documentation":"<p>The Conflict Resolution strategy to perform in the event of a conflict.</p> <ul> <li> <p> <b>OPTIMISTIC_CONCURRENCY</b>: Resolve conflicts by rejecting mutations when versions don't match the latest version at the server.</p> </li> <li> <p> <b>AUTOMERGE</b>: Resolve conflicts with the Automerge conflict resolution strategy.</p> </li> <li> <p> <b>LAMBDA</b>: Resolve conflicts with an Lambda function supplied in the <code>LambdaConflictHandlerConfig</code>.</p> </li> </ul>"
         },
         "conflictDetection":{
           "shape":"ConflictDetectionType",
-          "documentation":"<p>The Conflict Detection strategy to use.</p> <ul> <li> <p> <b>VERSION</b>: Detect conflicts based on object versions for this resolver.</p> </li> <li> <p> <b>NONE</b>: Do not detect conflicts when executing this resolver.</p> </li> </ul>"
+          "documentation":"<p>The Conflict Detection strategy to use.</p> <ul> <li> <p> <b>VERSION</b>: Detect conflicts based on object versions for this resolver.</p> </li> <li> <p> <b>NONE</b>: Do not detect conflicts when invoking this resolver.</p> </li> </ul>"
         },
         "lambdaConflictHandlerConfig":{
           "shape":"LambdaConflictHandlerConfig",
-          "documentation":"<p>The <code>LambdaConflictHandlerConfig</code> when configuring LAMBDA as the Conflict Handler.</p>"
+          "documentation":"<p>The <code>LambdaConflictHandlerConfig</code> when configuring <code>LAMBDA</code> as the Conflict Handler.</p>"
         }
       },
-      "documentation":"<p>Describes a Sync configuration for a resolver.</p> <p>Contains information on which Conflict Detection as well as Resolution strategy should be performed when the resolver is invoked.</p>"
+      "documentation":"<p>Describes a Sync configuration for a resolver.</p> <p>Specifies which Conflict Detection strategy and Resolution strategy to use when the resolver is invoked.</p>"
     },
     "TTL":{
       "type":"integer",
@@ -2708,7 +3079,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The <code>GraphqlApi</code> ARN.</p>",
+          "documentation":"<p>The <code>GraphqlApi</code> Amazon Resource Name (ARN).</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -2741,7 +3112,7 @@
         },
         "arn":{
           "shape":"String",
-          "documentation":"<p>The type ARN.</p>"
+          "documentation":"<p>The type Amazon Resource Name (ARN).</p>"
         },
         "definition":{
           "shape":"String",
@@ -2770,7 +3141,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>You are not authorized to perform this operation.</p>",
+      "documentation":"<p>You aren't authorized to perform this operation.</p>",
       "error":{"httpStatusCode":401},
       "exception":true
     },
@@ -2783,7 +3154,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The <code>GraphqlApi</code> ARN.</p>",
+          "documentation":"<p>The <code>GraphqlApi</code> Amazon Resource Name (ARN).</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -2811,13 +3182,13 @@
       "members":{
         "apiId":{
           "shape":"String",
-          "documentation":"<p>The GraphQL API Id.</p>",
+          "documentation":"<p>The GraphQL API ID.</p>",
           "location":"uri",
           "locationName":"apiId"
         },
         "ttl":{
           "shape":"Long",
-          "documentation":"<p>TTL in seconds for cache entries.</p> <p>Valid values are between 1 and 3600 seconds.</p>"
+          "documentation":"<p>TTL in seconds for cache entries.</p> <p>Valid values are 1–3,600 seconds.</p>"
         },
         "apiCachingBehavior":{
           "shape":"ApiCachingBehavior",
@@ -2865,7 +3236,7 @@
         },
         "expires":{
           "shape":"Long",
-          "documentation":"<p>The time from update time after which the API key expires. The date is represented as seconds since the epoch. For more information, see .</p>"
+          "documentation":"<p>From the update time, the time after which the API key expires. The date is represented as seconds since the epoch. For more information, see .</p>"
         }
       }
     },
@@ -2908,7 +3279,7 @@
         },
         "serviceRoleArn":{
           "shape":"String",
-          "documentation":"<p>The new service role ARN for the data source.</p>"
+          "documentation":"<p>The new service role Amazon Resource Name (ARN) for the data source.</p>"
         },
         "dynamodbConfig":{
           "shape":"DynamodbDataSourceConfig",
@@ -2916,7 +3287,7 @@
         },
         "lambdaConfig":{
           "shape":"LambdaDataSourceConfig",
-          "documentation":"<p>The new Amazon Web Services Lambda configuration.</p>"
+          "documentation":"<p>The new Lambda configuration.</p>"
         },
         "elasticsearchConfig":{
           "shape":"ElasticsearchDataSourceConfig",
@@ -2942,6 +3313,31 @@
         "dataSource":{
           "shape":"DataSource",
           "documentation":"<p>The updated <code>DataSource</code> object.</p>"
+        }
+      }
+    },
+    "UpdateDomainNameRequest":{
+      "type":"structure",
+      "required":["domainName"],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name.</p>",
+          "location":"uri",
+          "locationName":"domainName"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the <code>DomainName</code>.</p>"
+        }
+      }
+    },
+    "UpdateDomainNameResponse":{
+      "type":"structure",
+      "members":{
+        "domainNameConfig":{
+          "shape":"DomainNameConfig",
+          "documentation":"<p>The configuration for the <code>DomainName</code>.</p>"
         }
       }
     },
@@ -2985,11 +3381,11 @@
         },
         "responseMappingTemplate":{
           "shape":"MappingTemplate",
-          "documentation":"<p>The <code>Function</code> request mapping template. </p>"
+          "documentation":"<p>The <code>Function</code> request mapping template.</p>"
         },
         "functionVersion":{
           "shape":"String",
-          "documentation":"<p>The <code>version</code> of the request mapping template. Currently the supported value is 2018-05-29. </p>"
+          "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29.</p>"
         },
         "syncConfig":{"shape":"SyncConfig"}
       }
@@ -3030,7 +3426,7 @@
         },
         "userPoolConfig":{
           "shape":"UserPoolConfig",
-          "documentation":"<p>The new Amazon Cognito user pool configuration for the <code>GraphqlApi</code> object.</p>"
+          "documentation":"<p>The new Amazon Cognito user pool configuration for the <code>~GraphqlApi</code> object.</p>"
         },
         "openIDConnectConfig":{
           "shape":"OpenIDConnectConfig",
@@ -3042,11 +3438,11 @@
         },
         "xrayEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>A flag indicating whether to enable X-Ray tracing for the <code>GraphqlApi</code>.</p>"
+          "documentation":"<p>A flag indicating whether to use X-Ray tracing for the <code>GraphqlApi</code>.</p>"
         },
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
-          "documentation":"<p>Configuration for Amazon Web Services Lambda function authorization.</p>"
+          "documentation":"<p>Configuration for Lambda function authorization.</p>"
         }
       }
     },
@@ -3091,7 +3487,7 @@
         },
         "requestMappingTemplate":{
           "shape":"MappingTemplate",
-          "documentation":"<p>The new request mapping template.</p> <p>A resolver uses a request mapping template to convert a GraphQL expression into a format that a data source can understand. Mapping templates are written in Apache Velocity Template Language (VTL).</p> <p>VTL request mapping templates are optional when using a Lambda data source. For all other data sources, VTL request and response mapping templates are required.</p>"
+          "documentation":"<p>The new request mapping template.</p> <p>A resolver uses a request mapping template to convert a GraphQL expression into a format that a data source can understand. Mapping templates are written in Apache Velocity Template Language (VTL).</p> <p>VTL request mapping templates are optional when using an Lambda data source. For all other data sources, VTL request and response mapping templates are required.</p>"
         },
         "responseMappingTemplate":{
           "shape":"MappingTemplate",
@@ -3099,7 +3495,7 @@
         },
         "kind":{
           "shape":"ResolverKind",
-          "documentation":"<p>The resolver type.</p> <ul> <li> <p> <b>UNIT</b>: A UNIT resolver type. A UNIT resolver is the default resolver type. A UNIT resolver enables you to execute a GraphQL query against a single data source.</p> </li> <li> <p> <b>PIPELINE</b>: A PIPELINE resolver type. A PIPELINE resolver enables you to execute a series of <code>Function</code> in a serial manner. You can use a pipeline resolver to execute a GraphQL query against multiple data sources.</p> </li> </ul>"
+          "documentation":"<p>The resolver type.</p> <ul> <li> <p> <b>UNIT</b>: A UNIT resolver type. A UNIT resolver is the default resolver type. You can use a UNIT resolver to run a GraphQL query against a single data source.</p> </li> <li> <p> <b>PIPELINE</b>: A PIPELINE resolver type. You can use a PIPELINE resolver to invoke a series of <code>Function</code> objects in a serial manner. You can use a pipeline resolver to run a GraphQL query against multiple data sources.</p> </li> </ul>"
         },
         "pipelineConfig":{
           "shape":"PipelineConfig",
@@ -3107,7 +3503,7 @@
         },
         "syncConfig":{
           "shape":"SyncConfig",
-          "documentation":"<p>The <code>SyncConfig</code> for a resolver attached to a versioned datasource.</p>"
+          "documentation":"<p>The <code>SyncConfig</code> for a resolver attached to a versioned data source.</p>"
         },
         "cachingConfig":{
           "shape":"CachingConfig",

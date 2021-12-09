@@ -78,6 +78,22 @@
       ],
       "documentation":"<p>Gets the properties associated with an InferRxNorm job. Use this operation to get the status of an inference job.</p>"
     },
+    "DescribeSNOMEDCTInferenceJob":{
+      "name":"DescribeSNOMEDCTInferenceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSNOMEDCTInferenceJobRequest"},
+      "output":{"shape":"DescribeSNOMEDCTInferenceJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Gets the properties associated with an InferSNOMEDCT job. Use this operation to get the status of an inference job. </p>"
+    },
     "DetectEntities":{
       "name":"DetectEntities",
       "http":{
@@ -170,6 +186,24 @@
       ],
       "documentation":"<p>InferRxNorm detects medications as entities listed in a patient record and links to the normalized concept identifiers in the RxNorm database from the National Library of Medicine. Amazon Comprehend Medical only detects medical entities in English language texts. </p>"
     },
+    "InferSNOMEDCT":{
+      "name":"InferSNOMEDCT",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"InferSNOMEDCTRequest"},
+      "output":{"shape":"InferSNOMEDCTResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidEncodingException"},
+        {"shape":"TextSizeLimitExceededException"}
+      ],
+      "documentation":"<p> InferSNOMEDCT detects possible medical concepts as entities and links them to codes from the Systematized Nomenclature of Medicine, Clinical Terms (SNOMED-CT) ontology</p>"
+    },
     "ListEntitiesDetectionV2Jobs":{
       "name":"ListEntitiesDetectionV2Jobs",
       "http":{
@@ -233,6 +267,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets a list of InferRxNorm jobs that you have submitted.</p>"
+    },
+    "ListSNOMEDCTInferenceJobs":{
+      "name":"ListSNOMEDCTInferenceJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSNOMEDCTInferenceJobsRequest"},
+      "output":{"shape":"ListSNOMEDCTInferenceJobsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Gets a list of InferSNOMEDCT jobs a user has submitted. </p>"
     },
     "StartEntitiesDetectionV2Job":{
       "name":"StartEntitiesDetectionV2Job",
@@ -298,6 +348,22 @@
       ],
       "documentation":"<p>Starts an asynchronous job to detect medication entities and link them to the RxNorm ontology. Use the <code>DescribeRxNormInferenceJob</code> operation to track the status of a job.</p>"
     },
+    "StartSNOMEDCTInferenceJob":{
+      "name":"StartSNOMEDCTInferenceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSNOMEDCTInferenceJobRequest"},
+      "output":{"shape":"StartSNOMEDCTInferenceJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Starts an asynchronous job to detect medical concepts and link them to the SNOMED-CT ontology. Use the DescribeSNOMEDCTInferenceJob operation to track the status of a job. </p>"
+    },
     "StopEntitiesDetectionV2Job":{
       "name":"StopEntitiesDetectionV2Job",
       "http":{
@@ -357,6 +423,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Stops an InferRxNorm inference job in progress.</p>"
+    },
+    "StopSNOMEDCTInferenceJob":{
+      "name":"StopSNOMEDCTInferenceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopSNOMEDCTInferenceJobRequest"},
+      "output":{"shape":"StopSNOMEDCTInferenceJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Stops an InferSNOMEDCT inference job in progress. </p>"
     }
   },
   "shapes":{
@@ -370,11 +452,11 @@
         },
         "Score":{
           "shape":"Float",
-          "documentation":"<p> The level of confidence that Amazon Comprehend Medical has that the segment of text is correctly recognized as an attribute. </p>"
+          "documentation":"<p> The level of confidence that Comprehend Medical; has that the segment of text is correctly recognized as an attribute. </p>"
         },
         "RelationshipScore":{
           "shape":"Float",
-          "documentation":"<p> The level of confidence that Amazon Comprehend Medical has that this attribute is correctly related to this entity. </p>"
+          "documentation":"<p> The level of confidence that Comprehend Medical; has that this attribute is correctly related to this entity. </p>"
         },
         "RelationshipType":{
           "shape":"RelationshipType",
@@ -424,6 +506,16 @@
       "type":"string",
       "max":20000,
       "min":1
+    },
+    "Characters":{
+      "type":"structure",
+      "members":{
+        "OriginalTextCharacters":{
+          "shape":"Integer",
+          "documentation":"<p> The number of characters present in the input text document as processed by Comprehend Medical. </p>"
+        }
+      },
+      "documentation":"<p> The number of characters in the input text to be analyzed. </p>"
     },
     "ClientRequestTokenString":{
       "type":"string",
@@ -498,7 +590,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend Medical read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that gives Comprehend Medical; read access to your input data.</p>"
         },
         "ManifestFilePath":{
           "shape":"ManifestFilePath",
@@ -525,7 +617,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend Medical generated for the job. The <code>StartEntitiesDetectionV2Job</code> operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Comprehend Medical; generated for the job. The <code>StartEntitiesDetectionV2Job</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -563,7 +655,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend Medical generated for the job. The <code>StartPHIDetectionJob</code> operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Comprehend Medical; generated for the job. The <code>StartPHIDetectionJob</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -595,6 +687,22 @@
         }
       }
     },
+    "DescribeSNOMEDCTInferenceJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identifier that Amazon Comprehend Medical generated for the job. The StartSNOMEDCTInferenceJob operation returns this identifier in its response. </p>"
+        }
+      }
+    },
+    "DescribeSNOMEDCTInferenceJobResponse":{
+      "type":"structure",
+      "members":{
+        "ComprehendMedicalAsyncJobProperties":{"shape":"ComprehendMedicalAsyncJobProperties"}
+      }
+    },
     "DetectEntitiesRequest":{
       "type":"structure",
       "required":["Text"],
@@ -614,7 +722,7 @@
       "members":{
         "Entities":{
           "shape":"EntityList",
-          "documentation":"<p> The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Amazon Comprehend Medical has in the detection and analysis. Attributes and traits of the entity are also returned.</p>"
+          "documentation":"<p> The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical; has in the detection and analysis. Attributes and traits of the entity are also returned.</p>"
         },
         "UnmappedAttributes":{
           "shape":"UnmappedAttributeList",
@@ -684,7 +792,7 @@
       "members":{
         "Entities":{
           "shape":"EntityList",
-          "documentation":"<p> The collection of PHI entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Amazon Comprehend Medical has in its detection. </p>"
+          "documentation":"<p> The collection of PHI entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical; has in its detection. </p>"
         },
         "PaginationToken":{
           "shape":"String",
@@ -713,7 +821,7 @@
         },
         "Score":{
           "shape":"Float",
-          "documentation":"<p>The level of confidence that Amazon Comprehend Medical has in the accuracy of the detection.</p>"
+          "documentation":"<p>The level of confidence that Comprehend Medical; has in the accuracy of the detection.</p>"
         },
         "Text":{
           "shape":"String",
@@ -746,6 +854,7 @@
       "type":"string",
       "enum":[
         "NAME",
+        "DX_NAME",
         "DOSAGE",
         "ROUTE_OR_MODE",
         "FORM",
@@ -759,13 +868,16 @@
         "TEST_NAME",
         "TEST_VALUE",
         "TEST_UNITS",
+        "TEST_UNIT",
         "PROCEDURE_NAME",
         "TREATMENT_NAME",
         "DATE",
         "AGE",
         "CONTACT_POINT",
+        "PHONE_OR_FAX",
         "EMAIL",
         "IDENTIFIER",
+        "ID",
         "URL",
         "ADDRESS",
         "PROFESSION",
@@ -954,7 +1066,7 @@
         },
         "Score":{
           "shape":"Float",
-          "documentation":"<p>The level of confidence that Amazon Comprehend Medical has that the segment of text is correctly recognized as a trait.</p>"
+          "documentation":"<p>The level of confidence that Comprehend Medical; has that the segment of text is correctly recognized as a trait.</p>"
         }
       },
       "documentation":"<p>Contextual information for the entity. The traits recognized by InferICD10CM are <code>DIAGNOSIS</code>, <code>SIGN</code>, <code>SYMPTOM</code>, and <code>NEGATION</code>.</p>"
@@ -1031,6 +1143,42 @@
         "ModelVersion":{
           "shape":"String",
           "documentation":"<p>The version of the model used to analyze the documents, in the format <i>n</i>.<i>n</i>.<i>n</i> You can use this information to track the model used for a particular batch of documents.</p>"
+        }
+      }
+    },
+    "InferSNOMEDCTRequest":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"OntologyLinkingBoundedLengthString",
+          "documentation":"<p> The input text to be analyzed using InferSNOMEDCT. The text should be a string with 1 to 10000 characters. </p>"
+        }
+      }
+    },
+    "InferSNOMEDCTResponse":{
+      "type":"structure",
+      "required":["Entities"],
+      "members":{
+        "Entities":{
+          "shape":"SNOMEDCTEntityList",
+          "documentation":"<p> The collection of medical concept entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical has in the detection and analysis. Attributes and traits of the entity are also returned. </p>"
+        },
+        "PaginationToken":{
+          "shape":"String",
+          "documentation":"<p> If the result of the request is truncated, the pagination token can be used to fetch the next page of entities. </p>"
+        },
+        "ModelVersion":{
+          "shape":"String",
+          "documentation":"<p> The version of the model used to analyze the documents, in the format n.n.n You can use this information to track the model used for a particular batch of documents. </p>"
+        },
+        "SNOMEDCTDetails":{
+          "shape":"SNOMEDCTDetails",
+          "documentation":"<p> The details of the SNOMED-CT revision, including the edition, language, and version date. </p>"
+        },
+        "Characters":{
+          "shape":"Characters",
+          "documentation":"<p> The number of characters in the input request documentation. </p>"
         }
       }
     },
@@ -1229,6 +1377,33 @@
         }
       }
     },
+    "ListSNOMEDCTInferenceJobsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{"shape":"ComprehendMedicalAsyncJobFilter"},
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p> Identifies the next page of InferSNOMEDCT results to return. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsInteger",
+          "documentation":"<p> The maximum number of results to return in each page. The default is 100. </p>"
+        }
+      }
+    },
+    "ListSNOMEDCTInferenceJobsResponse":{
+      "type":"structure",
+      "members":{
+        "ComprehendMedicalAsyncJobPropertiesList":{
+          "shape":"ComprehendMedicalAsyncJobPropertiesList",
+          "documentation":"<p> A list containing the properties of each job that is returned. </p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p> Identifies the next page of results to return. </p>"
+        }
+      }
+    },
     "ManifestFilePath":{
       "type":"string",
       "max":4096,
@@ -1255,7 +1430,7 @@
         },
         "S3Key":{
           "shape":"S3Key",
-          "documentation":"<p>The path to the output data files in the S3 bucket. Amazon Comprehend Medical creates an output directory using the job ID so that the output from one job does not overwrite the output of another.</p>"
+          "documentation":"<p>The path to the output data files in the S3 bucket. Comprehend Medical; creates an output directory using the job ID so that the output from one job does not overwrite the output of another.</p>"
         }
       },
       "documentation":"<p>The output properties for a detection job.</p>"
@@ -1279,6 +1454,7 @@
         "ACUITY",
         "TEST_VALUE",
         "TEST_UNITS",
+        "TEST_UNIT",
         "DIRECTION",
         "SYSTEM_ORGAN_SITE"
       ]
@@ -1461,12 +1637,222 @@
       "max":1024,
       "pattern":".*"
     },
+    "SNOMEDCTAttribute":{
+      "type":"structure",
+      "members":{
+        "Category":{
+          "shape":"SNOMEDCTEntityCategory",
+          "documentation":"<p> The category of the detected attribute. Possible categories include MEDICAL_CONDITION, ANATOMY, and TEST_TREATMENT_PROCEDURE. </p>"
+        },
+        "Type":{
+          "shape":"SNOMEDCTAttributeType",
+          "documentation":"<p> The type of attribute. Possible types include DX_NAME, ACUITY, DIRECTION, SYSTEM_ORGAN_SITE,TEST_NAME, TEST_VALUE, TEST_UNIT, PROCEDURE_NAME, and TREATMENT_NAME. </p>"
+        },
+        "Score":{
+          "shape":"Float",
+          "documentation":"<p> The level of confidence that Comprehend Medical has that the segment of text is correctly recognized as an attribute. </p>"
+        },
+        "RelationshipScore":{
+          "shape":"Float",
+          "documentation":"<p> The level of confidence that Comprehend Medical has that this attribute is correctly related to this entity. </p>"
+        },
+        "RelationshipType":{
+          "shape":"SNOMEDCTRelationshipType",
+          "documentation":"<p> The type of relationship that exists between the entity and the related attribute. </p>"
+        },
+        "Id":{
+          "shape":"Integer",
+          "documentation":"<p> The numeric identifier for this attribute. This is a monotonically increasing id unique within this response rather than a global unique identifier. </p>"
+        },
+        "BeginOffset":{
+          "shape":"Integer",
+          "documentation":"<p> The 0-based character offset in the input text that shows where the attribute begins. The offset returns the UTF-8 code point in the string. </p>"
+        },
+        "EndOffset":{
+          "shape":"Integer",
+          "documentation":"<p> The 0-based character offset in the input text that shows where the attribute ends. The offset returns the UTF-8 code point in the string. </p>"
+        },
+        "Text":{
+          "shape":"String",
+          "documentation":"<p> The segment of input text extracted as this attribute. </p>"
+        },
+        "Traits":{
+          "shape":"SNOMEDCTTraitList",
+          "documentation":"<p> Contextual information for an attribute. Examples include signs, symptoms, diagnosis, and negation. </p>"
+        },
+        "SNOMEDCTConcepts":{
+          "shape":"SNOMEDCTConceptList",
+          "documentation":"<p> The SNOMED-CT concepts specific to an attribute, along with a score indicating the likelihood of the match. </p>"
+        }
+      },
+      "documentation":"<p> The extracted attributes that relate to an entity. An extracted segment of the text that is an attribute of an entity, or otherwise related to an entity, such as the dosage of a medication taken. </p>"
+    },
+    "SNOMEDCTAttributeList":{
+      "type":"list",
+      "member":{"shape":"SNOMEDCTAttribute"}
+    },
+    "SNOMEDCTAttributeType":{
+      "type":"string",
+      "enum":[
+        "ACUITY",
+        "QUALITY",
+        "DIRECTION",
+        "SYSTEM_ORGAN_SITE",
+        "TEST_VALUE",
+        "TEST_UNIT"
+      ]
+    },
+    "SNOMEDCTConcept":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"String",
+          "documentation":"<p> The description of the SNOMED-CT concept. </p>"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p> The numeric ID for the SNOMED-CT concept. </p>"
+        },
+        "Score":{
+          "shape":"Float",
+          "documentation":"<p> The level of confidence Comprehend Medical has that the entity should be linked to the identified SNOMED-CT concept. </p>"
+        }
+      },
+      "documentation":"<p> The SNOMED-CT concepts that the entity could refer to, along with a score indicating the likelihood of the match. </p>"
+    },
+    "SNOMEDCTConceptList":{
+      "type":"list",
+      "member":{"shape":"SNOMEDCTConcept"}
+    },
+    "SNOMEDCTDetails":{
+      "type":"structure",
+      "members":{
+        "Edition":{
+          "shape":"String",
+          "documentation":"<p> The edition of SNOMED-CT used. The edition used for the InferSNOMEDCT editions is the US edition. </p>"
+        },
+        "Language":{
+          "shape":"String",
+          "documentation":"<p> The language used in the SNOMED-CT ontology. All Amazon Comprehend Medical operations are US English (en). </p>"
+        },
+        "VersionDate":{
+          "shape":"String",
+          "documentation":"<p> The version date of the SNOMED-CT ontology used. </p>"
+        }
+      },
+      "documentation":"<p> The information about the revision of the SNOMED-CT ontology in the response. Specifically, the details include the SNOMED-CT edition, language, and version date. </p>"
+    },
+    "SNOMEDCTEntity":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"Integer",
+          "documentation":"<p> The numeric identifier for the entity. This is a monotonically increasing id unique within this response rather than a global unique identifier. </p>"
+        },
+        "Text":{
+          "shape":"OntologyLinkingBoundedLengthString",
+          "documentation":"<p> The segment of input text extracted as this entity. </p>"
+        },
+        "Category":{
+          "shape":"SNOMEDCTEntityCategory",
+          "documentation":"<p> The category of the detected entity. Possible categories are MEDICAL_CONDITION, ANATOMY, or TEST_TREATMENT_PROCEDURE. </p>"
+        },
+        "Type":{
+          "shape":"SNOMEDCTEntityType",
+          "documentation":"<p> Describes the specific type of entity with category of entities. Possible types include DX_NAME, ACUITY, DIRECTION, SYSTEM_ORGAN_SITE, TEST_NAME, TEST_VALUE, TEST_UNIT, PROCEDURE_NAME, or TREATMENT_NAME. </p>"
+        },
+        "Score":{
+          "shape":"Float",
+          "documentation":"<p> The level of confidence that Comprehend Medical has in the accuracy of the detected entity. </p>"
+        },
+        "BeginOffset":{
+          "shape":"Integer",
+          "documentation":"<p> The 0-based character offset in the input text that shows where the entity begins. The offset returns the UTF-8 code point in the string. </p>"
+        },
+        "EndOffset":{
+          "shape":"Integer",
+          "documentation":"<p> The 0-based character offset in the input text that shows where the entity ends. The offset returns the UTF-8 code point in the string. </p>"
+        },
+        "Attributes":{
+          "shape":"SNOMEDCTAttributeList",
+          "documentation":"<p> An extracted segment of the text that is an attribute of an entity, or otherwise related to an entity, such as the dosage of a medication taken. </p>"
+        },
+        "Traits":{
+          "shape":"SNOMEDCTTraitList",
+          "documentation":"<p> Contextual information for the entity. </p>"
+        },
+        "SNOMEDCTConcepts":{
+          "shape":"SNOMEDCTConceptList",
+          "documentation":"<p> The SNOMED concepts that the entity could refer to, along with a score indicating the likelihood of the match. </p>"
+        }
+      },
+      "documentation":"<p> The collection of medical entities extracted from the input text and their associated information. For each entity, the response provides the entity text, the entity category, where the entity text begins and ends, and the level of confidence that Comprehend Medical has in the detection and analysis. Attributes and traits of the entity are also returned. </p>"
+    },
+    "SNOMEDCTEntityCategory":{
+      "type":"string",
+      "enum":[
+        "MEDICAL_CONDITION",
+        "ANATOMY",
+        "TEST_TREATMENT_PROCEDURE"
+      ]
+    },
+    "SNOMEDCTEntityList":{
+      "type":"list",
+      "member":{"shape":"SNOMEDCTEntity"}
+    },
+    "SNOMEDCTEntityType":{
+      "type":"string",
+      "enum":[
+        "DX_NAME",
+        "TEST_NAME",
+        "PROCEDURE_NAME",
+        "TREATMENT_NAME"
+      ]
+    },
+    "SNOMEDCTRelationshipType":{
+      "type":"string",
+      "enum":[
+        "ACUITY",
+        "QUALITY",
+        "TEST_VALUE",
+        "TEST_UNITS",
+        "DIRECTION",
+        "SYSTEM_ORGAN_SITE"
+      ]
+    },
+    "SNOMEDCTTrait":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"SNOMEDCTTraitName",
+          "documentation":"<p> The name or contextual description of a detected trait. </p>"
+        },
+        "Score":{
+          "shape":"Float",
+          "documentation":"<p> The level of confidence that Comprehend Medical has in the accuracy of a detected trait. </p>"
+        }
+      },
+      "documentation":"<p> Contextual information for an entity. </p>"
+    },
+    "SNOMEDCTTraitList":{
+      "type":"list",
+      "member":{"shape":"SNOMEDCTTrait"}
+    },
+    "SNOMEDCTTraitName":{
+      "type":"string",
+      "enum":[
+        "NEGATION",
+        "DIAGNOSIS",
+        "SIGN",
+        "SYMPTOM"
+      ]
+    },
     "ServiceUnavailableException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p> The Amazon Comprehend Medical service is temporarily unavailable. Please wait and then retry your request. </p>",
+      "documentation":"<p> The Comprehend Medical; service is temporarily unavailable. Please wait and then retry your request. </p>",
       "exception":true
     },
     "StartEntitiesDetectionV2JobRequest":{
@@ -1480,15 +1866,15 @@
       "members":{
         "InputDataConfig":{
           "shape":"InputDataConfig",
-          "documentation":"<p>Specifies the format and location of the input data for the job.</p>"
+          "documentation":"<p>The input configuration that specifies the format and location of the input data for the job.</p>"
         },
         "OutputDataConfig":{
           "shape":"OutputDataConfig",
-          "documentation":"<p>Specifies where to send the output files.</p>"
+          "documentation":"<p>The output configuration that specifies where to send the output files.</p>"
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
         },
         "JobName":{
           "shape":"JobName",
@@ -1496,7 +1882,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one.</p>",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one for you.</p>",
           "idempotencyToken":true
         },
         "KMSKey":{
@@ -1505,7 +1891,7 @@
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The language of the input documents. All documents must be in the same language.</p>"
+          "documentation":"<p>The language of the input documents. All documents must be in the same language. Comprehend Medical; processes files in US English (en).</p>"
         }
       }
     },
@@ -1537,7 +1923,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
         },
         "JobName":{
           "shape":"JobName",
@@ -1545,7 +1931,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one.</p>",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.</p>",
           "idempotencyToken":true
         },
         "KMSKey":{
@@ -1586,7 +1972,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
         },
         "JobName":{
           "shape":"JobName",
@@ -1594,7 +1980,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one.</p>",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.</p>",
           "idempotencyToken":true
         },
         "KMSKey":{
@@ -1635,7 +2021,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Comprehend Medical; read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions-med.html#auth-role-permissions-med\"> Role-Based Permissions Required for Asynchronous Operations</a>.</p>"
         },
         "JobName":{
           "shape":"JobName",
@@ -1643,7 +2029,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one.</p>",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Comprehend Medical; generates one.</p>",
           "idempotencyToken":true
         },
         "KMSKey":{
@@ -1662,6 +2048,49 @@
         "JobId":{
           "shape":"JobId",
           "documentation":"<p>The identifier of the job.</p>"
+        }
+      }
+    },
+    "StartSNOMEDCTInferenceJobRequest":{
+      "type":"structure",
+      "required":[
+        "InputDataConfig",
+        "OutputDataConfig",
+        "DataAccessRoleArn",
+        "LanguageCode"
+      ],
+      "members":{
+        "InputDataConfig":{"shape":"InputDataConfig"},
+        "OutputDataConfig":{"shape":"OutputDataConfig"},
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend Medical read access to your input data. </p>"
+        },
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p> The user generated name the asynchronous InferSNOMEDCT job. </p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestTokenString",
+          "documentation":"<p> A unique identifier for the request. If you don't set the client request token, Amazon Comprehend Medical generates one. </p>",
+          "idempotencyToken":true
+        },
+        "KMSKey":{
+          "shape":"KMSKey",
+          "documentation":"<p> An AWS Key Management Service key used to encrypt your output files. If you do not specify a key, the files are written in plain text. </p>"
+        },
+        "LanguageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p> The language of the input documents. All documents must be in the same language. </p>"
+        }
+      }
+    },
+    "StartSNOMEDCTInferenceJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identifier generated for the job. To get the status of a job, use this identifier with the StartSNOMEDCTInferenceJob operation. </p>"
         }
       }
     },
@@ -1741,6 +2170,25 @@
         }
       }
     },
+    "StopSNOMEDCTInferenceJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p> The job id of the asynchronous InferSNOMEDCT job to be stopped. </p>"
+        }
+      }
+    },
+    "StopSNOMEDCTInferenceJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identifier generated for the job. To get the status of job, use this identifier with the DescribeSNOMEDCTInferenceJob operation. </p>"
+        }
+      }
+    },
     "String":{
       "type":"string",
       "min":1
@@ -1771,7 +2219,7 @@
         },
         "Score":{
           "shape":"Float",
-          "documentation":"<p> The level of confidence that Amazon Comprehend Medical has in the accuracy of this trait.</p>"
+          "documentation":"<p> The level of confidence that Comprehend Medical; has in the accuracy of this trait.</p>"
         }
       },
       "documentation":"<p> Provides contextual information about the extracted entity. </p>"
@@ -1785,14 +2233,14 @@
       "members":{
         "Type":{
           "shape":"EntityType",
-          "documentation":"<p> The type of the attribute, could be one of the following values: \"MEDICATION\", \"MEDICAL_CONDITION\", \"ANATOMY\", \"TEST_AND_TREATMENT_PROCEDURE\" or \"PROTECTED_HEALTH_INFORMATION\". </p>"
+          "documentation":"<p> The type of the unmapped attribute, could be one of the following values: \"MEDICATION\", \"MEDICAL_CONDITION\", \"ANATOMY\", \"TEST_AND_TREATMENT_PROCEDURE\" or \"PROTECTED_HEALTH_INFORMATION\". </p>"
         },
         "Attribute":{
           "shape":"Attribute",
           "documentation":"<p> The specific attribute that has been extracted but not mapped to an entity. </p>"
         }
       },
-      "documentation":"<p> An attribute that we extracted, but were unable to relate to an entity. </p>"
+      "documentation":"<p> An attribute that was extracted, but Comprehend Medical; was unable to relate to an entity. </p>"
     },
     "UnmappedAttributeList":{
       "type":"list",
@@ -1807,5 +2255,5 @@
       "exception":true
     }
   },
-  "documentation":"<p> Amazon Comprehend Medical extracts structured information from unstructured clinical text. Use these actions to gain insight in your documents. </p>"
+  "documentation":"<p> Comprehend Medical; extracts structured information from unstructured clinical text. Use these actions to gain insight in your documents. </p>"
 }

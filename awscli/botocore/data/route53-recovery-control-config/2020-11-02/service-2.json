@@ -55,7 +55,7 @@
           "documentation": "<p>409 response - ConflictException. You might be using a predefined variable.</p>"
         }
       ],
-      "documentation": "<p>Create a new cluster. A cluster is a set of redundant Regional endpoints against which you can run API calls to update or get the state of one or more routing controls. Each cluster has a name, status, Amazon Resource Name (ARN), and an array of the five cluster endpoints (one for each supported Amazon Web Services Region) that you can use with API calls to the Amazon Route 53 Application Recovery Controller cluster data plane.</p>"
+      "documentation": "<p>Create a new cluster. A cluster is a set of redundant Regional endpoints against which you can run API calls to update or get the state of one or more routing controls. Each cluster has a name, status, Amazon Resource Name (ARN), and an array of the five cluster endpoints (one for each supported Amazon Web Services Region) that you can use with API calls to the cluster data plane.</p>"
     },
     "CreateControlPanel": {
       "name": "CreateControlPanel",
@@ -101,7 +101,7 @@
           "documentation": "<p>409 response - ConflictException. You might be using a predefined variable.</p>"
         }
       ],
-      "documentation": "<p>Creates a new control panel. A control panel represents a group of routing controls that can be changed together in a single transaction. You can use a control panel to centrally view the operational status of applications across your organization, and trigger multi-app failovers in a single transaction, for example, to fail over an Availability Zone or AWS Region.</p>"
+      "documentation": "<p>Creates a new control panel. A control panel represents a group of routing controls that can be changed together in a single transaction. You can use a control panel to centrally view the operational status of applications across your organization, and trigger multi-app failovers in a single transaction, for example, to fail over an Availability Zone or Amazon Web Services Region.</p>"
     },
     "CreateRoutingControl": {
       "name": "CreateRoutingControl",
@@ -173,7 +173,7 @@
           "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
         }
       ],
-      "documentation": "<p>Creates a safety rule in a control panel. Safety rules let you add safeguards around enabling and disabling routing controls, to help prevent unexpected outcomes.</p> <p>There are two types of safety rules: assertion rules and gating rules.</p> <p>Assertion rule: An assertion rule enforces that, when a routing control state is changed, the criteria set by the rule configuration is met. Otherwise, the change to the routing control is not accepted.</p> <p>Gating rule: A gating rule verifies that a set of gating controls evaluates as true, based on a rule configuration that you specify. If the gating rule evaluates to true, Amazon Route 53 Application Recovery Controller allows a set of routing control state changes to run and complete against the set of target controls.</p>"
+      "documentation": "<p>Creates a safety rule in a control panel. Safety rules let you add safeguards around changing routing control states, and for enabling and disabling routing controls, to help prevent unexpected outcomes.</p> <p>There are two types of safety rules: assertion rules and gating rules.</p> <p>Assertion rule: An assertion rule enforces that, when you change a routing control state, that a certain criteria is met. For example, the criteria might be that at least one routing control state is On after the transation so that traffic continues to flow to at least one cell for the application. This ensures that you avoid a fail-open scenario.</p> <p>Gating rule: A gating rule lets you configure a gating routing control as an overall \"on/off\" switch for a group of routing controls. Or, you can configure more complex gating scenarios, for example by configuring multiple gating routing controls.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.safety-rules.html\">Safety rules</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
     },
     "DeleteCluster": {
       "name": "DeleteCluster",
@@ -481,7 +481,7 @@
           "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>"
         }
       ],
-      "documentation": "<p>Describes the safety rules (that is, the assertion rules and gating rules) for the routing controls in a control panel.</p>"
+      "documentation": "<p>Returns information about a safety rule.</p>"
     },
     "ListAssociatedRoute53HealthChecks": {
       "name": "ListAssociatedRoute53HealthChecks",
@@ -587,7 +587,7 @@
           "documentation": "<p>403 response - AccessDeniedException. You do not hace sufficient access to perform this action.</p>"
         }
       ],
-      "documentation": "<p>Returns an array of control panels for a cluster.</p>"
+      "documentation": "<p>Returns an array of control panels in an account or in a cluster.</p>"
     },
     "ListRoutingControls": {
       "name": "ListRoutingControls",
@@ -664,6 +664,96 @@
         }
       ],
       "documentation": "<p>List the safety rules (the assertion rules and gating rules) that you've defined for the routing controls in a control panel.</p>"
+    },
+    "ListTagsForResource": {
+      "name": "ListTagsForResource",
+      "http": {
+        "method": "GET",
+        "requestUri": "/tags/{ResourceArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListTagsForResourceRequest"
+      },
+      "output": {
+        "shape": "ListTagsForResourceResponse",
+        "documentation": "<p>200 response - Success.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>"
+        },
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you used parameters together incorrectly.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
+        }
+      ],
+      "documentation": "<p>Lists the tags for a resource.</p>"
+    },
+    "TagResource": {
+      "name": "TagResource",
+      "http": {
+        "method": "POST",
+        "requestUri": "/tags/{ResourceArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "TagResourceRequest"
+      },
+      "output": {
+        "shape": "TagResourceResponse",
+        "documentation": "<p>200 response - Success.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>"
+        },
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you used parameters together incorrectly.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
+        }
+      ],
+      "documentation": "<p>Adds a tag to a resource.</p>"
+    },
+    "UntagResource": {
+      "name": "UntagResource",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/tags/{ResourceArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UntagResourceRequest"
+      },
+      "output": {
+        "shape": "UntagResourceResponse",
+        "documentation": "<p>200 response - Success.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>"
+        },
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you used parameters together incorrectly.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
+        }
+      ],
+      "documentation": "<p>Removes a tag from a resource.</p>"
     },
     "UpdateControlPanel": {
       "name": "UpdateControlPanel",
@@ -777,19 +867,19 @@
           "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
         }
       ],
-      "documentation": "<p>Update a safety rule (an assertion rule or gating rule) for the routing controls in a control panel. You can only update the name and the waiting period for a safety rule. To make other updates, delete the safety rule and create a new safety rule.</p>"
+      "documentation": "<p>Update a safety rule (an assertion rule or gating rule). You can only update the name and the waiting period for a safety rule. To make other updates, delete the safety rule and create a new one.</p>"
     }
   },
   "shapes": {
     "AccessDeniedException": {
       "type": "structure",
-      "documentation": "<p>403 response - AccessDeniedException. You do not have sufficient access to perform this action.</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>403 response - You do not have sufficient access to perform this action.</p>",
       "required": [
         "Message"
       ],
@@ -802,11 +892,11 @@
       "type": "structure",
       "members": {
         "AssertedControls": {
-          "shape": "__listOf__string",
+          "shape": "__listOf__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The routing controls that are part of transactions that are evaluated to determine if a request to change a routing control state is allowed. For example, you might include three routing controls, one for each of three Amazon Web Services Regions.</p>"
         },
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "Name": {
@@ -815,10 +905,10 @@
         },
         "RuleConfig": {
           "shape": "RuleConfig",
-          "documentation": "<p>The criteria that you set for specific assertion controls (routing controls) that designate how many controls must be enabled as the result of a transaction. For example, if you have three assertion controls, you might specify atleast 2 for your rule configuration. This means that at least two assertion controls must be enabled, so that at least two Amazon Web Services Regions are enabled.</p>"
+          "documentation": "<p>The criteria that you set for specific assertion routing controls (AssertedControls) that designate how many routing control states must be ON as the result of a transaction. For example, if you have three assertion routing controls, you might specify atleast 2 for your rule configuration. This means that at least two assertion routing control states must be ON, so that at least two Amazon Web Services Regions have traffic flowing to them.</p>"
         },
         "SafetyRuleArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the assertion rule.</p>"
         },
         "Status": {
@@ -830,7 +920,7 @@
           "documentation": "<p>An evaluation period, in milliseconds (ms), during which any request against the target routing controls will fail. This helps prevent \"flapping\" of state. The wait period is 5000 ms by default, but you can choose a custom value.</p>"
         }
       },
-      "documentation": "<p>An assertion rule enforces that, when a routing control state is changed, the criteria set by the rule configuration is met. Otherwise, the change to the routing control is not accepted.</p>",
+      "documentation": "<p>An assertion rule enforces that, when you change a routing control state, that the criteria that you set in the rule configuration is met. Otherwise, the change to the routing control is not accepted. For example, the criteria might be that at least one routing control state is On after the transation so that traffic continues to flow to at least one cell for the application. This ensures that you avoid a fail-open scenario.</p>",
       "required": [
         "Status",
         "ControlPanelArn",
@@ -849,7 +939,7 @@
           "documentation": "<p>The name of the assertion rule. You can use any non-white space character in the name.</p>"
         },
         "SafetyRuleArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the assertion rule.</p>"
         },
         "WaitPeriodMs": {
@@ -866,15 +956,14 @@
     },
     "Cluster": {
       "type": "structure",
-      "documentation": "<p>A cluster is a set of five consensus-forming Regional endpoints that represent the infrastructure that hosts your routing controls. Typically, you host together on one cluster all of the routing controls for your applications.</p>",
       "members": {
         "ClusterArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
         },
         "ClusterEndpoints": {
           "shape": "__listOfClusterEndpoint",
-          "documentation": "<p>Endpoints for a cluster. Specify one of these endpoints when you want to set or retrieve a routing control state in the cluster.</p> <p>To get or update the routing control state, see the Amazon Route 53 Application Recovery Controller Cluster (Data Plane) Actions.</p>"
+          "documentation": "<p>Endpoints for a cluster. Specify one of these endpoints when you want to set or retrieve a routing control state in the cluster.</p> <p>To get or update the routing control state, see the Amazon Route 53 Application Recovery Controller Routing Control Actions.</p>"
         },
         "Name": {
           "shape": "__stringMin1Max64PatternS",
@@ -884,17 +973,18 @@
           "shape": "Status",
           "documentation": "<p>Deployment status of a resource. Status can be one of the following: PENDING, DEPLOYED, PENDING_DELETION.</p>"
         }
-      }
+      },
+      "documentation": "<p>A set of five redundant Regional endpoints against which you can execute API calls to update or get the state of routing controls. You can host multiple control panels and routing controls on one cluster.</p>"
     },
     "ClusterEndpoint": {
       "type": "structure",
       "members": {
         "Endpoint": {
-          "shape": "__stringMin1Max128",
-          "documentation": "<p>A cluster endpoint. Specify an endpoint and Amazon Web Services Region when you want to set or retrieve a routing control state in the cluster.</p> <p>To get or update the routing control state, see the Amazon Route 53 Application Recovery Controller Cluster (Data Plane) Actions.</p>"
+          "shape": "__stringMin1Max128PatternAZaZ09",
+          "documentation": "<p>A cluster endpoint. Specify an endpoint and Amazon Web Services Region when you want to set or retrieve a routing control state in the cluster.</p> <p>To get or update the routing control state, see the Amazon Route 53 Application Recovery Controller Routing Control Actions.</p>"
         },
         "Region": {
-          "shape": "__stringMin1Max32",
+          "shape": "__stringMin1Max32PatternS",
           "documentation": "<p>The Amazon Web Services Region for a cluster endpoint.</p>"
         }
       },
@@ -902,13 +992,13 @@
     },
     "ConflictException": {
       "type": "structure",
-      "documentation": "<p>409 response - ConflictException.</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>409 response - ConflictException. You might be using a predefined variable.</p>",
       "required": [
         "Message"
       ],
@@ -921,11 +1011,11 @@
       "type": "structure",
       "members": {
         "ClusterArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the cluster that includes the control panel.</p>"
         },
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "DefaultControlPanel": {
@@ -951,13 +1041,17 @@
       "type": "structure",
       "members": {
         "ClientToken": {
-          "shape": "__stringMax64",
-          "idempotencyToken": true,
-          "documentation": "<p>Unique client idempotency token.</p>"
+          "shape": "__stringMin1Max64PatternS",
+          "documentation": "<p>A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.</p>",
+          "idempotencyToken": true
         },
         "ClusterName": {
           "shape": "__stringMin1Max64PatternS",
           "documentation": "<p>The name of the cluster.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__stringMin0Max256PatternS",
+          "documentation": "<p>The tags associated with the cluster.</p>"
         }
       },
       "documentation": "<p>Creates a cluster.</p>",
@@ -978,17 +1072,21 @@
       "type": "structure",
       "members": {
         "ClientToken": {
-          "shape": "__stringMax64",
-          "documentation": "<p>Unique client idempotency token.</p>",
+          "shape": "__stringMin1Max64PatternS",
+          "documentation": "<p>A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.</p>",
           "idempotencyToken": true
         },
         "ClusterArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the cluster for the control panel.</p>"
         },
         "ControlPanelName": {
           "shape": "__stringMin1Max64PatternS",
           "documentation": "<p>The name of the control panel.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__stringMin0Max256PatternS",
+          "documentation": "<p>The tags associated with the control panel.</p>"
         }
       },
       "documentation": "<p>The details of the control panel that you're creating.</p>",
@@ -1010,16 +1108,16 @@
       "type": "structure",
       "members": {
         "ClientToken": {
-          "shape": "__stringMax64",
-          "documentation": "<p>Unique client idempotency token.</p>",
+          "shape": "__stringMin1Max64PatternS",
+          "documentation": "<p>A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.</p>",
           "idempotencyToken": true
         },
         "ClusterArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the cluster that includes the routing control.</p>"
         },
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel that includes the routing control.</p>"
         },
         "RoutingControlName": {
@@ -1046,15 +1144,21 @@
       "type": "structure",
       "members": {
         "AssertionRule": {
-          "shape": "NewAssertionRule"
+          "shape": "NewAssertionRule",
+          "documentation": "<p>The assertion rule requested.</p>"
         },
         "ClientToken": {
-          "shape": "__stringMax64",
-          "documentation": "<p>Unique client idempotency token.</p>",
+          "shape": "__stringMin1Max64PatternS",
+          "documentation": "<p>A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.</p>",
           "idempotencyToken": true
         },
         "GatingRule": {
-          "shape": "NewGatingRule"
+          "shape": "NewGatingRule",
+          "documentation": "<p>The gating rule requested.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__stringMin0Max256PatternS",
+          "documentation": "<p>The tags associated with the safety rule.</p>"
         }
       },
       "documentation": "<p>The request body that you include when you create a safety rule.</p>"
@@ -1063,10 +1167,12 @@
       "type": "structure",
       "members": {
         "AssertionRule": {
-          "shape": "AssertionRule"
+          "shape": "AssertionRule",
+          "documentation": "<p>The assertion rule created.</p>"
         },
         "GatingRule": {
-          "shape": "GatingRule"
+          "shape": "GatingRule",
+          "documentation": "<p>The gating rule created.</p>"
         }
       }
     },
@@ -1095,7 +1201,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "ControlPanelArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel that you're deleting.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         }
       },
       "required": [
@@ -1131,7 +1237,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "SafetyRuleArn",
-          "documentation": "<p>The request body that you include when you update a safety rule.</p>"
+          "documentation": "<p>The ARN of the safety rule.</p>"
         }
       },
       "required": [
@@ -1149,7 +1255,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "ClusterArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster that you're getting details for.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
         }
       },
       "required": [
@@ -1172,7 +1278,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "ControlPanelArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel that you're getting details for.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         }
       },
       "required": [
@@ -1195,7 +1301,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "RoutingControlArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the routing control that you're getting details for.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the routing control.</p>"
         }
       },
       "required": [
@@ -1218,7 +1324,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "SafetyRuleArn",
-          "documentation": "<p>The request body that you include when you update a safety rule.</p>"
+          "documentation": "<p>The ARN of the safety rule.</p>"
         }
       },
       "required": [
@@ -1229,10 +1335,12 @@
       "type": "structure",
       "members": {
         "AssertionRule": {
-          "shape": "AssertionRule"
+          "shape": "AssertionRule",
+          "documentation": "<p>The assertion rule in the response.</p>"
         },
         "GatingRule": {
-          "shape": "GatingRule"
+          "shape": "GatingRule",
+          "documentation": "<p>The gating rule in the response.</p>"
         }
       }
     },
@@ -1240,23 +1348,23 @@
       "type": "structure",
       "members": {
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "GatingControls": {
-          "shape": "__listOf__string",
-          "documentation": "<p>The gating controls for the gating rule. That is, routing controls that are evaluated by the rule configuration that you specify.</p>"
+          "shape": "__listOf__stringMin1Max256PatternAZaZ09",
+          "documentation": "<p>An array of gating routing control Amazon Resource Names (ARNs). For a simple \"on/off\" switch, specify the ARN for one routing control. The gating routing controls are evaluated by the rule configuration that you specify to determine if the target routing control states can be changed.</p>"
         },
         "Name": {
           "shape": "__stringMin1Max64PatternS",
-          "documentation": "<p>The name for the gating rule.</p>"
+          "documentation": "<p>The name for the gating rule. You can use any non-white space character in the name.</p>"
         },
         "RuleConfig": {
           "shape": "RuleConfig",
-          "documentation": "<p>The criteria that you set for specific gating controls (routing controls) that designates how many controls must be enabled to allow you to change (set or unset) the target controls.</p>"
+          "documentation": "<p>The criteria that you set for gating routing controls that designates how many of the routing control states must be ON to allow you to update target routing control states.</p>"
         },
         "SafetyRuleArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the gating rule.</p>"
         },
         "Status": {
@@ -1264,15 +1372,15 @@
           "documentation": "<p>The deployment status of a gating rule. Status can be one of the following: PENDING, DEPLOYED, PENDING_DELETION.</p>"
         },
         "TargetControls": {
-          "shape": "__listOf__string",
-          "documentation": "<p>Routing controls that can only be set or unset if the specified RuleConfig evaluates to true for the specified GatingControls. For example, say you have three gating controls, one for each of three Amazon Web Services Regions. Now you specify ATLEAST 2 as your RuleConfig. With these settings, you can only change (set or unset) the routing controls that you have specified as TargetControls if that rule evaluates to true.</p> <p>In other words, your ability to change the routing controls that you have specified as TargetControls is gated by the rule that you set for the routing controls in GatingControls.</p>"
+          "shape": "__listOf__stringMin1Max256PatternAZaZ09",
+          "documentation": "<p>An array of target routing control Amazon Resource Names (ARNs) for which the states can only be updated if the rule configuration that you specify evaluates to true for the gating routing control. As a simple example, if you have a single gating control, it acts as an overall \"on/off\" switch for a set of target routing controls. You can use this to manually override automated fail over, for example.</p>"
         },
         "WaitPeriodMs": {
           "shape": "__integer",
           "documentation": "<p>An evaluation period, in milliseconds (ms), during which any request against the target routing controls will fail. This helps prevent \"flapping\" of state. The wait period is 5000 ms by default, but you can choose a custom value.</p>"
         }
       },
-      "documentation": "<p>A gating rule verifies that a set of gating controls evaluates as true, based on a rule configuration that you specify. If the gating rule evaluates to true, Amazon Route 53 Application Recovery Controller allows a set of routing control state changes to run and complete against the set of target controls.</p>",
+      "documentation": "<p>A gating rule verifies that a gating routing control or set of gating rounting controls, evaluates as true, based on a rule configuration that you specify, which allows a set of routing control state changes to complete.</p> <p>For example, if you specify one gating routing control and you set the Type in the rule configuration to OR, that indicates that you must set the gating routing control to On for the rule to evaluate as true; that is, for the gating control \"switch\" to be \"On\". When you do that, then you can update the routing control states for the target routing controls that you specify in the gating rule.</p>",
       "required": [
         "Status",
         "TargetControls",
@@ -1289,10 +1397,10 @@
       "members": {
         "Name": {
           "shape": "__stringMin1Max64PatternS",
-          "documentation": "<p>The name for the gating rule.</p>"
+          "documentation": "<p>The name for the gating rule. You can use any non-white space character in the name.</p>"
         },
         "SafetyRuleArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the gating rule.</p>"
         },
         "WaitPeriodMs": {
@@ -1309,13 +1417,13 @@
     },
     "InternalServerException": {
       "type": "structure",
-      "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>",
       "required": [
         "Message"
       ],
@@ -1343,7 +1451,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "RoutingControlArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the routing control that you're getting details for.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the routing control.</p>"
         }
       },
       "required": [
@@ -1354,12 +1462,12 @@
       "type": "structure",
       "members": {
         "HealthCheckIds": {
-          "shape": "__listOf__string",
+          "shape": "__listOf__stringMax36PatternS",
           "documentation": "<p>Identifiers for the health checks.</p>"
         },
         "NextToken": {
-          "shape": "__stringMax8096",
-          "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
+          "shape": "__stringMin1Max8096PatternS",
+          "documentation": "<p>Next token for listing health checks.</p>"
         }
       }
     },
@@ -1388,7 +1496,7 @@
           "documentation": "<p>An array of the clusters in an account.</p>"
         },
         "NextToken": {
-          "shape": "__stringMax8096",
+          "shape": "__stringMin1Max8096PatternS",
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         }
       }
@@ -1424,7 +1532,7 @@
           "documentation": "<p>The result of a successful ListControlPanel request.</p>"
         },
         "NextToken": {
-          "shape": "__stringMax8096",
+          "shape": "__stringMin1Max8096PatternS",
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         }
       }
@@ -1436,7 +1544,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "ControlPanelArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel that you're getting routing control details for.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "MaxResults": {
           "shape": "MaxResults",
@@ -1459,7 +1567,7 @@
       "type": "structure",
       "members": {
         "NextToken": {
-          "shape": "__stringMax8096",
+          "shape": "__stringMin1Max8096PatternS",
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         },
         "RoutingControls": {
@@ -1475,7 +1583,7 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "ControlPanelArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel that you're getting details for.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "MaxResults": {
           "shape": "MaxResults",
@@ -1498,12 +1606,35 @@
       "type": "structure",
       "members": {
         "NextToken": {
-          "shape": "__stringMax8096",
+          "shape": "__stringMin1Max8096PatternS",
           "documentation": "<p>The token that identifies which batch of results you want to see.</p>"
         },
         "SafetyRules": {
           "shape": "__listOfRule",
           "documentation": "<p>The list of safety rules in a control panel.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest": {
+      "type": "structure",
+      "members": {
+        "ResourceArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) for the resource that's tagged.</p>"
+        }
+      },
+      "required": [
+        "ResourceArn"
+      ]
+    },
+    "ListTagsForResourceResponse": {
+      "type": "structure",
+      "members": {
+        "Tags": {
+          "shape": "__mapOf__stringMin0Max256PatternS",
+          "documentation": "<p>The tags associated with the resource.</p>"
         }
       }
     },
@@ -1516,11 +1647,11 @@
       "type": "structure",
       "members": {
         "AssertedControls": {
-          "shape": "__listOf__string",
+          "shape": "__listOf__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The routing controls that are part of transactions that are evaluated to determine if a request to change a routing control state is allowed. For example, you might include three routing controls, one for each of three Amazon Web Services Regions.</p>"
         },
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) for the control panel.</p>"
         },
         "Name": {
@@ -1529,7 +1660,7 @@
         },
         "RuleConfig": {
           "shape": "RuleConfig",
-          "documentation": "<p>The criteria that you set for specific assertion controls (routing controls) that designate how many controls must be enabled as the result of a transaction. For example, if you have three assertion controls, you might specify atleast 2 for your rule configuration. This means that at least two assertion controls must be enabled, so that at least two Amazon Web Services Regions are enabled.</p>"
+          "documentation": "<p>The criteria that you set for specific assertion controls (routing controls) that designate how many control states must be ON as the result of a transaction. For example, if you have three assertion controls, you might specify ATLEAST 2for your rule configuration. This means that at least two assertion controls must be ON, so that at least two Amazon Web Services Regions have traffic flowing to them.</p>"
         },
         "WaitPeriodMs": {
           "shape": "__integer",
@@ -1549,11 +1680,11 @@
       "type": "structure",
       "members": {
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "GatingControls": {
-          "shape": "__listOf__string",
+          "shape": "__listOf__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The gating controls for the new gating rule. That is, routing controls that are evaluated by the rule configuration that you specify.</p>"
         },
         "Name": {
@@ -1562,10 +1693,10 @@
         },
         "RuleConfig": {
           "shape": "RuleConfig",
-          "documentation": "<p>The criteria that you set for specific gating controls (routing controls) that designates how many controls must be enabled to allow you to change (set or unset) the target controls.</p>"
+          "documentation": "<p>The criteria that you set for specific gating controls (routing controls) that designates how many control states must be ON to allow you to change (set or unset) the target control states.</p>"
         },
         "TargetControls": {
-          "shape": "__listOf__string",
+          "shape": "__listOf__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>Routing controls that can only be set or unset if the specified RuleConfig evaluates to true for the specified GatingControls. For example, say you have three gating controls, one for each of three Amazon Web Services Regions. Now you specify AtLeast 2 as your RuleConfig. With these settings, you can only change (set or unset) the routing controls that you have specified as TargetControls if that rule evaluates to true.</p> <p>In other words, your ability to change the routing controls that you have specified as TargetControls is gated by the rule that you set for the routing controls in GatingControls.</p>"
         },
         "WaitPeriodMs": {
@@ -1585,13 +1716,13 @@
     },
     "ResourceNotFoundException": {
       "type": "structure",
-      "documentation": "<p>404 response - The query string contains a syntax error or resource not found.</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found..</p>",
       "required": [
         "Message"
       ],
@@ -1604,7 +1735,7 @@
       "type": "structure",
       "members": {
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel that includes the routing control.</p>"
         },
         "Name": {
@@ -1612,7 +1743,7 @@
           "documentation": "<p>The name of the routing control.</p>"
         },
         "RoutingControlArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the routing control.</p>"
         },
         "Status": {
@@ -1627,11 +1758,11 @@
       "members": {
         "ASSERTION": {
           "shape": "AssertionRule",
-          "documentation": "<p>An assertion rule enforces that, when a routing control state is changed, the criteria set by the rule configuration is met. Otherwise, the change to the routing control is not accepted.</p>"
+          "documentation": "<p>An assertion rule enforces that, when a routing control state is changed, the criteria set by the rule configuration is met. Otherwise, the change to the routing control state is not accepted. For example, the criteria might be that at least one routing control state is On after the transation so that traffic continues to flow to at least one cell for the application. This ensures that you avoid a fail-open scenario.</p>"
         },
         "GATING": {
           "shape": "GatingRule",
-          "documentation": "<p>A gating rule verifies that a set of gating controls evaluates as true, based on a rule configuration that you specify. If the gating rule evaluates to true, Amazon Route 53 Application Recovery Controller allows a set of routing control state changes to run and complete against the set of target controls.</p>"
+          "documentation": "<p>A gating rule verifies that a gating routing control or set of gating rounting controls, evaluates as true, based on a rule configuration that you specify, which allows a set of routing control state changes to complete.</p> <p>For example, if you specify one gating routing control and you set the Type in the rule configuration to OR, that indicates that you must set the gating routing control to On for the rule to evaluate as true; that is, for the gating control \"switch\" to be \"On\". When you do that, then you can update the routing control states for the target routing controls that you specify in the gating rule.</p>"
         }
       },
       "documentation": "<p>A safety rule. A safety rule can be an assertion rule or a gating rule.</p>"
@@ -1652,7 +1783,7 @@
           "documentation": "<p>A rule can be one of the following: ATLEAST, AND, or OR.</p>"
         }
       },
-      "documentation": "<p>The rule configuration for an assertion rule. That is, the criteria that you set for specific assertion controls (routing controls) that specify how many controls must be enabled after a transaction completes.</p>",
+      "documentation": "<p>The rule configuration for an assertion rule. That is, the criteria that you set for specific assertion controls (routing controls) that specify how many control states must be ON after a transaction completes.</p>",
       "required": [
         "Type",
         "Inverted",
@@ -1670,13 +1801,13 @@
     },
     "ServiceQuotaExceededException": {
       "type": "structure",
-      "documentation": "<p>402 response</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>402 response - You attempted to create more resources than the service allows based on service quotas.</p>",
       "required": [
         "Message"
       ],
@@ -1694,15 +1825,39 @@
         "PENDING_DELETION"
       ]
     },
+    "TagResourceRequest": {
+      "type": "structure",
+      "members": {
+        "ResourceArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) for the resource that's tagged.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__stringMin0Max256PatternS",
+          "documentation": "<p>The tags associated with the resource.</p>"
+        }
+      },
+      "documentation": "<p>Request of adding tag to the resource</p>",
+      "required": [
+        "ResourceArn",
+        "Tags"
+      ]
+    },
+    "TagResourceResponse": {
+      "type": "structure",
+      "members": {}
+    },
     "ThrottlingException": {
       "type": "structure",
-      "documentation": "<p>429 response - ThrottlingException.</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>429 response - LimitExceededException or TooManyRequestsException.</p>",
       "required": [
         "Message"
       ],
@@ -1711,11 +1866,36 @@
         "httpStatusCode": 429
       }
     },
+    "UntagResourceRequest": {
+      "type": "structure",
+      "members": {
+        "ResourceArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) for the resource that's tagged.</p>"
+        },
+        "TagKeys": {
+          "shape": "__listOf__string",
+          "location": "querystring",
+          "locationName": "TagKeys",
+          "documentation": "<p>Keys for the tags to be removed.</p>"
+        }
+      },
+      "required": [
+        "ResourceArn",
+        "TagKeys"
+      ]
+    },
+    "UntagResourceResponse": {
+      "type": "structure",
+      "members": {}
+    },
     "UpdateControlPanelRequest": {
       "type": "structure",
       "members": {
         "ControlPanelArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the control panel.</p>"
         },
         "ControlPanelName": {
@@ -1742,7 +1922,7 @@
       "type": "structure",
       "members": {
         "RoutingControlArn": {
-          "shape": "__string",
+          "shape": "__stringMin1Max256PatternAZaZ09",
           "documentation": "<p>The Amazon Resource Name (ARN) of the routing control.</p>"
         },
         "RoutingControlName": {
@@ -1769,33 +1949,38 @@
       "type": "structure",
       "members": {
         "AssertionRuleUpdate": {
-          "shape": "AssertionRuleUpdate"
+          "shape": "AssertionRuleUpdate",
+          "documentation": "<p>The assertion rule to update.</p>"
         },
         "GatingRuleUpdate": {
-          "shape": "GatingRuleUpdate"
+          "shape": "GatingRuleUpdate",
+          "documentation": "<p>The gating rule to update.</p>"
         }
-      }
+      },
+      "documentation": "<p>A rule that you add to Application Recovery Controller to ensure that recovery actions don't accidentally impair your application's availability.</p>"
     },
     "UpdateSafetyRuleResponse": {
       "type": "structure",
       "members": {
         "AssertionRule": {
-          "shape": "AssertionRule"
+          "shape": "AssertionRule",
+          "documentation": "<p>The assertion rule updated.</p>"
         },
         "GatingRule": {
-          "shape": "GatingRule"
+          "shape": "GatingRule",
+          "documentation": "<p>The gating rule updated.</p>"
         }
       }
     },
     "ValidationException": {
       "type": "structure",
-      "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you used parameters together incorrectly.</p>",
       "members": {
         "Message": {
           "shape": "__string",
           "locationName": "message"
         }
       },
+      "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you might have used parameters together incorrectly.</p>",
       "required": [
         "Message"
       ],
@@ -1849,35 +2034,73 @@
         "shape": "__string"
       }
     },
+    "__listOf__stringMax36PatternS": {
+      "type": "list",
+      "member": {
+        "shape": "__stringMax36PatternS"
+      }
+    },
+    "__listOf__stringMin1Max256PatternAZaZ09": {
+      "type": "list",
+      "member": {
+        "shape": "__stringMin1Max256PatternAZaZ09"
+      }
+    },
     "__long": {
       "type": "long"
+    },
+    "__mapOf__stringMin0Max256PatternS": {
+      "type": "map",
+      "key": {
+        "shape": "__string"
+      },
+      "value": {
+        "shape": "__stringMin0Max256PatternS"
+      }
     },
     "__string": {
       "type": "string"
     },
-    "__stringMax64": {
+    "__stringMax36PatternS": {
       "type": "string",
-      "max": 64
+      "max": 36,
+      "pattern": "^\\S+$"
     },
-    "__stringMax8096": {
+    "__stringMin0Max256PatternS": {
       "type": "string",
-      "max": 8096
+      "min": 0,
+      "max": 256,
+      "pattern": "^\\S+$"
     },
-    "__stringMin1Max128": {
+    "__stringMin1Max128PatternAZaZ09": {
       "type": "string",
       "min": 1,
-      "max": 128
+      "max": 128,
+      "pattern": "^[A-Za-z0-9:.\\/_-]*$"
     },
-    "__stringMin1Max32": {
+    "__stringMin1Max256PatternAZaZ09": {
       "type": "string",
       "min": 1,
-      "max": 32
+      "max": 256,
+      "pattern": "^[A-Za-z0-9:\\/_-]*$"
+    },
+    "__stringMin1Max32PatternS": {
+      "type": "string",
+      "min": 1,
+      "max": 32,
+      "pattern": "^\\S+$"
     },
     "__stringMin1Max64PatternS": {
       "type": "string",
       "min": 1,
       "max": 64,
       "pattern": "^\\S+$"
+    },
+    "__stringMin1Max8096PatternS": {
+      "type": "string",
+      "min": 1,
+      "max": 8096,
+      "pattern": "[\\S]*"
     },
     "__timestampIso8601": {
       "type": "timestamp",

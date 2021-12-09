@@ -254,6 +254,22 @@
       ],
       "documentation":"<p>Returns the data objects for the specified rule group. </p>"
     },
+    "DescribeRuleGroupMetadata":{
+      "name":"DescribeRuleGroupMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRuleGroupMetadataRequest"},
+      "output":{"shape":"DescribeRuleGroupMetadataResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>High-level information about a rule group, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
+    },
     "DisassociateSubnets":{
       "name":"DisassociateSubnets",
       "http":{
@@ -326,6 +342,8 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
@@ -357,6 +375,8 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
@@ -371,6 +391,8 @@
       "input":{"shape":"UntagResourceRequest"},
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
@@ -444,7 +466,7 @@
         {"shape":"InvalidTokenException"},
         {"shape":"ResourceOwnerCheckException"}
       ],
-      "documentation":"<p/>"
+      "documentation":"<p>Modifies the flag, <code>ChangeProtection</code>, which indicates whether it is possible to change the firewall. If the flag is set to <code>TRUE</code>, the firewall is protected from changes. This setting helps protect against accidentally changing a firewall that's in use.</p>"
     },
     "UpdateLoggingConfiguration":{
       "name":"UpdateLoggingConfiguration",
@@ -1049,6 +1071,53 @@
         }
       }
     },
+    "DescribeRuleGroupMetadataRequest":{
+      "type":"structure",
+      "members":{
+        "RuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the rule group. You can't change the name of a rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The descriptive name of the rule group. You can't change the name of a rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "Type":{
+          "shape":"RuleGroupType",
+          "documentation":"<p>Indicates whether the rule group is stateless or stateful. If the rule group is stateless, it contains stateless rules. If it is stateful, it contains stateful rules. </p> <note> <p>This setting is required for requests that do not include the <code>RuleGroupARN</code>.</p> </note>"
+        }
+      }
+    },
+    "DescribeRuleGroupMetadataResponse":{
+      "type":"structure",
+      "required":[
+        "RuleGroupArn",
+        "RuleGroupName"
+      ],
+      "members":{
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The descriptive name of the rule group. You can't change the name of a rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the rule group. You can't change the name of a rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Returns the metadata objects for the specified rule group. </p>"
+        },
+        "Type":{
+          "shape":"RuleGroupType",
+          "documentation":"<p>Indicates whether the rule group is stateless or stateful. If the rule group is stateless, it contains stateless rules. If it is stateful, it contains stateful rules. </p> <note> <p>This setting is required for requests that do not include the <code>RuleGroupARN</code>.</p> </note>"
+        },
+        "Capacity":{
+          "shape":"RuleCapacity",
+          "documentation":"<p>The maximum operating resources that this rule group can use. Rule group capacity is fixed at creation. When you update a rule group, you are limited to this capacity. When you reference a rule group from a firewall policy, Network Firewall reserves this capacity for the rule group. </p> <p>You can retrieve the capacity that would be required for a rule group before you create the rule group by calling <a>CreateRuleGroup</a> with <code>DryRun</code> set to <code>TRUE</code>. </p>"
+        },
+        "StatefulRuleOptions":{"shape":"StatefulRuleOptions"}
+      }
+    },
     "DescribeRuleGroupRequest":{
       "type":"structure",
       "members":{
@@ -1269,7 +1338,7 @@
         },
         "StatefulDefaultActions":{
           "shape":"StatefulActions",
-          "documentation":"<p>The default actions to take on a packet that doesn't match any stateful rules.</p>"
+          "documentation":"<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p>Valid values of the stateful default action:</p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-strict-rule-evaluation-order.html\">Strict evaluation order</a> in the <i>AWS Network Firewall Developer Guide</i>. </p>"
         },
         "StatefulEngineOptions":{
           "shape":"StatefulEngineOptions",
@@ -1580,6 +1649,10 @@
         "MaxResults":{
           "shape":"PaginationMaxResults",
           "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        },
+        "Scope":{
+          "shape":"ResourceManagedStatus",
+          "documentation":"<p>The scope of the request. The default setting of <code>ACCOUNT</code> or a setting of <code>NULL</code> returns all of the rule groups in your account. A setting of <code>MANAGED</code> returns all available managed rule groups.</p>"
         }
       }
     },
@@ -1727,6 +1800,10 @@
       "documentation":"<p>Criteria for Network Firewall to use to inspect an individual packet in stateless rule inspection. Each match attributes set can include one or more items such as IP address, CIDR range, port number, protocol, and TCP flags. </p>"
     },
     "NumberOfAssociations":{"type":"integer"},
+    "OverrideAction":{
+      "type":"string",
+      "enum":["DROP_TO_ALERT"]
+    },
     "PaginationMaxResults":{
       "type":"integer",
       "max":100,
@@ -1871,6 +1948,13 @@
       "max":36,
       "min":36,
       "pattern":"^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$"
+    },
+    "ResourceManagedStatus":{
+      "type":"string",
+      "enum":[
+        "MANAGED",
+        "ACCOUNT"
+      ]
     },
     "ResourceName":{
       "type":"string",
@@ -2097,7 +2181,7 @@
       "members":{
         "Targets":{
           "shape":"RuleTargets",
-          "documentation":"<p>The domains that you want to inspect for in your traffic flows. To provide multiple domains, separate them with commas. Valid domain specifications are the following:</p> <ul> <li> <p>Explicit names. For example, <code>abc.example.com</code> matches only the domain <code>abc.example.com</code>.</p> </li> <li> <p>Names that use a domain wildcard, which you indicate with an initial '<code>.</code>'. For example,<code>.example.com</code> matches <code>example.com</code> and matches all subdomains of <code>example.com</code>, such as <code>abc.example.com</code> and <code>www.example.com</code>. </p> </li> </ul>"
+          "documentation":"<p>The domains that you want to inspect for in your traffic flows. Valid domain specifications are the following:</p> <ul> <li> <p>Explicit names. For example, <code>abc.example.com</code> matches only the domain <code>abc.example.com</code>.</p> </li> <li> <p>Names that use a domain wildcard, which you indicate with an initial '<code>.</code>'. For example,<code>.example.com</code> matches <code>example.com</code> and matches all subdomains of <code>example.com</code>, such as <code>abc.example.com</code> and <code>www.example.com</code>. </p> </li> </ul>"
         },
         "TargetTypes":{
           "shape":"TargetTypes",
@@ -2148,7 +2232,7 @@
       "members":{
         "RuleOrder":{
           "shape":"RuleOrder",
-          "documentation":"<p>Indicates how to manage the order of stateful rule evaluation for the policy. By default, Network Firewall leaves the rule evaluation order up to the Suricata rule processing engine. If you set this to <code>STRICT_ORDER</code>, your rules are evaluated in the exact order that you provide them in the policy. With strict ordering, the rule groups are evaluated by order of priority, starting from the lowest number, and the rules in each rule group are processed in the order that they're defined. </p>"
+          "documentation":"<p>Indicates how to manage the order of stateful rule evaluation for the policy. <code>DEFAULT_ACTION_ORDER</code> is the default behavior. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on certain settings. For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html\">Evaluation order for stateful rules</a> in the <i>AWS Network Firewall Developer Guide</i>. </p>"
         }
       },
       "documentation":"<p>Configuration settings for the handling of the stateful rule groups in a firewall policy. </p>"
@@ -2183,6 +2267,16 @@
         "ANY"
       ]
     },
+    "StatefulRuleGroupOverride":{
+      "type":"structure",
+      "members":{
+        "Action":{
+          "shape":"OverrideAction",
+          "documentation":"<p>The action that changes the rule group from <code>DROP</code> to <code>ALERT</code>. This only applies to managed rule groups.</p>"
+        }
+      },
+      "documentation":"<p>The setting that allows the policy owner to change the behavior of the rule group within a policy. </p>"
+    },
     "StatefulRuleGroupReference":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -2195,6 +2289,10 @@
           "shape":"Priority",
           "documentation":"<p>An integer setting that indicates the order in which to run the stateful rule groups in a single <a>FirewallPolicy</a>. This setting only applies to firewall policies that specify the <code>STRICT_ORDER</code> rule order in the stateful engine options settings.</p> <p>Network Firewall evalutes each stateful rule group against a packet starting with the group that has the lowest priority setting. You must ensure that the priority settings are unique within each policy.</p> <p>You can change the priority settings of your rule groups at any time. To make it easier to insert rule groups later, number them so there's a wide range in between, for example use 100, 200, and so on. </p>",
           "box":true
+        },
+        "Override":{
+          "shape":"StatefulRuleGroupOverride",
+          "documentation":"<p>The action that allows the policy owner to override the behavior of the rule group within a policy.</p>"
         }
       },
       "documentation":"<p>Identifier for a single stateful rule group, used in a firewall policy to refer to a rule group. </p>"
@@ -2208,7 +2306,7 @@
       "members":{
         "RuleOrder":{
           "shape":"RuleOrder",
-          "documentation":"<p>Indicates how to manage the order of the rule evaluation for the rule group. By default, Network Firewall leaves the rule evaluation order up to the Suricata rule processing engine. If you set this to <code>STRICT_ORDER</code>, your rules are evaluated in the exact order that they're listed in your Suricata rules string. </p>"
+          "documentation":"<p>Indicates how to manage the order of the rule evaluation for the rule group. <code>DEFAULT_ACTION_ORDER</code> is the default behavior. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on certain settings. For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html\">Evaluation order for stateful rules</a> in the <i>AWS Network Firewall Developer Guide</i>. </p>"
         }
       },
       "documentation":"<p>Additional options governing how Network Firewall handles the rule group. You can only use these for stateful rule groups.</p>"
@@ -2528,7 +2626,7 @@
         },
         "DeleteProtection":{
           "shape":"Boolean",
-          "documentation":"<p/>"
+          "documentation":"<p>A flag indicating whether it is possible to delete the firewall. A setting of <code>TRUE</code> indicates that the firewall is protected against deletion. Use this setting to protect against accidentally deleting a firewall that is in use. When you create a firewall, the operation initializes this flag to <code>TRUE</code>.</p>"
         },
         "UpdateToken":{
           "shape":"UpdateToken",

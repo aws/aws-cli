@@ -23,9 +23,10 @@
       "errors":[
         {"shape":"InvalidInput"},
         {"shape":"OperationLimitExceeded"},
-        {"shape":"DomainLimitExceeded"}
+        {"shape":"DomainLimitExceeded"},
+        {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>Accepts the transfer of a domain from another AWS account to the current AWS account. You initiate a transfer between AWS accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
+      "documentation":"<p>Accepts the transfer of a domain from another Amazon Web Services account to the currentAmazon Web Services account. You initiate a transfer between Amazon Web Services accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>.</p> <p>If you use the CLI command at <a href=\"https://docs.aws.amazon.com/cli/latest/reference/route53domains/accept-domain-transfer-from-another-aws-account.html\">accept-domain-transfer-from-another-aws-account</a>, use JSON format as input instead of text because otherwise CLI will throw an error from domain transfer input that includes single quotes.</p> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
     },
     "CancelDomainTransferToAnotherAwsAccount":{
       "name":"CancelDomainTransferToAnotherAwsAccount",
@@ -37,9 +38,10 @@
       "output":{"shape":"CancelDomainTransferToAnotherAwsAccountResponse"},
       "errors":[
         {"shape":"InvalidInput"},
-        {"shape":"OperationLimitExceeded"}
+        {"shape":"OperationLimitExceeded"},
+        {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>Cancels the transfer of a domain from the current AWS account to another AWS account. You initiate a transfer between AWS accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> <important> <p>You must cancel the transfer before the other AWS account accepts the transfer using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a>.</p> </important> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
+      "documentation":"<p>Cancels the transfer of a domain from the current Amazon Web Services account to another Amazon Web Services account. You initiate a transfer betweenAmazon Web Services accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> <important> <p>You must cancel the transfer before the other Amazon Web Services account accepts the transfer using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a>.</p> </important> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
     },
     "CheckDomainAvailability":{
       "name":"CheckDomainAvailability",
@@ -68,6 +70,22 @@
         {"shape":"UnsupportedTLD"}
       ],
       "documentation":"<p>Checks whether a domain name can be transferred to Amazon Route 53. </p>"
+    },
+    "DeleteDomain":{
+      "name":"DeleteDomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDomainRequest"},
+      "output":{"shape":"DeleteDomainResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"DuplicateRequest"},
+        {"shape":"TLDRulesViolation"},
+        {"shape":"UnsupportedTLD"}
+      ],
+      "documentation":"<p>This operation deletes the specified domain. This action is permanent. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-delete.html\">Deleting a domain name registration</a>.</p> <p>To transfer the domain registration to another registrar, use the transfer process that’s provided by the registrar to which you want to transfer the registration. Otherwise, the following apply:</p> <ol> <li> <p>You can’t get a refund for the cost of a deleted domain registration.</p> </li> <li> <p>The registry for the top-level domain might hold the domain name for a brief time before releasing it for other users to register (varies by registry). </p> </li> <li> <p>When the registration has been deleted, we'll send you a confirmation to the registrant contact. The email will come from <code>noreply@domainnameverification.net</code> or <code>noreply@registrar.amazon.com</code>.</p> </li> </ol>"
     },
     "DeleteTagsForDomain":{
       "name":"DeleteTagsForDomain",
@@ -128,7 +146,7 @@
         {"shape":"UnsupportedTLD"},
         {"shape":"TLDRulesViolation"}
       ],
-      "documentation":"<p>This operation configures Amazon Route 53 to automatically renew the specified domain before the domain registration expires. The cost of renewing your domain registration is billed to your AWS account.</p> <p>The period during which you can renew a domain name varies by TLD. For a list of TLDs and their renewal policies, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html\">Domains That You Can Register with Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i>. Route 53 requires that you renew before the end of the renewal period so we can complete processing before the deadline.</p>"
+      "documentation":"<p>This operation configures Amazon Route 53 to automatically renew the specified domain before the domain registration expires. The cost of renewing your domain registration is billed to your Amazon Web Services account.</p> <p>The period during which you can renew a domain name varies by TLD. For a list of TLDs and their renewal policies, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html\">Domains That You Can Register with Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i>. Route 53 requires that you renew before the end of the renewal period so we can complete processing before the deadline.</p>"
     },
     "EnableDomainTransferLock":{
       "name":"EnableDomainTransferLock",
@@ -174,7 +192,7 @@
         {"shape":"InvalidInput"},
         {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>This operation returns detailed information about a specified domain that is associated with the current AWS account. Contact information for the domain is also returned as part of the output.</p>"
+      "documentation":"<p>This operation returns detailed information about a specified domain that is associated with the current Amazon Web Services account. Contact information for the domain is also returned as part of the output.</p>"
     },
     "GetDomainSuggestions":{
       "name":"GetDomainSuggestions",
@@ -214,7 +232,7 @@
       "errors":[
         {"shape":"InvalidInput"}
       ],
-      "documentation":"<p>This operation returns all the domain names registered with Amazon Route 53 for the current AWS account.</p>"
+      "documentation":"<p>This operation returns all the domain names registered with Amazon Route 53 for the current Amazon Web Services account if no filtering conditions are used.</p>"
     },
     "ListOperations":{
       "name":"ListOperations",
@@ -227,7 +245,21 @@
       "errors":[
         {"shape":"InvalidInput"}
       ],
-      "documentation":"<p>Returns information about all of the operations that return an operation ID and that have ever been performed on domains that were registered by the current account. </p>"
+      "documentation":"<p>Returns information about all of the operations that return an operation ID and that have ever been performed on domains that were registered by the current account. </p> <p>This command runs only in the us-east-1 Region.</p>"
+    },
+    "ListPrices":{
+      "name":"ListPrices",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPricesRequest"},
+      "output":{"shape":"ListPricesResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"UnsupportedTLD"}
+      ],
+      "documentation":"<p>Lists the following prices for either all the TLDs supported by Route 53, or the specified TLD:</p> <ul> <li> <p>Registration</p> </li> <li> <p>Transfer</p> </li> <li> <p>Owner change</p> </li> <li> <p>Domain renewal</p> </li> <li> <p>Domain restoration</p> </li> </ul>"
     },
     "ListTagsForDomain":{
       "name":"ListTagsForDomain",
@@ -260,7 +292,7 @@
         {"shape":"DomainLimitExceeded"},
         {"shape":"OperationLimitExceeded"}
       ],
-      "documentation":"<p>This operation registers a domain. Domains are registered either by Amazon Registrar (for .com, .net, and .org domains) or by our registrar associate, Gandi (for all other domains). For some top-level domains (TLDs), this operation requires extra parameters.</p> <p>When you register a domain, Amazon Route 53 does the following:</p> <ul> <li> <p>Creates a Route 53 hosted zone that has the same name as the domain. Route 53 assigns four name servers to your hosted zone and automatically updates your domain registration with the names of these name servers.</p> </li> <li> <p>Enables autorenew, so your domain registration will renew automatically each year. We'll notify you in advance of the renewal date so you can choose whether to renew the registration.</p> </li> <li> <p>Optionally enables privacy protection, so WHOIS queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you don't enable privacy protection, WHOIS queries return the information that you entered for the registrant, admin, and tech contacts.</p> </li> <li> <p>If registration is successful, returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant is notified by email.</p> </li> <li> <p>Charges your AWS account an amount based on the top-level domain. For more information, see <a href=\"http://aws.amazon.com/route53/pricing/\">Amazon Route 53 Pricing</a>.</p> </li> </ul>"
+      "documentation":"<p>This operation registers a domain. Domains are registered either by Amazon Registrar (for .com, .net, and .org domains) or by our registrar associate, Gandi (for all other domains). For some top-level domains (TLDs), this operation requires extra parameters.</p> <p>When you register a domain, Amazon Route 53 does the following:</p> <ul> <li> <p>Creates a Route 53 hosted zone that has the same name as the domain. Route 53 assigns four name servers to your hosted zone and automatically updates your domain registration with the names of these name servers.</p> </li> <li> <p>Enables autorenew, so your domain registration will renew automatically each year. We'll notify you in advance of the renewal date so you can choose whether to renew the registration.</p> </li> <li> <p>Optionally enables privacy protection, so WHOIS queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you don't enable privacy protection, WHOIS queries return the information that you entered for the administrative, registrant, and technical contacts.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> </li> <li> <p>If registration is successful, returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant is notified by email.</p> </li> <li> <p>Charges your Amazon Web Services account an amount based on the top-level domain. For more information, see <a href=\"http://aws.amazon.com/route53/pricing/\">Amazon Route 53 Pricing</a>.</p> </li> </ul>"
     },
     "RejectDomainTransferFromAnotherAwsAccount":{
       "name":"RejectDomainTransferFromAnotherAwsAccount",
@@ -272,9 +304,10 @@
       "output":{"shape":"RejectDomainTransferFromAnotherAwsAccountResponse"},
       "errors":[
         {"shape":"InvalidInput"},
-        {"shape":"OperationLimitExceeded"}
+        {"shape":"OperationLimitExceeded"},
+        {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>Rejects the transfer of a domain from another AWS account to the current AWS account. You initiate a transfer between AWS accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
+      "documentation":"<p>Rejects the transfer of a domain from another Amazon Web Services account to the current Amazon Web Services account. You initiate a transfer betweenAmazon Web Services accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
     },
     "RenewDomain":{
       "name":"RenewDomain",
@@ -291,7 +324,7 @@
         {"shape":"TLDRulesViolation"},
         {"shape":"OperationLimitExceeded"}
       ],
-      "documentation":"<p>This operation renews a domain for the specified number of years. The cost of renewing your domain is billed to your AWS account.</p> <p>We recommend that you renew your domain several weeks before the expiration date. Some TLD registries delete domains before the expiration date if you haven't renewed far enough in advance. For more information about renewing domain registration, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-renew.html\">Renewing Registration for a Domain</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
+      "documentation":"<p>This operation renews a domain for the specified number of years. The cost of renewing your domain is billed to your Amazon Web Services account.</p> <p>We recommend that you renew your domain several weeks before the expiration date. Some TLD registries delete domains before the expiration date if you haven't renewed far enough in advance. For more information about renewing domain registration, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-renew.html\">Renewing Registration for a Domain</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
     },
     "ResendContactReachabilityEmail":{
       "name":"ResendContactReachabilityEmail",
@@ -338,7 +371,7 @@
         {"shape":"DomainLimitExceeded"},
         {"shape":"OperationLimitExceeded"}
       ],
-      "documentation":"<p>Transfers a domain from another registrar to Amazon Route 53. When the transfer is complete, the domain is registered either with Amazon Registrar (for .com, .net, and .org domains) or with our registrar associate, Gandi (for all other TLDs).</p> <p>For more information about transferring domains, see the following topics:</p> <ul> <li> <p>For transfer requirements, a detailed procedure, and information about viewing the status of a domain that you're transferring to Route 53, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-to-route-53.html\">Transferring Registration for a Domain to Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </li> <li> <p>For information about how to transfer a domain from one AWS account to another, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> </li> <li> <p>For information about how to transfer a domain to another domain registrar, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-from-route-53.html\">Transferring a Domain from Amazon Route 53 to Another Registrar</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </li> </ul> <p>If the registrar for your domain is also the DNS service provider for the domain, we highly recommend that you transfer your DNS service to Route 53 or to another DNS service provider before you transfer your registration. Some registrars provide free DNS service when you purchase a domain registration. When you transfer the registration, the previous registrar will not renew your domain registration and could end your DNS service at any time.</p> <important> <p>If the registrar for your domain is also the DNS service provider for the domain and you don't transfer DNS service to another provider, your website, email, and the web applications associated with the domain might become unavailable.</p> </important> <p>If the transfer is successful, this method returns an operation ID that you can use to track the progress and completion of the action. If the transfer doesn't complete successfully, the domain registrant will be notified by email.</p>"
+      "documentation":"<p>Transfers a domain from another registrar to Amazon Route 53. When the transfer is complete, the domain is registered either with Amazon Registrar (for .com, .net, and .org domains) or with our registrar associate, Gandi (for all other TLDs).</p> <p>For more information about transferring domains, see the following topics:</p> <ul> <li> <p>For transfer requirements, a detailed procedure, and information about viewing the status of a domain that you're transferring to Route 53, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-to-route-53.html\">Transferring Registration for a Domain to Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </li> <li> <p>For information about how to transfer a domain from one Amazon Web Services account to another, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>. </p> </li> <li> <p>For information about how to transfer a domain to another domain registrar, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-from-route-53.html\">Transferring a Domain from Amazon Route 53 to Another Registrar</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </li> </ul> <p>If the registrar for your domain is also the DNS service provider for the domain, we highly recommend that you transfer your DNS service to Route 53 or to another DNS service provider before you transfer your registration. Some registrars provide free DNS service when you purchase a domain registration. When you transfer the registration, the previous registrar will not renew your domain registration and could end your DNS service at any time.</p> <important> <p>If the registrar for your domain is also the DNS service provider for the domain and you don't transfer DNS service to another provider, your website, email, and the web applications associated with the domain might become unavailable.</p> </important> <p>If the transfer is successful, this method returns an operation ID that you can use to track the progress and completion of the action. If the transfer doesn't complete successfully, the domain registrant will be notified by email.</p>"
     },
     "TransferDomainToAnotherAwsAccount":{
       "name":"TransferDomainToAnotherAwsAccount",
@@ -351,9 +384,10 @@
       "errors":[
         {"shape":"InvalidInput"},
         {"shape":"OperationLimitExceeded"},
-        {"shape":"DuplicateRequest"}
+        {"shape":"DuplicateRequest"},
+        {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>Transfers a domain from the current AWS account to another AWS account. Note the following:</p> <ul> <li> <p>The AWS account that you're transferring the domain to must accept the transfer. If the other account doesn't accept the transfer within 3 days, we cancel the transfer. See <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a>. </p> </li> <li> <p>You can cancel the transfer before the other account accepts it. See <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_CancelDomainTransferToAnotherAwsAccount.html\">CancelDomainTransferToAnotherAwsAccount</a>. </p> </li> <li> <p>The other account can reject the transfer. See <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_RejectDomainTransferFromAnotherAwsAccount.html\">RejectDomainTransferFromAnotherAwsAccount</a>. </p> </li> </ul> <important> <p>When you transfer a domain from one AWS account to another, Route 53 doesn't transfer the hosted zone that is associated with the domain. DNS resolution isn't affected if the domain and the hosted zone are owned by separate accounts, so transferring the hosted zone is optional. For information about transferring the hosted zone to another AWS account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-migrating.html\">Migrating a Hosted Zone to a Different AWS Account</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </important> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
+      "documentation":"<p>Transfers a domain from the current Amazon Web Services account to another Amazon Web Services account. Note the following:</p> <ul> <li> <p>The Amazon Web Services account that you're transferring the domain to must accept the transfer. If the other account doesn't accept the transfer within 3 days, we cancel the transfer. See <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a>. </p> </li> <li> <p>You can cancel the transfer before the other account accepts it. See <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_CancelDomainTransferToAnotherAwsAccount.html\">CancelDomainTransferToAnotherAwsAccount</a>. </p> </li> <li> <p>The other account can reject the transfer. See <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_RejectDomainTransferFromAnotherAwsAccount.html\">RejectDomainTransferFromAnotherAwsAccount</a>. </p> </li> </ul> <important> <p>When you transfer a domain from one Amazon Web Services account to another, Route 53 doesn't transfer the hosted zone that is associated with the domain. DNS resolution isn't affected if the domain and the hosted zone are owned by separate accounts, so transferring the hosted zone is optional. For information about transferring the hosted zone to another Amazon Web Services account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-migrating.html\">Migrating a Hosted Zone to a Different Amazon Web Services Account</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </important> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
     },
     "UpdateDomainContact":{
       "name":"UpdateDomainContact",
@@ -387,7 +421,7 @@
         {"shape":"OperationLimitExceeded"},
         {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>This operation updates the specified domain contact's privacy setting. When privacy protection is enabled, contact information such as email address is replaced either with contact information for Amazon Registrar (for .com, .net, and .org domains) or with contact information for our registrar associate, Gandi.</p> <p>This operation affects only the contact information for the specified contact type (registrant, administrator, or tech). If the request succeeds, Amazon Route 53 returns an operation ID that you can use with <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to track the progress and completion of the action. If the request doesn't complete successfully, the domain registrant will be notified by email.</p> <important> <p>By disabling the privacy service via API, you consent to the publication of the contact information provided for this domain via the public WHOIS database. You certify that you are the registrant of this domain name and have the authority to make this decision. You may withdraw your consent at any time by enabling privacy protection using either <code>UpdateDomainContactPrivacy</code> or the Route 53 console. Enabling privacy protection removes the contact information provided for this domain from the WHOIS database. For more information on our privacy practices, see <a href=\"https://aws.amazon.com/privacy/\">https://aws.amazon.com/privacy/</a>.</p> </important>"
+      "documentation":"<p>This operation updates the specified domain contact's privacy setting. When privacy protection is enabled, contact information such as email address is replaced either with contact information for Amazon Registrar (for .com, .net, and .org domains) or with contact information for our registrar associate, Gandi.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>This operation affects only the contact information for the specified contact type (administrative, registrant, or technical). If the request succeeds, Amazon Route 53 returns an operation ID that you can use with <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to track the progress and completion of the action. If the request doesn't complete successfully, the domain registrant will be notified by email.</p> <important> <p>By disabling the privacy service via API, you consent to the publication of the contact information provided for this domain via the public WHOIS database. You certify that you are the registrant of this domain name and have the authority to make this decision. You may withdraw your consent at any time by enabling privacy protection using either <code>UpdateDomainContactPrivacy</code> or the Route 53 console. Enabling privacy protection removes the contact information provided for this domain from the WHOIS database. For more information on our privacy practices, see <a href=\"https://aws.amazon.com/privacy/\">https://aws.amazon.com/privacy/</a>.</p> </important>"
     },
     "UpdateDomainNameservers":{
       "name":"UpdateDomainNameservers",
@@ -432,7 +466,7 @@
       "errors":[
         {"shape":"InvalidInput"}
       ],
-      "documentation":"<p>Returns all the domain-related billing records for the current AWS account for a specified period</p>"
+      "documentation":"<p>Returns all the domain-related billing records for the current Amazon Web Services account for a specified period</p>"
     }
   },
   "shapes":{
@@ -445,7 +479,7 @@
       "members":{
         "DomainName":{
           "shape":"DomainName",
-          "documentation":"<p>The name of the domain that was specified when another AWS account submitted a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a> request. </p>"
+          "documentation":"<p>The name of the domain that was specified when another Amazon Web Services account submitted a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a> request. </p>"
         },
         "Password":{
           "shape":"String",
@@ -466,6 +500,8 @@
     },
     "AccountId":{
       "type":"string",
+      "max":12,
+      "min":12,
       "pattern":"^(\\d{12})$"
     },
     "AddressLine":{
@@ -509,7 +545,7 @@
       "members":{
         "DomainName":{
           "shape":"DomainName",
-          "documentation":"<p>The name of the domain for which you want to cancel the transfer to another AWS account.</p>"
+          "documentation":"<p>The name of the domain for which you want to cancel the transfer to another Amazon Web Services account.</p>"
         }
       },
       "documentation":"<p>The CancelDomainTransferToAnotherAwsAccount request includes the following element.</p>"
@@ -593,7 +629,7 @@
         },
         "ContactType":{
           "shape":"ContactType",
-          "documentation":"<p>Indicates whether the contact is a person, company, association, or public organization. Note the following:</p> <ul> <li> <p>If you specify a value other than <code>PERSON</code>, you must also specify a value for <code>OrganizationName</code>.</p> </li> <li> <p>For some TLDs, the privacy protection available depends on the value that you specify for <code>Contact Type</code>. For the privacy protection settings for your TLD, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html\">Domains that You Can Register with Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i> </p> </li> <li> <p>For .es domains, if you specify <code>PERSON</code>, you must specify <code>INDIVIDUAL</code> for the value of <code>ES_LEGAL_FORM</code>.</p> </li> </ul>"
+          "documentation":"<p>Indicates whether the contact is a person, company, association, or public organization. Note the following:</p> <ul> <li> <p>If you specify a value other than <code>PERSON</code>, you must also specify a value for <code>OrganizationName</code>.</p> </li> <li> <p>For some TLDs, the privacy protection available depends on the value that you specify for <code>Contact Type</code>. For the privacy protection settings for your TLD, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html\">Domains that You Can Register with Amazon Route 53</a> in the <i>Amazon Route 53 Developer Guide</i> </p> </li> <li> <p>For .es domains, the value of <code>ContactType</code> must be <code>PERSON</code> for all three contacts.</p> </li> </ul>"
         },
         "OrganizationName":{
           "shape":"ContactName",
@@ -664,6 +700,7 @@
     "CountryCode":{
       "type":"string",
       "enum":[
+        "AC",
         "AD",
         "AE",
         "AF",
@@ -679,6 +716,7 @@
         "AT",
         "AU",
         "AW",
+        "AX",
         "AZ",
         "BA",
         "BB",
@@ -693,9 +731,11 @@
         "BM",
         "BN",
         "BO",
+        "BQ",
         "BR",
         "BS",
         "BT",
+        "BV",
         "BW",
         "BY",
         "BZ",
@@ -714,6 +754,7 @@
         "CR",
         "CU",
         "CV",
+        "CW",
         "CX",
         "CY",
         "CZ",
@@ -726,6 +767,7 @@
         "EC",
         "EE",
         "EG",
+        "EH",
         "ER",
         "ES",
         "ET",
@@ -739,18 +781,23 @@
         "GB",
         "GD",
         "GE",
+        "GF",
+        "GG",
         "GH",
         "GI",
         "GL",
         "GM",
         "GN",
+        "GP",
         "GQ",
         "GR",
+        "GS",
         "GT",
         "GU",
         "GW",
         "GY",
         "HK",
+        "HM",
         "HN",
         "HR",
         "HT",
@@ -760,10 +807,12 @@
         "IL",
         "IM",
         "IN",
+        "IO",
         "IQ",
         "IR",
         "IS",
         "IT",
+        "JE",
         "JM",
         "JO",
         "JP",
@@ -802,6 +851,7 @@
         "MN",
         "MO",
         "MP",
+        "MQ",
         "MR",
         "MS",
         "MT",
@@ -814,6 +864,7 @@
         "NA",
         "NC",
         "NE",
+        "NF",
         "NG",
         "NI",
         "NL",
@@ -833,10 +884,12 @@
         "PM",
         "PN",
         "PR",
+        "PS",
         "PT",
         "PW",
         "PY",
         "QA",
+        "RE",
         "RO",
         "RS",
         "RU",
@@ -849,18 +902,22 @@
         "SG",
         "SH",
         "SI",
+        "SJ",
         "SK",
         "SL",
         "SM",
         "SN",
         "SO",
         "SR",
+        "SS",
         "ST",
         "SV",
+        "SX",
         "SY",
         "SZ",
         "TC",
         "TD",
+        "TF",
         "TG",
         "TH",
         "TJ",
@@ -869,6 +926,7 @@
         "TM",
         "TN",
         "TO",
+        "TP",
         "TR",
         "TT",
         "TV",
@@ -895,8 +953,32 @@
         "ZW"
       ]
     },
+    "Currency":{
+      "type":"string",
+      "max":3,
+      "min":3
+    },
     "CurrentExpiryYear":{"type":"integer"},
     "DNSSec":{"type":"string"},
+    "DeleteDomainRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>Name of the domain to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteDomainResponse":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>Identifier for tracking the progress of the request. To query the operation status, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a>.</p>"
+        }
+      }
+    },
     "DeleteTagsForDomainRequest":{
       "type":"structure",
       "required":[
@@ -989,6 +1071,45 @@
     "DomainName":{
       "type":"string",
       "max":255
+    },
+    "DomainPrice":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"DomainPriceName",
+          "documentation":"<p>The name of the TLD for which the prices apply.</p>"
+        },
+        "RegistrationPrice":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price for domain registration with Route 53.</p>"
+        },
+        "TransferPrice":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price for transferring the domain registration to Route 53.</p>"
+        },
+        "RenewalPrice":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price for renewing domain registration with Route 53.</p>"
+        },
+        "ChangeOwnershipPrice":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price for changing domain ownership.</p>"
+        },
+        "RestorationPrice":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price for restoring the domain with Route 53.</p>"
+        }
+      },
+      "documentation":"<p>Information about the domain price associated with a TLD.</p>"
+    },
+    "DomainPriceList":{
+      "type":"list",
+      "member":{"shape":"DomainPrice"}
+    },
+    "DomainPriceName":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "DomainStatus":{"type":"string"},
     "DomainStatusList":{
@@ -1114,7 +1235,7 @@
       "members":{
         "Name":{
           "shape":"ExtraParamName",
-          "documentation":"<p>The name of an additional parameter that is required by a top-level domain. Here are the top-level domains that require additional parameters and the names of the parameters that they require:</p> <dl> <dt>.com.au and .net.au</dt> <dd> <ul> <li> <p> <code>AU_ID_NUMBER</code> </p> </li> <li> <p> <code>AU_ID_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ABN</code> (Australian business number)</p> </li> <li> <p> <code>ACN</code> (Australian company number)</p> </li> <li> <p> <code>TM</code> (Trademark number)</p> </li> </ul> </li> </ul> </dd> <dt>.ca</dt> <dd> <ul> <li> <p> <code>BRAND_NUMBER</code> </p> </li> <li> <p> <code>CA_BUSINESS_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>BANK</code> (Bank)</p> </li> <li> <p> <code>COMMERCIAL_COMPANY</code> (Commercial company)</p> </li> <li> <p> <code>COMPANY</code> (Company)</p> </li> <li> <p> <code>COOPERATION</code> (Cooperation)</p> </li> <li> <p> <code>COOPERATIVE</code> (Cooperative)</p> </li> <li> <p> <code>COOPRIX</code> (Cooprix)</p> </li> <li> <p> <code>CORP</code> (Corporation)</p> </li> <li> <p> <code>CREDIT_UNION</code> (Credit union)</p> </li> <li> <p> <code>FOMIA</code> (Federation of mutual insurance associations)</p> </li> <li> <p> <code>INC</code> (Incorporated)</p> </li> <li> <p> <code>LTD</code> (Limited)</p> </li> <li> <p> <code>LTEE</code> (Limitée)</p> </li> <li> <p> <code>LLC</code> (Limited liability corporation)</p> </li> <li> <p> <code>LLP</code> (Limited liability partnership)</p> </li> <li> <p> <code>LTE</code> (Lte.)</p> </li> <li> <p> <code>MBA</code> (Mutual benefit association)</p> </li> <li> <p> <code>MIC</code> (Mutual insurance company)</p> </li> <li> <p> <code>NFP</code> (Not-for-profit corporation)</p> </li> <li> <p> <code>SA</code> (S.A.)</p> </li> <li> <p> <code>SAVINGS_COMPANY</code> (Savings company)</p> </li> <li> <p> <code>SAVINGS_UNION</code> (Savings union)</p> </li> <li> <p> <code>SARL</code> (Société à responsabilité limitée)</p> </li> <li> <p> <code>TRUST</code> (Trust)</p> </li> <li> <p> <code>ULC</code> (Unlimited liability corporation)</p> </li> </ul> </li> <li> <p> <code>CA_LEGAL_TYPE</code> </p> <p>When <code>ContactType</code> is <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ABO</code> (Aboriginal Peoples indigenous to Canada)</p> </li> <li> <p> <code>CCT</code> (Canadian citizen)</p> </li> <li> <p> <code>LGR</code> (Legal Representative of a Canadian Citizen or Permanent Resident)</p> </li> <li> <p> <code>RES</code> (Permanent resident of Canada)</p> </li> </ul> <p>When <code>ContactType</code> is a value other than <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ASS</code> (Canadian unincorporated association)</p> </li> <li> <p> <code>CCO</code> (Canadian corporation)</p> </li> <li> <p> <code>EDU</code> (Canadian educational institution)</p> </li> <li> <p> <code>GOV</code> (Government or government entity in Canada)</p> </li> <li> <p> <code>HOP</code> (Canadian Hospital)</p> </li> <li> <p> <code>INB</code> (Indian Band recognized by the Indian Act of Canada)</p> </li> <li> <p> <code>LAM</code> (Canadian Library, Archive, or Museum)</p> </li> <li> <p> <code>MAJ</code> (Her/His Majesty the Queen/King)</p> </li> <li> <p> <code>OMK</code> (Official mark registered in Canada)</p> </li> <li> <p> <code>PLT</code> (Canadian Political Party)</p> </li> <li> <p> <code>PRT</code> (Partnership Registered in Canada)</p> </li> <li> <p> <code>TDM</code> (Trademark registered in Canada)</p> </li> <li> <p> <code>TRD</code> (Canadian Trade Union)</p> </li> <li> <p> <code>TRS</code> (Trust established in Canada)</p> </li> </ul> </li> </ul> </dd> <dt>.es</dt> <dd> <ul> <li> <p> <code>ES_IDENTIFICATION</code> </p> <p>Specify the applicable value:</p> <ul> <li> <p> <b>For contacts inside Spain:</b> Enter your passport ID.</p> </li> <li> <p> <b>For contacts outside of Spain:</b> Enter the VAT identification number for the company.</p> <note> <p>For .es domains, the value of <code>ContactType</code> must be <code>PERSON</code>.</p> </note> </li> </ul> </li> <li> <p> <code>ES_IDENTIFICATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>DNI_AND_NIF</code> (For Spanish contacts)</p> </li> <li> <p> <code>NIE</code> (For foreigners with legal residence)</p> </li> <li> <p> <code>OTHER</code> (For contacts outside of Spain)</p> </li> </ul> </li> <li> <p> <code>ES_LEGAL_FORM</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ASSOCIATION</code> </p> </li> <li> <p> <code>CENTRAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>CIVIL_SOCIETY</code> </p> </li> <li> <p> <code>COMMUNITY_OF_OWNERS</code> </p> </li> <li> <p> <code>COMMUNITY_PROPERTY</code> </p> </li> <li> <p> <code>CONSULATE</code> </p> </li> <li> <p> <code>COOPERATIVE</code> </p> </li> <li> <p> <code>DESIGNATION_OF_ORIGIN_SUPERVISORY_COUNCIL</code> </p> </li> <li> <p> <code>ECONOMIC_INTEREST_GROUP</code> </p> </li> <li> <p> <code>EMBASSY</code> </p> </li> <li> <p> <code>ENTITY_MANAGING_NATURAL_AREAS</code> </p> </li> <li> <p> <code>FARM_PARTNERSHIP</code> </p> </li> <li> <p> <code>FOUNDATION</code> </p> </li> <li> <p> <code>GENERAL_AND_LIMITED_PARTNERSHIP</code> </p> </li> <li> <p> <code>GENERAL_PARTNERSHIP</code> </p> </li> <li> <p> <code>INDIVIDUAL</code> </p> </li> <li> <p> <code>LIMITED_COMPANY</code> </p> </li> <li> <p> <code>LOCAL_AUTHORITY</code> </p> </li> <li> <p> <code>LOCAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>MUTUAL_INSURANCE_COMPANY</code> </p> </li> <li> <p> <code>NATIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>ORDER_OR_RELIGIOUS_INSTITUTION</code> </p> </li> <li> <p> <code>OTHERS (Only for contacts outside of Spain)</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PROFESSIONAL_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LAW_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>REGIONAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>REGIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>SAVINGS_BANK</code> </p> </li> <li> <p> <code>SPANISH_OFFICE</code> </p> </li> <li> <p> <code>SPORTS_ASSOCIATION</code> </p> </li> <li> <p> <code>SPORTS_FEDERATION</code> </p> </li> <li> <p> <code>SPORTS_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>TEMPORARY_ALLIANCE_OF_ENTERPRISES</code> </p> </li> <li> <p> <code>TRADE_UNION</code> </p> </li> <li> <p> <code>WORKER_OWNED_COMPANY</code> </p> </li> <li> <p> <code>WORKER_OWNED_LIMITED_COMPANY</code> </p> </li> </ul> </li> </ul> </dd> <dt>.fi</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>FI_BUSINESS_NUMBER</code> </p> </li> <li> <p> <code>FI_ID_NUMBER</code> </p> </li> <li> <p> <code>FI_NATIONALITY</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FINNISH</code> </p> </li> <li> <p> <code>NOT_FINNISH</code> </p> </li> </ul> </li> <li> <p> <code>FI_ORGANIZATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>COMPANY</code> </p> </li> <li> <p> <code>CORPORATION</code> </p> </li> <li> <p> <code>GOVERNMENT</code> </p> </li> <li> <p> <code>INSTITUTION</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PUBLIC_COMMUNITY</code> </p> </li> <li> <p> <code>TOWNSHIP</code> </p> </li> </ul> </li> </ul> </dd> <dt>.fr</dt> <dd> <ul> <li> <p> <code>BIRTH_CITY</code> </p> </li> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>BIRTH_DEPARTMENT</code>: Specify the INSEE code that corresponds with the department where the contact was born. If the contact was born somewhere other than France or its overseas departments, specify <code>99</code>. For more information, including a list of departments and the corresponding INSEE numbers, see the Wikipedia entry <a href=\"https://en.wikipedia.org/wiki/Departments_of_France\">Departments of France</a>.</p> </li> <li> <p> <code>BRAND_NUMBER</code> </p> </li> </ul> </dd> <dt>.it</dt> <dd> <ul> <li> <p> <code>IT_NATIONALITY</code> </p> </li> <li> <p> <code>IT_PIN</code> </p> </li> <li> <p> <code>IT_REGISTRANT_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FOREIGNERS</code> </p> </li> <li> <p> <code>FREELANCE_WORKERS</code> (Freelance workers and professionals)</p> </li> <li> <p> <code>ITALIAN_COMPANIES</code> (Italian companies and one-person companies)</p> </li> <li> <p> <code>NON_PROFIT_ORGANIZATIONS</code> </p> </li> <li> <p> <code>OTHER_SUBJECTS</code> </p> </li> <li> <p> <code>PUBLIC_ORGANIZATIONS</code> </p> </li> </ul> </li> </ul> </dd> <dt>.ru</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>RU_PASSPORT_DATA</code> </p> </li> </ul> </dd> <dt>.se</dt> <dd> <ul> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>SE_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.sg</dt> <dd> <ul> <li> <p> <code>SG_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.co.uk, .me.uk, and .org.uk</dt> <dd> <ul> <li> <p> <code>UK_CONTACT_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>CRC</code> (UK Corporation by Royal Charter)</p> </li> <li> <p> <code>FCORP</code> (Non-UK Corporation)</p> </li> <li> <p> <code>FIND</code> (Non-UK Individual, representing self)</p> </li> <li> <p> <code>FOTHER</code> (Non-UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>GOV</code> (UK Government Body)</p> </li> <li> <p> <code>IND</code> (UK Individual (representing self))</p> </li> <li> <p> <code>IP</code> (UK Industrial/Provident Registered Company)</p> </li> <li> <p> <code>LLP</code> (UK Limited Liability Partnership)</p> </li> <li> <p> <code>LTD</code> (UK Limited Company)</p> </li> <li> <p> <code>OTHER</code> (UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>PLC</code> (UK Public Limited Company)</p> </li> <li> <p> <code>PTNR</code> (UK Partnership)</p> </li> <li> <p> <code>RCHAR</code> (UK Registered Charity)</p> </li> <li> <p> <code>SCH</code> (UK School)</p> </li> <li> <p> <code>STAT</code> (UK Statutory Body)</p> </li> <li> <p> <code>STRA</code> (UK Sole Trader)</p> </li> </ul> </li> <li> <p> <code>UK_COMPANY_NUMBER</code> </p> </li> </ul> </dd> </dl> <p>In addition, many TLDs require a <code>VAT_NUMBER</code>.</p>"
+          "documentation":"<p>The name of an additional parameter that is required by a top-level domain. Here are the top-level domains that require additional parameters and the names of the parameters that they require:</p> <dl> <dt>.com.au and .net.au</dt> <dd> <ul> <li> <p> <code>AU_ID_NUMBER</code> </p> </li> <li> <p> <code>AU_ID_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ABN</code> (Australian business number)</p> </li> <li> <p> <code>ACN</code> (Australian company number)</p> </li> <li> <p> <code>TM</code> (Trademark number)</p> </li> </ul> </li> </ul> </dd> <dt>.ca</dt> <dd> <ul> <li> <p> <code>BRAND_NUMBER</code> </p> </li> <li> <p> <code>CA_BUSINESS_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>BANK</code> (Bank)</p> </li> <li> <p> <code>COMMERCIAL_COMPANY</code> (Commercial company)</p> </li> <li> <p> <code>COMPANY</code> (Company)</p> </li> <li> <p> <code>COOPERATION</code> (Cooperation)</p> </li> <li> <p> <code>COOPERATIVE</code> (Cooperative)</p> </li> <li> <p> <code>COOPRIX</code> (Cooprix)</p> </li> <li> <p> <code>CORP</code> (Corporation)</p> </li> <li> <p> <code>CREDIT_UNION</code> (Credit union)</p> </li> <li> <p> <code>FOMIA</code> (Federation of mutual insurance associations)</p> </li> <li> <p> <code>INC</code> (Incorporated)</p> </li> <li> <p> <code>LTD</code> (Limited)</p> </li> <li> <p> <code>LTEE</code> (Limitée)</p> </li> <li> <p> <code>LLC</code> (Limited liability corporation)</p> </li> <li> <p> <code>LLP</code> (Limited liability partnership)</p> </li> <li> <p> <code>LTE</code> (Lte.)</p> </li> <li> <p> <code>MBA</code> (Mutual benefit association)</p> </li> <li> <p> <code>MIC</code> (Mutual insurance company)</p> </li> <li> <p> <code>NFP</code> (Not-for-profit corporation)</p> </li> <li> <p> <code>SA</code> (S.A.)</p> </li> <li> <p> <code>SAVINGS_COMPANY</code> (Savings company)</p> </li> <li> <p> <code>SAVINGS_UNION</code> (Savings union)</p> </li> <li> <p> <code>SARL</code> (Société à responsabilité limitée)</p> </li> <li> <p> <code>TRUST</code> (Trust)</p> </li> <li> <p> <code>ULC</code> (Unlimited liability corporation)</p> </li> </ul> </li> <li> <p> <code>CA_LEGAL_TYPE</code> </p> <p>When <code>ContactType</code> is <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ABO</code> (Aboriginal Peoples indigenous to Canada)</p> </li> <li> <p> <code>CCT</code> (Canadian citizen)</p> </li> <li> <p> <code>LGR</code> (Legal Representative of a Canadian Citizen or Permanent Resident)</p> </li> <li> <p> <code>RES</code> (Permanent resident of Canada)</p> </li> </ul> <p>When <code>ContactType</code> is a value other than <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ASS</code> (Canadian unincorporated association)</p> </li> <li> <p> <code>CCO</code> (Canadian corporation)</p> </li> <li> <p> <code>EDU</code> (Canadian educational institution)</p> </li> <li> <p> <code>GOV</code> (Government or government entity in Canada)</p> </li> <li> <p> <code>HOP</code> (Canadian Hospital)</p> </li> <li> <p> <code>INB</code> (Indian Band recognized by the Indian Act of Canada)</p> </li> <li> <p> <code>LAM</code> (Canadian Library, Archive, or Museum)</p> </li> <li> <p> <code>MAJ</code> (Her/His Majesty the Queen/King)</p> </li> <li> <p> <code>OMK</code> (Official mark registered in Canada)</p> </li> <li> <p> <code>PLT</code> (Canadian Political Party)</p> </li> <li> <p> <code>PRT</code> (Partnership Registered in Canada)</p> </li> <li> <p> <code>TDM</code> (Trademark registered in Canada)</p> </li> <li> <p> <code>TRD</code> (Canadian Trade Union)</p> </li> <li> <p> <code>TRS</code> (Trust established in Canada)</p> </li> </ul> </li> </ul> </dd> <dt>.es</dt> <dd> <ul> <li> <p> <code>ES_IDENTIFICATION</code> </p> <p>The value of <code>ES_IDENTIFICATION</code> depends on the following values:</p> <ul> <li> <p>The value of <code>ES_LEGAL_FORM</code> </p> </li> <li> <p>The value of <code>ES_IDENTIFICATION_TYPE</code> </p> </li> </ul> <p> <b>If <code>ES_LEGAL_FORM</code> is any value other than <code>INDIVIDUAL</code>:</b> </p> <ul> <li> <p>Specify 1 letter + 8 numbers (CIF [Certificado de Identificación Fiscal])</p> </li> <li> <p>Example: B12345678</p> </li> </ul> <p> <b>If <code>ES_LEGAL_FORM</code> is <code>INDIVIDUAL</code>, the value that you specify for <code>ES_IDENTIFICATION</code> depends on the value of <code>ES_IDENTIFICATION_TYPE</code>:</b> </p> <ul> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>DNI_AND_NIF</code> (for Spanish contacts):</p> <ul> <li> <p>Specify 8 numbers + 1 letter (DNI [Documento Nacional de Identidad], NIF [Número de Identificación Fiscal])</p> </li> <li> <p>Example: 12345678M</p> </li> </ul> </li> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>NIE</code> (for foreigners with legal residence):</p> <ul> <li> <p>Specify 1 letter + 7 numbers + 1 letter ( NIE [Número de Identidad de Extranjero])</p> </li> <li> <p>Example: Y1234567X</p> </li> </ul> </li> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>OTHER</code> (for contacts outside of Spain):</p> <ul> <li> <p>Specify a passport number, drivers license number, or national identity card number</p> </li> </ul> </li> </ul> </li> <li> <p> <code>ES_IDENTIFICATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>DNI_AND_NIF</code> (For Spanish contacts)</p> </li> <li> <p> <code>NIE</code> (For foreigners with legal residence)</p> </li> <li> <p> <code>OTHER</code> (For contacts outside of Spain)</p> </li> </ul> </li> <li> <p> <code>ES_LEGAL_FORM</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ASSOCIATION</code> </p> </li> <li> <p> <code>CENTRAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>CIVIL_SOCIETY</code> </p> </li> <li> <p> <code>COMMUNITY_OF_OWNERS</code> </p> </li> <li> <p> <code>COMMUNITY_PROPERTY</code> </p> </li> <li> <p> <code>CONSULATE</code> </p> </li> <li> <p> <code>COOPERATIVE</code> </p> </li> <li> <p> <code>DESIGNATION_OF_ORIGIN_SUPERVISORY_COUNCIL</code> </p> </li> <li> <p> <code>ECONOMIC_INTEREST_GROUP</code> </p> </li> <li> <p> <code>EMBASSY</code> </p> </li> <li> <p> <code>ENTITY_MANAGING_NATURAL_AREAS</code> </p> </li> <li> <p> <code>FARM_PARTNERSHIP</code> </p> </li> <li> <p> <code>FOUNDATION</code> </p> </li> <li> <p> <code>GENERAL_AND_LIMITED_PARTNERSHIP</code> </p> </li> <li> <p> <code>GENERAL_PARTNERSHIP</code> </p> </li> <li> <p> <code>INDIVIDUAL</code> </p> </li> <li> <p> <code>LIMITED_COMPANY</code> </p> </li> <li> <p> <code>LOCAL_AUTHORITY</code> </p> </li> <li> <p> <code>LOCAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>MUTUAL_INSURANCE_COMPANY</code> </p> </li> <li> <p> <code>NATIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>ORDER_OR_RELIGIOUS_INSTITUTION</code> </p> </li> <li> <p> <code>OTHERS (Only for contacts outside of Spain)</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PROFESSIONAL_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LAW_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>REGIONAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>REGIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>SAVINGS_BANK</code> </p> </li> <li> <p> <code>SPANISH_OFFICE</code> </p> </li> <li> <p> <code>SPORTS_ASSOCIATION</code> </p> </li> <li> <p> <code>SPORTS_FEDERATION</code> </p> </li> <li> <p> <code>SPORTS_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>TEMPORARY_ALLIANCE_OF_ENTERPRISES</code> </p> </li> <li> <p> <code>TRADE_UNION</code> </p> </li> <li> <p> <code>WORKER_OWNED_COMPANY</code> </p> </li> <li> <p> <code>WORKER_OWNED_LIMITED_COMPANY</code> </p> </li> </ul> </li> </ul> </dd> <dt>.eu</dt> <dd> <ul> <li> <p> <code> EU_COUNTRY_OF_CITIZENSHIP</code> </p> </li> </ul> </dd> <dt>.fi</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>FI_BUSINESS_NUMBER</code> </p> </li> <li> <p> <code>FI_ID_NUMBER</code> </p> </li> <li> <p> <code>FI_NATIONALITY</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FINNISH</code> </p> </li> <li> <p> <code>NOT_FINNISH</code> </p> </li> </ul> </li> <li> <p> <code>FI_ORGANIZATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>COMPANY</code> </p> </li> <li> <p> <code>CORPORATION</code> </p> </li> <li> <p> <code>GOVERNMENT</code> </p> </li> <li> <p> <code>INSTITUTION</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PUBLIC_COMMUNITY</code> </p> </li> <li> <p> <code>TOWNSHIP</code> </p> </li> </ul> </li> </ul> </dd> <dt>.fr</dt> <dd> <ul> <li> <p> <code>BIRTH_CITY</code> </p> </li> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>BIRTH_DEPARTMENT</code>: Specify the INSEE code that corresponds with the department where the contact was born. If the contact was born somewhere other than France or its overseas departments, specify <code>99</code>. For more information, including a list of departments and the corresponding INSEE numbers, see the Wikipedia entry <a href=\"https://en.wikipedia.org/wiki/Departments_of_France\">Departments of France</a>.</p> </li> <li> <p> <code>BRAND_NUMBER</code> </p> </li> </ul> </dd> <dt>.it</dt> <dd> <ul> <li> <p> <code>IT_NATIONALITY</code> </p> </li> <li> <p> <code>IT_PIN</code> </p> </li> <li> <p> <code>IT_REGISTRANT_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FOREIGNERS</code> </p> </li> <li> <p> <code>FREELANCE_WORKERS</code> (Freelance workers and professionals)</p> </li> <li> <p> <code>ITALIAN_COMPANIES</code> (Italian companies and one-person companies)</p> </li> <li> <p> <code>NON_PROFIT_ORGANIZATIONS</code> </p> </li> <li> <p> <code>OTHER_SUBJECTS</code> </p> </li> <li> <p> <code>PUBLIC_ORGANIZATIONS</code> </p> </li> </ul> </li> </ul> </dd> <dt>.ru</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>RU_PASSPORT_DATA</code> </p> </li> </ul> </dd> <dt>.se</dt> <dd> <ul> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>SE_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.sg</dt> <dd> <ul> <li> <p> <code>SG_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.co.uk, .me.uk, and .org.uk</dt> <dd> <ul> <li> <p> <code>UK_CONTACT_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>CRC</code> (UK Corporation by Royal Charter)</p> </li> <li> <p> <code>FCORP</code> (Non-UK Corporation)</p> </li> <li> <p> <code>FIND</code> (Non-UK Individual, representing self)</p> </li> <li> <p> <code>FOTHER</code> (Non-UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>GOV</code> (UK Government Body)</p> </li> <li> <p> <code>IND</code> (UK Individual (representing self))</p> </li> <li> <p> <code>IP</code> (UK Industrial/Provident Registered Company)</p> </li> <li> <p> <code>LLP</code> (UK Limited Liability Partnership)</p> </li> <li> <p> <code>LTD</code> (UK Limited Company)</p> </li> <li> <p> <code>OTHER</code> (UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>PLC</code> (UK Public Limited Company)</p> </li> <li> <p> <code>PTNR</code> (UK Partnership)</p> </li> <li> <p> <code>RCHAR</code> (UK Registered Charity)</p> </li> <li> <p> <code>SCH</code> (UK School)</p> </li> <li> <p> <code>STAT</code> (UK Statutory Body)</p> </li> <li> <p> <code>STRA</code> (UK Sole Trader)</p> </li> </ul> </li> <li> <p> <code>UK_COMPANY_NUMBER</code> </p> </li> </ul> </dd> </dl> <p>In addition, many TLDs require a <code>VAT_NUMBER</code>.</p>"
         },
         "Value":{
           "shape":"ExtraParamValue",
@@ -1158,14 +1279,48 @@
         "SG_ID_NUMBER",
         "VAT_NUMBER",
         "UK_CONTACT_TYPE",
-        "UK_COMPANY_NUMBER"
+        "UK_COMPANY_NUMBER",
+        "EU_COUNTRY_OF_CITIZENSHIP"
       ]
     },
     "ExtraParamValue":{
       "type":"string",
-      "max":2048
+      "max":2048,
+      "sensitive":true
     },
-    "FIAuthKey":{"type":"string"},
+    "FIAuthKey":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "sensitive":true
+    },
+    "FilterCondition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Operator",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ListDomainsAttributeName",
+          "documentation":"<p>Name of the field which should be used for filtering the list of domains.</p>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The operator values for filtering domain names. The values can be:</p> <ul> <li> <p> <code>LE</code>: Less than, or equal to</p> </li> <li> <p> <code>GE</code>: Greater than, or equal to</p> </li> <li> <p> <code>BEGINS_WITH</code>: Begins with</p> </li> </ul>"
+        },
+        "Values":{
+          "shape":"Values",
+          "documentation":"<p> An array of strings presenting values to compare. Only 1 item in the list is currently supported.</p>"
+        }
+      },
+      "documentation":"<p>Information for the filtering of a list of domains returned by <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains__ListDomains.html\">ListDomains</a>.</p>"
+    },
+    "FilterConditions":{
+      "type":"list",
+      "member":{"shape":"FilterCondition"}
+    },
     "GetContactReachabilityStatusRequest":{
       "type":"structure",
       "members":{
@@ -1287,7 +1442,7 @@
         },
         "DnsSec":{
           "shape":"DNSSec",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Deprecated.</p>"
         },
         "StatusList":{
           "shape":"DomainStatusList",
@@ -1398,12 +1553,27 @@
       "type":"string",
       "max":3
     },
+    "ListDomainsAttributeName":{
+      "type":"string",
+      "enum":[
+        "DomainName",
+        "Expiry"
+      ]
+    },
     "ListDomainsRequest":{
       "type":"structure",
       "members":{
+        "FilterConditions":{
+          "shape":"FilterConditions",
+          "documentation":"<p>A complex type that contains information about the filters applied during the <code>ListDomains</code> request. The filter conditions can include domain name and domain expiration.</p>"
+        },
+        "SortCondition":{
+          "shape":"SortCondition",
+          "documentation":"<p>A complex type that contains information about the requested ordering of domains in the returned list.</p>"
+        },
         "Marker":{
           "shape":"PageMarker",
-          "documentation":"<p>For an initial request for a list of domains, omit this element. If the number of domains that are associated with the current AWS account is greater than the value that you specified for <code>MaxItems</code>, you can use <code>Marker</code> to return additional domains. Get the value of <code>NextPageMarker</code> from the previous response, and submit another request that includes the value of <code>NextPageMarker</code> in the <code>Marker</code> element.</p> <p>Constraints: The marker must match the value specified in the previous request.</p>"
+          "documentation":"<p>For an initial request for a list of domains, omit this element. If the number of domains that are associated with the current Amazon Web Services account is greater than the value that you specified for <code>MaxItems</code>, you can use <code>Marker</code> to return additional domains. Get the value of <code>NextPageMarker</code> from the previous response, and submit another request that includes the value of <code>NextPageMarker</code> in the <code>Marker</code> element.</p> <p>Constraints: The marker must match the value specified in the previous request.</p>"
         },
         "MaxItems":{
           "shape":"PageMaxItems",
@@ -1418,7 +1588,7 @@
       "members":{
         "Domains":{
           "shape":"DomainSummaryList",
-          "documentation":"<p>A summary of domains.</p>"
+          "documentation":"<p>A list of domains.</p>"
         },
         "NextPageMarker":{
           "shape":"PageMarker",
@@ -1459,6 +1629,37 @@
         }
       },
       "documentation":"<p>The ListOperations response includes the following elements.</p>"
+    },
+    "ListPricesRequest":{
+      "type":"structure",
+      "members":{
+        "Tld":{
+          "shape":"TldName",
+          "documentation":"<p>The TLD for which you want to receive the pricing information. For example. <code>.net</code>.</p> <p>If a <code>Tld</code> value is not provided, a list of prices for all TLDs supported by Route 53 is returned.</p>"
+        },
+        "Marker":{
+          "shape":"PageMarker",
+          "documentation":"<p>For an initial request for a list of prices, omit this element. If the number of prices that are not yet complete is greater than the value that you specified for <code>MaxItems</code>, you can use <code>Marker</code> to return additional prices. Get the value of <code>NextPageMarker</code> from the previous response, and submit another request that includes the value of <code>NextPageMarker</code> in the <code>Marker</code> element. </p> <p>Used only for all TLDs. If you specify a TLD, don't specify a <code>Marker</code>.</p>"
+        },
+        "MaxItems":{
+          "shape":"PageMaxItems",
+          "documentation":"<p>Number of <code>Prices</code> to be returned.</p> <p>Used only for all TLDs. If you specify a TLD, don't specify a <code>MaxItems</code>.</p>"
+        }
+      }
+    },
+    "ListPricesResponse":{
+      "type":"structure",
+      "required":["Prices"],
+      "members":{
+        "Prices":{
+          "shape":"DomainPriceList",
+          "documentation":"<p>A complex type that includes all the pricing information. If you specify a TLD, this array contains only the pricing for that TLD.</p>"
+        },
+        "NextPageMarker":{
+          "shape":"PageMarker",
+          "documentation":"<p>If there are more prices than you specified for <code>MaxItems</code> in the request, submit another request and include the value of <code>NextPageMarker</code> in the value of <code>Marker</code>. </p> <p>Used only for all TLDs. If you specify a TLD, don't specify a <code>NextPageMarker</code>.</p>"
+        }
+      }
     },
     "ListTagsForDomainRequest":{
       "type":"structure",
@@ -1581,6 +1782,14 @@
         "INTERNAL_TRANSFER_IN_DOMAIN"
       ]
     },
+    "Operator":{
+      "type":"string",
+      "enum":[
+        "LE",
+        "GE",
+        "BEGINS_WITH"
+      ]
+    },
     "PageMarker":{
       "type":"string",
       "max":4096
@@ -1590,6 +1799,24 @@
       "max":100
     },
     "Price":{"type":"double"},
+    "PriceWithCurrency":{
+      "type":"structure",
+      "required":[
+        "Price",
+        "Currency"
+      ],
+      "members":{
+        "Price":{
+          "shape":"Price",
+          "documentation":"<p>The price of a domain, in a specific currency.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency specifier.</p>"
+        }
+      },
+      "documentation":"<p>Currency-specific price information.</p>"
+    },
     "ReachabilityStatus":{
       "type":"string",
       "enum":[
@@ -1638,15 +1865,15 @@
         },
         "PrivacyProtectAdminContact":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the admin contact.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the admin contact.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>Default: <code>true</code> </p>"
         },
         "PrivacyProtectRegistrantContact":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the registrant contact (the domain owner).</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the registrant contact (the domain owner).</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>Default: <code>true</code> </p>"
         },
         "PrivacyProtectTechContact":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the technical contact.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the technical contact.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>Default: <code>true</code> </p>"
         }
       },
       "documentation":"<p>The RegisterDomain request includes the following elements.</p>"
@@ -1672,7 +1899,7 @@
       "members":{
         "DomainName":{
           "shape":"DomainName",
-          "documentation":"<p>The name of the domain that was specified when another AWS account submitted a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a> request. </p>"
+          "documentation":"<p>The name of the domain that was specified when another Amazon Web Services account submitted a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a> request. </p>"
         }
       },
       "documentation":"<p>The RejectDomainTransferFromAnotherAwsAccount request includes the following element.</p>"
@@ -1768,6 +1995,31 @@
       },
       "documentation":"<p>The RetrieveDomainAuthCode response includes the following element.</p>"
     },
+    "SortCondition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "SortOrder"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ListDomainsAttributeName",
+          "documentation":"<p>Field to be used for sorting the list of domains. It can be either the name or the expiration for a domain. Note that if <code>filterCondition</code> is used in the same <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains__ListDomains.html\">ListDomains</a> call, the field used for sorting has to be the same as the field used for filtering.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for a list of domains. Either ascending (ASC) or descending (DES).</p>"
+        }
+      },
+      "documentation":"<p>Information for sorting a list of domains.</p>"
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
     "State":{
       "type":"string",
       "max":255
@@ -1798,7 +2050,11 @@
       },
       "documentation":"<p>Each tag includes the following elements.</p>"
     },
-    "TagKey":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"}
@@ -1807,8 +2063,17 @@
       "type":"list",
       "member":{"shape":"Tag"}
     },
-    "TagValue":{"type":"string"},
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "Timestamp":{"type":"timestamp"},
+    "TldName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "TransferDomainRequest":{
       "type":"structure",
       "required":[
@@ -1857,15 +2122,15 @@
         },
         "PrivacyProtectAdminContact":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the admin contact.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the admin contact.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>Default: <code>true</code> </p>"
         },
         "PrivacyProtectRegistrantContact":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the registrant contact (domain owner).</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the registrant contact (domain owner).</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>Default: <code>true</code> </p>"
         },
         "PrivacyProtectTechContact":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the technical contact.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the technical contact.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> <p>Default: <code>true</code> </p>"
         }
       },
       "documentation":"<p>The TransferDomain request includes the following elements.</p>"
@@ -1890,11 +2155,11 @@
       "members":{
         "DomainName":{
           "shape":"DomainName",
-          "documentation":"<p>The name of the domain that you want to transfer from the current AWS account to another account.</p>"
+          "documentation":"<p>The name of the domain that you want to transfer from the current Amazon Web Services account to another account.</p>"
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID of the AWS account that you want to transfer the domain to, for example, <code>111122223333</code>.</p>"
+          "documentation":"<p>The account ID of the Amazon Web Services account that you want to transfer the domain to, for example, <code>111122223333</code>.</p>"
         }
       },
       "documentation":"<p>The TransferDomainToAnotherAwsAccount request includes the following elements.</p>"
@@ -1908,7 +2173,7 @@
         },
         "Password":{
           "shape":"String",
-          "documentation":"<p>To finish transferring a domain to another AWS account, the account that the domain is being transferred to must submit an <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a> request. The request must include the value of the <code>Password</code> element that was returned in the <code>TransferDomainToAnotherAwsAccount</code> response.</p>"
+          "documentation":"<p>To finish transferring a domain to another Amazon Web Services account, the account that the domain is being transferred to must submit an <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a> request. The request must include the value of the <code>Password</code> element that was returned in the <code>TransferDomainToAnotherAwsAccount</code> response.</p>"
         }
       },
       "documentation":"<p>The <code>TransferDomainToAnotherAwsAccount</code> response includes the following elements.</p>"
@@ -1943,15 +2208,15 @@
         },
         "AdminPrivacy":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the admin contact.</p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the admin contact.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note>"
         },
         "RegistrantPrivacy":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the registrant contact (domain owner).</p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the registrant contact (domain owner).</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note>"
         },
         "TechPrivacy":{
           "shape":"Boolean",
-          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the technical contact.</p>"
+          "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you specify <code>false</code>, WHOIS queries return the information that you entered for the technical contact.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note>"
         }
       },
       "documentation":"<p>The UpdateDomainContactPrivacy request includes the following elements.</p>"
@@ -2055,6 +2320,17 @@
       "members":{
       }
     },
+    "Value":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "Values":{
+      "type":"list",
+      "member":{"shape":"Value"},
+      "max":1,
+      "min":1
+    },
     "ViewBillingRequest":{
       "type":"structure",
       "members":{
@@ -2068,7 +2344,7 @@
         },
         "Marker":{
           "shape":"PageMarker",
-          "documentation":"<p>For an initial request for a list of billing records, omit this element. If the number of billing records that are associated with the current AWS account during the specified period is greater than the value that you specified for <code>MaxItems</code>, you can use <code>Marker</code> to return additional billing records. Get the value of <code>NextPageMarker</code> from the previous response, and submit another request that includes the value of <code>NextPageMarker</code> in the <code>Marker</code> element. </p> <p>Constraints: The marker must match the value of <code>NextPageMarker</code> that was returned in the previous response.</p>"
+          "documentation":"<p>For an initial request for a list of billing records, omit this element. If the number of billing records that are associated with the current Amazon Web Services account during the specified period is greater than the value that you specified for <code>MaxItems</code>, you can use <code>Marker</code> to return additional billing records. Get the value of <code>NextPageMarker</code> from the previous response, and submit another request that includes the value of <code>NextPageMarker</code> in the <code>Marker</code> element. </p> <p>Constraints: The marker must match the value of <code>NextPageMarker</code> that was returned in the previous response.</p>"
         },
         "MaxItems":{
           "shape":"PageMaxItems",

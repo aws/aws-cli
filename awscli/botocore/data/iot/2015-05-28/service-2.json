@@ -5178,13 +5178,18 @@
         "signingDisabled":{
           "shape":"BooleanKey",
           "documentation":"<p>Specifies whether IoT validates the token signature in an authorization request.</p>"
+        },
+        "enableCachingForHttp":{
+          "shape":"EnableCachingForHttp",
+          "documentation":"<p>When <code>true</code>, the result from the authorizer’s Lambda function is cached for the time specified in <code>refreshAfterInSeconds</code>. The cached result is used while the device reuses the same HTTP connection.</p>"
         }
       },
       "documentation":"<p>The authorizer description.</p>"
     },
     "AuthorizerFunctionArn":{
       "type":"string",
-      "max":2048
+      "max":2048,
+      "pattern":"[\\s\\S]*"
     },
     "AuthorizerName":{
       "type":"string",
@@ -5937,11 +5942,14 @@
       "type":"string",
       "documentation":"<p>The PEM of a certificate.</p>",
       "max":65536,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "CertificateSigningRequest":{
       "type":"string",
-      "min":1
+      "max":4096,
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "CertificateStateException":{
       "type":"structure",
@@ -6321,6 +6329,10 @@
         "signingDisabled":{
           "shape":"BooleanKey",
           "documentation":"<p>Specifies whether IoT validates the token signature in an authorization request.</p>"
+        },
+        "enableCachingForHttp":{
+          "shape":"EnableCachingForHttp",
+          "documentation":"<p>When <code>true</code>, the result from the authorizer’s Lambda function is cached for clients that use persistent HTTP connections. The results are cached for the time specified by the Lambda function in <code>refreshAfterInSeconds</code>. This value does not affect authorization of clients that use MQTT connections.</p> <p>The default value is <code>false</code>.</p>"
         }
       }
     },
@@ -9952,7 +9964,8 @@
     "DomainName":{
       "type":"string",
       "max":253,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "DomainType":{
       "type":"string",
@@ -10111,6 +10124,7 @@
     "ElasticsearchId":{"type":"string"},
     "ElasticsearchIndex":{"type":"string"},
     "ElasticsearchType":{"type":"string"},
+    "EnableCachingForHttp":{"type":"boolean"},
     "EnableIoTLoggingParams":{
       "type":"structure",
       "required":[
@@ -10146,7 +10160,8 @@
     "EndpointAddress":{"type":"string"},
     "EndpointType":{
       "type":"string",
-      "max":128
+      "max":128,
+      "pattern":"[\\s\\S]*"
     },
     "Environment":{
       "type":"string",
@@ -10992,12 +11007,14 @@
     "HttpHeaderName":{
       "type":"string",
       "max":8192,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "HttpHeaderValue":{
       "type":"string",
       "max":8192,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "HttpHeaders":{
       "type":"map",
@@ -11007,7 +11024,8 @@
     "HttpQueryString":{
       "type":"string",
       "max":4096,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "HttpUrlDestinationConfiguration":{
       "type":"structure",
@@ -11714,7 +11732,8 @@
     },
     "KeyValue":{
       "type":"string",
-      "max":5120
+      "max":5120,
+      "pattern":"[\\s\\S]*"
     },
     "KinesisAction":{
       "type":"structure",
@@ -14193,7 +14212,8 @@
     },
     "Message":{
       "type":"string",
-      "max":128
+      "max":128,
+      "pattern":"[\\s\\S]*"
     },
     "MessageFormat":{
       "type":"string",
@@ -14405,7 +14425,8 @@
     "MqttClientId":{
       "type":"string",
       "max":65535,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "MqttContext":{
       "type":"structure",
@@ -14433,7 +14454,8 @@
     "MqttUsername":{
       "type":"string",
       "max":65535,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "NamedShadowIndexingMode":{
       "type":"string",
@@ -14717,7 +14739,12 @@
       "max":250,
       "min":1
     },
-    "Parameter":{"type":"string"},
+    "Parameter":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "ParameterKey":{
       "type":"string",
       "max":128,
@@ -14801,7 +14828,12 @@
       "documentation":"<p>Describes an IoT policy.</p>"
     },
     "PolicyArn":{"type":"string"},
-    "PolicyDocument":{"type":"string"},
+    "PolicyDocument":{
+      "type":"string",
+      "max":404600,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "PolicyDocuments":{
       "type":"list",
       "member":{"shape":"PolicyDocument"}
@@ -15497,7 +15529,8 @@
     },
     "Resource":{
       "type":"string",
-      "max":2048
+      "max":2048,
+      "pattern":"[\\s\\S]*"
     },
     "ResourceAlreadyExistsException":{
       "type":"structure",
@@ -15972,7 +16005,8 @@
     "ServerName":{
       "type":"string",
       "max":253,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "ServiceName":{"type":"string"},
     "ServiceType":{
@@ -16773,7 +16807,12 @@
       "documentation":"<p>Provides summary counts of how many tasks for findings are in a particular state. This information is included in the response from DescribeAuditMitigationActionsTask.</p>"
     },
     "TemplateArn":{"type":"string"},
-    "TemplateBody":{"type":"string"},
+    "TemplateBody":{
+      "type":"string",
+      "max":10240,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "TemplateDescription":{
       "type":"string",
       "max":500,
@@ -17360,7 +17399,8 @@
     "Token":{
       "type":"string",
       "max":6144,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "TokenKeyName":{
       "type":"string",
@@ -17787,6 +17827,10 @@
         "status":{
           "shape":"AuthorizerStatus",
           "documentation":"<p>The status of the update authorizer request.</p>"
+        },
+        "enableCachingForHttp":{
+          "shape":"EnableCachingForHttp",
+          "documentation":"<p>When <code>true</code>, the result from the authorizer’s Lambda function is cached for the time specified in <code>refreshAfterInSeconds</code>. The cached result is used while the device reuses the same HTTP connection.</p>"
         }
       }
     },
@@ -18656,7 +18700,12 @@
       "type":"list",
       "member":{"shape":"ValidationError"}
     },
-    "Value":{"type":"string"},
+    "Value":{
+      "type":"string",
+      "max":4096,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "Variance":{"type":"double"},
     "VerificationState":{
       "type":"string",

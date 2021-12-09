@@ -87,7 +87,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Evaluates device positions against the geofence geometries from a given geofence collection.</p> <p>This operation always returns an empty response because geofences are asynchronously evaluated. The evaluation determines if the device has entered or exited a geofenced area, and then publishes one of the following events to Amazon EventBridge:</p> <ul> <li> <p> <code>ENTER</code> if Amazon Location determines that the tracked device has entered a geofenced area.</p> </li> <li> <p> <code>EXIT</code> if Amazon Location determines that the tracked device has exited a geofenced area.</p> </li> </ul> <note> <p>The last geofence that a device was observed within is tracked for 30 days after the most recent device position update.</p> </note>",
+      "documentation":"<p>Evaluates device positions against the geofence geometries from a given geofence collection.</p> <p>This operation always returns an empty response because geofences are asynchronously evaluated. The evaluation determines if the device has entered or exited a geofenced area, and then publishes one of the following events to Amazon EventBridge:</p> <ul> <li> <p> <code>ENTER</code> if Amazon Location determines that the tracked device has entered a geofenced area.</p> </li> <li> <p> <code>EXIT</code> if Amazon Location determines that the tracked device has exited a geofenced area.</p> </li> </ul> <note> <p>The last geofence that a device was observed within is tracked for 30 days after the most recent device position update.</p> </note> <note> <p>Geofence evaluation uses the given device position. It does not account for the optional <code>Accuracy</code> of a <code>DevicePositionUpdate</code>.</p> </note>",
       "endpoint":{"hostPrefix":"geofencing."}
     },
     "BatchGetDevicePosition":{
@@ -144,7 +144,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Uploads position update data for one or more devices to a tracker resource. Amazon Location uses the data when it reports the last known device position and position history. Amazon Location retains location data for 30 days.</p> <note> <p>Position updates are handled based on the <code>PositionFiltering</code> property of the tracker. When <code>PositionFiltering</code> is set to <code>TimeBased</code>, updates are evaluated against linked geofence collections, and location data is stored at a maximum of one position per 30 second interval. If your update frequency is more often than every 30 seconds, only one update per 30 seconds is stored for each unique device ID. When <code>PositionFiltering</code> is set to <code>DistanceBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than 30 m (98.4 ft).</p> </note>",
+      "documentation":"<p>Uploads position update data for one or more devices to a tracker resource. Amazon Location uses the data when it reports the last known device position and position history. Amazon Location retains location data for 30 days.</p> <note> <p>Position updates are handled based on the <code>PositionFiltering</code> property of the tracker. When <code>PositionFiltering</code> is set to <code>TimeBased</code>, updates are evaluated against linked geofence collections, and location data is stored at a maximum of one position per 30 second interval. If your update frequency is more often than every 30 seconds, only one update per 30 seconds is stored for each unique device ID.</p> <p>When <code>PositionFiltering</code> is set to <code>DistanceBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than 30 m (98.4 ft).</p> <p>When <code>PositionFiltering</code> is set to <code>AccuracyBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than the measured accuracy. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is neither stored or evaluated if the device has moved less than 15 m. If <code>PositionFiltering</code> is set to <code>AccuracyBased</code> filtering, Amazon Location uses the default value <code>{ \"Horizontal\": 0}</code> when accuracy is not provided on a <code>DevicePositionUpdate</code>.</p> </note>",
       "endpoint":{"hostPrefix":"tracking."}
     },
     "CalculateRoute":{
@@ -222,7 +222,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a place index resource in your AWS account. Use a place index resource to geocode addresses and other text queries by using the <code>SearchPlaceIndexForText</code> operation, and reverse geocode coordinates by using the <code>SearchPlaceIndexForPosition</code> operation.</p>",
+      "documentation":"<p>Creates a place index resource in your AWS account. Use a place index resource to geocode addresses and other text queries by using the <code>SearchPlaceIndexForText</code> operation, and reverse geocode coordinates by using the <code>SearchPlaceIndexForPosition</code> operation, and enable autosuggestions by using the <code>SearchPlaceIndexForSuggestions</code> operation.</p>",
       "endpoint":{"hostPrefix":"places."},
       "idempotent":true
     },
@@ -815,6 +815,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Reverse geocodes a given coordinate and returns a legible address. Allows you to search for Places or points of interest near a given position.</p>",
+      "endpoint":{"hostPrefix":"places."}
+    },
+    "SearchPlaceIndexForSuggestions":{
+      "name":"SearchPlaceIndexForSuggestions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/places/v0/indexes/{IndexName}/search/suggestions",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchPlaceIndexForSuggestionsRequest"},
+      "output":{"shape":"SearchPlaceIndexForSuggestionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Generates suggestions for addresses and points of interest based on partial or misspelled free-form text. This operation is also known as autocomplete, autosuggest, or fuzzy matching.</p> <p>Optional parameters let you narrow your search results by bounding box or country, or bias your search toward a specific position on the globe.</p> <note> <p>You can search for suggested place names near a specified position by using <code>BiasPosition</code>, or filter results within a bounding box by using <code>FilterBBox</code>. These parameters are mutually exclusive; using both <code>BiasPosition</code> and <code>FilterBBox</code> in the same command returns an error.</p> </note>",
       "endpoint":{"hostPrefix":"places."}
     },
     "SearchPlaceIndexForText":{
@@ -1894,7 +1913,7 @@
         },
         "PositionFiltering":{
           "shape":"PositionFiltering",
-          "documentation":"<p>Specifies the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this area are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> </ul> <p>This field is optional. If not specified, the default value is <code>TimeBased</code>.</p>"
+          "documentation":"<p>Specifies the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this area are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> <li> <p> <code>AccuracyBased</code> - If the device has moved less than the measured accuracy, location updates are ignored. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is ignored if the device has moved less than 15 m. Ignored location updates are neither evaluated against linked geofence collections, nor stored. This can reduce the effects of GPS noise when displaying device trajectories on a map, and can help control your costs by reducing the number of geofence evaluations. </p> </li> </ul> <p>This field is optional. If not specified, the default value is <code>TimeBased</code>.</p>"
         },
         "PricingPlan":{
           "shape":"PricingPlan",
@@ -2349,6 +2368,10 @@
         "SampleTime"
       ],
       "members":{
+        "Accuracy":{
+          "shape":"PositionalAccuracy",
+          "documentation":"<p>The accuracy of the device position.</p>"
+        },
         "DeviceId":{
           "shape":"Id",
           "documentation":"<p>The device whose position you retrieved.</p>"
@@ -2356,6 +2379,10 @@
         "Position":{
           "shape":"Position",
           "documentation":"<p>The last known device position.</p>"
+        },
+        "PositionProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The properties associated with the position.</p>"
         },
         "ReceivedTime":{
           "shape":"Timestamp",
@@ -2380,6 +2407,10 @@
         "SampleTime"
       ],
       "members":{
+        "Accuracy":{
+          "shape":"PositionalAccuracy",
+          "documentation":"<p>The accuracy of the device position.</p>"
+        },
         "DeviceId":{
           "shape":"Id",
           "documentation":"<p>The device associated to the position update.</p>"
@@ -2387,6 +2418,10 @@
         "Position":{
           "shape":"Position",
           "documentation":"<p>The latest device position defined in <a href=\"https://earth-info.nga.mil/GandG/wgs84/index.html\">WGS 84</a> format: <code>[X or longitude, Y or latitude]</code>.</p>"
+        },
+        "PositionProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>Associates one of more properties with the position update. A property is a key-value pair stored with the position update and added to any geofence event the update may trigger.</p> <p>Format: <code>\"key\" : \"value\"</code> </p>"
         },
         "SampleTime":{
           "shape":"Timestamp",
@@ -2525,6 +2560,10 @@
         "SampleTime"
       ],
       "members":{
+        "Accuracy":{
+          "shape":"PositionalAccuracy",
+          "documentation":"<p>The accuracy of the device position.</p>"
+        },
         "DeviceId":{
           "shape":"Id",
           "documentation":"<p>The device whose position you retrieved.</p>"
@@ -2532,6 +2571,10 @@
         "Position":{
           "shape":"Position",
           "documentation":"<p>The last known device position.</p>"
+        },
+        "PositionProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The properties associated with the position.</p>"
         },
         "ReceivedTime":{
           "shape":"Timestamp",
@@ -2942,6 +2985,10 @@
         "SampleTime"
       ],
       "members":{
+        "Accuracy":{
+          "shape":"PositionalAccuracy",
+          "documentation":"<p>The accuracy of the device position.</p>"
+        },
         "DeviceId":{
           "shape":"Id",
           "documentation":"<p>The ID of the device for this position.</p>"
@@ -2949,6 +2996,10 @@
         "Position":{
           "shape":"Position",
           "documentation":"<p>The last known device position. Empty if no positions currently stored.</p>"
+        },
+        "PositionProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The properties associated with the position.</p>"
         },
         "SampleTime":{
           "shape":"Timestamp",
@@ -3561,6 +3612,23 @@
         "AccuracyBased"
       ]
     },
+    "PositionalAccuracy":{
+      "type":"structure",
+      "required":["Horizontal"],
+      "members":{
+        "Horizontal":{
+          "shape":"PositionalAccuracyHorizontalDouble",
+          "documentation":"<p>Estimated maximum distance, in meters, between the measured position and the true position of a device, along the Earth's surface.</p>"
+        }
+      },
+      "documentation":"<p>Defines the level of certainty of the position.</p>"
+    },
+    "PositionalAccuracyHorizontalDouble":{
+      "type":"double",
+      "box":true,
+      "max":10000,
+      "min":0
+    },
     "PricingPlan":{
       "type":"string",
       "enum":[
@@ -3568,6 +3636,24 @@
         "MobileAssetTracking",
         "MobileAssetManagement"
       ]
+    },
+    "PropertyMap":{
+      "type":"map",
+      "key":{"shape":"PropertyMapKeyString"},
+      "value":{"shape":"PropertyMapValueString"},
+      "max":3,
+      "min":0,
+      "sensitive":true
+    },
+    "PropertyMapKeyString":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
+    "PropertyMapValueString":{
+      "type":"string",
+      "max":40,
+      "min":1
     },
     "PutGeofenceRequest":{
       "type":"structure",
@@ -3670,6 +3756,21 @@
     "SearchForPositionResultList":{
       "type":"list",
       "member":{"shape":"SearchForPositionResult"}
+    },
+    "SearchForSuggestionsResult":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"String",
+          "documentation":"<p>The text of the place suggestion, typically formatted as an address string.</p>"
+        }
+      },
+      "documentation":"<p>Contains a place suggestion resulting from a place suggestion query that is run on a place index resource.</p>"
+    },
+    "SearchForSuggestionsResultList":{
+      "type":"list",
+      "member":{"shape":"SearchForSuggestionsResult"}
     },
     "SearchForTextResult":{
       "type":"structure",
@@ -3775,6 +3876,106 @@
       },
       "documentation":"<p>A summary of the request sent by using <code>SearchPlaceIndexForPosition</code>.</p>"
     },
+    "SearchPlaceIndexForSuggestionsRequest":{
+      "type":"structure",
+      "required":[
+        "IndexName",
+        "Text"
+      ],
+      "members":{
+        "BiasPosition":{
+          "shape":"Position",
+          "documentation":"<p>An optional parameter that indicates a preference for place suggestions that are closer to a specified position.</p> <p> If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p> <note> <p> <code>BiasPosition</code> and <code>FilterBBox</code> are mutually exclusive. Specifying both options results in an error. </p> </note>"
+        },
+        "FilterBBox":{
+          "shape":"BoundingBox",
+          "documentation":"<p>An optional parameter that limits the search results by returning only suggestions within a specified bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>"
+        },
+        "FilterCountries":{
+          "shape":"CountryCodeList",
+          "documentation":"<p>An optional parameter that limits the search results by returning only suggestions within the provided list of countries.</p> <ul> <li> <p>Use the <a href=\"https://www.iso.org/iso-3166-country-codes.html\">ISO 3166</a> 3-digit country code. For example, Australia uses three upper-case characters: <code>AUS</code>.</p> </li> </ul>"
+        },
+        "IndexName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the place index resource you want to use for the search.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        },
+        "Language":{
+          "shape":"LanguageTag",
+          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. It does not change which results are returned. If the language is not specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>Used only when the partner selected is Here.</p>"
+        },
+        "MaxResults":{
+          "shape":"SearchPlaceIndexForSuggestionsRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>5</code> </p>"
+        },
+        "Text":{
+          "shape":"SyntheticSearchPlaceIndexForSuggestionsRequestString",
+          "documentation":"<p>The free-form partial text to use to generate place suggestions. For example, <code>eiffel tow</code>.</p>"
+        }
+      }
+    },
+    "SearchPlaceIndexForSuggestionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":15,
+      "min":1
+    },
+    "SearchPlaceIndexForSuggestionsResponse":{
+      "type":"structure",
+      "required":[
+        "Results",
+        "Summary"
+      ],
+      "members":{
+        "Results":{
+          "shape":"SearchForSuggestionsResultList",
+          "documentation":"<p>A list of place suggestions that best match the search text.</p>"
+        },
+        "Summary":{
+          "shape":"SearchPlaceIndexForSuggestionsSummary",
+          "documentation":"<p>Contains a summary of the request. Echoes the input values for <code>BiasPosition</code>, <code>FilterBBox</code>, <code>FilterCountries</code>, <code>Language</code>, <code>MaxResults</code>, and <code>Text</code>. Also includes the <code>DataSource</code> of the place index. </p>"
+        }
+      }
+    },
+    "SearchPlaceIndexForSuggestionsSummary":{
+      "type":"structure",
+      "required":[
+        "DataSource",
+        "Text"
+      ],
+      "members":{
+        "BiasPosition":{
+          "shape":"Position",
+          "documentation":"<p>Contains the coordinates for the optional bias position specified in the request.</p> <p>This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>"
+        },
+        "DataSource":{
+          "shape":"String",
+          "documentation":"<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html\">Amazon Location Service data providers</a>.</p>"
+        },
+        "FilterBBox":{
+          "shape":"BoundingBox",
+          "documentation":"<p>Contains the coordinates for the optional bounding box specified in the request.</p>"
+        },
+        "FilterCountries":{
+          "shape":"CountryCodeList",
+          "documentation":"<p>Contains the optional country filter specified in the request.</p>"
+        },
+        "Language":{
+          "shape":"LanguageTag",
+          "documentation":"<p>The preferred language used to return results. Matches the language in the request. The value is a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>Contains the optional result count limit specified in the request.</p>"
+        },
+        "Text":{
+          "shape":"SyntheticSearchPlaceIndexForSuggestionsSummaryString",
+          "documentation":"<p>The free-form partial text input specified in the request.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the request sent by using <code>SearchPlaceIndexForSuggestions</code>.</p>"
+    },
     "SearchPlaceIndexForTextRequest":{
       "type":"structure",
       "required":[
@@ -3840,7 +4041,7 @@
       "members":{
         "BiasPosition":{
           "shape":"Position",
-          "documentation":"<p>Contains the coordinates for the optional bias position specified in the request.</p>"
+          "documentation":"<p>Contains the coordinates for the optional bias position specified in the request.</p> <p>This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>"
         },
         "DataSource":{
           "shape":"String",
@@ -3942,6 +4143,16 @@
       "member":{"shape":"Step"}
     },
     "String":{"type":"string"},
+    "SyntheticSearchPlaceIndexForSuggestionsRequestString":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "SyntheticSearchPlaceIndexForSuggestionsSummaryString":{
+      "type":"string",
+      "sensitive":true
+    },
     "SyntheticSearchPlaceIndexForTextRequestString":{
       "type":"string",
       "max":200,
@@ -4318,7 +4529,7 @@
         },
         "PositionFiltering":{
           "shape":"PositionFiltering",
-          "documentation":"<p>Updates the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this distance are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and device positions to retrieve. Distance-based filtering can also reduce the jitter effect when displaying device trajectory on a map. </p> </li> </ul>"
+          "documentation":"<p>Updates the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this distance are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> <li> <p> <code>AccuracyBased</code> - If the device has moved less than the measured accuracy, location updates are ignored. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is ignored if the device has moved less than 15 m. Ignored location updates are neither evaluated against linked geofence collections, nor stored. This helps educe the effects of GPS noise when displaying device trajectories on a map, and can help control costs by reducing the number of geofence evaluations. </p> </li> </ul>"
         },
         "PricingPlan":{
           "shape":"PricingPlan",

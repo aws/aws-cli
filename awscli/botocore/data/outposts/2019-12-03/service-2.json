@@ -317,6 +317,23 @@
       ],
       "documentation":"<p>Removes tags from the specified resource.</p>"
     },
+    "UpdateOutpost":{
+      "name":"UpdateOutpost",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/outposts/{OutpostId}"
+      },
+      "input":{"shape":"UpdateOutpostInput"},
+      "output":{"shape":"UpdateOutpostOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Updates an Outpost. </p>"
+    },
     "UpdateSite":{
       "name":"UpdateSite",
       "http":{
@@ -665,7 +682,10 @@
       "members":{
         "Name":{"shape":"OutpostName"},
         "Description":{"shape":"OutpostDescription"},
-        "SiteId":{"shape":"SiteId"},
+        "SiteId":{
+          "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>"
+        },
         "AvailabilityZone":{"shape":"AvailabilityZone"},
         "AvailabilityZoneId":{"shape":"AvailabilityZoneId"},
         "Tags":{
@@ -724,7 +744,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID of the Outpost. </p>",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         }
@@ -741,6 +761,7 @@
       "members":{
         "SiteId":{
           "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>",
           "location":"uri",
           "locationName":"SiteId"
         }
@@ -847,7 +868,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID of the Outpost. </p>",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         }
@@ -859,7 +880,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID of the Outpost. </p>",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         },
@@ -902,6 +923,7 @@
       "members":{
         "SiteId":{
           "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>",
           "location":"uri",
           "locationName":"SiteId"
         },
@@ -933,6 +955,7 @@
       "members":{
         "SiteId":{
           "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>",
           "location":"uri",
           "locationName":"SiteId"
         }
@@ -1596,7 +1619,7 @@
     },
     "SiteId":{
       "type":"string",
-      "documentation":"<p>The ID of the site.</p>",
+      "documentation":"<p> The ID of the site. </p>",
       "max":255,
       "min":1,
       "pattern":"^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:site/)?(os-[a-f0-9]{17})$"
@@ -1736,6 +1759,30 @@
       "members":{
       }
     },
+    "UpdateOutpostInput":{
+      "type":"structure",
+      "required":["OutpostId"],
+      "members":{
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "Name":{"shape":"OutpostName"},
+        "Description":{"shape":"OutpostDescription"},
+        "SupportedHardwareType":{
+          "shape":"SupportedHardwareType",
+          "documentation":"<p> The type of hardware for this Outpost. </p>"
+        }
+      }
+    },
+    "UpdateOutpostOutput":{
+      "type":"structure",
+      "members":{
+        "Outpost":{"shape":"Outpost"}
+      }
+    },
     "UpdateSiteAddressInput":{
       "type":"structure",
       "required":[
@@ -1746,6 +1793,7 @@
       "members":{
         "SiteId":{
           "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>",
           "location":"uri",
           "locationName":"SiteId"
         },
@@ -1778,6 +1826,7 @@
       "members":{
         "SiteId":{
           "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>",
           "location":"uri",
           "locationName":"SiteId"
         },
@@ -1801,6 +1850,7 @@
       "members":{
         "SiteId":{
           "shape":"SiteId",
+          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the site. </p>",
           "location":"uri",
           "locationName":"SiteId"
         },

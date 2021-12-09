@@ -369,7 +369,7 @@
         {"shape":"InvalidKMSArn"},
         {"shape":"InvalidInput"}
       ],
-      "documentation":"<p>Deletes a key-signing key (KSK). Before you can delete a KSK, you must deactivate it. The KSK must be deactivated before you can delete it regardless of whether the hosted zone is enabled for DNSSEC signing.</p>"
+      "documentation":"<p>Deletes a key-signing key (KSK). Before you can delete a KSK, you must deactivate it. The KSK must be deactivated before you can delete it regardless of whether the hosted zone is enabled for DNSSEC signing.</p> <p>You can use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_DeactivateKeySigningKey.html\">DeactivateKeySigningKey</a> to deactivate the key before you delete it.</p> <p>Use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetDNSSEC.html\">GetDNSSEC</a> to verify that the KSK is in an <code>INACTIVE</code> status.</p>"
     },
     "DeleteQueryLoggingConfig":{
       "name":"DeleteQueryLoggingConfig",
@@ -1041,7 +1041,8 @@
       "output":{"shape":"UpdateHostedZoneCommentResponse"},
       "errors":[
         {"shape":"NoSuchHostedZone"},
-        {"shape":"InvalidInput"}
+        {"shape":"InvalidInput"},
+        {"shape":"PriorRequestNotComplete"}
       ],
       "documentation":"<p>Updates the comment for a specified hosted zone.</p>"
     },
@@ -1454,6 +1455,7 @@
         "ap-south-1",
         "ap-southeast-1",
         "ap-southeast-2",
+        "ap-southeast-3",
         "ap-northeast-1",
         "ap-northeast-2",
         "ap-northeast-3",
@@ -1466,6 +1468,7 @@
         "us-gov-west-1",
         "us-gov-east-1",
         "us-iso-east-1",
+        "us-iso-west-1",
         "us-isob-east-1"
       ],
       "max":64,
@@ -1563,7 +1566,7 @@
         },
         "VPC":{
           "shape":"VPC",
-          "documentation":"<p>(Private hosted zones only) A complex type that contains information about the Amazon VPC that you're associating with this hosted zone.</p> <p>You can specify only one Amazon VPC when you create a private hosted zone. To associate additional Amazon VPCs with the hosted zone, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AssociateVPCWithHostedZone.html\">AssociateVPCWithHostedZone</a> after you create a hosted zone.</p>"
+          "documentation":"<p>(Private hosted zones only) A complex type that contains information about the Amazon VPC that you're associating with this hosted zone.</p> <p>You can specify only one Amazon VPC when you create a private hosted zone. If you are associating a VPC with a hosted zone with this request, the paramaters <code>VPCId</code> and <code>VPCRegion</code> are also required.</p> <p>To associate additional Amazon VPCs with the hosted zone, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AssociateVPCWithHostedZone.html\">AssociateVPCWithHostedZone</a> after you create a hosted zone.</p>"
         },
         "CallerReference":{
           "shape":"Nonce",
@@ -1634,7 +1637,7 @@
         },
         "KeyManagementServiceArn":{
           "shape":"SigningKeyString",
-          "documentation":"<p>The Amazon resource name (ARN) for a customer managed customer master key (CMK) in Key Management Service (KMS). The <code>KeyManagementServiceArn</code> must be unique for each key-signing key (KSK) in a single hosted zone. To see an example of <code>KeyManagementServiceArn</code> that grants the correct permissions for DNSSEC, scroll down to <b>Example</b>. </p> <p>You must configure the customer managed CMK as follows:</p> <dl> <dt>Status</dt> <dd> <p>Enabled</p> </dd> <dt>Key spec</dt> <dd> <p>ECC_NIST_P256</p> </dd> <dt>Key usage</dt> <dd> <p>Sign and verify</p> </dd> <dt>Key policy</dt> <dd> <p>The key policy must give permission for the following actions:</p> <ul> <li> <p>DescribeKey</p> </li> <li> <p>GetPublicKey</p> </li> <li> <p>Sign</p> </li> </ul> <p>The key policy must also include the Amazon Route 53 service in the principal for your account. Specify the following:</p> <ul> <li> <p> <code>\"Service\": \"dnssec-route53.amazonaws.com\"</code> </p> </li> </ul> </dd> </dl> <p>For more information about working with a customer managed CMK in KMS, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html\">Key Management Service concepts</a>.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) for a customer managed key in Key Management Service (KMS). The <code>KeyManagementServiceArn</code> must be unique for each key-signing key (KSK) in a single hosted zone. To see an example of <code>KeyManagementServiceArn</code> that grants the correct permissions for DNSSEC, scroll down to <b>Example</b>. </p> <p>You must configure the customer managed customer managed key as follows:</p> <dl> <dt>Status</dt> <dd> <p>Enabled</p> </dd> <dt>Key spec</dt> <dd> <p>ECC_NIST_P256</p> </dd> <dt>Key usage</dt> <dd> <p>Sign and verify</p> </dd> <dt>Key policy</dt> <dd> <p>The key policy must give permission for the following actions:</p> <ul> <li> <p>DescribeKey</p> </li> <li> <p>GetPublicKey</p> </li> <li> <p>Sign</p> </li> </ul> <p>The key policy must also include the Amazon Route 53 service in the principal for your account. Specify the following:</p> <ul> <li> <p> <code>\"Service\": \"dnssec-route53.amazonaws.com\"</code> </p> </li> </ul> </dd> </dl> <p>For more information about working with a customer managed key in KMS, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html\">Key Management Service concepts</a>.</p>"
         },
         "Name":{
           "shape":"SigningKeyName",
@@ -1932,7 +1935,7 @@
       "members":{
         "ServeSignature":{
           "shape":"ServeSignature",
-          "documentation":"<p>A string that represents the current hosted zone signing status.</p> <p>Status can have one of the following values:</p> <dl> <dt>SIGNING</dt> <dd> <p>DNSSEC signing is enabled for the hosted zone.</p> </dd> <dt>NOT_SIGNING</dt> <dd> <p>DNSSEC signing is not enabled for the hosted zone.</p> </dd> <dt>DELETING</dt> <dd> <p>DNSSEC signing is in the process of being removed for the hosted zone.</p> </dd> <dt>ACTION_NEEDED</dt> <dd> <p>There is a problem with signing in the hosted zone that requires you to take action to resolve. For example, the customer managed customer master key (CMK) might have been deleted, or the permissions for the customer managed CMK might have been changed.</p> </dd> <dt>INTERNAL_FAILURE</dt> <dd> <p>There was an error during a request. Before you can continue to work with DNSSEC signing, including with key-signing keys (KSKs), you must correct the problem by enabling or disabling DNSSEC signing for the hosted zone.</p> </dd> </dl>"
+          "documentation":"<p>A string that represents the current hosted zone signing status.</p> <p>Status can have one of the following values:</p> <dl> <dt>SIGNING</dt> <dd> <p>DNSSEC signing is enabled for the hosted zone.</p> </dd> <dt>NOT_SIGNING</dt> <dd> <p>DNSSEC signing is not enabled for the hosted zone.</p> </dd> <dt>DELETING</dt> <dd> <p>DNSSEC signing is in the process of being removed for the hosted zone.</p> </dd> <dt>ACTION_NEEDED</dt> <dd> <p>There is a problem with signing in the hosted zone that requires you to take action to resolve. For example, the customer managed key might have been deleted, or the permissions for the customer managed key might have been changed.</p> </dd> <dt>INTERNAL_FAILURE</dt> <dd> <p>There was an error during a request. Before you can continue to work with DNSSEC signing, including with key-signing keys (KSKs), you must correct the problem by enabling or disabling DNSSEC signing for the hosted zone.</p> </dd> </dl>"
         },
         "StatusMessage":{
           "shape":"SigningKeyStatusMessage",
@@ -3504,7 +3507,7 @@
         },
         "KmsArn":{
           "shape":"SigningKeyString",
-          "documentation":"<p>The Amazon resource name (ARN) used to identify the customer managed customer master key (CMK) in Key Management Service (KMS). The <code>KmsArn</code> must be unique for each key-signing key (KSK) in a single hosted zone.</p> <p>You must configure the CMK as follows:</p> <dl> <dt>Status</dt> <dd> <p>Enabled</p> </dd> <dt>Key spec</dt> <dd> <p>ECC_NIST_P256</p> </dd> <dt>Key usage</dt> <dd> <p>Sign and verify</p> </dd> <dt>Key policy</dt> <dd> <p>The key policy must give permission for the following actions:</p> <ul> <li> <p>DescribeKey</p> </li> <li> <p>GetPublicKey</p> </li> <li> <p>Sign</p> </li> </ul> <p>The key policy must also include the Amazon Route 53 service in the principal for your account. Specify the following:</p> <ul> <li> <p> <code>\"Service\": \"dnssec-route53.amazonaws.com\"</code> </p> </li> </ul> </dd> </dl> <p>For more information about working with the customer managed CMK in KMS, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html\">Key Management Service concepts</a>.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) used to identify the customer managed key in Key Management Service (KMS). The <code>KmsArn</code> must be unique for each key-signing key (KSK) in a single hosted zone.</p> <p>You must configure the customer managed key as follows:</p> <dl> <dt>Status</dt> <dd> <p>Enabled</p> </dd> <dt>Key spec</dt> <dd> <p>ECC_NIST_P256</p> </dd> <dt>Key usage</dt> <dd> <p>Sign and verify</p> </dd> <dt>Key policy</dt> <dd> <p>The key policy must give permission for the following actions:</p> <ul> <li> <p>DescribeKey</p> </li> <li> <p>GetPublicKey</p> </li> <li> <p>Sign</p> </li> </ul> <p>The key policy must also include the Amazon Route 53 service in the principal for your account. Specify the following:</p> <ul> <li> <p> <code>\"Service\": \"dnssec-route53.amazonaws.com\"</code> </p> </li> </ul> </dd> </dl> <p>For more information about working with the customer managed key in KMS, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html\">Key Management Service concepts</a>.</p>"
         },
         "Flag":{
           "shape":"SigningKeyInteger",
@@ -3548,7 +3551,7 @@
         },
         "Status":{
           "shape":"SigningKeyStatus",
-          "documentation":"<p>A string that represents the current key-signing key (KSK) status.</p> <p>Status can have one of the following values:</p> <dl> <dt>ACTIVE</dt> <dd> <p>The KSK is being used for signing.</p> </dd> <dt>INACTIVE</dt> <dd> <p>The KSK is not being used for signing.</p> </dd> <dt>DELETING</dt> <dd> <p>The KSK is in the process of being deleted.</p> </dd> <dt>ACTION_NEEDED</dt> <dd> <p>There is a problem with the KSK that requires you to take action to resolve. For example, the customer managed customer master key (CMK) might have been deleted, or the permissions for the customer managed CMK might have been changed.</p> </dd> <dt>INTERNAL_FAILURE</dt> <dd> <p>There was an error during a request. Before you can continue to work with DNSSEC signing, including actions that involve this KSK, you must correct the problem. For example, you may need to activate or deactivate the KSK.</p> </dd> </dl>"
+          "documentation":"<p>A string that represents the current key-signing key (KSK) status.</p> <p>Status can have one of the following values:</p> <dl> <dt>ACTIVE</dt> <dd> <p>The KSK is being used for signing.</p> </dd> <dt>INACTIVE</dt> <dd> <p>The KSK is not being used for signing.</p> </dd> <dt>DELETING</dt> <dd> <p>The KSK is in the process of being deleted.</p> </dd> <dt>ACTION_NEEDED</dt> <dd> <p>There is a problem with the KSK that requires you to take action to resolve. For example, the customer managed key might have been deleted, or the permissions for the customer managed key might have been changed.</p> </dd> <dt>INTERNAL_FAILURE</dt> <dd> <p>There was an error during a request. Before you can continue to work with DNSSEC signing, including actions that involve this KSK, you must correct the problem. For example, you may need to activate or deactivate the KSK.</p> </dd> </dl>"
         },
         "StatusMessage":{
           "shape":"SigningKeyStatusMessage",
@@ -3570,7 +3573,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>You've already created a key-signing key (KSK) with this name or with the same customer managed customer master key (CMK) ARN.</p>",
+      "documentation":"<p>You've already created a key-signing key (KSK) with this name or with the same customer managed key ARN.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -4909,6 +4912,7 @@
         "eu-central-1",
         "ap-southeast-1",
         "ap-southeast-2",
+        "ap-southeast-3",
         "ap-northeast-1",
         "ap-northeast-2",
         "ap-northeast-3",
@@ -5585,7 +5589,7 @@
         },
         "InsufficientDataHealthStatus":{
           "shape":"InsufficientDataHealthStatus",
-          "documentation":"<p>When CloudWatch has insufficient data about the metric to determine the alarm state, the status that you want Amazon Route 53 to assign to the health check:</p> <ul> <li> <p> <code>Healthy</code>: Route 53 considers the health check to be healthy.</p> </li> <li> <p> <code>Unhealthy</code>: Route 53 considers the health check to be unhealthy.</p> </li> <li> <p> <code>LastKnownStatus</code>: Route 53 uses the status of the health check from the last time CloudWatch had sufficient data to determine the alarm state. For new health checks that have no last known status, the default status for the health check is healthy.</p> </li> </ul>"
+          "documentation":"<p>When CloudWatch has insufficient data about the metric to determine the alarm state, the status that you want Amazon Route 53 to assign to the health check:</p> <ul> <li> <p> <code>Healthy</code>: Route 53 considers the health check to be healthy.</p> </li> <li> <p> <code>Unhealthy</code>: Route 53 considers the health check to be unhealthy.</p> </li> <li> <p> <code>LastKnownStatus</code>: By default, Route 53 uses the status of the health check from the last time CloudWatch had sufficient data to determine the alarm state. For new health checks that have no last known status, the status for the health check is healthy.</p> </li> </ul>"
         },
         "ResetElements":{
           "shape":"ResettableElementNameList",
@@ -5725,7 +5729,7 @@
         },
         "VPCId":{"shape":"VPCId"}
       },
-      "documentation":"<p>(Private hosted zones only) A complex type that contains information about an Amazon VPC.</p>"
+      "documentation":"<p>(Private hosted zones only) A complex type that contains information about an Amazon VPC.</p> <p>If you associate a private hosted zone with an Amazon VPC when you make a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateHostedZone.html\">CreateHostedZone</a> request, the following parameters are also required.</p>"
     },
     "VPCAssociationAuthorizationNotFound":{
       "type":"structure",
@@ -5772,9 +5776,11 @@
         "us-gov-west-1",
         "us-gov-east-1",
         "us-iso-east-1",
+        "us-iso-west-1",
         "us-isob-east-1",
         "ap-southeast-1",
         "ap-southeast-2",
+        "ap-southeast-3",
         "ap-south-1",
         "ap-northeast-1",
         "ap-northeast-2",

@@ -80,6 +80,15 @@ class TestGetObject(BaseAWSCommandParamsTest):
                   'StorageClass': u'STANDARD_IA'}
         self.assert_params(cmdline, result)
 
+    def test_glacier_ir_storage_class(self):
+        cmdline = self.prefix
+        cmdline += self.file_path
+        cmdline += ' s3://mybucket/mykey'
+        cmdline += ' --storage-class GLACIER_IR'
+        result = {'Bucket': u'mybucket', 'Key': u'mykey',
+                  'StorageClass': u'GLACIER_IR'}
+        self.assert_params(cmdline, result)
+
     def test_website_redirect(self):
         cmdline = self.prefix
         cmdline += self.file_path

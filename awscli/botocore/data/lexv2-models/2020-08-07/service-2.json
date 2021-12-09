@@ -2936,7 +2936,6 @@
       "type":"structure",
       "required":[
         "slotTypeName",
-        "valueSelectionSetting",
         "botId",
         "botVersion",
         "localeId"
@@ -2979,6 +2978,10 @@
           "documentation":"<p>The identifier of the language and locale that the slot type will be used in. The string must match one of the supported locales. All of the bots, intents, and slots used by the slot type must have the same locale. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a>.</p>",
           "location":"uri",
           "locationName":"localeId"
+        },
+        "externalSourceSetting":{
+          "shape":"ExternalSourceSetting",
+          "documentation":"<p>Sets the type of external information used to create the slot type.</p>"
         }
       }
     },
@@ -3024,6 +3027,10 @@
         "creationDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the slot type was created.</p>"
+        },
+        "externalSourceSetting":{
+          "shape":"ExternalSourceSetting",
+          "documentation":"<p>The type of external information used to create the slot type.</p>"
         }
       }
     },
@@ -3687,6 +3694,10 @@
         "botLocaleHistoryEvents":{
           "shape":"BotLocaleHistoryEventsList",
           "documentation":"<p>History of changes, such as when a locale is used in an alias, that have taken place for the locale.</p>"
+        },
+        "recommendedActions":{
+          "shape":"RecommendedActions",
+          "documentation":"<p>Recommended actions to take to resolve an error in the <code>failureReasons</code> field.</p>"
         }
       }
     },
@@ -4316,7 +4327,8 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the slot type was last updated.</p>"
-        }
+        },
+        "externalSourceSetting":{"shape":"ExternalSourceSetting"}
       }
     },
     "Description":{
@@ -4486,6 +4498,16 @@
       "type":"list",
       "member":{"shape":"ExportSummary"}
     },
+    "ExternalSourceSetting":{
+      "type":"structure",
+      "members":{
+        "grammarSlotTypeSetting":{
+          "shape":"GrammarSlotTypeSetting",
+          "documentation":"<p>Settings required for a slot type based on a grammar that you provide.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the external source of the slot type's definition.</p>"
+    },
     "FailureReason":{"type":"string"},
     "FailureReasons":{
       "type":"list",
@@ -4609,6 +4631,38 @@
         }
       },
       "documentation":"<p>Provides information for updating the user on the progress of fulfilling an intent.</p>"
+    },
+    "GrammarSlotTypeSetting":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"GrammarSlotTypeSource",
+          "documentation":"<p>The source of the grammar used to create the slot type.</p>"
+        }
+      },
+      "documentation":"<p>Settings requried for a slot type based on a grammar that you provide.</p>"
+    },
+    "GrammarSlotTypeSource":{
+      "type":"structure",
+      "required":[
+        "s3BucketName",
+        "s3ObjectKey"
+      ],
+      "members":{
+        "s3BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket that contains the grammar source.</p>"
+        },
+        "s3ObjectKey":{
+          "shape":"S3ObjectPath",
+          "documentation":"<p>The path to the grammar in the S3 bucket.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon KMS key required to decrypt the contents of the grammar, if any.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Amazon S3 bucket name and location for the grammar that is the source for the slot type.</p>"
     },
     "HitCount":{"type":"integer"},
     "Id":{
@@ -6120,6 +6174,11 @@
       "max":5000,
       "min":1
     },
+    "RecommendedAction":{"type":"string"},
+    "RecommendedActions":{
+      "type":"list",
+      "member":{"shape":"RecommendedAction"}
+    },
     "RecommendedIntentSummary":{
       "type":"structure",
       "members":{
@@ -6266,6 +6325,12 @@
         }
       },
       "documentation":"<p>The object representing the Amazon S3 bucket containing the transcript, as well as the associated metadata.</p>"
+    },
+    "S3ObjectPath":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$"
     },
     "SSMLMessage":{
       "type":"structure",
@@ -6605,6 +6670,14 @@
       "type":"list",
       "member":{"shape":"SlotSummary"}
     },
+    "SlotTypeCategory":{
+      "type":"string",
+      "enum":[
+        "Custom",
+        "Extended",
+        "ExternalGrammar"
+      ]
+    },
     "SlotTypeFilter":{
       "type":"structure",
       "required":[
@@ -6630,7 +6703,10 @@
     },
     "SlotTypeFilterName":{
       "type":"string",
-      "enum":["SlotTypeName"]
+      "enum":[
+        "SlotTypeName",
+        "ExternalSourceType"
+      ]
     },
     "SlotTypeFilterOperator":{
       "type":"string",
@@ -6703,6 +6779,10 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the slot type was last updated.</p>"
+        },
+        "slotTypeCategory":{
+          "shape":"SlotTypeCategory",
+          "documentation":"<p>Indicates the type of the slot type.</p> <ul> <li> <p> <code>Custom</code> - A slot type that you created using custom values. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/custom-slot-types.html\">Creating custom slot types</a>.</p> </li> <li> <p> <code>Extended</code> - A slot type created by extending the AMAZON.AlphaNumeric built-in slot type. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/built-in-slot-alphanumerice.html\">AMAZON.AlphaNumeric</a>.</p> </li> <li> <p> <code>ExternalGrammar</code> - A slot type using a custom GRXML grammar to define values. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/building-grxml.html\">Using a custom grammar slot type</a>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Provides summary information about a slot type.</p>"
@@ -7302,6 +7382,10 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the locale was last updated.</p>"
+        },
+        "recommendedActions":{
+          "shape":"RecommendedActions",
+          "documentation":"<p>Recommended actions to take to resolve an error in the <code>failureReasons</code> field.</p>"
         }
       }
     },
@@ -7840,7 +7924,6 @@
       "required":[
         "slotTypeId",
         "slotTypeName",
-        "valueSelectionSetting",
         "botId",
         "botVersion",
         "localeId"
@@ -7889,7 +7972,8 @@
           "documentation":"<p>The identifier of the language and locale that contains the slot type. The string must match one of the supported locales. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a>.</p>",
           "location":"uri",
           "locationName":"localeId"
-        }
+        },
+        "externalSourceSetting":{"shape":"ExternalSourceSetting"}
       }
     },
     "UpdateSlotTypeResponse":{
@@ -7938,7 +8022,8 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the slot type was last updated.</p>"
-        }
+        },
+        "externalSourceSetting":{"shape":"ExternalSourceSetting"}
       }
     },
     "Utterance":{"type":"string"},
@@ -7985,7 +8070,7 @@
         },
         "engine":{
           "shape":"VoiceEngine",
-          "documentation":"<p>Indicates the type of Amazon Polly voice that Amazon Lex should use for voice interaction with the user. For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/voicelist.html\">Voices in Amazon Polly</a>.</p>"
+          "documentation":"<p>Indicates the type of Amazon Polly voice that Amazon Lex should use for voice interaction with the user. For more information, see the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html#polly-SynthesizeSpeech-request-Engine\"> <code>engine</code> parameter of the <code>SynthesizeSpeech</code> operation</a> in the <i>Amazon Polly developer guide</i>.</p> <p>If you do not specify a value, the default is <code>standard</code>.</p>"
         }
       },
       "documentation":"<p>Defines settings for using an Amazon Polly voice to communicate with a user.</p>"

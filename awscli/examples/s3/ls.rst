@@ -81,3 +81,22 @@ Output::
 
                                PRE somePrefix/
     2013-07-25 17:06:27         88 test.txt
+
+**Example 7: Recursively listing all prefixes and objects in a bucket without the timestamp and file sizes**
+
+The following ``ls`` command will recursively list objects in a bucket without the timestamp and file sizes.  Rather than showing ``PRE dirname/`` in the output, all the content in a bucket will be listed in order::
+
+    aws s3 ls s3://mybucket --short
+
+Output::
+
+    a.txt
+    foo.zip
+    foo/bar/.baz/a
+    foo/bar/.baz/b
+    foo/bar/.baz/c
+    foo/bar/.baz/d
+    foo/bar/.baz/e
+    foo/bar/.baz/hooks/bar
+    foo/bar/.baz/hooks/foo
+    z.txt

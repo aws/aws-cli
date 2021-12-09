@@ -49,6 +49,8 @@ RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
 HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
                   'help_text': "Displays file sizes in human readable format."}
 
+SHORT_RECURSIVE = {'name': 'short', 'action': 'store_true',
+                  'help_text': "Displays all files or objects in a directory without the timestamp and file sizes"}
 
 SUMMARIZE = {'name': 'summarize', 'action': 'store_true',
              'help_text': (
@@ -461,7 +463,7 @@ class ListCommand(S3Command):
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER,SHORT_RECURSIVE]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -485,6 +487,9 @@ class ListCommand(S3Command):
                 bucket, key, parsed_args.page_size, parsed_args.request_payer)
         if parsed_args.summarize:
             self._print_summary()
+        if parsed_args.short:
+            self._list_all_objects_recursive_short(
+                bucket, key, parsed_args.page_size, parsed_args.request_payer)
         if key:
             # User specified a key to look for. We should return an rc of one
             # if there are no matching keys and/or prefixes or return an rc
@@ -539,6 +544,29 @@ class ListCommand(S3Command):
             uni_print(print_str)
         self._at_first_page = False
 
+    def _display_page_short(self, response_data, use_basename=True):
+        common_prefixes = response_data.get('CommonPrefixes', [])
+        contents = response_data.get('Contents', [])
+        if not contents and not common_prefixes:
+            self._empty_result = True
+            return
+        for common_prefix in common_prefixes:
+            prefix_components = common_prefix['Prefix'].split('/')
+            prefix = prefix_components[-2]
+            pre_string = "PRE".rjust(30, " ")
+            print_str = pre_string + ' ' + prefix + '/\n'
+            uni_print(print_str)
+        for content in contents:
+            self._total_objects += 1
+            if use_basename:
+                filename_components = content['Key'].split('/')
+                filename = filename_components[-1]
+            else:
+                filename = content['Key']
+            print_str = filename + '\n'
+            uni_print(print_str)
+        self._at_first_page = False
+
     def _list_all_buckets(self):
         response_data = self.client.list_buckets()
         buckets = response_data['Buckets']
@@ -559,6 +587,19 @@ class ListCommand(S3Command):
         iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
             self._display_page(response_data, use_basename=False)
+
+    def _list_all_objects_recursive_short(self, bucket, key, page_size=None,
+                                    request_payer=None):
+        paginator = self.client.get_paginator('list_objects_v2')
+        paging_args = {
+            'Bucket': bucket, 'Prefix': key,
+            'PaginationConfig': {'PageSize': page_size}
+        }
+        if request_payer is not None:
+            paging_args['RequestPayer'] = request_payer
+        iterator = paginator.paginate(**paging_args)
+        for response_data in iterator:
+            self._display_page_short(response_data, use_basename=False)
 
     def _check_no_objects(self):
         if self._empty_result and self._at_first_page:

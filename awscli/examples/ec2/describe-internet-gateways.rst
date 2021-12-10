@@ -1,31 +1,31 @@
-**To describe your internet gateways**
+**To describe an internet gateway**
 
-The following ``describe-internet-gateways`` example retrieves details about all of your internet gateways. ::
+The following ``describe-internet-gateways`` example describes the specified internet gateway. ::
 
-    aws ec2 describe-internet-gateways
+    aws ec2 describe-internet-gateways \
+        --internet-gateway-ids igw-0d0fb496b3EXAMPLE
 
 Output::
 
     {
         "InternetGateways": [
             {
-                "Attachments": [],
-                "InternetGatewayId": "igw-036dde5c85EXAMPLE",
-                "OwnerId": "111122223333",
-                "Tags": []
-            },
-            {
                 "Attachments": [
                     {
                         "State": "available",
-                        "VpcId": "vpc-cEXAMPLE"
+                        "VpcId": "vpc-0a60eb65b4EXAMPLE"
                     }
                 ],
-                "InternetGatewayId": "igw-0EXAMPLE",
-                "OwnerId": "111122223333",
-                "Tags": []
+                "InternetGatewayId": "igw-0d0fb496b3EXAMPLE",
+                "OwnerId": "123456789012",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "my-igw"
+                    }
+                ]
             }
         ]
-    }             
+    }
 
-For more information, see `Internet Gateways <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html>`__ in the *AWS VPC User Guide*.
+For more information, see `Internet gateways <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html>`__ in the *Amazon VPC User Guide*.

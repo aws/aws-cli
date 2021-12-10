@@ -5,7 +5,7 @@ The following ``associate-transit-gateway-multicast-domain`` example associates 
     aws ec2 associate-transit-gateway-multicast-domain \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef79d6e597 \
         --transit-gateway-attachment-id tgw-attach-028c1dd0f8f5cbe8e \
-        --subnet-id subnet-000de86e3b49c932a \
+        --subnet-ids subnet-000de86e3b49c932a \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef7EXAMPLE
 
 Output::

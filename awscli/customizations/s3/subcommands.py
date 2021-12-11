@@ -247,14 +247,14 @@ SSE_C_COPY_SOURCE_KEY = {
 
 
 STORAGE_CLASS = {'name': 'storage-class',
-                 'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA',
-                             'ONEZONE_IA', 'INTELLIGENT_TIERING', 'GLACIER',
-                             'DEEP_ARCHIVE', 'GLACIER_IR'],
+                 'choices': ['STANDARD', 'INTELLIGENT_TIERING', 'STANDARD_IA',
+                             'ONEZONE_IA', 'GLACIER_IR', 'GLACIER',
+                             'DEEP_ARCHIVE', 'REDUCED_REDUNDANCY'],
                  'help_text': (
                      "The type of storage to use for the object. "
-                     "Valid choices are: STANDARD | REDUCED_REDUNDANCY "
-                     "| STANDARD_IA | ONEZONE_IA | INTELLIGENT_TIERING "
-                     "| GLACIER | DEEP_ARCHIVE | GLACIER_IR. "
+                     "Valid choices are: STANDARD | INTELLIGENT_TIERING "
+                     "| STANDARD_IA | ONEZONE_IA | GLACIER_IR "
+                     "| GLACIER | DEEP_ARCHIVE | REDUCED_REDUNDANCY. "
                      "Defaults to 'STANDARD'")}
 
 

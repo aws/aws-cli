@@ -108,6 +108,19 @@ Python 3 to start receiving updates again.
 If you install the AWS CLI using pip, as long as you use pip 10.0 and later, you will 
 automatically install the last available version compatible with Python 2.7.
 
+1.
+- To Install the AWS CLI version 1, use the pip3 command (if you use Python version 3 or later) or the pip command.
+
+   For the latest version of the AWS CLI, use the following command block:<br>
+```pip3 install awscli --upgrade --user```
+
+- For a specific version of the AWS CLI, append a less-than symbol < and the version number to the filename. For this example the filename for version 1.16.312 would be <1.16.312 resulting in the following command:<br>
+``` pip3 install awscli<1.16.312 --upgrade --user```
+
+2.
+- Verify that the AWS CLI version 1 is installed correctly. If there is no response, see the Add the AWS CLI version 1 executable to your command line path section.<br>
+```aws --version```
+
 ### Windows MSI Installer
 
 If you installed the AWS CLI v1 using the Windows MSI Installer for Python 3 

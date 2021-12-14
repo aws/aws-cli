@@ -1,45 +1,54 @@
-**To add a staging label attached to a version of a secret**
+**Example 1: To add a staging label attached to a version of a secret**
 
-The following example shows you how to add a staging label to a version of a secret. You can review the results by running the command list-secret-version-ids and viewing the VersionStages response field for the affected version. ::
+The following ``update-secret-version-stage`` example adds a staging label to a version of a secret. You can review the results by running ``list-secret-version-ids`` and viewing the ``VersionStages`` response field for the affected version. ::
 
-	aws secretsmanager update-secret-version-stage --secret-id MyTestDatabaseSecret \
-	  --version-stage STAGINGLABEL1 \
-	  --move-to-version-id EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
+    aws secretsmanager update-secret-version-stage \
+        --secret-id MyTestSecret \
+        --version-stage STAGINGLABEL1 \
+        --move-to-version-id EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
 
-The output shows the following: ::
+Output::
 
-	{
-	  "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret"
-	}
+    {
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret"
+    }
 
-**To delete a staging label attached to a version of a secret**
+For more information, see `Version <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version>`__ in the *Secrets Manager User Guide*.
 
-The following example shows you how to delete a staging label that is attached to a version of a secret. You can review the results by running the command list-secret-version-ids and viewing the VersionStages response field for the affected version. ::
+**Example 2: To delete a staging label attached to a version of a secret**
 
-	aws secretsmanager update-secret-version-stage --secret-id MyTestDatabaseSecret \
-	  --version-stage STAGINGLABEL1 \
-	  --remove-from-version-id EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE
+The following ``update-secret-version-stage`` example deletes a staging label that is attached to a version of a secret. You can review the results by running ``list-secret-version-ids`` and viewing the ``VersionStages`` response field for the affected version. ::
 
-The output shows the following: ::
+    aws secretsmanager update-secret-version-stage \
+        --secret-id MyTestSecret \
+        --version-stage STAGINGLABEL1 \
+        --remove-from-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
-	{
-	  "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret"
-	}
-	
-**To move a staging label from one version of a secret to another**
+Output::
 
-The following example shows you how to move a staging label that is attached to one version of a secret to a different version. You can review the results by running the command list-secret-version-ids and viewing the VersionStages response field for the affected version. ::
+    {
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret"
+    }
 
-	aws secretsmanager update-secret-version-stage --secret-id MyTestDatabaseSecret \
-	  --version-stage AWSCURRENT \
-	  --move-to-version-id EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE \
-	  --remove-from-version-id EXAMPLE2-90ab-cdef-fedc-ba987EXAMPLE
+For more information, see `Version <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version>`__ in the *Secrets Manager User Guide*.
 
-The output shows the following: ::
+**Example 3: To move a staging label from one version of a secret to another**
 
-	{
-	  "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestDatabaseSecret-a1b2c3",
-	  "Name": "MyTestDatabaseSecret"
-	}	
+The following ``update-secret-version-stage`` example moves a staging label from one version of a secret to a different version. You can review the results by running the command ``list-secret-version-ids`` and viewing the ``VersionStages`` response field for the affected versions. ::
+
+    aws secretsmanager update-secret-version-stage \
+        --secret-id MyTestSecret \
+        --version-stage AWSCURRENT \
+        --move-to-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
+        --remove-from-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
+
+Output::
+
+    {
+        "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
+        "Name": "MyTestSecret"
+    }
+
+For more information, see `Version <https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version>`__ in the *Secrets Manager User Guide*.

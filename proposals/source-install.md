@@ -15,7 +15,7 @@ source along with an official source distribution artifact.
 ## Motivation
 
 The AWS CLI v2 is available as pre-built executables for macOS,
-Linux x86_64, Linux aarch64, and Windows (64-bit). The AWS CLI v2 is also
+glibc-based Linux x86_64, glibc-based Linux aarch64, and Windows (64-bit). The AWS CLI v2 is also
 available as a Docker image. Generally, these artifacts provide coverage for
 most platforms and environments, but they do not satisfy all use cases:
 
@@ -42,6 +42,12 @@ most platforms and environments, but they do not satisfy all use cases:
   maintain full control over the code and  packages being imported into their
   distribution. Therefore, importing a pre-built executable is generally a
   [non-starter for distro maintainers](https://github.com/aws/aws-cli/issues/4842).
+
+* Users may want to patch AWS CLI v2 functionality, but in order to use the
+  patched functionality, it requires building and installing the AWS CLI v2 from
+  source. This is especially important for community members that want to test
+  changes they've made to the source prior to proposing/contributing the change in
+  the upstream GitHub repository.
 
 Full support for installing the AWS CLI v2 from source will unblock these use
 cases because users will be able to build and install the AWS CLI v2 for their
@@ -130,7 +136,12 @@ These are the requirements to build the AWS CLI v2 from source:
   to run Autotools generated files. For more information, see the
   [Appendix on Windows usage](#windows).
 
-* Python 3.8+ interpreter
+* Python 3.8+ interpreter. The minimum Python version required will increase
+  over time and follow the same timelines as the [official Python support policy
+  for AWS SDKs and Tools](https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/)
+  where an interpreter will only continue to be supported 6 months after its end-of-support date. For example,
+  Python 3.8 reaches end of support in October 2024, and thus in April 2025, Python 3.8 will no longer be supported
+  for installing the AWS CLI v2 from source and instead require a Python 3.9+ interpreter.
 
 * (Optional) All build and runtime Python library dependencies
   of the AWS CLI v2. This can be opted out of through configuration that
@@ -173,7 +184,7 @@ Optional Packages:
   --with-install-type=[portable-exe|system-sandbox]
                           Specify type of AWS CLI installation. Options are:
                           "portable-exe", "system-sandbox" (default is
-                          "frozen-exe")
+                          "system-sandbox")
   --with-download-deps    Download all dependencies and use those when
                           building the AWS CLI. If not specified, the
                           dependencies (including all python packages) must be
@@ -200,7 +211,7 @@ install the AWS CLI v2:
   (e.g., `aws`, `aws_completer`) will be installed. The default location is
   `/usr/local/bin`.
 
-The following options are offered to control the directories used:
+The following `configure` options are offered to control the directories used:
 
 * `--prefix` - Sets the directory prefix to use for the installation. The
   default value is `/usr/local`.
@@ -228,6 +239,22 @@ install the AWS CLI v2 as an add-on application in the `/opt` directory:
 ```
 This command results in the AWS CLI v2 being installed at `/opt/aws-cli` and
 the executables being installed at their default location of `/usr/local/bin`.
+
+In addition, the `make install` rule supports:
+
+* [`DESTDIR`](https://www.gnu.org/software/make/manual/html_node/DESTDIR.html#DESTDIR) variable - The path
+  to prepend to the configured installation prefix path when installing the AWS CLI. By default, no value is set
+  for this variable.
+
+The `DESTDIR` variable allows users to install the AWS CLI to an alternative location to the finalized installation
+location. For example, users can use the variable to install to a temporary location:
+```
+./configure --prefix=/usr/local
+make
+make DESTDIR=/tmp/stage install
+```
+These commands result in the AWS CLI v2 being installed at `/tmp/stage/usr/local/lib/aws-cli` and its
+executables located in `/tmp/stage/usr/local/bin`.
 
 
 ##### Python interpreter
@@ -405,7 +432,7 @@ These are the aspects that have **no** backwards compatibility guarantees:
   * Pulling in a new Python library dependency
   * Requiring a new system dependency
   
-  Furthermore, the `--with-downloaded-deps` option does not guarantee that all
+  Furthermore, the `--with-download-deps` option does not guarantee that all
   possible new dependencies in the future will be accounted for by the flag. For
   example, a new programming language may  be required in the future
   (e.g., Go, Rust) and the `--with-download-deps` option would likely not account

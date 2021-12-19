@@ -109,7 +109,7 @@ class DuplicateKeyInObjectError(ShorthandParseError):
     def _construct_msg(self):
         msg = (
             "Second instance of key \"%s\" encountered for input:\n%s\n"
-            "This is often because there is a preceeding \",\" instead of a "
+            "This is often because there is a preceding \",\" instead of a "
             "space."
         ) % (self.key, self._error_location())
         return msg
@@ -162,7 +162,7 @@ class ShorthandParser(object):
             parser.parse('a=b')  # {'a': 'b'}
             parser.parse('a=b,c')  # {'a': ['b', 'c']}
 
-        :tpye value: str
+        :type value: str
         :param value: Any value that needs to be parsed.
 
         :return: Parsed value, which will be a dictionary.

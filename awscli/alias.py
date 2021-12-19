@@ -153,7 +153,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         :type parser: awscli.argparser.MainArgParser
         :param parser: The parser to parse commands provided at the top level
             of a CLI command which includes service commands and global
-            parameters. This is used to parse the service commmand and any
+            parameters. This is used to parse the service command and any
             global parameters from the alias's value.
 
         :type shadow_proxy_command: CLICommand
@@ -180,7 +180,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         LOG.debug(
             'Alias %r passing on arguments: %r to %r command',
             self._alias_name, remaining, parsed_alias_args.command)
-        # Pass the update remaing args and global args to the service command
+        # Pass the update remaining args and global args to the service command
         # the alias proxied to.
         command = self._command_table[parsed_alias_args.command]
         if self._shadow_proxy_command:

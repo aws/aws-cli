@@ -494,7 +494,7 @@ class BooleanArgument(CLIArgument):
 
         aws foo bar --enabled
 
-    For cases wher the boolean parameter is required we need to add
+    For cases where the boolean parameter is required we need to add
     two parameters::
 
         aws foo bar --enabled

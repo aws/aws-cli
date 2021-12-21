@@ -1394,6 +1394,14 @@
         "Metadata":{
           "shape":"Metadata",
           "documentation":"<p>The message metadata.</p>"
+        },
+        "PushNotification":{
+          "shape":"PushNotificationConfiguration",
+          "documentation":"<p>The push notification configuration of the message.</p>"
+        },
+        "MessageAttributes":{
+          "shape":"MessageAttributeMap",
+          "documentation":"<p>The attributes for the message, used for message filtering along with a <code>FilterRule</code> defined in the <code>PushNotificationPreferences</code>. </p>"
         }
       },
       "documentation":"<p>Stores information about a callback.</p>"
@@ -2603,7 +2611,7 @@
         },
         "Type":{
           "shape":"ChannelMembershipType",
-          "documentation":"<p>The membership type of a user, <code>DEFAULT</code> or <code>HIDDEN</code>. Default members are always returned as part of <code>ListChannelMemberships</code>. Hidden members are only returned if the type filter in <code>ListChannelMemberships</code> equals <code>HIDDEN</code>. Otherwise hidden members are not returned.</p>",
+          "documentation":"<p>The membership type of a user, <code>DEFAULT</code> or <code>HIDDEN</code>. Default members are returned as part of <code>ListChannelMemberships</code> if no type is specified. Hidden members are only returned if the type filter in <code>ListChannelMemberships</code> equals <code>HIDDEN</code>.</p>",
           "location":"querystring",
           "locationName":"type"
         },
@@ -3071,11 +3079,6 @@
     },
     "PushNotificationConfiguration":{
       "type":"structure",
-      "required":[
-        "Title",
-        "Body",
-        "Type"
-      ],
       "members":{
         "Title":{
           "shape":"PushNotificationTitle",

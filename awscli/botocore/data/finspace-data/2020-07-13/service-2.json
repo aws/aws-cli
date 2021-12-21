@@ -364,6 +364,10 @@
           "documentation":"<p>Time until which the Changeset is active. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
           "box":true
         },
+        "activeFromTimestamp":{
+          "shape":"TimestampEpoch",
+          "box":true
+        },
         "updatesChangesetId":{
           "shape":"ChangesetId",
           "documentation":"<p>The unique identifier of the Changeset that is updated.</p>"
@@ -559,9 +563,7 @@
       "required":[
         "datasetTitle",
         "kind",
-        "datasetDescription",
-        "permissionGroupParams",
-        "alias"
+        "permissionGroupParams"
       ],
       "members":{
         "clientToken":{
@@ -643,7 +645,9 @@
         "destinationType":{
           "shape":"DataViewDestinationType",
           "documentation":"<p>Destination type for a Dataview.</p> <ul> <li> <p> <code>GLUE_TABLE</code> - Glue table destination type.</p> </li> </ul>"
-        }
+        },
+        "s3DestinationExportFileFormat":{"shape":"ExportFileFormat"},
+        "s3DestinationExportFileFormatOptions":{"shape":"S3DestinationFormatOptions"}
       },
       "documentation":"<p>Structure for the Dataview destination type parameters.</p>"
     },
@@ -794,7 +798,7 @@
     "DatasetDescription":{
       "type":"string",
       "documentation":"Description of a dataset",
-      "max":256,
+      "max":1000,
       "min":1,
       "pattern":"[\\s\\S]*\\S[\\s\\S]*"
     },
@@ -908,6 +912,14 @@
       "documentation":"Changeset Error Message",
       "max":1000
     },
+    "ExportFileFormat":{
+      "type":"string",
+      "documentation":"Data View Export File Format",
+      "enum":[
+        "PARQUET",
+        "DELIMITED_TEXT"
+      ]
+    },
     "FormatParams":{
       "type":"map",
       "key":{"shape":"StringMapKey"},
@@ -978,6 +990,10 @@
         "activeUntilTimestamp":{
           "shape":"TimestampEpoch",
           "documentation":"<p>Time until which the Changeset is active. The value is determined as Epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>",
+          "box":true
+        },
+        "activeFromTimestamp":{
+          "shape":"TimestampEpoch",
           "box":true
         },
         "updatesChangesetId":{
@@ -1405,6 +1421,11 @@
       "max":100,
       "min":1
     },
+    "S3DestinationFormatOptions":{
+      "type":"map",
+      "key":{"shape":"StringMapKey"},
+      "value":{"shape":"StringMapValue"}
+    },
     "SchemaDefinition":{
       "type":"structure",
       "members":{
@@ -1537,8 +1558,7 @@
       "required":[
         "datasetId",
         "datasetTitle",
-        "kind",
-        "alias"
+        "kind"
       ],
       "members":{
         "clientToken":{

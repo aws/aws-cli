@@ -293,6 +293,23 @@
       ],
       "documentation":"<p>Lists the detectors in the current AWS Region.</p> <p>Amazon Lookout for Metrics API actions are eventually consistent. If you do a read operation on a resource immediately after creating or modifying it, use retries to allow time for the write operation to complete.</p>"
     },
+    "ListAnomalyGroupRelatedMetrics":{
+      "name":"ListAnomalyGroupRelatedMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListAnomalyGroupRelatedMetrics"
+      },
+      "input":{"shape":"ListAnomalyGroupRelatedMetricsRequest"},
+      "output":{"shape":"ListAnomalyGroupRelatedMetricsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns a list of measures that are potential causes or effects of an anomaly group.</p>"
+    },
     "ListAnomalyGroupSummaries":{
       "name":"ListAnomalyGroupSummaries",
       "http":{
@@ -1550,6 +1567,32 @@
       "min":1
     },
     "Integer":{"type":"integer"},
+    "InterMetricImpactDetails":{
+      "type":"structure",
+      "members":{
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the measure.</p>"
+        },
+        "AnomalyGroupId":{
+          "shape":"UUID",
+          "documentation":"<p>The ID of the anomaly group.</p>"
+        },
+        "RelationshipType":{
+          "shape":"RelationshipType",
+          "documentation":"<p>Whether a measure is a potential cause of the anomaly group (<code>CAUSE_OF_INPUT_ANOMALY_GROUP</code>), or whether the measure is impacted by the anomaly group (<code>EFFECT_OF_INPUT_ANOMALY_GROUP</code>).</p>"
+        },
+        "ContributionPercentage":{
+          "shape":"MetricChangePercentage",
+          "documentation":"<p>For potential causes (<code>CAUSE_OF_INPUT_ANOMALY_GROUP</code>), the percentage contribution the measure has in causing the anomalies.</p>"
+        }
+      },
+      "documentation":"<p>Aggregated details about the measures contributing to the anomaly group, and the measures potentially impacted by the anomaly group.</p> <p/>"
+    },
+    "InterMetricImpactList":{
+      "type":"list",
+      "member":{"shape":"InterMetricImpactDetails"}
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["Message"],
@@ -1679,6 +1722,49 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the response is truncated, the service returns this token. To retrieve the next set of results, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListAnomalyGroupRelatedMetricsRequest":{
+      "type":"structure",
+      "required":[
+        "AnomalyDetectorArn",
+        "AnomalyGroupId"
+      ],
+      "members":{
+        "AnomalyDetectorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the anomaly detector.</p>"
+        },
+        "AnomalyGroupId":{
+          "shape":"UUID",
+          "documentation":"<p>The ID of the anomaly group.</p>"
+        },
+        "RelationshipTypeFilter":{
+          "shape":"RelationshipType",
+          "documentation":"<p>Filter for potential causes (<code>CAUSE_OF_INPUT_ANOMALY_GROUP</code>) or downstream effects (<code>EFFECT_OF_INPUT_ANOMALY_GROUP</code>) of the anomaly group.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token that's returned by a previous request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListAnomalyGroupRelatedMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "InterMetricImpactList":{
+          "shape":"InterMetricImpactList",
+          "documentation":"<p>Aggregated details about the measures contributing to the anomaly group, and the measures potentially impacted by the anomaly group.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
         }
       }
     },
@@ -1861,6 +1947,11 @@
         }
       },
       "documentation":"<p>A calculation made by contrasting a measure and a dimension from your source data.</p>"
+    },
+    "MetricChangePercentage":{
+      "type":"double",
+      "max":100.0,
+      "min":0.0
     },
     "MetricLevelImpact":{
       "type":"structure",
@@ -2143,6 +2234,13 @@
         }
       },
       "documentation":"<p>Provides information about the Amazon Redshift database configuration.</p>"
+    },
+    "RelationshipType":{
+      "type":"string",
+      "enum":[
+        "CAUSE_OF_INPUT_ANOMALY_GROUP",
+        "EFFECT_OF_INPUT_ANOMALY_GROUP"
+      ]
     },
     "ResourceId":{"type":"string"},
     "ResourceNotFoundException":{

@@ -5936,7 +5936,7 @@
       "members":{
         "limit":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of requests that can be made in a given time period.</p>"
+          "documentation":"<p>The target maximum number of requests that can be made in a given time period.</p>"
         },
         "offset":{
           "shape":"Integer",
@@ -6505,11 +6505,11 @@
       "members":{
         "burstLimit":{
           "shape":"Integer",
-          "documentation":"<p>The API request burst limit, the maximum rate limit over a time ranging from one to a few seconds, depending upon whether the underlying token bucket is at its full capacity.</p>"
+          "documentation":"<p>The API target request burst rate limit. This allows more requests through for a period of time than the target rate limit.</p>"
         },
         "rateLimit":{
           "shape":"Double",
-          "documentation":"<p>The API request steady-state rate limit.</p>"
+          "documentation":"<p>The API target request rate limit.</p>"
         }
       },
       "documentation":"<p> The API request rate limits.</p>"
@@ -7166,11 +7166,11 @@
         },
         "throttle":{
           "shape":"ThrottleSettings",
-          "documentation":"<p>The request throttle limits of a usage plan.</p>"
+          "documentation":"<p>Map containing method level throttling information for API stage in a usage plan.</p>"
         },
         "quota":{
           "shape":"QuotaSettings",
-          "documentation":"<p>The maximum number of permitted requests per a given unit time interval.</p>"
+          "documentation":"<p>The target maximum number of permitted requests per a given unit time interval.</p>"
         },
         "productCode":{
           "shape":"String",
@@ -7181,7 +7181,7 @@
           "documentation":"<p>The collection of tags. Each tag element is associated with a given resource.</p>"
         }
       },
-      "documentation":"<p>Represents a usage plan than can specify who can assess associated API stages with specified request limits and quotas.</p> <div class=\"remarks\"> <p>In a usage plan, you associate an API by specifying the API's Id and a stage name of the specified API. You add plan customers by adding API keys to the plan. </p> </div> <div class=\"seeAlso\"> <a href=\"https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html\">Create and Use Usage Plans</a> </div>"
+      "documentation":"<p>Represents a usage plan used to specify who can assess associated API stages. Optionally, target request rate and quota limits can be set. In some cases clients can exceed the targets that you set. Don’t rely on usage plans to control costs. Consider using <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html\">AWS Budgets</a> to monitor costs and <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">AWS WAF</a> to manage API requests.</p> <div class=\"remarks\"> <p>In a usage plan, you associate an API by specifying the API's Id and a stage name of the specified API. You add plan customers by adding API keys to the plan. </p> </div> <div class=\"seeAlso\"> <a href=\"https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html\">Create and Use Usage Plans</a> </div>"
     },
     "UsagePlanKey":{
       "type":"structure",

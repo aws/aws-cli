@@ -56,6 +56,20 @@
       ],
       "documentation":"<p>Creates an endpoint for an Amazon EFS file system.</p>"
     },
+    "CreateLocationFsxLustre":{
+      "name":"CreateLocationFsxLustre",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocationFsxLustreRequest"},
+      "output":{"shape":"CreateLocationFsxLustreResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates an endpoint for an Amazon FSx for Lustre file system.</p>"
+    },
     "CreateLocationFsxWindows":{
       "name":"CreateLocationFsxWindows",
       "http":{
@@ -223,6 +237,20 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns metadata, such as the path information about an Amazon EFS location.</p>"
+    },
+    "DescribeLocationFsxLustre":{
+      "name":"DescribeLocationFsxLustre",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLocationFsxLustreRequest"},
+      "output":{"shape":"DescribeLocationFsxLustreResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns metadata, such as the path information about an Amazon FSx for Lustre location.</p>"
     },
     "DescribeLocationFsxWindows":{
       "name":"DescribeLocationFsxWindows",
@@ -697,6 +725,40 @@
       },
       "documentation":"<p>CreateLocationEfs</p>"
     },
+    "CreateLocationFsxLustreRequest":{
+      "type":"structure",
+      "required":[
+        "FsxFilesystemArn",
+        "SecurityGroupArns"
+      ],
+      "members":{
+        "FsxFilesystemArn":{
+          "shape":"FsxFilesystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the FSx for Lustre file system.</p>"
+        },
+        "SecurityGroupArns":{
+          "shape":"Ec2SecurityGroupArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are used to configure the FSx for Lustre file system.</p>"
+        },
+        "Subdirectory":{
+          "shape":"FsxLustreSubdirectory",
+          "documentation":"<p>A subdirectory in the location's path. This subdirectory in the FSx for Lustre file system is used to read data from the FSx for Lustre source location or write data to the FSx for Lustre destination.</p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>The key-value pair that represents a tag that you want to add to the resource. The value can be an empty string. This value helps you manage, filter, and search for your resources. We recommend that you create a name tag for your location.</p>"
+        }
+      }
+    },
+    "CreateLocationFsxLustreResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the FSx for Lustre file system location that's created. </p>"
+        }
+      }
+    },
     "CreateLocationFsxWindowsRequest":{
       "type":"structure",
       "required":[
@@ -708,7 +770,7 @@
       "members":{
         "Subdirectory":{
           "shape":"FsxWindowsSubdirectory",
-          "documentation":"<p>A subdirectory in the location’s path. This subdirectory in the Amazon FSx for Windows File Server file system is used to read data from the Amazon FSx for Windows File Server source location or write data to the FSx for Windows File Server destination.</p>"
+          "documentation":"<p>A subdirectory in the location's path. This subdirectory in the Amazon FSx for Windows File Server file system is used to read data from the Amazon FSx for Windows File Server source location or write data to the FSx for Windows File Server destination.</p>"
         },
         "FsxFilesystemArn":{
           "shape":"FsxFilesystemArn",
@@ -716,7 +778,7 @@
         },
         "SecurityGroupArns":{
           "shape":"Ec2SecurityGroupArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are to use to configure the FSx for Windows File Server file system.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are used to configure the FSx for Windows File Server file system.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
@@ -1188,6 +1250,37 @@
         }
       },
       "documentation":"<p>DescribeLocationEfsResponse</p>"
+    },
+    "DescribeLocationFsxLustreRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the FSx for Lustre location to describe. </p>"
+        }
+      }
+    },
+    "DescribeLocationFsxLustreResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the FSx for Lustre location that was described.</p>"
+        },
+        "LocationUri":{
+          "shape":"LocationUri",
+          "documentation":"<p>The URI of the FSx for Lustre location that was described.</p>"
+        },
+        "SecurityGroupArns":{
+          "shape":"Ec2SecurityGroupArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are configured for the FSx for Lustre file system.</p>"
+        },
+        "CreationTime":{
+          "shape":"Time",
+          "documentation":"<p>The time that the FSx for Lustre location was created.</p>"
+        }
+      }
     },
     "DescribeLocationFsxWindowsRequest":{
       "type":"structure",
@@ -1708,6 +1801,11 @@
       "max":128,
       "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):fsx:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$"
     },
+    "FsxLustreSubdirectory":{
+      "type":"string",
+      "max":4096,
+      "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+    },
     "FsxWindowsSubdirectory":{
       "type":"string",
       "max":4096,
@@ -2065,7 +2163,7 @@
         },
         "LocationUri":{
           "shape":"LocationUri",
-          "documentation":"<p>Represents a list of URLs of a location. <code>LocationUri</code> returns an array that contains a list of locations when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListLocations.html\">ListLocations</a> operation is called.</p> <p>Format: <code>TYPE://GLOBAL_ID/SUBDIR</code>.</p> <p>TYPE designates the type of location. Valid values: NFS | EFS | S3.</p> <p>GLOBAL_ID is the globally unique identifier of the resource that backs the location. An example for EFS is <code>us-east-2.fs-abcd1234</code>. An example for Amazon S3 is the bucket name, such as <code>myBucket</code>. An example for NFS is a valid IPv4 address or a host name compliant with Domain Name Service (DNS).</p> <p>SUBDIR is a valid file system path, delimited by forward slashes as is the *nix convention. For NFS and Amazon EFS, it's the export path to mount the location. For Amazon S3, it's the prefix path that you mount to and treat as the root of the location.</p> <p/>"
+          "documentation":"<p>Represents a list of URIs of a location. <code>LocationUri</code> returns an array that contains a list of locations when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListLocations.html\">ListLocations</a> operation is called.</p> <p>Format: <code>TYPE://GLOBAL_ID/SUBDIR</code>.</p> <p>TYPE designates the type of location. Valid values: NFS | EFS | S3.</p> <p>GLOBAL_ID is the globally unique identifier of the resource that backs the location. An example for EFS is <code>us-east-2.fs-abcd1234</code>. An example for Amazon S3 is the bucket name, such as <code>myBucket</code>. An example for NFS is a valid IPv4 address or a host name compliant with Domain Name Service (DNS).</p> <p>SUBDIR is a valid file system path, delimited by forward slashes as is the *nix convention. For NFS and Amazon EFS, it's the export path to mount the location. For Amazon S3, it's the prefix path that you mount to and treat as the root of the location.</p> <p/>"
         }
       },
       "documentation":"<p>Represents a single entry in a list of locations. <code>LocationListEntry</code> returns an array that contains a list of locations when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListLocations.html\">ListLocations</a> operation is called.</p>"
@@ -2073,7 +2171,7 @@
     "LocationUri":{
       "type":"string",
       "max":4356,
-      "pattern":"^(efs|nfs|s3|smb|fsxw)://[a-zA-Z0-9.\\-]+$"
+      "pattern":"^(efs|nfs|s3|smb|fsxw|fsxl)://[a-zA-Z0-9.\\-]+$"
     },
     "LogGroupArn":{
       "type":"string",

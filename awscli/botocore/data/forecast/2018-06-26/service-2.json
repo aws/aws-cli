@@ -28,7 +28,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an Amazon Forecast predictor.</p> <p>Amazon Forecast creates predictors with AutoPredictor, which involves applying the optimal combination of algorithms to each time series in your datasets. You can use CreateAutoPredictor to create new predictors or upgrade/retrain existing predictors.</p> <p> <b>Creating new predictors</b> </p> <p>The following parameters are required when creating a new predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>DatasetGroupArn</code> - The ARN of the dataset group used to train the predictor.</p> </li> <li> <p> <code>ForecastFrequency</code> - The granularity of your forecasts (hourly, daily, weekly, etc).</p> </li> <li> <p> <code>ForecastHorizon</code> - The number of time steps being forecasted.</p> </li> </ul> <p>When creating a new predictor, do not specify a value for <code>ReferencePredictorArn</code>.</p> <p> <b>Upgrading and retraining predictors</b> </p> <p>The following parameters are required when retraining or upgrading a predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>ReferencePredictorArn</code> - The ARN of the predictor to retrain or upgrade.</p> </li> </ul> <p>When upgrading or retraining a predictor, only specify values for the <code>ReferencePredictorArn</code> and <code>PredictorName</code>. </p>"
+      "documentation":"<p>Creates an Amazon Forecast predictor.</p> <p>Amazon Forecast creates predictors with AutoPredictor, which involves applying the optimal combination of algorithms to each time series in your datasets. You can use <a>CreateAutoPredictor</a> to create new predictors or upgrade/retrain existing predictors.</p> <p> <b>Creating new predictors</b> </p> <p>The following parameters are required when creating a new predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>DatasetGroupArn</code> - The ARN of the dataset group used to train the predictor.</p> </li> <li> <p> <code>ForecastFrequency</code> - The granularity of your forecasts (hourly, daily, weekly, etc).</p> </li> <li> <p> <code>ForecastHorizon</code> - The number of time steps being forecasted.</p> </li> </ul> <p>When creating a new predictor, do not specify a value for <code>ReferencePredictorArn</code>.</p> <p> <b>Upgrading and retraining predictors</b> </p> <p>The following parameters are required when retraining or upgrading a predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>ReferencePredictorArn</code> - The ARN of the predictor to retrain or upgrade.</p> </li> </ul> <p>When upgrading or retraining a predictor, only specify values for the <code>ReferencePredictorArn</code> and <code>PredictorName</code>. </p>"
     },
     "CreateDataset":{
       "name":"CreateDataset",
@@ -94,7 +94,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<note> <p>Explainability is only available for Forecasts and Predictors generated from an AutoPredictor (<a>CreateAutoPredictor</a>)</p> </note> <p>Creates an Amazon Forecast Explainability.</p> <p>Explainability helps you better understand how the attributes in your datasets impact forecast. Amazon Forecast uses a metric called Impact scores to quantify the relative impact of each attribute and determine whether they increase or decrease forecast values.</p> <p>To enable Forecast Explainability, your predictor must include at least one of the following: related time series, item metadata, or additional datasets like Holidays and the Weather Index.</p> <p>CreateExplainability accepts either a Predictor ARN or Forecast ARN. To receive aggregated Impact scores for all time series and time points in your datasets, provide a Predictor ARN. To receive Impact scores for specific time series and time points, provide a Forecast ARN.</p> <p> <b>CreateExplainability with a Predictor ARN</b> </p> <note> <p>You can only have one Explainability resource per predictor. If you already enabled <code>ExplainPredictor</code> in <a>CreateAutoPredictor</a>, that predictor already has an Explainability resource.</p> </note> <p>The following parameters are required when providing a Predictor ARN:</p> <ul> <li> <p> <code>ExplainabilityName</code> - A unique name for the Explainability.</p> </li> <li> <p> <code>ResourceArn</code> - The Arn of the predictor.</p> </li> <li> <p> <code>TimePointGranularity</code> - Must be set to “ALL”.</p> </li> <li> <p> <code>TimeSeriesGranularity</code> - Must be set to “ALL”.</p> </li> </ul> <p>Do not specify a value for the following parameters:</p> <ul> <li> <p> <code>DataSource</code> - Only valid when TimeSeriesGranularity is “SPECIFIC”.</p> </li> <li> <p> <code>Schema</code> - Only valid when TimeSeriesGranularity is “SPECIFIC”.</p> </li> <li> <p> <code>StartDateTime</code> - Only valid when TimePointGranularity is “SPECIFIC”.</p> </li> <li> <p> <code>EndDateTime</code> - Only valid when TimePointGranularity is “SPECIFIC”.</p> </li> </ul> <p> <b>CreateExplainability with a Forecast ARN</b> </p> <note> <p>You can specify a maximum of 50 time series and 1500 time points.</p> </note> <p>The following parameters are required when providing a Predictor ARN:</p> <ul> <li> <p> <code>ExplainabilityName</code> - A unique name for the Explainability.</p> </li> <li> <p> <code>ResourceArn</code> - The Arn of the forecast.</p> </li> <li> <p> <code>TimePointGranularity</code> - Either “ALL” or “SPECIFIC”.</p> </li> <li> <p> <code>TimeSeriesGranularity</code> - Either “ALL” or “SPECIFIC”.</p> </li> </ul> <p>If you set TimeSeriesGranularity to “SPECIFIC”, you must also provide the following:</p> <ul> <li> <p> <code>DataSource</code> - The S3 location of the CSV file specifying your time series.</p> </li> <li> <p> <code>Schema</code> - The Schema defines the attributes and attribute types listed in the Data Source.</p> </li> </ul> <p>If you set TimePointGranularity to “SPECIFIC”, you must also provide the following:</p> <ul> <li> <p> <code>StartDateTime</code> - The first timestamp in the range of time points.</p> </li> <li> <p> <code>EndDateTime</code> - The last timestamp in the range of time points.</p> </li> </ul>"
+      "documentation":"<note> <p>Explainability is only available for Forecasts and Predictors generated from an AutoPredictor (<a>CreateAutoPredictor</a>)</p> </note> <p>Creates an Amazon Forecast Explainability.</p> <p>Explainability helps you better understand how the attributes in your datasets impact forecast. Amazon Forecast uses a metric called Impact scores to quantify the relative impact of each attribute and determine whether they increase or decrease forecast values.</p> <p>To enable Forecast Explainability, your predictor must include at least one of the following: related time series, item metadata, or additional datasets like Holidays and the Weather Index.</p> <p>CreateExplainability accepts either a Predictor ARN or Forecast ARN. To receive aggregated Impact scores for all time series and time points in your datasets, provide a Predictor ARN. To receive Impact scores for specific time series and time points, provide a Forecast ARN.</p> <p> <b>CreateExplainability with a Predictor ARN</b> </p> <note> <p>You can only have one Explainability resource per predictor. If you already enabled <code>ExplainPredictor</code> in <a>CreateAutoPredictor</a>, that predictor already has an Explainability resource.</p> </note> <p>The following parameters are required when providing a Predictor ARN:</p> <ul> <li> <p> <code>ExplainabilityName</code> - A unique name for the Explainability.</p> </li> <li> <p> <code>ResourceArn</code> - The Arn of the predictor.</p> </li> <li> <p> <code>TimePointGranularity</code> - Must be set to “ALL”.</p> </li> <li> <p> <code>TimeSeriesGranularity</code> - Must be set to “ALL”.</p> </li> </ul> <p>Do not specify a value for the following parameters:</p> <ul> <li> <p> <code>DataSource</code> - Only valid when TimeSeriesGranularity is “SPECIFIC”.</p> </li> <li> <p> <code>Schema</code> - Only valid when TimeSeriesGranularity is “SPECIFIC”.</p> </li> <li> <p> <code>StartDateTime</code> - Only valid when TimePointGranularity is “SPECIFIC”.</p> </li> <li> <p> <code>EndDateTime</code> - Only valid when TimePointGranularity is “SPECIFIC”.</p> </li> </ul> <p> <b>CreateExplainability with a Forecast ARN</b> </p> <note> <p>You can specify a maximum of 50 time series and 500 time points.</p> </note> <p>The following parameters are required when providing a Predictor ARN:</p> <ul> <li> <p> <code>ExplainabilityName</code> - A unique name for the Explainability.</p> </li> <li> <p> <code>ResourceArn</code> - The Arn of the forecast.</p> </li> <li> <p> <code>TimePointGranularity</code> - Either “ALL” or “SPECIFIC”.</p> </li> <li> <p> <code>TimeSeriesGranularity</code> - Either “ALL” or “SPECIFIC”.</p> </li> </ul> <p>If you set TimeSeriesGranularity to “SPECIFIC”, you must also provide the following:</p> <ul> <li> <p> <code>DataSource</code> - The S3 location of the CSV file specifying your time series.</p> </li> <li> <p> <code>Schema</code> - The Schema defines the attributes and attribute types listed in the Data Source.</p> </li> </ul> <p>If you set TimePointGranularity to “SPECIFIC”, you must also provide the following:</p> <ul> <li> <p> <code>StartDateTime</code> - The first timestamp in the range of time points.</p> </li> <li> <p> <code>EndDateTime</code> - The last timestamp in the range of time points.</p> </li> </ul>"
     },
     "CreateExplainabilityExport":{
       "name":"CreateExplainabilityExport",
@@ -162,7 +162,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<note> <p> This operation creates a legacy predictor that does not include all the predictor functionalities provided by Amazon Forecast. To create a predictor that is compatible with all aspects of Forecast, use CreateAutoPredictor.</p> </note> <p>Creates an Amazon Forecast predictor.</p> <p>In the request, provide a dataset group and either specify an algorithm or let Amazon Forecast choose an algorithm for you using AutoML. If you specify an algorithm, you also can override algorithm-specific hyperparameters.</p> <p>Amazon Forecast uses the algorithm to train a predictor using the latest version of the datasets in the specified dataset group. You can then generate a forecast using the <a>CreateForecast</a> operation.</p> <p> To see the evaluation metrics, use the <a>GetAccuracyMetrics</a> operation. </p> <p>You can specify a featurization configuration to fill and aggregate the data fields in the <code>TARGET_TIME_SERIES</code> dataset to improve model training. For more information, see <a>FeaturizationConfig</a>.</p> <p>For RELATED_TIME_SERIES datasets, <code>CreatePredictor</code> verifies that the <code>DataFrequency</code> specified when the dataset was created matches the <code>ForecastFrequency</code>. TARGET_TIME_SERIES datasets don't have this restriction. Amazon Forecast also verifies the delimiter and timestamp format. For more information, see <a>howitworks-datasets-groups</a>.</p> <p>By default, predictors are trained and evaluated at the 0.1 (P10), 0.5 (P50), and 0.9 (P90) quantiles. You can choose custom forecast types to train and evaluate your predictor by setting the <code>ForecastTypes</code>. </p> <p> <b>AutoML</b> </p> <p>If you want Amazon Forecast to evaluate each algorithm and choose the one that minimizes the <code>objective function</code>, set <code>PerformAutoML</code> to <code>true</code>. The <code>objective function</code> is defined as the mean of the weighted losses over the forecast types. By default, these are the p10, p50, and p90 quantile losses. For more information, see <a>EvaluationResult</a>.</p> <p>When AutoML is enabled, the following properties are disallowed:</p> <ul> <li> <p> <code>AlgorithmArn</code> </p> </li> <li> <p> <code>HPOConfig</code> </p> </li> <li> <p> <code>PerformHPO</code> </p> </li> <li> <p> <code>TrainingParameters</code> </p> </li> </ul> <p>To get a list of all of your predictors, use the <a>ListPredictors</a> operation.</p> <note> <p>Before you can use the predictor to create a forecast, the <code>Status</code> of the predictor must be <code>ACTIVE</code>, signifying that training has completed. To get the status, use the <a>DescribePredictor</a> operation.</p> </note>"
+      "documentation":"<note> <p> This operation creates a legacy predictor that does not include all the predictor functionalities provided by Amazon Forecast. To create a predictor that is compatible with all aspects of Forecast, use <a>CreateAutoPredictor</a>.</p> </note> <p>Creates an Amazon Forecast predictor.</p> <p>In the request, provide a dataset group and either specify an algorithm or let Amazon Forecast choose an algorithm for you using AutoML. If you specify an algorithm, you also can override algorithm-specific hyperparameters.</p> <p>Amazon Forecast uses the algorithm to train a predictor using the latest version of the datasets in the specified dataset group. You can then generate a forecast using the <a>CreateForecast</a> operation.</p> <p> To see the evaluation metrics, use the <a>GetAccuracyMetrics</a> operation. </p> <p>You can specify a featurization configuration to fill and aggregate the data fields in the <code>TARGET_TIME_SERIES</code> dataset to improve model training. For more information, see <a>FeaturizationConfig</a>.</p> <p>For RELATED_TIME_SERIES datasets, <code>CreatePredictor</code> verifies that the <code>DataFrequency</code> specified when the dataset was created matches the <code>ForecastFrequency</code>. TARGET_TIME_SERIES datasets don't have this restriction. Amazon Forecast also verifies the delimiter and timestamp format. For more information, see <a>howitworks-datasets-groups</a>.</p> <p>By default, predictors are trained and evaluated at the 0.1 (P10), 0.5 (P50), and 0.9 (P90) quantiles. You can choose custom forecast types to train and evaluate your predictor by setting the <code>ForecastTypes</code>. </p> <p> <b>AutoML</b> </p> <p>If you want Amazon Forecast to evaluate each algorithm and choose the one that minimizes the <code>objective function</code>, set <code>PerformAutoML</code> to <code>true</code>. The <code>objective function</code> is defined as the mean of the weighted losses over the forecast types. By default, these are the p10, p50, and p90 quantile losses. For more information, see <a>EvaluationResult</a>.</p> <p>When AutoML is enabled, the following properties are disallowed:</p> <ul> <li> <p> <code>AlgorithmArn</code> </p> </li> <li> <p> <code>HPOConfig</code> </p> </li> <li> <p> <code>PerformHPO</code> </p> </li> <li> <p> <code>TrainingParameters</code> </p> </li> </ul> <p>To get a list of all of your predictors, use the <a>ListPredictors</a> operation.</p> <note> <p>Before you can use the predictor to create a forecast, the <code>Status</code> of the predictor must be <code>ACTIVE</code>, signifying that training has completed. To get the status, use the <a>DescribePredictor</a> operation.</p> </note>"
     },
     "CreatePredictorBacktestExportJob":{
       "name":"CreatePredictorBacktestExportJob",
@@ -179,7 +179,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Exports backtest forecasts and accuracy metrics generated by the <a>CreatePredictor</a> operation. Two folders containing CSV files are exported to your specified S3 bucket.</p> <p> The export file names will match the following conventions:</p> <p> <code>&lt;ExportJobName&gt;_&lt;ExportTimestamp&gt;_&lt;PartNumber&gt;.csv</code> </p> <p>The &lt;ExportTimestamp&gt; component is in Java SimpleDate format (yyyy-MM-ddTHH-mm-ssZ).</p> <p>You must specify a <a>DataDestination</a> object that includes an Amazon S3 bucket and an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the Amazon S3 bucket. For more information, see <a>aws-forecast-iam-roles</a>.</p> <note> <p>The <code>Status</code> of the export job must be <code>ACTIVE</code> before you can access the export in your Amazon S3 bucket. To get the status, use the <a>DescribePredictorBacktestExportJob</a> operation.</p> </note>"
+      "documentation":"<p>Exports backtest forecasts and accuracy metrics generated by the <a>CreateAutoPredictor</a> or <a>CreatePredictor</a> operations. Two folders containing CSV files are exported to your specified S3 bucket.</p> <p> The export file names will match the following conventions:</p> <p> <code>&lt;ExportJobName&gt;_&lt;ExportTimestamp&gt;_&lt;PartNumber&gt;.csv</code> </p> <p>The &lt;ExportTimestamp&gt; component is in Java SimpleDate format (yyyy-MM-ddTHH-mm-ssZ).</p> <p>You must specify a <a>DataDestination</a> object that includes an Amazon S3 bucket and an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the Amazon S3 bucket. For more information, see <a>aws-forecast-iam-roles</a>.</p> <note> <p>The <code>Status</code> of the export job must be <code>ACTIVE</code> before you can access the export in your Amazon S3 bucket. To get the status, use the <a>DescribePredictorBacktestExportJob</a> operation.</p> </note>"
     },
     "DeleteDataset":{
       "name":"DeleteDataset",
@@ -253,7 +253,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes an Explainability export job.</p>",
+      "documentation":"<p>Deletes an Explainability export.</p>",
       "idempotent":true
     },
     "DeleteForecast":{
@@ -298,7 +298,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes a predictor created using the <a>CreatePredictor</a> operation. You can delete only predictor that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status, use the <a>DescribePredictor</a> operation.</p>",
+      "documentation":"<p>Deletes a predictor created using the <a>DescribePredictor</a> or <a>CreatePredictor</a> operations. You can delete only predictor that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status, use the <a>DescribePredictor</a> operation.</p>",
       "idempotent":true
     },
     "DeletePredictorBacktestExportJob":{
@@ -463,7 +463,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<note> <p> This operation is only valid for legacy predictors created with CreatePredictor. If you are not using a legacy predictor, use DescribeAutoPredictor.</p> <p>To upgrade a legacy predictor to AutoPredictor, see Upgrading to AutoPredictor.</p> </note> <p>Describes a predictor created using the <a>CreatePredictor</a> operation.</p> <p>In addition to listing the properties provided in the <code>CreatePredictor</code> request, this operation lists the following properties:</p> <ul> <li> <p> <code>DatasetImportJobArns</code> - The dataset import jobs used to import training data.</p> </li> <li> <p> <code>AutoMLAlgorithmArns</code> - If AutoML is performed, the algorithms that were evaluated.</p> </li> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Message</code> - If an error occurred, information about the error.</p> </li> </ul>",
+      "documentation":"<note> <p> This operation is only valid for legacy predictors created with CreatePredictor. If you are not using a legacy predictor, use <a>DescribeAutoPredictor</a>.</p> </note> <p>Describes a predictor created using the <a>CreatePredictor</a> operation.</p> <p>In addition to listing the properties provided in the <code>CreatePredictor</code> request, this operation lists the following properties:</p> <ul> <li> <p> <code>DatasetImportJobArns</code> - The dataset import jobs used to import training data.</p> </li> <li> <p> <code>AutoMLAlgorithmArns</code> - If AutoML is performed, the algorithms that were evaluated.</p> </li> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Message</code> - If an error occurred, information about the error.</p> </li> </ul>",
       "idempotent":true
     },
     "DescribePredictorBacktestExportJob":{
@@ -627,7 +627,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Returns a list of predictors created using the <a>CreatePredictor</a> operation. For each predictor, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). You can retrieve the complete set of properties by using the ARN with the <a>DescribePredictor</a> operation. You can filter the list using an array of <a>Filter</a> objects.</p>",
+      "documentation":"<p>Returns a list of predictors created using the <a>CreateAutoPredictor</a> or <a>CreatePredictor</a> operations. For each predictor, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). </p> <p>You can retrieve the complete set of properties by using the ARN with the <a>DescribeAutoPredictor</a> and <a>DescribePredictor</a> operations. You can filter the list using an array of <a>Filter</a> objects.</p>",
       "idempotent":true
     },
     "ListTagsForResource":{
@@ -656,7 +656,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Stops a resource.</p> <p>The resource undergoes the following states: <code>CREATE_STOPPING</code> and <code>CREATE_STOPPED</code>. You cannot resume a resource once it has been stopped.</p> <p>This operation can be applied to the following resources (and their corresponding child resources):</p> <ul> <li> <p>Dataset Import Job</p> </li> <li> <p>Predictor Job</p> </li> <li> <p>Forecast Job</p> </li> <li> <p>Forecast Export Job</p> </li> <li> <p>Predictor Backtest Export Job</p> </li> </ul>",
+      "documentation":"<p>Stops a resource.</p> <p>The resource undergoes the following states: <code>CREATE_STOPPING</code> and <code>CREATE_STOPPED</code>. You cannot resume a resource once it has been stopped.</p> <p>This operation can be applied to the following resources (and their corresponding child resources):</p> <ul> <li> <p>Dataset Import Job</p> </li> <li> <p>Predictor Job</p> </li> <li> <p>Forecast Job</p> </li> <li> <p>Forecast Export Job</p> </li> <li> <p>Predictor Backtest Export Job</p> </li> <li> <p>Explainability Job</p> </li> <li> <p>Explainability Export Job</p> </li> </ul>",
       "idempotent":true
     },
     "TagResource":{
@@ -716,7 +716,7 @@
         },
         "Configuration":{
           "shape":"Configuration",
-          "documentation":"<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, do not specify a value for <code>Configuration</code>.</p> <p> <b>Holidays</b> </p> <p>To enable Holidays, specify a country with one of the following two-letter country codes:</p> <ul> <li> <p>\"AL\" - ALBANIA</p> </li> <li> <p>\"AR\" - ARGENTINA</p> </li> <li> <p>\"AT\" - AUSTRIA</p> </li> <li> <p>\"AU\" - AUSTRALIA</p> </li> <li> <p>\"BA\" - BOSNIA HERZEGOVINA</p> </li> <li> <p>\"BE\" - BELGIUM</p> </li> <li> <p>\"BG\" - BULGARIA</p> </li> <li> <p>\"BO\" - BOLIVIA</p> </li> <li> <p>\"BR\" - BRAZIL</p> </li> <li> <p>\"BY\" - BELARUS</p> </li> <li> <p>\"CA\" - CANADA</p> </li> <li> <p>\"CL\" - CHILE</p> </li> <li> <p>\"CO\" - COLOMBIA</p> </li> <li> <p>\"CR\" - COSTA RICA</p> </li> <li> <p>\"HR\" - CROATIA</p> </li> <li> <p>\"CZ\" - CZECH REPUBLIC</p> </li> <li> <p>\"DK\" - DENMARK</p> </li> <li> <p>\"EC\" - ECUADOR</p> </li> <li> <p>\"EE\" - ESTONIA</p> </li> <li> <p>\"ET\" - ETHIOPIA</p> </li> <li> <p>\"FI\" - FINLAND</p> </li> <li> <p>\"FR\" - FRANCE</p> </li> <li> <p>\"DE\" - GERMANY</p> </li> <li> <p>\"GR\" - GREECE</p> </li> <li> <p>\"HU\" - HUNGARY</p> </li> <li> <p>\"IS\" - ICELAND</p> </li> <li> <p>\"IN\" - INDIA</p> </li> <li> <p>\"IE\" - IRELAND</p> </li> <li> <p>\"IT\" - ITALY</p> </li> <li> <p>\"JP\" - JAPAN</p> </li> <li> <p>\"KZ\" - KAZAKHSTAN</p> </li> <li> <p>\"KR\" - KOREA</p> </li> <li> <p>\"LV\" - LATVIA</p> </li> <li> <p>\"LI\" - LIECHTENSTEIN</p> </li> <li> <p>\"LT\" - LITHUANIA</p> </li> <li> <p>\"LU\" - LUXEMBOURG</p> </li> <li> <p>\"MK\" - MACEDONIA</p> </li> <li> <p>\"MT\" - MALTA</p> </li> <li> <p>\"MX\" - MEXICO</p> </li> <li> <p>\"MD\" - MOLDOVA</p> </li> <li> <p>\"ME\" - MONTENEGRO</p> </li> <li> <p>\"NL\" - NETHERLANDS</p> </li> <li> <p>\"NZ\" - NEW ZEALAND</p> </li> <li> <p>\"NI\" - NICARAGUA</p> </li> <li> <p>\"NG\" - NIGERIA</p> </li> <li> <p>\"NO\" - NORWAY</p> </li> <li> <p>\"PA\" - PANAMA</p> </li> <li> <p>\"PY\" - PARAGUAY</p> </li> <li> <p>\"PE\" - PERU</p> </li> <li> <p>\"PL\" - POLAND</p> </li> <li> <p>\"PT\" - PORTUGAL</p> </li> <li> <p>\"RO\" - ROMANIA</p> </li> <li> <p>\"RU\" - RUSSIA</p> </li> <li> <p>\"RS\" - SERBIA</p> </li> <li> <p>\"SK\" - SLOVAKIA</p> </li> <li> <p>\"SI\" - SLOVENIA</p> </li> <li> <p>\"ZA\" - SOUTH AFRICA</p> </li> <li> <p>\"ES\" - SPAIN</p> </li> <li> <p>\"SE\" - SWEDEN</p> </li> <li> <p>\"CH\" - SWITZERLAND</p> </li> <li> <p>\"UA\" - UKRAINE</p> </li> <li> <p>\"AE\" - UNITED ARAB EMIRATES</p> </li> <li> <p>\"US\" - UNITED STATES</p> </li> <li> <p>\"UK\" - UNITED KINGDOM</p> </li> <li> <p>\"UY\" - URUGUAY</p> </li> <li> <p>\"VE\" - VENEZUELA</p> </li> </ul>"
+          "documentation":"<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, do not specify a value for <code>Configuration</code>.</p> <p> <b>Holidays</b> </p> <p>To enable Holidays, set <code>CountryCode</code> to one of the following two-letter country codes:</p> <ul> <li> <p>\"AL\" - ALBANIA</p> </li> <li> <p>\"AR\" - ARGENTINA</p> </li> <li> <p>\"AT\" - AUSTRIA</p> </li> <li> <p>\"AU\" - AUSTRALIA</p> </li> <li> <p>\"BA\" - BOSNIA HERZEGOVINA</p> </li> <li> <p>\"BE\" - BELGIUM</p> </li> <li> <p>\"BG\" - BULGARIA</p> </li> <li> <p>\"BO\" - BOLIVIA</p> </li> <li> <p>\"BR\" - BRAZIL</p> </li> <li> <p>\"BY\" - BELARUS</p> </li> <li> <p>\"CA\" - CANADA</p> </li> <li> <p>\"CL\" - CHILE</p> </li> <li> <p>\"CO\" - COLOMBIA</p> </li> <li> <p>\"CR\" - COSTA RICA</p> </li> <li> <p>\"HR\" - CROATIA</p> </li> <li> <p>\"CZ\" - CZECH REPUBLIC</p> </li> <li> <p>\"DK\" - DENMARK</p> </li> <li> <p>\"EC\" - ECUADOR</p> </li> <li> <p>\"EE\" - ESTONIA</p> </li> <li> <p>\"ET\" - ETHIOPIA</p> </li> <li> <p>\"FI\" - FINLAND</p> </li> <li> <p>\"FR\" - FRANCE</p> </li> <li> <p>\"DE\" - GERMANY</p> </li> <li> <p>\"GR\" - GREECE</p> </li> <li> <p>\"HU\" - HUNGARY</p> </li> <li> <p>\"IS\" - ICELAND</p> </li> <li> <p>\"IN\" - INDIA</p> </li> <li> <p>\"IE\" - IRELAND</p> </li> <li> <p>\"IT\" - ITALY</p> </li> <li> <p>\"JP\" - JAPAN</p> </li> <li> <p>\"KZ\" - KAZAKHSTAN</p> </li> <li> <p>\"KR\" - KOREA</p> </li> <li> <p>\"LV\" - LATVIA</p> </li> <li> <p>\"LI\" - LIECHTENSTEIN</p> </li> <li> <p>\"LT\" - LITHUANIA</p> </li> <li> <p>\"LU\" - LUXEMBOURG</p> </li> <li> <p>\"MK\" - MACEDONIA</p> </li> <li> <p>\"MT\" - MALTA</p> </li> <li> <p>\"MX\" - MEXICO</p> </li> <li> <p>\"MD\" - MOLDOVA</p> </li> <li> <p>\"ME\" - MONTENEGRO</p> </li> <li> <p>\"NL\" - NETHERLANDS</p> </li> <li> <p>\"NZ\" - NEW ZEALAND</p> </li> <li> <p>\"NI\" - NICARAGUA</p> </li> <li> <p>\"NG\" - NIGERIA</p> </li> <li> <p>\"NO\" - NORWAY</p> </li> <li> <p>\"PA\" - PANAMA</p> </li> <li> <p>\"PY\" - PARAGUAY</p> </li> <li> <p>\"PE\" - PERU</p> </li> <li> <p>\"PL\" - POLAND</p> </li> <li> <p>\"PT\" - PORTUGAL</p> </li> <li> <p>\"RO\" - ROMANIA</p> </li> <li> <p>\"RU\" - RUSSIA</p> </li> <li> <p>\"RS\" - SERBIA</p> </li> <li> <p>\"SK\" - SLOVAKIA</p> </li> <li> <p>\"SI\" - SLOVENIA</p> </li> <li> <p>\"ZA\" - SOUTH AFRICA</p> </li> <li> <p>\"ES\" - SPAIN</p> </li> <li> <p>\"SE\" - SWEDEN</p> </li> <li> <p>\"CH\" - SWITZERLAND</p> </li> <li> <p>\"UA\" - UKRAINE</p> </li> <li> <p>\"AE\" - UNITED ARAB EMIRATES</p> </li> <li> <p>\"US\" - UNITED STATES</p> </li> <li> <p>\"UK\" - UNITED KINGDOM</p> </li> <li> <p>\"UY\" - URUGUAY</p> </li> <li> <p>\"VE\" - VENEZUELA</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes an additional dataset. This object is part of the <a>DataConfig</a> object. Forecast supports the Weather Index and Holidays additional datasets.</p> <p> <b>Weather Index</b> </p> <p>The Amazon Forecast Weather Index is a built-in dataset that incorporates historical and projected weather information into your model. The Weather Index supplements your datasets with over two years of historical weather data and up to 14 days of projected weather data. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/weather.html\">Amazon Forecast Weather Index</a>.</p> <p> <b>Holidays</b> </p> <p>Holidays is a built-in dataset that incorporates national holiday information into your model. It provides native support for the holiday calendars of 66 countries. To view the holiday calendars, refer to the <a href=\"http://jollyday.sourceforge.net/data.html\">Jollyday</a> library. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/holidays.html\">Holidays Featurization</a>.</p>"
@@ -877,7 +877,10 @@
           "shape":"OptimizationMetric",
           "documentation":"<p>The accuracy metric used to optimize the predictor.</p>"
         },
-        "ExplainPredictor":{"shape":"Boolean"},
+        "ExplainPredictor":{
+          "shape":"Boolean",
+          "documentation":"<p>Create an Explainability resource for the predictor.</p>"
+        },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Optional metadata to help you categorize and organize your predictors. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>"
@@ -1086,11 +1089,11 @@
         },
         "StartDateTime":{
           "shape":"LocalDateTime",
-          "documentation":"<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the first point for the Explainability.</p>"
+          "documentation":"<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the first point for the Explainability.</p> <p>Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example: 2015-01-01T20:00:00)</p>"
         },
         "EndDateTime":{
           "shape":"LocalDateTime",
-          "documentation":"<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the last time point for the Explainability.</p>"
+          "documentation":"<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the last time point for the Explainability.</p> <p>Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example: 2015-01-01T20:00:00)</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1324,10 +1327,10 @@
       "members":{
         "S3Config":{
           "shape":"S3Config",
-          "documentation":"<p>The path to the training data stored in an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the data.</p>"
+          "documentation":"<p>The path to the data stored in an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the data.</p>"
         }
       },
-      "documentation":"<p>The source of your training data, an AWS Identity and Access Management (IAM) role that allows Amazon Forecast to access the data and, optionally, an AWS Key Management Service (KMS) key. This object is submitted in the <a>CreateDatasetImportJob</a> request.</p>"
+      "documentation":"<p>The source of your data, an AWS Identity and Access Management (IAM) role that allows Amazon Forecast to access the data and, optionally, an AWS Key Management Service (KMS) key.</p>"
     },
     "DatasetGroupSummary":{
       "type":"structure",
@@ -1568,6 +1571,10 @@
           "shape":"Frequency",
           "documentation":"<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are Y (Year), M (Month), W (Week), D (Day), H (Hour), 30min (30 minutes), 15min (15 minutes), 10min (10 minutes), 5min (5 minutes), and 1min (1 minute). For example, \"Y\" indicates every year and \"5min\" indicates every five minutes.</p>"
         },
+        "ForecastDimensions":{
+          "shape":"ForecastDimensions",
+          "documentation":"<p>An array of dimension (field) names that specify the attributes used to group your time series.</p>"
+        },
         "DatasetImportJobArns":{
           "shape":"ArnList",
           "documentation":"<p>An array of the ARNs of the dataset import jobs used to import training data for the predictor.</p>"
@@ -1605,7 +1612,10 @@
           "shape":"OptimizationMetric",
           "documentation":"<p>The accuracy metric used to optimize the predictor.</p>"
         },
-        "ExplainabilityInfo":{"shape":"ExplainabilityInfo"}
+        "ExplainabilityInfo":{
+          "shape":"ExplainabilityInfo",
+          "documentation":"<p>Provides the status and ARN of the Predictor Explainability.</p>"
+        }
       }
     },
     "DescribeDatasetGroupRequest":{
@@ -2304,9 +2314,16 @@
     "ExplainabilityInfo":{
       "type":"structure",
       "members":{
-        "ExplainabilityArn":{"shape":"Arn"},
-        "Status":{"shape":"Status"}
-      }
+        "ExplainabilityArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Explainability.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the Explainability. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides information about the Explainability resource.</p>"
     },
     "ExplainabilitySummary":{
       "type":"structure",
@@ -2359,7 +2376,7 @@
           "documentation":"<p>An array of one <code>FeaturizationMethod</code> object that specifies the feature transformation method.</p>"
         }
       },
-      "documentation":"<p>Provides featurization (transformation) information for a dataset field. This object is part of the <a>FeaturizationConfig</a> object.</p> <p>For example:</p> <p> <code>{</code> </p> <p> <code>\"AttributeName\": \"demand\",</code> </p> <p> <code>FeaturizationPipeline [ {</code> </p> <p> <code>\"FeaturizationMethodName\": \"filling\",</code> </p> <p> <code>\"FeaturizationMethodParameters\": {\"aggregation\": \"avg\", \"backfill\": \"nan\"}</code> </p> <p> <code>} ]</code> </p> <p> <code>}</code> </p>"
+      "documentation":"<note> <p>This object belongs to the <a>CreatePredictor</a> operation. If you created your predictor with <a>CreateAutoPredictor</a>, see <a>AttributeConfig</a>.</p> </note> <p>Provides featurization (transformation) information for a dataset field. This object is part of the <a>FeaturizationConfig</a> object.</p> <p>For example:</p> <p> <code>{</code> </p> <p> <code>\"AttributeName\": \"demand\",</code> </p> <p> <code>FeaturizationPipeline [ {</code> </p> <p> <code>\"FeaturizationMethodName\": \"filling\",</code> </p> <p> <code>\"FeaturizationMethodParameters\": {\"aggregation\": \"avg\", \"backfill\": \"nan\"}</code> </p> <p> <code>} ]</code> </p> <p> <code>}</code> </p>"
     },
     "FeaturizationConfig":{
       "type":"structure",
@@ -2378,7 +2395,7 @@
           "documentation":"<p>An array of featurization (transformation) information for the fields of a dataset.</p>"
         }
       },
-      "documentation":"<p>In a <a>CreatePredictor</a> operation, the specified algorithm trains a model using the specified dataset group. You can optionally tell the operation to modify data fields prior to training a model. These modifications are referred to as <i>featurization</i>.</p> <p>You define featurization using the <code>FeaturizationConfig</code> object. You specify an array of transformations, one for each field that you want to featurize. You then include the <code>FeaturizationConfig</code> object in your <code>CreatePredictor</code> request. Amazon Forecast applies the featurization to the <code>TARGET_TIME_SERIES</code> and <code>RELATED_TIME_SERIES</code> datasets before model training.</p> <p>You can create multiple featurization configurations. For example, you might call the <code>CreatePredictor</code> operation twice by specifying different featurization configurations.</p>"
+      "documentation":"<note> <p>This object belongs to the <a>CreatePredictor</a> operation. If you created your predictor with <a>CreateAutoPredictor</a>, see <a>AttributeConfig</a>.</p> </note> <p>In a <a>CreatePredictor</a> operation, the specified algorithm trains a model using the specified dataset group. You can optionally tell the operation to modify data fields prior to training a model. These modifications are referred to as <i>featurization</i>.</p> <p>You define featurization using the <code>FeaturizationConfig</code> object. You specify an array of transformations, one for each field that you want to featurize. You then include the <code>FeaturizationConfig</code> object in your <code>CreatePredictor</code> request. Amazon Forecast applies the featurization to the <code>TARGET_TIME_SERIES</code> and <code>RELATED_TIME_SERIES</code> datasets before model training.</p> <p>You can create multiple featurization configurations. For example, you might call the <code>CreatePredictor</code> operation twice by specifying different featurization configurations.</p>"
     },
     "FeaturizationMethod":{
       "type":"structure",
@@ -2516,7 +2533,10 @@
           "shape":"String",
           "documentation":"<p>The ARN of the predictor used to generate the forecast.</p>"
         },
-        "CreatedUsingAutoPredictor":{"shape":"Boolean"},
+        "CreatedUsingAutoPredictor":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the Forecast was created from an AutoPredictor.</p>"
+        },
         "DatasetGroupArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the dataset group that provided the data used to train the predictor.</p>"
@@ -2621,7 +2641,7 @@
           "documentation":"<p>An array of supplementary features. The only supported feature is a holiday calendar.</p>"
         }
       },
-      "documentation":"<p>The data used to train a predictor. The data includes a dataset group and any supplementary features. You specify this object in the <a>CreatePredictor</a> request.</p>"
+      "documentation":"<note> <p>This object belongs to the <a>CreatePredictor</a> operation. If you created your predictor with <a>CreateAutoPredictor</a>, see <a>DataConfig</a>.</p> </note> <p>The data used to train a predictor. The data includes a dataset group and any supplementary features. You specify this object in the <a>CreatePredictor</a> request.</p>"
     },
     "Integer":{"type":"integer"},
     "IntegerParameterRange":{
@@ -2781,7 +2801,7 @@
         },
         "Filters":{
           "shape":"Filters",
-          "documentation":"<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>PredictorArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>"
+          "documentation":"<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ResourceArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>"
         }
       }
     },
@@ -2811,7 +2831,7 @@
         },
         "Filters":{
           "shape":"Filters",
-          "documentation":"<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>PredictorArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>"
+          "documentation":"<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ResourceArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>"
         }
       }
     },
@@ -2954,7 +2974,7 @@
       "members":{
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are Forecast dataset groups, datasets, dataset import jobs, predictors, forecasts, and forecast export jobs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. </p>"
         }
       }
     },
@@ -3251,7 +3271,7 @@
           "documentation":"<p>An array of attributes specifying the name and type of each field in a dataset.</p>"
         }
       },
-      "documentation":"<p>Defines the fields of a dataset. You specify this object in the <a>CreateDataset</a> request.</p>"
+      "documentation":"<p>Defines the fields of a dataset.</p>"
     },
     "SchemaAttribute":{
       "type":"structure",
@@ -3344,7 +3364,7 @@
       "members":{
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource to stop. The supported ARNs are <code>DatasetImportJobArn</code>, <code>PredictorArn</code>, <code>PredictorBacktestExportJobArn</code>, <code>ForecastArn</code>, and <code>ForecastExportJobArn</code>. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource to stop. The supported ARNs are <code>DatasetImportJobArn</code>, <code>PredictorArn</code>, <code>PredictorBacktestExportJobArn</code>, <code>ForecastArn</code>, <code>ForecastExportJobArn</code>, <code>ExplainabilityArn</code>, and <code>ExplainabilityExportArn</code>. </p>"
         }
       }
     },
@@ -3369,7 +3389,7 @@
           "documentation":"<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, set the value to <code>\"true\"</code> </p> <p> <b>Holidays</b> </p> <p>To enable Holidays, specify a country with one of the following two-letter country codes:</p> <ul> <li> <p>\"AL\" - ALBANIA</p> </li> <li> <p>\"AR\" - ARGENTINA</p> </li> <li> <p>\"AT\" - AUSTRIA</p> </li> <li> <p>\"AU\" - AUSTRALIA</p> </li> <li> <p>\"BA\" - BOSNIA HERZEGOVINA</p> </li> <li> <p>\"BE\" - BELGIUM</p> </li> <li> <p>\"BG\" - BULGARIA</p> </li> <li> <p>\"BO\" - BOLIVIA</p> </li> <li> <p>\"BR\" - BRAZIL</p> </li> <li> <p>\"BY\" - BELARUS</p> </li> <li> <p>\"CA\" - CANADA</p> </li> <li> <p>\"CL\" - CHILE</p> </li> <li> <p>\"CO\" - COLOMBIA</p> </li> <li> <p>\"CR\" - COSTA RICA</p> </li> <li> <p>\"HR\" - CROATIA</p> </li> <li> <p>\"CZ\" - CZECH REPUBLIC</p> </li> <li> <p>\"DK\" - DENMARK</p> </li> <li> <p>\"EC\" - ECUADOR</p> </li> <li> <p>\"EE\" - ESTONIA</p> </li> <li> <p>\"ET\" - ETHIOPIA</p> </li> <li> <p>\"FI\" - FINLAND</p> </li> <li> <p>\"FR\" - FRANCE</p> </li> <li> <p>\"DE\" - GERMANY</p> </li> <li> <p>\"GR\" - GREECE</p> </li> <li> <p>\"HU\" - HUNGARY</p> </li> <li> <p>\"IS\" - ICELAND</p> </li> <li> <p>\"IN\" - INDIA</p> </li> <li> <p>\"IE\" - IRELAND</p> </li> <li> <p>\"IT\" - ITALY</p> </li> <li> <p>\"JP\" - JAPAN</p> </li> <li> <p>\"KZ\" - KAZAKHSTAN</p> </li> <li> <p>\"KR\" - KOREA</p> </li> <li> <p>\"LV\" - LATVIA</p> </li> <li> <p>\"LI\" - LIECHTENSTEIN</p> </li> <li> <p>\"LT\" - LITHUANIA</p> </li> <li> <p>\"LU\" - LUXEMBOURG</p> </li> <li> <p>\"MK\" - MACEDONIA</p> </li> <li> <p>\"MT\" - MALTA</p> </li> <li> <p>\"MX\" - MEXICO</p> </li> <li> <p>\"MD\" - MOLDOVA</p> </li> <li> <p>\"ME\" - MONTENEGRO</p> </li> <li> <p>\"NL\" - NETHERLANDS</p> </li> <li> <p>\"NZ\" - NEW ZEALAND</p> </li> <li> <p>\"NI\" - NICARAGUA</p> </li> <li> <p>\"NG\" - NIGERIA</p> </li> <li> <p>\"NO\" - NORWAY</p> </li> <li> <p>\"PA\" - PANAMA</p> </li> <li> <p>\"PY\" - PARAGUAY</p> </li> <li> <p>\"PE\" - PERU</p> </li> <li> <p>\"PL\" - POLAND</p> </li> <li> <p>\"PT\" - PORTUGAL</p> </li> <li> <p>\"RO\" - ROMANIA</p> </li> <li> <p>\"RU\" - RUSSIA</p> </li> <li> <p>\"RS\" - SERBIA</p> </li> <li> <p>\"SK\" - SLOVAKIA</p> </li> <li> <p>\"SI\" - SLOVENIA</p> </li> <li> <p>\"ZA\" - SOUTH AFRICA</p> </li> <li> <p>\"ES\" - SPAIN</p> </li> <li> <p>\"SE\" - SWEDEN</p> </li> <li> <p>\"CH\" - SWITZERLAND</p> </li> <li> <p>\"UA\" - UKRAINE</p> </li> <li> <p>\"AE\" - UNITED ARAB EMIRATES</p> </li> <li> <p>\"US\" - UNITED STATES</p> </li> <li> <p>\"UK\" - UNITED KINGDOM</p> </li> <li> <p>\"UY\" - URUGUAY</p> </li> <li> <p>\"VE\" - VENEZUELA</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes a supplementary feature of a dataset group. This object is part of the <a>InputDataConfig</a> object. Forecast supports the Weather Index and Holidays built-in featurizations.</p> <p> <b>Weather Index</b> </p> <p>The Amazon Forecast Weather Index is a built-in featurization that incorporates historical and projected weather information into your model. The Weather Index supplements your datasets with over two years of historical weather data and up to 14 days of projected weather data. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/weather.html\">Amazon Forecast Weather Index</a>.</p> <p> <b>Holidays</b> </p> <p>Holidays is a built-in featurization that incorporates a feature-engineered dataset of national holiday information into your model. It provides native support for the holiday calendars of 66 countries. To view the holiday calendars, refer to the <a href=\"http://jollyday.sourceforge.net/data.html\">Jollyday</a> library. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/holidays.html\">Holidays Featurization</a>.</p>"
+      "documentation":"<note> <p>This object belongs to the <a>CreatePredictor</a> operation. If you created your predictor with <a>CreateAutoPredictor</a>, see <a>AdditionalDataset</a>.</p> </note> <p>Describes a supplementary feature of a dataset group. This object is part of the <a>InputDataConfig</a> object. Forecast supports the Weather Index and Holidays built-in featurizations.</p> <p> <b>Weather Index</b> </p> <p>The Amazon Forecast Weather Index is a built-in featurization that incorporates historical and projected weather information into your model. The Weather Index supplements your datasets with over two years of historical weather data and up to 14 days of projected weather data. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/weather.html\">Amazon Forecast Weather Index</a>.</p> <p> <b>Holidays</b> </p> <p>Holidays is a built-in featurization that incorporates a feature-engineered dataset of national holiday information into your model. It provides native support for the holiday calendars of 66 countries. To view the holiday calendars, refer to the <a href=\"http://jollyday.sourceforge.net/data.html\">Jollyday</a> library. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/holidays.html\">Holidays Featurization</a>.</p>"
     },
     "SupplementaryFeatures":{
       "type":"list",
@@ -3417,7 +3437,7 @@
       "members":{
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are Forecast dataset groups, datasets, dataset import jobs, predictors, forecasts, and forecast export jobs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. </p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -3521,7 +3541,7 @@
       "members":{
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are Forecast dataset groups, datasets, dataset import jobs, predictors, forecasts, and forecast exports.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. </p>"
         },
         "TagKeys":{
           "shape":"TagKeys",

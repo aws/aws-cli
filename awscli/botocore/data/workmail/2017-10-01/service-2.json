@@ -219,6 +219,22 @@
       "documentation":"<p>Remove one or more specified aliases from a set of aliases for a given user.</p>",
       "idempotent":true
     },
+    "DeleteEmailMonitoringConfiguration":{
+      "name":"DeleteEmailMonitoringConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEmailMonitoringConfigurationRequest"},
+      "output":{"shape":"DeleteEmailMonitoringConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>Deletes the email monitoring configuration for a specified organization.</p>",
+      "idempotent":true
+    },
     "DeleteGroup":{
       "name":"DeleteGroup",
       "http":{
@@ -391,6 +407,23 @@
         {"shape":"InvalidCustomSesConfigurationException"}
       ],
       "documentation":"<p>Removes a domain from Amazon WorkMail, stops email routing to WorkMail, and removes the authorization allowing WorkMail use. SES keeps the domain because other applications may use it. You must first remove any email address used by WorkMail entities before you remove the domain.</p>",
+      "idempotent":true
+    },
+    "DescribeEmailMonitoringConfiguration":{
+      "name":"DescribeEmailMonitoringConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEmailMonitoringConfigurationRequest"},
+      "output":{"shape":"DescribeEmailMonitoringConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>Describes the current email monitoring configuration for a specified organization.</p>",
       "idempotent":true
     },
     "DescribeGroup":{
@@ -868,6 +901,23 @@
         {"shape":"OrganizationStateException"}
       ],
       "documentation":"<p>Adds a new access control rule for the specified organization. The rule allows or denies access to the organization for the specified IPv4 addresses, access protocol actions, and user IDs. Adding a new rule with the same name as an existing rule replaces the older rule.</p>"
+    },
+    "PutEmailMonitoringConfiguration":{
+      "name":"PutEmailMonitoringConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutEmailMonitoringConfigurationRequest"},
+      "output":{"shape":"PutEmailMonitoringConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>Creates or updates the email monitoring configuration for a specified organization.</p>",
+      "idempotent":true
     },
     "PutInboundDmarcSettings":{
       "name":"PutInboundDmarcSettings",
@@ -1651,6 +1701,21 @@
       "members":{
       }
     },
+    "DeleteEmailMonitoringConfigurationRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The ID of the organization from which the email monitoring configuration is deleted.</p>"
+        }
+      }
+    },
+    "DeleteEmailMonitoringConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteGroupRequest":{
       "type":"structure",
       "required":[
@@ -1892,6 +1957,29 @@
     "DeregisterMailDomainResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DescribeEmailMonitoringConfigurationRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The ID of the organization for which the email monitoring configuration is described.</p>"
+        }
+      }
+    },
+    "DescribeEmailMonitoringConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.</p>"
+        },
+        "LogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.</p>"
+        }
       }
     },
     "DescribeGroupRequest":{
@@ -3258,6 +3346,12 @@
         }
       }
     },
+    "LogGroupArn":{
+      "type":"string",
+      "max":562,
+      "min":47,
+      "pattern":"arn:aws:logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([\\.\\-_/#A-Za-z0-9]+):\\*$"
+    },
     "MailDomainInUseException":{
       "type":"structure",
       "members":{
@@ -3746,6 +3840,33 @@
       }
     },
     "PutAccessControlRuleResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "PutEmailMonitoringConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "RoleArn",
+        "LogGroupArn"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The ID of the organization for which the email monitoring configuration is set.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.</p>"
+        },
+        "LogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.</p>"
+        }
+      }
+    },
+    "PutEmailMonitoringConfigurationResponse":{
       "type":"structure",
       "members":{
       }

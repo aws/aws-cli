@@ -281,7 +281,7 @@ class TopicTagDB(object):
 
         :param topic_name: The name of the topic
         :param tag: The name of the tag to retrieve
-        :raises VauleError: Raised if there is not exactly one value
+        :raises ValueError: Raised if there is not exactly one value
             in the list value.
         """
         value = self.get_tag_value(topic_name, tag)

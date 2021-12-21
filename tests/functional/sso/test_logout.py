@@ -20,12 +20,11 @@ from tests.functional.sso import BaseSSOTest
 class TestLogoutCommand(BaseSSOTest):
     def setUp(self):
         super(TestLogoutCommand, self).setUp()
-        self.token_cache_dir = self.files.full_path('token-cache')
-        self.token_cache_dir_patch = mock.patch(
+        self.logout_token_cache_dir_patch = mock.patch(
             'awscli.customizations.sso.logout.SSO_TOKEN_DIR',
             self.token_cache_dir
         )
-        self.token_cache_dir_patch.start()
+        self.logout_token_cache_dir_patch.start()
         self.aws_creds_cache_dir = self.files.full_path('aws-creds-cache')
         self.aws_creds_cache_dir_patch = mock.patch(
             'awscli.customizations.sso.logout.AWS_CREDS_CACHE_DIR',
@@ -35,7 +34,7 @@ class TestLogoutCommand(BaseSSOTest):
 
     def tearDown(self):
         super(TestLogoutCommand, self).tearDown()
-        self.token_cache_dir_patch.stop()
+        self.logout_token_cache_dir_patch.stop()
         self.aws_creds_cache_dir_patch.stop()
 
     def add_cached_token(self, filename):

@@ -16,6 +16,7 @@ from awscli.testutils import mock
 from awscli.testutils import unittest
 
 from botocore.session import Session
+from botocore.exceptions import ClientError
 
 from awscli.compat import StringIO
 from awscli.customizations.sso.utils import do_sso_login
@@ -35,7 +36,10 @@ class TestDoSSOLogin(unittest.TestCase):
         self.session.create_client.return_value = self.oidc_client
 
     def get_mock_sso_oidc_client(self):
+        real_client = Session().create_client(
+            'sso-oidc', region_name=self.region)
         client = mock.Mock()
+        client.exceptions = real_client.exceptions
         client.register_client.return_value = {
             'clientSecretExpiresAt': 1000,
             'clientId': 'foo-client-id',
@@ -49,11 +53,14 @@ class TestDoSSOLogin(unittest.TestCase):
             'verificationUri': 'https://sso.fake/device',
             'verificationUriComplete': 'https://sso.verify',
         }
-        client.create_token.return_value = {
-            'expiresIn': 28800,
-            'tokenType': 'Bearer',
-            'accessToken': 'access.token',
-        }
+        client.create_token.side_effect = [
+            client.exceptions.AuthorizationPendingException({}, "CreateToken"),
+            {
+                'expiresIn': 28800,
+                'tokenType': 'Bearer',
+                'accessToken': 'access.token',
+            }
+        ]
         return client
 
     def assert_client_called_with_start_url(self):
@@ -83,6 +90,26 @@ class TestDoSSOLogin(unittest.TestCase):
         self.assert_used_sso_region()
         self.assert_token_cache_was_filled()
         self.assert_on_pending_authorization_called()
+
+    def test_do_sso_login_preauthorized(self):
+        # First call to create token succeeds because client is pre-authorized
+        self.oidc_client.create_token.side_effect = [
+            {
+                'expiresIn': 28800,
+                'tokenType': 'Bearer',
+                'accessToken': 'access.token',
+            }
+        ]
+        do_sso_login(
+            session=self.session, sso_region=self.region,
+            start_url=self.start_url, token_cache=self.token_cache,
+            on_pending_authorization=self.on_pending_authorization_mock
+        )
+        self.assert_client_called_with_start_url()
+        self.assert_used_sso_region()
+        self.assert_token_cache_was_filled()
+        # Handler should not have been invoked as client was pre-authorized
+        self.on_pending_authorization_mock.assert_not_called()
 
 
 class BaseHandlerTest(unittest.TestCase):

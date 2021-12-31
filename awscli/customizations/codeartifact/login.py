@@ -38,7 +38,7 @@ class BaseLogin(object):
     _TOOL_NOT_FOUND_MESSAGE = '%s was not found. Please verify installation.'
 
     def __init__(self, auth_token, expiration, repository_endpoint,
-                 domain, repository, subprocess_utils, namespace=None):
+                 domain, repository, subprocess_utils, namespace=None, flags=None):
         self.auth_token = auth_token
         self.expiration = expiration
         self.repository_endpoint = repository_endpoint
@@ -46,6 +46,7 @@ class BaseLogin(object):
         self.repository = repository
         self.subprocess_utils = subprocess_utils
         self.namespace = namespace
+        self.flags = flags
 
     def login(self, dry_run=False):
         raise NotImplementedError('login()')
@@ -365,12 +366,12 @@ class PipLogin(BaseLogin):
 
     def login(self, dry_run=False):
         commands = self.get_commands(
-            self.repository_endpoint, self.auth_token
+            self.repository_endpoint, self.auth_token, self.flags
         )
         self._run_commands('pip', commands, dry_run)
 
     @classmethod
-    def get_commands(cls, endpoint, auth_token, **kwargs):
+    def get_commands(cls, endpoint, auth_token, flags, **kwargs):
         repo_uri = urlparse.urlsplit(endpoint)
         pip_index_url = cls.PIP_INDEX_URL_FMT.format(
             scheme=repo_uri.scheme,
@@ -379,7 +380,18 @@ class PipLogin(BaseLogin):
             path=repo_uri.path
         )
 
-        return [['pip', 'config', 'set', 'global.index-url', pip_index_url]]
+        pip_index_url_setting_name = 'global.index-url'
+
+        if flags:
+            for flag in flags:
+                if flag == 'secondary':
+                    pip_index_url_setting_name = 'global.extra-index-url'
+                else:
+                    raise ValueError(
+                        'Flag {} is not supported for pip'.format(flag)
+                    )
+
+        return [['pip', 'config', 'set', pip_index_url_setting_name, pip_index_url]]
 
 
 class TwineLogin(BaseLogin):
@@ -521,6 +533,7 @@ class CodeArtifactLogin(BasicCommand):
             'package_format': 'pypi',
             'login_cls': PipLogin,
             'namespace_support': False,
+            'flags_support': True,
         },
         'twine': {
             'package_format': 'pypi',
@@ -528,6 +541,8 @@ class CodeArtifactLogin(BasicCommand):
             'namespace_support': False,
         }
     }
+
+    FLAGS = ['primary', 'secondary']
 
     NAME = 'login'
 
@@ -543,6 +558,12 @@ class CodeArtifactLogin(BasicCommand):
             'help_text': 'The tool you want to connect with your repository',
             'choices': list(TOOL_MAP.keys()),
             'required': True,
+        },
+        {
+            'name': 'flags',
+            'help_text': 'Flags that should be used for the given tool',
+            'choices': FLAGS,
+            'required': False,
         },
         {
             'name': 'domain',
@@ -592,6 +613,19 @@ class CodeArtifactLogin(BasicCommand):
             )
         else:
             return parsed_args.namespace
+
+    def _get_flags(self, tool, parsed_args):
+        flags_compatible = self.TOOL_MAP[tool]['flags_support']
+
+        if not flags_compatible and parsed_args.flags:
+            raise ValueError(
+                'Argument --flags is not supported for {}'.format(tool)
+            )
+        else:
+            if parsed_args.flags:
+                return parsed_args.flags.split(',')
+
+        return
 
     def _get_repository_endpoint(
         self, codeartifact_client, parsed_args, package_format
@@ -644,12 +678,13 @@ class CodeArtifactLogin(BasicCommand):
         domain = parsed_args.domain
         repository = parsed_args.repository
         namespace = self._get_namespace(tool, parsed_args)
+        flags = self._get_flags(tool, parsed_args)
 
         auth_token = auth_token_res['authorizationToken']
         expiration = parse_timestamp(auth_token_res['expiration'])
         login = self.TOOL_MAP[tool]['login_cls'](
             auth_token, expiration, repository_endpoint,
-            domain, repository, subprocess, namespace
+            domain, repository, subprocess, namespace, flags
         )
 
         login.login(parsed_args.dry_run)

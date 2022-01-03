@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.27
+=======
+
+* api-change:``sagemaker``: The release allows users to pass pipeline definitions as Amazon S3 locations and control the pipeline execution concurrency using ParallelismConfiguration. It also adds support of EMR jobs as pipeline steps.
+* api-change:``rds``: Multiple doc-only updates for Relational Database Service (RDS)
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added strength levels to the Sharpness Filter and now permits OGG files to be specified as sidecar audio inputs.
+* api-change:``detective``: Added and updated API operations to support the Detective integration with AWS Organizations. New actions are used to manage the delegated administrator account and the integration configuration.
+* api-change:``greengrassv2``: This release adds the API operations to manage the Greengrass role associated with your account and to manage the core device connectivity information. Greengrass V2 customers can now depend solely on Greengrass V2 SDK for all the API operations needed to manage their fleets.
+
+
 1.22.26
 =======
 

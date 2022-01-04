@@ -56,7 +56,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Sends a request to invite the specified AWS accounts to be member accounts in the behavior graph. This operation can only be called by the administrator account for a behavior graph. </p> <p> <code>CreateMembers</code> verifies the accounts and then invites the verified accounts. The administrator can optionally specify to not send invitation emails to the member accounts. This would be used when the administrator manages their member accounts centrally.</p> <p>The request provides the behavior graph ARN and the list of accounts to invite.</p> <p>The response separates the requested accounts into two lists:</p> <ul> <li> <p>The accounts that <code>CreateMembers</code> was able to start the verification for. This list includes member accounts that are being verified, that have passed verification and are to be invited, and that have failed verification.</p> </li> <li> <p>The accounts that <code>CreateMembers</code> was unable to process. This list includes accounts that were already invited to be member accounts in the behavior graph.</p> </li> </ul>"
+      "documentation":"<p> <code>CreateMembers</code> is used to send invitations to accounts. For the organization behavior graph, the Detective administrator account uses <code>CreateMembers</code> to enable organization accounts as member accounts.</p> <p>For invited accounts, <code>CreateMembers</code> sends a request to invite the specified Amazon Web Services accounts to be member accounts in the behavior graph. This operation can only be called by the administrator account for a behavior graph. </p> <p> <code>CreateMembers</code> verifies the accounts and then invites the verified accounts. The administrator can optionally specify to not send invitation emails to the member accounts. This would be used when the administrator manages their member accounts centrally.</p> <p>For organization accounts in the organization behavior graph, <code>CreateMembers</code> attempts to enable the accounts. The organization accounts do not receive invitations.</p> <p>The request provides the behavior graph ARN and the list of accounts to invite or to enable.</p> <p>The response separates the requested accounts into two lists:</p> <ul> <li> <p>The accounts that <code>CreateMembers</code> was able to process. For invited accounts, includes member accounts that are being verified, that have passed verification and are to be invited, and that have failed verification. For organization accounts in the organization behavior graph, includes accounts that can be enabled and that cannot be enabled.</p> </li> <li> <p>The accounts that <code>CreateMembers</code> was unable to process. This list includes accounts that were already invited to be member accounts in the behavior graph.</p> </li> </ul>"
     },
     "DeleteGraph":{
       "name":"DeleteGraph",
@@ -70,7 +70,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Disables the specified behavior graph and queues it to be deleted. This operation removes the graph from each member account's list of behavior graphs.</p> <p> <code>DeleteGraph</code> can only be called by the administrator account for a behavior graph.</p>"
+      "documentation":"<p>Disables the specified behavior graph and queues it to be deleted. This operation removes the behavior graph from each member account's list of behavior graphs.</p> <p> <code>DeleteGraph</code> can only be called by the administrator account for a behavior graph.</p>"
     },
     "DeleteMembers":{
       "name":"DeleteMembers",
@@ -86,7 +86,35 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes one or more member accounts from the administrator account's behavior graph. This operation can only be called by a Detective administrator account. That account cannot use <code>DeleteMembers</code> to delete their own account from the behavior graph. To disable a behavior graph, the administrator account uses the <code>DeleteGraph</code> API method.</p>"
+      "documentation":"<p>Removes the specified member accounts from the behavior graph. The removed accounts no longer contribute data to the behavior graph. This operation can only be called by the administrator account for the behavior graph.</p> <p>For invited accounts, the removed accounts are deleted from the list of accounts in the behavior graph. To restore the account, the administrator account must send another invitation.</p> <p>For organization accounts in the organization behavior graph, the Detective administrator account can always enable the organization account again. Organization accounts that are not enabled as member accounts are not included in the <code>ListMembers</code> results for the organization behavior graph.</p> <p>An administrator account cannot use <code>DeleteMembers</code> to remove their own account from the behavior graph. To disable a behavior graph, the administrator account uses the <code>DeleteGraph</code> API method.</p>"
+    },
+    "DescribeOrganizationConfiguration":{
+      "name":"DescribeOrganizationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/orgs/describeOrganizationConfiguration"
+      },
+      "input":{"shape":"DescribeOrganizationConfigurationRequest"},
+      "output":{"shape":"DescribeOrganizationConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns information about the configuration for the organization behavior graph. Currently indicates whether to automatically enable new organization accounts as member accounts.</p> <p>Can only be called by the Detective administrator account for the organization. </p>"
+    },
+    "DisableOrganizationAdminAccount":{
+      "name":"DisableOrganizationAdminAccount",
+      "http":{
+        "method":"POST",
+        "requestUri":"/orgs/disableAdminAccount"
+      },
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Removes the Detective administrator account for the organization in the current Region. Deletes the behavior graph for that account.</p> <p>Can only be called by the organization management account. Before you can select a different Detective administrator account, you must remove the Detective administrator account in all Regions.</p>"
     },
     "DisassociateMembership":{
       "name":"DisassociateMembership",
@@ -101,7 +129,21 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Removes the member account from the specified behavior graph. This operation can only be called by a member account that has the <code>ENABLED</code> status.</p>"
+      "documentation":"<p>Removes the member account from the specified behavior graph. This operation can only be called by an invited member account that has the <code>ENABLED</code> status.</p> <p> <code>DisassociateMembership</code> cannot be called by an organization account in the organization behavior graph. For the organization behavior graph, the Detective administrator account determines which organization accounts to enable or disable as member accounts.</p>"
+    },
+    "EnableOrganizationAdminAccount":{
+      "name":"EnableOrganizationAdminAccount",
+      "http":{
+        "method":"POST",
+        "requestUri":"/orgs/enableAdminAccount"
+      },
+      "input":{"shape":"EnableOrganizationAdminAccountRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Designates the Detective administrator account for the organization in the current Region.</p> <p>If the account does not have Detective enabled, then enables Detective for that account and creates a new behavior graph.</p> <p>Can only be called by the organization management account.</p> <p>The Detective administrator account for an organization must be the same in all Regions. If you already designated a Detective administrator account in another Region, then you must designate the same account.</p>"
     },
     "GetMembers":{
       "name":"GetMembers",
@@ -144,7 +186,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the list of open and accepted behavior graph invitations for the member account. This operation can only be called by a member account.</p> <p>Open invitations are invitations that the member account has not responded to.</p> <p>The results do not include behavior graphs for which the member account declined the invitation. The results also do not include behavior graphs that the member account resigned from or was removed from.</p>"
+      "documentation":"<p>Retrieves the list of open and accepted behavior graph invitations for the member account. This operation can only be called by an invited member account.</p> <p>Open invitations are invitations that the member account has not responded to.</p> <p>The results do not include behavior graphs for which the member account declined the invitation. The results also do not include behavior graphs that the member account resigned from or was removed from.</p>"
     },
     "ListMembers":{
       "name":"ListMembers",
@@ -159,7 +201,22 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the list of member accounts for a behavior graph. Does not return member accounts that were removed from the behavior graph.</p>"
+      "documentation":"<p>Retrieves the list of member accounts for a behavior graph.</p> <p>For invited accounts, the results do not include member accounts that were removed from the behavior graph.</p> <p>For the organization behavior graph, the results do not include organization accounts that the Detective administrator account has not enabled as member accounts.</p>"
+    },
+    "ListOrganizationAdminAccounts":{
+      "name":"ListOrganizationAdminAccounts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/orgs/adminAccountslist"
+      },
+      "input":{"shape":"ListOrganizationAdminAccountsRequest"},
+      "output":{"shape":"ListOrganizationAdminAccountsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns information about the Detective administrator account for an organization. Can only be called by the organization management account.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -190,7 +247,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Rejects an invitation to contribute the account data to a behavior graph. This operation must be called by a member account that has the <code>INVITED</code> status.</p>"
+      "documentation":"<p>Rejects an invitation to contribute the account data to a behavior graph. This operation must be called by an invited member account that has the <code>INVITED</code> status.</p> <p> <code>RejectInvitation</code> cannot be called by an organization account in the organization behavior graph. In the organization behavior graph, organization accounts do not receive an invitation.</p>"
     },
     "StartMonitoringMember":{
       "name":"StartMonitoringMember",
@@ -239,6 +296,20 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Removes tags from a behavior graph.</p>"
+    },
+    "UpdateOrganizationConfiguration":{
+      "name":"UpdateOrganizationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/orgs/updateOrganizationConfiguration"
+      },
+      "input":{"shape":"UpdateOrganizationConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Updates the configuration for the Organizations integration in the current Region. Can only be called by the Detective administrator account for the organization.</p>"
     }
   },
   "shapes":{
@@ -261,14 +332,14 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The account identifier of the AWS account.</p>"
+          "documentation":"<p>The account identifier of the Amazon Web Services account.</p>"
         },
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The AWS account root user email address for the AWS account.</p>"
+          "documentation":"<p>The Amazon Web Services account root user email address for the Amazon Web Services account.</p>"
         }
       },
-      "documentation":"<p>An AWS account that is the administrator account of or a member of a behavior graph.</p>"
+      "documentation":"<p>An Amazon Web Services account that is the administrator account of or a member of a behavior graph.</p>"
     },
     "AccountId":{
       "type":"string",
@@ -287,6 +358,28 @@
       "member":{"shape":"Account"},
       "max":50,
       "min":1
+    },
+    "Administrator":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account identifier of the Detective administrator account for the organization.</p>"
+        },
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the organization behavior graph.</p>"
+        },
+        "DelegationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the Detective administrator account was enabled. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about the Detective administrator account for an organization.</p>"
+    },
+    "AdministratorList":{
+      "type":"list",
+      "member":{"shape":"Administrator"}
     },
     "Boolean":{"type":"boolean"},
     "ByteValue":{"type":"long"},
@@ -326,7 +419,7 @@
       "members":{
         "GraphArn":{
           "shape":"GraphArn",
-          "documentation":"<p>The ARN of the behavior graph to invite the member accounts to contribute their data to.</p>"
+          "documentation":"<p>The ARN of the behavior graph.</p>"
         },
         "Message":{
           "shape":"EmailMessage",
@@ -334,11 +427,11 @@
         },
         "DisableEmailNotification":{
           "shape":"Boolean",
-          "documentation":"<p>if set to <code>true</code>, then the member accounts do not receive email notifications. By default, this is set to <code>false</code>, and the member accounts receive email notifications.</p>"
+          "documentation":"<p>if set to <code>true</code>, then the invited accounts do not receive email notifications. By default, this is set to <code>false</code>, and the invited accounts receive email notifications.</p> <p>Organization accounts in the organization behavior graph do not receive email notifications.</p>"
         },
         "Accounts":{
           "shape":"AccountList",
-          "documentation":"<p>The list of AWS accounts to invite to become member accounts in the behavior graph. You can invite up to 50 accounts at a time. For each invited account, the account list contains the account identifier and the AWS account root user email address.</p>"
+          "documentation":"<p>The list of Amazon Web Services accounts to invite or to enable. You can invite or enable up to 50 accounts at a time. For each invited account, the account list contains the account identifier and the Amazon Web Services account root user email address. For organization accounts in the organization behavior graph, the email address is not required.</p>"
         }
       }
     },
@@ -347,11 +440,11 @@
       "members":{
         "Members":{
           "shape":"MemberDetailList",
-          "documentation":"<p>The set of member account invitation requests that Detective was able to process. This includes accounts that are being verified, that failed verification, and that passed verification and are being sent an invitation.</p>"
+          "documentation":"<p>The set of member account invitation or enablement requests that Detective was able to process. This includes accounts that are being verified, that failed verification, and that passed verification and are being sent an invitation or are being enabled.</p>"
         },
         "UnprocessedAccounts":{
           "shape":"UnprocessedAccountList",
-          "documentation":"<p>The list of accounts for which Detective was unable to process the invitation request. For each account, the list provides the reason why the request could not be processed. The list includes accounts that are already member accounts in the behavior graph.</p>"
+          "documentation":"<p>The list of accounts for which Detective was unable to process the invitation or enablement request. For each account, the list provides the reason why the request could not be processed. The list includes accounts that are already member accounts in the behavior graph.</p>"
         }
       }
     },
@@ -374,11 +467,11 @@
       "members":{
         "GraphArn":{
           "shape":"GraphArn",
-          "documentation":"<p>The ARN of the behavior graph to delete members from.</p>"
+          "documentation":"<p>The ARN of the behavior graph to remove members from.</p>"
         },
         "AccountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p>The list of AWS account identifiers for the member accounts to delete from the behavior graph. You can delete up to 50 member accounts at a time.</p>"
+          "documentation":"<p>The list of Amazon Web Services account identifiers for the member accounts to remove from the behavior graph. You can remove up to 50 member accounts at a time.</p>"
         }
       }
     },
@@ -387,11 +480,30 @@
       "members":{
         "AccountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p>The list of AWS account identifiers for the member accounts that Detective successfully deleted from the behavior graph.</p>"
+          "documentation":"<p>The list of Amazon Web Services account identifiers for the member accounts that Detective successfully removed from the behavior graph.</p>"
         },
         "UnprocessedAccounts":{
           "shape":"UnprocessedAccountList",
-          "documentation":"<p>The list of member accounts that Detective was not able to delete from the behavior graph. For each member account, provides the reason that the deletion could not be processed.</p>"
+          "documentation":"<p>The list of member accounts that Detective was not able to remove from the behavior graph. For each member account, provides the reason that the deletion could not be processed.</p>"
+        }
+      }
+    },
+    "DescribeOrganizationConfigurationRequest":{
+      "type":"structure",
+      "required":["GraphArn"],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the organization behavior graph.</p>"
+        }
+      }
+    },
+    "DescribeOrganizationConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "AutoEnable":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.</p>"
         }
       }
     },
@@ -416,6 +528,16 @@
       "max":1000,
       "min":1
     },
+    "EnableOrganizationAdminAccountRequest":{
+      "type":"structure",
+      "required":["AccountId"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account identifier of the account to designate as the Detective administrator account for the organization.</p>"
+        }
+      }
+    },
     "ErrorMessage":{"type":"string"},
     "GetMembersRequest":{
       "type":"structure",
@@ -430,7 +552,7 @@
         },
         "AccountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p>The list of AWS account identifiers for the member account for which to return member details. You can request details for up to 50 member accounts at a time.</p> <p>You cannot use <code>GetMembers</code> to retrieve information about member accounts that were removed from the behavior graph.</p>"
+          "documentation":"<p>The list of Amazon Web Services account identifiers for the member account for which to return member details. You can request details for up to 50 member accounts at a time.</p> <p>You cannot use <code>GetMembers</code> to retrieve information about member accounts that were removed from the behavior graph.</p>"
         }
       }
     },
@@ -456,7 +578,7 @@
         },
         "CreatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the behavior graph was created. The value is in milliseconds since the epoch.</p>"
+          "documentation":"<p>The date and time that the behavior graph was created. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
         }
       },
       "documentation":"<p>A behavior graph in Detective.</p>"
@@ -477,6 +599,13 @@
       "documentation":"<p>The request was valid but failed because of a problem with the service.</p>",
       "error":{"httpStatusCode":500},
       "exception":true
+    },
+    "InvitationType":{
+      "type":"string",
+      "enum":[
+        "INVITATION",
+        "ORGANIZATION"
+      ]
     },
     "ListGraphsRequest":{
       "type":"structure",
@@ -553,11 +682,37 @@
       "members":{
         "MemberDetails":{
           "shape":"MemberDetailList",
-          "documentation":"<p>The list of member accounts in the behavior graph.</p> <p>The results include member accounts that did not pass verification and member accounts that have not yet accepted the invitation to the behavior graph. The results do not include member accounts that were removed from the behavior graph.</p>"
+          "documentation":"<p>The list of member accounts in the behavior graph.</p> <p>For invited accounts, the results include member accounts that did not pass verification and member accounts that have not yet accepted the invitation to the behavior graph. The results do not include member accounts that were removed from the behavior graph.</p> <p>For the organization behavior graph, the results do not include organization accounts that the Detective administrator account has not enabled as member accounts.</p>"
         },
         "NextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>If there are more member accounts remaining in the results, then this is the pagination token to use to request the next page of member accounts.</p>"
+          "documentation":"<p>If there are more member accounts remaining in the results, then use this pagination token to request the next page of member accounts.</p>"
+        }
+      }
+    },
+    "ListOrganizationAdminAccountsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.</p>"
+        },
+        "MaxResults":{
+          "shape":"MemberResultsLimit",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListOrganizationAdminAccountsResponse":{
+      "type":"structure",
+      "members":{
+        "Administrators":{
+          "shape":"AdministratorList",
+          "documentation":"<p>The list of delegated administrator accounts.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more accounts remaining in the results, then this is the pagination token to use to request the next page of accounts.</p>"
         }
       }
     },
@@ -587,29 +742,29 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account identifier for the member account.</p>"
+          "documentation":"<p>The Amazon Web Services account identifier for the member account.</p>"
         },
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The AWS account root user email address for the member account.</p>"
+          "documentation":"<p>The Amazon Web Services account root user email address for the member account.</p>"
         },
         "GraphArn":{
           "shape":"GraphArn",
-          "documentation":"<p>The ARN of the behavior graph that the member account was invited to.</p>"
+          "documentation":"<p>The ARN of the behavior graph.</p>"
         },
         "MasterId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account identifier of the administrator account for the behavior graph.</p>",
+          "documentation":"<p>The Amazon Web Services account identifier of the administrator account for the behavior graph.</p>",
           "deprecated":true,
           "deprecatedMessage":"This property is deprecated. Use AdministratorId instead."
         },
         "AdministratorId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account identifier of the administrator account for the behavior graph.</p>"
+          "documentation":"<p>The Amazon Web Services account identifier of the administrator account for the behavior graph.</p>"
         },
         "Status":{
           "shape":"MemberStatus",
-          "documentation":"<p>The current membership status of the member account. The status can have one of the following values:</p> <ul> <li> <p> <code>INVITED</code> - Indicates that the member was sent an invitation but has not yet responded.</p> </li> <li> <p> <code>VERIFICATION_IN_PROGRESS</code> - Indicates that Detective is verifying that the account identifier and email address provided for the member account match. If they do match, then Detective sends the invitation. If the email address and account identifier don't match, then the member cannot be added to the behavior graph.</p> </li> <li> <p> <code>VERIFICATION_FAILED</code> - Indicates that the account and email address provided for the member account do not match, and Detective did not send an invitation to the account.</p> </li> <li> <p> <code>ENABLED</code> - Indicates that the member account accepted the invitation to contribute to the behavior graph.</p> </li> <li> <p> <code>ACCEPTED_BUT_DISABLED</code> - Indicates that the member account accepted the invitation but is prevented from contributing data to the behavior graph. <code>DisabledReason</code> provides the reason why the member account is not enabled.</p> </li> </ul> <p>Member accounts that declined an invitation or that were removed from the behavior graph are not included.</p>"
+          "documentation":"<p>The current membership status of the member account. The status can have one of the following values:</p> <ul> <li> <p> <code>INVITED</code> - For invited accounts only. Indicates that the member was sent an invitation but has not yet responded.</p> </li> <li> <p> <code>VERIFICATION_IN_PROGRESS</code> - For invited accounts only, indicates that Detective is verifying that the account identifier and email address provided for the member account match. If they do match, then Detective sends the invitation. If the email address and account identifier don't match, then the member cannot be added to the behavior graph.</p> <p>For organization accounts in the organization behavior graph, indicates that Detective is verifying that the account belongs to the organization.</p> </li> <li> <p> <code>VERIFICATION_FAILED</code> - For invited accounts only. Indicates that the account and email address provided for the member account do not match, and Detective did not send an invitation to the account.</p> </li> <li> <p> <code>ENABLED</code> - Indicates that the member account currently contributes data to the behavior graph. For invited accounts, the member account accepted the invitation. For organization accounts in the organization behavior graph, the Detective administrator account enabled the organization account as a member account.</p> </li> <li> <p> <code>ACCEPTED_BUT_DISABLED</code> - The account accepted the invitation, or was enabled by the Detective administrator account, but is prevented from contributing data to the behavior graph. <code>DisabledReason</code> provides the reason why the member account is not enabled.</p> </li> </ul> <p>Invited accounts that declined an invitation or that were removed from the behavior graph are not included. In the organization behavior graph, organization accounts that the Detective administrator account did not enable are not included.</p>"
         },
         "DisabledReason":{
           "shape":"MemberDisabledReason",
@@ -617,11 +772,11 @@
         },
         "InvitedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that Detective sent the invitation to the member account. The value is in milliseconds since the epoch.</p>"
+          "documentation":"<p>For invited accounts, the date and time that Detective sent the invitation to the account. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
         },
         "UpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the member account was last updated. The value is in milliseconds since the epoch.</p>"
+          "documentation":"<p>The date and time that the member account was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
         },
         "VolumeUsageInBytes":{
           "shape":"ByteValue",
@@ -629,7 +784,7 @@
         },
         "VolumeUsageUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The data and time when the member account data volume was last updated.</p>"
+          "documentation":"<p>The data and time when the member account data volume was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
         },
         "PercentOfGraphUtilization":{
           "shape":"Percentage",
@@ -639,12 +794,16 @@
         },
         "PercentOfGraphUtilizationUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time when the graph utilization percentage was last updated.</p>",
+          "documentation":"<p>The date and time when the graph utilization percentage was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>",
           "deprecated":true,
           "deprecatedMessage":"This property is deprecated. Use VolumeUsageUpdatedTime instead."
+        },
+        "InvitationType":{
+          "shape":"InvitationType",
+          "documentation":"<p>The type of behavior graph membership.</p> <p>For an organization account in the organization behavior graph, the type is <code>ORGANIZATION</code>.</p> <p>For an account that was invited to a behavior graph, the type is <code>INVITATION</code>. </p>"
         }
       },
-      "documentation":"<p>Details about a member account that was invited to contribute to a behavior graph.</p>"
+      "documentation":"<p>Details about a member account in a behavior graph.</p>"
     },
     "MemberDetailList":{
       "type":"list",
@@ -703,7 +862,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>This request cannot be completed for one of the following reasons.</p> <ul> <li> <p>The request would cause the number of member accounts in the behavior graph to exceed the maximum allowed. A behavior graph cannot have more than 1000 member accounts.</p> </li> <li> <p>The request would cause the data rate for the behavior graph to exceed the maximum allowed.</p> </li> <li> <p>Detective is unable to verify the data rate for the member account. This is usually because the member account is not enrolled in Amazon GuardDuty. </p> </li> </ul>",
+      "documentation":"<p>This request cannot be completed for one of the following reasons.</p> <ul> <li> <p>The request would cause the number of member accounts in the behavior graph to exceed the maximum allowed. A behavior graph cannot have more than 1200 member accounts.</p> </li> <li> <p>The request would cause the data rate for the behavior graph to exceed the maximum allowed.</p> </li> <li> <p>Detective is unable to verify the data rate for the member account. This is usually because the member account is not enrolled in Amazon GuardDuty.</p> </li> </ul>",
       "error":{"httpStatusCode":402},
       "exception":true
     },
@@ -775,12 +934,21 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request cannot be completed because too many other requests are occurring at the same time.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "UnprocessedAccount":{
       "type":"structure",
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account identifier of the member account that was not processed.</p>"
+          "documentation":"<p>The Amazon Web Services account identifier of the member account that was not processed.</p>"
         },
         "Reason":{
           "shape":"UnprocessedReason",
@@ -820,6 +988,20 @@
       "members":{
       }
     },
+    "UpdateOrganizationConfigurationRequest":{
+      "type":"structure",
+      "required":["GraphArn"],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the organization behavior graph.</p>"
+        },
+        "AutoEnable":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.</p>"
+        }
+      }
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -830,5 +1012,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Detective uses machine learning and purpose-built visualizations to help you analyze and investigate security issues across your Amazon Web Services (AWS) workloads. Detective automatically extracts time-based events such as login attempts, API calls, and network traffic from AWS CloudTrail and Amazon Virtual Private Cloud (Amazon VPC) flow logs. It also extracts findings detected by Amazon GuardDuty.</p> <p>The Detective API primarily supports the creation and management of behavior graphs. A behavior graph contains the extracted data from a set of member accounts, and is created and managed by an administrator account.</p> <p>Every behavior graph is specific to a Region. You can only use the API to manage graphs that belong to the Region that is associated with the currently selected endpoint.</p> <p>A Detective administrator account can use the Detective API to do the following:</p> <ul> <li> <p>Enable and disable Detective. Enabling Detective creates a new behavior graph.</p> </li> <li> <p>View the list of member accounts in a behavior graph.</p> </li> <li> <p>Add member accounts to a behavior graph.</p> </li> <li> <p>Remove member accounts from a behavior graph.</p> </li> </ul> <p>A member account can use the Detective API to do the following:</p> <ul> <li> <p>View the list of behavior graphs that they are invited to.</p> </li> <li> <p>Accept an invitation to contribute to a behavior graph.</p> </li> <li> <p>Decline an invitation to contribute to a behavior graph.</p> </li> <li> <p>Remove their account from a behavior graph.</p> </li> </ul> <p>All API actions are logged as CloudTrail events. See <a href=\"https://docs.aws.amazon.com/detective/latest/adminguide/logging-using-cloudtrail.html\">Logging Detective API Calls with CloudTrail</a>.</p> <note> <p>We replaced the term \"master account\" with the term \"administrator account.\" An administrator account is used to centrally manage multiple accounts. In the case of Detective, the administrator account manages the accounts in their behavior graph.</p> </note>"
+  "documentation":"<p>Detective uses machine learning and purpose-built visualizations to help you to analyze and investigate security issues across your Amazon Web Services (Amazon Web Services) workloads. Detective automatically extracts time-based events such as login attempts, API calls, and network traffic from CloudTrail and Amazon Virtual Private Cloud (Amazon VPC) flow logs. It also extracts findings detected by Amazon GuardDuty.</p> <p>The Detective API primarily supports the creation and management of behavior graphs. A behavior graph contains the extracted data from a set of member accounts, and is created and managed by an administrator account.</p> <p>To add a member account to the behavior graph, the administrator account sends an invitation to the account. When the account accepts the invitation, it becomes a member account in the behavior graph.</p> <p>Detective is also integrated with Organizations. The organization management account designates the Detective administrator account for the organization. That account becomes the administrator account for the organization behavior graph. The Detective administrator account can enable any organization account as a member account in the organization behavior graph. The organization accounts do not receive invitations. The Detective administrator account can also invite other accounts to the organization behavior graph.</p> <p>Every behavior graph is specific to a Region. You can only use the API to manage behavior graphs that belong to the Region that is associated with the currently selected endpoint.</p> <p>The administrator account for a behavior graph can use the Detective API to do the following:</p> <ul> <li> <p>Enable and disable Detective. Enabling Detective creates a new behavior graph.</p> </li> <li> <p>View the list of member accounts in a behavior graph.</p> </li> <li> <p>Add member accounts to a behavior graph.</p> </li> <li> <p>Remove member accounts from a behavior graph.</p> </li> <li> <p>Apply tags to a behavior graph.</p> </li> </ul> <p>The organization management account can use the Detective API to select the delegated administrator for Detective.</p> <p>The Detective administrator account for an organization can use the Detective API to do the following:</p> <ul> <li> <p>Perform all of the functions of an administrator account.</p> </li> <li> <p>Determine whether to automatically enable new organization accounts as member accounts in the organization behavior graph.</p> </li> </ul> <p>An invited member account can use the Detective API to do the following:</p> <ul> <li> <p>View the list of behavior graphs that they are invited to.</p> </li> <li> <p>Accept an invitation to contribute to a behavior graph.</p> </li> <li> <p>Decline an invitation to contribute to a behavior graph.</p> </li> <li> <p>Remove their account from a behavior graph.</p> </li> </ul> <p>All API actions are logged as CloudTrail events. See <a href=\"https://docs.aws.amazon.com/detective/latest/adminguide/logging-using-cloudtrail.html\">Logging Detective API Calls with CloudTrail</a>.</p> <note> <p>We replaced the term \"master account\" with the term \"administrator account.\" An administrator account is used to centrally manage multiple accounts. In the case of Detective, the administrator account manages the accounts in their behavior graph.</p> </note>"
 }

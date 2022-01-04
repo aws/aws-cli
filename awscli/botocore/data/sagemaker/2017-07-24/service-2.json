@@ -2669,7 +2669,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Stops a pipeline execution.</p> <p> <b>Callback Step</b> </p> <p>A pipeline execution won't stop while a callback step is running. When you call <code>StopPipelineExecution</code> on a pipeline execution with a running callback step, SageMaker Pipelines sends an additional Amazon SQS message to the specified SQS queue. The body of the SQS message contains a \"Status\" field which is set to \"Stopping\".</p> <p>You should add logic to your Amazon SQS message consumer to take any needed action (for example, resource cleanup) upon receipt of the message followed by a call to <code>SendPipelineExecutionStepSuccess</code> or <code>SendPipelineExecutionStepFailure</code>.</p> <p>Only when SageMaker Pipelines receives one of these calls will it stop the pipeline execution.</p> <p> <b>Lambda Step</b> </p> <p>A pipeline execution can't be stopped while a lambda step is running because the Lambda function invoked by the lambda step can't be stopped. If you attempt to stop the execution while the Lambda function is running, the pipeline waits for the Lambda function to finish or until the timeout is hit, whichever occurs first, and then stops. If the Lambda function finishes, the pipeline execution status is <code>Stopped</code>. If the timeout is hit the pipeline execution status is <code>Failed</code>.</p>"
+      "documentation":"<p>Stops a pipeline execution.</p> <p> <b>Callback Step</b> </p> <p>A pipeline execution won't stop while a callback step is running. When you call <code>StopPipelineExecution</code> on a pipeline execution with a running callback step, Amazon SageMaker Pipelines sends an additional Amazon SQS message to the specified SQS queue. The body of the SQS message contains a \"Status\" field which is set to \"Stopping\".</p> <p>You should add logic to your Amazon SQS message consumer to take any needed action (for example, resource cleanup) upon receipt of the message followed by a call to <code>SendPipelineExecutionStepSuccess</code> or <code>SendPipelineExecutionStepFailure</code>.</p> <p>Only when Amazon SageMaker Pipelines receives one of these calls will it stop the pipeline execution.</p> <p> <b>Lambda Step</b> </p> <p>A pipeline execution can't be stopped while a lambda step is running because the Lambda function invoked by the lambda step can't be stopped. If you attempt to stop the execution while the Lambda function is running, the pipeline waits for the Lambda function to finish or until the timeout is hit, whichever occurs first, and then stops. If the Lambda function finishes, the pipeline execution status is <code>Stopped</code>. If the timeout is hit the pipeline execution status is <code>Failed</code>.</p>"
     },
     "StopProcessingJob":{
       "name":"StopProcessingJob",
@@ -2705,7 +2705,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Stops a transform job.</p> <p>When Amazon SageMaker receives a <code>StopTransformJob</code> request, the status of the job changes to <code>Stopping</code>. After Amazon SageMaker stops the job, the status is set to <code>Stopped</code>. When you stop a transform job before it is completed, Amazon SageMaker doesn't store the job's output in Amazon S3.</p>"
+      "documentation":"<p>Stops a batch transform job.</p> <p>When Amazon SageMaker receives a <code>StopTransformJob</code> request, the status of the job changes to <code>Stopping</code>. After Amazon SageMaker stops the job, the status is set to <code>Stopped</code>. When you stop a batch transform job before it is completed, Amazon SageMaker doesn't store the job's output in Amazon S3.</p>"
     },
     "UpdateAction":{
       "name":"UpdateAction",
@@ -4589,6 +4589,12 @@
       "min":1,
       "pattern":"[^ ~^:?*\\[]+"
     },
+    "BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+    },
     "CacheHitResult":{
       "type":"structure",
       "members":{
@@ -6045,7 +6051,7 @@
         },
         "HomeEfsFileSystemKmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>This member is deprecated and replaced with <code>KmsKeyId</code>.</p>",
+          "documentation":"<p>Use <code>KmsKeyId</code>.</p>",
           "deprecated":true,
           "deprecatedMessage":"This property is deprecated, use KmsKeyId instead."
         },
@@ -7050,7 +7056,6 @@
       "type":"structure",
       "required":[
         "PipelineName",
-        "PipelineDefinition",
         "ClientRequestToken",
         "RoleArn"
       ],
@@ -7066,6 +7071,10 @@
         "PipelineDefinition":{
           "shape":"PipelineDefinition",
           "documentation":"<p>The JSON pipeline definition of the pipeline.</p>"
+        },
+        "PipelineDefinitionS3Location":{
+          "shape":"PipelineDefinitionS3Location",
+          "documentation":"<p>The location of the pipeline definition stored in Amazon S3. If specified, SageMaker will retrieve the pipeline definition from this location.</p>"
         },
         "PipelineDescription":{
           "shape":"PipelineDescription",
@@ -7083,6 +7092,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags to apply to the created pipeline.</p>"
+        },
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>This is the configuration that controls the parallelism of the pipeline. If specified, it applies to all runs of this pipeline by default.</p>"
         }
       }
     },
@@ -9504,7 +9517,7 @@
         },
         "HomeEfsFileSystemKmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>This member is deprecated and replaced with <code>KmsKeyId</code>.</p>",
+          "documentation":"<p>Use <code>KmsKeyId</code>.</p>",
           "deprecated":true,
           "deprecatedMessage":"This property is deprecated, use KmsKeyId instead."
         },
@@ -11041,7 +11054,11 @@
           "documentation":"<p>The time when the pipeline execution was modified last.</p>"
         },
         "CreatedBy":{"shape":"UserContext"},
-        "LastModifiedBy":{"shape":"UserContext"}
+        "LastModifiedBy":{"shape":"UserContext"},
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>The parallelism configuration applied to the pipeline.</p>"
+        }
       }
     },
     "DescribePipelineRequest":{
@@ -11098,7 +11115,11 @@
           "documentation":"<p>The time when the pipeline was last run.</p>"
         },
         "CreatedBy":{"shape":"UserContext"},
-        "LastModifiedBy":{"shape":"UserContext"}
+        "LastModifiedBy":{"shape":"UserContext"},
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>Lists the parallelism configuration applied to the pipeline.</p>"
+        }
       }
     },
     "DescribeProcessingJobRequest":{
@@ -12263,6 +12284,28 @@
         "Constraints":{"shape":"MetricsSource"}
       },
       "documentation":"<p>Represents the drift check model quality baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "EMRStepMetadata":{
+      "type":"structure",
+      "members":{
+        "ClusterId":{
+          "shape":"String256",
+          "documentation":"<p>The identifier of the EMR cluster.</p>"
+        },
+        "StepId":{
+          "shape":"String256",
+          "documentation":"<p>The identifier of the EMR cluster step.</p>"
+        },
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the EMR cluster step.</p>"
+        },
+        "LogFilePath":{
+          "shape":"String1024",
+          "documentation":"<p>The path to the log file where the cluster step's failure root cause is recorded.</p>"
+        }
+      },
+      "documentation":"<p>The configurations and outcomes of an Amazon EMR step execution.</p>"
     },
     "Edge":{
       "type":"structure",
@@ -14725,7 +14768,7 @@
         },
         "FrameworkVersion":{
           "shape":"FrameworkVersion",
-          "documentation":"<p>Specifies the framework version to use.</p> <p>This API field is only supported for PyTorch framework versions <code>1.4</code>, <code>1.5</code>, and <code>1.6</code> for cloud instance target devices: <code>ml_c4</code>, <code>ml_c5</code>, <code>ml_m4</code>, <code>ml_m5</code>, <code>ml_p2</code>, <code>ml_p3</code>, and <code>ml_g4dn</code>.</p>"
+          "documentation":"<p>Specifies the framework version to use. This API field is only supported for the PyTorch and TensorFlow frameworks.</p> <p>For information about framework versions supported for cloud targets and edge devices, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-cloud.html\">Cloud Supported Instance Types and Frameworks</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-devices-edge-frameworks.html\">Edge Supported Frameworks</a>.</p>"
         }
       },
       "documentation":"<p>Contains information about the location of input model artifacts, the name and shape of the expected data inputs, and the framework in which the model was trained.</p>"
@@ -14995,6 +15038,12 @@
       "member":{"shape":"KernelSpec"},
       "max":1,
       "min":1
+    },
+    "Key":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".+"
     },
     "KmsKeyId":{
       "type":"string",
@@ -18379,6 +18428,10 @@
       "type":"integer",
       "min":1
     },
+    "MaxParallelExecutionSteps":{
+      "type":"integer",
+      "min":1
+    },
     "MaxParallelOfTests":{
       "type":"integer",
       "min":1
@@ -20630,6 +20683,17 @@
       "max":8192,
       "pattern":".*"
     },
+    "ParallelismConfiguration":{
+      "type":"structure",
+      "required":["MaxParallelExecutionSteps"],
+      "members":{
+        "MaxParallelExecutionSteps":{
+          "shape":"MaxParallelExecutionSteps",
+          "documentation":"<p>The max number of steps that can be executed in parallel. </p>"
+        }
+      },
+      "documentation":"<p>Configuration that controls the parallelism of the pipeline. By default, the parallelism configuration specified applies to all executions of the pipeline unless overridden.</p>"
+    },
     "Parameter":{
       "type":"structure",
       "required":[
@@ -20893,6 +20957,10 @@
         },
         "CreatedBy":{"shape":"UserContext"},
         "LastModifiedBy":{"shape":"UserContext"},
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>The parallelism configuration applied to the pipeline.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags that apply to the pipeline.</p>"
@@ -20910,6 +20978,28 @@
       "max":1048576,
       "min":1,
       "pattern":".*(?:[ \\r\\n\\t].*)*"
+    },
+    "PipelineDefinitionS3Location":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "ObjectKey"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p>Name of the S3 bucket.</p>"
+        },
+        "ObjectKey":{
+          "shape":"Key",
+          "documentation":"<p>The object key (or key name) uniquely identifies the object in an S3 bucket. </p>"
+        },
+        "VersionId":{
+          "shape":"VersionId",
+          "documentation":"<p>Version Id of the pipeline definition file. If not specified, Amazon SageMaker will retrieve the latest version.</p>"
+        }
+      },
+      "documentation":"<p>The location of the pipeline definition stored in Amazon S3.</p>"
     },
     "PipelineDescription":{
       "type":"string",
@@ -20955,6 +21045,10 @@
         },
         "CreatedBy":{"shape":"UserContext"},
         "LastModifiedBy":{"shape":"UserContext"},
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>The parallelism configuration applied to the pipeline execution.</p>"
+        },
         "PipelineParameters":{
           "shape":"ParameterList",
           "documentation":"<p>Contains a list of pipeline parameters. This list can be empty. </p>"
@@ -21001,6 +21095,14 @@
           "shape":"StepName",
           "documentation":"<p>The name of the step that is executed.</p>"
         },
+        "StepDisplayName":{
+          "shape":"StepDisplayName",
+          "documentation":"<p>The display name of the step.</p>"
+        },
+        "StepDescription":{
+          "shape":"StepDescription",
+          "documentation":"<p>The description of the step.</p>"
+        },
         "StartTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the step started executing.</p>"
@@ -21017,7 +21119,10 @@
           "shape":"CacheHitResult",
           "documentation":"<p>If this pipeline execution step was cached, details on the cache hit.</p>"
         },
-        "AttemptCount":{"shape":"IntegerValue"},
+        "AttemptCount":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The current attempt of the execution step. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/sagemaker/latest/dg/pipelines-retry-policy.html\">Retry Policy for Amazon SageMaker Pipelines steps</a>.</p>"
+        },
         "FailureReason":{
           "shape":"FailureReason",
           "documentation":"<p>The reason why the step failed execution. This is only returned if the step failed its execution.</p>"
@@ -21081,6 +21186,10 @@
         "ClarifyCheck":{
           "shape":"ClarifyCheckStepMetadata",
           "documentation":"<p>Container for the metadata for a Clarify check step. The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted,</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
+        },
+        "EMR":{
+          "shape":"EMRStepMetadata",
+          "documentation":"<p>The configurations and outcomes of an EMR step execution.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -23032,6 +23141,10 @@
           "shape":"IdempotencyToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than once.</p>",
           "idempotencyToken":true
+        },
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>This configuration, if specified, overrides the parallelism configuration of the parent pipeline.</p>"
         }
       }
     },
@@ -23740,6 +23853,10 @@
           "shape":"IdempotencyToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than once.</p>",
           "idempotencyToken":true
+        },
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>This configuration, if specified, overrides the parallelism configuration of the parent pipeline for this specific run.</p>"
         }
       }
     },
@@ -23758,10 +23875,22 @@
       "pattern":".*"
     },
     "StatusMessage":{"type":"string"},
-    "StepName":{
+    "StepDescription":{
+      "type":"string",
+      "max":3072,
+      "min":0,
+      "pattern":".*"
+    },
+    "StepDisplayName":{
       "type":"string",
       "max":256,
+      "min":0,
       "pattern":".*"
+    },
+    "StepName":{
+      "type":"string",
+      "max":64,
+      "pattern":"^[A-Za-z0-9\\-_]*$"
     },
     "StepStatus":{
       "type":"string",
@@ -23907,7 +24036,7 @@
       "members":{
         "TransformJobName":{
           "shape":"TransformJobName",
-          "documentation":"<p>The name of the transform job to stop.</p>"
+          "documentation":"<p>The name of the batch transform job to stop.</p>"
         }
       }
     },
@@ -26159,6 +26288,10 @@
         "PipelineExecutionDisplayName":{
           "shape":"PipelineExecutionName",
           "documentation":"<p>The display name of the pipeline execution.</p>"
+        },
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>This configuration, if specified, overrides the parallelism configuration of the parent pipeline for this specific run.</p>"
         }
       }
     },
@@ -26187,6 +26320,10 @@
           "shape":"PipelineDefinition",
           "documentation":"<p>The JSON pipeline definition.</p>"
         },
+        "PipelineDefinitionS3Location":{
+          "shape":"PipelineDefinitionS3Location",
+          "documentation":"<p>The location of the pipeline definition stored in Amazon S3. If specified, SageMaker will retrieve the pipeline definition from this location.</p>"
+        },
         "PipelineDescription":{
           "shape":"PipelineDescription",
           "documentation":"<p>The description of the pipeline.</p>"
@@ -26194,6 +26331,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) that the pipeline uses to execute.</p>"
+        },
+        "ParallelismConfiguration":{
+          "shape":"ParallelismConfiguration",
+          "documentation":"<p>If specified, it applies to all executions of this pipeline by default.</p>"
         }
       }
     },
@@ -26605,6 +26746,12 @@
     "VariantWeight":{
       "type":"float",
       "min":0
+    },
+    "VersionId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".+"
     },
     "VersionedArnOrName":{
       "type":"string",

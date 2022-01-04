@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.28
+=======
+
+* api-change:``s3control``: Documentation updates for the renaming of Glacier to Glacier Flexible Retrieval.
+* api-change:``s3``: Minor doc-based updates based on feedback bugs received.
+* api-change:``rekognition``: This release introduces a new field IndexFacesModelVersion, which is the version of the face detect and storage model that was used when indexing the face vector.
+
+
 1.22.27
 =======
 

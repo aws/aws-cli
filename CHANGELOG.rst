@@ -2979,6 +2979,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.30
+=======
+
+* api-change:``es``: Amazon OpenSearch Service adds support for Fine Grained Access Control for existing domains running Elasticsearch version 6.7 and above
+* api-change:``ec2``: This release introduces On-Demand Capacity Reservation support for Cluster Placement Groups, adds Tags on instance Metadata, and includes documentation updates for Amazon EC2.
+* api-change:``appsync``: AppSync: AWS AppSync now supports configurable batching sizes for AWS Lambda resolvers, Direct AWS Lambda resolvers and pipeline functions
+* api-change:``iotwireless``: Downlink Queue Management feature provides APIs for customers to manage the queued messages destined to device inside AWS IoT Core for LoRaWAN. Customer can view, delete or purge the queued message(s). It allows customer to preempt the queued messages and let more urgent messages go through.
+* api-change:``mwaa``: This release adds a "Source" field that provides the initiator of an update, such as due to an automated patch from AWS or due to modification via Console or API.
+* api-change:``opensearch``: Amazon OpenSearch Service adds support for Fine Grained Access Control for existing domains running Elasticsearch version 6.7 and above
+* api-change:``mediatailor``: This release adds support for filler slate when updating MediaTailor channels that use the linear playback mode.
+
+
+1.22.29
+=======
+
+* api-change:``ec2``: This release adds a new API called ModifyVpcEndpointServicePayerResponsibility which allows VPC endpoint service owners to take payer responsibility of their VPC Endpoint connections.
+* api-change:``sagemaker``: Amazon SageMaker now supports running training jobs on ml.g5 instance types.
+* api-change:``iot``: This release adds an automatic retry mechanism for AWS IoT Jobs. You can now define a maximum number of retries for each Job rollout, along with the criteria to trigger the retry for FAILED/TIMED_OUT/ALL(both FAILED an TIMED_OUT) job.
+* api-change:``glue``: Add Delta Lake target support for Glue Crawler and 3rd Party Support for Lake Formation
+* api-change:``appstream``: Includes APIs for App Entitlement management regarding entitlement and entitled application association.
+* api-change:``eks``: Amazon EKS now supports running applications using IPv6 address space
+* api-change:``lakeformation``: Add new APIs for 3rd Party Support for Lake Formation
+* api-change:``snowball``: Updating validation rules for interfaces used in the Snowball API to tighten security of service.
+* api-change:``cloudtrail``: This release adds support for CloudTrail Lake, a new feature that lets you run SQL-based queries on events that you have aggregated into event data stores. New APIs have been added for creating and managing event data stores, and creating, running, and managing queries in CloudTrail Lake.
+* api-change:``ecs``: Documentation update for ticket fixes.
+* api-change:``quicksight``: Multiple Doc-only updates for Amazon QuickSight.
+
+
 1.22.28
 =======
 

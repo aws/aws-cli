@@ -71,8 +71,6 @@ output               --output       output                AWS_DEFAULT_OUTPUT    
 -------------------- -------------- --------------------- --------------------- --------------------------------
 cli_timestamp_format N/A            cli_timestamp_format  N/A                   Output format of timestamps
 -------------------- -------------- --------------------- --------------------- --------------------------------
-cli_follow_urlparam  N/A            cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- -------------- --------------------- --------------------- --------------------------------
 ca_bundle            --ca-bundle    ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
 -------------------- -------------- --------------------- --------------------- --------------------------------
 parameter_validation N/A            parameter_validation  N/A                   Toggles parameter validation
@@ -116,17 +114,6 @@ the ``cli_binary_format`` setting. When using ``file://`` the file contents
 will need to properly formatted for the configured ``cli_binary_format``.
 
 The default value is ``iso8601``.
-
-``cli_follow_urlparam`` controls whether or not the CLI will attempt to follow
-URL links in parameters that start with either prefix ``https://`` or
-``http://``.  The valid values of the ``cli_follow_urlparam`` configuration
-variable are:
-
-* true - This is the default value. With this configured the CLI will follow
-  any string parameters that start with ``https://`` or ``http://`` will be
-  fetched, and the downloaded content will be used as the parameter instead.
-* false - The CLI will not treat strings prefixed with ``https://`` or
-  ``http://`` any differently than normal string parameters.
 
 ``parameter_validation`` controls whether parameter validation should occur
 when serializing requests. The default is True. You can disable parameter

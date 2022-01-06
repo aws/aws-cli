@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.22.30
+=======
+
+* api-change:``es``: Amazon OpenSearch Service adds support for Fine Grained Access Control for existing domains running Elasticsearch version 6.7 and above
+* api-change:``ec2``: This release introduces On-Demand Capacity Reservation support for Cluster Placement Groups, adds Tags on instance Metadata, and includes documentation updates for Amazon EC2.
+* api-change:``appsync``: AppSync: AWS AppSync now supports configurable batching sizes for AWS Lambda resolvers, Direct AWS Lambda resolvers and pipeline functions
+* api-change:``iotwireless``: Downlink Queue Management feature provides APIs for customers to manage the queued messages destined to device inside AWS IoT Core for LoRaWAN. Customer can view, delete or purge the queued message(s). It allows customer to preempt the queued messages and let more urgent messages go through.
+* api-change:``mwaa``: This release adds a "Source" field that provides the initiator of an update, such as due to an automated patch from AWS or due to modification via Console or API.
+* api-change:``opensearch``: Amazon OpenSearch Service adds support for Fine Grained Access Control for existing domains running Elasticsearch version 6.7 and above
+* api-change:``mediatailor``: This release adds support for filler slate when updating MediaTailor channels that use the linear playback mode.
+
+
 1.22.29
 =======
 

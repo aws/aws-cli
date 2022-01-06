@@ -6737,7 +6737,7 @@
         },
         "abortConfig":{
           "shape":"AbortConfig",
-          "documentation":"<p>Allows you to create criteria to abort a job.</p>"
+          "documentation":"<p>Allows you to create the criteria to abort a job.</p>"
         },
         "timeoutConfig":{
           "shape":"TimeoutConfig",
@@ -6754,6 +6754,10 @@
         "jobTemplateArn":{
           "shape":"JobTemplateArn",
           "documentation":"<p>The ARN of the job template used to create the job.</p>"
+        },
+        "jobExecutionsRetryConfig":{
+          "shape":"JobExecutionsRetryConfig",
+          "documentation":"<p>Allows you to create the criteria to retry a job.</p>"
         },
         "documentParameters":{
           "shape":"ParameterMap",
@@ -6814,6 +6818,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Metadata that can be used to manage the job template.</p>"
+        },
+        "jobExecutionsRetryConfig":{
+          "shape":"JobExecutionsRetryConfig",
+          "documentation":"<p>Allows you to create the criteria to retry a job.</p>"
         }
       }
     },
@@ -8996,7 +9004,11 @@
         "presignedUrlConfig":{"shape":"PresignedUrlConfig"},
         "jobExecutionsRolloutConfig":{"shape":"JobExecutionsRolloutConfig"},
         "abortConfig":{"shape":"AbortConfig"},
-        "timeoutConfig":{"shape":"TimeoutConfig"}
+        "timeoutConfig":{"shape":"TimeoutConfig"},
+        "jobExecutionsRetryConfig":{
+          "shape":"JobExecutionsRetryConfig",
+          "documentation":"<p>The configuration that determines how many retries are allowed for each failure type for a job.</p>"
+        }
       }
     },
     "DescribeManagedJobTemplateRequest":{
@@ -11355,6 +11367,10 @@
           "shape":"JobTemplateArn",
           "documentation":"<p>The ARN of the job template used to create the job.</p>"
         },
+        "jobExecutionsRetryConfig":{
+          "shape":"JobExecutionsRetryConfig",
+          "documentation":"<p>The configuration for the criteria to retry the job.</p>"
+        },
         "documentParameters":{
           "shape":"ParameterMap",
           "documentation":"<p>A key-value map that pairs the patterns that need to be replaced in a managed template job document schema. You can use the description of each key as a guidance to specify the inputs during runtime when creating a job.</p>"
@@ -11481,6 +11497,10 @@
         "executionNumber":{
           "shape":"ExecutionNumber",
           "documentation":"<p>A string (consisting of the digits \"0\" through \"9\") which identifies this particular job execution on this particular device. It can be used later in commands which return or update job execution information.</p>"
+        },
+        "retryAttempt":{
+          "shape":"RetryAttempt",
+          "documentation":"<p>The number that indicates how many retry attempts have been completed for this job on this device.</p>"
         }
       },
       "documentation":"<p>The job execution summary.</p>"
@@ -11520,6 +11540,17 @@
     "JobExecutionSummaryForThingList":{
       "type":"list",
       "member":{"shape":"JobExecutionSummaryForThing"}
+    },
+    "JobExecutionsRetryConfig":{
+      "type":"structure",
+      "required":["criteriaList"],
+      "members":{
+        "criteriaList":{
+          "shape":"RetryCriteriaList",
+          "documentation":"<p>The list of criteria that determines how many retries are allowed for each failure type for a job.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that determines how many retries are allowed for each failure type for a job.</p>"
     },
     "JobExecutionsRolloutConfig":{
       "type":"structure",
@@ -12683,6 +12714,12 @@
           "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier you assigned to this job when it was created.</p>",
+          "location":"querystring",
+          "locationName":"jobId"
         }
       }
     },
@@ -14509,6 +14546,11 @@
       "type":"list",
       "member":{"shape":"Number"}
     },
+    "NumberOfRetries":{
+      "type":"integer",
+      "max":10,
+      "min":0
+    },
     "NumberOfThings":{
       "type":"integer",
       "min":1
@@ -15637,6 +15679,39 @@
     "Resources":{
       "type":"list",
       "member":{"shape":"Resource"}
+    },
+    "RetryAttempt":{"type":"integer"},
+    "RetryCriteria":{
+      "type":"structure",
+      "required":[
+        "failureType",
+        "numberOfRetries"
+      ],
+      "members":{
+        "failureType":{
+          "shape":"RetryableFailureType",
+          "documentation":"<p>The type of job execution failures that can initiate a job retry.</p>"
+        },
+        "numberOfRetries":{
+          "shape":"NumberOfRetries",
+          "documentation":"<p>The number of retries allowed for a failure type for the job.</p>"
+        }
+      },
+      "documentation":"<p>The criteria that determines how many retries are allowed for each failure type for a job.</p>"
+    },
+    "RetryCriteriaList":{
+      "type":"list",
+      "member":{"shape":"RetryCriteria"},
+      "max":2,
+      "min":1
+    },
+    "RetryableFailureType":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "TIMED_OUT",
+        "ALL"
+      ]
     },
     "RoleAlias":{
       "type":"string",
@@ -18251,6 +18326,10 @@
           "documentation":"<p>The namespace used to indicate that a job is a customer-managed job.</p> <p>When you specify a value for this parameter, Amazon Web Services IoT Core sends jobs notifications to MQTT topics that contain the value in the following format.</p> <p> <code>$aws/things/<i>THING_NAME</i>/jobs/<i>JOB_ID</i>/notify-namespace-<i>NAMESPACE_ID</i>/</code> </p> <note> <p>The <code>namespaceId</code> feature is in public preview.</p> </note>",
           "location":"querystring",
           "locationName":"namespaceId"
+        },
+        "jobExecutionsRetryConfig":{
+          "shape":"JobExecutionsRetryConfig",
+          "documentation":"<p>Allows you to create the criteria to retry a job.</p>"
         }
       }
     },

@@ -30,6 +30,23 @@
       ],
       "documentation":"<p>Associates the specified application with the specified fleet. This is only supported for Elastic fleets.</p>"
     },
+    "AssociateApplicationToEntitlement":{
+      "name":"AssociateApplicationToEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateApplicationToEntitlementRequest"},
+      "output":{"shape":"AssociateApplicationToEntitlementResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntitlementNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Associates an application to entitle.</p>"
+    },
     "AssociateFleet":{
       "name":"AssociateFleet",
       "http":{
@@ -144,6 +161,22 @@
         {"shape":"InvalidRoleException"}
       ],
       "documentation":"<p>Creates a Directory Config object in AppStream 2.0. This object includes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.</p>"
+    },
+    "CreateEntitlement":{
+      "name":"CreateEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEntitlementRequest"},
+      "output":{"shape":"CreateEntitlementResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"EntitlementAlreadyExistsException"}
+      ],
+      "documentation":"<p>Creates a new entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. Amazon AppStream 2.0 user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.</p>"
     },
     "CreateFleet":{
       "name":"CreateFleet",
@@ -336,6 +369,23 @@
       ],
       "documentation":"<p>Deletes the specified Directory Config object from AppStream 2.0. This object includes the information required to join streaming instances to an Active Directory domain.</p>"
     },
+    "DeleteEntitlement":{
+      "name":"DeleteEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEntitlementRequest"},
+      "output":{"shape":"DeleteEntitlementResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntitlementNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes the specified entitlement.</p>"
+    },
     "DeleteFleet":{
       "name":"DeleteFleet",
       "http":{
@@ -407,6 +457,7 @@
       "errors":[
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
         {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes the specified stack. After the stack is deleted, the application streaming environment provided by the stack is no longer available to users. Also, any reservations made for application streaming sessions for the stack are released.</p>"
@@ -492,6 +543,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a list that describes one or more specified Directory Config objects for AppStream 2.0, if the names for these objects are provided. Otherwise, all Directory Config objects in the account are described. These objects include the configuration information required to join fleets and image builders to Microsoft Active Directory domains. </p> <p>Although the response syntax in this topic includes the account password, this password is not returned in the actual response.</p>"
+    },
+    "DescribeEntitlements":{
+      "name":"DescribeEntitlements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEntitlementsRequest"},
+      "output":{"shape":"DescribeEntitlementsResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntitlementNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes one of more entitlements.</p>"
     },
     "DescribeFleets":{
       "name":"DescribeFleets",
@@ -643,6 +709,22 @@
       ],
       "documentation":"<p>Disassociates the specified application from the fleet.</p>"
     },
+    "DisassociateApplicationFromEntitlement":{
+      "name":"DisassociateApplicationFromEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateApplicationFromEntitlementRequest"},
+      "output":{"shape":"DisassociateApplicationFromEntitlementResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntitlementNotFoundException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Deletes the specified application from the specified entitlement.</p>"
+    },
     "DisassociateFleet":{
       "name":"DisassociateFleet",
       "http":{
@@ -702,6 +784,21 @@
       "input":{"shape":"ListAssociatedStacksRequest"},
       "output":{"shape":"ListAssociatedStacksResult"},
       "documentation":"<p>Retrieves the name of the stack with which the specified fleet is associated.</p>"
+    },
+    "ListEntitledApplications":{
+      "name":"ListEntitledApplications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEntitledApplicationsRequest"},
+      "output":{"shape":"ListEntitledApplicationsResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntitlementNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list of entitled applications.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -841,6 +938,22 @@
         {"shape":"InvalidRoleException"}
       ],
       "documentation":"<p>Updates the specified Directory Config object in AppStream 2.0. This object includes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.</p>"
+    },
+    "UpdateEntitlement":{
+      "name":"UpdateEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEntitlementRequest"},
+      "output":{"shape":"UpdateEntitlementResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntitlementNotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Updates the specified entitlement.</p>"
     },
     "UpdateFleet":{
       "name":"UpdateFleet",
@@ -993,6 +1106,13 @@
     "AppBlocks":{
       "type":"list",
       "member":{"shape":"AppBlock"}
+    },
+    "AppVisibility":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "ASSOCIATED"
+      ]
     },
     "Application":{
       "type":"structure",
@@ -1170,6 +1290,33 @@
           "shape":"ApplicationFleetAssociation",
           "documentation":"<p>If fleet name is specified, this returns the list of applications that are associated to it. If application ARN is specified, this returns the list of fleets to which it is associated.</p>"
         }
+      }
+    },
+    "AssociateApplicationToEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "StackName",
+        "EntitlementName",
+        "ApplicationIdentifier"
+      ],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack.</p>"
+        },
+        "EntitlementName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "ApplicationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the application.</p>"
+        }
+      }
+    },
+    "AssociateApplicationToEntitlementResult":{
+      "type":"structure",
+      "members":{
       }
     },
     "AssociateFleetRequest":{
@@ -1462,6 +1609,46 @@
         "DirectoryConfig":{
           "shape":"DirectoryConfig",
           "documentation":"<p>Information about the directory configuration.</p>"
+        }
+      }
+    },
+    "CreateEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "StackName",
+        "AppVisibility",
+        "Attributes"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the entitlement.</p>"
+        },
+        "AppVisibility":{
+          "shape":"AppVisibility",
+          "documentation":"<p>Specifies whether all or selected apps are entitled.</p>"
+        },
+        "Attributes":{
+          "shape":"EntitlementAttributeList",
+          "documentation":"<p>The attributes of the entitlement.</p>"
+        }
+      }
+    },
+    "CreateEntitlementResult":{
+      "type":"structure",
+      "members":{
+        "Entitlement":{
+          "shape":"Entitlement",
+          "documentation":"<p>The entitlement.</p>"
         }
       }
     },
@@ -1906,6 +2093,28 @@
       "members":{
       }
     },
+    "DeleteEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "StackName"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        }
+      }
+    },
+    "DeleteEntitlementResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteFleetRequest":{
       "type":"structure",
       "required":["Name"],
@@ -2149,6 +2358,41 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.</p>"
+        }
+      }
+    },
+    "DescribeEntitlementsRequest":{
+      "type":"structure",
+      "required":["StackName"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results.</p>"
+        }
+      }
+    },
+    "DescribeEntitlementsResult":{
+      "type":"structure",
+      "members":{
+        "Entitlements":{
+          "shape":"EntitlementList",
+          "documentation":"<p>The entitlements.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
         }
       }
     },
@@ -2538,6 +2782,33 @@
       "members":{
       }
     },
+    "DisassociateApplicationFromEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "StackName",
+        "EntitlementName",
+        "ApplicationIdentifier"
+      ],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        },
+        "EntitlementName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "ApplicationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the application to remove from the entitlement.</p>"
+        }
+      }
+    },
+    "DisassociateApplicationFromEntitlementResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DisassociateFleetRequest":{
       "type":"structure",
       "required":[
@@ -2622,6 +2893,104 @@
       "type":"structure",
       "members":{
       }
+    },
+    "EntitledApplication":{
+      "type":"structure",
+      "required":["ApplicationIdentifier"],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the application.</p>"
+        }
+      },
+      "documentation":"<p>The application associated to an entitlement. Access is controlled based on user attributes.</p>"
+    },
+    "EntitledApplicationList":{
+      "type":"list",
+      "member":{"shape":"EntitledApplication"}
+    },
+    "Entitlement":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "StackName",
+        "AppVisibility",
+        "Attributes"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the entitlement.</p>"
+        },
+        "AppVisibility":{
+          "shape":"AppVisibility",
+          "documentation":"<p>Specifies whether all or selected apps are entitled.</p>"
+        },
+        "Attributes":{
+          "shape":"EntitlementAttributeList",
+          "documentation":"<p>The attributes of the entitlement.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the entitlement was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the entitlement was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. Amazon AppStream 2.0 user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.</p>"
+    },
+    "EntitlementAlreadyExistsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The entitlement already exists.</p>",
+      "exception":true
+    },
+    "EntitlementAttribute":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>A supported AWS IAM SAML <code>PrincipalTag</code> attribute that is matched to the associated value when a user identity federates into an Amazon AppStream 2.0 SAML application.</p> <p>The following are valid values:</p> <ul> <li> <p>roles</p> </li> <li> <p>department </p> </li> <li> <p>organization </p> </li> <li> <p>groups </p> </li> <li> <p>title </p> </li> <li> <p>costCenter </p> </li> <li> <p>userType</p> </li> </ul> <p> </p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>A value that is matched to a supported SAML attribute name when a user identity federates into an Amazon AppStream 2.0 SAML application. </p>"
+        }
+      },
+      "documentation":"<p>An attribute associated with an entitlement. Application entitlements work by matching a supported SAML 2.0 attribute name to a value when a user identity federates to an Amazon AppStream 2.0 SAML application.</p>"
+    },
+    "EntitlementAttributeList":{
+      "type":"list",
+      "member":{"shape":"EntitlementAttribute"},
+      "min":1
+    },
+    "EntitlementList":{
+      "type":"list",
+      "member":{"shape":"Entitlement"}
+    },
+    "EntitlementNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The entitlement can't be found.</p>",
+      "exception":true
     },
     "ErrorMessage":{
       "type":"string",
@@ -3196,6 +3565,44 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.</p>"
+        }
+      }
+    },
+    "ListEntitledApplicationsRequest":{
+      "type":"structure",
+      "required":[
+        "StackName",
+        "EntitlementName"
+      ],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        },
+        "EntitlementName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results.</p>"
+        }
+      }
+    },
+    "ListEntitledApplicationsResult":{
+      "type":"structure",
+      "members":{
+        "EntitledApplications":{
+          "shape":"EntitledApplicationList",
+          "documentation":"<p>The entitled applications.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
         }
       }
     },
@@ -3932,6 +4339,44 @@
         "DirectoryConfig":{
           "shape":"DirectoryConfig",
           "documentation":"<p>Information about the Directory Config object.</p>"
+        }
+      }
+    },
+    "UpdateEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "StackName"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the entitlement.</p>"
+        },
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack with which the entitlement is associated.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the entitlement.</p>"
+        },
+        "AppVisibility":{
+          "shape":"AppVisibility",
+          "documentation":"<p>Specifies whether all or only selected apps are entitled.</p>"
+        },
+        "Attributes":{
+          "shape":"EntitlementAttributeList",
+          "documentation":"<p>The attributes of the entitlement.</p>"
+        }
+      }
+    },
+    "UpdateEntitlementResult":{
+      "type":"structure",
+      "members":{
+        "Entitlement":{
+          "shape":"Entitlement",
+          "documentation":"<p>The entitlement.</p>"
         }
       }
     },

@@ -24,7 +24,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Create a CLI token to use Airflow CLI.</p>",
+      "documentation":"<p>Creates a CLI token for the Airflow CLI. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/call-mwaa-apis-cli.html\">Creating an Apache Airflow CLI token</a>.</p>",
       "endpoint":{"hostPrefix":"env."}
     },
     "CreateEnvironment":{
@@ -59,7 +59,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Create a JWT token to be used to login to Airflow Web UI with claims based Authentication.</p>",
+      "documentation":"<p>Creates a web login token for the Airflow Web UI. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/call-mwaa-apis-web.html\">Creating an Apache Airflow web login token</a>.</p>",
       "endpoint":{"hostPrefix":"env."},
       "idempotent":true
     },
@@ -95,7 +95,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the details of an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
+      "documentation":"<p>Describes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "ListEnvironments":{
@@ -144,7 +144,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>An operation for publishing metrics from the customers to the Ops plane.</p>",
+      "documentation":"<p> <b>Internal only</b>. Publishes environment health metrics to Amazon CloudWatch.</p>",
       "endpoint":{"hostPrefix":"ops."}
     },
     "TagResource":{
@@ -206,7 +206,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>Access to the Airflow Web UI or CLI has been Denied. Please follow the MWAA user guide to setup permissions to access the Web UI and CLI functionality.</p>",
+      "documentation":"<p>Access to the Apache Airflow Web UI or CLI has been denied due to insufficient permissions. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/access-policies.html\">Accessing an Amazon MWAA environment</a>.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -234,13 +234,13 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-z]+([a-z._]*[a-z]+)?$"
+      "pattern":"^[a-z]+([a-z0-9._]*[a-z0-9_]+)?$"
     },
     "ConfigValue":{
       "type":"string",
-      "max":256,
+      "max":65536,
       "min":1,
-      "pattern":".*"
+      "pattern":"^[ -~]+$"
     },
     "CreateCliTokenRequest":{
       "type":"structure",
@@ -248,7 +248,7 @@
       "members":{
         "Name":{
           "shape":"EnvironmentName",
-          "documentation":"<p>Create a CLI token request for a MWAA environment.</p>",
+          "documentation":"<p>The name of the Amazon MWAA environment. For example, <code>MyMWAAEnvironment</code>.</p>",
           "location":"uri",
           "locationName":"Name"
         }
@@ -259,11 +259,11 @@
       "members":{
         "CliToken":{
           "shape":"SyntheticCreateCliTokenResponseToken",
-          "documentation":"<p>Create an Airflow CLI login token response for the provided JWT token.</p>"
+          "documentation":"<p>An Airflow CLI login token.</p>"
         },
         "WebServerHostname":{
           "shape":"Hostname",
-          "documentation":"<p>Create an Airflow CLI login token response for the provided webserver hostname.</p>"
+          "documentation":"<p>The Airflow web server hostname for the environment.</p>"
         }
       }
     },
@@ -283,7 +283,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version for your environment. For example, <code>v1.10.12</code>. If no value is specified, defaults to the latest version. Valid values: <code>v1.10.12</code>.</p>"
+          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, defaults to the latest version. Valid values: <code>1.10.12</code>, <code>2.0.2</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (MWAA)</a>.</p>"
         },
         "DagS3Path":{
           "shape":"RelativePath",
@@ -295,15 +295,15 @@
         },
         "ExecutionRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role for your environment. An execution role is an AWS Identity and Access Management (IAM) role that grants MWAA permission to access AWS services and resources used by your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role for your environment. An execution role is an Amazon Web Services Identity and Access Management (IAM) role that grants MWAA permission to access Amazon Web Services services and resources used by your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
         },
         "KmsKey":{
           "shape":"KmsKey",
-          "documentation":"<p>The AWS Key Management Service (KMS) key to encrypt the data in your environment. You can use an AWS owned CMK, or a Customer managed CMK (advanced). To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) key to encrypt the data in your environment. You can use an Amazon Web Services owned CMK, or a Customer managed CMK (advanced). To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/create-environment.html\">Create an Amazon MWAA environment</a>.</p>"
         },
         "LoggingConfiguration":{
           "shape":"LoggingConfigurationInput",
-          "documentation":"<p>Defines the Apache Airflow logs to send to CloudWatch Logs: <code>DagProcessingLogs</code>, <code>SchedulerLogs</code>, <code>TaskLogs</code>, <code>WebserverLogs</code>, <code>WorkerLogs</code>.</p>"
+          "documentation":"<p>Defines the Apache Airflow logs to send to CloudWatch Logs.</p>"
         },
         "MaxWorkers":{
           "shape":"MaxWorkers",
@@ -321,7 +321,7 @@
         },
         "NetworkConfiguration":{
           "shape":"NetworkConfiguration",
-          "documentation":"<p>The VPC networking components used to secure and enable network traffic between the AWS resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
+          "documentation":"<p>The VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
         },
         "PluginsS3ObjectVersion":{
           "shape":"S3ObjectVersion",
@@ -341,7 +341,7 @@
         },
         "Schedulers":{
           "shape":"Schedulers",
-          "documentation":"<p>The number of Apache Airflow schedulers to run in your environment.</p>"
+          "documentation":"<p>The number of Apache Airflow schedulers to run in your environment. Valid values:</p> <ul> <li> <p>v2.0.2 - Accepts between 2 to 5. Defaults to 2.</p> </li> <li> <p>v1.10.12 - Accepts 1.</p> </li> </ul>"
         },
         "SourceBucketArn":{
           "shape":"S3BucketArn",
@@ -349,7 +349,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The key-value tag pairs you want to associate to your environment. For example, <code>\"Environment\": \"Staging\"</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS resources</a>.</p>"
+          "documentation":"<p>The key-value tag pairs you want to associate to your environment. For example, <code>\"Environment\": \"Staging\"</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
         },
         "WebserverAccessMode":{
           "shape":"WebserverAccessMode",
@@ -357,7 +357,7 @@
         },
         "WeeklyMaintenanceWindowStart":{
           "shape":"WeeklyMaintenanceWindowStart",
-          "documentation":"<p>The day and time of the week to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only. Supported input includes the following:</p> <ul> <li> <p>MON|TUE|WED|THU|FRI|SAT|SUN:([01]\\\\d|2[0-3]):(00|30)</p> </li> </ul>"
+          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only.</p>"
         }
       },
       "documentation":"<p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation to create an environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
@@ -377,7 +377,7 @@
       "members":{
         "Name":{
           "shape":"EnvironmentName",
-          "documentation":"<p>Create an Airflow Web UI login token request for a MWAA environment.</p>",
+          "documentation":"<p>The name of the Amazon MWAA environment. For example, <code>MyMWAAEnvironment</code>.</p>",
           "location":"uri",
           "locationName":"Name"
         }
@@ -388,11 +388,11 @@
       "members":{
         "WebServerHostname":{
           "shape":"Hostname",
-          "documentation":"<p>Create an Airflow Web UI login token response for the provided webserver hostname.</p>"
+          "documentation":"<p>The Airflow web server hostname for the environment.</p>"
         },
         "WebToken":{
           "shape":"SyntheticCreateWebLoginTokenResponseToken",
-          "documentation":"<p>Create an Airflow Web UI login token response for the provided JWT token.</p>"
+          "documentation":"<p>An Airflow web server login token.</p>"
         }
       }
     },
@@ -423,14 +423,14 @@
       "members":{
         "Name":{
           "shape":"String",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The name of the dimension.</p>"
         },
         "Value":{
           "shape":"String",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The value of the dimension.</p>"
         }
       },
-      "documentation":"<p>Internal only API.</p>"
+      "documentation":"<p> <b>Internal only</b>. Represents the dimensions of a metric. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
     },
     "Dimensions":{
       "type":"list",
@@ -449,7 +449,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version on your environment. For example, <code>v1.10.12</code>.</p>"
+          "documentation":"<p>The Apache Airflow version on your environment. Valid values: <code>1.10.12</code>, <code>2.0.2</code>.</p>"
         },
         "Arn":{
           "shape":"EnvironmentArn",
@@ -469,16 +469,19 @@
         },
         "ExecutionRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role in IAM that allows MWAA to access AWS resources in your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role in IAM that allows MWAA to access Amazon Web Services resources in your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
         },
         "KmsKey":{
           "shape":"KmsKey",
-          "documentation":"<p>The Key Management Service (KMS) encryption key used to encrypt the data in your environment.</p>"
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) encryption key used to encrypt the data in your environment.</p>"
         },
-        "LastUpdate":{"shape":"LastUpdate"},
+        "LastUpdate":{
+          "shape":"LastUpdate",
+          "documentation":"<p>The status of the last update on the environment.</p>"
+        },
         "LoggingConfiguration":{
           "shape":"LoggingConfiguration",
-          "documentation":"<p>The Apache Airflow logs being sent to CloudWatch Logs: <code>DagProcessingLogs</code>, <code>SchedulerLogs</code>, <code>TaskLogs</code>, <code>WebserverLogs</code>, <code>WorkerLogs</code>.</p>"
+          "documentation":"<p>The Apache Airflow logs published to CloudWatch Logs.</p>"
         },
         "MaxWorkers":{
           "shape":"MaxWorkers",
@@ -492,7 +495,10 @@
           "shape":"EnvironmentName",
           "documentation":"<p>The name of the Amazon MWAA environment. For example, <code>MyMWAAEnvironment</code>.</p>"
         },
-        "NetworkConfiguration":{"shape":"NetworkConfiguration"},
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>Describes the VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
+        },
         "PluginsS3ObjectVersion":{
           "shape":"S3ObjectVersion",
           "documentation":"<p>The version of the plugins.zip file on your Amazon S3 bucket. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-import-plugins.html\">Installing custom plugins</a>.</p>"
@@ -527,7 +533,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The key-value tag pairs associated to your environment. For example, <code>\"Environment\": \"Staging\"</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS resources</a>.</p>"
+          "documentation":"<p>The key-value tag pairs associated to your environment. For example, <code>\"Environment\": \"Staging\"</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
         },
         "WebserverAccessMode":{
           "shape":"WebserverAccessMode",
@@ -539,10 +545,10 @@
         },
         "WeeklyMaintenanceWindowStart":{
           "shape":"WeeklyMaintenanceWindowStart",
-          "documentation":"<p>The day and time of the week that weekly maintenance updates are scheduled. For example: <code>TUE:03:30</code>.</p>"
+          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time that weekly maintenance updates are scheduled. For example: <code>TUE:03:30</code>.</p>"
         }
       },
-      "documentation":"<p>The Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>"
+      "documentation":"<p>Describes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>"
     },
     "EnvironmentArn":{
       "type":"string",
@@ -649,12 +655,16 @@
           "shape":"UpdateError",
           "documentation":"<p>The error that was encountered during the last update of the environment.</p>"
         },
+        "Source":{
+          "shape":"UpdateSource",
+          "documentation":"<p>The source of the last update to the environment. Includes internal processes by Amazon MWAA, such as an environment maintenance update.</p>"
+        },
         "Status":{
           "shape":"UpdateStatus",
-          "documentation":"<p>The status of the last update on the environment. Valid values: <code>SUCCESS</code>, <code>PENDING</code>, <code>FAILED</code>.</p>"
+          "documentation":"<p>The status of the last update on the environment.</p>"
         }
       },
-      "documentation":"<p>The status of the last update on the environment, and any errors that were encountered.</p>"
+      "documentation":"<p>Describes the status of the last update on the environment, and any errors that were encountered.</p>"
     },
     "ListEnvironmentsInput":{
       "type":"structure",
@@ -685,7 +695,7 @@
       "members":{
         "Environments":{
           "shape":"EnvironmentList",
-          "documentation":"<p>Returns the list of Amazon MWAA environments.</p>"
+          "documentation":"<p>Returns a list of Amazon MWAA environments.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -710,31 +720,61 @@
       "members":{
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The key-value tag pairs associated to your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS resources</a>.</p>"
+          "documentation":"<p>The key-value tag pairs associated to your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
         }
       }
     },
     "LoggingConfiguration":{
       "type":"structure",
       "members":{
-        "DagProcessingLogs":{"shape":"ModuleLoggingConfiguration"},
-        "SchedulerLogs":{"shape":"ModuleLoggingConfiguration"},
-        "TaskLogs":{"shape":"ModuleLoggingConfiguration"},
-        "WebserverLogs":{"shape":"ModuleLoggingConfiguration"},
-        "WorkerLogs":{"shape":"ModuleLoggingConfiguration"}
+        "DagProcessingLogs":{
+          "shape":"ModuleLoggingConfiguration",
+          "documentation":"<p>The Airflow DAG processing logs published to CloudWatch Logs and the log level.</p>"
+        },
+        "SchedulerLogs":{
+          "shape":"ModuleLoggingConfiguration",
+          "documentation":"<p>The Airflow scheduler logs published to CloudWatch Logs and the log level.</p>"
+        },
+        "TaskLogs":{
+          "shape":"ModuleLoggingConfiguration",
+          "documentation":"<p>The Airflow task logs published to CloudWatch Logs and the log level.</p>"
+        },
+        "WebserverLogs":{
+          "shape":"ModuleLoggingConfiguration",
+          "documentation":"<p>The Airflow web server logs published to CloudWatch Logs and the log level.</p>"
+        },
+        "WorkerLogs":{
+          "shape":"ModuleLoggingConfiguration",
+          "documentation":"<p>The Airflow worker logs published to CloudWatch Logs and the log level.</p>"
+        }
       },
-      "documentation":"<p>Defines the Apache Airflow logs to send to CloudWatch Logs: <code>DagProcessingLogs</code>, <code>SchedulerLogs</code>, <code>TaskLogs</code>, <code>WebserverLogs</code>, <code>WorkerLogs</code>.</p>"
+      "documentation":"<p>Describes the Apache Airflow log types that are published to CloudWatch Logs.</p>"
     },
     "LoggingConfigurationInput":{
       "type":"structure",
       "members":{
-        "DagProcessingLogs":{"shape":"ModuleLoggingConfigurationInput"},
-        "SchedulerLogs":{"shape":"ModuleLoggingConfigurationInput"},
-        "TaskLogs":{"shape":"ModuleLoggingConfigurationInput"},
-        "WebserverLogs":{"shape":"ModuleLoggingConfigurationInput"},
-        "WorkerLogs":{"shape":"ModuleLoggingConfigurationInput"}
+        "DagProcessingLogs":{
+          "shape":"ModuleLoggingConfigurationInput",
+          "documentation":"<p>Publishes Airflow DAG processing logs to CloudWatch Logs.</p>"
+        },
+        "SchedulerLogs":{
+          "shape":"ModuleLoggingConfigurationInput",
+          "documentation":"<p>Publishes Airflow scheduler logs to CloudWatch Logs.</p>"
+        },
+        "TaskLogs":{
+          "shape":"ModuleLoggingConfigurationInput",
+          "documentation":"<p>Publishes Airflow task logs to CloudWatch Logs.</p>"
+        },
+        "WebserverLogs":{
+          "shape":"ModuleLoggingConfigurationInput",
+          "documentation":"<p>Publishes Airflow web server logs to CloudWatch Logs.</p>"
+        },
+        "WorkerLogs":{
+          "shape":"ModuleLoggingConfigurationInput",
+          "documentation":"<p>Publishes Airflow worker logs to CloudWatch Logs.</p>"
+        }
       },
-      "documentation":"<p>Defines the Apache Airflow logs to send to CloudWatch Logs: <code>DagProcessingLogs</code>, <code>SchedulerLogs</code>, <code>TaskLogs</code>, <code>WebserverLogs</code>, <code>WorkerLogs</code>.</p>"
+      "documentation":"<p>Defines the Apache Airflow log types to send to CloudWatch Logs.</p>"
     },
     "LoggingEnabled":{
       "type":"boolean",
@@ -768,27 +808,30 @@
       "members":{
         "Dimensions":{
           "shape":"Dimensions",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The dimensions associated with the metric.</p>"
         },
         "MetricName":{
           "shape":"String",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The name of the metric.</p>"
         },
         "StatisticValues":{
           "shape":"StatisticSet",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The statistical values for the metric.</p>"
         },
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The time the metric data was received.</p>"
         },
-        "Unit":{"shape":"Unit"},
+        "Unit":{
+          "shape":"Unit",
+          "documentation":"<p> <b>Internal only</b>. The unit used to store the metric.</p>"
+        },
         "Value":{
           "shape":"Double",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The value for the metric.</p>"
         }
       },
-      "documentation":"<p>Internal only API.</p>"
+      "documentation":"<p> <b>Internal only</b>. Collects Apache Airflow metrics. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
     },
     "MinWorkers":{
       "type":"integer",
@@ -804,14 +847,14 @@
         },
         "Enabled":{
           "shape":"LoggingEnabled",
-          "documentation":"<p>Indicates whether to enable the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>) in CloudWatch Logs.</p>"
+          "documentation":"<p>Indicates whether the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>) is enabled.</p>"
         },
         "LogLevel":{
           "shape":"LoggingLevel",
-          "documentation":"<p>Defines the Apache Airflow logs to send for the log type (e.g. <code>DagProcessingLogs</code>) to CloudWatch Logs. Valid values: <code>CRITICAL</code>, <code>ERROR</code>, <code>WARNING</code>, <code>INFO</code>.</p>"
+          "documentation":"<p>The Apache Airflow log level for the log type (e.g. <code>DagProcessingLogs</code>). </p>"
         }
       },
-      "documentation":"<p>Defines the type of logs to send for the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>). Valid values: <code>CloudWatchLogGroupArn</code>, <code>Enabled</code>, <code>LogLevel</code>.</p>"
+      "documentation":"<p>Describes the Apache Airflow log details for the log type (e.g. <code>DagProcessingLogs</code>).</p>"
     },
     "ModuleLoggingConfigurationInput":{
       "type":"structure",
@@ -822,28 +865,28 @@
       "members":{
         "Enabled":{
           "shape":"LoggingEnabled",
-          "documentation":"<p>Indicates whether to enable the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>) in CloudWatch Logs.</p>"
+          "documentation":"<p>Indicates whether to enable the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>).</p>"
         },
         "LogLevel":{
           "shape":"LoggingLevel",
-          "documentation":"<p>Defines the Apache Airflow logs to send for the log type (e.g. <code>DagProcessingLogs</code>) to CloudWatch Logs. Valid values: <code>CRITICAL</code>, <code>ERROR</code>, <code>WARNING</code>, <code>INFO</code>.</p>"
+          "documentation":"<p>Defines the Apache Airflow log level (e.g. <code>INFO</code>) to send to CloudWatch Logs.</p>"
         }
       },
-      "documentation":"<p>Defines the type of logs to send for the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>). Valid values: <code>CloudWatchLogGroupArn</code>, <code>Enabled</code>, <code>LogLevel</code>.</p>"
+      "documentation":"<p>Enables the Apache Airflow log type (e.g. <code>DagProcessingLogs</code>) and defines the log level to send to CloudWatch Logs (e.g. <code>INFO</code>).</p>"
     },
     "NetworkConfiguration":{
       "type":"structure",
       "members":{
         "SecurityGroupIds":{
           "shape":"SecurityGroupList",
-          "documentation":"<p>A list of 1 or more security group IDs. Accepts up to 5 security group IDs. A security group must be attached to the same VPC as the subnets. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/vpc-security.html\">Security in your VPC on Amazon MWAA</a>.</p>"
+          "documentation":"<p>A list of security group IDs. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/vpc-security.html\">Security in your VPC on Amazon MWAA</a>.</p>"
         },
         "SubnetIds":{
           "shape":"SubnetList",
-          "documentation":"<p>A list of 2 subnet IDs. <b>Required</b> to create an environment. Must be private subnets in two different availability zones. A subnet must be attached to the same VPC as the security group.</p>"
+          "documentation":"<p>A list of subnet IDs. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
         }
       },
-      "documentation":"<p>The VPC networking components used to secure and enable network traffic between the AWS resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
+      "documentation":"<p>Describes the VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
     },
     "NextToken":{
       "type":"string",
@@ -859,13 +902,13 @@
       "members":{
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>Publishes environment metric data to Amazon CloudWatch.</p>",
+          "documentation":"<p> <b>Internal only</b>. The name of the environment.</p>",
           "location":"uri",
           "locationName":"EnvironmentName"
         },
         "MetricData":{
           "shape":"MetricData",
-          "documentation":"<p>Publishes metric data points to Amazon CloudWatch. CloudWatch associates the data points with the specified metrica.</p>"
+          "documentation":"<p> <b>Internal only</b>. Publishes metrics to Amazon CloudWatch. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
         }
       }
     },
@@ -925,22 +968,22 @@
       "members":{
         "Maximum":{
           "shape":"Double",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The maximum value of the sample set.</p>"
         },
         "Minimum":{
           "shape":"Double",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The minimum value of the sample set.</p>"
         },
         "SampleCount":{
           "shape":"Integer",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The number of samples used for the statistic set.</p>"
         },
         "Sum":{
           "shape":"Double",
-          "documentation":"<p>Internal only API.</p>"
+          "documentation":"<p> <b>Internal only</b>. The sum of values for the sample set.</p>"
         }
       },
-      "documentation":"<p>Internal only API.</p>"
+      "documentation":"<p> <b>Internal only</b>. Represents a set of statistics that describe a specific metric. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
     },
     "String":{"type":"string"},
     "SubnetId":{
@@ -1009,7 +1052,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The key-value tag pairs you want to associate to your environment. For example, <code>\"Environment\": \"Staging\"</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS resources</a>.</p>"
+          "documentation":"<p>The key-value tag pairs you want to associate to your environment. For example, <code>\"Environment\": \"Staging\"</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
         }
       }
     },
@@ -1027,7 +1070,6 @@
     "Timestamp":{"type":"timestamp"},
     "Unit":{
       "type":"string",
-      "documentation":"<p>Unit</p>",
       "enum":[
         "Seconds",
         "Microseconds",
@@ -1095,7 +1137,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version for your environment. For example, <code>v1.10.12</code>. If no value is specified, defaults to the latest version. Valid values: <code>v1.10.12</code>.</p>"
+          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, defaults to the latest version. Valid values: <code>1.10.12</code>, <code>2.0.2</code>.</p>"
         },
         "DagS3Path":{
           "shape":"RelativePath",
@@ -1107,11 +1149,11 @@
         },
         "ExecutionRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role in IAM that allows MWAA to access AWS resources in your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role in IAM that allows MWAA to access Amazon Web Services resources in your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
         },
         "LoggingConfiguration":{
           "shape":"LoggingConfigurationInput",
-          "documentation":"<p>Defines the Apache Airflow logs to send to CloudWatch Logs: <code>DagProcessingLogs</code>, <code>SchedulerLogs</code>, <code>TaskLogs</code>, <code>WebserverLogs</code>, <code>WorkerLogs</code>.</p>"
+          "documentation":"<p>The Apache Airflow log types to send to CloudWatch Logs.</p>"
         },
         "MaxWorkers":{
           "shape":"MaxWorkers",
@@ -1129,7 +1171,7 @@
         },
         "NetworkConfiguration":{
           "shape":"UpdateNetworkConfigurationInput",
-          "documentation":"<p>The VPC networking components used to secure and enable network traffic between the AWS resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
+          "documentation":"<p>The VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
         },
         "PluginsS3ObjectVersion":{
           "shape":"S3ObjectVersion",
@@ -1161,7 +1203,7 @@
         },
         "WeeklyMaintenanceWindowStart":{
           "shape":"WeeklyMaintenanceWindowStart",
-          "documentation":"<p>The day and time of the week to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only. Supported input includes the following:</p> <ul> <li> <p>MON|TUE|WED|THU|FRI|SAT|SUN:([01]\\\\d|2[0-3]):(00|30)</p> </li> </ul>"
+          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only.</p>"
         }
       }
     },
@@ -1186,7 +1228,7 @@
           "documentation":"<p>The error message that corresponds to the error code.</p>"
         }
       },
-      "documentation":"<p>An object containing the error encountered with the last update: <code>ErrorCode</code>, <code>ErrorMessage</code>.</p>"
+      "documentation":"<p>Describes the error(s) encountered with the last update of the environment.</p>"
     },
     "UpdateNetworkConfigurationInput":{
       "type":"structure",
@@ -1194,10 +1236,16 @@
       "members":{
         "SecurityGroupIds":{
           "shape":"SecurityGroupList",
-          "documentation":"<p>A list of 1 or more security group IDs. Accepts up to 5 security group IDs. A security group must be attached to the same VPC as the subnets. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/vpc-security.html\">Security in your VPC on Amazon MWAA</a>.</p>"
+          "documentation":"<p>A list of security group IDs. A security group must be attached to the same VPC as the subnets. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/vpc-security.html\">Security in your VPC on Amazon MWAA</a>.</p>"
         }
       },
-      "documentation":"<p>The VPC networking components used to secure and enable network traffic between the AWS resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
+      "documentation":"<p>Defines the VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
+    },
+    "UpdateSource":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^.+$"
     },
     "UpdateStatus":{
       "type":"string",
@@ -1239,5 +1287,5 @@
       "pattern":"(MON|TUE|WED|THU|FRI|SAT|SUN):([01]\\d|2[0-3]):(00|30)"
     }
   },
-  "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What Is Amazon MWAA?</a>.</p></p>"
+  "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What Is Amazon MWAA?</a>.</p></p> <pre><code> &lt;p&gt; &lt;b&gt;Endpoints&lt;/b&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;api.airflow.{region}.amazonaws.com&lt;/code&gt; - This endpoint is used for environment management.&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html&quot;&gt;CreateEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html&quot;&gt;DeleteEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html&quot;&gt;GetEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html&quot;&gt;ListEnvironments&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html&quot;&gt;ListTagsForResource&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html&quot;&gt;TagResource&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html&quot;&gt;UntagResource&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html&quot;&gt;UpdateEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;env.airflow.{region}.amazonaws.com&lt;/code&gt; - This endpoint is used to operate the Airflow environment.&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html &quot;&gt;CreateCliToken&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html&quot;&gt;CreateWebLoginToken&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;ops.airflow.{region}.amazonaws.com&lt;/code&gt; - This endpoint is used to push environment metrics that track environment health.&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_PublishMetrics.html &quot;&gt;PublishMetrics&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; &lt;b&gt;Regions&lt;/b&gt; &lt;/p&gt; &lt;p&gt;For a list of regions that Amazon MWAA supports, see &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html#regions-mwaa&quot;&gt;Region availability&lt;/a&gt; in the &lt;i&gt;Amazon MWAA User Guide&lt;/i&gt;.&lt;/p&gt; </code></pre>"
 }

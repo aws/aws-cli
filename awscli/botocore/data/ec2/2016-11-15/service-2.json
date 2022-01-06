@@ -1852,7 +1852,7 @@
       },
       "input":{"shape":"DescribeAccountAttributesRequest"},
       "output":{"shape":"DescribeAccountAttributesResult"},
-      "documentation":"<p>Describes attributes of your AWS account. The following are the supported account attributes:</p> <ul> <li> <p> <code>supported-platforms</code>: Indicates whether your account can launch instances into EC2-Classic and EC2-VPC, or only into EC2-VPC.</p> </li> <li> <p> <code>default-vpc</code>: The ID of the default VPC for your account, or <code>none</code>.</p> </li> <li> <p> <code>max-instances</code>: This attribute is no longer supported. The returned value does not reflect your actual vCPU limit for running On-Demand Instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html#ec2-on-demand-instances-limits\">On-Demand Instance Limits</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </li> <li> <p> <code>vpc-max-security-groups-per-interface</code>: The maximum number of security groups that you can assign to a network interface.</p> </li> <li> <p> <code>max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-Classic. </p> </li> <li> <p> <code>vpc-max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-VPC.</p> </li> </ul>"
+      "documentation":"<p>Describes attributes of your Amazon Web Services account. The following are the supported account attributes:</p> <ul> <li> <p> <code>supported-platforms</code>: Indicates whether your account can launch instances into EC2-Classic and EC2-VPC, or only into EC2-VPC.</p> </li> <li> <p> <code>default-vpc</code>: The ID of the default VPC for your account, or <code>none</code>.</p> </li> <li> <p> <code>max-instances</code>: This attribute is no longer supported. The returned value does not reflect your actual vCPU limit for running On-Demand Instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html#ec2-on-demand-instances-limits\">On-Demand Instance Limits</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </li> <li> <p> <code>vpc-max-security-groups-per-interface</code>: The maximum number of security groups that you can assign to a network interface.</p> </li> <li> <p> <code>max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-Classic. </p> </li> <li> <p> <code>vpc-max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-VPC.</p> </li> </ul>"
     },
     "DescribeAddresses":{
       "name":"DescribeAddresses",
@@ -2842,7 +2842,7 @@
       },
       "input":{"shape":"DescribeStaleSecurityGroupsRequest"},
       "output":{"shape":"DescribeStaleSecurityGroupsResult"},
-      "documentation":"<p>[VPC only] Describes the stale security group rules for security groups in a specified VPC. Rules are stale when they reference a deleted security group in a peer VPC, or a security group in a peer VPC for which the VPC peering connection has been deleted.</p>"
+      "documentation":"<p>[VPC only] Describes the stale security group rules for security groups in a specified VPC. Rules are stale when they reference a deleted security group in the same VPC or in a peer VPC, or if they reference a security group in a peer VPC for which the VPC peering connection has been deleted.</p>"
     },
     "DescribeStoreImageTasks":{
       "name":"DescribeStoreImageTasks",
@@ -4406,6 +4406,16 @@
       "input":{"shape":"ModifyVpcEndpointServiceConfigurationRequest"},
       "output":{"shape":"ModifyVpcEndpointServiceConfigurationResult"},
       "documentation":"<p>Modifies the attributes of your VPC endpoint service configuration. You can change the Network Load Balancers or Gateway Load Balancers for your service, and you can specify whether acceptance is required for requests to connect to your endpoint service through an interface VPC endpoint.</p> <p>If you set or modify the private DNS name, you must prove that you own the private DNS domain name. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-services-dns-validation.html\">VPC Endpoint Service Private DNS Name Verification</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
+    "ModifyVpcEndpointServicePayerResponsibility":{
+      "name":"ModifyVpcEndpointServicePayerResponsibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyVpcEndpointServicePayerResponsibilityRequest"},
+      "output":{"shape":"ModifyVpcEndpointServicePayerResponsibilityResult"},
+      "documentation":"<p>Modifies the payer responsibility for your VPC endpoint service.</p>"
     },
     "ModifyVpcEndpointServicePermissions":{
       "name":"ModifyVpcEndpointServicePermissions",
@@ -8462,6 +8472,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the Capacity Reservation Fleet to which the Capacity Reservation belongs. Only valid for Capacity Reservations that were created by a Capacity Reservation Fleet.</p>",
           "locationName":"capacityReservationFleetId"
+        },
+        "PlacementGroupArn":{
+          "shape":"PlacementGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster placement group in which the Capacity Reservation was created. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-cpg.html\"> Capacity Reservations for cluster placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"placementGroupArn"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
@@ -10179,6 +10194,10 @@
         "OutpostArn":{
           "shape":"OutpostArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost on which to create the Capacity Reservation.</p>"
+        },
+        "PlacementGroupArn":{
+          "shape":"PlacementGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster placement group in which to create the Capacity Reservation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-cpg.html\"> Capacity Reservations for cluster placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         }
       }
     },
@@ -10650,7 +10669,7 @@
         },
         "Type":{
           "shape":"FleetType",
-          "documentation":"<p>The fleet type. The default value is <code>maintain</code>.</p> <ul> <li> <p> <code>maintain</code> - The EC2 Fleet places an asynchronous request for your desired capacity, and continues to maintain your desired Spot capacity by replenishing interrupted Spot Instances.</p> </li> <li> <p> <code>request</code> - The EC2 Fleet places an asynchronous one-time request for your desired capacity, but does submit Spot requests in alternative capacity pools if Spot capacity is unavailable, and does not maintain Spot capacity if Spot Instances are interrupted.</p> </li> <li> <p> <code>instant</code> - The EC2 Fleet places a synchronous one-time request for your desired capacity, and returns errors for any instances that could not be launched.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-configuration-strategies.html#ec2-fleet-request-type\">EC2 Fleet request types</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<p>The fleet type. The default value is <code>maintain</code>.</p> <ul> <li> <p> <code>maintain</code> - The EC2 Fleet places an asynchronous request for your desired capacity, and continues to maintain your desired Spot capacity by replenishing interrupted Spot Instances.</p> </li> <li> <p> <code>request</code> - The EC2 Fleet places an asynchronous one-time request for your desired capacity, but does submit Spot requests in alternative capacity pools if Spot capacity is unavailable, and does not maintain Spot capacity if Spot Instances are interrupted.</p> </li> <li> <p> <code>instant</code> - The EC2 Fleet places a synchronous one-time request for your desired capacity, and returns errors for any instances that could not be launched.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/ec2-fleet-request-type.html\">EC2 Fleet request types</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "ValidFrom":{
           "shape":"DateTime",
@@ -11739,7 +11758,7 @@
         },
         "InterfaceType":{
           "shape":"NetworkInterfaceCreationType",
-          "documentation":"<p>Indicates the type of network interface. To create an Elastic Fabric Adapter (EFA), specify <code>efa</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html\"> Elastic Fabric Adapter</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. To create a trunk network interface, specify <code>efa</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/eni-trunking.html\"> Network interface trunking</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+          "documentation":"<p>Indicates the type of network interface. To create an Elastic Fabric Adapter (EFA), specify <code>efa</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html\"> Elastic Fabric Adapter</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. To create a trunk network interface, specify <code>trunk</code>.</p>"
         },
         "SubnetId":{
           "shape":"SubnetId",
@@ -15767,7 +15786,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>instance-type</code> - The type of instance for which the Capacity Reservation reserves capacity.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the Capacity Reservation.</p> </li> <li> <p> <code>availability-zone-id</code> - The Availability Zone ID of the Capacity Reservation.</p> </li> <li> <p> <code>instance-platform</code> - The type of operating system for which the Capacity Reservation reserves capacity.</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone ID of the Capacity Reservation.</p> </li> <li> <p> <code>tenancy</code> - Indicates the tenancy of the Capacity Reservation. A Capacity Reservation can have one of the following tenancy settings:</p> <ul> <li> <p> <code>default</code> - The Capacity Reservation is created on hardware that is shared with other Amazon Web Services accounts.</p> </li> <li> <p> <code>dedicated</code> - The Capacity Reservation is created on single-tenant hardware that is dedicated to a single Amazon Web Services account.</p> </li> </ul> </li> <li> <p> <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the Outpost on which the Capacity Reservation was created.</p> </li> <li> <p> <code>state</code> - The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code>- The Capacity Reservation is active and the capacity is available for your use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was cancelled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request might fail due to invalid request parameters, capacity constraints, or instance limit constraints. Failed requests are retained for 60 minutes.</p> </li> </ul> </li> <li> <p> <code>start-date</code> - The date and time at which the Capacity Reservation was started.</p> </li> <li> <p> <code>end-date</code> - The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to expired when it reaches its end date and time.</p> </li> <li> <p> <code>end-date-type</code> - Indicates the way in which the Capacity Reservation ends. A Capacity Reservation can have one of the following end types:</p> <ul> <li> <p> <code>unlimited</code> - The Capacity Reservation remains active until you explicitly cancel it.</p> </li> <li> <p> <code>limited</code> - The Capacity Reservation expires automatically at a specified date and time.</p> </li> </ul> </li> <li> <p> <code>instance-match-criteria</code> - Indicates the type of instance launches that the Capacity Reservation accepts. The options include:</p> <ul> <li> <p> <code>open</code> - The Capacity Reservation accepts all instances that have matching attributes (instance type, platform, and Availability Zone). Instances that have matching attributes launch into the Capacity Reservation automatically without specifying any additional parameters.</p> </li> <li> <p> <code>targeted</code> - The Capacity Reservation only accepts instances that have matching attributes (instance type, platform, and Availability Zone), and explicitly target the Capacity Reservation. This ensures that only permitted instances can use the reserved capacity.</p> </li> </ul> </li> </ul>",
+          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>instance-type</code> - The type of instance for which the Capacity Reservation reserves capacity.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the Capacity Reservation.</p> </li> <li> <p> <code>instance-platform</code> - The type of operating system for which the Capacity Reservation reserves capacity.</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the Capacity Reservation.</p> </li> <li> <p> <code>tenancy</code> - Indicates the tenancy of the Capacity Reservation. A Capacity Reservation can have one of the following tenancy settings:</p> <ul> <li> <p> <code>default</code> - The Capacity Reservation is created on hardware that is shared with other Amazon Web Services accounts.</p> </li> <li> <p> <code>dedicated</code> - The Capacity Reservation is created on single-tenant hardware that is dedicated to a single Amazon Web Services account.</p> </li> </ul> </li> <li> <p> <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the Outpost on which the Capacity Reservation was created.</p> </li> <li> <p> <code>state</code> - The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code>- The Capacity Reservation is active and the capacity is available for your use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was cancelled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request might fail due to invalid request parameters, capacity constraints, or instance limit constraints. Failed requests are retained for 60 minutes.</p> </li> </ul> </li> <li> <p> <code>start-date</code> - The date and time at which the Capacity Reservation was started.</p> </li> <li> <p> <code>end-date</code> - The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to expired when it reaches its end date and time.</p> </li> <li> <p> <code>end-date-type</code> - Indicates the way in which the Capacity Reservation ends. A Capacity Reservation can have one of the following end types:</p> <ul> <li> <p> <code>unlimited</code> - The Capacity Reservation remains active until you explicitly cancel it.</p> </li> <li> <p> <code>limited</code> - The Capacity Reservation expires automatically at a specified date and time.</p> </li> </ul> </li> <li> <p> <code>instance-match-criteria</code> - Indicates the type of instance launches that the Capacity Reservation accepts. The options include:</p> <ul> <li> <p> <code>open</code> - The Capacity Reservation accepts all instances that have matching attributes (instance type, platform, and Availability Zone). Instances that have matching attributes launch into the Capacity Reservation automatically without specifying any additional parameters.</p> </li> <li> <p> <code>targeted</code> - The Capacity Reservation only accepts instances that have matching attributes (instance type, platform, and Availability Zone), and explicitly target the Capacity Reservation. This ensures that only permitted instances can use the reserved capacity.</p> </li> </ul> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -17864,7 +17883,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>create-time</code> - The time the launch template version was created.</p> </li> <li> <p> <code>ebs-optimized</code> - A boolean that indicates whether the instance is optimized for Amazon EBS I/O.</p> </li> <li> <p> <code>iam-instance-profile</code> - The ARN of the IAM instance profile.</p> </li> <li> <p> <code>image-id</code> - The ID of the AMI.</p> </li> <li> <p> <code>instance-type</code> - The instance type.</p> </li> <li> <p> <code>is-default-version</code> - A boolean that indicates whether the launch template version is the default version.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>ram-disk-id</code> - The RAM disk ID.</p> </li> </ul>",
+          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>create-time</code> - The time the launch template version was created.</p> </li> <li> <p> <code>ebs-optimized</code> - A boolean that indicates whether the instance is optimized for Amazon EBS I/O.</p> </li> <li> <p> <code>http-endpoint</code> - Indicates whether the HTTP metadata endpoint on your instances is enabled (<code>enabled</code> | <code>disabled</code>).</p> </li> <li> <p> <code>http-protocol-ipv4</code> - Indicates whether the IPv4 endpoint for the instance metadata service is enabled (<code>enabled</code> | <code>disabled</code>).</p> </li> <li> <p> <code>host-resource-group-arn</code> - The ARN of the host resource group in which to launch the instances.</p> </li> <li> <p> <code>http-tokens</code> - The state of token usage for your instance metadata requests (<code>optional</code> | <code>required</code>).</p> </li> <li> <p> <code>iam-instance-profile</code> - The ARN of the IAM instance profile.</p> </li> <li> <p> <code>image-id</code> - The ID of the AMI.</p> </li> <li> <p> <code>instance-type</code> - The instance type.</p> </li> <li> <p> <code>is-default-version</code> - A boolean that indicates whether the launch template version is the default version.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>license-configuration-arn</code> - The ARN of the license configuration.</p> </li> <li> <p> <code>network-card-index</code> - The index of the network card.</p> </li> <li> <p> <code>ram-disk-id</code> - The RAM disk ID.</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -18719,7 +18738,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>group-name</code> - The name of the placement group.</p> </li> <li> <p> <code>state</code> - The state of the placement group (<code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code>).</p> </li> <li> <p> <code>strategy</code> - The strategy of the placement group (<code>cluster</code> | <code>spread</code> | <code>partition</code>).</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>group-name</code> - The name of the placement group.</p> </li> <li> <p> <code>group-arn</code> - The Amazon Resource Name (ARN) of the placement group.</p> </li> <li> <p> <code>state</code> - The state of the placement group (<code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code>).</p> </li> <li> <p> <code>strategy</code> - The strategy of the placement group (<code>cluster</code> | <code>spread</code> | <code>partition</code>).</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -19484,7 +19503,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>last-tiering-operation</code> - The state of the last archive or restore action. (<code>archiving</code> | <code>archival_error</code> | <code>archival_complete</code> | <code>restoring</code> | <code>restore_error</code> | <code>restore_complete</code>)</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>last-tiering-operation</code> - The state of the last archive or restore action. (<code>archival-in-progress</code> | <code>archival-completed</code> | <code>archival-failed</code> | <code>permanent-restore-in-progress</code> | <code>permanent-restore-completed</code> | <code>permanent-restore-failed</code> | <code>temporary-restore-in-progress</code> | <code>temporary-restore-completed</code> | <code>temporary-restore-failed</code>)</p> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -24069,11 +24088,11 @@
         },
         "Values":{
           "shape":"ValueStringList",
-          "documentation":"<p>The filter values. Filter values are case-sensitive.</p>",
+          "documentation":"<p>The filter values. Filter values are case-sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values.</p>",
           "locationName":"Value"
         }
       },
-      "documentation":"<p>A filter name and value pair that is used to return a more specific list of results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.</p>"
+      "documentation":"<p>A filter name and value pair that is used to return a more specific list of results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.</p> <p>If you specify multiple filters, the filters are joined with an <code>AND</code>, and the request returns only results that match all of the specified filters.</p>"
     },
     "FilterList":{
       "type":"list",
@@ -24524,7 +24543,7 @@
         },
         "TerminationDelay":{
           "shape":"Integer",
-          "documentation":"<p>The amount of time (in seconds) that Amazon EC2 waits before terminating the old Spot Instance after launching a new replacement Spot Instance.</p> <p>Valid only when <code>replacementStrategy</code> is set to <code>launch-before-terminate</code>.</p> <p>Valid values: Minimum value of <code>120</code> seconds. Maximum value of <code>7200</code> seconds.</p>",
+          "documentation":"<p>The amount of time (in seconds) that Amazon EC2 waits before terminating the old Spot Instance after launching a new replacement Spot Instance.</p> <p>Required when <code>ReplacementStrategy</code> is set to <code>launch-before-terminate</code>.</p> <p>Not valid when <code>ReplacementStrategy</code> is set to <code>launch</code>.</p> <p>Valid values: Minimum value of <code>120</code> seconds. Maximum value of <code>7200</code> seconds.</p>",
           "locationName":"terminationDelay"
         }
       },
@@ -24539,10 +24558,10 @@
         },
         "TerminationDelay":{
           "shape":"Integer",
-          "documentation":"<p>The amount of time (in seconds) that Amazon EC2 waits before terminating the old Spot Instance after launching a new replacement Spot Instance.</p> <p>Valid only when <code>ReplacementStrategy</code> is set to <code>launch-before-terminate</code>.</p> <p>Valid values: Minimum value of <code>120</code> seconds. Maximum value of <code>7200</code> seconds.</p>"
+          "documentation":"<p>The amount of time (in seconds) that Amazon EC2 waits before terminating the old Spot Instance after launching a new replacement Spot Instance.</p> <p>Required when <code>ReplacementStrategy</code> is set to <code>launch-before-terminate</code>.</p> <p>Not valid when <code>ReplacementStrategy</code> is set to <code>launch</code>.</p> <p>Valid values: Minimum value of <code>120</code> seconds. Maximum value of <code>7200</code> seconds.</p>"
         }
       },
-      "documentation":"<p>The Spot Instance replacement strategy to use when Amazon EC2 emits a rebalance notification signal that your Spot Instance is at an elevated risk of being interrupted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-configuration-strategies.html#ec2-fleet-capacity-rebalance\">Capacity rebalancing</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>The Spot Instance replacement strategy to use when Amazon EC2 emits a rebalance notification signal that your Spot Instance is at an elevated risk of being interrupted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-capacity-rebalance.html\">Capacity rebalancing</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "FleetSpotMaintenanceStrategies":{
       "type":"structure",
@@ -26663,7 +26682,7 @@
           "locationName":"instanceFamily"
         },
         "OfferingId":{
-          "shape":"String",
+          "shape":"OfferingId",
           "documentation":"<p>The ID of the offering.</p>",
           "locationName":"offeringId"
         },
@@ -26754,7 +26773,7 @@
           "locationName":"hostIdSet"
         },
         "HostReservationId":{
-          "shape":"String",
+          "shape":"HostReservationId",
           "documentation":"<p>The ID of the reservation that specifies the associated Dedicated Hosts.</p>",
           "locationName":"hostReservationId"
         },
@@ -26769,7 +26788,7 @@
           "locationName":"instanceFamily"
         },
         "OfferingId":{
-          "shape":"String",
+          "shape":"OfferingId",
           "documentation":"<p>The ID of the reservation. This remains the same regardless of which Dedicated Hosts are associated with it.</p>",
           "locationName":"offeringId"
         },
@@ -27374,7 +27393,7 @@
       "members":{
         "Architecture":{
           "shape":"String",
-          "documentation":"<p>The architecture of the virtual machine.</p> <p>Valid values: <code>i386</code> | <code>x86_64</code> | <code>arm64</code> </p>"
+          "documentation":"<p>The architecture of the virtual machine.</p> <p>Valid values: <code>i386</code> | <code>x86_64</code> </p>"
         },
         "ClientData":{
           "shape":"ClientData",
@@ -29039,7 +29058,7 @@
       "members":{
         "HttpTokens":{
           "shape":"HttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p>"
+          "documentation":"<p>The state of token usage for your instance metadata requests.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p> <p>Default: <code>optional</code> </p>"
         },
         "HttpPutResponseHopLimit":{
           "shape":"Integer",
@@ -29047,11 +29066,15 @@
         },
         "HttpEndpoint":{
           "shape":"InstanceMetadataEndpointState",
-          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is <code>enabled</code>.</p> <p>If you specify a value of <code>disabled</code>, you will not be able to access your instance metadata.</p>"
+          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances.</p> <p>If you specify a value of <code>disabled</code>, you cannot access your instance metadata.</p> <p>Default: <code>enabled</code> </p>"
         },
         "HttpProtocolIpv6":{
           "shape":"InstanceMetadataProtocolState",
           "documentation":"<p>Enables or disables the IPv6 endpoint for the instance metadata service.</p>"
+        },
+        "InstanceMetadataTags":{
+          "shape":"InstanceMetadataTagsState",
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
         }
       },
       "documentation":"<p>The metadata options for the instance.</p>"
@@ -29066,7 +29089,7 @@
         },
         "HttpTokens":{
           "shape":"HttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with any instance metadata retrieval requests. In this state, retrieving the IAM role credential always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p>",
+          "documentation":"<p>The state of token usage for your instance metadata requests.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with any instance metadata retrieval requests. In this state, retrieving the IAM role credential always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p> <p>Default: <code>optional</code> </p>",
           "locationName":"httpTokens"
         },
         "HttpPutResponseHopLimit":{
@@ -29076,13 +29099,18 @@
         },
         "HttpEndpoint":{
           "shape":"InstanceMetadataEndpointState",
-          "documentation":"<p>Indicates whether the HTTP metadata endpoint on your instances is enabled or disabled.</p>",
+          "documentation":"<p>Indicates whether the HTTP metadata endpoint on your instances is enabled or disabled.</p> <p>If the value is <code>disabled</code>, you cannot access your instance metadata.</p>",
           "locationName":"httpEndpoint"
         },
         "HttpProtocolIpv6":{
           "shape":"InstanceMetadataProtocolState",
           "documentation":"<p>Indicates whether the IPv6 endpoint for the instance metadata service is enabled or disabled.</p>",
           "locationName":"httpProtocolIpv6"
+        },
+        "InstanceMetadataTags":{
+          "shape":"InstanceMetadataTagsState",
+          "documentation":"<p>Indicates whether access to instance tags from the instance metadata is enabled or disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p>",
+          "locationName":"instanceMetadataTags"
         }
       },
       "documentation":"<p>The metadata options for the instance.</p>"
@@ -29095,6 +29123,13 @@
       ]
     },
     "InstanceMetadataProtocolState":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "enabled"
+      ]
+    },
+    "InstanceMetadataTagsState":{
       "type":"string",
       "enum":[
         "disabled",
@@ -29928,154 +29963,12 @@
     "InstanceType":{
       "type":"string",
       "enum":[
-        "t1.micro",
-        "t2.nano",
-        "t2.micro",
-        "t2.small",
-        "t2.medium",
-        "t2.large",
-        "t2.xlarge",
-        "t2.2xlarge",
-        "t3.nano",
-        "t3.micro",
-        "t3.small",
-        "t3.medium",
-        "t3.large",
-        "t3.xlarge",
-        "t3.2xlarge",
-        "t3a.nano",
-        "t3a.micro",
-        "t3a.small",
-        "t3a.medium",
-        "t3a.large",
-        "t3a.xlarge",
-        "t3a.2xlarge",
-        "t4g.nano",
-        "t4g.micro",
-        "t4g.small",
-        "t4g.medium",
-        "t4g.large",
-        "t4g.xlarge",
-        "t4g.2xlarge",
-        "m1.small",
-        "m1.medium",
-        "m1.large",
-        "m1.xlarge",
-        "m3.medium",
-        "m3.large",
-        "m3.xlarge",
-        "m3.2xlarge",
-        "m4.large",
-        "m4.xlarge",
-        "m4.2xlarge",
-        "m4.4xlarge",
-        "m4.10xlarge",
-        "m4.16xlarge",
-        "m2.xlarge",
-        "m2.2xlarge",
-        "m2.4xlarge",
-        "cr1.8xlarge",
-        "r3.large",
-        "r3.xlarge",
-        "r3.2xlarge",
-        "r3.4xlarge",
-        "r3.8xlarge",
-        "r4.large",
-        "r4.xlarge",
-        "r4.2xlarge",
-        "r4.4xlarge",
-        "r4.8xlarge",
-        "r4.16xlarge",
-        "r5.large",
-        "r5.xlarge",
-        "r5.2xlarge",
-        "r5.4xlarge",
-        "r5.8xlarge",
-        "r5.12xlarge",
-        "r5.16xlarge",
-        "r5.24xlarge",
-        "r5.metal",
-        "r5a.large",
-        "r5a.xlarge",
-        "r5a.2xlarge",
-        "r5a.4xlarge",
-        "r5a.8xlarge",
-        "r5a.12xlarge",
-        "r5a.16xlarge",
-        "r5a.24xlarge",
-        "r5b.large",
-        "r5b.xlarge",
-        "r5b.2xlarge",
-        "r5b.4xlarge",
-        "r5b.8xlarge",
-        "r5b.12xlarge",
-        "r5b.16xlarge",
-        "r5b.24xlarge",
-        "r5b.metal",
-        "r5d.large",
-        "r5d.xlarge",
-        "r5d.2xlarge",
-        "r5d.4xlarge",
-        "r5d.8xlarge",
-        "r5d.12xlarge",
-        "r5d.16xlarge",
-        "r5d.24xlarge",
-        "r5d.metal",
-        "r5ad.large",
-        "r5ad.xlarge",
-        "r5ad.2xlarge",
-        "r5ad.4xlarge",
-        "r5ad.8xlarge",
-        "r5ad.12xlarge",
-        "r5ad.16xlarge",
-        "r5ad.24xlarge",
-        "r6g.metal",
-        "r6g.medium",
-        "r6g.large",
-        "r6g.xlarge",
-        "r6g.2xlarge",
-        "r6g.4xlarge",
-        "r6g.8xlarge",
-        "r6g.12xlarge",
-        "r6g.16xlarge",
-        "r6gd.metal",
-        "r6gd.medium",
-        "r6gd.large",
-        "r6gd.xlarge",
-        "r6gd.2xlarge",
-        "r6gd.4xlarge",
-        "r6gd.8xlarge",
-        "r6gd.12xlarge",
-        "r6gd.16xlarge",
-        "x1.16xlarge",
-        "x1.32xlarge",
-        "x1e.xlarge",
-        "x1e.2xlarge",
-        "x1e.4xlarge",
-        "x1e.8xlarge",
-        "x1e.16xlarge",
-        "x1e.32xlarge",
-        "i2.xlarge",
-        "i2.2xlarge",
-        "i2.4xlarge",
-        "i2.8xlarge",
-        "i3.large",
-        "i3.xlarge",
-        "i3.2xlarge",
-        "i3.4xlarge",
-        "i3.8xlarge",
-        "i3.16xlarge",
-        "i3.metal",
-        "i3en.large",
-        "i3en.xlarge",
-        "i3en.2xlarge",
-        "i3en.3xlarge",
-        "i3en.6xlarge",
-        "i3en.12xlarge",
-        "i3en.24xlarge",
-        "i3en.metal",
-        "hi1.4xlarge",
-        "hs1.8xlarge",
+        "a1.medium",
+        "a1.large",
+        "a1.xlarge",
+        "a1.2xlarge",
+        "a1.4xlarge",
+        "a1.metal",
         "c1.medium",
         "c1.xlarge",
         "c3.large",
@@ -30129,7 +30022,6 @@
         "c5n.9xlarge",
         "c5n.18xlarge",
         "c5n.metal",
-        "c6g.metal",
         "c6g.medium",
         "c6g.large",
         "c6g.xlarge",
@@ -30138,7 +30030,7 @@
         "c6g.8xlarge",
         "c6g.12xlarge",
         "c6g.16xlarge",
-        "c6gd.metal",
+        "c6g.metal",
         "c6gd.medium",
         "c6gd.large",
         "c6gd.xlarge",
@@ -30147,6 +30039,7 @@
         "c6gd.8xlarge",
         "c6gd.12xlarge",
         "c6gd.16xlarge",
+        "c6gd.metal",
         "c6gn.medium",
         "c6gn.large",
         "c6gn.xlarge",
@@ -30166,33 +30059,8 @@
         "c6i.32xlarge",
         "cc1.4xlarge",
         "cc2.8xlarge",
-        "g2.2xlarge",
-        "g2.8xlarge",
-        "g3.4xlarge",
-        "g3.8xlarge",
-        "g3.16xlarge",
-        "g3s.xlarge",
-        "g4ad.xlarge",
-        "g4ad.2xlarge",
-        "g4ad.4xlarge",
-        "g4ad.8xlarge",
-        "g4ad.16xlarge",
-        "g4dn.xlarge",
-        "g4dn.2xlarge",
-        "g4dn.4xlarge",
-        "g4dn.8xlarge",
-        "g4dn.12xlarge",
-        "g4dn.16xlarge",
-        "g4dn.metal",
         "cg1.4xlarge",
-        "p2.xlarge",
-        "p2.8xlarge",
-        "p2.16xlarge",
-        "p3.2xlarge",
-        "p3.8xlarge",
-        "p3.16xlarge",
-        "p3dn.24xlarge",
-        "p4d.24xlarge",
+        "cr1.8xlarge",
         "d2.xlarge",
         "d2.2xlarge",
         "d2.4xlarge",
@@ -30211,6 +30079,96 @@
         "f1.2xlarge",
         "f1.4xlarge",
         "f1.16xlarge",
+        "g2.2xlarge",
+        "g2.8xlarge",
+        "g3.4xlarge",
+        "g3.8xlarge",
+        "g3.16xlarge",
+        "g3s.xlarge",
+        "g4ad.xlarge",
+        "g4ad.2xlarge",
+        "g4ad.4xlarge",
+        "g4ad.8xlarge",
+        "g4ad.16xlarge",
+        "g4dn.xlarge",
+        "g4dn.2xlarge",
+        "g4dn.4xlarge",
+        "g4dn.8xlarge",
+        "g4dn.12xlarge",
+        "g4dn.16xlarge",
+        "g4dn.metal",
+        "g5.xlarge",
+        "g5.2xlarge",
+        "g5.4xlarge",
+        "g5.8xlarge",
+        "g5.12xlarge",
+        "g5.16xlarge",
+        "g5.24xlarge",
+        "g5.48xlarge",
+        "g5g.xlarge",
+        "g5g.2xlarge",
+        "g5g.4xlarge",
+        "g5g.8xlarge",
+        "g5g.16xlarge",
+        "g5g.metal",
+        "hi1.4xlarge",
+        "hs1.8xlarge",
+        "h1.2xlarge",
+        "h1.4xlarge",
+        "h1.8xlarge",
+        "h1.16xlarge",
+        "i2.xlarge",
+        "i2.2xlarge",
+        "i2.4xlarge",
+        "i2.8xlarge",
+        "i3.large",
+        "i3.xlarge",
+        "i3.2xlarge",
+        "i3.4xlarge",
+        "i3.8xlarge",
+        "i3.16xlarge",
+        "i3.metal",
+        "i3en.large",
+        "i3en.xlarge",
+        "i3en.2xlarge",
+        "i3en.3xlarge",
+        "i3en.6xlarge",
+        "i3en.12xlarge",
+        "i3en.24xlarge",
+        "i3en.metal",
+        "im4gn.large",
+        "im4gn.xlarge",
+        "im4gn.2xlarge",
+        "im4gn.4xlarge",
+        "im4gn.8xlarge",
+        "im4gn.16xlarge",
+        "inf1.xlarge",
+        "inf1.2xlarge",
+        "inf1.6xlarge",
+        "inf1.24xlarge",
+        "is4gen.medium",
+        "is4gen.large",
+        "is4gen.xlarge",
+        "is4gen.2xlarge",
+        "is4gen.4xlarge",
+        "is4gen.8xlarge",
+        "m1.small",
+        "m1.medium",
+        "m1.large",
+        "m1.xlarge",
+        "m2.xlarge",
+        "m2.2xlarge",
+        "m2.4xlarge",
+        "m3.medium",
+        "m3.large",
+        "m3.xlarge",
+        "m3.2xlarge",
+        "m4.large",
+        "m4.xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.10xlarge",
+        "m4.16xlarge",
         "m5.large",
         "m5.xlarge",
         "m5.2xlarge",
@@ -30228,6 +30186,14 @@
         "m5a.12xlarge",
         "m5a.16xlarge",
         "m5a.24xlarge",
+        "m5ad.large",
+        "m5ad.xlarge",
+        "m5ad.2xlarge",
+        "m5ad.4xlarge",
+        "m5ad.8xlarge",
+        "m5ad.12xlarge",
+        "m5ad.16xlarge",
+        "m5ad.24xlarge",
         "m5d.large",
         "m5d.xlarge",
         "m5d.2xlarge",
@@ -30237,47 +30203,6 @@
         "m5d.16xlarge",
         "m5d.24xlarge",
         "m5d.metal",
-        "m5ad.large",
-        "m5ad.xlarge",
-        "m5ad.2xlarge",
-        "m5ad.4xlarge",
-        "m5ad.8xlarge",
-        "m5ad.12xlarge",
-        "m5ad.16xlarge",
-        "m5ad.24xlarge",
-        "m5zn.large",
-        "m5zn.xlarge",
-        "m5zn.2xlarge",
-        "m5zn.3xlarge",
-        "m5zn.6xlarge",
-        "m5zn.12xlarge",
-        "m5zn.metal",
-        "h1.2xlarge",
-        "h1.4xlarge",
-        "h1.8xlarge",
-        "h1.16xlarge",
-        "z1d.large",
-        "z1d.xlarge",
-        "z1d.2xlarge",
-        "z1d.3xlarge",
-        "z1d.6xlarge",
-        "z1d.12xlarge",
-        "z1d.metal",
-        "u-6tb1.56xlarge",
-        "u-6tb1.112xlarge",
-        "u-9tb1.112xlarge",
-        "u-12tb1.112xlarge",
-        "u-6tb1.metal",
-        "u-9tb1.metal",
-        "u-12tb1.metal",
-        "u-18tb1.metal",
-        "u-24tb1.metal",
-        "a1.medium",
-        "a1.large",
-        "a1.xlarge",
-        "a1.2xlarge",
-        "a1.4xlarge",
-        "a1.metal",
         "m5dn.large",
         "m5dn.xlarge",
         "m5dn.2xlarge",
@@ -30296,28 +30221,23 @@
         "m5n.16xlarge",
         "m5n.24xlarge",
         "m5n.metal",
-        "r5dn.large",
-        "r5dn.xlarge",
-        "r5dn.2xlarge",
-        "r5dn.4xlarge",
-        "r5dn.8xlarge",
-        "r5dn.12xlarge",
-        "r5dn.16xlarge",
-        "r5dn.24xlarge",
-        "r5dn.metal",
-        "r5n.large",
-        "r5n.xlarge",
-        "r5n.2xlarge",
-        "r5n.4xlarge",
-        "r5n.8xlarge",
-        "r5n.12xlarge",
-        "r5n.16xlarge",
-        "r5n.24xlarge",
-        "r5n.metal",
-        "inf1.xlarge",
-        "inf1.2xlarge",
-        "inf1.6xlarge",
-        "inf1.24xlarge",
+        "m5zn.large",
+        "m5zn.xlarge",
+        "m5zn.2xlarge",
+        "m5zn.3xlarge",
+        "m5zn.6xlarge",
+        "m5zn.12xlarge",
+        "m5zn.metal",
+        "m6a.large",
+        "m6a.xlarge",
+        "m6a.2xlarge",
+        "m6a.4xlarge",
+        "m6a.8xlarge",
+        "m6a.12xlarge",
+        "m6a.16xlarge",
+        "m6a.24xlarge",
+        "m6a.32xlarge",
+        "m6a.48xlarge",
         "m6g.metal",
         "m6g.medium",
         "m6g.large",
@@ -30336,16 +30256,6 @@
         "m6gd.8xlarge",
         "m6gd.12xlarge",
         "m6gd.16xlarge",
-        "m6a.large",
-        "m6a.xlarge",
-        "m6a.2xlarge",
-        "m6a.4xlarge",
-        "m6a.8xlarge",
-        "m6a.12xlarge",
-        "m6a.16xlarge",
-        "m6a.24xlarge",
-        "m6a.32xlarge",
-        "m6a.48xlarge",
         "m6i.large",
         "m6i.xlarge",
         "m6i.2xlarge",
@@ -30356,6 +30266,153 @@
         "m6i.24xlarge",
         "m6i.32xlarge",
         "mac1.metal",
+        "p2.xlarge",
+        "p2.8xlarge",
+        "p2.16xlarge",
+        "p3.2xlarge",
+        "p3.8xlarge",
+        "p3.16xlarge",
+        "p3dn.24xlarge",
+        "p4d.24xlarge",
+        "r3.large",
+        "r3.xlarge",
+        "r3.2xlarge",
+        "r3.4xlarge",
+        "r3.8xlarge",
+        "r4.large",
+        "r4.xlarge",
+        "r4.2xlarge",
+        "r4.4xlarge",
+        "r4.8xlarge",
+        "r4.16xlarge",
+        "r5.large",
+        "r5.xlarge",
+        "r5.2xlarge",
+        "r5.4xlarge",
+        "r5.8xlarge",
+        "r5.12xlarge",
+        "r5.16xlarge",
+        "r5.24xlarge",
+        "r5.metal",
+        "r5a.large",
+        "r5a.xlarge",
+        "r5a.2xlarge",
+        "r5a.4xlarge",
+        "r5a.8xlarge",
+        "r5a.12xlarge",
+        "r5a.16xlarge",
+        "r5a.24xlarge",
+        "r5ad.large",
+        "r5ad.xlarge",
+        "r5ad.2xlarge",
+        "r5ad.4xlarge",
+        "r5ad.8xlarge",
+        "r5ad.12xlarge",
+        "r5ad.16xlarge",
+        "r5ad.24xlarge",
+        "r5b.large",
+        "r5b.xlarge",
+        "r5b.2xlarge",
+        "r5b.4xlarge",
+        "r5b.8xlarge",
+        "r5b.12xlarge",
+        "r5b.16xlarge",
+        "r5b.24xlarge",
+        "r5b.metal",
+        "r5d.large",
+        "r5d.xlarge",
+        "r5d.2xlarge",
+        "r5d.4xlarge",
+        "r5d.8xlarge",
+        "r5d.12xlarge",
+        "r5d.16xlarge",
+        "r5d.24xlarge",
+        "r5d.metal",
+        "r5dn.large",
+        "r5dn.xlarge",
+        "r5dn.2xlarge",
+        "r5dn.4xlarge",
+        "r5dn.8xlarge",
+        "r5dn.12xlarge",
+        "r5dn.16xlarge",
+        "r5dn.24xlarge",
+        "r5dn.metal",
+        "r5n.large",
+        "r5n.xlarge",
+        "r5n.2xlarge",
+        "r5n.4xlarge",
+        "r5n.8xlarge",
+        "r5n.12xlarge",
+        "r5n.16xlarge",
+        "r5n.24xlarge",
+        "r5n.metal",
+        "r6g.medium",
+        "r6g.large",
+        "r6g.xlarge",
+        "r6g.2xlarge",
+        "r6g.4xlarge",
+        "r6g.8xlarge",
+        "r6g.12xlarge",
+        "r6g.16xlarge",
+        "r6g.metal",
+        "r6gd.medium",
+        "r6gd.large",
+        "r6gd.xlarge",
+        "r6gd.2xlarge",
+        "r6gd.4xlarge",
+        "r6gd.8xlarge",
+        "r6gd.12xlarge",
+        "r6gd.16xlarge",
+        "r6gd.metal",
+        "t1.micro",
+        "t2.nano",
+        "t2.micro",
+        "t2.small",
+        "t2.medium",
+        "t2.large",
+        "t2.xlarge",
+        "t2.2xlarge",
+        "t3.nano",
+        "t3.micro",
+        "t3.small",
+        "t3.medium",
+        "t3.large",
+        "t3.xlarge",
+        "t3.2xlarge",
+        "t3a.nano",
+        "t3a.micro",
+        "t3a.small",
+        "t3a.medium",
+        "t3a.large",
+        "t3a.xlarge",
+        "t3a.2xlarge",
+        "t4g.nano",
+        "t4g.micro",
+        "t4g.small",
+        "t4g.medium",
+        "t4g.large",
+        "t4g.xlarge",
+        "t4g.2xlarge",
+        "u-6tb1.56xlarge",
+        "u-6tb1.112xlarge",
+        "u-9tb1.112xlarge",
+        "u-12tb1.112xlarge",
+        "u-6tb1.metal",
+        "u-9tb1.metal",
+        "u-12tb1.metal",
+        "u-18tb1.metal",
+        "u-24tb1.metal",
+        "vt1.3xlarge",
+        "vt1.6xlarge",
+        "vt1.24xlarge",
+        "x1.16xlarge",
+        "x1.32xlarge",
+        "x1e.xlarge",
+        "x1e.2xlarge",
+        "x1e.4xlarge",
+        "x1e.8xlarge",
+        "x1e.16xlarge",
+        "x1e.32xlarge",
         "x2gd.medium",
         "x2gd.large",
         "x2gd.xlarge",
@@ -30365,35 +30422,13 @@
         "x2gd.12xlarge",
         "x2gd.16xlarge",
         "x2gd.metal",
-        "vt1.3xlarge",
-        "vt1.6xlarge",
-        "vt1.24xlarge",
-        "im4gn.16xlarge",
-        "im4gn.2xlarge",
-        "im4gn.4xlarge",
-        "im4gn.8xlarge",
-        "im4gn.large",
-        "im4gn.xlarge",
-        "is4gen.2xlarge",
-        "is4gen.4xlarge",
-        "is4gen.8xlarge",
-        "is4gen.large",
-        "is4gen.medium",
-        "is4gen.xlarge",
-        "g5g.xlarge",
-        "g5g.2xlarge",
-        "g5g.4xlarge",
-        "g5g.8xlarge",
-        "g5g.16xlarge",
-        "g5g.metal",
-        "g5.xlarge",
-        "g5.2xlarge",
-        "g5.4xlarge",
-        "g5.8xlarge",
-        "g5.12xlarge",
-        "g5.16xlarge",
-        "g5.24xlarge",
-        "g5.48xlarge"
+        "z1d.large",
+        "z1d.xlarge",
+        "z1d.2xlarge",
+        "z1d.3xlarge",
+        "z1d.6xlarge",
+        "z1d.12xlarge",
+        "z1d.metal"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -31900,11 +31935,11 @@
       "members":{
         "Add":{
           "shape":"LaunchPermissionList",
-          "documentation":"<p>The Amazon Web Services account ID to add to the list of launch permissions for the AMI.</p>"
+          "documentation":"<p>The Amazon Web Services account ID, organization ARN, or OU ARN to add to the list of launch permissions for the AMI.</p>"
         },
         "Remove":{
           "shape":"LaunchPermissionList",
-          "documentation":"<p>The Amazon Web Services account ID to remove from the list of launch permissions for the AMI.</p>"
+          "documentation":"<p>The Amazon Web Services account ID, organization ARN, or OU ARN to remove from the list of launch permissions for the AMI.</p>"
         }
       },
       "documentation":"<p>Describes a launch permission modification.</p>"
@@ -32486,13 +32521,18 @@
         },
         "HttpEndpoint":{
           "shape":"LaunchTemplateInstanceMetadataEndpointState",
-          "documentation":"<p>This parameter enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is <code>enabled</code>.</p> <note> <p>If you specify a value of <code>disabled</code>, you will not be able to access your instance metadata. </p> </note>",
+          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is <code>enabled</code>.</p> <note> <p>If you specify a value of <code>disabled</code>, you will not be able to access your instance metadata. </p> </note>",
           "locationName":"httpEndpoint"
         },
         "HttpProtocolIpv6":{
           "shape":"LaunchTemplateInstanceMetadataProtocolIpv6",
           "documentation":"<p>Enables or disables the IPv6 endpoint for the instance metadata service.</p> <p>Default: <code>disabled</code> </p>",
           "locationName":"httpProtocolIpv6"
+        },
+        "InstanceMetadataTags":{
+          "shape":"LaunchTemplateInstanceMetadataTagsState",
+          "documentation":"<p> </p>",
+          "locationName":"instanceMetadataTags"
         }
       },
       "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Instance Metadata and User Data</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
@@ -32510,11 +32550,15 @@
         },
         "HttpEndpoint":{
           "shape":"LaunchTemplateInstanceMetadataEndpointState",
-          "documentation":"<p>This parameter enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is <code>enabled</code>.</p> <note> <p>If you specify a value of <code>disabled</code>, you will not be able to access your instance metadata. </p> </note>"
+          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is <code>enabled</code>.</p> <note> <p>If you specify a value of <code>disabled</code>, you will not be able to access your instance metadata. </p> </note>"
         },
         "HttpProtocolIpv6":{
           "shape":"LaunchTemplateInstanceMetadataProtocolIpv6",
           "documentation":"<p>Enables or disables the IPv6 endpoint for the instance metadata service.</p> <p>Default: <code>disabled</code> </p>"
+        },
+        "InstanceMetadataTags":{
+          "shape":"LaunchTemplateInstanceMetadataTagsState",
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
         }
       },
       "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Instance Metadata and User Data</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
@@ -32527,6 +32571,13 @@
       ]
     },
     "LaunchTemplateInstanceMetadataProtocolIpv6":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "enabled"
+      ]
+    },
+    "LaunchTemplateInstanceMetadataTagsState":{
       "type":"string",
       "enum":[
         "disabled",
@@ -34676,7 +34727,7 @@
         },
         "HttpEndpoint":{
           "shape":"InstanceMetadataEndpointState",
-          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the existing state is maintained.</p> <p>If you specify a value of <code>disabled</code>, you cannot access your instance metadata.</p>"
+          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances. If this parameter is not specified, the existing state is maintained.</p> <p>If you specify a value of <code>disabled</code>, you cannot access your instance metadata.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -34685,6 +34736,10 @@
         "HttpProtocolIpv6":{
           "shape":"InstanceMetadataProtocolState",
           "documentation":"<p>Enables or disables the IPv6 endpoint for the instance metadata service. This setting applies only if you have enabled the HTTP metadata endpoint.</p>"
+        },
+        "InstanceMetadataTags":{
+          "shape":"InstanceMetadataTagsState",
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
         }
       }
     },
@@ -35868,6 +35923,37 @@
         }
       }
     },
+    "ModifyVpcEndpointServicePayerResponsibilityRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceId",
+        "PayerResponsibility"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ServiceId":{
+          "shape":"VpcEndpointServiceId",
+          "documentation":"<p>The ID of the service.</p>"
+        },
+        "PayerResponsibility":{
+          "shape":"PayerResponsibility",
+          "documentation":"<p>The entity that is responsible for the endpoint costs. The default is the endpoint owner. If you set the payer responsibility to the service owner, you cannot set it back to the endpoint owner.</p>"
+        }
+      }
+    },
+    "ModifyVpcEndpointServicePayerResponsibilityResult":{
+      "type":"structure",
+      "members":{
+        "ReturnValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "ModifyVpcEndpointServicePermissionsRequest":{
       "type":"structure",
       "required":["ServiceId"],
@@ -36144,7 +36230,7 @@
         },
         "DPDTimeoutSeconds":{
           "shape":"Integer",
-          "documentation":"<p>The number of seconds after which a DPD timeout occurs.</p> <p>Constraints: A value between 0 and 30.</p> <p>Default: <code>30</code> </p>"
+          "documentation":"<p>The number of seconds after which a DPD timeout occurs.</p> <p>Constraints: A value greater than or equal to 30.</p> <p>Default: <code>30</code> </p>"
         },
         "DPDTimeoutAction":{
           "shape":"String",
@@ -36271,6 +36357,11 @@
     },
     "MoveByoipCidrToIpamRequest":{
       "type":"structure",
+      "required":[
+        "Cidr",
+        "IpamPoolId",
+        "IpamPoolOwner"
+      ],
       "members":{
         "DryRun":{
           "shape":"Boolean",
@@ -37803,6 +37894,10 @@
       },
       "documentation":"<p>Describes a path statement.</p>"
     },
+    "PayerResponsibility":{
+      "type":"string",
+      "enum":["ServiceOwner"]
+    },
     "PaymentOption":{
       "type":"string",
       "enum":[
@@ -38201,9 +38296,18 @@
           "shape":"TagList",
           "documentation":"<p>Any tags applied to the placement group.</p>",
           "locationName":"tagSet"
+        },
+        "GroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the placement group.</p>",
+          "locationName":"groupArn"
         }
       },
       "documentation":"<p>Describes a placement group.</p>"
+    },
+    "PlacementGroupArn":{
+      "type":"string",
+      "pattern":"^arn:aws([a-z-]+)?:ec2:[a-z\\d-]+:\\d{12}:placement-group/([^\\s].+[^\\s]){1,255}$"
     },
     "PlacementGroupId":{"type":"string"},
     "PlacementGroupIdStringList":{
@@ -39105,7 +39209,7 @@
           "locationName":"hostIdSet"
         },
         "HostReservationId":{
-          "shape":"String",
+          "shape":"HostReservationId",
           "documentation":"<p>The ID of the reservation.</p>",
           "locationName":"hostReservationId"
         },
@@ -43631,6 +43735,11 @@
           "documentation":"<p>Information about the endpoint service private DNS name configuration.</p>",
           "locationName":"privateDnsNameConfiguration"
         },
+        "PayerResponsibility":{
+          "shape":"PayerResponsibility",
+          "documentation":"<p>The payer responsibility.</p>",
+          "locationName":"payerResponsibility"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Any tags assigned to the service.</p>",
@@ -43703,6 +43812,11 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the service manages its VPC endpoints. Management of the service VPC endpoints using the VPC endpoint API is restricted.</p>",
           "locationName":"managesVpcEndpoints"
+        },
+        "PayerResponsibility":{
+          "shape":"PayerResponsibility",
+          "documentation":"<p>The payer responsibility.</p>",
+          "locationName":"payerResponsibility"
         },
         "Tags":{
           "shape":"TagList",
@@ -44259,11 +44373,11 @@
         },
         "TerminationDelay":{
           "shape":"Integer",
-          "documentation":"<p>The amount of time (in seconds) that Amazon EC2 waits before terminating the old Spot Instance after launching a new replacement Spot Instance.</p> <p>Valid only when <code>ReplacementStrategy</code> is set to <code>launch-before-terminate</code>.</p> <p>Valid values: Minimum value of <code>120</code> seconds. Maximum value of <code>7200</code> seconds.</p>",
+          "documentation":"<p>The amount of time (in seconds) that Amazon EC2 waits before terminating the old Spot Instance after launching a new replacement Spot Instance.</p> <p>Required when <code>ReplacementStrategy</code> is set to <code>launch-before-terminate</code>.</p> <p>Not valid when <code>ReplacementStrategy</code> is set to <code>launch</code>.</p> <p>Valid values: Minimum value of <code>120</code> seconds. Maximum value of <code>7200</code> seconds.</p>",
           "locationName":"terminationDelay"
         }
       },
-      "documentation":"<p>The Spot Instance replacement strategy to use when Amazon EC2 emits a signal that your Spot Instance is at an elevated risk of being interrupted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-configuration-strategies.html#spot-fleet-capacity-rebalance\">Capacity rebalancing</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>"
+      "documentation":"<p>The Spot Instance replacement strategy to use when Amazon EC2 emits a signal that your Spot Instance is at an elevated risk of being interrupted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-capacity-rebalance.html\">Capacity rebalancing</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>"
     },
     "SpotDatafeedSubscription":{
       "type":"structure",
@@ -44805,7 +44919,7 @@
       "members":{
         "CapacityRebalance":{
           "shape":"SpotCapacityRebalance",
-          "documentation":"<p>The strategy to use when Amazon EC2 emits a signal that your Spot Instance is at an elevated risk of being interrupted.</p>",
+          "documentation":"<p>The Spot Instance replacement strategy to use when Amazon EC2 emits a signal that your Spot Instance is at an elevated risk of being interrupted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-capacity-rebalance.html\">Capacity rebalancing</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>",
           "locationName":"capacityRebalance"
         }
       },
@@ -50096,7 +50210,7 @@
         },
         "DPDTimeoutSeconds":{
           "shape":"Integer",
-          "documentation":"<p>The number of seconds after which a DPD timeout occurs.</p> <p>Constraints: A value between 0 and 30.</p> <p>Default: <code>30</code> </p>"
+          "documentation":"<p>The number of seconds after which a DPD timeout occurs.</p> <p>Constraints: A value greater than or equal to 30.</p> <p>Default: <code>30</code> </p>"
         },
         "DPDTimeoutAction":{
           "shape":"String",
@@ -50215,5 +50329,5 @@
     "totalFpgaMemory":{"type":"integer"},
     "totalGpuMemory":{"type":"integer"}
   },
-  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>Amazon Elastic Compute Cloud (Amazon EC2) provides secure and resizable computing capacity in the AWS Cloud. Using Amazon EC2 eliminates the need to invest in hardware up front, so you can develop and deploy applications faster. Amazon Virtual Private Cloud (Amazon VPC) enables you to provision a logically isolated section of the AWS Cloud where you can launch AWS resources in a virtual network that you've defined. Amazon Elastic Block Store (Amazon EBS) provides block level storage volumes for use with EC2 instances. EBS volumes are highly available and reliable storage volumes that can be attached to any running instance and used like a hard drive.</p> <p>To learn more, see the following resources:</p> <ul> <li> <p>Amazon EC2: <a href=\"http://aws.amazon.com/ec2\">AmazonEC2 product page</a>, <a href=\"http://aws.amazon.com/documentation/ec2\">Amazon EC2 documentation</a> </p> </li> <li> <p>Amazon EBS: <a href=\"http://aws.amazon.com/ebs\">Amazon EBS product page</a>, <a href=\"http://aws.amazon.com/documentation/ebs\">Amazon EBS documentation</a> </p> </li> <li> <p>Amazon VPC: <a href=\"http://aws.amazon.com/vpc\">Amazon VPC product page</a>, <a href=\"http://aws.amazon.com/documentation/vpc\">Amazon VPC documentation</a> </p> </li> <li> <p>AWS VPN: <a href=\"http://aws.amazon.com/vpn\">AWS VPN product page</a>, <a href=\"http://aws.amazon.com/documentation/vpn\">AWS VPN documentation</a> </p> </li> </ul>"
+  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>Amazon Elastic Compute Cloud (Amazon EC2) provides secure and resizable computing capacity in the Amazon Web Services Cloud. Using Amazon EC2 eliminates the need to invest in hardware up front, so you can develop and deploy applications faster. Amazon Virtual Private Cloud (Amazon VPC) enables you to provision a logically isolated section of the Amazon Web Services Cloud where you can launch Amazon Web Services resources in a virtual network that you've defined. Amazon Elastic Block Store (Amazon EBS) provides block level storage volumes for use with EC2 instances. EBS volumes are highly available and reliable storage volumes that can be attached to any running instance and used like a hard drive.</p> <p>To learn more, see the following resources:</p> <ul> <li> <p>Amazon EC2: <a href=\"http://aws.amazon.com/ec2\">AmazonEC2 product page</a>, <a href=\"http://aws.amazon.com/documentation/ec2\">Amazon EC2 documentation</a> </p> </li> <li> <p>Amazon EBS: <a href=\"http://aws.amazon.com/ebs\">Amazon EBS product page</a>, <a href=\"http://aws.amazon.com/documentation/ebs\">Amazon EBS documentation</a> </p> </li> <li> <p>Amazon VPC: <a href=\"http://aws.amazon.com/vpc\">Amazon VPC product page</a>, <a href=\"http://aws.amazon.com/documentation/vpc\">Amazon VPC documentation</a> </p> </li> <li> <p>Amazon Web Services VPN: <a href=\"http://aws.amazon.com/vpn\">Amazon Web Services VPN product page</a>, <a href=\"http://aws.amazon.com/documentation/vpn\">Amazon Web Services VPN documentation</a> </p> </li> </ul>"
 }

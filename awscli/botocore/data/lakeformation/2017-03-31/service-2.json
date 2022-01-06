@@ -375,6 +375,42 @@
       ],
       "documentation":"<p>Returns the set of Amazon S3 objects that make up the specified governed table. A transaction ID or timestamp can be specified for time-travel queries.</p>"
     },
+    "GetTemporaryGluePartitionCredentials":{
+      "name":"GetTemporaryGluePartitionCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTemporaryGluePartitionCredentials"
+      },
+      "input":{"shape":"GetTemporaryGluePartitionCredentialsRequest"},
+      "output":{"shape":"GetTemporaryGluePartitionCredentialsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"PermissionTypeMismatchException"}
+      ],
+      "documentation":"<p>This API is identical to <code>GetTemporaryTableCredentials</code> except that this is used when the target Data Catalog resource is of type Partition. Lake Formation restricts the permission of the vended credentials with the same scope down policy which restricts access to a single Amazon S3 prefix.</p>"
+    },
+    "GetTemporaryGlueTableCredentials":{
+      "name":"GetTemporaryGlueTableCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTemporaryGlueTableCredentials"
+      },
+      "input":{"shape":"GetTemporaryGlueTableCredentialsRequest"},
+      "output":{"shape":"GetTemporaryGlueTableCredentialsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"PermissionTypeMismatchException"}
+      ],
+      "documentation":"<p>Allows a caller in a secure environment to assume a role with permission to access Amazon S3. In order to vend such credentials, Lake Formation assumes the role associated with a registered location, for example an Amazon S3 bucket, with a scope down policy which restricts the access to a single prefix.</p>"
+    },
     "GetWorkUnitResults":{
       "name":"GetWorkUnitResults",
       "http":{
@@ -745,6 +781,7 @@
       },
       "exception":true
     },
+    "AccessKeyIdString":{"type":"string"},
     "AddLFTagsToResourceRequest":{
       "type":"structure",
       "required":[
@@ -818,6 +855,26 @@
       },
       "documentation":"<p>A resource to be created or added already exists.</p>",
       "exception":true
+    },
+    "AuditContext":{
+      "type":"structure",
+      "members":{
+        "AdditionalAuditContext":{
+          "shape":"AuditContextString",
+          "documentation":"<p>The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.</p>"
+        }
+      },
+      "documentation":"<p>A structure used to include auditing information on the privileged API. </p>"
+    },
+    "AuditContextString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "AuthorizedSessionTagValueList":{
+      "type":"list",
+      "member":{"shape":"NameString"}
     },
     "BatchGrantPermissionsRequest":{
       "type":"structure",
@@ -1061,6 +1118,12 @@
       "members":{
       }
     },
+    "CredentialTimeoutDurationSecondInteger":{
+      "type":"integer",
+      "box":true,
+      "max":43200,
+      "min":900
+    },
     "DataCellsFilter":{
       "type":"structure",
       "required":[
@@ -1096,7 +1159,7 @@
         },
         "ColumnWildcard":{
           "shape":"ColumnWildcard",
-          "documentation":"<p>A wildcard with exclusions.</p>"
+          "documentation":"<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>"
         }
       },
       "documentation":"<p>A structure that describes certain columns on certain rows.</p>"
@@ -1135,7 +1198,7 @@
           "documentation":"<p>An identifier for the Lake Formation principal.</p>"
         }
       },
-      "documentation":"<p>The AWS Lake Formation principal. Supported principals are IAM users or IAM roles.</p>"
+      "documentation":"<p>The Lake Formation principal. Supported principals are IAM users or IAM roles.</p>"
     },
     "DataLakePrincipalList":{
       "type":"list",
@@ -1179,6 +1242,18 @@
         "TrustedResourceOwners":{
           "shape":"TrustedResourceOwners",
           "documentation":"<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>"
+        },
+        "AllowExternalDataFiltering":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#emr-switch\">(Optional) Allow Data Filtering on Amazon EMR</a>.</p>"
+        },
+        "ExternalDataFilteringAllowList":{
+          "shape":"DataLakePrincipalList",
+          "documentation":"<p>A list of the account IDs of Amazon Web Services accounts with Amazon EMR clusters that are to perform data filtering.&gt;</p>"
+        },
+        "AuthorizedSessionTagValueList":{
+          "shape":"AuthorizedSessionTagValueList",
+          "documentation":"<p>Lake Formation relies on a privileged process secured by Amazon EMR or the third party integrator to tag the user's role while assuming it. Lake Formation will publish the acceptable key-value pair, for example key = \"LakeFormationTrustedCaller\" and value = \"TRUE\" and the third party integrator must properly tag the temporary security credentials that will be used to call Lake Formation's administrative APIs.</p>"
         }
       },
       "documentation":"<p>A structure representing a list of Lake Formation principals designated as data lake administrators and lists of principal permission entries for default create database and default create table permissions.</p>"
@@ -1440,6 +1515,7 @@
       },
       "documentation":"<p>Statistics related to the processing of a query statement.</p>"
     },
+    "ExpirationTimestamp":{"type":"timestamp"},
     "ExpiredException":{
       "type":"structure",
       "members":{
@@ -1739,6 +1815,111 @@
         "NextToken":{
           "shape":"TokenString",
           "documentation":"<p>A continuation token indicating whether additional data is available.</p>"
+        }
+      }
+    },
+    "GetTemporaryGluePartitionCredentialsRequest":{
+      "type":"structure",
+      "required":[
+        "TableArn",
+        "Partition",
+        "SupportedPermissionTypes"
+      ],
+      "members":{
+        "TableArn":{
+          "shape":"ResourceArnString",
+          "documentation":"<p>The ARN of the partitions' table.</p>"
+        },
+        "Partition":{
+          "shape":"PartitionValueList",
+          "documentation":"<p>A list of partition values identifying a single partition.</p>"
+        },
+        "Permissions":{
+          "shape":"PermissionList",
+          "documentation":"<p>Filters the request based on the user having been granted a list of specified permissions on the requested resource(s).</p>"
+        },
+        "DurationSeconds":{
+          "shape":"CredentialTimeoutDurationSecondInteger",
+          "documentation":"<p>The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.</p>"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>A structure representing context to access a resource (column names, query ID, etc).</p>"
+        },
+        "SupportedPermissionTypes":{
+          "shape":"PermissionTypeList",
+          "documentation":"<p>A list of supported permission types for the partition. Valid values are <code>COLUMN_PERMISSION</code> and <code>CELL_FILTER_PERMISSION</code>.</p>"
+        }
+      }
+    },
+    "GetTemporaryGluePartitionCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "AccessKeyId":{
+          "shape":"AccessKeyIdString",
+          "documentation":"<p>The access key ID for the temporary credentials.</p>"
+        },
+        "SecretAccessKey":{
+          "shape":"SecretAccessKeyString",
+          "documentation":"<p>The secret key for the temporary credentials.</p>"
+        },
+        "SessionToken":{
+          "shape":"SessionTokenString",
+          "documentation":"<p>The session token for the temporary credentials.</p>"
+        },
+        "Expiration":{
+          "shape":"ExpirationTimestamp",
+          "documentation":"<p>The date and time when the temporary credentials expire.</p>"
+        }
+      }
+    },
+    "GetTemporaryGlueTableCredentialsRequest":{
+      "type":"structure",
+      "required":[
+        "TableArn",
+        "SupportedPermissionTypes"
+      ],
+      "members":{
+        "TableArn":{
+          "shape":"ResourceArnString",
+          "documentation":"<p>The ARN identifying a table in the Data Catalog for the temporary credentials request.</p>"
+        },
+        "Permissions":{
+          "shape":"PermissionList",
+          "documentation":"<p>Filters the request based on the user having been granted a list of specified permissions on the requested resource(s).</p>"
+        },
+        "DurationSeconds":{
+          "shape":"CredentialTimeoutDurationSecondInteger",
+          "documentation":"<p>The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.</p>"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>A structure representing context to access a resource (column names, query ID, etc).</p>"
+        },
+        "SupportedPermissionTypes":{
+          "shape":"PermissionTypeList",
+          "documentation":"<p>A list of supported permission types for the table. Valid values are <code>COLUMN_PERMISSION</code> and <code>CELL_FILTER_PERMISSION</code>.</p>"
+        }
+      }
+    },
+    "GetTemporaryGlueTableCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "AccessKeyId":{
+          "shape":"AccessKeyIdString",
+          "documentation":"<p>The access key ID for the temporary credentials.</p>"
+        },
+        "SecretAccessKey":{
+          "shape":"SecretAccessKeyString",
+          "documentation":"<p>The secret key for the temporary credentials.</p>"
+        },
+        "SessionToken":{
+          "shape":"SessionTokenString",
+          "documentation":"<p>The session token for the temporary credentials.</p>"
+        },
+        "Expiration":{
+          "shape":"ExpirationTimestamp",
+          "documentation":"<p>The date and time when the temporary credentials expire.</p>"
         }
       }
     },
@@ -2311,6 +2492,17 @@
       },
       "documentation":"<p>A structure containing a list of partition values and table objects.</p>"
     },
+    "PartitionValueList":{
+      "type":"structure",
+      "required":["Values"],
+      "members":{
+        "Values":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The list of partition values.</p>"
+        }
+      },
+      "documentation":"<p>Contains a list of values defining partitions.</p>"
+    },
     "PartitionValueString":{
       "type":"string",
       "max":1024
@@ -2348,6 +2540,30 @@
     "PermissionList":{
       "type":"list",
       "member":{"shape":"Permission"}
+    },
+    "PermissionType":{
+      "type":"string",
+      "enum":[
+        "COLUMN_PERMISSION",
+        "CELL_FILTER_PERMISSION"
+      ]
+    },
+    "PermissionTypeList":{
+      "type":"list",
+      "member":{"shape":"PermissionType"},
+      "max":255,
+      "min":1
+    },
+    "PermissionTypeMismatchException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>The engine does not support filtering data based on the enforced permissions. For example, if you call the <code>GetTemporaryGlueTableCredentials</code> operation with <code>SupportedPermissionType</code> equal to <code>ColumnPermission</code>, but cell-level permissions exist on the table, this exception is thrown.</p>",
+      "exception":true
     },
     "PlanningStatistics":{
       "type":"structure",
@@ -2772,6 +2988,8 @@
         }
       }
     },
+    "SecretAccessKeyString":{"type":"string"},
+    "SessionTokenString":{"type":"string"},
     "StartQueryPlanningRequest":{
       "type":"structure",
       "required":[
@@ -3269,6 +3487,12 @@
           "documentation":"<p>A response indicating the success of failure of the operation.</p>"
         }
       }
+    },
+    "ValueString":{"type":"string"},
+    "ValueStringList":{
+      "type":"list",
+      "member":{"shape":"ValueString"},
+      "min":1
     },
     "VirtualObject":{
       "type":"structure",

@@ -1381,7 +1381,11 @@
           "shape":"String",
           "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29.</p>"
         },
-        "syncConfig":{"shape":"SyncConfig"}
+        "syncConfig":{"shape":"SyncConfig"},
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum batching size for a resolver.</p>"
+        }
       }
     },
     "CreateFunctionResponse":{
@@ -1498,6 +1502,10 @@
         "cachingConfig":{
           "shape":"CachingConfig",
           "documentation":"<p>The caching configuration for the resolver.</p>"
+        },
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum batching size for a resolver.</p>"
         }
       }
     },
@@ -1994,7 +2002,11 @@
           "shape":"String",
           "documentation":"<p>The version of the request mapping template. Currently, only the 2018-05-29 version of the template is supported.</p>"
         },
-        "syncConfig":{"shape":"SyncConfig"}
+        "syncConfig":{"shape":"SyncConfig"},
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum batching size for a resolver.</p>"
+        }
       },
       "documentation":"<p>A function is a reusable entity. You can use multiple functions to compose the resolver logic.</p>"
     },
@@ -2793,7 +2805,13 @@
     "MappingTemplate":{
       "type":"string",
       "max":65536,
-      "min":1
+      "min":1,
+      "pattern":"^.*$"
+    },
+    "MaxBatchSize":{
+      "type":"integer",
+      "max":2000,
+      "min":0
     },
     "MaxResults":{
       "type":"integer",
@@ -2959,6 +2977,10 @@
         "cachingConfig":{
           "shape":"CachingConfig",
           "documentation":"<p>The caching configuration for the resolver.</p>"
+        },
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum batching size for a resolver.</p>"
         }
       },
       "documentation":"<p>Describes a resolver.</p>"
@@ -3097,7 +3119,8 @@
     "TagValue":{
       "type":"string",
       "documentation":"<p>The value for the tag.</p>",
-      "max":256
+      "max":256,
+      "pattern":"^[\\s\\w+-=\\.:/@]*$"
     },
     "Type":{
       "type":"structure",
@@ -3387,7 +3410,11 @@
           "shape":"String",
           "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29.</p>"
         },
-        "syncConfig":{"shape":"SyncConfig"}
+        "syncConfig":{"shape":"SyncConfig"},
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum batching size for a resolver.</p>"
+        }
       }
     },
     "UpdateFunctionResponse":{
@@ -3508,6 +3535,10 @@
         "cachingConfig":{
           "shape":"CachingConfig",
           "documentation":"<p>The caching configuration for the resolver.</p>"
+        },
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum batching size for a resolver.</p>"
         }
       }
     },

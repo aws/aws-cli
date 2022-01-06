@@ -404,6 +404,24 @@
       ],
       "documentation":"<p>Deletes a multicast group if it is not in use by a fuota task.</p>"
     },
+    "DeleteQueuedMessages":{
+      "name":"DeleteQueuedMessages",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/wireless-devices/{Id}/data",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteQueuedMessagesRequest"},
+      "output":{"shape":"DeleteQueuedMessagesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> The operation to delete queued messages. </p>"
+    },
     "DeleteServiceProfile":{
       "name":"DeleteServiceProfile",
       "http":{
@@ -1062,6 +1080,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the partner accounts associated with your AWS account.</p>"
+    },
+    "ListQueuedMessages":{
+      "name":"ListQueuedMessages",
+      "http":{
+        "method":"GET",
+        "requestUri":"/wireless-devices/{Id}/data"
+      },
+      "input":{"shape":"ListQueuedMessagesRequest"},
+      "output":{"shape":"ListQueuedMessagesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>The operation to list queued messages. </p>"
     },
     "ListServiceProfiles":{
       "name":"ListServiceProfiles",
@@ -2278,6 +2313,38 @@
       "members":{
       }
     },
+    "DeleteQueuedMessagesRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "MessageId"
+      ],
+      "members":{
+        "Id":{
+          "shape":"WirelessDeviceId",
+          "documentation":"<p>Id of a given wireless device which messages will be deleted </p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "MessageId":{
+          "shape":"MessageId",
+          "documentation":"<p>if messageID==\"*\", the queue for a particular wireless deviceId will be purged, otherwise, the specific message with messageId will be deleted </p>",
+          "location":"querystring",
+          "locationName":"messageId"
+        },
+        "WirelessDeviceType":{
+          "shape":"WirelessDeviceType",
+          "documentation":"<p>The wireless device type, it is either Sidewalk or LoRaWAN. </p>",
+          "location":"querystring",
+          "locationName":"WirelessDeviceType"
+        }
+      }
+    },
+    "DeleteQueuedMessagesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteServiceProfileRequest":{
       "type":"structure",
       "required":["Id"],
@@ -2662,6 +2729,29 @@
       "max":256
     },
     "Double":{"type":"double"},
+    "DownlinkQueueMessage":{
+      "type":"structure",
+      "members":{
+        "MessageId":{
+          "shape":"MessageId",
+          "documentation":"<p> The messageId allocated by IoT Wireless for tracing purpose</p>"
+        },
+        "TransmitMode":{
+          "shape":"TransmitMode",
+          "documentation":"<p>The transmit mode to use to send data to the wireless device. Can be: <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).</p>"
+        },
+        "ReceivedAt":{
+          "shape":"ISODateTimeString",
+          "documentation":"<p>The timestamp that Iot Wireless received the message.</p>"
+        },
+        "LoRaWAN":{"shape":"LoRaWANSendDataToDevice"}
+      },
+      "documentation":"<p>The message in downlink queue.</p>"
+    },
+    "DownlinkQueueMessagesList":{
+      "type":"list",
+      "member":{"shape":"DownlinkQueueMessage"}
+    },
     "DrMax":{
       "type":"integer",
       "max":15,
@@ -3672,6 +3762,49 @@
         "Sidewalk":{
           "shape":"SidewalkAccountList",
           "documentation":"<p>The Sidewalk account credentials.</p>"
+        }
+      }
+    },
+    "ListQueuedMessagesRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"WirelessDeviceId",
+          "documentation":"<p>Id of a given wireless device which the downlink packets are targeted </p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "WirelessDeviceType":{
+          "shape":"WirelessDeviceType",
+          "documentation":"<p>The wireless device type, it is either Sidewalk or LoRaWAN.</p>",
+          "location":"querystring",
+          "locationName":"WirelessDeviceType"
+        }
+      }
+    },
+    "ListQueuedMessagesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>"
+        },
+        "DownlinkQueueMessagesList":{
+          "shape":"DownlinkQueueMessagesList",
+          "documentation":"<p>The messages in downlink queue.</p>"
         }
       }
     },
@@ -5837,5 +5970,5 @@
       "documentation":"<p>WirelessMetadata object.</p>"
     }
   },
-  "documentation":"<p>AWS IoT Wireless API documentation</p>"
+  "documentation":"<p>AWS IoT Wireless provides bi-directional communication between internet-connected wireless devices and the AWS Cloud. To onboard both LoRaWAN and Sidewalk devices to AWS IoT, use the IoT Wireless API. These wireless devices use the Low Power Wide Area Networking (LPWAN) communication protocol to communicate with AWS IoT.</p> <p>Using the API, you can perform create, read, update, and delete operations for your wireless devices, gateways, destinations, and profiles. After onboarding your devices, you can use the API operations to set log levels and monitor your devices with CloudWatch.</p> <p>You can also use the API operations to create multicast groups and schedule a multicast session for sending a downlink message to devices in the group. By using Firmware Updates Over-The-Air (FUOTA) API operations, you can create a FUOTA task and schedule a session to update the firmware of individual devices or an entire group of devices in a multicast group.</p>"
 }

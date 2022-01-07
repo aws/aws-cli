@@ -77,6 +77,8 @@ setup_options = dict(
     ],
     project_urls={
         'Source': 'https://github.com/aws/aws-cli',
+        'Reference': 'https://docs.aws.amazon.com/cli/latest/reference/',
+        'Changelog': 'https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst',
     },
 )
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.31
+=======
+
+* api-change:``medialive``: This release adds support for selecting the Program Date Time (PDT) Clock source algorithm for HLS outputs.
+
+
 1.22.30
 =======
 

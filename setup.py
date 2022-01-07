@@ -66,6 +66,11 @@ setup_options = dict(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
     ],
+    project_urls={
+        'Source': 'https://github.com/aws/aws-cli',
+        'Reference': 'https://docs.aws.amazon.com/cli/latest/reference/',
+        'Changelog': 'https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst',
+    },
 )
 
 

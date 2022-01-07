@@ -235,7 +235,7 @@ The following ``describe-instances`` example uses filters to scope the results t
 
     aws ec2 describe-instances \
         --filters Name=instance-type,Values=t2.micro \
-        --query Reservations[*].Instances[*].[InstanceId] \
+        --query "Reservations[*].Instances[*].[InstanceId]" \
         --output text
 
 Output::

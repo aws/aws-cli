@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 from awscli.compat import six
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import mock, unittest, FileCreator
 from awscli.testutils import skip_if_windows
 
 from awscli.paramfile import get_paramfile, ResourceLoadingError
@@ -93,12 +92,12 @@ class TestHTTPBasedResourceLoading(unittest.TestCase):
 
     def test_non_200_raises_error(self):
         self.response.status_code = 500
-        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
+        with self.assertRaisesRegex(ResourceLoadingError, 'foo\.bar\.baz'):
             self.get_paramfile('https://foo.bar.baz')
 
     def test_connection_error_raises_error(self):
         self.session_mock.side_effect = Exception("Connection error.")
-        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
+        with self.assertRaisesRegex(ResourceLoadingError, 'foo\.bar\.baz'):
             self.get_paramfile('https://foo.bar.baz')
 
 

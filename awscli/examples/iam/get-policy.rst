@@ -10,8 +10,8 @@ Output::
       "Policy": {
           "PolicyName": "MySamplePolicy",
           "CreateDate": "2015-06-17T19:23;32Z",
-          "AttachmentCount": "0",
-          "IsAttachable": "true",
+          "AttachmentCount": 0,
+          "IsAttachable": true,
 		  "PolicyId": "Z27SI6FQMGNQ2EXAMPLE1",
           "DefaultVersionId": "v1",
 		  "Path": "/",

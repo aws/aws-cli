@@ -13,14 +13,13 @@
 
 import glob
 import os
-import mock
 import tempfile
 import shutil
 import sys
 import botocore
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.utils import uni_print
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.update_kubeconfig import (KubeconfigSelector,

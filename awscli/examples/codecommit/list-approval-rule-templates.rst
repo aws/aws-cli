@@ -9,7 +9,7 @@ Output::
 
     {
         "approvalRuleTemplateNames": [
-            "2-approver-rule-for-master",
+            "2-approver-rule-for-main",
             "1-approver-rule-for-all-pull-requests"
         ]
     }

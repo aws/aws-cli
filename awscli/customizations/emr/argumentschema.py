@@ -94,6 +94,10 @@ INSTANCE_GROUPS_SCHEMA = {
                 "for the instance group",
                 "required": True
             },
+            "CustomAmiId": {
+                "type": "string",
+                "description": "The AMI ID of a custom AMI to use when Amazon EMR provisions EC2 instances."
+            },
             "EbsConfiguration": {
                 "type": "object",
                 "description": "EBS configuration that will be associated with the instance group.",
@@ -330,6 +334,10 @@ INSTANCE_FLEETS_SCHEMA = {
                         "BidPriceAsPercentageOfOnDemandPrice": {
                             "type": "double",
                             "description": "Bid price as percentage of on-demand price."
+                        },
+                        "CustomAmiId": {
+                            "type": "string",
+                            "description": "The AMI ID of a custom AMI to use when Amazon EMR provisions EC2 instances."
                         },
                         "EbsConfiguration": {
                             "type": "object",
@@ -812,6 +820,18 @@ PLACEMENT_GROUP_CONFIGS_SCHEMA = {
                                "with instance role.",
                 "enum": ["SPREAD", "PARTITION", "CLUSTER", "NONE"]
             }
+        }
+    }
+}
+
+AUTO_TERMINATION_POLICY_SCHEMA = {
+    "type": "object",
+    "properties":  {
+        "IdleTimeout": {
+            "type": "long",
+            "description":
+                "Specifies the amount of idle time in seconds after which the cluster automatically terminates. "
+                "You can specify a minimum of 60 seconds and a maximum of 604800 seconds (seven days).",
         }
     }
 }

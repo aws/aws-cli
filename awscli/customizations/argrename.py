@@ -59,14 +59,17 @@ ARGUMENT_RENAMES = {
     'pinpoint.get-campaign-version.version': 'campaign-version',
     'pinpoint.get-segment-version.version': 'segment-version',
     'pinpoint.delete-email-template.version': 'template-version',
+    'pinpoint.delete-in-app-template.version': 'template-version',
     'pinpoint.delete-push-template.version': 'template-version',
     'pinpoint.delete-sms-template.version': 'template-version',
     'pinpoint.delete-voice-template.version': 'template-version',
     'pinpoint.get-email-template.version': 'template-version',
+    'pinpoint.get-in-app-template.version': 'template-version',
     'pinpoint.get-push-template.version': 'template-version',
     'pinpoint.get-sms-template.version': 'template-version',
     'pinpoint.get-voice-template.version': 'template-version',
     'pinpoint.update-email-template.version': 'template-version',
+    'pinpoint.update-in-app-template.version': 'template-version',
     'pinpoint.update-push-template.version': 'template-version',
     'pinpoint.update-sms-template.version': 'template-version',
     'pinpoint.update-voice-template.version': 'template-version',
@@ -132,6 +135,13 @@ HIDDEN_ALIASES = {
     'lambda.publish-version.code-sha256': 'code-sha-256',
     'lightsail.import-key-pair.public-key-base64': 'public-key-base-64',
     'opsworks.register-volume.ec2-volume-id': 'ec-2-volume-id',
+    'mgn.*.replication-servers-security-groups-ids':
+        'replication-servers-security-groups-i-ds',
+    'mgn.*.source-server-ids': 'source-server-i-ds',
+    'mgn.*.replication-configuration-template-ids':
+        'replication-configuration-template-i-ds',
+    'elasticache.create-replication-group.preferred-cache-cluster-azs':
+        'preferred-cache-cluster-a-zs'
 }
 
 

@@ -1,41 +1,56 @@
-**Example 1: To decrypt an encrypted file**
+**Example 1: To decrypt an encrypted message with a symmetric CMK (Linux and macOS)**
 
-The following ``decrypt`` command demonstrates the recommended way to decrypt data with the AWS CLI. ::
+The following ``decrypt`` command example demonstrates the recommended way to decrypt data with the AWS CLI. This version shows how to decrypt data under a symmetric customer master key (CMK).
 
-    aws kms decrypt \
-        --ciphertext-blob fileb://ExampleEncryptedFile \
-        --output text \
-        --query Plaintext | base64 --decode > ExamplePlaintextFile
+* Provide the ciphertext in a file. 
 
-The command does several things:
+    In the value of the ``--ciphertext-blob`` parameter, use the ``fileb://`` prefix, which tells the CLI to read the data from a binary file. If the file is not in the current directory, type the full path to file. For more information about reading AWS CLI parameter values from a file, see `Loading AWS CLI parameters from a file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-file.html>` in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters<https://aws.amazon.com/blogs/developer/best-practices-for-local-file-parameters/>` in the *AWS Command Line Tool Blog*.
 
-#. Uses the ``fileb://`` prefix to specify the ``--ciphertext-blob`` parameter.
+* Specify the CMK to decrypt the ciphertext.
 
-    The ``fileb://`` prefix instructs the CLI to read the encrypted data, called the *ciphertext*, from a file and pass the file's contents to the command's ``--ciphertext-blob`` parameter.  If the file is not in the current directory, type the full path to file. For example: ``fileb:///var/tmp/ExampleEncryptedFile`` or ``fileb://C:\Temp\ExampleEncryptedFile``.
+    The ``--key-id`` parameter is not required when decrypting with symmetric CMKs. AWS KMS can get the CMK that was used to encrypt the data from the metadata in the ciphertext blob. But it's always a best practice to specify the CMK you are using. This practice ensures that you use the CMK that you intend, and prevents you from inadvertently decrypting a ciphertext using a CMK you do not trust. 
 
-    For more information about reading AWS CLI parameter values from a file, see `Loading Parameters from a File <https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#cli-using-param-file>`_ in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters <https://blogs.aws.amazon.com/cli/post/TxLWWN1O25V1HE/Best-Practices-for-Local-File-Parameters>`_ on the AWS Command Line Tool Blog.
+* Request the plaintext output as a text value.
 
-    The command assumes the ciphertext in ``ExampleEncryptedFile`` is binary data. The `encrypt examples <encrypt.html#examples>`_ demonstrate how to save a ciphertext this way.
+    The ``--query`` parameter tells the CLI to get only the value of the ``Plaintext`` field from the output. The ``--output`` parameter returns the output as text. 
 
-#. Uses the ``--output`` and ``--query`` parameters to control the command's output.
+* Base64-decode the plaintext and save it in a file.
 
-    These parameters extract the decrypted data, called the *plaintext*, from the command's output. For more information about controlling output, see `Controlling Command Output <https://docs.aws.amazon.com/cli/latest/userguide/controlling-output.html>`_ in the *AWS Command Line Interface User Guide*.
+    The  following example pipes (|) the value of the ``Plaintext`` parameter to the Base64 utility, which decodes it. Then, it redirects (>) the decoded output to the ``ExamplePlaintext`` file. 
 
-#. Uses the ``base64`` utility.
-
-    This utility decodes the extracted plaintext to binary data. The plaintext that is returned by a successful ``decrypt`` command is base64-encoded text. You must decode this text to obtain the original plaintext.
-
-#. Saves the binary plaintext to a file.
-
-    The final part of the command (``> ExamplePlaintextFile``) saves the binary plaintext data to a file.
-
-**Example 2: Using the AWS CLI to decrypt data from the Windows command prompt**
-
-The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and Mac OS X. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples. ::
+Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
     aws kms decrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --output text \
+        --query Plaintext | base64 \
+        --decode > ExamplePlaintextFile
+
+This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.
+
+For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html>`__ in the *AWS Key Management Service API Reference*.
+
+**Example 2: To decrypt an encrypted message with a symmetric CMK (Windows command prompt)**
+
+The following example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
+
+Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
+
+    aws kms decrypt ^
+        --ciphertext-blob fileb://ExampleEncryptedFile ^
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
+        --output text ^
         --query Plaintext > ExamplePlaintextFile.base64
 
+Run the ``certutil`` command. ::
+
     certutil -decode ExamplePlaintextFile.base64 ExamplePlaintextFile
+
+Output::
+
+    Input Length = 18
+    Output Length = 12
+    CertUtil: -decode command completed successfully.
+
+For more information, see `Decrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html>`__ in the *AWS Key Management Service API Reference*.

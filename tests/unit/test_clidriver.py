@@ -11,14 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.testutils import mock
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
 import sys
 
-import mock
-import nose
 from awscli.compat import six
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
@@ -254,7 +253,7 @@ class FakeSession(object):
 class FakeCommand(BasicCommand):
     def _run_main(self, args, parsed_globals):
         # We just return success. If this code is reached, it means that
-        # all the logic in the __call__ method has sucessfully been run.
+        # all the logic in the __call__ method has successfully been run.
         # We subclass it here because the default implementation raises
         # an exception and we don't want that behavior.
         return 0
@@ -576,7 +575,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             value='file:///foo',
         )
 
-    @unittest.skip
     def test_custom_arg_no_paramfile(self):
         driver = create_clidriver()
         driver.session.register(
@@ -674,7 +672,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
         self.driver.session.register('calling-command', override_with_rc)
         rc = self.driver.main('ec2 describe-instances'.split())
-        # Check that the overriden rc is as expected.
+        # Check that the overridden rc is as expected.
         self.assertEqual(rc, 20)
 
     def test_override_calling_command_error(self):

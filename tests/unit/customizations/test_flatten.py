@@ -10,9 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
-
-import mock
+from awscli.testutils import mock, unittest
 
 from awscli.arguments import CLIArgument
 from awscli.customizations import utils
@@ -212,6 +210,6 @@ class TestFlattenCommands(unittest.TestCase):
         self.assertEqual(False, argument_table['foo'].required)
         self.assertEqual(True, argument_table['bar'].required)
 
-        # Make sure docs can be overriden and get the defaults
+        # Make sure docs can be overridden and get the defaults
         self.assertEqual('Original docs', argument_table['foo'].documentation)
         self.assertEqual('Some help text', argument_table['bar'].documentation)

@@ -1,10 +1,10 @@
 **To create an unreferenced commit that represents the result of merging two commit specifiers**
 
-The following ``create-unreferenced-merge-commit`` example creates a commit that represents the results of a merge between a source branch named ``bugfix-1234`` with a destination branch named ``master`` using the THREE_WAY_MERGE strategy in a repository named ``MyDemoRepo``. ::
+The following ``create-unreferenced-merge-commit`` example creates a commit that represents the results of a merge between a source branch named ``bugfix-1234`` with a destination branch named ``main`` using the THREE_WAY_MERGE strategy in a repository named ``MyDemoRepo``. ::
 
     aws codecommit create-unreferenced-merge-commit \
         --source-commit-specifier bugfix-1234 \
-        --destination-commit-specifier master \
+        --destination-commit-specifier main \
         --merge-option THREE_WAY_MERGE \
         --repository-name MyDemoRepo \
         --name "Maria Garcia" \

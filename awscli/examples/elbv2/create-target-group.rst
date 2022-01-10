@@ -35,6 +35,8 @@ Output::
         ]
     }
 
+For more information, see `Create a target group <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-target-group.html>`__ in the *User Guide for Application Load Balancers*.
+
 **Example 2: To create a target group to route traffic to an IP addresses**
 
 The following ``create-target-group`` example creates a target group for a Network Load Balancer where you register targets by IP address (the target type is ``ip``). This target group uses the TCP protocol, port 80, and the default health check settings for a TCP target group. ::
@@ -68,6 +70,8 @@ Output::
         ]
     }
 
+For more information, see `Create a target group for your Network Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-target-group.html>`__ in the *User Guide for Network Load Balancers*.
+
 **Example 3: To create a target group to route traffic to a Lambda function**
 
 The following ``create-target-group`` example creates a target group for an Application Load Balancer where the target is a Lambda function (the target type is ``lambda``). Health checks are disabled for this target group by default. ::
@@ -96,3 +100,40 @@ Output::
             }
         ]
     }
+
+For more information, see `Lambda functions as targets <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html>`__ in the *User Guide for Application Load Balancers*.
+
+**Example 4: To create a target group to route traffic to a Gateway Load Balancer**
+
+The following ``create-target-group`` example creates a target group for a Gateway Load Balancer where the target is an instance, and the target group protocol is GENEVE. ::
+
+    aws elbv2 create-target-group \
+        --name my-glb-targetgroup \
+        --protocol GENEVE \
+        --port 6081 \
+        --target-type instance \
+        --vpc-id vpc-838475fe
+
+Output::
+
+    {
+        "TargetGroups": [
+            {
+                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:targetgroup/my-glb-targetgroup/00c3d57eacd6f40b6f",
+                "TargetGroupName": "my-glb-targetgroup",
+                "Protocol": "GENEVE",
+                "Port": 6081,
+                "VpcId": "vpc-838475fe",
+                "HealthCheckProtocol": "TCP",
+                "HealthCheckPort": "80",
+                "HealthCheckEnabled": true,
+                "HealthCheckIntervalSeconds": 10,
+                "HealthCheckTimeoutSeconds": 5,
+                "HealthyThresholdCount": 3,
+                "UnhealthyThresholdCount": 3,
+                "TargetType": "instance"
+            }
+        ]
+    }
+
+For more information, see `Create a target group for your Gateway Load Balancer <https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/create-target-group.html>`__ in the *User Guide for Gateway Load Balancers*.

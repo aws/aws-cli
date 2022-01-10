@@ -13,7 +13,6 @@
 
 import os
 import sys
-import mock
 import glob
 import yaml
 import logging
@@ -22,11 +21,10 @@ import tempfile
 import shutil
 import re
 from argparse import Namespace
-from mock import patch, Mock, MagicMock, call
 
 from botocore.session import get_session
 
-from awscli.testutils import unittest, capture_output
+from awscli.testutils import mock, unittest, capture_output
 from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (Kubeconfig,
@@ -57,14 +55,14 @@ def build_environment(entries):
 
 class TestUpdateKubeconfig(unittest.TestCase):
     def setUp(self):
-        self.create_client_patch = patch(
+        self.create_client_patch = mock.patch(
             'botocore.session.Session.create_client'
         )
         
         self.mock_create_client = self.create_client_patch.start()
         self.session = get_session()
 
-        self.client = Mock()
+        self.client = mock.Mock()
         self.client.describe_cluster.return_value = describe_cluster_response()
         self.mock_create_client.return_value = self.client
                 
@@ -405,7 +403,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         passed = "output_combined"
         environment = []
         self.client.describe_cluster =\
-            Mock(return_value=describe_cluster_creating_response())
+            mock.Mock(return_value=describe_cluster_creating_response())
         with self.assertRaises(EKSClusterError):
             self.assert_cmd(configs, passed, environment)
 

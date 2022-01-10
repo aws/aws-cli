@@ -21,7 +21,7 @@ The list below are guidelines to use when submitting pull requests. These are th
 - The SDK is released under the [Apache license](http://aws.amazon.com/apache2.0/). Any code you submit will be released under that license.
 - We maintain a high percentage of code coverage in our unit tests. As a general rule of thumb, code changes should not lower the overall code coverage percentage for the project. In practice, this means that **every bug fix and feature addition should include tests.**
 - Code should follow [pep8](https://www.python.org/dev/peps/pep-0008/), although if you are modifying an existing module, it is more important for the code to be consistent if there are any discrepancies. Using [`flake8`](https://flake8.pycqa.org/en/latest/) can assist in identifying `pep8` compliance issues.
-- Code must work on `python2.7`, and `python3.4` and higher.
+- Code must work on `python3.6` and higher.
 - The AWS CLI is cross platform and code must work on at least Linux, Windows, and Mac OS X. Avoid platform specific behavior.
 - If you would like to implement support for a significant feature that is not yet available in the AWS CLI, please talk to us beforehand to avoid any duplication of effort. You can file an [issue](https://github.com/aws/aws-cli/issues) to discuss the feature request further.
 

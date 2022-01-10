@@ -44,6 +44,6 @@ if you don't specify a ``BodyS3Location``, this command will not upload an artif
 Before the command uploads artifacts, it checks if the artifacts are already
 present in the S3 bucket to prevent unnecessary uploads. The command uses MD5
 checksums to compare files. If the values match, the command doesn't upload the
-artifacts. Use the ``--force flag`` to skip this check and always upload the
+artifacts. Use the ``--force-upload flag`` to skip this check and always upload the
 artifacts.
 

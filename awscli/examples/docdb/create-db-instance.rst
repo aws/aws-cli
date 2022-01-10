@@ -73,11 +73,9 @@ Output::
                     "VpcSecurityGroupId": "sg-77186e0d"
                 }
             ],
-            "AutoMinorVersionUpgrade": true,
             "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:sample-cluster-instance-2",
             "DbiResourceId": "db-XEKJLEMGRV5ZKCARUVA4HO3ITE"
         }
     }
-
 
 For more information, see `Adding an Amazon DocumentDB Instance to a Cluster <https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-add.html>`__ in the *Amazon DocumentDB Developer Guide*.

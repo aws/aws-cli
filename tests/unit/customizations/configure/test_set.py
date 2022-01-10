@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import os
 
 from awscli.customizations.configure.set import ConfigureSetCommand
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from . import FakeSession
 
 
@@ -135,3 +134,51 @@ class TestConfigureSetCommand(unittest.TestCase):
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'foo',
              'aws_access_key_id': 'bar'}, self.fake_credentials_filename)
+
+    def test_credential_set_profile_with_space(self):
+        self.session.profile = 'some profile'
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_session_token', 'foo'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'some profile',
+             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+
+    def test_credential_set_profile_with_space_dotted(self):
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['profile.some profile.aws_session_token', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'some profile',
+             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+
+    def test_configure_set_with_profile_with_space(self):
+        self.session.profile = 'some profile'
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': "profile 'some profile'", 'region': 'us-west-2'},
+            'myconfigfile')
+
+    def test_configure_set_with_profile_with_space_dotted(self):
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['profile.some profile.region', 'us-west-2'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': "profile 'some profile'", 'region': 'us-west-2'},
+            'myconfigfile')
+
+    def test_credential_set_profile_with_tab(self):
+        self.session.profile = 'some\tprofile'
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_session_token', 'foo'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'some\tprofile',
+             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+
+    def test_configure_set_with_profile_with_tab_dotted(self):
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['profile.some\tprofile.region', 'us-west-2'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': "profile 'some\tprofile'", 'region': 'us-west-2'},
+            'myconfigfile')

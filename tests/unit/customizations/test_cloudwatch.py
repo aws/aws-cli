@@ -12,10 +12,7 @@
 # language governing permissions and limitations under the License.
 import decimal
 
-from awscli.testutils import unittest
-
-import mock
-
+from awscli.testutils import mock, unittest
 from awscli.customizations import putmetricdata
 
 

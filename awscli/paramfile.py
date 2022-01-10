@@ -76,6 +76,8 @@ PARAMFILE_DISABLED = set([
     'comprehend.detect-sentiment.text',
     'comprehend.batch-detect-sentiment.text-list',
 
+    'emr.create-studio.idp-auth-url',
+
     'iam.create-open-id-connect-provider.url',
 
     'machine-learning.predict.predict-endpoint',

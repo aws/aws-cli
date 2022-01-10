@@ -3,7 +3,7 @@
 The following ``delete-user-group`` example deletes a user group. ::
 
     aws elasticache delete-user-group \
-        --user-id user2  
+        --user-group-id myusergroup
 
 Output::
 

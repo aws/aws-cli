@@ -11,11 +11,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
+from awscli.testutils import mock 
 from awscli.compat import six
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -1144,5 +1144,35 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
                 self.copy_object_request(
                     self.accesspoint_arn, 'mykey', accesspoint_arn_dest,
                     'mykey'),
+            ]
+        )
+
+    def test_accepts_mrap_arns(self):
+        mrap_arn = (
+            'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
+        )
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % mrap_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(mrap_arn, 'mykey')
+            ]
+        )
+
+    def test_accepts_mrap_arns_with_slash(self):
+        mrap_arn = (
+            'arn:aws:s3::123456789012:accesspoint/mfzwi23gnjvgw.mrap'
+        )
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % mrap_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(mrap_arn, 'mykey')
             ]
         )

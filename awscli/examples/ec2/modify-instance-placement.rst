@@ -31,7 +31,7 @@ For more information, see `Modifying Instance Tenancy and Affinity <https://docs
 
 **Example 3: To move an instance to a placement group**
 
-To move an instance to a placement group, stop the instance, modify the instance placement, and then restart the instance. ::
+The following ``modify-instance-placement`` example moves an instance to a placement group, stop the instance, modify the instance placement, and then restart the instance. ::
 
     aws ec2 stop-instances \
         --instance-ids i-0123a456700123456
@@ -47,16 +47,34 @@ For more information, see `Changing the Placement Group for an Instance <https:/
 
 **Example 4: To remove an instance from a placement group**
 
-To remove an instance from a placement group, stop the instance, modify the instance placement, and then restart the instance. The following example specifies an empty string (" ") for the placement group name to indicate that the instance is not to be located in a placement group.
+The following ``modify-instance-placement`` example removes an instance from a placement group by stopping the instance, modifying the instance placement, and then restarting the instance. The following example specifies an empty string ("") for the placement group name to indicate that the instance is not to be located in a placement group.
+
+Stop the instance::
 
     aws ec2 stop-instances \
         --instance-ids i-0123a456700123456
 
+Modify the placement (Windows Command Prompt, Linux, and macOS)::
+
     aws ec2 modify-instance-placement \
         --instance-id i-0123a456700123456 \
-        --group-name " "
+        --group-name ""
+
+Modify the placement (Windows PowerShell)::
+
+    aws ec2 modify-instance-placement `
+        --instance-id i-0123a456700123456 `
+        --group-name """"
+
+Restart the instance::
 
     aws ec2 start-instances \
         --instance-ids i-0123a456700123456
+
+Output::
+
+    {
+        "Return": true
+    }
 
 For more information, see `Modifying Instance Tenancy and Affinity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#moving-instances-dedicated-hosts>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

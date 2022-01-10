@@ -2,7 +2,7 @@
 Building The Documentation
 ==========================
 
-Before building the documentation, make sure you have Python 2.7,
+Before building the documentation, make sure you have Python 3.6,
 the awscli, and all the necessary dependencies installed.  You can
 install dependencies by using the requirements-docs.txt file at the
 root of this repo::

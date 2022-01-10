@@ -1,17 +1,19 @@
-**To force a password change**
+**To resend a confirmation code**
 
-This example sends a message to jane@example.com to change their password.
+The following ``resend-confirmation-code`` example sends a confirmation code to the user ``jane``. ::
 
-Command::
-
-  aws cognito-idp forget-device --client-id 38fjsnc484p94kpqsnet7mpld0 --username jane@example.com
+    aws cognito-idp resend-confirmation-code \
+        --client-id 12a3b456c7de890f11g123hijk \
+        --username jane
 
 Output::
 
-  {
-    "CodeDeliveryDetails": {
-        "Destination": "j***@e***.com",
-        "DeliveryMedium": "EMAIL",
-        "AttributeName": "email"
+    {
+        "CodeDeliveryDetails": {
+            "Destination": "j***@e***.com",
+            "DeliveryMedium": "EMAIL",
+            "AttributeName": "email"
+        }
     }
-  }
+
+For more information, see `Signing up and confirming user accounts <https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html>`__ in the *Amazon Cognito Developer Guide*.

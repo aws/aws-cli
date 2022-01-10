@@ -1,10 +1,10 @@
-**To describe your Auto Scaling account limits**
+**To describe your Amazon EC2 Auto Scaling account limits**
 
-This example describes the Auto Scaling limits for your AWS account::
+This example describes the Amazon EC2 Auto Scaling limits for your AWS account. ::
 
     aws autoscaling describe-account-limits
 
-The following is example output::
+Output::
 
     {
         "NumberOfLaunchConfigurations": 5,
@@ -13,6 +13,4 @@ The following is example output::
         "MaxNumberOfAutoScalingGroups": 20
     }
 
-For more information, see `Amazon EC2 Auto Scaling Limits`_ in the *Amazon EC2 Auto Scaling User Guide*.
-
-.. _`Amazon EC2 Auto Scaling Limits`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-account-limits.html
+For more information, see `Amazon EC2 Auto Scaling service quotas <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-account-limits.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

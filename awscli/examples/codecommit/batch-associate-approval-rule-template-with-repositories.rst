@@ -6,7 +6,7 @@ Note: Approval rule templates are specific to the AWS Region where they are crea
 
     aws codecommit batch-associate-approval-rule-template-with-repositories \
         --repository-names MyDemoRepo, MyOtherDemoRepo  \
-        --approval-rule-template-name 2-approver-rule-for-master
+        --approval-rule-template-name 2-approver-rule-for-main
 
 Output::
 

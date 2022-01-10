@@ -52,7 +52,7 @@ class TestBaseLogin(unittest.TestCase):
             errno.ENOENT, 'not found error'
         )
         tool = 'NotSupported'
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, '%s was not found.' % tool):
             self.test_subject._run_commands(tool, ['echo', tool])
 
@@ -61,7 +61,7 @@ class TestBaseLogin(unittest.TestCase):
             errno.ENOSYS, 'unhandled error'
         )
         tool = 'NotSupported'
-        with self.assertRaisesRegexp(OSError, 'unhandled error'):
+        with self.assertRaisesRegex(OSError, 'unhandled error'):
             self.test_subject._run_commands(tool, ['echo', tool])
 
 
@@ -227,7 +227,7 @@ Registered Sources:
         self.subprocess_utils.check_output.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 'nuget was not found. Please verify installation.'):
             self.test_subject.login()
@@ -385,7 +385,7 @@ Registered Sources:
         self.subprocess_utils.check_output.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 'dotnet was not found. Please verify installation.'):
             self.test_subject.login()

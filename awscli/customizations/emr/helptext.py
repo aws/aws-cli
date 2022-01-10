@@ -183,8 +183,10 @@ INSTANCE_FLEETS = (
     ' type with the Spot purchasing option launches.</li>'
     '<li><code>[LaunchSpecifications]</code> - When <code>TargetSpotCapacity</code> is specified,'
     ' specifies the block duration and timeout action for Spot Instances.'
-    '<li><code>InstanceTypeConfigs</code> - Specifies up to five EC2 instance types to'
-    ' use in the instance fleet, including details such as Spot price and Amazon EBS configuration.</li>')
+    '<li><code>InstanceTypeConfigs</code> - Specify up to five EC2 instance types to'
+    ' use in the instance fleet, including details such as Spot price and Amazon EBS configuration.'
+    ' When you use an On-Demand or Spot Instance allocation strategy,'
+    ' you can specify up to 30 instance types per instance fleet.</li>')
 
 INSTANCE_TYPE = (
     '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>.'
@@ -203,16 +205,29 @@ INSTANCE_COUNT = (
     ' are used for the core node type.</p>')
 
 ADDITIONAL_INFO = (
-    '<p>Specifies additional information during cluster creation.</p>')
+    '<p>Specifies additional information during cluster creation. To set development mode when starting your EMR cluster,'
+    ' set this parameter to <code>{"clusterType":"development"}</code>.</p>')
 
 EC2_ATTRIBUTES = (
     '<p>Configures cluster and Amazon EC2 instance configurations. Accepts'
     ' the following arguments:</p>'
     '<li><code>KeyName</code> - Specifies the name of the AWS EC2 key pair that will be used for'
     ' SSH connections to the master node and other instances on the cluster.</li>'
-    '<li><code>AvailabilityZone</code> - Specifies the availability zone in which to launch'
-    ' the cluster. For example, <code>us-west-1b</code>.</li>'
-    '<li><code>SubnetId</code> - Specifies the VPC subnet in which to create the cluster.</li>'
+    '<li><code>AvailabilityZone</code> - Applies to clusters that use the uniform instance group configuration.'
+    ' Specifies the availability zone in which to launch the cluster.'
+    ' For example, <code>us-west-1b</code>. <code>AvailabilityZone</code> is used for uniform instance groups,'
+    ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
+    '<li><code>AvailabilityZones</code> - Applies to clusters that use the instance fleet configuration.'
+    ' When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances' 
+    ' in the optimal Availability Zone. <code>AvailabilityZone</code> is used for uniform instance groups,'
+    ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
+    '<li><code>SubnetId</code> - Applies to clusters that use the uniform instance group configuration.' 
+    ' Specify the VPC subnet in which to create the cluster. <code>SubnetId</code> is used for uniform instance groups,'
+    ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
+    '<li><code>SubnetIds</code> - Applies to clusters that use the instance fleet configuration.'
+    ' When multiple EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.'
+    ' <code>SubnetId</code> is used for uniform instance groups,'
+    ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
     '<li><code>InstanceProfile</code> - An IAM role that allows EC2 instances to'
     ' access other AWS services, such as Amazon S3, that'
     ' are required for operations.</li>'
@@ -419,9 +434,9 @@ LIST_CLUSTERS_CREATED_AFTER = (
     ' <code>--created-after 2017-07-04T00:01:30.</p>')
 
 LIST_CLUSTERS_CREATED_BEFORE = (
-    '<p>List only those clusters created after the date and time'
+    '<p>List only those clusters created before the date and time'
     ' specified in the format yyyy-mm-ddThh:mm:ss. For example,'
-    ' <code>--created-after 2017-07-04T00:01:30.</p>')
+    ' <code>--created-before 2017-07-04T00:01:30.</p>')
 
 EMR_MANAGED_MASTER_SECURITY_GROUP = (
     '<p>The identifier of the Amazon EC2 security group '
@@ -470,4 +485,10 @@ PLACEMENT_GROUP_CONFIGS = (
     'role with <code>SPREAD</code> strategy by default. You can opt-in by '
     'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
     'during cluster creation.</p>'
+)
+
+AUTO_TERMINATION_POLICY = (
+    '<p>Auto termination policy for an Amazon EMR cluster. '
+    'The configuration specifies the termination idle timeout'
+    'threshold for an cluster.</p> '
 )

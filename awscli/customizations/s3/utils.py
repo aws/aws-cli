@@ -44,13 +44,20 @@ SIZE_SUFFIX = {
     'tib': 1024 ** 4,
 }
 _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX = re.compile(
-    r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]+:[0-9]{12}:accesspoint[:/][^/]+)/?'
+    r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]*:[0-9]{12}:accesspoint[:/][^/]+)/?'
     r'(?P<key>.*)$'
 )
 _S3_OUTPOST_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:]'
     r'[a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
 )
+
+_S3_OUTPOST_BUCKET_ARN_TO_BUCKET_KEY_REGEX = re.compile(
+    r'^(?P<bucket>arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:]'
+    r'[a-zA-Z0-9\-]{1,63}[/:]bucket[/:]'
+    r'[a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
+)
+
 _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3-object-lambda:[a-z\-0-9]+:[0-9]{12}:'
     r'accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
@@ -127,7 +134,7 @@ class AppendFilter(argparse.Action):
     --exclude and the value will be the rule to apply.  This will
     format all of the rules inputted into the command line
     in a way compatible with the Filter class.  Note that rules that
-    appear later in the command line take preferance over rulers that
+    appear later in the command line take preference over rulers that
     appear earlier.
     """
     def __call__(self, parser, namespace, values, option_string=None):
@@ -187,17 +194,23 @@ class StablePriorityQueue(queue.Queue):
             return bucket.popleft()
 
 
-def block_s3_object_lambda(s3_path):
-    # AWS CLI s3 commands don't support banner resources only direct API calls
+def block_unsupported_resources(s3_path):
+    # AWS CLI s3 commands don't support object lambdas only direct API calls
     # are available for such resources
-    match = _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX.match(s3_path)
-    if match:
+    if _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX.match(s3_path):
         # In AWS CLI v2 we should use
         # awscli.customizations.exceptions.ParamValidationError
         # instead of ValueError
         raise ValueError(
             's3 commands do not support S3 Object Lambda resources. '
             'Use s3api commands instead.'
+        )
+    # AWS S3 API and AWS CLI s3 commands don't support Outpost bucket ARNs
+    # only s3control API supports them so far
+    if _S3_OUTPOST_BUCKET_ARN_TO_BUCKET_KEY_REGEX.match(s3_path):
+        raise ValueError(
+            's3 commands do not support Outpost Bucket ARNs. '
+            'Use s3control commands instead.'
         )
 
 
@@ -207,7 +220,7 @@ def find_bucket_key(s3_path):
     the form: bucket/key
     It will return the bucket and the key represented by the s3 path
     """
-    block_s3_object_lambda(s3_path)
+    block_unsupported_resources(s3_path)
     match = _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX.match(s3_path)
     if match:
         return match.group('bucket'), match.group('key')
@@ -325,9 +338,9 @@ def guess_content_type(filename):
     """
     try:
         return mimetypes.guess_type(filename)[0]
-    # This catches a bug in the mimetype libary where some MIME types
+    # This catches a bug in the mimetype library where some MIME types
     # specifically on windows machines cause a UnicodeDecodeError
-    # because the MIME type in the Windows registery has an encoding
+    # because the MIME type in the Windows registry has an encoding
     # that cannot be properly encoded using the default system encoding.
     # https://bugs.python.org/issue9291
     #
@@ -450,7 +463,7 @@ class RequestParamsMapper(object):
         >>> print(request_params)
         {'StorageClass': 'GLACIER', 'ServerSideEncryption': 'AES256'}
 
-    Note that existing parameters in ``request_params`` will be overriden if
+    Note that existing parameters in ``request_params`` will be overridden if
     a parameter in ``cli_params`` maps to the existing parameter.
     """
     @classmethod
@@ -639,7 +652,7 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
             future.result()
         except Exception as e:
             future_exception = e
-        # If the result propogates an error, call the on_failure
+        # If the result propagates an error, call the on_failure
         # method instead.
         if future_exception:
             self._on_failure(future, future_exception)

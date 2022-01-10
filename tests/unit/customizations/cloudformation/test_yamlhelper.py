@@ -10,14 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import tempfile
-from mock import patch, Mock, MagicMock
 
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
 
@@ -64,12 +62,12 @@ class TestYaml(unittest.TestCase):
 
     def test_yaml_with_tags(self):
         output = yaml_parse(self.yaml_with_tags)
-        self.assertEquals(self.parsed_yaml_dict, output)
+        self.assertEqual(self.parsed_yaml_dict, output)
 
         # Make sure formatter and parser work well with each other
         formatted_str = yaml_dump(output)
         output_again = yaml_parse(formatted_str)
-        self.assertEquals(output, output_again)
+        self.assertEqual(output, output_again)
 
     def test_yaml_getatt(self):
         # This is an invalid syntax for !GetAtt. But make sure the code does
@@ -90,7 +88,7 @@ class TestYaml(unittest.TestCase):
         }
 
         actual_output = yaml_parse(yaml_input)
-        self.assertEquals(actual_output, output)
+        self.assertEqual(actual_output, output)
 
     def test_parse_json_with_tabs(self):
         template = '{\n\t"foo": "bar"\n}'

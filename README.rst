@@ -5,11 +5,6 @@ aws-cli
    :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 
-.. image:: https://badges.gitter.im/aws/aws-cli.svg
-   :target: https://gitter.im/aws/aws-cli
-   :alt: Gitter
-
-
 This package provides a unified command line interface to Amazon Web
 Services.
 
@@ -31,12 +26,21 @@ Requirements
 
 The aws-cli package works on Python versions:
 
--  2.7.x and greater
 -  3.6.x and greater
 -  3.7.x and greater
 -  3.8.x and greater
+-  3.9.x and greater
+-  3.10.x and greater
 
-On 10/29/2020 support for Python 3.4 and Python 3.5 was deprecated and
+Notices
+~~~~~~~
+
+On 01/15/2021, deprecation for Python 2.7 was announced and support was dropped
+on 07/15/2021. To avoid disruption, customers using the AWS CLI on Python 2.7 may
+need to upgrade their version of Python or pin the version of the AWS CLI. For
+more information, see this `blog post <https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-python-2-7-in-aws-sdk-for-python-and-aws-cli-v1/>`__.
+
+On 10/29/2020, support for Python 3.4 and Python 3.5 was deprecated and
 support was dropped on 02/01/2021. Customers using the AWS CLI on
 Python 3.4 or 3.5 will need to upgrade their version of Python to
 continue receiving feature and security updates. For more information,
@@ -60,6 +64,13 @@ For information about maintenance and support for SDK major versions and their u
 Installation
 ~~~~~~~~~~~~
 
+Installation of the AWS CLI and its dependencies use a range of packaging
+features provided by ``pip`` and ``setuptools``. To ensure smooth installation,
+it's recommended to use:
+
+- ``pip``: 9.0.2 or greater
+- ``setuptools``: 36.2.0 or greater
+
 The safest way to install the AWS CLI is to use
 `pip <https://pip.pypa.io/en/stable/>`__ in a ``virtualenv``:
 
@@ -80,7 +91,7 @@ or for your user:
    $ python -m pip install --user awscli
 
 If you have the aws-cli package installed and want to upgrade to the
-latest version you can run:
+latest version, you can run:
 
 ::
 

@@ -21,6 +21,7 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.exceptions import ProfileNotFound
 from botocore.history import get_global_history_recorder
 
 from awscli import EnvironmentVariables, __version__
@@ -342,8 +343,11 @@ class ServiceCommand(CLICommand):
 
     def _get_service_model(self):
         if self._service_model is None:
-            api_version = self.session.get_config_variable('api_versions').get(
-                self._service_name, None)
+            try:
+                api_version = self.session.get_config_variable(
+                    'api_versions').get(self._service_name, None)
+            except ProfileNotFound:
+                api_version = None
             self._service_model = self.session.get_service_model(
                 self._service_name, api_version=api_version)
         return self._service_model

@@ -1,71 +1,57 @@
-**Example 1: To re-encrypt encrypted data under a different CMK**
+**Example 1: To re-encrypt an encrypted message under a different symmetric CMK (Linux and macOS).**
 
-The following ``re-encrypt`` example re-encrypts data that was encrypted using the ``encrypt`` operation in the AWS CLI. You can use the ``re-encrypt`` command to re-encrypt the result of any AWS KMS operation that encrypted data or data keys. 
+The following ``re-encrypt`` command example demonstrates the recommended way to re-encrypt data with the AWS CLI.
 
-This example writes the output to the command line so you can see the all of the properties in the response. However, unless you're testing or demonstrating this operation, you should base64-decode the encrypted data and save it in a file.
+* Provide the ciphertext in a file. 
 
-The command in this example re-encrypts the data under a different CMK, but you can re-encrypt it under the same CMK to change characteristics of the encryption, such as the encryption context. 
+    In the value of the ``--ciphertext-blob`` parameter, use the ``fileb://`` prefix, which tells the CLI to read the data from a binary file. If the file is not in the current directory, type the full path to file. For more information about reading AWS CLI parameter values from a file, see `Loading AWS CLI parameters from a file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-file.html>` in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters<https://aws.amazon.com/blogs/developer/best-practices-for-local-file-parameters/>` in the *AWS Command Line Tool Blog*.
 
-To run this command, you must have ``kms:ReEncryptFrom`` permission on the CMK that encrypted the data and ``kms:ReEncryptTo`` permissions on the CMK that you use to re-encrypt the data.
+* Specify the source CMK, which decrypts the ciphertext.
 
-* The ``--ciphertext-blob`` parameter identifies the ciphertext to re-encrypt. The file ``ExampleEncryptedFile`` contains the base64-decoded output of the encrypt command. 
-* The ``fileb://`` prefix of the file name tells the CLI to treat the input file as binary instead of text. 
-* The ``--destination-key-id`` parameter specifies the CMK under which the data is to be re-encrypted. This example uses the key ID to identify the CMK, but you can use a key ID, key ARN, alias name, or alias ARN in this command.
-* You do not need to specify the CMK that was used to encrypt the data. AWS KMS gets that information from metadata in the ciphertext. ::
+    The ``--source-key-id`` parameter is not required when decrypting with symmetric CMKs. AWS KMS can get the CMK that was used to encrypt the data from the metadata in the ciphertext blob. But it's always a best practice to specify the CMK you are using. This practice ensures that you use the CMK that you intend, and prevents you from inadvertently decrypting a ciphertext using a CMK you do not trust.
 
-    aws kms re-encrypt \
-        --ciphertext-blob fileb://ExampleEncryptedFile \
-        --destination-key-id 0987dcba-09fe-87dc-65ba-ab0987654321
+* Specify the destination CMK, which re-encrypts the data.
 
-The output includes the following properties:
+    The ``--destination-key-id`` parameter is always required. This example uses a key ARN, but you can use any valid key identifier.
 
-* The ``SourceKeyID`` is the key ID of the CMK that originally encrypted the CMK.
-* The ``KeyId`` is the ID of the CMK that re-encrypted the data.
-* The ``CiphertextBlob``, which is the re-encrypted data in base64-encoded format. ::
+* Request the plaintext output as a text value.
 
-    {
-        "CiphertextBlob": "AQICAHgJtIvJqgOGUX6NLvVXnW5OOQT...",
-        "SourceKeyId": "arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyId": "arn:aws:kms:us-west-2:123456789012:key/0987dcba-09fe-87dc-65ba-ab0987654321"
-    }
+    The ``--query`` parameter tells the CLI to get only the value of the ``Plaintext`` field from the output. The ``--output`` parameter returns the output as text. 
 
-**Example 2: To re-encrypt encrypted data under a different CMK (Linux or macOs)**
+* Base64-decode the plaintext and save it in a file.
 
-The following ``re-encrypt`` example demonstrates the recommended way to re-encrypt data with the AWS CLI. This example re-encrypts the ciphertext that was encrypted by the encrypt command, but you can use the same procedure to re-encrypt data keys.
 
-This example is the same as the previous example except that it does not write the output to the command line. Instead, after re-encrypting the ciphertext under a different CMK, it extracts the re-encrypted ciphertext from the response, base64-decodes it, and saves the binary data in a file. You can store the file safely. Then, you can use the file in decrypt or re-encrypt commands in the AWS CLI.
+    The following example pipes (|) the value of the ``Plaintext`` parameter to the Base64 utility, which decodes it. Then, it redirects (>) the decoded output to the ``ExamplePlaintext`` file. 
 
-To run this command, you must have ``kms:ReEncryptFrom`` permission on the CMK that encrypted the data and ``kms:ReEncryptTo`` permissions on the CMK that will re-encrypt the data.
-The ``--ciphertext-blob`` parameter identifies the ciphertext to re-encrypt. 
-
-* The ``fileb://`` prefix tells the CLI to treat the input file as binary instead of text. 
-* The ``--destination-key-id`` parameter specifies the CMK under which the data is re-encrypted. This example uses the key ID to identify the CMK, but you can use a key ID, key ARN, alias name, or alias ARN in this command.
-* You do not need to specify the CMK that was used to encrypt the data. AWS KMS gets that information from metadata in the ciphertext. 
-* The ``--output`` parameter with a value of ``text`` directs the AWS CLI to return the output as text, instead of JSON. 
-* The ``--query`` parameter extracts the value of the ``CiphertextBlob`` property from the response.
-* The pipe operator ( | ) sends the output of the CLI command to the ``base64`` utility, which decodes the extracted output. The ``CiphertextBlob`` that the re-encrypt operation returns is base64-encoded text. However, the ``decrypt`` and ``re-encrypt`` commands require binary data. The example decodes the base64-encoded ciphertext back to binary and then saves it in a file. You can use the file as input to the decrypt or re-encrypt commands. ::
+Before running this command, replace the example key IDs with valid key identifiers from your AWS account. ::
 
     aws kms re-encrypt \
         --ciphertext-blob fileb://ExampleEncryptedFile \
+        --source-key-id 1234abcd-12ab-34cd-56ef-1234567890ab \        
         --destination-key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
-        --output text \
-        --query CiphertextBlob | base64 --decode > ExampleReEncryptedFile
+        --query CiphertextBlob \
+        --output text | base64 --decode > ExampleReEncryptedFile
 
-This command produces no output on screen because it is redirected to a file.
+This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.
 
-**Example 3: To re-encrypted encrypted data under a different CMK (Windows Command Prompt)**
+For more information, see `Using symmetric and asymmetric keys <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html`__ in the *AWS KMS Developer Guide*.
 
-This example is the same as the previous example, except that it uses the ``certutil`` utility in Windows to base64-decode the ciphertext before saving it in a file.
- 
-* The first command re-encrypts the ciphertext and saves the base64-encoded ciphertext in a temporary file named ``ExampleReEncryptedFile.base64``.
-* The second command uses the ``certutil -decode`` command to decode the base64-encoded ciphertext in the file to binary. Then, it saves the binary ciphertext in the file ``ExampleReEncryptedFile``. This file is ready to be used in a decrypt or re-encrypt command in the AWS CLI. ::
+**Example 2: To re-encrypt an encrypted message under a different symmetric CMK (Windows command prompt).**
+
+The following ``re-encrypt`` command example is the same as the previous one except that it uses the ``certutil`` utility to Base64-decode the plaintext data. This procedure requires two commands, as shown in the following examples. 
+
+Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 
     aws kms re-encrypt ^
         --ciphertext-blob fileb://ExampleEncryptedFile ^
+        --source-key-id 1234abcd-12ab-34cd-56ef-1234567890ab ^
         --destination-key-id 0987dcba-09fe-87dc-65ba-ab0987654321 ^
-        --output text ^
-        --query CiphertextBlob  > ExampleReEncryptedFile.base64 
-    certutil -decode ExampleReEncryptedFile.base64 ExampleReEncryptedFile
+        --query CiphertextBlob ^
+        --output text > ExampleReEncryptedFile.base64
+        
+Then use the ``certutil`` utility ::
+
+    certutil -decode ExamplePlaintextFile.base64 ExamplePlaintextFile
 
 Output::
 
@@ -73,4 +59,4 @@ Output::
     Output Length = 12
     CertUtil: -decode command completed successfully.
 
-For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html>`__ in the *AWS Key Management Service API Reference*.
+For more information, see `Using symmetric and asymmetric keys <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html`__ in the *AWS KMS Developer Guide*.

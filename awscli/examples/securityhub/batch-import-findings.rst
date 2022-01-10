@@ -8,6 +8,15 @@ The following ``batch-import-findings`` example updates a finding. ::
                 "AwsAccountId": "123456789012",
                 "CreatedAt": "2020-05-27T17:05:54.832Z",
                 "Description": "Vulnerability in a CloudTrail trail",
+                "FindingProviderFields": {
+                    "Severity": {
+                        "Label": "LOW",
+                        "Original": "10"
+                    },
+                    "Types": [
+                        "Software and Configuration Checks/Vulnerabilities/CVE"
+                    ]
+                },
                 "GeneratorId": "TestGeneratorId",
                 "Id": "Id1",
                 "ProductArn": "arn:aws:securityhub:us-west-1:123456789012:product/123456789012/default",
@@ -20,14 +29,7 @@ The following ``batch-import-findings`` example updates a finding. ::
                     }
                 ],
                 "SchemaVersion": "2018-10-08",
-                "Severity": {
-                    "Label": "LOW",
-                    "Product": 10
-                },
                 "Title": "CloudTrail trail vulnerability",
-                "Types": [
-                    "Software and Configuration Checks/Vulnerabilities/CVE"
-                ],
                 "UpdatedAt": "2020-06-02T16:05:54.832Z"
             }]'
 

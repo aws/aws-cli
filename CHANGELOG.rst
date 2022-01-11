@@ -3002,6 +3002,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.33
+=======
+
+* api-change:``iotevents-data``: This release provides documentation updates for Timer.timestamp in the IoT Events API Reference Guide.
+* api-change:``kendra``: Amazon Kendra now supports advanced query language and query-less search.
+* api-change:``ce``: Doc only update for Cost Explorer API that fixes missing clarifications for MatchOptions definitions
+* api-change:``finspace-data``: Documentation updates for FinSpace.
+* api-change:``rds``: This release adds the db-proxy event type to support subscribing to RDS Proxy events.
+* api-change:``ec2``: EC2 Capacity Reservations now supports RHEL instance platforms (RHEL with SQL Server Standard, RHEL with SQL Server Enterprise, RHEL with SQL Server Web, RHEL with HA, RHEL with HA and SQL Server Standard, RHEL with HA and SQL Server Enterprise)
+* api-change:``workspaces``: Introducing new APIs for Workspaces audio optimization with Amazon Connect: CreateConnectClientAddIn, DescribeConnectClientAddIns, UpdateConnectClientAddIn and DeleteConnectClientAddIn.
+
+
+1.22.32
+=======
+
+* api-change:``lookoutmetrics``: This release adds FailureType in the response of DescribeAnomalyDetector.
+* api-change:``compute-optimizer``: Adds support for new Compute Optimizer capability that makes it easier for customers to optimize their EC2 instances by leveraging multiple CPU architectures.
+* api-change:``ec2``: New feature: Updated EC2 API to support faster launching for Windows images. Optimized images are pre-provisioned, using snapshots to launch instances up to 65% faster.
+* api-change:``transcribe``: Documentation updates for Amazon Transcribe.
+* api-change:``databrew``: This SDK release adds support for specifying a Bucket Owner for an S3 location.
+
+
+1.22.31
+=======
+
+* api-change:``medialive``: This release adds support for selecting the Program Date Time (PDT) Clock source algorithm for HLS outputs.
+
+
 1.22.30
 =======
 

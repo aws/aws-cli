@@ -178,7 +178,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an new set of frequently asked question (FAQ) questions and answers.</p>"
+      "documentation":"<p>Creates an new set of frequently asked question (FAQ) questions and answers.</p> <p>Adding FAQs to an index is an asynchronous operation.</p>"
     },
     "CreateIndex":{
       "name":"CreateIndex",
@@ -3346,7 +3346,7 @@
           "documentation":"<p>The value of the attribute.</p>"
         }
       },
-      "documentation":"<p>A custom attribute value assigned to a document. </p>"
+      "documentation":"<p>A custom attribute value assigned to a document.</p> <p>For more information on how to create custom document attributes, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-attributes.html\">Custom Attributes</a>.</p>"
     },
     "DocumentAttributeCondition":{
       "type":"structure",
@@ -3430,7 +3430,7 @@
         },
         "DateValue":{
           "shape":"Timestamp",
-          "documentation":"<p>A date expressed as an ISO 8601 string.</p> <p>It is important for the time zone to be included in the ISO 8601 date-time format. For example, 20120325T123010+01:00 is the ISO 8601 date-time format for March 25th 2012 at 12:30PM (plus 10 seconds) in Central European Time.</p>"
+          "documentation":"<p>A date expressed as an ISO 8601 string.</p> <p>It is important for the time zone to be included in the ISO 8601 date-time format. For example, 2012-03-25T12:30:10+01:00 is the ISO 8601 date-time format for March 25th 2012 at 12:30PM (plus 10 seconds) in Central European Time.</p>"
         }
       },
       "documentation":"<p>The value of a custom document attribute. You can only provide one value for a custom attribute.</p>"
@@ -4254,7 +4254,7 @@
           "documentation":"<p>Stores the original, raw documents or the structured, parsed documents before and after altering them. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html#cde-data-contracts-lambda\">Data contracts for Lambda functions</a>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information for invoking a Lambda function in Lambda to alter document metadata and content when ingesting documents into Amazon Kendra. You can configure your Lambda function using <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PreExtractionHookConfiguration.html\">PreExtractionHookConfiguration</a> if you want to apply advanced alterations on the original or raw documents. If you want to apply advanced alterations on the Amazon Kendra structured documents, you must configure your Lambda function using <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PostExtractionHookConfiguration.html\">PostExtractionHookConfiguration</a>. You can only invoke one Lambda function. However, this function can invoke other functions it requires.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html\">Customizing document metadata during the ingestion process</a>.</p>"
+      "documentation":"<p>Provides the configuration information for invoking a Lambda function in Lambda to alter document metadata and content when ingesting documents into Amazon Kendra. You can configure your Lambda function using <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_CustomDocumentEnrichmentConfiguration.html\">PreExtractionHookConfiguration</a> if you want to apply advanced alterations on the original or raw documents. If you want to apply advanced alterations on the Amazon Kendra structured documents, you must configure your Lambda function using <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_CustomDocumentEnrichmentConfiguration.html\">PostExtractionHookConfiguration</a>. You can only invoke one Lambda function. However, this function can invoke other functions it requires.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html\">Customizing document metadata during the ingestion process</a>.</p>"
     },
     "Host":{
       "type":"string",
@@ -5280,10 +5280,7 @@
     },
     "QueryRequest":{
       "type":"structure",
-      "required":[
-        "IndexId",
-        "QueryText"
-      ],
+      "required":["IndexId"],
       "members":{
         "IndexId":{
           "shape":"IndexId",
@@ -5353,6 +5350,10 @@
         "TotalNumberOfResults":{
           "shape":"Integer",
           "documentation":"<p>The total number of items found by the search; however, you can only retrieve up to 100 items. For example, if the search found 192 items, you can only retrieve the first 100 of the items.</p>"
+        },
+        "Warnings":{
+          "shape":"WarningList",
+          "documentation":"<p>A list of warning codes and their messages on problems with your query.</p> <p>Amazon Kendra currently only supports one type of warning, which is a warning on invalid syntax used in the query. For examples of invalid query syntax, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/searching-example.html#searching-index-query-syntax\">Searching with advanced query syntax</a>.</p>"
         }
       }
     },
@@ -5486,8 +5487,7 @@
     "QueryText":{
       "type":"string",
       "max":1000,
-      "min":1,
-      "pattern":"^\\P{C}*$"
+      "min":1
     },
     "ReadAccessType":{
       "type":"string",
@@ -6925,7 +6925,7 @@
           "documentation":"<p>The identity store provider (mode) you want to use to fetch access levels of groups and users. Amazon Web Services Single Sign On is currently the only available mode. Your users and groups must exist in an Amazon Web Services SSO identity source in order to use this mode.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information to fetch access levels of groups and users from an Amazon Web Services Single Sign On identity source. This is useful for setting up user context filtering, where Amazon Kendra filters search results for different users based on their group's access to documents. You can also map your users to their groups for user context filtering using the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PutPrincipalMapping.html\">PutPrincipalMapping operation</a>.</p> <p>To set up an Amazon Web Services SSO identity source in the console to use with Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an Amazon Web Services SSO identity source</a>. You must also grant the required permissions to use Amazon Web Services SSO with Amazon Kendra. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-aws-sso\">IAM roles for Amazon Web Services SSO</a>.</p>"
+      "documentation":"<p>Provides the configuration information to fetch access levels of groups and users from an Amazon Web Services Single Sign On identity source. This is useful for setting up user context filtering, where Amazon Kendra filters search results for different users based on their group's access to documents. You can also map your users to their groups for user context filtering using the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PutPrincipalMapping.html\">PutPrincipalMapping operation</a>.</p> <p>To set up an Amazon Web Services SSO identity source in the console to use with Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an Amazon Web Services SSO identity source</a>. You must also grant the required permissions to use Amazon Web Services SSO with Amazon Kendra. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-aws-sso\">IAM roles for Amazon Web Services SSO</a>.</p> <p>Amazon Kendra currently does not support using <code>UserGroupResolutionConfiguration</code> with an Amazon Web Services organization member account for your Amazon Web Services SSO identify source. You must create your index in the parent account for the organization in order to use <code>UserGroupResolutionConfiguration</code>.</p>"
     },
     "UserGroupResolutionMode":{
       "type":"string",
@@ -7004,6 +7004,36 @@
       "max":200,
       "min":1,
       "pattern":"[-0-9a-zA-Z]+"
+    },
+    "Warning":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"WarningMessage",
+          "documentation":"<p>The message that explains the problem with the query.</p>"
+        },
+        "Code":{
+          "shape":"WarningCode",
+          "documentation":"<p>The code used to show the type of warning for the query.</p>"
+        }
+      },
+      "documentation":"<p>The warning code and message that explains a problem with a query.</p>"
+    },
+    "WarningCode":{
+      "type":"string",
+      "enum":["QUERY_LANGUAGE_INVALID_SYNTAX"]
+    },
+    "WarningList":{
+      "type":"list",
+      "member":{"shape":"Warning"},
+      "max":1,
+      "min":1
+    },
+    "WarningMessage":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^\\P{C}*$"
     },
     "WebCrawlerConfiguration":{
       "type":"structure",

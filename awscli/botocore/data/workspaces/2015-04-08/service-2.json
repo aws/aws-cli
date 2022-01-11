@@ -84,6 +84,23 @@
       ],
       "documentation":"<p>Copies the specified image from the specified Region to the current Region. For more information about copying images, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/copy-custom-image.html\"> Copy a Custom WorkSpaces Image</a>.</p> <p>In the China (Ningxia) Region, you can copy images only within the same Region.</p> <p>In Amazon Web Services GovCloud (US), to copy images to and from other Regions, contact Amazon Web Services Support.</p> <important> <p>Before copying a shared image, be sure to verify that it has been shared from the correct Amazon Web Services account. To determine if an image has been shared and to see the ID of the Amazon Web Services account that owns an image, use the <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceImages.html\">DescribeWorkSpaceImages</a> and <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceImagePermissions.html\">DescribeWorkspaceImagePermissions</a> API operations. </p> </important>"
     },
+    "CreateConnectClientAddIn":{
+      "name":"CreateConnectClientAddIn",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateConnectClientAddInRequest"},
+      "output":{"shape":"CreateConnectClientAddInResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceCreationFailedException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a client-add-in for Amazon Connect within a directory. You can create only one Amazon Connect client add-in within a directory.</p> <p>This client add-in allows WorkSpaces users to seamlessly connect to Amazon Connect.</p>"
+    },
     "CreateConnectionAlias":{
       "name":"CreateConnectionAlias",
       "http":{
@@ -184,6 +201,21 @@
         {"shape":"InvalidParameterValuesException"}
       ],
       "documentation":"<p>Creates one or more WorkSpaces.</p> <p>This operation is asynchronous and returns before the WorkSpaces are created.</p>"
+    },
+    "DeleteConnectClientAddIn":{
+      "name":"DeleteConnectClientAddIn",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteConnectClientAddInRequest"},
+      "output":{"shape":"DeleteConnectClientAddInResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a client-add-in for Amazon Connect that is configured within a directory.</p>"
     },
     "DeleteConnectionAlias":{
       "name":"DeleteConnectionAlias",
@@ -321,6 +353,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a list that describes one or more specified Amazon WorkSpaces clients.</p>"
+    },
+    "DescribeConnectClientAddIns":{
+      "name":"DescribeConnectClientAddIns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeConnectClientAddInsRequest"},
+      "output":{"shape":"DescribeConnectClientAddInsResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of Amazon Connect client add-ins that have been created.</p>"
     },
     "DescribeConnectionAliasPermissions":{
       "name":"DescribeConnectionAliasPermissions",
@@ -771,6 +818,21 @@
       "output":{"shape":"TerminateWorkspacesResult"},
       "documentation":"<p>Terminates the specified WorkSpaces.</p> <important> <p>Terminating a WorkSpace is a permanent action and cannot be undone. The user's data is destroyed. If you need to archive any user data, contact Amazon Web Services Support before terminating the WorkSpace.</p> </important> <p>You can terminate a WorkSpace that is in any state except <code>SUSPENDED</code>.</p> <p>This operation is asynchronous and returns before the WorkSpaces have been completely terminated. After a WorkSpace is terminated, the <code>TERMINATED</code> state is returned only briefly before the WorkSpace directory metadata is cleaned up, so this state is rarely returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID by using <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html\"> DescribeWorkSpaces</a>. If the WorkSpace ID isn't returned, then the WorkSpace has been successfully terminated.</p> <note> <p>Simple AD and AD Connector are made available to you free of charge to use with WorkSpaces. If there are no WorkSpaces being used with your Simple AD or AD Connector directory for 30 consecutive days, this directory will be automatically deregistered for use with Amazon WorkSpaces, and you will be charged for this directory as per the <a href=\"http://aws.amazon.com/directoryservice/pricing/\">Directory Service pricing terms</a>.</p> <p>To delete empty directories, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/delete-workspaces-directory.html\"> Delete the Directory for Your WorkSpaces</a>. If you delete your Simple AD or AD Connector directory, you can always create a new one when you want to start using WorkSpaces again.</p> </note>"
     },
+    "UpdateConnectClientAddIn":{
+      "name":"UpdateConnectClientAddIn",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateConnectClientAddInRequest"},
+      "output":{"shape":"UpdateConnectClientAddInResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates a Amazon Connect client add-in. Use this action to update the name and endpoint URL of a Amazon Connect client add-in.</p>"
+    },
     "UpdateConnectionAliasPermission":{
       "name":"UpdateConnectionAliasPermission",
       "http":{
@@ -895,7 +957,25 @@
       "type":"list",
       "member":{"shape":"AccountModification"}
     },
+    "AddInName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^.*$"
+    },
+    "AddInUrl":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^(http|https)\\://\\S+"
+    },
     "Alias":{"type":"string"},
+    "AmazonUuid":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
     "Application":{
       "type":"string",
       "enum":[
@@ -1060,6 +1140,32 @@
       "documentation":"<p>Describes the compute type of the bundle.</p>"
     },
     "ComputerName":{"type":"string"},
+    "ConnectClientAddIn":{
+      "type":"structure",
+      "members":{
+        "AddInId":{
+          "shape":"AmazonUuid",
+          "documentation":"<p>The client add-in identifier.</p>"
+        },
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier for which the client add-in is configured.</p>"
+        },
+        "Name":{
+          "shape":"AddInName",
+          "documentation":"<p>The name of the client add in.</p>"
+        },
+        "URL":{
+          "shape":"AddInUrl",
+          "documentation":"<p>The endpoint URL of the client add-in.</p>"
+        }
+      },
+      "documentation":"<p>Describes an Amazon Connect client add-in.</p>"
+    },
+    "ConnectClientAddInList":{
+      "type":"list",
+      "member":{"shape":"ConnectClientAddIn"}
+    },
     "ConnectionAlias":{
       "type":"structure",
       "members":{
@@ -1220,6 +1326,37 @@
         "ImageId":{
           "shape":"WorkspaceImageId",
           "documentation":"<p>The identifier of the image.</p>"
+        }
+      }
+    },
+    "CreateConnectClientAddInRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "Name",
+        "URL"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier for which to configure the client add-in.</p>"
+        },
+        "Name":{
+          "shape":"AddInName",
+          "documentation":"<p>The name of the client add-in.</p>"
+        },
+        "URL":{
+          "shape":"AddInUrl",
+          "documentation":"<p>The endpoint URL of the Amazon Connect client add-in.</p>"
+        }
+      }
+    },
+    "CreateConnectClientAddInResult":{
+      "type":"structure",
+      "members":{
+        "AddInId":{
+          "shape":"AmazonUuid",
+          "documentation":"<p>The client add-in identifier.</p>"
         }
       }
     },
@@ -1452,6 +1589,28 @@
       },
       "documentation":"<p>Describes the default values that are used to create WorkSpaces. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html\">Update Directory Details for Your WorkSpaces</a>.</p>"
     },
+    "DeleteConnectClientAddInRequest":{
+      "type":"structure",
+      "required":[
+        "AddInId",
+        "ResourceId"
+      ],
+      "members":{
+        "AddInId":{
+          "shape":"AmazonUuid",
+          "documentation":"<p>The identifier of the client add-in to delete.</p>"
+        },
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier for which the client add-in is configured.</p>"
+        }
+      }
+    },
+    "DeleteConnectClientAddInResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteConnectionAliasRequest":{
       "type":"structure",
       "required":["AliasId"],
@@ -1604,6 +1763,37 @@
         "ClientPropertiesList":{
           "shape":"ClientPropertiesList",
           "documentation":"<p>Information about the specified Amazon WorkSpaces clients.</p>"
+        }
+      }
+    },
+    "DescribeConnectClientAddInsRequest":{
+      "type":"structure",
+      "required":["ResourceId"],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier for which the client add-in is configured.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"Limit",
+          "documentation":"<p>The maximum number of items to return.</p>"
+        }
+      }
+    },
+    "DescribeConnectClientAddInsResult":{
+      "type":"structure",
+      "members":{
+        "AddIns":{
+          "shape":"ConnectClientAddInList",
+          "documentation":"<p>Information about client add-ins.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>"
         }
       }
     },
@@ -2969,6 +3159,36 @@
       },
       "documentation":"<p>The configuration of this WorkSpace is not supported for this operation. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/required-service-components.html\">Required Configuration and Service Components for WorkSpaces </a>.</p>",
       "exception":true
+    },
+    "UpdateConnectClientAddInRequest":{
+      "type":"structure",
+      "required":[
+        "AddInId",
+        "ResourceId"
+      ],
+      "members":{
+        "AddInId":{
+          "shape":"AmazonUuid",
+          "documentation":"<p>The identifier of the client add-in to update.</p>"
+        },
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier for which the client add-in is configured.</p>"
+        },
+        "Name":{
+          "shape":"AddInName",
+          "documentation":"<p>The name of the client add-in.</p>"
+        },
+        "URL":{
+          "shape":"AddInUrl",
+          "documentation":"<p>The endpoint URL of the Amazon Connect client add-in.</p>"
+        }
+      }
+    },
+    "UpdateConnectClientAddInResult":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateConnectionAliasPermissionRequest":{
       "type":"structure",

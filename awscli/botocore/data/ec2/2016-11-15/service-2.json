@@ -2084,6 +2084,16 @@
       "output":{"shape":"DescribeExportTasksResult"},
       "documentation":"<p>Describes the specified export instance tasks or all of your export instance tasks.</p>"
     },
+    "DescribeFastLaunchImages":{
+      "name":"DescribeFastLaunchImages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeFastLaunchImagesRequest"},
+      "output":{"shape":"DescribeFastLaunchImagesResult"},
+      "documentation":"<p>Describe details for Windows AMIs that are configured for faster launching.</p>"
+    },
     "DescribeFastSnapshotRestores":{
       "name":"DescribeFastSnapshotRestores",
       "http":{
@@ -3221,6 +3231,16 @@
       "output":{"shape":"DisableEbsEncryptionByDefaultResult"},
       "documentation":"<p>Disables EBS encryption by default for your account in the current Region.</p> <p>After you disable encryption by default, you can still create encrypted volumes by enabling encryption when you create each volume.</p> <p>Disabling encryption by default does not change the encryption status of your existing volumes.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html\">Amazon EBS encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
+    "DisableFastLaunch":{
+      "name":"DisableFastLaunch",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableFastLaunchRequest"},
+      "output":{"shape":"DisableFastLaunchResult"},
+      "documentation":"<p>Discontinue faster launching for a Windows AMI, and clean up existing pre-provisioned snapshots. When you disable faster launching, the AMI uses the standard launch process for each instance. All pre-provisioned snapshots must be removed before you can enable faster launching again.</p>"
+    },
     "DisableFastSnapshotRestores":{
       "name":"DisableFastSnapshotRestores",
       "http":{
@@ -3417,6 +3437,16 @@
       "input":{"shape":"EnableEbsEncryptionByDefaultRequest"},
       "output":{"shape":"EnableEbsEncryptionByDefaultResult"},
       "documentation":"<p>Enables EBS encryption by default for your account in the current Region.</p> <p>After you enable encryption by default, the EBS volumes that you create are always encrypted, either using the default KMS key or the KMS key that you specified when you created each volume. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html\">Amazon EBS encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>You can specify the default KMS key for encryption by default using <a>ModifyEbsDefaultKmsKeyId</a> or <a>ResetEbsDefaultKmsKeyId</a>.</p> <p>Enabling encryption by default has no effect on the encryption status of your existing volumes.</p> <p>After you enable encryption by default, you can no longer launch instances using instance types that do not support encryption. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#EBSEncryption_supported_instances\">Supported instance types</a>.</p>"
+    },
+    "EnableFastLaunch":{
+      "name":"EnableFastLaunch",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableFastLaunchRequest"},
+      "output":{"shape":"EnableFastLaunchResult"},
+      "documentation":"<p>When you enable faster launching for a Windows AMI, images are pre-provisioned, using snapshots to launch instances up to 65% faster. To create the optimized Windows image, Amazon EC2 launches an instance and runs through Sysprep steps, rebooting as required. Then it creates a set of reserved snapshots that are used for subsequent launches. The reserved snapshots are automatically replenished as they are used, depending on your settings for launch frequency.</p>"
     },
     "EnableFastSnapshotRestores":{
       "name":"EnableFastSnapshotRestores",
@@ -8648,7 +8678,13 @@
         "Windows with SQL Server Web",
         "Linux with SQL Server Standard",
         "Linux with SQL Server Web",
-        "Linux with SQL Server Enterprise"
+        "Linux with SQL Server Enterprise",
+        "RHEL with SQL Server Standard",
+        "RHEL with SQL Server Enterprise",
+        "RHEL with SQL Server Web",
+        "RHEL with HA",
+        "RHEL with HA and SQL Server Standard",
+        "RHEL with HA and SQL Server Enterprise"
       ]
     },
     "CapacityReservationOptions":{
@@ -11612,11 +11648,11 @@
           "documentation":"<p>The IP address of the Amazon Web Services resource that is the destination of the path.</p>"
         },
         "Source":{
-          "shape":"String",
+          "shape":"NetworkInsightsResourceId",
           "documentation":"<p>The Amazon Web Services resource that is the source of the path.</p>"
         },
         "Destination":{
-          "shape":"String",
+          "shape":"NetworkInsightsResourceId",
           "documentation":"<p>The Amazon Web Services resource that is the destination of the path.</p>"
         },
         "Protocol":{
@@ -16464,6 +16500,111 @@
           "documentation":"<p>Information about the export tasks.</p>",
           "locationName":"exportTaskSet"
         }
+      }
+    },
+    "DescribeFastLaunchImagesRequest":{
+      "type":"structure",
+      "members":{
+        "ImageIds":{
+          "shape":"FastLaunchImageIdList",
+          "documentation":"<p>Details for one or more Windows AMI image IDs.</p>",
+          "locationName":"ImageId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Use the following filters to streamline results.</p> <ul> <li> <p> <code>resource-type</code> - The resource type for pre-provisioning.</p> </li> <li> <p> <code>launch-template</code> - The launch template that is associated with the pre-provisioned Windows AMI.</p> </li> <li> <p> <code>owner-id</code> - The owner ID for the pre-provisioning resource.</p> </li> <li> <p> <code>state</code> - The current state of fast launching for the Windows AMI.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeFastLaunchImagesRequestMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another request with the returned NextToken value. If this parameter is not specified, then all results are returned.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeFastLaunchImagesRequestMaxResults":{
+      "type":"integer",
+      "max":200,
+      "min":0
+    },
+    "DescribeFastLaunchImagesResult":{
+      "type":"structure",
+      "members":{
+        "FastLaunchImages":{
+          "shape":"DescribeFastLaunchImagesSuccessSet",
+          "documentation":"<p>A collection of details about the fast-launch enabled Windows images that meet the requested criteria.</p>",
+          "locationName":"fastLaunchImageSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use for the next set of results. This value is null when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeFastLaunchImagesSuccessItem":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The image ID that identifies the fast-launch enabled Windows image.</p>",
+          "locationName":"imageId"
+        },
+        "ResourceType":{
+          "shape":"FastLaunchResourceType",
+          "documentation":"<p>The resource type that is used for pre-provisioning the Windows AMI. Supported values include: <code>snapshot</code>.</p>",
+          "locationName":"resourceType"
+        },
+        "SnapshotConfiguration":{
+          "shape":"FastLaunchSnapshotConfigurationResponse",
+          "documentation":"<p>A group of parameters that are used for pre-provisioning the associated Windows AMI using snapshots.</p>",
+          "locationName":"snapshotConfiguration"
+        },
+        "LaunchTemplate":{
+          "shape":"FastLaunchLaunchTemplateSpecificationResponse",
+          "documentation":"<p>The launch template that the fast-launch enabled Windows AMI uses when it launches Windows instances from pre-provisioned snapshots.</p>",
+          "locationName":"launchTemplate"
+        },
+        "MaxParallelLaunches":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of parallel instances that are launched for creating resources.</p>",
+          "locationName":"maxParallelLaunches"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The owner ID for the fast-launch enabled Windows AMI.</p>",
+          "locationName":"ownerId"
+        },
+        "State":{
+          "shape":"FastLaunchStateCode",
+          "documentation":"<p>The current state of faster launching for the specified Windows AMI.</p>",
+          "locationName":"state"
+        },
+        "StateTransitionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that faster launching for the Windows AMI changed to the current state.</p>",
+          "locationName":"stateTransitionReason"
+        },
+        "StateTransitionTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time that faster launching for the Windows AMI changed to the current state.</p>",
+          "locationName":"stateTransitionTime"
+        }
+      },
+      "documentation":"<p>Describe details about a fast-launch enabled Windows image that meets the requested criteria. Criteria are defined by the <code>DescribeFastLaunchImages</code> action filters.</p>"
+    },
+    "DescribeFastLaunchImagesSuccessSet":{
+      "type":"list",
+      "member":{
+        "shape":"DescribeFastLaunchImagesSuccessItem",
+        "locationName":"item"
       }
     },
     "DescribeFastSnapshotRestoreSuccessItem":{
@@ -21573,6 +21714,74 @@
         }
       }
     },
+    "DisableFastLaunchRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the image for which you’re turning off faster launching, and removing pre-provisioned snapshots.</p>"
+        },
+        "Force":{
+          "shape":"Boolean",
+          "documentation":"<p>Forces the image settings to turn off faster launching for your Windows AMI. This parameter overrides any errors that are encountered while cleaning up resources in your account.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableFastLaunchResult":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the image for which faster-launching has been turned off.</p>",
+          "locationName":"imageId"
+        },
+        "ResourceType":{
+          "shape":"FastLaunchResourceType",
+          "documentation":"<p>The pre-provisioning resource type that must be cleaned after turning off faster launching for the Windows AMI. Supported values include: <code>snapshot</code>.</p>",
+          "locationName":"resourceType"
+        },
+        "SnapshotConfiguration":{
+          "shape":"FastLaunchSnapshotConfigurationResponse",
+          "documentation":"<p>Parameters that were used for faster launching for the Windows AMI before faster launching was turned off. This informs the clean-up process.</p>",
+          "locationName":"snapshotConfiguration"
+        },
+        "LaunchTemplate":{
+          "shape":"FastLaunchLaunchTemplateSpecificationResponse",
+          "documentation":"<p>The launch template that was used to launch Windows instances from pre-provisioned snapshots.</p>",
+          "locationName":"launchTemplate"
+        },
+        "MaxParallelLaunches":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of parallel instances to launch for creating resources.</p>",
+          "locationName":"maxParallelLaunches"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The owner of the Windows AMI for which faster launching was turned off.</p>",
+          "locationName":"ownerId"
+        },
+        "State":{
+          "shape":"FastLaunchStateCode",
+          "documentation":"<p>The current state of faster launching for the specified Windows AMI.</p>",
+          "locationName":"state"
+        },
+        "StateTransitionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the state changed for faster launching for the Windows AMI.</p>",
+          "locationName":"stateTransitionReason"
+        },
+        "StateTransitionTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time that the state changed for faster launching for the Windows AMI.</p>",
+          "locationName":"stateTransitionTime"
+        }
+      }
+    },
     "DisableFastSnapshotRestoreErrorItem":{
       "type":"structure",
       "members":{
@@ -22873,6 +23082,86 @@
         }
       }
     },
+    "EnableFastLaunchRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the image for which you’re enabling faster launching.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of resource to use for pre-provisioning the Windows AMI for faster launching. Supported values include: <code>snapshot</code>, which is the default value.</p>"
+        },
+        "SnapshotConfiguration":{
+          "shape":"FastLaunchSnapshotConfigurationRequest",
+          "documentation":"<p>Configuration settings for creating and managing the snapshots that are used for pre-provisioning the Windows AMI for faster launching. The associated <code>ResourceType</code> must be <code>snapshot</code>.</p>"
+        },
+        "LaunchTemplate":{
+          "shape":"FastLaunchLaunchTemplateSpecificationRequest",
+          "documentation":"<p>The launch template to use when launching Windows instances from pre-provisioned snapshots. Launch template parameters can include either the name or ID of the launch template, but not both.</p>"
+        },
+        "MaxParallelLaunches":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of parallel instances to launch for creating resources.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableFastLaunchResult":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The image ID that identifies the Windows AMI for which faster launching was enabled.</p>",
+          "locationName":"imageId"
+        },
+        "ResourceType":{
+          "shape":"FastLaunchResourceType",
+          "documentation":"<p>The type of resource that was defined for pre-provisioning the Windows AMI for faster launching.</p>",
+          "locationName":"resourceType"
+        },
+        "SnapshotConfiguration":{
+          "shape":"FastLaunchSnapshotConfigurationResponse",
+          "documentation":"<p>The configuration settings that were defined for creating and managing the pre-provisioned snapshots for faster launching of the Windows AMI. This property is returned when the associated <code>resourceType</code> is <code>snapshot</code>.</p>",
+          "locationName":"snapshotConfiguration"
+        },
+        "LaunchTemplate":{
+          "shape":"FastLaunchLaunchTemplateSpecificationResponse",
+          "documentation":"<p>The launch template that is used when launching Windows instances from pre-provisioned snapshots.</p>",
+          "locationName":"launchTemplate"
+        },
+        "MaxParallelLaunches":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of parallel instances to launch for creating resources.</p>",
+          "locationName":"maxParallelLaunches"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The owner ID for the Windows AMI for which faster launching was enabled.</p>",
+          "locationName":"ownerId"
+        },
+        "State":{
+          "shape":"FastLaunchStateCode",
+          "documentation":"<p>The current state of faster launching for the specified Windows AMI.</p>",
+          "locationName":"state"
+        },
+        "StateTransitionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the state changed for faster launching for the Windows AMI.</p>",
+          "locationName":"stateTransitionReason"
+        },
+        "StateTransitionTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time that the state changed for faster launching for the Windows AMI.</p>",
+          "locationName":"stateTransitionTime"
+        }
+      }
+    },
     "EnableFastSnapshotRestoreErrorItem":{
       "type":"structure",
       "members":{
@@ -24038,6 +24327,89 @@
         "shape":"FailedQueuedPurchaseDeletion",
         "locationName":"item"
       }
+    },
+    "FastLaunchImageIdList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageId",
+        "locationName":"ImageId"
+      }
+    },
+    "FastLaunchLaunchTemplateSpecificationRequest":{
+      "type":"structure",
+      "required":["Version"],
+      "members":{
+        "LaunchTemplateId":{
+          "shape":"LaunchTemplateId",
+          "documentation":"<p>The ID of the launch template to use for faster launching for a Windows AMI.</p>"
+        },
+        "LaunchTemplateName":{
+          "shape":"String",
+          "documentation":"<p>The name of the launch template to use for faster launching for a Windows AMI.</p>"
+        },
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version of the launch template to use for faster launching for a Windows AMI.</p>"
+        }
+      },
+      "documentation":"<p>Request to create a launch template for a fast-launch enabled Windows AMI.</p> <note> <p>Note - You can specify either the <code>LaunchTemplateName</code> or the <code>LaunchTemplateId</code>, but not both.</p> </note>"
+    },
+    "FastLaunchLaunchTemplateSpecificationResponse":{
+      "type":"structure",
+      "members":{
+        "LaunchTemplateId":{
+          "shape":"LaunchTemplateId",
+          "documentation":"<p>The ID of the launch template for faster launching of the associated Windows AMI.</p>",
+          "locationName":"launchTemplateId"
+        },
+        "LaunchTemplateName":{
+          "shape":"String",
+          "documentation":"<p>The name of the launch template for faster launching of the associated Windows AMI.</p>",
+          "locationName":"launchTemplateName"
+        },
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version of the launch template for faster launching of the associated Windows AMI.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Identifies the launch template to use for faster launching of the Windows AMI.</p>"
+    },
+    "FastLaunchResourceType":{
+      "type":"string",
+      "enum":["snapshot"]
+    },
+    "FastLaunchSnapshotConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "TargetResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pre-provisioned snapshots to keep on hand for a fast-launch enabled Windows AMI.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for creating and managing pre-provisioned snapshots for a fast-launch enabled Windows AMI.</p>"
+    },
+    "FastLaunchSnapshotConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "TargetResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pre-provisioned snapshots requested to keep on hand for a fast-launch enabled Windows AMI.</p>",
+          "locationName":"targetResourceCount"
+        }
+      },
+      "documentation":"<p>Configuration settings for creating and managing pre-provisioned snapshots for a fast-launch enabled Windows AMI.</p>"
+    },
+    "FastLaunchStateCode":{
+      "type":"string",
+      "enum":[
+        "enabling",
+        "enabling-failed",
+        "enabled",
+        "enabled-failed",
+        "disabling",
+        "disabling-failed"
+      ]
     },
     "FastSnapshotRestoreStateCode":{
       "type":"string",
@@ -37095,6 +37467,7 @@
         "locationName":"item"
       }
     },
+    "NetworkInsightsResourceId":{"type":"string"},
     "NetworkInterface":{
       "type":"structure",
       "members":{

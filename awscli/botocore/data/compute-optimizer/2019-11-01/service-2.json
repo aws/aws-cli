@@ -482,6 +482,10 @@
         "effectiveRecommendationPreferences":{
           "shape":"EffectiveRecommendationPreferences",
           "documentation":"<p>An object that describes the effective recommendation preferences for the Auto Scaling group.</p>"
+        },
+        "inferredWorkloadTypes":{
+          "shape":"InferredWorkloadTypes",
+          "documentation":"<p>The applications that might be running on the instances in the Auto Scaling group as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instances:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instances.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instances.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instances.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instances.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instances.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instances.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instances.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group recommendation.</p>"
@@ -508,6 +512,10 @@
         "savingsOpportunity":{
           "shape":"SavingsOpportunity",
           "documentation":"<p>An object that describes the savings opportunity for the Auto Scaling group recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
+        },
+        "migrationEffort":{
+          "shape":"MigrationEffort",
+          "documentation":"<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Auto Scaling group.</p>"
@@ -705,7 +713,11 @@
         },
         "enhancedInfrastructureMetrics":{
           "shape":"EnhancedInfrastructureMetrics",
-          "documentation":"<p>Describes the activation status of the enhanced infrastructure metrics preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p>"
+          "documentation":"<p>Describes the activation status of the enhanced infrastructure metrics preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "inferredWorkloadTypes":{
+          "shape":"InferredWorkloadTypesPreference",
+          "documentation":"<p>Describes the activation status of the inferred workload types preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh. A status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p>"
         }
       },
       "documentation":"<p>Describes the effective recommendation preferences for a resource.</p>"
@@ -752,7 +764,7 @@
           "documentation":"<p>The value of the estimated monthly savings.</p>"
         }
       },
-      "documentation":"<p>Describes the estimated monthly savings amount possible for a given resource based on On-Demand instance pricing</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-ec2-recommendations.html#ec2-savings-calculation\">Estimated monthly savings and savings opportunities</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+      "documentation":"<p>Describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-ec2-recommendations.html#ec2-savings-calculation\">Estimated monthly savings and savings opportunities</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
     "ExportAutoScalingGroupRecommendationsRequest":{
       "type":"structure",
@@ -985,7 +997,10 @@
         "RecommendationOptionsEstimatedMonthlySavingsCurrency",
         "RecommendationOptionsEstimatedMonthlySavingsValue",
         "EffectiveRecommendationPreferencesCpuVendorArchitectures",
-        "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
+        "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics",
+        "EffectiveRecommendationPreferencesInferredWorkloadTypes",
+        "InferredWorkloadTypes",
+        "RecommendationOptionsMigrationEffort"
       ]
     },
     "ExportableAutoScalingGroupFields":{
@@ -1043,7 +1058,10 @@
         "RecommendationOptionsEstimatedMonthlySavingsCurrency",
         "RecommendationOptionsEstimatedMonthlySavingsValue",
         "EffectiveRecommendationPreferencesCpuVendorArchitectures",
-        "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
+        "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics",
+        "EffectiveRecommendationPreferencesInferredWorkloadTypes",
+        "InferredWorkloadTypes",
+        "RecommendationOptionsMigrationEffort"
       ]
     },
     "ExportableInstanceFields":{
@@ -1374,7 +1392,7 @@
       "members":{
         "enhancedInfrastructureMetrics":{
           "shape":"EnhancedInfrastructureMetrics",
-          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference. Considers all applicable preferences that you might have set at the resource, account, and organization level.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetAutoScalingGroupRecommendations</a> and <a>GetEC2InstanceRecommendations</a> actions.</p>"
+          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference. Considers all applicable preferences that you might have set at the resource, account, and organization level.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetAutoScalingGroupRecommendations</a> and <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         }
       }
     },
@@ -1566,6 +1584,29 @@
     "High":{"type":"long"},
     "Identifier":{"type":"string"},
     "IncludeMemberAccounts":{"type":"boolean"},
+    "InferredWorkloadType":{
+      "type":"string",
+      "enum":[
+        "AmazonEmr",
+        "ApacheCassandra",
+        "ApacheHadoop",
+        "Memcached",
+        "Nginx",
+        "PostgreSql",
+        "Redis"
+      ]
+    },
+    "InferredWorkloadTypes":{
+      "type":"list",
+      "member":{"shape":"InferredWorkloadType"}
+    },
+    "InferredWorkloadTypesPreference":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Inactive"
+      ]
+    },
     "InstanceArn":{"type":"string"},
     "InstanceArns":{
       "type":"list",
@@ -1621,11 +1662,15 @@
         },
         "currentPerformanceRisk":{
           "shape":"CurrentPerformanceRisk",
-          "documentation":"<p>The risk of the current instance not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function requires more memory.</p>"
+          "documentation":"<p>The risk of the current instance not meeting the performance needs of its workloads. The higher the risk, the more likely the current instance cannot meet the performance requirements of its workload.</p>"
         },
         "effectiveRecommendationPreferences":{
           "shape":"EffectiveRecommendationPreferences",
           "documentation":"<p>An object that describes the effective recommendation preferences for the instance.</p>"
+        },
+        "inferredWorkloadTypes":{
+          "shape":"InferredWorkloadTypes",
+          "documentation":"<p>The applications that might be running on the instance as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instance:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instance.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instance.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instance.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instance.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instance.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instance.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instance.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes an Amazon EC2 instance recommendation.</p>"
@@ -1681,6 +1726,10 @@
         "savingsOpportunity":{
           "shape":"SavingsOpportunity",
           "documentation":"<p>An object that describes the savings opportunity for the instance recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
+        },
+        "migrationEffort":{
+          "shape":"MigrationEffort",
+          "documentation":"<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon EC2 instance.</p>"
@@ -1870,7 +1919,7 @@
         },
         "currentPerformanceRisk":{
           "shape":"CurrentPerformanceRisk",
-          "documentation":"<p>The risk of the current Lambda function not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function configuration is underperforming in its workload.</p>"
+          "documentation":"<p>The risk of the current Lambda function not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function requires more memory.</p>"
         }
       },
       "documentation":"<p>Describes an Lambda function recommendation.</p>"
@@ -2001,6 +2050,15 @@
       "type":"list",
       "member":{"shape":"MetricValue"}
     },
+    "MigrationEffort":{
+      "type":"string",
+      "enum":[
+        "VeryLow",
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
     "MinSize":{"type":"integer"},
     "MissingAuthenticationToken":{
       "type":"structure",
@@ -2080,11 +2138,15 @@
         },
         "scope":{
           "shape":"Scope",
-          "documentation":"<p>An object that describes the scope of the recommendation preference to create.</p> <p>You can create recommendation preferences at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified the Auto Scaling group.</p> </note>"
+          "documentation":"<p>An object that describes the scope of the recommendation preference to create.</p> <p>You can create recommendation preferences at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified Auto Scaling group. You also cannot create recommendation preferences at the resource level for instances that are part of an Auto Scaling group. You can create recommendation preferences at the resource level only for standalone instances.</p> </note>"
         },
         "enhancedInfrastructureMetrics":{
           "shape":"EnhancedInfrastructureMetrics",
-          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference to create or update.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p>"
+          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference to create or update.</p> <p>Specify the <code>Active</code> status to activate the preference, or specify <code>Inactive</code> to deactivate the preference.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "inferredWorkloadTypes":{
+          "shape":"InferredWorkloadTypesPreference",
+          "documentation":"<p>The status of the inferred workload types recommendation preference to create or update.</p> <note> <p>The inferred workload type feature is active by default. To deactivate it, create a recommendation preference.</p> </note> <p>Specify the <code>Inactive</code> status to deactivate the feature, or specify <code>Active</code> to activate it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/inferred-workload-types.html\">Inferred workload types</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         }
       }
     },
@@ -2156,7 +2218,10 @@
     },
     "RecommendationPreferenceName":{
       "type":"string",
-      "enum":["EnhancedInfrastructureMetrics"]
+      "enum":[
+        "EnhancedInfrastructureMetrics",
+        "InferredWorkloadTypes"
+      ]
     },
     "RecommendationPreferenceNames":{
       "type":"list",
@@ -2185,7 +2250,11 @@
         },
         "enhancedInfrastructureMetrics":{
           "shape":"EnhancedInfrastructureMetrics",
-          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied.</p>"
+          "documentation":"<p>The status of the enhanced infrastructure metrics recommendation preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "inferredWorkloadTypes":{
+          "shape":"InferredWorkloadTypesPreference",
+          "documentation":"<p>The status of the inferred workload types recommendation preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh. A status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation preference.</p>"
@@ -2291,7 +2360,8 @@
         "Ec2Instance",
         "AutoScalingGroup",
         "EbsVolume",
-        "LambdaFunction"
+        "LambdaFunction",
+        "NotApplicable"
       ]
     },
     "S3Destination":{
@@ -2331,11 +2401,11 @@
       "members":{
         "savingsOpportunityPercentage":{
           "shape":"SavingsOpportunityPercentage",
-          "documentation":"<p>The estimated monthly savings possible as a percentage of monthly cost.</p>"
+          "documentation":"<p>The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer recommendations for a given resource.</p>"
         },
         "estimatedMonthlySavings":{
           "shape":"EstimatedMonthlySavings",
-          "documentation":"<p>An object that describes the estimated monthly savings amount possible based on On-Demand instance pricing.</p>"
+          "documentation":"<p>An object that describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.</p>"
         }
       },
       "documentation":"<p>Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource.</p> <p>Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation.</p> <important> <p>Savings opportunity data requires that you opt in to Cost Explorer, as well as activate <b>Receive Amazon EC2 resource recommendations</b> in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html\">Enabling Cost Explorer</a> and <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html\">Optimizing your cost with Rightsizing Recommendations</a> in the <i>Cost Management User Guide</i>.</p> </important>"
@@ -2353,7 +2423,7 @@
           "documentation":"<p>The value of the scope.</p> <p>If you specified the <code>name</code> of the scope as:</p> <ul> <li> <p> <code>Organization</code> - The <code>value</code> must be <code>ALL_ACCOUNTS</code>.</p> </li> <li> <p> <code>AccountId</code> - The <code>value</code> must be a 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>ResourceArn</code> - The <code>value</code> must be the Amazon Resource Name (ARN) of an EC2 instance or an Auto Scaling group.</p> </li> </ul> <p>Only EC2 instance and Auto Scaling group ARNs are currently supported.</p>"
         }
       },
-      "documentation":"<p>Describes the scope of a recommendation preference.</p> <p>Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified the Auto Scaling group.</p> </note>"
+      "documentation":"<p>Describes the scope of a recommendation preference.</p> <p>Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified Auto Scaling group. You also cannot create recommendation preferences at the resource level for instances that are part of an Auto Scaling group. You can create recommendation preferences at the resource level only for standalone instances.</p> </note>"
     },
     "ScopeName":{
       "type":"string",

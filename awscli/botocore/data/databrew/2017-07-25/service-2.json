@@ -738,6 +738,12 @@
       "max":63,
       "min":3
     },
+    "BucketOwner":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^[0-9]{12}$"
+    },
     "CatalogId":{
       "type":"string",
       "max":255,
@@ -3422,7 +3428,7 @@
         },
         "CheckExpression":{
           "shape":"Expression",
-          "documentation":"<p>The expression which includes column references, condition names followed by variable references, possibly grouped and combined with other conditions. For example, <code>(:col1 starts_with :prefix1 or :col1 starts_with :prefix2) and (:col1 ends_with :suffix1 or :col1 ends_with :suffix2)</code>. Column and value references are substitution variables that should start with the ':' symbol. Depending on the context, substitution variables' values can be either an actual value or a column name. These values are defined in the SubstitutionMap. If a CheckExpression starts with a column reference, then ColumnSelectors in the rule should be null. If ColumnSelectors has been defined, then there should be no columnn reference in the left side of a condition, for example, <code>is_between :val1 and :val2</code>.</p>"
+          "documentation":"<p>The expression which includes column references, condition names followed by variable references, possibly grouped and combined with other conditions. For example, <code>(:col1 starts_with :prefix1 or :col1 starts_with :prefix2) and (:col1 ends_with :suffix1 or :col1 ends_with :suffix2)</code>. Column and value references are substitution variables that should start with the ':' symbol. Depending on the context, substitution variables' values can be either an actual value or a column name. These values are defined in the SubstitutionMap. If a CheckExpression starts with a column reference, then ColumnSelectors in the rule should be null. If ColumnSelectors has been defined, then there should be no columnn reference in the left side of a condition, for example, <code>is_between :val1 and :val2</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/databrew/latest/dg/profile.data-quality-available-checks.html\">Available checks</a> </p>"
         },
         "SubstitutionMap":{
           "shape":"ValuesMap",
@@ -3531,9 +3537,13 @@
         "Key":{
           "shape":"Key",
           "documentation":"<p>The unique name of the object in the bucket.</p>"
+        },
+        "BucketOwner":{
+          "shape":"BucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID of the bucket owner.</p>"
         }
       },
-      "documentation":"<p>Represents an Amazon S3 location (bucket name and object key) where DataBrew can read input data, or write output from a job.</p>"
+      "documentation":"<p>Represents an Amazon S3 location (bucket name, bucket owner, and object key) where DataBrew can read input data, or write output from a job.</p>"
     },
     "S3TableOutputOptions":{
       "type":"structure",

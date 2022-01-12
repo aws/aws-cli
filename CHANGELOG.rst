@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.22.34
+=======
+
+* api-change:``ec2``: Hpc6a instances are powered by a third-generation AMD EPYC processors (Milan) delivering all-core turbo frequency of 3.4 GHz
+* api-change:``pi``: This release adds three Performance Insights APIs. Use ListAvailableResourceMetrics to get available metrics, GetResourceMetadata to get feature metadata, and ListAvailableResourceDimensions to list available dimensions. The AdditionalMetrics field in DescribeDimensionKeys retrieves per-SQL metrics.
+* api-change:``fms``: Shield Advanced policies for Amazon CloudFront resources now support automatic application layer DDoS mitigation. The max length for SecurityServicePolicyData ManagedServiceData is now 8192 characters, instead of 4096.
+* api-change:``honeycode``: Honeycode is releasing new APIs to allow user to create, delete and list tags on resources.
+* api-change:``elasticache``: Doc only update for ElastiCache
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+
+
 1.22.33
 =======
 

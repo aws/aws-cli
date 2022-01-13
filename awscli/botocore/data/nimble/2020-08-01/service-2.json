@@ -438,7 +438,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Gets StreamingSession resource.</p> <p>anvoke this operation to poll for a streaming session state while creating or deleting a session.</p>"
+      "documentation":"<p>Gets StreamingSession resource.</p> <p>Invoke this operation to poll for a streaming session state while creating or deleting a session.</p>"
     },
     "GetStreamingSessionStream":{
       "name":"GetStreamingSessionStream",
@@ -1260,7 +1260,7 @@
         },
         "ownedBy":{
           "shape":"String",
-          "documentation":"<p>The user ID of the user that owns the streaming session.</p>"
+          "documentation":"<p>The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.</p>"
         },
         "streamingImageId":{
           "shape":"StreamingImageId",
@@ -2242,6 +2242,10 @@
         "updatedBy":{
           "shape":"String",
           "documentation":"<p>The user ID of the user that most recently updated the resource.</p>"
+        },
+        "validationResults":{
+          "shape":"ValidationResults",
+          "documentation":"<p>The list of the latest validation results.</p>"
         }
       },
       "documentation":"<p>A launch profile controls your artist workforce’s access to studio components, like compute farms, shared file systems, managed file systems, and license server configurations, as well as instance types and Amazon Machine Images (AMIs). </p> <pre><code> &lt;p&gt;Studio administrators create launch profiles in the Nimble Studio console. Artists can use their launch profiles to launch an instance from the Nimble Studio portal. Each user’s launch profile defines how they can launch a streaming session. By default, studio admins can use all launch profiles.&lt;/p&gt; </code></pre>"
@@ -2435,6 +2439,10 @@
         "UPDATE_FAILED"
       ]
     },
+    "LaunchProfileStateList":{
+      "type":"list",
+      "member":{"shape":"LaunchProfileState"}
+    },
     "LaunchProfileStatusCode":{
       "type":"string",
       "enum":[
@@ -2458,6 +2466,40 @@
       "member":{"shape":"String"},
       "max":100,
       "min":1
+    },
+    "LaunchProfileValidationState":{
+      "type":"string",
+      "enum":[
+        "VALIDATION_NOT_STARTED",
+        "VALIDATION_IN_PROGRESS",
+        "VALIDATION_SUCCESS",
+        "VALIDATION_FAILED",
+        "VALIDATION_FAILED_INTERNAL_SERVER_ERROR"
+      ]
+    },
+    "LaunchProfileValidationStatusCode":{
+      "type":"string",
+      "enum":[
+        "VALIDATION_NOT_STARTED",
+        "VALIDATION_IN_PROGRESS",
+        "VALIDATION_SUCCESS",
+        "VALIDATION_FAILED_INVALID_SUBNET_ROUTE_TABLE_ASSOCIATION",
+        "VALIDATION_FAILED_SUBNET_NOT_FOUND",
+        "VALIDATION_FAILED_INVALID_SECURITY_GROUP_ASSOCIATION",
+        "VALIDATION_FAILED_INVALID_ACTIVE_DIRECTORY",
+        "VALIDATION_FAILED_UNAUTHORIZED",
+        "VALIDATION_FAILED_INTERNAL_SERVER_ERROR"
+      ]
+    },
+    "LaunchProfileValidationStatusMessage":{"type":"string"},
+    "LaunchProfileValidationType":{
+      "type":"string",
+      "enum":[
+        "VALIDATE_ACTIVE_DIRECTORY_STUDIO_COMPONENT",
+        "VALIDATE_SUBNET_ASSOCIATION",
+        "VALIDATE_NETWORK_ACL_ASSOCIATION",
+        "VALIDATE_SECURITY_GROUP_ASSOCIATION"
+      ]
     },
     "LaunchPurpose":{
       "type":"string",
@@ -2619,7 +2661,7 @@
           "locationName":"principalId"
         },
         "states":{
-          "shape":"StringList",
+          "shape":"LaunchProfileStateList",
           "documentation":"<p>Filter this request to launch profiles in any of the given states.</p>",
           "location":"querystring",
           "locationName":"states"
@@ -2748,7 +2790,7 @@
           "locationName":"nextToken"
         },
         "states":{
-          "shape":"StringList",
+          "shape":"StudioComponentStateList",
           "documentation":"<p>Filters the request to studio components that are in one of the given states. </p>",
           "location":"querystring",
           "locationName":"states"
@@ -2760,7 +2802,7 @@
           "locationName":"studioId"
         },
         "types":{
-          "shape":"StringList",
+          "shape":"StudioComponentTypeList",
           "documentation":"<p>Filters the request to studio components that are of one of the given types.</p>",
           "location":"querystring",
           "locationName":"types"
@@ -3220,7 +3262,7 @@
         },
         "maxStoppedSessionLengthInMinutes":{
           "shape":"StreamConfigurationMaxStoppedSessionLengthInMinutes",
-          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p> <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call StopStreamingSession, the session fails. If the time that a session stays in the READY state exceeds the maxSessionLengthInMinutes value, the session will automatically be terminated by AWS (instead of stopped).</p> <p>If the value is set to a positive number, the session can be stopped. You can call StopStreamingSession to stop sessions in the READY state. If the time that a session stays in the READY state exceeds the maxSessionLengthInMinutes value, the session will automatically be stopped by AWS (instead of terminated).</p>"
+          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p> <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated by AWS (instead of stopped).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the READY state. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped by AWS (instead of terminated).</p>"
         },
         "sessionStorage":{
           "shape":"StreamConfigurationSessionStorage",
@@ -3255,7 +3297,7 @@
         },
         "maxStoppedSessionLengthInMinutes":{
           "shape":"StreamConfigurationMaxStoppedSessionLengthInMinutes",
-          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p> <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call StopStreamingSession, the session fails. If the time that a session stays in the READY state exceeds the maxSessionLengthInMinutes value, the session will automatically be terminated by AWS (instead of stopped).</p> <p>If the value is set to a positive number, the session can be stopped. You can call StopStreamingSession to stop sessions in the READY state. If the time that a session stays in the READY state exceeds the maxSessionLengthInMinutes value, the session will automatically be stopped by AWS (instead of terminated).</p>"
+          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p> <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated by AWS (instead of stopped).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the READY state. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped by AWS (instead of terminated).</p>"
         },
         "sessionStorage":{
           "shape":"StreamConfigurationSessionStorage",
@@ -3477,7 +3519,7 @@
         },
         "ownedBy":{
           "shape":"String",
-          "documentation":"<p>The user ID of the user that owns the streaming session.</p>"
+          "documentation":"<p>The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.</p>"
         },
         "sessionId":{
           "shape":"StreamingSessionId",
@@ -3577,7 +3619,8 @@
         "STREAMING_SESSION_STOPPED",
         "STREAMING_SESSION_STARTED",
         "STREAMING_SESSION_STOP_IN_PROGRESS",
-        "STREAMING_SESSION_START_IN_PROGRESS"
+        "STREAMING_SESSION_START_IN_PROGRESS",
+        "AMI_VALIDATION_ERROR"
       ]
     },
     "StreamingSessionStorageMode":{
@@ -3594,11 +3637,11 @@
       "members":{
         "linux":{
           "shape":"StreamingSessionStorageRootPathLinux",
-          "documentation":"<p>The folder path in Linux workstations where files are uploaded. The default path is <code>$HOME/Downloads</code>.</p>"
+          "documentation":"<p>The folder path in Linux workstations where files are uploaded.</p>"
         },
         "windows":{
           "shape":"StreamingSessionStorageRootPathWindows",
-          "documentation":"<p>The folder path in Windows workstations where files are uploaded. The default path is <code>%HOMEPATH%\\Downloads</code>.</p>"
+          "documentation":"<p>The folder path in Windows workstations where files are uploaded.</p>"
         }
       },
       "documentation":"<p>The upload storage root location (folder) on streaming workstations where files are uploaded.</p>"
@@ -3634,7 +3677,7 @@
         },
         "ownedBy":{
           "shape":"String",
-          "documentation":"<p>The user ID of the user that owns the streaming session.</p>"
+          "documentation":"<p>The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.</p>"
         },
         "state":{
           "shape":"StreamingSessionStreamState",
@@ -3948,6 +3991,10 @@
         "UPDATE_FAILED"
       ]
     },
+    "StudioComponentStateList":{
+      "type":"list",
+      "member":{"shape":"StudioComponentState"}
+    },
     "StudioComponentStatusCode":{
       "type":"string",
       "documentation":"<p>The current status of the studio component resource.</p> <p>When the resource is in the 'READY' state, the status code signals what the last mutation made to the resource was.</p> <p>When the resource is in a CREATE_FAILED/UPDATE_FAILED/DELETE_FAILED state, the status code signals what went wrong and why the mutation failed.</p>",
@@ -4028,6 +4075,10 @@
         "LICENSE_SERVICE",
         "CUSTOM"
       ]
+    },
+    "StudioComponentTypeList":{
+      "type":"list",
+      "member":{"shape":"StudioComponentType"}
     },
     "StudioEncryptionConfiguration":{
       "type":"structure",
@@ -4573,6 +4624,38 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ValidationResult":{
+      "type":"structure",
+      "required":[
+        "state",
+        "statusCode",
+        "statusMessage",
+        "type"
+      ],
+      "members":{
+        "state":{
+          "shape":"LaunchProfileValidationState",
+          "documentation":"<p>The current state.</p>"
+        },
+        "statusCode":{
+          "shape":"LaunchProfileValidationStatusCode",
+          "documentation":"<p>The status code. This will contain the failure reason if the state is <code>VALIDATION_FAILED</code>.</p>"
+        },
+        "statusMessage":{
+          "shape":"LaunchProfileValidationStatusMessage",
+          "documentation":"<p>The status message for the validation result.</p>"
+        },
+        "type":{
+          "shape":"LaunchProfileValidationType",
+          "documentation":"<p>The type of the validation result.</p>"
+        }
+      },
+      "documentation":"<p>The launch profile validation result.</p>"
+    },
+    "ValidationResults":{
+      "type":"list",
+      "member":{"shape":"ValidationResult"}
     },
     "WindowsMountDrive":{
       "type":"string",

@@ -317,6 +317,25 @@
       ],
       "documentation":"<p>Deletes a specific version of a bot. To delete all version of a bot, use the <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/API_DeleteBot.html\">DeleteBot</a> operation.</p>"
     },
+    "DeleteCustomVocabulary":{
+      "name":"DeleteCustomVocabulary",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteCustomVocabularyRequest"},
+      "output":{"shape":"DeleteCustomVocabularyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"PreconditionFailedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes a custom vocabulary from the specified locale in the specified bot.</p>"
+    },
     "DeleteExport":{
       "name":"DeleteExport",
       "http":{
@@ -545,6 +564,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Provides metadata about a version of a bot.</p>"
+    },
+    "DescribeCustomVocabularyMetadata":{
+      "name":"DescribeCustomVocabularyMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeCustomVocabularyMetadataRequest"},
+      "output":{"shape":"DescribeCustomVocabularyMetadataResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Provides metadata information about a custom vocabulary.</p>"
     },
     "DescribeExport":{
       "name":"DescribeExport",
@@ -800,7 +837,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the exports for a bot or bot locale. Exports are kept in the list for 7 days.</p>"
+      "documentation":"<p>Lists the exports for a bot, bot locale, or custom vocabulary. Exports are kept in the list for 7 days.</p>"
     },
     "ListImports":{
       "name":"ListImports",
@@ -816,7 +853,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the imports for a bot or bot locale. Imports are kept in the list for 7 days.</p>"
+      "documentation":"<p>Lists the imports for a bot, bot locale, or custom vocabulary. Imports are kept in the list for 7 days.</p>"
     },
     "ListIntents":{
       "name":"ListIntents",
@@ -960,7 +997,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts importing a bot or bot locale from a zip archive that you uploaded to an S3 bucket.</p>"
+      "documentation":"<p>Starts importing a bot, bot locale, or custom vocabulary from a zip archive that you uploaded to an S3 bucket.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1171,6 +1208,16 @@
     }
   },
   "shapes":{
+    "AdvancedRecognitionSetting":{
+      "type":"structure",
+      "members":{
+        "audioRecognitionStrategy":{
+          "shape":"AudioRecognitionStrategy",
+          "documentation":"<p>Enables using the slot values as a custom vocabulary for recognizing user utterances.</p>"
+        }
+      },
+      "documentation":"<p>Provides settings that enable advanced recognition settings for slot values.</p>"
+    },
     "AggregatedUtterancesFilter":{
       "type":"structure",
       "required":[
@@ -1361,6 +1408,10 @@
       "member":{"shape":"AudioLogSetting"},
       "max":1,
       "min":1
+    },
+    "AudioRecognitionStrategy":{
+      "type":"string",
+      "enum":["UseSlotValuesAsCustomVocabulary"]
     },
     "Boolean":{"type":"boolean"},
     "BotAliasHistoryEvent":{
@@ -3068,6 +3119,62 @@
       "max":1000,
       "min":1
     },
+    "CustomVocabularyExportSpecification":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The identifier of the bot that contains the custom vocabulary to export.</p>"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The version of the bot that contains the custom vocabulary to export.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale of the bot that contains the custom vocabulary to export.</p>"
+        }
+      },
+      "documentation":"<p>Provides the parameters required for exporting a custom vocabulary.</p>"
+    },
+    "CustomVocabularyImportSpecification":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The identifier of the bot to import the custom vocabulary to.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot to import the custom vocabulary to.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The identifier of the local to import the custom vocabulary to. The value must be <code>en_GB</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides the parameters required for importing a custom vocabulary.</p>"
+    },
+    "CustomVocabularyStatus":{
+      "type":"string",
+      "enum":[
+        "Ready",
+        "Deleting",
+        "Exporting",
+        "Importing",
+        "Creating"
+      ]
+    },
     "DataPrivacy":{
       "type":"structure",
       "required":["childDirected"],
@@ -3262,6 +3369,55 @@
         "botStatus":{
           "shape":"BotStatus",
           "documentation":"<p>The current status of the bot. </p>"
+        }
+      }
+    },
+    "DeleteCustomVocabularyRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to remove the custom vocabulary from.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot to remove the custom vocabulary from.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier for the locale that contains the custom vocabulary to remove.</p>",
+          "location":"uri",
+          "locationName":"localeId"
+        }
+      }
+    },
+    "DeleteCustomVocabularyResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The identifier of the bot that the custom vocabulary was removed from.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot that the custom vocabulary was removed from.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier for the locale that the custom vocabulary was removed from.</p>"
+        },
+        "customVocabularyStatus":{
+          "shape":"CustomVocabularyStatus",
+          "documentation":"<p>The status of removing the custom vocabulary.</p>"
         }
       }
     },
@@ -3904,6 +4060,63 @@
         }
       }
     },
+    "DescribeCustomVocabularyMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot that contains the custom vocabulary.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to return metadata for.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale to return the custom vocabulary information for. The locale must be <code>en_GB</code>.</p>",
+          "location":"uri",
+          "locationName":"localeId"
+        }
+      }
+    },
+    "DescribeCustomVocabularyMetadataResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The identifier of the bot that contains the custom vocabulary.</p>"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The version of the bot that contains the custom vocabulary to describe.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale that contains the custom vocabulary to describe.</p>"
+        },
+        "customVocabularyStatus":{
+          "shape":"CustomVocabularyStatus",
+          "documentation":"<p>The status of the custom vocabulary. If the status is <code>Ready</code> the custom vocabulary is ready to use.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the custom vocabulary was created.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the custom vocabulary was last updated.</p>"
+        }
+      }
+    },
     "DescribeExportRequest":{
       "type":"structure",
       "required":["exportId"],
@@ -3929,7 +4142,7 @@
         },
         "fileFormat":{
           "shape":"ImportExportFileFormat",
-          "documentation":"<p>The file format used in the files that describe the bot or bot locale.</p>"
+          "documentation":"<p>The file format used in the files that describe the resource. </p>"
         },
         "exportStatus":{
           "shape":"ExportStatus",
@@ -3974,7 +4187,7 @@
         },
         "resourceSpecification":{
           "shape":"ImportResourceSpecification",
-          "documentation":"<p>The specifications of the imported bot or bot locale.</p>"
+          "documentation":"<p>The specifications of the imported bot, bot locale, or custom vocabulary.</p>"
         },
         "importedResourceId":{
           "shape":"ImportedResourceId",
@@ -4393,7 +4606,7 @@
         },
         "values":{
           "shape":"FilterValues",
-          "documentation":"<p>The values to use to filter the response.</p>"
+          "documentation":"<p>The values to use to filter the response. The values must be <code>Bot</code>, <code>BotLocale</code>, or <code>CustomVocabulary</code>.</p>"
         },
         "operator":{
           "shape":"ExportFilterOperator",
@@ -4429,6 +4642,10 @@
         "botLocaleExportSpecification":{
           "shape":"BotLocaleExportSpecification",
           "documentation":"<p>Parameters for exporting a bot locale.</p>"
+        },
+        "customVocabularyExportSpecification":{
+          "shape":"CustomVocabularyExportSpecification",
+          "documentation":"<p>The parameters required to export a custom vocabulary.</p>"
         }
       },
       "documentation":"<p>Provides information about the bot or bot locale that you want to export. You can specify the <code>botExportSpecification</code> or the <code>botLocaleExportSpecification</code>, but not both.</p>"
@@ -4696,7 +4913,10 @@
     },
     "ImportExportFileFormat":{
       "type":"string",
-      "enum":["LexJson"]
+      "enum":[
+        "LexJson",
+        "TSV"
+      ]
     },
     "ImportExportFilePassword":{
       "type":"string",
@@ -4718,7 +4938,7 @@
         },
         "values":{
           "shape":"FilterValues",
-          "documentation":"<p>The values to use to filter the response.</p>"
+          "documentation":"<p>The values to use to filter the response. The values must be <code>Bot</code>, <code>BotLocale</code>, or <code>CustomVocabulary</code>.</p>"
         },
         "operator":{
           "shape":"ImportFilterOperator",
@@ -4754,9 +4974,18 @@
         "botLocaleImportSpecification":{
           "shape":"BotLocaleImportSpecification",
           "documentation":"<p>Parameters for importing a bot locale.</p>"
-        }
+        },
+        "customVocabularyImportSpecification":{"shape":"CustomVocabularyImportSpecification"}
       },
       "documentation":"<p>Provides information about the bot or bot locale that you want to import. You can specify the <code>botImportSpecification</code> or the <code>botLocaleImportSpecification</code>, but not both.</p>"
+    },
+    "ImportResourceType":{
+      "type":"string",
+      "enum":[
+        "Bot",
+        "BotLocale",
+        "CustomVocabulary"
+      ]
     },
     "ImportSortAttribute":{
       "type":"string",
@@ -4819,6 +5048,10 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the import was last updated.</p>"
+        },
+        "importedResourceType":{
+          "shape":"ImportResourceType",
+          "documentation":"<p>The type of resource that was imported.</p>"
         }
       },
       "documentation":"<p>Provides summary information about an import in an import list.</p>"
@@ -5383,7 +5616,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the response from the <code>ListBots</code> operation contains more results than specified in the <code>maxResults</code> parameter, a token is returned in the response. Use that token in the <code>nextToken</code> parameter to return the next page of results.</p>"
+          "documentation":"<p>If the response from the <code>ListBots</code> operation contains more results than specified in the <code>maxResults</code> parameter, a token is returned in the response. </p> <p>Use the returned token in the <code>nextToken</code> parameter of a <code>ListBots</code> request to return the next page of results. For a complete set of results, call the <code>ListBots</code> operation until the <code>nextToken</code> returned in the response is null.</p>"
         }
       }
     },
@@ -5507,7 +5740,11 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the response from the <code>ListExports</code> operation contains more results that specified in the <code>maxResults</code> parameter, a token is returned in the response. Use that token in the <code>nextToken</code> parameter to return the next page of results.</p>"
+          "documentation":"<p>If the response from the <code>ListExports</code> operation contains more results that specified in the <code>maxResults</code> parameter, a token is returned in the response. </p> <p>Use the returned token in the <code>nextToken</code> parameter of a <code>ListExports</code> request to return the next page of results. For a complete set of results, call the <code>ListExports</code> operation until the <code>nextToken</code> returned in the response is null.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>Specifies the resources that should be exported. If you don't specify a resource type in the <code>filters</code> parameter, both bot locales and custom vocabularies are exported.</p>"
         }
       }
     },
@@ -5529,6 +5766,10 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token that indicates whether there are more results to return in a response to the <code>ListExports</code> operation. If the <code>nextToken</code> field is present, you send the contents as the <code>nextToken</code> parameter of a <code>ListExports</code> operation request to get the next page of results.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale specified in the request.</p>"
         }
       }
     },
@@ -5557,7 +5798,11 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the response from the <code>ListImports</code> operation contains more results than specified in the <code>maxResults</code> parameter, a token is returned in the response. Use that token in the <code>nextToken</code> parameter to return the next page of results.</p>"
+          "documentation":"<p>If the response from the <code>ListImports</code> operation contains more results than specified in the <code>maxResults</code> parameter, a token is returned in the response.</p> <p>Use the returned token in the <code>nextToken</code> parameter of a <code>ListImports</code> request to return the next page of results. For a complete set of results, call the <code>ListImports</code> operation until the <code>nextToken</code> returned in the response is null.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>Specifies the locale that should be present in the list. If you don't specify a resource type in the <code>filters</code> parameter, the list contains both bot locales and custom vocabularies.</p>"
         }
       }
     },
@@ -5579,6 +5824,10 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token that indicates whether there are more results to return in a response to the <code>ListImports</code> operation. If the <code>nextToken</code> field is present, you send the contents as the <code>nextToken</code> parameter of a <code>ListImports</code> operation request to get the next page of results.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale specified in the request.</p>"
         }
       }
     },
@@ -5622,7 +5871,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the response from the <code>ListIntents</code> operation contains more results than specified in the <code>maxResults</code> parameter, a token is returned in the response. Use that token in the <code>nextToken</code> parameter to return the next page of results.</p>"
+          "documentation":"<p>If the response from the <code>ListIntents</code> operation contains more results than specified in the <code>maxResults</code> parameter, a token is returned in the response.</p> <p>Use the returned token in the <code>nextToken</code> parameter of a <code>ListIntents</code> request to return the next page of results. For a complete set of results, call the <code>ListIntents</code> operation until the <code>nextToken</code> returned in the response is null.</p>"
         }
       }
     },
@@ -6864,6 +7113,10 @@
         "regexFilter":{
           "shape":"SlotValueRegexFilter",
           "documentation":"<p>A regular expression used to validate the value of a slot.</p>"
+        },
+        "advancedRecognitionSetting":{
+          "shape":"AdvancedRecognitionSetting",
+          "documentation":"<p>Provides settings that enable advanced recognition settings for slot values.</p>"
         }
       },
       "documentation":"<p>Contains settings used by Amazon Lex to select a slot value.</p>"
@@ -6963,7 +7216,7 @@
         },
         "resourceSpecification":{
           "shape":"ImportResourceSpecification",
-          "documentation":"<p>Parameters for creating the bot or bot locale.</p>"
+          "documentation":"<p>Parameters for creating the bot, bot locale or custom vocabulary.</p>"
         },
         "mergeStrategy":{
           "shape":"MergeStrategy",
@@ -6971,7 +7224,7 @@
         },
         "filePassword":{
           "shape":"ImportExportFilePassword",
-          "documentation":"<p>The password used to encrypt the zip archive that contains the bot or bot locale definition. You should always encrypt the zip archive to protect it during transit between your site and Amazon Lex.</p>"
+          "documentation":"<p>The password used to encrypt the zip archive that contains the resource definition. You should always encrypt the zip archive to protect it during transit between your site and Amazon Lex.</p>"
         }
       }
     },
@@ -6984,7 +7237,7 @@
         },
         "resourceSpecification":{
           "shape":"ImportResourceSpecification",
-          "documentation":"<p>The parameters used when importing the bot or bot locale.</p>"
+          "documentation":"<p>The parameters used when importing the resource.</p>"
         },
         "mergeStrategy":{
           "shape":"MergeStrategy",
@@ -6992,7 +7245,7 @@
         },
         "importStatus":{
           "shape":"ImportStatus",
-          "documentation":"<p>The current status of the import. When the status is <code>Complete</code> the bot or bot alias is ready to use.</p>"
+          "documentation":"<p>The current status of the import. When the status is <code>Complete</code> the bot, bot alias, or custom vocabulary is ready to use.</p>"
         },
         "creationDateTime":{
           "shape":"Timestamp",
@@ -7578,7 +7831,7 @@
         },
         "fileFormat":{
           "shape":"ImportExportFileFormat",
-          "documentation":"<p>The file format used for the files that define the resource.</p>"
+          "documentation":"<p>The file format used for the files that define the resource. The <code>TSV</code> format is required to export a custom vocabulary only; otherwise use <code>LexJson</code> format.</p>"
         },
         "exportStatus":{
           "shape":"ExportStatus",

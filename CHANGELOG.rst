@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.4.11
+======
+
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``ec2``: Hpc6a instances are powered by a third-generation AMD EPYC processors (Milan) delivering all-core turbo frequency of 3.4 GHz
+* api-change:``pinpoint``: Adds JourneyChannelSettings to WriteJourneyRequest
+* api-change:``honeycode``: Honeycode is releasing new APIs to allow user to create, delete and list tags on resources.
+* api-change:``pi``: This release adds three Performance Insights APIs. Use ListAvailableResourceMetrics to get available metrics, GetResourceMetadata to get feature metadata, and ListAvailableResourceDimensions to list available dimensions. The AdditionalMetrics field in DescribeDimensionKeys retrieves per-SQL metrics.
+* api-change:``fms``: Shield Advanced policies for Amazon CloudFront resources now support automatic application layer DDoS mitigation. The max length for SecurityServicePolicyData ManagedServiceData is now 8192 characters, instead of 4096.
+* api-change:``elasticache``: AWS ElastiCache for Redis has added a new Engine Log LogType in LogDelivery feature. You can now publish the Engine Log from your Amazon ElastiCache for Redis clusters to Amazon CloudWatch Logs and Amazon Kinesis Data Firehose.
+* api-change:``nimble``: Amazon Nimble Studio now supports validation for Launch Profiles. Launch Profiles now report static validation results after create/update to detect errors in network or active directory configuration.
+* api-change:``elasticache``: Doc only update for ElastiCache
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``glue``: This SDK release adds support to pass run properties when starting a workflow run
+* api-change:``ssm``: AWS Systems Manager adds category support for DescribeDocument API
+
+
 2.4.10
 ======
 

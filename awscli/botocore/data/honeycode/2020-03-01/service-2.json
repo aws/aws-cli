@@ -206,6 +206,25 @@
       ],
       "documentation":"<p> The ListTables API allows you to retrieve a list of all the tables in a workbook. </p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"RequestTimeoutException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> The ListTagsForResource API allows you to return a resource's tags. </p>"
+    },
     "QueryTableRows":{
       "name":"QueryTableRows",
       "http":{
@@ -242,6 +261,44 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p> The StartTableDataImportJob API allows you to start an import job on a table. This API will only return the id of the job that was started. To find out the status of the import request, you need to call the DescribeTableDataImportJob API. </p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"RequestTimeoutException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> The TagResource API allows you to add tags to an ARN-able resource. Resource includes workbook, table, screen and screen-automation. </p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"RequestTimeoutException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> The UntagResource API allows you to removes tags from an ARN-able resource. Resource includes workbook, table, screen and screen-automation. </p>"
     }
   },
   "shapes":{
@@ -779,7 +836,7 @@
         },
         "appId":{
           "shape":"ResourceId",
-          "documentation":"<p>The ID of the app that contains the screem.</p>"
+          "documentation":"<p>The ID of the app that contains the screen.</p>"
         },
         "screenId":{
           "shape":"ResourceId",
@@ -1114,6 +1171,27 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The resource's Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResult":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The resource's tags.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -1207,6 +1285,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^arn:aws:honeycode:.+:[0-9]{12}:.+:.+$"
     },
     "ResourceId":{
       "type":"string",
@@ -1493,6 +1577,55 @@
       "type":"list",
       "member":{"shape":"Table"}
     },
+    "TagKey":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[^\\n\\r\\x00\\x08\\x0B\\x0C\\x0E\\x1F]*$"
+    },
+    "TagKeysList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>A list of tag keys</p>",
+      "max":100
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The resource's Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of tags to apply to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[^\\n\\r\\x00\\x08\\x0B\\x0C\\x0E\\x1F]*$"
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "documentation":"<p>A string to string map representing tags</p>",
+      "max":100
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -1503,6 +1636,32 @@
       "exception":true
     },
     "TimestampInMillis":{"type":"timestamp"},
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The resource's Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeysList",
+          "documentation":"<p>A list of tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateRowData":{
       "type":"structure",
       "required":[

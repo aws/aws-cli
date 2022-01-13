@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.22.35
+=======
+
+* api-change:``elasticache``: AWS ElastiCache for Redis has added a new Engine Log LogType in LogDelivery feature. You can now publish the Engine Log from your Amazon ElastiCache for Redis clusters to Amazon CloudWatch Logs and Amazon Kinesis Data Firehose.
+* api-change:``pinpoint``: Adds JourneyChannelSettings to WriteJourneyRequest
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``nimble``: Amazon Nimble Studio now supports validation for Launch Profiles. Launch Profiles now report static validation results after create/update to detect errors in network or active directory configuration.
+* api-change:``glue``: This SDK release adds support to pass run properties when starting a workflow run
+* api-change:``ssm``: AWS Systems Manager adds category support for DescribeDocument API
+
+
 1.22.34
 =======
 

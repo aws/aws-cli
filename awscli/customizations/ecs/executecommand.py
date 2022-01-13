@@ -13,6 +13,7 @@
 import logging
 import json
 import errno
+import os
 
 from subprocess import check_call
 from awscli.compat import ignore_user_entered_signals
@@ -83,7 +84,7 @@ class ExecuteCommandCaller(CLIOperationCaller):
             # before calling execute-command to ensure that
             # session-manager-plugin is installed
             # before execute-command-command is made
-            check_call(["session-manager-plugin"])
+            check_call(["session-manager-plugin"], stdout=open(os.devnull, 'wb'))
             client = self._session.create_client(
                 service_name, region_name=parsed_globals.region,
                 endpoint_url=parsed_globals.endpoint_url,

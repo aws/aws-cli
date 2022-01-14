@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.36
+=======
+
+* api-change:``config``: Update ResourceType enum with values for CodeDeploy, EC2 and Kinesis resources
+* api-change:``ram``: This release adds the ListPermissionVersions API which lists the versions for a given permission.
+* api-change:``honeycode``: Added read and write api support for multi-select picklist. And added errorcode field to DescribeTableDataImportJob API output, when import job fails.
+* api-change:``application-insights``: Application Insights support for Active Directory and SharePoint
+* api-change:``lookoutmetrics``: This release adds a new DeactivateAnomalyDetector API operation.
+
+
 1.22.35
 =======
 

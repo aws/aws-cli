@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.38
+=======
+
+* api-change:``ivs``: This release adds support for the new Thumbnail Configuration property for Recording Configurations. For more information see https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html
+* api-change:``cloudtrail``: This release fixes a documentation bug in the description for the readOnly field selector in advanced event selectors. The description now clarifies that users omit the readOnly field selector to select both Read and Write management events.
+* api-change:``ec2``: Add support for AWS Client VPN client login banner and session timeout.
+* api-change:``location``: This release adds the CalculateRouteMatrix API which calculates routes for the provided departure and destination positions. The release also deprecates the use of pricing plan across all verticals.
+* api-change:``storagegateway``: Documentation update for adding bandwidth throttling support for S3 File Gateways.
+
+
 1.22.36
 =======
 

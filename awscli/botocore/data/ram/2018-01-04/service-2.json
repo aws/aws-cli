@@ -293,6 +293,25 @@
       ],
       "documentation":"<p>Lists the resources in a resource share that is shared with you but for which the invitation is still <code>PENDING</code>. That means that you haven't accepted or rejected the invitation and the invitation hasn't expired.</p>"
     },
+    "ListPermissionVersions":{
+      "name":"ListPermissionVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/listpermissionversions"
+      },
+      "input":{"shape":"ListPermissionVersionsRequest"},
+      "output":{"shape":"ListPermissionVersionsResponse"},
+      "errors":[
+        {"shape":"MalformedArnException"},
+        {"shape":"UnknownResourceException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"ServerInternalException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Lists the available versions of the specified RAM permission.</p>"
+    },
     "ListPermissions":{
       "name":"ListPermissions",
       "http":{
@@ -534,7 +553,7 @@
         },
         "permissionVersion":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the version of the RAM permission to associate with the resource share. If you don't specify this parameter, the operation uses the version designated as the default.</p>"
+          "documentation":"<p>Specifies the version of the RAM permission to associate with the resource share. If you don't specify this parameter, the operation uses the version designated as the default. You can use the <a>ListPermissionVersions</a> operation to discover the available versions of a permission.</p>"
         }
       }
     },
@@ -1038,6 +1057,37 @@
         "resources":{
           "shape":"ResourceList",
           "documentation":"<p>An array of objects that contain the information about the resources included the specified resource share.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
+        }
+      }
+    },
+    "ListPermissionVersionsRequest":{
+      "type":"structure",
+      "required":["permissionArn"],
+      "members":{
+        "permissionArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resoure Name (ARN)</a> of the RAM permission whose versions you want to list. You can use the <code>permissionVersion</code> parameter on the <a>AssociateResourceSharePermission</a> operation to specify a non-default version to attach.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+        }
+      }
+    },
+    "ListPermissionVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "permissions":{
+          "shape":"ResourceSharePermissionList",
+          "documentation":"<p>An array of objects that contain details for each of the available versions.</p>"
         },
         "nextToken":{
           "shape":"String",

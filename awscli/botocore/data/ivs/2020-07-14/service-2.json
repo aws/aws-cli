@@ -362,7 +362,8 @@
       "input":{"shape":"ListStreamsRequest"},
       "output":{"shape":"ListStreamsResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets summary information about live streams in your account, in the Amazon Web Services region where the API request is processed.</p>"
     },
@@ -781,6 +782,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>.</p>"
+        },
+        "thumbnailConfiguration":{
+          "shape":"ThumbnailConfiguration",
+          "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for a live session and modify the interval at which thumbnails are generated for the live session.</p>"
         }
       }
     },
@@ -1195,7 +1200,7 @@
         },
         "streamSessions":{
           "shape":"StreamSessionList",
-          "documentation":"<p/>"
+          "documentation":"<p>List of stream sessions.</p>"
         }
       }
     },
@@ -1400,6 +1405,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>.</p>"
+        },
+        "thumbnailConfiguration":{
+          "shape":"ThumbnailConfiguration",
+          "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for a live session and modify the interval at which thumbnails are generated for the live session.</p>"
         }
       },
       "documentation":"<p>An object representing a configuration to record a channel stream.</p>"
@@ -1458,6 +1467,13 @@
         }
       },
       "documentation":"<p>Summary information about a RecordingConfiguration.</p>"
+    },
+    "RecordingMode":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "INTERVAL"
+      ]
     },
     "ResourceArn":{
       "type":"string",
@@ -1845,6 +1861,11 @@
       "max":50,
       "min":0
     },
+    "TargetIntervalSeconds":{
+      "type":"long",
+      "max":60,
+      "min":5
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -1859,6 +1880,20 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ThumbnailConfiguration":{
+      "type":"structure",
+      "members":{
+        "recordingMode":{
+          "shape":"RecordingMode",
+          "documentation":"<p>Thumbnail recording mode. Default: <code>INTERVAL</code>.</p>"
+        },
+        "targetIntervalSeconds":{
+          "shape":"TargetIntervalSeconds",
+          "documentation":"<p>The targeted thumbnail-generation interval in seconds. This is configurable (and required) only if <code>recordingMode</code> is <code>INTERVAL</code>. Default: 60.</p> <p> <b>Important:</b> Setting a value for <code>targetIntervalSeconds</code> does not guarantee that thumbnails are generated at the specified interval. For thumbnails to be generated at the <code>targetIntervalSeconds</code> interval, the <code>IDR/Keyframe</code> value for the input video must be less than the <code>targetIntervalSeconds</code> value. See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/streaming-config.html\"> Amazon IVS Streaming Configuration</a> for information on setting <code>IDR/Keyframe</code> to the recommended value in video-encoder settings.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of thumbnails for recorded video.</p>"
     },
     "Time":{
       "type":"timestamp",

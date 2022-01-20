@@ -262,6 +262,9 @@ SCALE_DOWN_BEHAVIOR = (
     ' the request to terminate was submitted.</li>'
 )
 VISIBILITY = (
+    '<p>Using this option to set cluster visiblity is no longer supported.'
+    ' The value is set to <code>true</code> by default, and setting it to'
+    ' <code>false</code> now has no effect.</p>'
     '<p>Specifies whether the cluster is visible to all IAM users of'
     ' the AWS account associated with the cluster. If set to'
     ' <code>--visible-to-all-users</code>, all IAM users of that AWS account'
@@ -491,4 +494,13 @@ AUTO_TERMINATION_POLICY = (
     '<p>Auto termination policy for an Amazon EMR cluster. '
     'The configuration specifies the termination idle timeout'
     'threshold for an cluster.</p> '
+)
+
+MODIFY_CLUSTER_ATTRIBUTES = (
+    '<p>Modifies cluster attributes such as '
+    ' <code>termination-protected</code>.</p>'
+    '<p>The options <code>--visible-to-all-users</code> and'
+    ' <code>--no-visible-to-all-users</code> are no longer supported.'
+    ' To restrict cluster access, you should configure permissions'
+    ' using IAM policies.</p>'
 )

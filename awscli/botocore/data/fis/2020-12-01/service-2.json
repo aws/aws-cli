@@ -28,7 +28,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an experiment template. </p> <p>To create a template, specify the following information: </p> <ul> <li> <p> <b>Targets</b>: A target can be a specific resource in your AWS environment, or one or more resources that match criteria that you specify, for example, resources that have specific tags.</p> </li> <li> <p> <b>Actions</b>: The actions to carry out on the target. You can specify multiple actions, the duration of each action, and when to start each action during an experiment.</p> </li> <li> <p> <b>Stop conditions</b>: If a stop condition is triggered while an experiment is running, the experiment is automatically stopped. You can define a stop condition as a CloudWatch alarm.</p> </li> </ul> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">AWS Fault Injection Simulator User Guide</a>.</p>"
+      "documentation":"<p>Creates an experiment template. </p> <p>An experiment template includes the following components:</p> <ul> <li> <p> <b>Targets</b>: A target can be a specific resource in your Amazon Web Services environment, or one or more resources that match criteria that you specify, for example, resources that have specific tags.</p> </li> <li> <p> <b>Actions</b>: The actions to carry out on the target. You can specify multiple actions, the duration of each action, and when to start each action during an experiment.</p> </li> <li> <p> <b>Stop conditions</b>: If a stop condition is triggered while an experiment is running, the experiment is automatically stopped. You can define a stop condition as a CloudWatch alarm.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-templates.html\">Experiment templates</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
     },
     "DeleteExperimentTemplate":{
       "name":"DeleteExperimentTemplate",
@@ -58,7 +58,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets information about the specified AWS FIS action.</p>"
+      "documentation":"<p>Gets information about the specified FIS action.</p>"
     },
     "GetExperiment":{
       "name":"GetExperiment",
@@ -102,7 +102,7 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the available AWS FIS actions.</p>"
+      "documentation":"<p>Lists the available FIS actions.</p>"
     },
     "ListExperimentTemplates":{
       "name":"ListExperimentTemplates",
@@ -239,7 +239,7 @@
           "documentation":"<p>The tags for the action.</p>"
         }
       },
-      "documentation":"<p>Describes an action. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/fis-actions-reference.html\">AWS FIS actions</a> in the <i>AWS Fault Injection Simulator User Guide</i>.</p>"
+      "documentation":"<p>Describes an action. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/fis-actions-reference.html\">FIS actions</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
     },
     "ActionDescription":{
       "type":"string",
@@ -349,7 +349,7 @@
       "members":{
         "actionId":{
           "shape":"ActionId",
-          "documentation":"<p>The ID of the action.</p>"
+          "documentation":"<p>The ID of the action. The format of the action ID is: aws:<i>service-name</i>:<i>action-type</i>.</p>"
         },
         "description":{
           "shape":"ExperimentTemplateActionDescription",
@@ -368,7 +368,7 @@
           "documentation":"<p>The name of the action that must be completed before the current action starts. Omit this parameter to run the action at the start of the experiment.</p>"
         }
       },
-      "documentation":"<p>Specifies an action for an experiment template.</p>"
+      "documentation":"<p>Specifies an action for an experiment template.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/actions.html\">Actions</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
     },
     "CreateExperimentTemplateActionInputMap":{
       "type":"map",
@@ -392,7 +392,7 @@
         },
         "description":{
           "shape":"ExperimentTemplateDescription",
-          "documentation":"<p>A description for the experiment template. Can contain up to 64 letters (A-Z and a-z).</p>"
+          "documentation":"<p>A description for the experiment template.</p>"
         },
         "stopConditions":{
           "shape":"CreateExperimentTemplateStopConditionInputList",
@@ -408,7 +408,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants the AWS FIS service permission to perform service actions on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -453,7 +453,7 @@
       "members":{
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The AWS resource type. The resource type must be supported for the specified action.</p>"
+          "documentation":"<p>The Amazon Web Services resource type. The resource type must be supported for the specified action.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
@@ -472,7 +472,7 @@
           "documentation":"<p>Scopes the identified resources to a specific count of the resources at random, or a percentage of the resources. All identified resources are included in the target.</p> <ul> <li> <p>ALL - Run the action on all identified targets. This is the default.</p> </li> <li> <p>COUNT(n) - Run the action on the specified number of targets, chosen from the identified targets at random. For example, COUNT(1) selects one of the targets.</p> </li> <li> <p>PERCENT(n) - Run the action on the specified percentage of targets, chosen from the identified targets at random. For example, PERCENT(25) selects 25% of the targets.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Specifies a target for an experiment. You must specify at least one Amazon Resource Name (ARN) or at least one resource tag. You cannot specify both ARNs and tags.</p>"
+      "documentation":"<p>Specifies a target for an experiment. You must specify at least one Amazon Resource Name (ARN) or at least one resource tag. You cannot specify both ARNs and tags.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/targets.html\">Targets</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
     },
     "CreateExperimentTemplateTargetInputMap":{
       "type":"map",
@@ -519,7 +519,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants the AWS FIS service permission to perform service actions on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.</p>"
         },
         "state":{
           "shape":"ExperimentState",
@@ -539,11 +539,11 @@
         },
         "creationTime":{
           "shape":"CreationTime",
-          "documentation":"<p>The time the experiment was created.</p>"
+          "documentation":"<p>The time that the experiment was created.</p>"
         },
         "startTime":{
           "shape":"ExperimentStartTime",
-          "documentation":"<p>The time that the experiment was started.</p>"
+          "documentation":"<p>The time that the experiment started.</p>"
         },
         "endTime":{
           "shape":"ExperimentEndTime",
@@ -582,6 +582,14 @@
         "state":{
           "shape":"ExperimentActionState",
           "documentation":"<p>The state of the action.</p>"
+        },
+        "startTime":{
+          "shape":"ExperimentActionStartTime",
+          "documentation":"<p>The time that the action started.</p>"
+        },
+        "endTime":{
+          "shape":"ExperimentActionEndTime",
+          "documentation":"<p>The time that the action ended.</p>"
         }
       },
       "documentation":"<p>Describes the action for an experiment.</p>"
@@ -591,6 +599,7 @@
       "max":512,
       "pattern":"[\\s\\S]+"
     },
+    "ExperimentActionEndTime":{"type":"timestamp"},
     "ExperimentActionMap":{
       "type":"map",
       "key":{"shape":"ExperimentActionName"},
@@ -625,6 +634,7 @@
       "type":"list",
       "member":{"shape":"ExperimentActionStartAfter"}
     },
+    "ExperimentActionStartTime":{"type":"timestamp"},
     "ExperimentActionState":{
       "type":"structure",
       "members":{
@@ -1079,7 +1089,7 @@
           "documentation":"<p>The attribute values for the filter.</p>"
         }
       },
-      "documentation":"<p>Describes a filter used for the target resource input in an experiment template.</p>"
+      "documentation":"<p>Specifies a filter used for the target resource input in an experiment template.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/targets.html#target-filters\">Resource filters</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
     },
     "ExperimentTemplateTargetMap":{
       "type":"map",
@@ -1529,7 +1539,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants the AWS FIS service permission to perform service actions on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.</p>"
         }
       }
     },
@@ -1570,7 +1580,7 @@
       "members":{
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The AWS resource type. The resource type must be supported for the specified action.</p>"
+          "documentation":"<p>The Amazon Web Services resource type. The resource type must be supported for the specified action.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
@@ -1606,5 +1616,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>AWS Fault Injection Simulator is a managed service that enables you to perform fault injection experiments on your AWS workloads. For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">AWS Fault Injection Simulator User Guide</a>.</p>"
+  "documentation":"<p>Fault Injection Simulator is a managed service that enables you to perform fault injection experiments on your Amazon Web Services workloads. For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">Fault Injection Simulator User Guide</a>.</p>"
 }

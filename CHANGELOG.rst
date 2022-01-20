@@ -3052,6 +3052,23 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.40
+=======
+
+* api-change:``ec2``: C6i, M6i and R6i instances are powered by a third-generation Intel Xeon Scalable processor (Ice Lake) delivering all-core turbo frequency of 3.5 GHz
+* api-change:``guardduty``: Amazon GuardDuty findings now include remoteAccountDetails under AwsApiCallAction section if instance credential is exfiltrated.
+* api-change:``connect``: This release adds tagging support for UserHierarchyGroups resource.
+* api-change:``mediatailor``: This release adds support for multiple Segment Delivery Configurations. Users can provide a list of names and URLs when creating or editing a source location. When retrieving content, users can send a header to choose which URL should be used to serve content.
+* api-change:``fis``: Added action startTime and action endTime timestamp fields to the ExperimentAction object
+
+
+1.22.39
+=======
+
+* api-change:``ec2-instance-connect``: Adds support for ED25519 keys. PushSSHPublicKey Availability Zone parameter is now optional. Adds EC2InstanceStateInvalidException for instances that are not running. This was previously a service exception, so this may require updating your code to handle this new exception.
+* api-change:``macie2``: This release of the Amazon Macie API introduces stricter validation of requests to create custom data identifiers.
+
+
 1.22.38
 =======
 

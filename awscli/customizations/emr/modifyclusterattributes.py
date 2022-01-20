@@ -19,8 +19,7 @@ from awscli.customizations.emr.command import Command
 
 class ModifyClusterAttr(Command):
     NAME = 'modify-cluster-attributes'
-    DESCRIPTION = ("Modifies the cluster attributes 'visible-to-all-users' and"
-                   " 'termination-protected'.")
+    DESCRIPTION = helptext.MODIFY_CLUSTER_ATTRIBUTES
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
             'help_text': helptext.CLUSTER_ID},

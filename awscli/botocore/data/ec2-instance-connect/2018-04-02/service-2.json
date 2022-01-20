@@ -26,7 +26,8 @@
         {"shape":"InvalidArgsException"},
         {"shape":"ServiceException"},
         {"shape":"ThrottlingException"},
-        {"shape":"EC2InstanceNotFoundException"}
+        {"shape":"EC2InstanceNotFoundException"},
+        {"shape":"EC2InstanceStateInvalidException"}
       ],
       "documentation":"<p>Pushes an SSH public key to the specified EC2 instance for use by the specified user. The key remains for 60 seconds. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html\">Connect to your Linux instance using EC2 Instance Connect</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
@@ -47,7 +48,8 @@
         {"shape":"EC2InstanceNotFoundException"},
         {"shape":"EC2InstanceTypeInvalidException"},
         {"shape":"SerialConsoleSessionLimitExceededException"},
-        {"shape":"SerialConsoleSessionUnavailableException"}
+        {"shape":"SerialConsoleSessionUnavailableException"},
+        {"shape":"EC2InstanceStateInvalidException"}
       ],
       "documentation":"<p>Pushes an SSH public key to the specified EC2 instance. The key remains for 60 seconds, which gives you 60 seconds to establish a serial console connection to the instance using SSH. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-serial-console.html\">EC2 Serial Console</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     }
@@ -73,6 +75,14 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The specified instance was not found.</p>",
+      "exception":true
+    },
+    "EC2InstanceStateInvalidException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>Unable to connect because the instance is not in a valid state. Connecting to a stopped or terminated instance is not supported. If the instance is stopped, start your instance, and try to connect again.</p>",
       "exception":true
     },
     "EC2InstanceTypeInvalidException":{
@@ -107,15 +117,14 @@
     "SSHPublicKey":{
       "type":"string",
       "max":4096,
-      "min":256
+      "min":80
     },
     "SendSSHPublicKeyRequest":{
       "type":"structure",
       "required":[
         "InstanceId",
         "InstanceOSUser",
-        "SSHPublicKey",
-        "AvailabilityZone"
+        "SSHPublicKey"
       ],
       "members":{
         "InstanceId":{

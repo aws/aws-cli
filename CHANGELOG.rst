@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.42
+=======
+
+* api-change:``route53-recovery-readiness``: Updated documentation for Route53 Recovery Readiness APIs.
+
+
 1.22.41
 =======
 

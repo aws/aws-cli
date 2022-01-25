@@ -49,6 +49,23 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Allows the specified Amazon Connect instance to access the specified Amazon Lex or Amazon Lex V2 bot.</p>"
     },
+    "AssociateDefaultVocabulary":{
+      "name":"AssociateDefaultVocabulary",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/default-vocabulary/{InstanceId}/{LanguageCode}"
+      },
+      "input":{"shape":"AssociateDefaultVocabularyRequest"},
+      "output":{"shape":"AssociateDefaultVocabularyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Associates an existing vocabulary as the default. Contact Lens for Amazon Connect uses the vocabulary in post-call and real-time analysis sessions for the given language.</p>"
+    },
     "AssociateInstanceStorageConfig":{
       "name":"AssociateInstanceStorageConfig",
       "http":{
@@ -400,6 +417,25 @@
       ],
       "documentation":"<p>Creates a new user hierarchy group.</p>"
     },
+    "CreateVocabulary":{
+      "name":"CreateVocabulary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/vocabulary/{InstanceId}"
+      },
+      "input":{"shape":"CreateVocabularyRequest"},
+      "output":{"shape":"CreateVocabularyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a custom vocabulary associated with your Amazon Connect instance. You can set a custom vocabulary to be your default vocabulary for a given language. Contact Lens for Amazon Connect uses the default vocabulary in post-call and real-time contact analysis sessions for that language.</p>"
+    },
     "DeleteContactFlow":{
       "name":"DeleteContactFlow",
       "http":{
@@ -561,6 +597,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Deletes an existing user hierarchy group. It must not be associated with any agents or have any active child groups.</p>"
+    },
+    "DeleteVocabulary":{
+      "name":"DeleteVocabulary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/vocabulary-remove/{InstanceId}/{VocabularyId}"
+      },
+      "input":{"shape":"DeleteVocabularyRequest"},
+      "output":{"shape":"DeleteVocabularyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Deletes the vocabulary that has the given identifier.</p>"
     },
     "DescribeAgentStatus":{
       "name":"DescribeAgentStatus",
@@ -816,6 +870,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes the hierarchy structure of the specified Amazon Connect instance.</p>"
+    },
+    "DescribeVocabulary":{
+      "name":"DescribeVocabulary",
+      "http":{
+        "method":"GET",
+        "requestUri":"/vocabulary/{InstanceId}/{VocabularyId}"
+      },
+      "input":{"shape":"DescribeVocabularyRequest"},
+      "output":{"shape":"DescribeVocabularyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the specified vocabulary.</p>"
     },
     "DisassociateApprovedOrigin":{
       "name":"DisassociateApprovedOrigin",
@@ -1112,6 +1183,22 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified <code>referenceTypes</code>, returns a list of references associated with the contact. </p>"
+    },
+    "ListDefaultVocabularies":{
+      "name":"ListDefaultVocabularies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/default-vocabulary-summary/{InstanceId}"
+      },
+      "input":{"shape":"ListDefaultVocabulariesRequest"},
+      "output":{"shape":"ListDefaultVocabulariesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the default vocabularies for the specified Amazon Connect instance.</p>"
     },
     "ListHoursOfOperations":{
       "name":"ListHoursOfOperations",
@@ -1479,6 +1566,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>When a contact is being recorded, and the recording has been suspended using SuspendContactRecording, this API resumes recording the call.</p> <p>Only voice recordings are supported at this time.</p>"
+    },
+    "SearchVocabularies":{
+      "name":"SearchVocabularies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/vocabulary-summary/{InstanceId}"
+      },
+      "input":{"shape":"SearchVocabulariesRequest"},
+      "output":{"shape":"SearchVocabulariesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for vocabularies within a specific Amazon Connect instance using <code>State</code>, <code>NameStartsWith</code>, and <code>LanguageCode</code>.</p>"
     },
     "StartChatContact":{
       "name":"StartChatContact",
@@ -2379,6 +2482,36 @@
           "shape":"LexV2Bot",
           "documentation":"<p>The Amazon Lex V2 bot to associate with the instance.</p>"
         }
+      }
+    },
+    "AssociateDefaultVocabularyRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "LanguageCode"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>",
+          "location":"uri",
+          "locationName":"LanguageCode"
+        },
+        "VocabularyId":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary. If this is empty, the default is set to none.</p>"
+        }
+      }
+    },
+    "AssociateDefaultVocabularyResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "AssociateInstanceStorageConfigRequest":{
@@ -3639,6 +3772,66 @@
         }
       }
     },
+    "CreateVocabularyRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "VocabularyName",
+        "LanguageCode",
+        "Content"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If a create request is received more than once with same client token, subsequent requests return the previous response without creating a vocabulary again.</p>",
+          "idempotencyToken":true
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "VocabularyName":{
+          "shape":"VocabularyName",
+          "documentation":"<p>A unique name of the custom vocabulary.</p>"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>"
+        },
+        "Content":{
+          "shape":"VocabularyContent",
+          "documentation":"<p>The content of the custom vocabulary in plain-text format with a table of values. Each row in the table represents a word or a phrase, described with <code>Phrase</code>, <code>IPA</code>, <code>SoundsLike</code>, and <code>DisplayAs</code> fields. Separate the fields with TAB characters. The size limit is 50KB. For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table\">Create a custom vocabulary using a table</a>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateVocabularyResponse":{
+      "type":"structure",
+      "required":[
+        "VocabularyArn",
+        "VocabularyId",
+        "State"
+      ],
+      "members":{
+        "VocabularyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom vocabulary.</p>"
+        },
+        "VocabularyId":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>"
+        },
+        "State":{
+          "shape":"VocabularyState",
+          "documentation":"<p>The current state of the custom vocabulary.</p>"
+        }
+      }
+    },
     "Credentials":{
       "type":"structure",
       "members":{
@@ -3734,6 +3927,38 @@
     "CurrentMetrics":{
       "type":"list",
       "member":{"shape":"CurrentMetric"}
+    },
+    "DefaultVocabulary":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "LanguageCode",
+        "VocabularyId",
+        "VocabularyName"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>"
+        },
+        "VocabularyId":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>"
+        },
+        "VocabularyName":{
+          "shape":"VocabularyName",
+          "documentation":"<p>A unique name of the custom vocabulary.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a default vocabulary.</p>"
+    },
+    "DefaultVocabularyList":{
+      "type":"list",
+      "member":{"shape":"DefaultVocabulary"}
     },
     "Delay":{
       "type":"integer",
@@ -3950,6 +4175,49 @@
           "documentation":"<p>The identifier of the user.</p>",
           "location":"uri",
           "locationName":"UserId"
+        }
+      }
+    },
+    "DeleteVocabularyRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "VocabularyId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "VocabularyId":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>",
+          "location":"uri",
+          "locationName":"VocabularyId"
+        }
+      }
+    },
+    "DeleteVocabularyResponse":{
+      "type":"structure",
+      "required":[
+        "VocabularyArn",
+        "VocabularyId",
+        "State"
+      ],
+      "members":{
+        "VocabularyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom vocabulary.</p>"
+        },
+        "VocabularyId":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>"
+        },
+        "State":{
+          "shape":"VocabularyState",
+          "documentation":"<p>The current state of the custom vocabulary.</p>"
         }
       }
     },
@@ -4389,6 +4657,37 @@
         "User":{
           "shape":"User",
           "documentation":"<p>Information about the user account and configuration settings.</p>"
+        }
+      }
+    },
+    "DescribeVocabularyRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "VocabularyId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "VocabularyId":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>",
+          "location":"uri",
+          "locationName":"VocabularyId"
+        }
+      }
+    },
+    "DescribeVocabularyResponse":{
+      "type":"structure",
+      "required":["Vocabulary"],
+      "members":{
+        "Vocabulary":{
+          "shape":"Vocabulary",
+          "documentation":"<p>A list of specific words that you want Contact Lens for Amazon Connect to recognize in your audio input. They are generally domain-specific words and phrases, words that Contact Lens is not recognizing, or proper nouns.</p>"
         }
       }
     },
@@ -5940,6 +6239,44 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as null in the response.</p> </important>"
+        }
+      }
+    },
+    "ListDefaultVocabulariesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>"
+        },
+        "NextToken":{
+          "shape":"VocabularyNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListDefaultVocabulariesResponse":{
+      "type":"structure",
+      "required":["DefaultVocabularyList"],
+      "members":{
+        "DefaultVocabularyList":{
+          "shape":"DefaultVocabularyList",
+          "documentation":"<p>A list of default vocabularies.</p>"
+        },
+        "NextToken":{
+          "shape":"VocabularyNextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
     },
@@ -7900,6 +8237,51 @@
       },
       "documentation":"<p>Information about the Amazon Simple Storage Service (Amazon S3) storage type.</p>"
     },
+    "SearchVocabulariesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>"
+        },
+        "NextToken":{
+          "shape":"VocabularyNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "State":{
+          "shape":"VocabularyState",
+          "documentation":"<p>The current state of the custom vocabulary.</p>"
+        },
+        "NameStartsWith":{
+          "shape":"VocabularyName",
+          "documentation":"<p>The starting pattern of the name of the vocabulary.</p>"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>"
+        }
+      }
+    },
+    "SearchVocabulariesResponse":{
+      "type":"structure",
+      "members":{
+        "VocabularySummaryList":{
+          "shape":"VocabularySummaryList",
+          "documentation":"<p>The list of the available custom vocabularies.</p>"
+        },
+        "NextToken":{
+          "shape":"VocabularyNextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "SecurityKey":{
       "type":"structure",
       "members":{
@@ -8612,7 +8994,7 @@
         },
         "Name":{
           "shape":"ContactFlowName",
-          "documentation":"<p>TThe name of the contact flow.</p>"
+          "documentation":"<p>The name of the contact flow.</p>"
         },
         "Description":{
           "shape":"ContactFlowDescription",
@@ -9574,6 +9956,161 @@
       "member":{"shape":"UserSummary"}
     },
     "Value":{"type":"double"},
+    "Vocabulary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Id",
+        "Arn",
+        "LanguageCode",
+        "State",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"VocabularyName",
+          "documentation":"<p>A unique name of the custom vocabulary.</p>"
+        },
+        "Id":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom vocabulary.</p>"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>"
+        },
+        "State":{
+          "shape":"VocabularyState",
+          "documentation":"<p>The current state of the custom vocabulary.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"VocabularyLastModifiedTime",
+          "documentation":"<p>The timestamp when the custom vocabulary was last modified.</p>"
+        },
+        "FailureReason":{
+          "shape":"VocabularyFailureReason",
+          "documentation":"<p>The reason why the custom vocabulary was not created.</p>"
+        },
+        "Content":{
+          "shape":"VocabularyContent",
+          "documentation":"<p>The content of the custom vocabulary in plain-text format with a table of values. Each row in the table represents a word or a phrase, described with <code>Phrase</code>, <code>IPA</code>, <code>SoundsLike</code>, and <code>DisplayAs</code> fields. Separate the fields with TAB characters. For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table\">Create a custom vocabulary using a table</a>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a custom vocabulary.</p>"
+    },
+    "VocabularyContent":{
+      "type":"string",
+      "max":60000,
+      "min":1
+    },
+    "VocabularyFailureReason":{"type":"string"},
+    "VocabularyId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "VocabularyLanguageCode":{
+      "type":"string",
+      "enum":[
+        "ar-AE",
+        "de-CH",
+        "de-DE",
+        "en-AB",
+        "en-AU",
+        "en-GB",
+        "en-IE",
+        "en-IN",
+        "en-US",
+        "en-WL",
+        "es-ES",
+        "es-US",
+        "fr-CA",
+        "fr-FR",
+        "hi-IN",
+        "it-IT",
+        "ja-JP",
+        "ko-KR",
+        "pt-BR",
+        "pt-PT",
+        "zh-CN"
+      ]
+    },
+    "VocabularyLastModifiedTime":{"type":"timestamp"},
+    "VocabularyName":{
+      "type":"string",
+      "max":140,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "VocabularyNextToken":{
+      "type":"string",
+      "max":131070,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "VocabularyState":{
+      "type":"string",
+      "enum":[
+        "CREATION_IN_PROGRESS",
+        "ACTIVE",
+        "CREATION_FAILED",
+        "DELETE_IN_PROGRESS"
+      ]
+    },
+    "VocabularySummary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Id",
+        "Arn",
+        "LanguageCode",
+        "State",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"VocabularyName",
+          "documentation":"<p>A unique name of the custom vocabulary.</p>"
+        },
+        "Id":{
+          "shape":"VocabularyId",
+          "documentation":"<p>The identifier of the custom vocabulary.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom vocabulary.</p>"
+        },
+        "LanguageCode":{
+          "shape":"VocabularyLanguageCode",
+          "documentation":"<p>The language code of the vocabulary entries. For a list of languages and their corresponding language codes, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html\">What is Amazon Transcribe?</a> </p>"
+        },
+        "State":{
+          "shape":"VocabularyState",
+          "documentation":"<p>The current state of the custom vocabulary.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"VocabularyLastModifiedTime",
+          "documentation":"<p>The timestamp when the custom vocabulary was last modified.</p>"
+        },
+        "FailureReason":{
+          "shape":"VocabularyFailureReason",
+          "documentation":"<p>The reason why the custom vocabulary was not created.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about the custom vocabulary.</p>"
+    },
+    "VocabularySummaryList":{
+      "type":"list",
+      "member":{"shape":"VocabularySummary"}
+    },
     "VoiceRecordingConfiguration":{
       "type":"structure",
       "members":{

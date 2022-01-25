@@ -1032,6 +1032,11 @@
           "shape":"PortProbeAction",
           "documentation":"<p>Information about the PORT_PROBE action described in this finding.</p>",
           "locationName":"portProbeAction"
+        },
+        "KubernetesApiCallAction":{
+          "shape":"KubernetesApiCallAction",
+          "documentation":"<p>Information about the Kubernetes API call action described in this finding.</p>",
+          "locationName":"kubernetesApiCallAction"
         }
       },
       "documentation":"<p>Contains information about actions.</p>"
@@ -1114,6 +1119,10 @@
           "shape":"String",
           "documentation":"<p>The error code of the failed Amazon Web Services API action.</p>",
           "locationName":"errorCode"
+        },
+        "UserAgent":{
+          "shape":"String",
+          "locationName":"userAgent"
         },
         "RemoteIpDetails":{
           "shape":"RemoteIpDetails",
@@ -1314,6 +1323,51 @@
         }
       },
       "documentation":"<p>Contains information about the condition.</p>"
+    },
+    "Container":{
+      "type":"structure",
+      "members":{
+        "ContainerRuntime":{
+          "shape":"String",
+          "documentation":"<p>The container runtime (such as, Docker or containerd) used to run the container.</p>",
+          "locationName":"containerRuntime"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>Container ID.</p>",
+          "locationName":"id"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Container name.</p>",
+          "locationName":"name"
+        },
+        "Image":{
+          "shape":"String",
+          "documentation":"<p>Container image.</p>",
+          "locationName":"image"
+        },
+        "ImagePrefix":{
+          "shape":"String",
+          "documentation":"<p>Part of the image name before the last slash. For example, imagePrefix for public.ecr.aws/amazonlinux/amazonlinux:latest would be public.ecr.aws/amazonlinux. If the image name is relative and does not have a slash, this field is empty.</p>",
+          "locationName":"imagePrefix"
+        },
+        "VolumeMounts":{
+          "shape":"VolumeMounts",
+          "documentation":"<p>Container volume mounts.</p>",
+          "locationName":"volumeMounts"
+        },
+        "SecurityContext":{
+          "shape":"SecurityContext",
+          "documentation":"<p>Container security context.</p>",
+          "locationName":"securityContext"
+        }
+      },
+      "documentation":"<p>Details of a container.</p>"
+    },
+    "Containers":{
+      "type":"list",
+      "member":{"shape":"Container"}
     },
     "CountBySeverity":{
       "type":"map",
@@ -1680,7 +1734,8 @@
         "FLOW_LOGS",
         "CLOUD_TRAIL",
         "DNS_LOGS",
-        "S3_LOGS"
+        "S3_LOGS",
+        "KUBERNETES_AUDIT_LOGS"
       ]
     },
     "DataSourceConfigurations":{
@@ -1690,6 +1745,11 @@
           "shape":"S3LogsConfiguration",
           "documentation":"<p>Describes whether S3 data event logs are enabled as a data source.</p>",
           "locationName":"s3Logs"
+        },
+        "Kubernetes":{
+          "shape":"KubernetesConfiguration",
+          "documentation":"<p>Describes whether any Kubernetes logs are enabled as data sources.</p>",
+          "locationName":"kubernetes"
         }
       },
       "documentation":"<p>Contains information about which data sources are enabled.</p>"
@@ -1722,6 +1782,11 @@
           "shape":"S3LogsConfigurationResult",
           "documentation":"<p>An object that contains information on the status of S3 Data event logs as a data source.</p>",
           "locationName":"s3Logs"
+        },
+        "Kubernetes":{
+          "shape":"KubernetesConfigurationResult",
+          "documentation":"<p>An object that contains information on the status of all Kubernetes data sources.</p>",
+          "locationName":"kubernetes"
         }
       },
       "documentation":"<p>Contains information on the status of data sources for the detector.</p>"
@@ -2204,6 +2269,42 @@
       "documentation":"<p>Contains information about the domain.</p>"
     },
     "Double":{"type":"double"},
+    "EksClusterDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>EKS cluster name.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>EKS cluster ARN.</p>",
+          "locationName":"arn"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The VPC ID to which the EKS cluster is attached.</p>",
+          "locationName":"vpcId"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The EKS cluster status.</p>",
+          "locationName":"status"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The EKS cluster tags.</p>",
+          "locationName":"tags"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the EKS cluster was created.</p>",
+          "locationName":"createdAt"
+        }
+      },
+      "documentation":"<p>Details about the EKS cluster involved in a Kubernetes finding.</p>"
+    },
     "Email":{
       "type":"string",
       "max":64,
@@ -2943,9 +3044,24 @@
         }
       }
     },
+    "Groups":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "GuardDutyArn":{
       "type":"string",
       "pattern":"^arn:[A-Za-z_.-]{1,20}:guardduty:[A-Za-z0-9_/.-]{0,63}:\\d+:detector/[A-Za-z0-9_/.-]{32,264}$"
+    },
+    "HostPath":{
+      "type":"structure",
+      "members":{
+        "Path":{
+          "shape":"String",
+          "documentation":"<p>Path of the file or directory on the host that the volume maps to.</p>",
+          "locationName":"path"
+        }
+      },
+      "documentation":"<p>Represents a pre-existing file or directory on the host machine that the volume maps to.</p>"
     },
     "IamInstanceProfile":{
       "type":"structure",
@@ -3162,6 +3278,172 @@
     "Ipv6Addresses":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "KubernetesApiCallAction":{
+      "type":"structure",
+      "members":{
+        "RequestUri":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes API request URI.</p>",
+          "locationName":"requestUri"
+        },
+        "Verb":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes API request HTTP verb.</p>",
+          "locationName":"verb"
+        },
+        "SourceIps":{
+          "shape":"SourceIps",
+          "documentation":"<p>The IP of the Kubernetes API caller and the IPs of any proxies or load balancers between the caller and the API endpoint.</p>",
+          "locationName":"sourceIps"
+        },
+        "UserAgent":{
+          "shape":"String",
+          "documentation":"<p>The user agent of the caller of the Kubernetes API.</p>",
+          "locationName":"userAgent"
+        },
+        "RemoteIpDetails":{
+          "shape":"RemoteIpDetails",
+          "locationName":"remoteIpDetails"
+        },
+        "StatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The resulting HTTP response code of the Kubernetes API call action.</p>",
+          "locationName":"statusCode"
+        },
+        "Parameters":{
+          "shape":"String",
+          "documentation":"<p>Parameters related to the Kubernetes API call action.</p>",
+          "locationName":"parameters"
+        }
+      },
+      "documentation":"<p>Information about the Kubernetes API call action described in this finding.</p>"
+    },
+    "KubernetesAuditLogsConfiguration":{
+      "type":"structure",
+      "required":["Enable"],
+      "members":{
+        "Enable":{
+          "shape":"Boolean",
+          "documentation":"<p>The status of Kubernetes audit logs as a data source.</p>",
+          "locationName":"enable"
+        }
+      },
+      "documentation":"<p>Describes whether Kubernetes audit logs are enabled as a data source.</p>"
+    },
+    "KubernetesAuditLogsConfigurationResult":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"DataSourceStatus",
+          "documentation":"<p>A value that describes whether Kubernetes audit logs are enabled as a data source.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Describes whether Kubernetes audit logs are enabled as a data source.</p>"
+    },
+    "KubernetesConfiguration":{
+      "type":"structure",
+      "required":["AuditLogs"],
+      "members":{
+        "AuditLogs":{
+          "shape":"KubernetesAuditLogsConfiguration",
+          "documentation":"<p>The status of Kubernetes audit logs as a data source.</p>",
+          "locationName":"auditLogs"
+        }
+      },
+      "documentation":"<p>Describes whether any Kubernetes data sources are enabled.</p>"
+    },
+    "KubernetesConfigurationResult":{
+      "type":"structure",
+      "required":["AuditLogs"],
+      "members":{
+        "AuditLogs":{
+          "shape":"KubernetesAuditLogsConfigurationResult",
+          "documentation":"<p>Describes whether Kubernetes audit logs are enabled as a data source.</p>",
+          "locationName":"auditLogs"
+        }
+      },
+      "documentation":"<p>Describes whether any Kubernetes logs will be enabled as a data source.</p>"
+    },
+    "KubernetesDetails":{
+      "type":"structure",
+      "members":{
+        "KubernetesUserDetails":{
+          "shape":"KubernetesUserDetails",
+          "documentation":"<p>Details about the Kubernetes user involved in a Kubernetes finding.</p>",
+          "locationName":"kubernetesUserDetails"
+        },
+        "KubernetesWorkloadDetails":{
+          "shape":"KubernetesWorkloadDetails",
+          "documentation":"<p>Details about the Kubernetes workload involved in a Kubernetes finding.</p>",
+          "locationName":"kubernetesWorkloadDetails"
+        }
+      },
+      "documentation":"<p>Details about Kubernetes resources such as a Kubernetes user or workload resource involved in a Kubernetes finding.</p>"
+    },
+    "KubernetesUserDetails":{
+      "type":"structure",
+      "members":{
+        "Username":{
+          "shape":"String",
+          "documentation":"<p>The username of the user who called the Kubernetes API.</p>",
+          "locationName":"username"
+        },
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The user ID of the user who called the Kubernetes API.</p>",
+          "locationName":"uid"
+        },
+        "Groups":{
+          "shape":"Groups",
+          "documentation":"<p>The groups that include the user who called the Kubernetes API.</p>",
+          "locationName":"groups"
+        }
+      },
+      "documentation":"<p>Details about the Kubernetes user involved in a Kubernetes finding.</p>"
+    },
+    "KubernetesWorkloadDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Kubernetes workload name.</p>",
+          "locationName":"name"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>Kubernetes workload type (e.g. Pod, Deployment, etc.).</p>",
+          "locationName":"type"
+        },
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>Kubernetes workload ID.</p>",
+          "locationName":"uid"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>Kubernetes namespace that the workload is part of.</p>",
+          "locationName":"namespace"
+        },
+        "HostNetwork":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the hostNetwork flag is enabled for the pods included in the workload.</p>",
+          "locationName":"hostNetwork"
+        },
+        "Containers":{
+          "shape":"Containers",
+          "documentation":"<p>Containers running as part of the Kubernetes workload.</p>",
+          "locationName":"containers"
+        },
+        "Volumes":{
+          "shape":"Volumes",
+          "documentation":"<p>Volumes used by the Kubernetes workload.</p>",
+          "locationName":"volumes"
+        }
+      },
+      "documentation":"<p>Details about the Kubernetes workload involved in a Kubernetes finding.</p>"
     },
     "ListDetectorsRequest":{
       "type":"structure",
@@ -3833,6 +4115,11 @@
           "shape":"OrganizationS3LogsConfiguration",
           "documentation":"<p>Describes whether S3 data event logs are enabled for new members of the organization.</p>",
           "locationName":"s3Logs"
+        },
+        "Kubernetes":{
+          "shape":"OrganizationKubernetesConfiguration",
+          "documentation":"<p>Describes the configuration of Kubernetes data sources for new members of the organization.</p>",
+          "locationName":"kubernetes"
         }
       },
       "documentation":"<p>An object that contains information on which data sources will be configured to be automatically enabled for new members within the organization.</p>"
@@ -3845,9 +4132,62 @@
           "shape":"OrganizationS3LogsConfigurationResult",
           "documentation":"<p>Describes whether S3 data event logs are enabled as a data source.</p>",
           "locationName":"s3Logs"
+        },
+        "Kubernetes":{
+          "shape":"OrganizationKubernetesConfigurationResult",
+          "documentation":"<p>Describes the configuration of Kubernetes data sources.</p>",
+          "locationName":"kubernetes"
         }
       },
       "documentation":"<p>An object that contains information on which data sources are automatically enabled for new members within the organization.</p>"
+    },
+    "OrganizationKubernetesAuditLogsConfiguration":{
+      "type":"structure",
+      "required":["AutoEnable"],
+      "members":{
+        "AutoEnable":{
+          "shape":"Boolean",
+          "documentation":"<p>A value that contains information on whether Kubernetes audit logs should be enabled automatically as a data source for the organization.</p>",
+          "locationName":"autoEnable"
+        }
+      },
+      "documentation":"<p>Organization-wide Kubernetes audit logs configuration.</p>"
+    },
+    "OrganizationKubernetesAuditLogsConfigurationResult":{
+      "type":"structure",
+      "required":["AutoEnable"],
+      "members":{
+        "AutoEnable":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether Kubernetes audit logs data source should be auto-enabled for new members joining the organization.</p>",
+          "locationName":"autoEnable"
+        }
+      },
+      "documentation":"<p>The current configuration of Kubernetes audit logs as a data source for the organization.</p>"
+    },
+    "OrganizationKubernetesConfiguration":{
+      "type":"structure",
+      "required":["AuditLogs"],
+      "members":{
+        "AuditLogs":{
+          "shape":"OrganizationKubernetesAuditLogsConfiguration",
+          "documentation":"<p>Whether Kubernetes audit logs data source should be auto-enabled for new members joining the organization.</p>",
+          "locationName":"auditLogs"
+        }
+      },
+      "documentation":"<p>Organization-wide Kubernetes data sources configurations.</p>"
+    },
+    "OrganizationKubernetesConfigurationResult":{
+      "type":"structure",
+      "required":["AuditLogs"],
+      "members":{
+        "AuditLogs":{
+          "shape":"OrganizationKubernetesAuditLogsConfigurationResult",
+          "documentation":"<p>The current configuration of Kubernetes audit logs as a data source for the organization.</p>",
+          "locationName":"auditLogs"
+        }
+      },
+      "documentation":"<p>The current configuration of all Kubernetes data sources for the organization.</p>"
     },
     "OrganizationS3LogsConfiguration":{
       "type":"structure",
@@ -4089,6 +4429,16 @@
           "documentation":"<p>The information about the EC2 instance associated with the activity that prompted GuardDuty to generate a finding.</p>",
           "locationName":"instanceDetails"
         },
+        "EksClusterDetails":{
+          "shape":"EksClusterDetails",
+          "documentation":"<p>Details about the EKS cluster involved in a Kubernetes finding.</p>",
+          "locationName":"eksClusterDetails"
+        },
+        "KubernetesDetails":{
+          "shape":"KubernetesDetails",
+          "documentation":"<p>Details about the Kubernetes user and workload involved in a Kubernetes finding.</p>",
+          "locationName":"kubernetesDetails"
+        },
         "ResourceType":{
           "shape":"String",
           "documentation":"<p>The type of Amazon Web Services resource.</p>",
@@ -4174,6 +4524,17 @@
         }
       },
       "documentation":"<p>Describes whether S3 data event logs will be enabled as a data source.</p>"
+    },
+    "SecurityContext":{
+      "type":"structure",
+      "members":{
+        "Privileged":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the container is privileged.</p>",
+          "locationName":"privileged"
+        }
+      },
+      "documentation":"<p>Container security context.</p>"
     },
     "SecurityGroup":{
       "type":"structure",
@@ -4266,6 +4627,10 @@
         }
       },
       "documentation":"<p>Contains information about the criteria used for sorting findings.</p>"
+    },
+    "SourceIps":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "StartMonitoringMembersRequest":{
       "type":"structure",
@@ -4964,6 +5329,46 @@
         }
       },
       "documentation":"<p>Contains the result of GuardDuty usage. If a UsageStatisticType is provided the result for other types will be null. </p>"
+    },
+    "Volume":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Volume name.</p>",
+          "locationName":"name"
+        },
+        "HostPath":{
+          "shape":"HostPath",
+          "documentation":"<p>Represents a pre-existing file or directory on the host machine that the volume maps to.</p>",
+          "locationName":"hostPath"
+        }
+      },
+      "documentation":"<p>Volume used by the Kubernetes workload.</p>"
+    },
+    "VolumeMount":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Volume mount name.</p>",
+          "locationName":"name"
+        },
+        "MountPath":{
+          "shape":"String",
+          "documentation":"<p>Volume mount path.</p>",
+          "locationName":"mountPath"
+        }
+      },
+      "documentation":"<p>Container volume mount.</p>"
+    },
+    "VolumeMounts":{
+      "type":"list",
+      "member":{"shape":"VolumeMount"}
+    },
+    "Volumes":{
+      "type":"list",
+      "member":{"shape":"Volume"}
     }
   },
   "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC Flow Logs, Amazon Web Services CloudTrail event logs, and DNS logs. It uses threat intelligence feeds (such as lists of malicious IPs and domains) and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, URLs, or domains. For example, GuardDuty can detect compromised EC2 instances that serve malware or mine bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise. Some examples of this are unauthorized infrastructure deployments such as EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you of the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon CloudWatch events. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"

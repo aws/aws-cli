@@ -897,6 +897,10 @@
         "RedactionOutput":{
           "shape":"RedactionOutput",
           "documentation":"<p>The output transcript file stored in either the default S3 bucket or in a bucket you specify.</p> <p>When you choose <code>redacted</code> Amazon Transcribe outputs only the redacted transcript.</p> <p>When you choose <code>redacted_and_unredacted</code> Amazon Transcribe outputs both the redacted and unredacted transcripts.</p>"
+        },
+        "PiiEntityTypes":{
+          "shape":"PiiEntityTypes",
+          "documentation":"<p>The types of personally identifiable information (PII) you want to redact in your transcript.</p>"
         }
       },
       "documentation":"<p>Settings for content redaction within a transcription job.</p>"
@@ -2268,6 +2272,29 @@
     "Phrases":{
       "type":"list",
       "member":{"shape":"Phrase"}
+    },
+    "PiiEntityType":{
+      "type":"string",
+      "enum":[
+        "BANK_ACCOUNT_NUMBER",
+        "BANK_ROUTING",
+        "CREDIT_DEBIT_NUMBER",
+        "CREDIT_DEBIT_CVV",
+        "CREDIT_DEBIT_EXPIRY",
+        "PIN",
+        "EMAIL",
+        "ADDRESS",
+        "NAME",
+        "PHONE",
+        "SSN",
+        "ALL"
+      ]
+    },
+    "PiiEntityTypes":{
+      "type":"list",
+      "member":{"shape":"PiiEntityType"},
+      "max":11,
+      "min":0
     },
     "RedactionOutput":{
       "type":"string",

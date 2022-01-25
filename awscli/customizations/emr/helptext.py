@@ -495,12 +495,3 @@ AUTO_TERMINATION_POLICY = (
     'The configuration specifies the termination idle timeout'
     'threshold for an cluster.</p> '
 )
-
-MODIFY_CLUSTER_ATTRIBUTES = (
-    '<p>Modifies cluster attributes such as '
-    ' <code>termination-protected</code>.</p>'
-    '<p>The options <code>--visible-to-all-users</code> and'
-    ' <code>--no-visible-to-all-users</code> are no longer supported.'
-    ' To restrict cluster access, you should configure permissions'
-    ' using IAM policies.</p>'
-)

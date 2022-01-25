@@ -3064,6 +3064,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.43
+=======
+
+* api-change:``connect``: This release adds support for custom vocabularies to be used with Contact Lens. Custom vocabularies improve transcription accuracy for one or more specific words.
+* api-change:``guardduty``: Amazon GuardDuty expands threat detection coverage to protect Amazon Elastic Kubernetes Service (EKS) workloads.
+* api-change:``fsx``: This release adds support for growing SSD storage capacity and growing/shrinking SSD IOPS for FSx for ONTAP file systems.
+* api-change:``efs``: Update efs command to latest version
+
+
+1.22.42
+=======
+
+* api-change:``route53-recovery-readiness``: Updated documentation for Route53 Recovery Readiness APIs.
+
+
+1.22.41
+=======
+
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added support for 4K AV1 output resolutions & 10-bit AV1 color, the ability to ingest sidecar Dolby Vision XML metadata files, and the ability to flag WebVTT and IMSC tracks for accessibility in HLS.
+* api-change:``transcribe``: Add support for granular PIIEntityTypes when using Batch ContentRedaction.
+
+
 1.22.40
 =======
 

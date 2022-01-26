@@ -129,23 +129,14 @@ class ConfigureSSOCommand(BasicCommand):
         {
             'name': 'sso-start-url',
             'required': False,
-            'help_text': (
-                'help get fucked'
-            )
         },
         {
             'name': 'sso-role-name',
             'required': False,
-            'help_text': (
-                'help get fucked'
-            )
         },
         {
             'name': 'sso-account-id',
             'required': False,
-            'help_text': (
-                'help get fucked'
-            )
         },
         {
             'name': 'sso-region',
@@ -155,23 +146,14 @@ class ConfigureSSOCommand(BasicCommand):
         {
             'name': 'default-region',
             'required': False,
-            'help_text': (
-                'help get fucked'
-            )
         },
         {
             'name': 'default-output',
             'required': False,
-            'help_text': (
-                'help get fucked'
-            )
         },
         {
             'name': 'dry-run',
             'action': 'store_true',
-            'help_text': (
-                'help get fucked'
-            )
         }
     ]
 

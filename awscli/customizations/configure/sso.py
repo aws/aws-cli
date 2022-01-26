@@ -125,7 +125,55 @@ class ConfigureSSOCommand(BasicCommand):
         '\n\nNote: The configuration is saved in the shared configuration '
         'file. By default, ``~/.aws/config``.'
     )
-    # TODO: Add CLI parameters to skip prompted values, --start-url, etc.
+    ARG_TABLE = [
+        {
+            'name': 'sso-start-url',
+            'required': False,
+            'help_text': (
+                'help get fucked'
+            )
+        },
+        {
+            'name': 'sso-role-name',
+            'required': False,
+            'help_text': (
+                'help get fucked'
+            )
+        },
+        {
+            'name': 'sso-account-id',
+            'required': False,
+            'help_text': (
+                'help get fucked'
+            )
+        },
+        {
+            'name': 'sso-region',
+            'required': False,
+            'default': 'us-east-1'
+        },
+        {
+            'name': 'default-region',
+            'required': False,
+            'help_text': (
+                'help get fucked'
+            )
+        },
+        {
+            'name': 'default-output',
+            'required': False,
+            'help_text': (
+                'help get fucked'
+            )
+        },
+        {
+            'name': 'dry-run',
+            'action': 'store_true',
+            'help_text': (
+                'help get fucked'
+            )
+        }
+    ]
 
     def __init__(self, session, prompter=None, selector=None,
                  config_writer=None, sso_token_cache=None):
@@ -163,6 +211,22 @@ class ConfigureSSOCommand(BasicCommand):
         if new_value:
             self._new_values[config_name] = new_value
         return new_value
+
+    def _maybe_prompt_for(self, config_name, text, *args, argname=None, **kwargs):
+        arg_val = vars(self._parsed_args).get(argname or config_name)
+        if arg_val:
+            self._new_values[config_name] = arg_val
+            return arg_val
+        else:
+            return self._prompt_for(config_name, text, *args, **kwargs)
+
+    def _maybe_prompt_with_fallback(self, config_name, fallback_fn, *args, **kwargs):
+        arg_val = vars(self._parsed_args).get(config_name)
+        if arg_val:
+            self._new_values[config_name] = arg_val
+            return arg_val
+        else:
+            return getattr(self, fallback_fn)(*args, **kwargs)
 
     def _handle_single_account(self, accounts):
         sso_account_id = accounts[0]['accountId']
@@ -259,6 +323,13 @@ class ConfigureSSOCommand(BasicCommand):
         )
         return start_url
 
+    def _maybe_prompt_for_start_url(self):
+        return self._maybe_prompt_with_fallback(
+            'sso_start_url',
+            '_prompt_for_start_url',
+            'SSO start URL',
+        )
+
     def _get_potential_sso_regions(self):
         return self._session.get_available_regions('sso-oidc')
 
@@ -269,6 +340,13 @@ class ConfigureSSOCommand(BasicCommand):
             completions=potential_sso_regions,
         )
         return sso_region
+
+    def _maybe_prompt_for_sso_region(self):
+        return self._maybe_prompt_with_fallback(
+            'sso_region',
+            '_prompt_for_sso_region',
+            'SSO Region',
+        )
 
     def _prompt_for_cli_default_region(self):
         # TODO: figure out a way to get a list of reasonable client regions
@@ -293,8 +371,10 @@ class ConfigureSSOCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         self._unset_session_profile()
-        start_url = self._prompt_for_start_url()
-        sso_region = self._prompt_for_sso_region()
+        self._parsed_args = parsed_args
+
+        start_url = self._maybe_prompt_for_start_url()
+        sso_region = self._maybe_prompt_for_sso_region()
         sso_token = do_sso_login(
             self._session,
             sso_region,
@@ -309,12 +389,24 @@ class ConfigureSSOCommand(BasicCommand):
         )
         sso = self._session.create_client('sso', config=client_config)
 
-        sso_account_id = self._prompt_for_account(sso, sso_token)
-        sso_role_name = self._prompt_for_role(sso, sso_token, sso_account_id)
+        sso_account_id = self._maybe_prompt_with_fallback(
+            'sso_account_id',
+            '_prompt_for_account',
+            sso,
+            sso_token
+        )
+
+        sso_role_name = self._maybe_prompt_with_fallback(
+            'sso_role_name',
+            '_prompt_for_role',
+            sso,
+            sso_token,
+            sso_account_id
+        )
 
         # General CLI configuration
-        self._prompt_for_cli_default_region()
-        self._prompt_for_cli_output_format()
+        self._maybe_prompt_for('region', 'CLI default client Region', argname='default_region')
+        self._maybe_prompt_for('output', 'CLI default output format', argname='default_output')
 
         profile_name = self._prompt_for_profile(sso_account_id, sso_role_name)
 
@@ -325,7 +417,10 @@ class ConfigureSSOCommand(BasicCommand):
         )
         uni_print(usage_msg.format(profile_name))
 
-        self._write_new_config(profile_name)
+        if parsed_args.dry_run:
+            print(self._new_values)
+        else:
+            self._write_new_config(profile_name)
         return 0
 
     def _write_new_config(self, profile):

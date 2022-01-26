@@ -141,7 +141,6 @@ class ConfigureSSOCommand(BasicCommand):
         {
             'name': 'sso-region',
             'required': False,
-            'default': 'us-east-1'
         },
         {
             'name': 'default-region',

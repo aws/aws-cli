@@ -9309,6 +9309,10 @@
         "FindingProviderFields":{
           "shape":"FindingProviderFields",
           "documentation":"<p>In a <code>BatchImportFindings</code> request, finding providers use <code>FindingProviderFields</code> to provide and update their own values for confidence, criticality, related findings, severity, and types.</p>"
+        },
+        "Sample":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the finding is a sample finding.</p>"
         }
       },
       "documentation":"<p>Provides consistent format for the contents of the Security Hub-aggregated findings. <code>AwsSecurityFinding</code> format enables you to share findings between Amazon Web Services security services and third-party solutions, and security standards checks.</p> <note> <p>A finding is a potential security issue generated either by Amazon Web Services services or by the integrated third-party solutions and standards checks.</p> </note>"
@@ -9699,6 +9703,10 @@
         "FindingProviderFieldsTypes":{
           "shape":"StringFilterList",
           "documentation":"<p>One or more finding types that the finding provider assigned to the finding. Uses the format of <code>namespace/category/classifier</code> that classify a finding.</p> <p>Valid namespace values are: Software and Configuration Checks | TTPs | Effects | Unusual Behaviors | Sensitive Data Identifications</p>"
+        },
+        "Sample":{
+          "shape":"BooleanFilterList",
+          "documentation":"<p>Indicates whether or not sample findings are included in the filter results.</p>"
         }
       },
       "documentation":"<p>A collection of attributes that are applied to all active Security Hub-aggregated findings and that result in a subset of findings that are included in this insight.</p> <p>You can filter by up to 10 finding attributes. For each attribute, you can provide up to 20 filter values.</p>"
@@ -10230,6 +10238,20 @@
       "member":{"shape":"BatchUpdateFindingsUnprocessedFinding"}
     },
     "Boolean":{"type":"boolean"},
+    "BooleanFilter":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"Boolean",
+          "documentation":"<p>The value of the boolean.</p>"
+        }
+      },
+      "documentation":"<p>Boolean filter for querying findings.</p>"
+    },
+    "BooleanFilterList":{
+      "type":"list",
+      "member":{"shape":"BooleanFilter"}
+    },
     "CategoryList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}

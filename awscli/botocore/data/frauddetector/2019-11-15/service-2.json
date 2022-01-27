@@ -619,6 +619,23 @@
       ],
       "documentation":"<p>Evaluates an event against a detector version. If a version ID is not provided, the detector’s (<code>ACTIVE</code>) version is used.</p>"
     },
+    "GetEventPredictionMetadata":{
+      "name":"GetEventPredictionMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEventPredictionMetadataRequest"},
+      "output":{"shape":"GetEventPredictionMetadataResult"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Gets details of the past fraud predictions for the specified event ID, event type, detector ID, and detector version ID that was generated in the specified time period. </p>"
+    },
     "GetEventTypes":{
       "name":"GetEventTypes",
       "http":{
@@ -769,6 +786,22 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets all of the variables or the specific variable. This is a paginated API. Providing null <code>maxSizePerPage</code> results in retrieving maximum of 100 records per page. If you provide <code>maxSizePerPage</code> the value must be between 50 and 100. To get the next page result, a provide a pagination token from <code>GetVariablesResult</code> as part of your request. Null pagination token fetches the records from the beginning. </p>"
+    },
+    "ListEventPredictions":{
+      "name":"ListEventPredictions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventPredictionsRequest"},
+      "output":{"shape":"ListEventPredictionsResult"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets a list of past predictions. The list can be filtered by detector ID, detector version ID, event ID, event type, or by specifying a time period. If filter is not specified, the most recent prediction is returned.</p> <p>For example, the following filter lists all past predictions for <code>xyz</code> event type - <code>{ \"eventType\":{ \"value\": \"xyz\" }” } </code> </p> <p>This is a paginated API. If you provide a null <code>maxResults</code>, this action will retrieve a maximum of 10 records per page. If you provide a <code>maxResults</code>, the value must be between 50 and 100. To get the next page results, provide the <code>nextToken</code> from the response as part of your request. A null <code>nextToken</code> fetches the records from the beginning. </p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1379,6 +1412,7 @@
       "type":"list",
       "member":{"shape":"BatchPrediction"}
     },
+    "Boolean":{"type":"boolean"},
     "CancelBatchImportJobRequest":{
       "type":"structure",
       "required":["jobId"],
@@ -2257,6 +2291,88 @@
       },
       "documentation":"<p>The entity type details.</p>"
     },
+    "EvaluatedExternalModel":{
+      "type":"structure",
+      "members":{
+        "modelEndpoint":{
+          "shape":"string",
+          "documentation":"<p> The endpoint of the external (Amazon Sagemaker) model. </p>"
+        },
+        "useEventVariables":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether event variables were used to generate predictions. </p>"
+        },
+        "inputVariables":{
+          "shape":"MapOfStrings",
+          "documentation":"<p> Input variables use for generating predictions. </p>"
+        },
+        "outputVariables":{
+          "shape":"MapOfStrings",
+          "documentation":"<p> Output variables. </p>"
+        }
+      },
+      "documentation":"<p> The details of the external (Amazon Sagemaker) model evaluated for generating predictions. </p>"
+    },
+    "EvaluatedModelVersion":{
+      "type":"structure",
+      "members":{
+        "modelId":{
+          "shape":"string",
+          "documentation":"<p> The model ID. </p>"
+        },
+        "modelVersion":{
+          "shape":"string",
+          "documentation":"<p> The model version. </p>"
+        },
+        "modelType":{
+          "shape":"string",
+          "documentation":"<p>The model type. </p> <p>Valid values: <code>ONLINE_FRAUD_INSIGHTS</code> | <code>TRANSACTION_FRAUD_INSIGHTS</code> </p>"
+        },
+        "evaluations":{
+          "shape":"ListOfModelVersionEvaluations",
+          "documentation":"<p> Evaluations generated for the model version. </p>"
+        }
+      },
+      "documentation":"<p> The model version evaluated for generating prediction. </p>"
+    },
+    "EvaluatedRule":{
+      "type":"structure",
+      "members":{
+        "ruleId":{
+          "shape":"identifier",
+          "documentation":"<p> The rule ID. </p>"
+        },
+        "ruleVersion":{
+          "shape":"wholeNumberVersionString",
+          "documentation":"<p> The rule version. </p>"
+        },
+        "expression":{
+          "shape":"sensitiveString",
+          "documentation":"<p> The rule expression. </p>"
+        },
+        "expressionWithValues":{
+          "shape":"sensitiveString",
+          "documentation":"<p> The rule expression value. </p>"
+        },
+        "outcomes":{
+          "shape":"ListOfStrings",
+          "documentation":"<p> The rule outcome. </p>"
+        },
+        "evaluated":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether the rule was evaluated. </p>"
+        },
+        "matched":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether the rule matched. </p>"
+        }
+      },
+      "documentation":"<p> The details of the rule used for evaluating variable values. </p>"
+    },
+    "EvaluatedRuleList":{
+      "type":"list",
+      "member":{"shape":"EvaluatedRule"}
+    },
     "Event":{
       "type":"structure",
       "members":{
@@ -2302,6 +2418,42 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "EventPredictionSummary":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"identifier",
+          "documentation":"<p> The event ID. </p>"
+        },
+        "eventTypeName":{
+          "shape":"identifier",
+          "documentation":"<p> The event type. </p>"
+        },
+        "eventTimestamp":{
+          "shape":"time",
+          "documentation":"<p> The timestamp of the event. </p>"
+        },
+        "predictionTimestamp":{
+          "shape":"time",
+          "documentation":"<p> The timestamp when the prediction was generated. </p>"
+        },
+        "detectorId":{
+          "shape":"identifier",
+          "documentation":"<p> The detector ID. </p>"
+        },
+        "detectorVersionId":{
+          "shape":"wholeNumberVersionString",
+          "documentation":"<p> The detector version ID. </p>"
+        }
+      },
+      "documentation":"<p> Information about the summary of an event prediction. </p>"
+    },
+    "EventPredictionsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":50
     },
     "EventType":{
       "type":"structure",
@@ -2355,6 +2507,24 @@
       "key":{"shape":"variableName"},
       "value":{"shape":"variableValue"},
       "min":1
+    },
+    "EventVariableSummary":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"sensitiveString",
+          "documentation":"<p> The event variable name. </p>"
+        },
+        "value":{
+          "shape":"sensitiveString",
+          "documentation":"<p> The value of the event variable. </p>"
+        },
+        "source":{
+          "shape":"sensitiveString",
+          "documentation":"<p> The event variable source. </p>"
+        }
+      },
+      "documentation":"<p> Information about the summary of an event variable that was evaluated for generating prediction. </p>"
     },
     "ExternalEventsDetail":{
       "type":"structure",
@@ -2508,6 +2678,16 @@
         }
       },
       "documentation":"<p>The message details.</p>"
+    },
+    "FilterCondition":{
+      "type":"structure",
+      "members":{
+        "value":{
+          "shape":"filterString",
+          "documentation":"<p> A statement containing a resource property and a value to specify filter condition. </p>"
+        }
+      },
+      "documentation":"<p> A conditional statement for filtering a list of past predictions. </p>"
     },
     "GetBatchImportJobsRequest":{
       "type":"structure",
@@ -2715,6 +2895,103 @@
         "nextToken":{
           "shape":"string",
           "documentation":"<p>The next page token.</p>"
+        }
+      }
+    },
+    "GetEventPredictionMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "eventTypeName",
+        "detectorId",
+        "detectorVersionId",
+        "predictionTimestamp"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"identifier",
+          "documentation":"<p> The event ID. </p>"
+        },
+        "eventTypeName":{
+          "shape":"identifier",
+          "documentation":"<p> The event type associated with the detector specified for the prediction. </p>"
+        },
+        "detectorId":{
+          "shape":"identifier",
+          "documentation":"<p> The detector ID. </p>"
+        },
+        "detectorVersionId":{
+          "shape":"wholeNumberVersionString",
+          "documentation":"<p> The detector version ID. </p>"
+        },
+        "predictionTimestamp":{
+          "shape":"time",
+          "documentation":"<p> The timestamp that defines when the prediction was generated. </p>"
+        }
+      }
+    },
+    "GetEventPredictionMetadataResult":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"identifier",
+          "documentation":"<p> The event ID. </p>"
+        },
+        "eventTypeName":{
+          "shape":"identifier",
+          "documentation":"<p> The event type associated with the detector specified for this prediction. </p>"
+        },
+        "entityId":{
+          "shape":"string",
+          "documentation":"<p> The entity ID. </p>"
+        },
+        "entityType":{
+          "shape":"string",
+          "documentation":"<p> The entity type. </p>"
+        },
+        "eventTimestamp":{
+          "shape":"time",
+          "documentation":"<p> The timestamp for when the prediction was generated for the associated event ID. </p>"
+        },
+        "detectorId":{
+          "shape":"identifier",
+          "documentation":"<p> The detector ID. </p>"
+        },
+        "detectorVersionId":{
+          "shape":"wholeNumberVersionString",
+          "documentation":"<p> The detector version ID. </p>"
+        },
+        "detectorVersionStatus":{
+          "shape":"string",
+          "documentation":"<p> The status of the detector version. </p>"
+        },
+        "eventVariables":{
+          "shape":"ListOfEventVariableSummaries",
+          "documentation":"<p> A list of event variables that influenced the prediction scores. </p>"
+        },
+        "rules":{
+          "shape":"EvaluatedRuleList",
+          "documentation":"<p> List of rules associated with the detector version that were used for evaluating variable values. </p>"
+        },
+        "ruleExecutionMode":{
+          "shape":"RuleExecutionMode",
+          "documentation":"<p> The execution mode of the rule used for evaluating variable values. </p>"
+        },
+        "outcomes":{
+          "shape":"ListOfStrings",
+          "documentation":"<p> The outcomes of the matched rule, based on the rule execution mode. </p>"
+        },
+        "evaluatedModelVersions":{
+          "shape":"ListOfEvaluatedModelVersions",
+          "documentation":"<p> Model versions that were evaluated for generating predictions. </p>"
+        },
+        "evaluatedExternalModels":{
+          "shape":"ListOfEvaluatedExternalModels",
+          "documentation":"<p> External (Amazon SageMaker) models that were evaluated for generating predictions. </p>"
+        },
+        "predictionTimestamp":{
+          "shape":"time",
+          "documentation":"<p>The timestamp that defines when the prediction was generated. </p>"
         }
       }
     },
@@ -3233,6 +3510,68 @@
       "type":"string",
       "enum":["DETECTORPL"]
     },
+    "ListEventPredictionsRequest":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"FilterCondition",
+          "documentation":"<p> The event ID. </p>"
+        },
+        "eventType":{
+          "shape":"FilterCondition",
+          "documentation":"<p> The event type associated with the detector. </p>"
+        },
+        "detectorId":{
+          "shape":"FilterCondition",
+          "documentation":"<p> The detector ID. </p>"
+        },
+        "detectorVersionId":{
+          "shape":"FilterCondition",
+          "documentation":"<p> The detector version ID. </p>"
+        },
+        "predictionTimeRange":{
+          "shape":"PredictionTimeRange",
+          "documentation":"<p> The time period for when the predictions were generated. </p>"
+        },
+        "nextToken":{
+          "shape":"string",
+          "documentation":"<p> Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. </p>"
+        },
+        "maxResults":{
+          "shape":"EventPredictionsMaxResults",
+          "documentation":"<p> The maximum number of predictions to return for the request. </p>"
+        }
+      }
+    },
+    "ListEventPredictionsResult":{
+      "type":"structure",
+      "members":{
+        "eventPredictionSummaries":{
+          "shape":"ListOfEventPredictionSummaries",
+          "documentation":"<p> The summary of the past predictions. </p>"
+        },
+        "nextToken":{
+          "shape":"string",
+          "documentation":"<p> Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. </p>"
+        }
+      }
+    },
+    "ListOfEvaluatedExternalModels":{
+      "type":"list",
+      "member":{"shape":"EvaluatedExternalModel"}
+    },
+    "ListOfEvaluatedModelVersions":{
+      "type":"list",
+      "member":{"shape":"EvaluatedModelVersion"}
+    },
+    "ListOfEventPredictionSummaries":{
+      "type":"list",
+      "member":{"shape":"EventPredictionSummary"}
+    },
+    "ListOfEventVariableSummaries":{
+      "type":"list",
+      "member":{"shape":"EventVariableSummary"}
+    },
     "ListOfExternalModelOutputs":{
       "type":"list",
       "member":{"shape":"ExternalModelOutputs"}
@@ -3244,6 +3583,10 @@
     "ListOfModelScores":{
       "type":"list",
       "member":{"shape":"ModelScores"}
+    },
+    "ListOfModelVersionEvaluations":{
+      "type":"list",
+      "member":{"shape":"ModelVersionEvaluation"}
     },
     "ListOfModelVersions":{
       "type":"list",
@@ -3312,6 +3655,12 @@
       "documentation":"<p>The log odds metric details.</p>"
     },
     "Long":{"type":"long"},
+    "MapOfStrings":{
+      "type":"map",
+      "key":{"shape":"string"},
+      "value":{"shape":"string"},
+      "sensitive":true
+    },
     "MetricDataPoint":{
       "type":"structure",
       "members":{
@@ -3560,6 +3909,24 @@
       },
       "documentation":"<p>The details of the model version.</p>"
     },
+    "ModelVersionEvaluation":{
+      "type":"structure",
+      "members":{
+        "outputVariableName":{
+          "shape":"string",
+          "documentation":"<p> The output variable name. </p>"
+        },
+        "evaluationScore":{
+          "shape":"string",
+          "documentation":"<p> The evaluation score generated for the model version. </p>"
+        },
+        "predictionExplanations":{
+          "shape":"PredictionExplanations",
+          "documentation":"<p> The prediction explanations generated for the model version. </p>"
+        }
+      },
+      "documentation":"<p> The model version evalutions. </p>"
+    },
     "ModelVersionStatus":{
       "type":"string",
       "enum":[
@@ -3614,6 +3981,34 @@
       "box":true,
       "max":100,
       "min":50
+    },
+    "PredictionExplanations":{
+      "type":"structure",
+      "members":{
+        "variableImpactExplanations":{
+          "shape":"listOfVariableImpactExplanations",
+          "documentation":"<p> The details of the event variable's impact on the prediction score. </p>"
+        }
+      },
+      "documentation":"<p> The prediction explanations that provide insight into how each event variable impacted the model version's fraud prediction score. </p>"
+    },
+    "PredictionTimeRange":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"time",
+          "documentation":"<p> The start time of the time period for when the predictions were generated. </p>"
+        },
+        "endTime":{
+          "shape":"time",
+          "documentation":"<p> The end time of the time period for when the predictions were generated. </p>"
+        }
+      },
+      "documentation":"<p> The time period for when the predictions were generated. </p>"
     },
     "PutDetectorRequest":{
       "type":"structure",
@@ -4547,6 +4942,24 @@
       "max":25,
       "min":1
     },
+    "VariableImpactExplanation":{
+      "type":"structure",
+      "members":{
+        "eventVariableName":{
+          "shape":"string",
+          "documentation":"<p> The event variable name. </p>"
+        },
+        "relativeImpact":{
+          "shape":"string",
+          "documentation":"<p> The event variable's relative impact in terms of magnitude on the prediction scores. The relative impact values consist of a numerical rating (0-5, 5 being the highest) and direction (increased/decreased) impact of the fraud risk. </p>"
+        },
+        "logOddsImpact":{
+          "shape":"float",
+          "documentation":"<p> The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from - infinity to + infinity.</p> <ul> <li> <p>A positive value indicates that the variable drove the risk score up.</p> </li> <li> <p>A negative value indicates that the variable drove the risk score down.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> The details of the event variable's impact on the prediction score. </p>"
+    },
     "VariableImportanceMetrics":{
       "type":"structure",
       "members":{
@@ -4635,6 +5048,12 @@
       "type":"list",
       "member":{"shape":"FileValidationMessage"}
     },
+    "filterString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[0-9A-Za-z_-]+$"
+    },
     "float":{"type":"float"},
     "floatVersionString":{
       "type":"string",
@@ -4679,6 +5098,10 @@
     "listOfEntities":{
       "type":"list",
       "member":{"shape":"Entity"}
+    },
+    "listOfVariableImpactExplanations":{
+      "type":"list",
+      "member":{"shape":"VariableImpactExplanation"}
     },
     "metricDataPointsList":{
       "type":"list",
@@ -4726,6 +5149,10 @@
       "max":63,
       "min":1,
       "pattern":"^[0-9A-Za-z_-]+$"
+    },
+    "sensitiveString":{
+      "type":"string",
+      "sensitive":true
     },
     "string":{"type":"string"},
     "tagKey":{

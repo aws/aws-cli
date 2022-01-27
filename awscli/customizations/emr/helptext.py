@@ -265,7 +265,7 @@ SCALE_DOWN_BEHAVIOR = (
 VISIBILITY = (
     '<p>Specifies whether the cluster is visible to all IAM users'
     ' of the AWS account associated with the cluster. If a user'
-    ' has the proper policy permissions set, they can also manager the cluster.</p>'
+    ' has the proper policy permissions set, they can also manage the cluster.</p>'
     '<p>Visibility is on by default. The <code>--no-visible-to-all-users</code> option'
     ' is no longer supported. To restrict cluster visibility, use an IAM policy.</p>')
 

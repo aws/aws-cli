@@ -26,10 +26,10 @@ class ModifyClusterAttr(Command):
             'help_text': helptext.CLUSTER_ID},
         {'name': 'visible-to-all-users', 'required': False, 'action':
             'store_true', 'group_name': 'visible',
-            'help_text': 'Change cluster visibility for IAM users'},
+            'help_text': helptext.VISIBILITY},
         {'name': 'no-visible-to-all-users', 'required': False, 'action':
             'store_true', 'group_name': 'visible',
-            'help_text': 'Change cluster visibility for IAM users'},
+            'help_text': helptext.VISIBILITY},
         {'name': 'termination-protected', 'required': False, 'action':
             'store_true', 'group_name': 'terminate',
             'help_text': 'Set termination protection on or off'},

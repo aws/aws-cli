@@ -261,14 +261,13 @@ SCALE_DOWN_BEHAVIOR = (
     ' terminate EC2 instances at the instance-hour boundary, regardless of when'
     ' the request to terminate was submitted.</li>'
 )
+
 VISIBILITY = (
-    '<p>Specifies whether the cluster is visible to all IAM users of'
-    ' the AWS account associated with the cluster. If set to'
-    ' <code>--visible-to-all-users</code>, all IAM users of that AWS account'
-    ' can view it. If they have the proper policy permissions set, they can '
-    ' also manage the cluster. If it is set to <code>--no-visible-to-all-users</code>,'
-    ' only the IAM user that created the cluster can view and manage it. '
-    ' Clusters are visible by default.</p>')
+    '<p>Specifies whether the cluster is visible to all IAM users'
+    ' of the AWS account associated with the cluster. If a user'
+    ' has the proper policy permissions set, they can also manage the cluster.</p>'
+    '<p>Visibility is on by default. The <code>--no-visible-to-all-users</code> option'
+    ' is no longer supported. To restrict cluster visibility, use an IAM policy.</p>')
 
 DEBUGGING = (
     '<p>Specifies that the debugging tool is enabled for the cluster,'

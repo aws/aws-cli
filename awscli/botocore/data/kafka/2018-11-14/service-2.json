@@ -1423,6 +1423,11 @@
           "locationName": "kafkaBrokerNodeId",
           "documentation": "\n            <p>The ID of the broker to update.</p>\n         "
         },
+        "ProvisionedThroughput" : {
+          "shape" : "ProvisionedThroughput",
+          "locationName" : "provisionedThroughput",
+          "documentation" : "EBS volume provisioned throughput information."
+        },
         "VolumeSizeGB": {
           "shape": "__integer",
           "locationName": "volumeSizeGB",
@@ -1431,7 +1436,6 @@
       },
       "documentation": "\n            <p>Specifies the EBS volume upgrade information. The broker identifier must be set to the keyword ALL. This means the changes apply to all the brokers in the cluster.</p>\n         ",
       "required": [
-        "VolumeSizeGB",
         "KafkaBrokerNodeId"
       ]
     },
@@ -2667,6 +2671,11 @@
     "EBSStorageInfo": {
       "type": "structure",
       "members": {
+        "ProvisionedThroughput" : {
+          "shape" : "ProvisionedThroughput",
+          "locationName" : "provisionedThroughput",
+          "documentation" : "EBS volume provisioned throughput information."
+        },
         "VolumeSize": {
           "shape": "__integerMin1Max16384",
           "locationName": "volumeSize",
@@ -3421,6 +3430,22 @@
         }
       },
       "documentation" : "\n            <p>Prometheus settings.</p>\n         "
+    },
+    "ProvisionedThroughput" : {
+      "type" : "structure",
+      "members" : {
+        "Enabled" : {
+          "shape" : "__boolean",
+          "locationName" : "enabled",
+          "documentation" : "Provisioned throughput is enabled or not."
+        },
+        "VolumeThroughput" : {
+          "shape" : "__integer",
+          "locationName" : "volumeThroughput",
+          "documentation" : "Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second."
+        }
+      },
+      "documentation" : "Contains information about provisioned throughput for EBS storage volumes attached to kafka broker nodes."
     },
     "PublicAccess" : {
       "type" : "structure",

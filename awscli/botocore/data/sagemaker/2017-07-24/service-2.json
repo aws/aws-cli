@@ -2669,7 +2669,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Stops a pipeline execution.</p> <p> <b>Callback Step</b> </p> <p>A pipeline execution won't stop while a callback step is running. When you call <code>StopPipelineExecution</code> on a pipeline execution with a running callback step, Amazon SageMaker Pipelines sends an additional Amazon SQS message to the specified SQS queue. The body of the SQS message contains a \"Status\" field which is set to \"Stopping\".</p> <p>You should add logic to your Amazon SQS message consumer to take any needed action (for example, resource cleanup) upon receipt of the message followed by a call to <code>SendPipelineExecutionStepSuccess</code> or <code>SendPipelineExecutionStepFailure</code>.</p> <p>Only when Amazon SageMaker Pipelines receives one of these calls will it stop the pipeline execution.</p> <p> <b>Lambda Step</b> </p> <p>A pipeline execution can't be stopped while a lambda step is running because the Lambda function invoked by the lambda step can't be stopped. If you attempt to stop the execution while the Lambda function is running, the pipeline waits for the Lambda function to finish or until the timeout is hit, whichever occurs first, and then stops. If the Lambda function finishes, the pipeline execution status is <code>Stopped</code>. If the timeout is hit the pipeline execution status is <code>Failed</code>.</p>"
+      "documentation":"<p>Stops a pipeline execution.</p> <p> <b>Callback Step</b> </p> <p>A pipeline execution won't stop while a callback step is running. When you call <code>StopPipelineExecution</code> on a pipeline execution with a running callback step, SageMaker Pipelines sends an additional Amazon SQS message to the specified SQS queue. The body of the SQS message contains a \"Status\" field which is set to \"Stopping\".</p> <p>You should add logic to your Amazon SQS message consumer to take any needed action (for example, resource cleanup) upon receipt of the message followed by a call to <code>SendPipelineExecutionStepSuccess</code> or <code>SendPipelineExecutionStepFailure</code>.</p> <p>Only when SageMaker Pipelines receives one of these calls will it stop the pipeline execution.</p> <p> <b>Lambda Step</b> </p> <p>A pipeline execution can't be stopped while a lambda step is running because the Lambda function invoked by the lambda step can't be stopped. If you attempt to stop the execution while the Lambda function is running, the pipeline waits for the Lambda function to finish or until the timeout is hit, whichever occurs first, and then stops. If the Lambda function finishes, the pipeline execution status is <code>Stopped</code>. If the timeout is hit the pipeline execution status is <code>Failed</code>.</p>"
     },
     "StopProcessingJob":{
       "name":"StopProcessingJob",
@@ -6153,7 +6153,7 @@
         },
         "AsyncInferenceConfig":{
           "shape":"AsyncInferenceConfig",
-          "documentation":"<p>Specifies configuration for how an endpoint performs asynchronous inference. This is a required field in order for your Endpoint to be invoked using <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html\"> <code>InvokeEndpointAsync</code> </a>.</p>"
+          "documentation":"<p>Specifies configuration for how an endpoint performs asynchronous inference. This is a required field in order for your Endpoint to be invoked using <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html\">InvokeEndpointAsync</a>.</p>"
         }
       }
     },
@@ -13087,6 +13087,16 @@
       "type":"string",
       "min":1
     },
+    "FailStepMetadata":{
+      "type":"structure",
+      "members":{
+        "ErrorMessage":{
+          "shape":"String3072",
+          "documentation":"<p>A message that you define and then is processed and rendered by the Fail step when the error occurs.</p>"
+        }
+      },
+      "documentation":"<p>The container for the metadata for Fail step.</p>"
+    },
     "FailureReason":{
       "type":"string",
       "max":1024
@@ -17193,7 +17203,7 @@
         },
         "ModelPackageType":{
           "shape":"ModelPackageType",
-          "documentation":"<p>A filter that returns onlyl the model packages of the specified type. This can be one of the following values.</p> <ul> <li> <p> <code>VERSIONED</code> - List only versioned models.</p> </li> <li> <p> <code>UNVERSIONED</code> - List only unversioined models.</p> </li> <li> <p> <code>BOTH</code> - List both versioned and unversioned models.</p> </li> </ul>"
+          "documentation":"<p>A filter that returns only the model packages of the specified type. This can be one of the following values.</p> <ul> <li> <p> <code>UNVERSIONED</code> - List only unversioined models. This is the default value if no <code>ModelPackageType</code> is specified.</p> </li> <li> <p> <code>VERSIONED</code> - List only versioned models.</p> </li> <li> <p> <code>BOTH</code> - List both versioned and unversioned models.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -21121,7 +21131,7 @@
         },
         "AttemptCount":{
           "shape":"IntegerValue",
-          "documentation":"<p>The current attempt of the execution step. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/sagemaker/latest/dg/pipelines-retry-policy.html\">Retry Policy for Amazon SageMaker Pipelines steps</a>.</p>"
+          "documentation":"<p>The current attempt of the execution step. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-retry-policy.html\">Retry Policy for SageMaker Pipelines steps</a>.</p>"
         },
         "FailureReason":{
           "shape":"FailureReason",
@@ -21190,6 +21200,10 @@
         "EMR":{
           "shape":"EMRStepMetadata",
           "documentation":"<p>The configurations and outcomes of an EMR step execution.</p>"
+        },
+        "Fail":{
+          "shape":"FailStepMetadata",
+          "documentation":"<p>The configurations and outcomes of a Fail step execution.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -21216,6 +21230,10 @@
         "PipelineExecutionDisplayName":{
           "shape":"PipelineExecutionName",
           "documentation":"<p>The display name of the pipeline execution.</p>"
+        },
+        "PipelineExecutionFailureReason":{
+          "shape":"String3072",
+          "documentation":"<p>A message generated by SageMaker Pipelines describing why the pipeline execution failed.</p>"
         }
       },
       "documentation":"<p>A pipeline execution summary.</p>"
@@ -24076,6 +24094,10 @@
     "String256":{
       "type":"string",
       "max":256
+    },
+    "String3072":{
+      "type":"string",
+      "max":3072
     },
     "String40":{
       "type":"string",

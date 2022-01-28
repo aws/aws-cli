@@ -17,8 +17,12 @@ Output::
                 }
             },
             "state": "ACTIVE",
-            "tags": {}
+            "tags": { "key1" : "value1" },
+            "thumbnailConfiguration": { 
+                "recordingMode": "INTERVAL",
+                "targetIntervalSeconds": 30
+            }
         }
     }
 
-For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-S3.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html>`__ in the *Amazon Interactive Video Service User Guide*.

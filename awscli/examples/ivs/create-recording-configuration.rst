@@ -1,10 +1,12 @@
 **To create a RecordingConfiguration resource**
 
-The following ``create-recording-configuration`` example creates RecordingConfiguration resource to enable recording to Amazon S3. ::
+The following ``create-recording-configuration`` example creates a RecordingConfiguration resource to enable recording to Amazon S3. ::
 
     aws ivs create-recording-configuration \
-        --name test-recording-config \
-        --destination-configuration S3={bucketName=demo-recording-bucket}
+        --name "test-recording-config" \
+        --tags "key1=value1, key2=value2" \
+        --destination-configuration s3={bucketName=demo-recording-bucket} \
+        --thumbnail-configuration recordingMode="INTERVAL", targetIntervalSeconds=30
 
 Output::
 
@@ -18,8 +20,12 @@ Output::
                 }
             },
             "state": "CREATING",
-            "tags": {}
+            "tags": { "key1" : "value1" },
+            "thumbnailConfiguration": { 
+                "recordingMode": "INTERVAL",
+                "targetIntervalSeconds": 30
+            }
         }
     }
 
-For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-S3.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html>`__ in the *Amazon Interactive Video Service User Guide*.

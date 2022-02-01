@@ -3,7 +3,7 @@
 The following ``create-repository`` example creates a repository inside the specified namespace in the default registry for an account. ::
 
     aws ecr create-repository \
-        --repository-name project-a/nginx-web-app
+        --repository-name sample-repo
 
 Output::
 

@@ -113,32 +113,19 @@ class TestMvCommand(BaseS3TransferCommandTest):
         cmdline += ' --request-payer'
 
         self.parsed_responses = [
-            # Response for HeadObject
-            {"ContentLength": 100, "LastModified": "00:00:00Z"},
-            # Response for CopyObject
-            {},
-            # Response for DeleteObject
-            {}
+            self.head_object_response(),
+            self.copy_object_response(),
+            self.delete_object_response(),
         ]
-
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('HeadObject', {
-                    'Bucket': 'sourcebucket',
-                    'Key': 'sourcekey',
-                    'RequestPayer': 'requester',
-                }),
-                ('CopyObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'CopySource': 'sourcebucket/sourcekey',
-                    'RequestPayer': 'requester',
-                }),
-                ('DeleteObject', {
-                    'Bucket': 'sourcebucket',
-                    'Key': 'sourcekey',
-                    'RequestPayer': 'requester',
-                })
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', RequestPayer='requester'),
+                self.copy_object_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    RequestPayer='requester'),
+                self.delete_object_request(
+                    'sourcebucket', 'sourcekey', RequestPayer='requester')
             ]
         )

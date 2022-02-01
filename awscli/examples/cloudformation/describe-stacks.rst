@@ -27,6 +27,7 @@ Output::
               "DisableRollback": false
           }
       ]
+  }
 
 For more information, see `Stacks`_ in the *AWS CloudFormation User Guide*.
 

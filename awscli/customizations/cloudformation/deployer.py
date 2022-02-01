@@ -203,11 +203,11 @@ class Deployer(object):
             raise RuntimeError("Invalid changeset type {0}"
                                .format(changeset_type))
 
-        # Poll every 5 seconds. Optimizing for the case when the stack has only
-        # minimal changes, such the Code for Lambda Function
+        # Poll every 30 seconds. Polling too frequently risks hitting rate limits
+        # on CloudFormation's DescribeStacks API
         waiter_config = {
-            'Delay': 5,
-            'MaxAttempts': 720,
+            'Delay': 30,
+            'MaxAttempts': 120,
         }
 
         try:

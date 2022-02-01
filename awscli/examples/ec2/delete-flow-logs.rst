@@ -1,13 +1,11 @@
 **To delete a flow log**
 
-This example deletes flow log ``fl-1a2b3c4d``.
+The following ``delete-flow-logs`` example deletes the specified flow log. ::
 
-Command::
-
-  aws ec2 delete-flow-logs --flow-log-id fl-1a2b3c4d
+    aws ec2 delete-flow-logs --flow-log-id fl-11223344556677889
 
 Output::
 
-  {
-    "Unsuccessful": []
-  }
+    {
+        "Unsuccessful": []
+    }

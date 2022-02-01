@@ -1,14 +1,17 @@
-**To create an activation**
+**To create a managed instance activation**
 
-This example creates a managed instance.
+The following ``create-activation`` example creates a managed instance activation. ::
 
-Command::
-
-  aws ssm create-activation --default-instance-name "MyWebServers" --iam-role "AutomationRole" --registration-limit 10
+    aws ssm create-activation \
+        --default-instance-name "HybridWebServers" \
+        --iam-role "HybridWebServersRole" \
+        --registration-limit 5
 
 Output::
 
-  {
-    "ActivationCode": "Zqr175DJ+sPQRHsmbzzf",
-    "ActivationId": "5b9e0074-65d3-4587-8620-3e0b0938db9e"
-  }
+    {
+        "ActivationId": "5743558d-563b-4457-8682-d16c3EXAMPLE",
+        "ActivationCode": "dRmgnYaFv567vEXAMPLE"
+    }
+
+For more information, see `Step 4: Create a Managed-Instance Activation for a Hybrid Environment <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-managed-instance-activation.html>`__ in the *AWS Systems Manager User Guide*.

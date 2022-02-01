@@ -53,5 +53,9 @@ def validate_and_build_instance_fleets(parsed_instance_fleets):
                 instance_fleet_config['LaunchSpecifications']['SpotSpecification'] = \
                     instanceFleetProvisioningSpecifications['SpotSpecification']
 
+            if 'OnDemandSpecification' in instanceFleetProvisioningSpecifications:
+                instance_fleet_config['LaunchSpecifications']['OnDemandSpecification'] = \
+                    instanceFleetProvisioningSpecifications['OnDemandSpecification']
+
         instance_fleets.append(instance_fleet_config)
     return instance_fleets

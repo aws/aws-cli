@@ -20,6 +20,8 @@ ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/{{policy_
 EC2_ROLE_POLICY_NAME = "AmazonElasticMapReduceforEC2Role"
 EMR_ROLE_POLICY_NAME = "AmazonElasticMapReduceRole"
 EMR_AUTOSCALING_ROLE_POLICY_NAME = "AmazonElasticMapReduceforAutoScalingRole"
+EMR_AUTOSCALING_SERVICE_NAME = "application-autoscaling"
+EMR_AUTOSCALING_SERVICE_PRINCIPAL = "application-autoscaling.amazonaws.com"
 
 # Action on failure
 CONTINUE = 'CONTINUE'

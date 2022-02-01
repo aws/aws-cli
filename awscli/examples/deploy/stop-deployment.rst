@@ -1,14 +1,12 @@
 **To attempt to stop a deployment**
 
-This example attempts to stop an in-progress deployment that is associated with the user's AWS account.
+The following ``stop-deployment`` example attempts to stop an in-progress deployment that is associated with the user's AWS account.
 
-Command::
-
-  aws deploy stop-deployment --deployment-id d-8365D4OEX
+    aws deploy stop-deployment --deployment-id d-A1B2C3111
 
 Output::
 
-  {
-      "status": "Succeeded", 
-      "statusMessage": "No more commands will be scheduled for execution in the deployment instances"
-  }
+    {
+        "status": "Succeeded", 
+        "statusMessage": "No more commands will be scheduled for execution in the deployment instances"
+    }

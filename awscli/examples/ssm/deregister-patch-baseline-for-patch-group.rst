@@ -1,14 +1,16 @@
 **To deregister a patch group from a patch baseline**
 
-This example deregisters a patch group from a patch baseline.
+The following ``deregister-patch-baseline-for-patch-group`` example deregisters the specified patch group from the specified patch baseline. ::
 
-Command::
+    aws ssm deregister-patch-baseline-for-patch-group \
+        --patch-group "Production" \
+        --baseline-id "pb-0ca44a362fEXAMPLE"
 
-  aws ssm deregister-patch-baseline-for-patch-group --patch-group "Production" --baseline-id "arn:aws:ssm:us-west-1:812345678901:patchbaseline/pb-0ca44a362f8afc725"
-  
 Output::
 
-  {
-	"PatchGroup":"Production",
-	"BaselineId":"arn:aws:ssm:us-west-1:812345678901:patchbaseline/pb-0ca44a362f8afc725"
-  }
+    {
+      "PatchGroup":"Production",
+      "BaselineId":"pb-0ca44a362fEXAMPLE"
+    }
+
+For more information, see `Add a Patch Group to a Patch Baseline  <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-patch-group-patchbaseline.html>`__ in the *AWS Systems Manager User Guide*.

@@ -1,32 +1,30 @@
-**To list the tasks in a cluster**
+**Example 1: To list the tasks in a cluster**
 
-This example command lists all of the tasks in a cluster.
+The following ``list-tasks`` example lists all of the tasks in a cluster. ::
 
-Command::
-
-  aws ecs list-tasks --cluster default
+    aws ecs list-tasks --cluster default
 
 Output::
 
-	{
-	    "taskArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/6b809ef6-c67e-4467-921f-ee261c15a0a1"
-	    ]
-	}
+    {
+        "taskArns": [
+            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-22222EXAMPLE"
+        ]
+    }
 
-**To list the tasks on a particular container instance**
+**Example 2: To list the tasks on a particular container instance**
 
-This example command lists the tasks of a specified container instance, using the container instance UUID as a filter.
+The following ``list-tasks`` example lists the tasks on a container instance, using the container instance UUID as a filter. ::
 
-Command::
-
-  aws ecs list-tasks --cluster default --container-instance f6bbb147-5370-4ace-8c73-c7181ded911f
+    aws ecs list-tasks --cluster default --container-instance a1b2c3d4-5678-90ab-cdef-33333EXAMPLE
 
 Output::
 
-	{
-	    "taskArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84"
-	    ]
-	}
+    {
+        "taskArns": [
+            "arn:aws:ecs:us-west-2:123456789012:task/a1b2c3d4-5678-90ab-cdef-44444EXAMPLE"
+        ]
+    }
+
+For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`_ in the *Amazon ECS Developer Guide*.

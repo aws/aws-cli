@@ -1,8 +1,7 @@
 **To delete a service**
 
-This example command deletes the ``my-http-service`` service. The service must have a desired count and running count of 0 before you can delete it.
+The following ``ecs delete-service`` example deletes the specified service from a cluster. You can include the ``--force`` parameter to delete a service even if it has not been scaled to zero tasks. ::
 
-Command::
+    aws ecs delete-service --cluster MyCluster --service MyService1 --force
 
-  aws ecs delete-service --service my-http-service
-
+For more information, see `Deleting a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete-service.html>`_ in the *Amazon ECS Developer Guide*.

@@ -18,6 +18,22 @@ example, if the S3 object ``myobject`` had the prefix ``myprefix``, the
 S3 key would be ``myprefix/myobject``, and if the object was in the bucket
 ``mybucket``, the ``S3Uri`` would be ``s3://mybucket/myprefix/myobject``.
 
+``S3Uri`` also supports S3 access points. To specify an access point, this
+value must be of the form ``s3://<access-point-arn>/<key>``. For example if
+the access point ``myaccesspoint`` to be used has the ARN:
+``arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint`` and the object
+being accessed has the key ``mykey``, then the ``S3URI`` used must be:
+``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey``.
+Similar to bucket names, you can also use prefixes with access point ARNs for
+the ``S3Uri``. For example:
+``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/myprefix/``
+
+The higher level ``s3`` commands do **not** support access point object ARNs.
+For example, if the following was specified:
+``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/object/mykey``
+the ``S3URI`` will resolve to the object key ``object/mykey``
+
+
 
 Order of Path Arguments
 +++++++++++++++++++++++

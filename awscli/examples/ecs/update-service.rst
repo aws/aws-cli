@@ -1,15 +1,13 @@
-**To change the task definition used in a service**
+**Example 1: To change the task definition used in a service**
 
-This example command updates the ``my-http-service`` service to use the ``amazon-ecs-sample`` task definition. 
+The following ``update-service`` example updates the ``my-http-service`` service to use the ``amazon-ecs-sample`` task definition. ::
 
-Command::
+    aws ecs update-service --service my-http-service --task-definition amazon-ecs-sample
 
-  aws ecs update-service --service my-http-service --task-definition amazon-ecs-sample
+**Example 2: To change the number of tasks in a service**
 
-**To change the number of tasks in a service**
+The following ``update-service`` example updates the desired task count of the service ``my-http-service`` to 3. ::
 
-This example command updates the desired count of the ``my-http-service`` service to 10. 
+    aws ecs update-service --service my-http-service --desired-count 3
 
-Command::
-
-  aws ecs update-service --service my-http-service --desired-count 10
+For more information, see `Updating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/update-service.html>`_ in the *Amazon ECS Developer Guide*.

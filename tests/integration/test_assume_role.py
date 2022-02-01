@@ -98,7 +98,8 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         return creds
 
     def wait_for_assume_role(self, role_arn, access_key, secret_key,
-                             token=None, attempts=30, delay=10):
+                             token=None, attempts=30, delay=10,
+                             num_success_needed=3):
         # "Why not use the policy simulator?" you might ask. The answer is
         # that the policy simulator will return success far before you can
         # actually make the calls.
@@ -108,18 +109,20 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         )
         attempts_remaining = attempts
         role_session_name = random_chars(10)
+        num_success = 0
         while attempts_remaining > 0:
-            attempts_remaining -= 1
             try:
                 result = client.assume_role(
                     RoleArn=role_arn, RoleSessionName=role_session_name)
-                return result['Credentials']
+                num_success += 1
+                if num_success == num_success_needed:
+                    return result['Credentials']
             except ClientError as e:
                 code = e.response.get('Error', {}).get('Code')
-                if code in ["InvalidClientTokenId", "AccessDenied"]:
-                    time.sleep(delay)
-                else:
+                if code not in ["InvalidClientTokenId", "AccessDenied"]:
                     raise
+                attempts_remaining -= 1
+            time.sleep(delay)
 
         raise Exception("Unable to assume role %s" % role_arn)
 

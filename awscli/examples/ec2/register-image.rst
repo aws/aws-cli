@@ -1,27 +1,32 @@
-**To register an AMI using a manifest file**
+**Example 1: To register an AMI using a manifest file**
 
-This example registers an AMI using the specified manifest file in Amazon S3.
+The following ``register-image`` example registers an AMI using the specified manifest file in Amazon S3. ::
 
-Command::
-
-  aws ec2 register-image --image-location my-s3-bucket/myimage/image.manifest.xml --name "MyImage"
+    aws ec2 register-image \
+        --name my-image \
+        --image-location my-s3-bucket/myimage/image.manifest.xml
 
 Output::
 
-  {
-      "ImageId": "ami-61341708"
-  }
+    {
+        "ImageId": "ami-1234567890EXAMPLE"
+    }
 
-**To add a block device mapping**
+For more information, see `Amazon Machine Images (AMI) <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html>`__ in the *Amazon EC2 User Guide*.
 
-Add the following parameter to your ``register-image`` command to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100::
+**Example 2: To register an AMI using a snapshot of a root device**
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+The following ``register-image`` example registers an AMI using the specified snapshot of an EBS root volume as device ``/dev/xvda``. The block device mapping also includes an empty 100 GiB EBS volume as device ``/dev/xvdf``. ::
 
-Add the following parameter to your ``register-image`` command to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``::
+    aws ec2 register-image \
+        --name my-image \
+        --root-device-name /dev/xvda \
+        --block-device-mappings DeviceName=/dev/xvda,Ebs={SnapshotId=snap-0db2cf683925d191f} DeviceName=/dev/xvdf,Ebs={VolumeSize=100}
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+Output::
 
-Add the following parameter to your ``register-image`` command to omit a device (for example, ``/dev/sdf``)::
+    {
+        "ImageId": "ami-1a2b3c4d5eEXAMPLE"
+    }
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+For more information, see `Amazon Machine Images (AMI) <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html>`__ in the *Amazon EC2 User Guide*.

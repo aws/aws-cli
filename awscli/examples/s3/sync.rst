@@ -82,3 +82,15 @@ Output::
 The following ``sync`` command syncs files between two buckets in different regions::
 
     aws s3 sync s3://my-us-west-2-bucket s3://my-us-east-1-bucket --source-region us-west-2 --region us-east-1
+
+
+**Sync to an S3 access point**
+
+The following ``sync`` command syncs the current directory to the access point (``myaccesspoint``)::
+
+    aws s3 sync . s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/
+
+Output::
+
+    upload: test.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test.txt
+    upload: test2.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test2.txt

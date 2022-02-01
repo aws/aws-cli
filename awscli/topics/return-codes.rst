@@ -6,8 +6,8 @@
 These are the following return codes returned at the end of execution
 of a CLI command:
 
-* ``0`` -- Command was successful. There were no errors thrown by either
-  the CLI or by the service the request was made to.
+* ``0`` -- The service responded with an HTTP response status code of 200 and there 
+  were no errors from either the CLI or the service the request was made to.
 
 * ``1`` -- Limited to ``s3`` commands, at least one or more s3 transfers
   failed for the command executed.
@@ -16,7 +16,7 @@ of a CLI command:
 
   The primary meaning is that the command entered on the command
   line failed to be parsed. Parsing failures can be caused by,
-  but are not limted to, missing any required subcommands or arguments
+  but are not limited to, missing any required subcommands or arguments
   or using any unknown commands or arguments.
   Note that this return code meaning is applicable to all CLI commands.
 
@@ -31,8 +31,8 @@ of a CLI command:
 
 * ``130`` -- The process received a SIGINT (Ctrl-C).
 
-* ``255`` -- Command failed. There were errors thrown by either the CLI or
-  by the service the request was made to.
+* ``255`` -- Command failed. There were errors from either the CLI or 
+  the service the request was made to.
 
 
 To determine the return code of a command, run the following right after

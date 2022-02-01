@@ -14,7 +14,6 @@ import json
 import os
 
 from botocore.session import get_session
-from botocore.handlers import register_retries_for_service
 from botocore.loaders import Loader
 
 from awscli.customizations.configure.addmodel import get_model_location
@@ -41,11 +40,6 @@ class TestGetModelLocation(unittest.TestCase):
         )
         self.data_loader.CUSTOMER_DATA_PATH = self.customer_data_root
         self.session.register_component('data_loader', self.data_loader)
-        # Since we are using a custom data loader, we need to remove
-        # retries since these try to get loaded when the service model
-        # is loaded.
-        self.session.unregister(
-            'service-data-loaded', register_retries_for_service)
 
         # Add some models into the builtin model directory
         # We are going to add two models. One with a matching service name

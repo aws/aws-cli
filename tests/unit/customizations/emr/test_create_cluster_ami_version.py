@@ -17,38 +17,41 @@ from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 from tests.unit.customizations.emr import test_constants_instance_fleets as \
     CONSTANTS_FLEET
+from awscli.testutils import mock
 import copy
 import os
 import json
-from mock import patch
 
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
 
 DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=MASTER,Name=MASTER,'
-    'InstanceCount=1,InstanceType=m1.large '
+    'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
     'InstanceGroupType=CORE,Name=CORE,'
-    'InstanceCount=1,InstanceType=m1.large '
+    'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
     'InstanceGroupType=TASK,Name=TASK,'
-    'InstanceCount=1,InstanceType=m1.large ')
+    'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadpork ')
 
 DEFAULT_INSTANCE_GROUPS = \
     [{'InstanceRole': 'MASTER',
       'InstanceCount': 1,
       'Name': 'MASTER',
+      'CustomAmiId': 'ami-deadbeef',
       'Market': 'ON_DEMAND',
       'InstanceType': 'm1.large'
       },
      {'InstanceRole': 'CORE',
       'InstanceCount': 1,
       'Name': 'CORE',
+      'CustomAmiId': 'ami-deadbeef',
       'Market': 'ON_DEMAND',
       'InstanceType': 'm1.large'
       },
      {'InstanceRole': 'TASK',
       'InstanceCount': 1,
       'Name': 'TASK',
+      'CustomAmiId': 'ami-deadpork',
       'Market': 'ON_DEMAND',
       'InstanceType': 'm1.large'
       }]
@@ -305,11 +308,13 @@ IMPALA_DEFAULT_STEP = {
 }
 
 CREATE_CLUSTER_RESULT = {
-    "JobFlowId": "j-XXXX"
+    "JobFlowId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 CONSTRUCTED_RESULT = {
-    "ClusterId": "j-XXXX"
+    "ClusterId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 DEFAULT_RESULT = \
@@ -386,7 +391,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'choose --use-default-roles or use both --service-role <roleName>'
             ' and --ec2-attributes InstanceProfile=<profileName>.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_mutual_exclusive_use_default_roles_and_instance_profile(self):
         cmd = (DEFAULT_CMD + '--service-role ServiceRole '
@@ -397,7 +402,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--use-default-roles or use both --service-role <roleName> '
             'and --ec2-attributes InstanceProfile=<profileName>.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_cluster_name_no_space(self):
         cmd = DEFAULT_CMD + '--name MyCluster'
@@ -448,7 +453,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_termination_protected(self):
         cmd = DEFAULT_CMD + '--termination-protected'
@@ -469,7 +474,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --termination-protected'
             ' and --no-termination-protected options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users'
@@ -487,7 +492,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --visible-to-all-users and '
             '--no-visible-to-all-users options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_tags(self):
         cmd = DEFAULT_CMD.split() + ['--tags', 'k1=v1', 'k2', 'k3=spaces  v3']
@@ -540,7 +545,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: LogUri not specified. You must specify a logUri'
             ' if you enable debugging when creating a cluster.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_enable_debugging_and_no_enable_debugging(self):
         cmd = DEFAULT_CMD + '--enable-debugging --no-enable-debugging' + \
@@ -549,15 +554,15 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --enable-debugging and '
             '--no-enable-debugging options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_instance_groups_default_name_market(self):
         cmd = (
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
             '--instance-groups '
-            'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large '
-            'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large '
-            'InstanceGroupType=TASK,InstanceCount=1,InstanceType=m1.large ')
+            'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
+            'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
+            'InstanceGroupType=TASK,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadpork ')
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
     def test_instance_groups_instance_group_type_mismatch_cases(self):
@@ -565,9 +570,9 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
             '--instance-groups '
             'Name=MASTER,InstanceGroupType=MaSter,InstanceCount=1,'
-            'InstanceType=m1.large Name=CORE,InstanceGroupType=cORE,'
-            'InstanceCount=1,InstanceType=m1.large Name=TASK,'
-            'InstanceGroupType=tAsK,InstanceCount=1,InstanceType=m1.large')
+            'InstanceType=m1.large,CustomAmiId=ami-deadbeef Name=CORE,InstanceGroupType=cORE,'
+            'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef Name=TASK,'
+            'InstanceGroupType=tAsK,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadpork')
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
     def test_instance_groups_instance_type_and_count(self):
@@ -617,7 +622,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
         cmd = (
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
@@ -627,7 +632,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_instance_groups_exclusive_parameter_validation_error(self):
         cmd = (
@@ -640,7 +645,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
         cmd = (
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
@@ -652,7 +657,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = (
@@ -768,7 +773,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: You may not specify both a SubnetId and an Availab'
             'ilityZone (placement) because ec2SubnetId implies a placement.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_ec2_attributes_with_subnet_from_json_file(self):
         data_path = os.path.join(
@@ -822,7 +827,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                              'bootstrap actions for a cluster exceeded.\n'
         result = self.run_cmd(cmd, 255)
 
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_bootstrap_actions_exceed_maximum_with_applications_error(self):
         cmd = DEFAULT_CMD + ' --applications Name=GANGLIA Name=HBASE' +\
@@ -833,7 +838,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = '\naws: error: maximum number of ' +\
                              'bootstrap actions for a cluster exceeded.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_boostrap_actions_with_default_fields(self):
         cmd = DEFAULT_CMD + (
@@ -998,7 +1003,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: The step type unknown is not supported.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_default_step_type_name_action_on_failure(self):
         cmd = DEFAULT_CMD + '--steps Jar=s3://mybucket/mytest.jar'
@@ -1011,7 +1016,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for CustomJARStepConfig: Jar.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_custom_jar_step_with_all_fields(self):
         cmd = DEFAULT_CMD + '--steps ' + (
@@ -1047,7 +1052,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for StreamingStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_streaming_jar_with_all_fields(self):
         test_step_config = (
@@ -1074,7 +1079,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for HiveStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_hive_step_with_all_fields(self):
         test_step_config = (
@@ -1099,7 +1104,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for PigStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_pig_step_with_all_fields(self):
         test_step_config = (
@@ -1126,7 +1131,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for ImpalaStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_impala_step_with_all_fields(self):
         test_step_config = (
@@ -1177,21 +1182,21 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = ('\naws: error: The prameter Args cannot '
                             'be an empty list.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
         cmd = DEFAULT_CMD + '--steps Type=Pig,Args= '
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
         cmd = DEFAULT_CMD + '--steps Type=Hive,Args= '
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
         cmd = DEFAULT_CMD + '--steps Args= '
         expect_error_msg = ('\naws: error: The following required parameters '
                             'are missing for CustomJARStepConfig: Jar.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_missing_applications_for_steps(self):
         cmd = DEFAULT_CMD +\
@@ -1251,13 +1256,13 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         else:
             self.assertTrue(False)
 
-    @patch('awscli.customizations.emr.emrutils.call')
+    @mock.patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):
         call_patch.return_value = CREATE_CLUSTER_RESULT
         cmd = DEFAULT_CMD
         result = self.run_cmd(cmd, expected_rc=0)
         result_json = json.loads(result[0])
-        self.assertEquals(result_json, CONSTRUCTED_RESULT)
+        self.assertEqual(result_json, CONSTRUCTED_RESULT)
 
     def test_all_security_groups(self):
         cmd = DEFAULT_CMD + (
@@ -1361,7 +1366,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: Must specify --auto-scaling-role when'
             ' configuring an AutoScaling policy for an instance group.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_scale_down_behavior(self):
         cmd = (self.prefix + '--ami-version 3.1.0 --scale-down-behavior TERMINATE_AT_TASK_COMPLETION '
@@ -1511,6 +1516,23 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_fleets_with_on_demand_master_only_with_targeted_odcr(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY_WITH_TARGETED_ODCR)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                  CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY_WITH_TARGETED_ODCR
+                              },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_instance_fleets_with_spot_master_only(self):
         cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
                CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY)
@@ -1600,6 +1622,23 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_fleets_with_spot_master_core_cluster_multiple_custom_amis(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER_WITH_CUSTOM_AMI)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER_WITH_CUSTOM_AMI
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_instance_fleets_with_complex_config_from_json(self):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_instance_fleets.json')
@@ -1629,7 +1668,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: You cannot specify both AvailabilityZone'
             ' and AvailabilityZones options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
 if __name__ == "__main__":
     unittest.main()

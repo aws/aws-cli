@@ -1,19 +1,45 @@
-The following command creates a source endpoint for a MySQL RDS DB instance named ``mydb.cx1llnox7iyx.uswest-2.rds.amazonaws.com``::
+**To create an endpoint**
 
-  aws dms create-endpoint --endpoint-identifier test-endpoint-1 --endpoint-type source --engine-name mysql --username username --password password --server-name mydb.cx1llnox7iyx.uswest-2.rds.amazonaws.com --port 3306
+The following ``create-endpoint`` example creates an endpoint for an Amazon S3 source. ::
+
+    aws dms create-endpoint \
+        --endpoint-type source \
+        --engine-name s3 \
+        --endpoint-identifier src-endpoint \
+        --s3-settings file://s3-settings.json
+
+
+Contents of ``s3-settings.json``::
+
+    {
+        "BucketName":"my-corp-data",
+        "BucketFolder":"sourcedata",
+        "ServiceAccessRoleArn":"arn:aws:iam::123456789012:role/my-s3-access-role"
+    }
 
 Output::
 
-  {
-    "Endpoint": {
-      "Username": "username",
-      "Status": "active",
-      "EndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:RAAR3R22XSH46S3PWLC3NJAWKM",
-      "ServerName": "mydb.cx1llnox7iyx.us-west-2.rds.amazonaws.com",
-      "EndpointType": "SOURCE",
-      "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/4c1731d6-5435-ed4d-be13-d53411a7cfbd",
-      "EngineName": "mysql",
-      "EndpointIdentifier": "test-endpoint-1",
-      "Port": 3306
+    {
+        "Endpoint": {
+            "EndpointIdentifier": "src-endpoint",
+            "EndpointType": "SOURCE",
+            "EngineName": "s3",
+            "EngineDisplayName": "Amazon S3",
+            "ExtraConnectionAttributes": "bucketFolder=sourcedata;bucketName=my-corp-data;compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\\n;",
+            "Status": "active",
+            "EndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:GUVAFG34EECUOJ6QVZ56DAHT3U",
+            "SslMode": "none",
+            "ServiceAccessRoleArn": "arn:aws:iam::123456789012:role/my-s3-access-role",
+            "S3Settings": {
+                "ServiceAccessRoleArn": "arn:aws:iam::123456789012:role/my-s3-access-role",
+                "CsvRowDelimiter": "\\n",
+                "CsvDelimiter": ",",
+                "BucketFolder": "sourcedata",
+                "BucketName": "my-corp-data",
+                "CompressionType": "NONE",
+                "EnableStatistics": true
+            }
+        }
     }
-  }
+
+For more information, see `Working with AWS DMS Endpoints <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Endpoints.html>`__ in the *AWS Database Migration Service User Guide*.

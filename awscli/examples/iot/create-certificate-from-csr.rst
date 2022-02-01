@@ -1,36 +1,16 @@
-Create Batches of Certificates from Batches of CSRs
----------------------------------------------------
-The following example shows how to create a batch of certificates given a
-batch of CSRs. Assuming a set of CSRs are located inside of the
-directory ``my-csr-directory``::
+**To create a device certificate from a certificate signing request (CSR)**
 
-    $ ls my-csr-directory/
-    csr.pem		csr2.pem
+The following ``create-certificate-from-csr`` example creates a device certificate from a CSR. You can use the ``openssl`` command to create a CSR. ::
 
+    aws iot create-certificate-from-csr \
+        --certificate-signing-request=file://certificate.csr
 
-a certificate can be created for each CSR in that directory
-using a single command. On Linux and OSX, this command is::
+Output::
 
-    $ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}
+    {
+        "certificateArn": "arn:aws:iot:us-west-2:123456789012:cert/c0c57bbc8baaf4631a9a0345c957657f5e710473e3ddbee1428d216d54d53ac9",
+            "certificateId": "c0c57bbc8baaf4631a9a0345c957657f5e710473e3ddbee1428d216d54d53ac9",
+            "certificatePem": "<certificate-text>"
+    }
 
-
-This command lists all of the CSRs in ``my-csr-directory`` and
-pipes each CSR filename to the ``aws iot create-certificate-from-csr`` AWS CLI
-command to create a certificate for the corresponding CSR.
-
-The ``aws iot create-certificate-from-csr`` part of the command can also be
-ran in parallel to speed up the certificate creation process::
-
-    $ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}
-
-
-On Windows PowerShell, the command to create certificates for all CSRs
-in ``my-csr-directory`` is::
-
-    > ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_}
-
-
-On Windows Command Prompt, the command to create certificates for all CSRs
-in ``my-csr-directory`` is::
-
-    > forfiles /p my-csr-directory /c "cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path"
+For more information, see `CreateCertificateFromCSR <https://docs.aws.amazon.com/iot/latest/apireference/API_CreateCertificateFromCsr.html>`__ in the *AWS IoT API Reference*.

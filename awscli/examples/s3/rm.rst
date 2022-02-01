@@ -36,3 +36,14 @@ this example, the bucket ``mybucket`` has the objects ``test1.txt`` and ``anothe
 Output::
 
     delete: s3://mybucket/test1.txt
+
+
+**Deleting an object from an S3 access point**
+
+The following ``rm`` command deletes a single object (``mykey``) from the access point (``myaccesspoint``)::
+
+    aws s3 rm s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+Output::
+
+    delete: s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey

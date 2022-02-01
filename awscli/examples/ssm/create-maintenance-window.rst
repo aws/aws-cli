@@ -1,13 +1,37 @@
-**To create a maintenance window**
+**Example 1: To create a maintenance window**
 
-This example creates a new maintenance window with the specified name that runs at 4 PM on every Tuesday for 4 hours, with a 1 hour cutoff, and that allows unassociated targets.
+The following ``create-maintenance-window`` example creates a new maintenance window that every five minutes for up to two hours (as needed), prevents new tasks from starting within one hour of the end of the maintenance window execution, allows unassociated targets (instances that you haven't registered with the maintenance window), and indicates through the use of custom tags that its creator intends to use it in a tutorial. ::
 
-Command::
-
-  aws ssm create-maintenance-window --name "My-First-Maintenance-Window" --schedule "cron(0 16 ? * TUE *)" --duration 4 --cutoff 1 --allow-unassociated-targets
+    aws ssm create-maintenance-window \
+        --name "My-Tutorial-Maintenance-Window" \
+        --schedule "rate(5 minutes)" \
+        --duration 2 --cutoff 1 \
+        --allow-unassociated-targets \
+        --tags "Key=Purpose,Value=Tutorial"
 
 Output::
 
-  {
-	"WindowId": "mw-ab12cd34ef56gh78"
-  }
+    {
+        "WindowId": "mw-0c50858d01EXAMPLE"
+    }
+
+
+**Example 2: To create a maintenance window that runs only once**
+
+The following ``create-maintenance-window`` example creates a new maintenance window that only runs one time on the specified date and time. ::
+
+    aws ssm create-maintenance-window \
+        --name My-One-Time-Maintenance-Window \
+        --schedule "at(2020-05-14T15:55:00)" \
+        --duration 5 \
+        --cutoff 2 \
+        --allow-unassociated-targets \
+        --tags "Key=Environment,Value=Production"
+
+Output::
+
+    {
+        "WindowId": "mw-01234567890abcdef"
+    }
+
+For more information, see `Maintenance Windows <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-maintenance.html>`_ in the *AWS Systems Manager User Guide*.

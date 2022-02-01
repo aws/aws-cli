@@ -13,14 +13,17 @@
 import logging
 import os
 from botocore import xform_name
-from botocore.docs.bcdoc.docevents import DOC_EVENTS
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
+from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
-from awscli.utils import find_service_and_method_in_event_name
+from awscli.utils import (
+    find_service_and_method_in_event_name, is_document_type,
+    operation_uses_document_types
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -43,6 +46,8 @@ class CLIDocumentEventHandler(object):
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
             return 'JSON'
+        if is_document_type(shape):
+            return 'document'
         return default
 
     def _map_handlers(self, session, event_class, mapfn):
@@ -128,8 +133,10 @@ class CLIDocumentEventHandler(object):
                 [a.cli_name for a in
                  self._arg_groups[argument.group_name]])
             self._documented_arg_groups.append(argument.group_name)
-        else:
+        elif argument.cli_name.startswith('--'):
             option_str = '%s <value>' % argument.cli_name
+        else:
+            option_str = '<%s>' % argument.cli_name
         if not (argument.required
                 or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str
@@ -166,7 +173,9 @@ class CLIDocumentEventHandler(object):
             argument.argument_model, argument.cli_type_name)))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
-        self._document_enums(argument, doc)
+        if hasattr(argument, 'argument_model'):
+            self._document_enums(argument.argument_model, doc)
+            self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
 
@@ -184,18 +193,76 @@ class CLIDocumentEventHandler(object):
         )
         doc.write('\n')
 
-    def _document_enums(self, argument, doc):
+    def _document_enums(self, model, doc):
         """Documents top-level parameter enums"""
-        if hasattr(argument, 'argument_model'):
-            model = argument.argument_model
-            if isinstance(model, StringShape):
-                if model.enum:
-                    doc.style.new_paragraph()
-                    doc.write('Possible values:')
-                    doc.style.start_ul()
-                    for enum in model.enum:
-                        doc.style.li('``%s``' % enum)
-                    doc.style.end_ul()
+        if isinstance(model, StringShape):
+            if model.enum:
+                doc.style.new_paragraph()
+                doc.write('Possible values:')
+                doc.style.start_ul()
+                for enum in model.enum:
+                    doc.style.li('``%s``' % enum)
+                doc.style.end_ul()
+
+    def _document_nested_structure(self, model, doc):
+        """Recursively documents parameters in nested structures"""
+        member_type_name = getattr(model, 'type_name', None)
+        if member_type_name == 'structure':
+            for member_name, member_shape in model.members.items():
+                self._doc_member(doc, member_name, member_shape,
+                                 stack=[model.name])
+        elif member_type_name == 'list':
+            self._doc_member(doc, '', model.member, stack=[model.name])
+        elif member_type_name == 'map':
+            key_shape = model.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member(doc, key_name, key_shape, stack=[model.name])
+            value_shape = model.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member(doc, value_name, value_shape, stack=[model.name])
+
+    def _doc_member(self, doc, member_name, member_shape, stack):
+        if member_shape.name in stack:
+            # Document the recursion once, otherwise just
+            # note the fact that it's recursive and return.
+            if stack.count(member_shape.name) > 1:
+                if member_shape.type_name == 'structure':
+                    doc.write('( ... recursive ... )')
+                return
+        stack.append(member_shape.name)
+        try:
+            self._do_doc_member(doc, member_name,
+                                member_shape, stack)
+        finally:
+            stack.pop()
+
+    def _do_doc_member(self, doc, member_name, member_shape, stack):
+        docs = member_shape.documentation
+        type_name = self._get_argument_type_name(
+            member_shape, member_shape.type_name)
+        if member_name:
+            doc.write('%s -> (%s)' % (member_name, type_name))
+        else:
+            doc.write('(%s)' % type_name)
+        doc.style.indent()
+        doc.style.new_paragraph()
+        doc.include_doc_string(docs)
+        doc.style.new_paragraph()
+        member_type_name = member_shape.type_name
+        if member_type_name == 'structure':
+            for sub_name, sub_shape in member_shape.members.items():
+                self._doc_member(doc, sub_name, sub_shape, stack)
+        elif member_type_name == 'map':
+            key_shape = member_shape.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member(doc, key_name, key_shape, stack)
+            value_shape = member_shape.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member(doc, value_name, value_shape, stack)
+        elif member_type_name == 'list':
+            self._doc_member(doc, '', member_shape.member, stack)
+        doc.style.dedent()
+        doc.style.new_paragraph()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -305,6 +372,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
         self._add_top_level_args_reference(help_command)
+        self._add_note_for_document_types_if_used(help_command)
 
     def _add_top_level_args_reference(self, help_command):
         help_command.doc.writeln('')
@@ -331,6 +399,18 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                              operation_model.name)
         doc.style.external_link(title="AWS API Documentation", link=link)
         doc.writeln('')
+
+    def _add_note_for_document_types_if_used(self, help_command):
+        if operation_uses_document_types(help_command.obj):
+            help_command.doc.style.new_paragraph()
+            help_command.doc.writeln(
+                '``%s`` uses document type values. Document types follow the '
+                'JSON data model where valid values are: strings, numbers, '
+                'booleans, null, arrays, and objects. For command input, '
+                'options and nested parameters that are labeled with the type '
+                '``document`` must be provided as JSON. Shorthand syntax does '
+                'not support document types.' % help_command.name
+            )
 
     def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
@@ -390,7 +470,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.dedent()
             doc.write('}')
         elif argument_model.type_name == 'structure':
-            self._doc_input_structure_members(doc, argument_model, stack)
+            if argument_model.is_document_type:
+                self._doc_document_member(doc)
+            else:
+                self._doc_input_structure_members(doc, argument_model, stack)
+
+    def _doc_document_member(self, doc):
+        doc.write('{...}')
 
     def _doc_input_structure_members(self, doc, argument_model, stack):
         doc.write('{')
@@ -487,53 +573,11 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Output')
         operation_model = help_command.obj
         output_shape = operation_model.output_shape
-        if output_shape is None:
+        if output_shape is None or not output_shape.members:
             doc.write('None')
         else:
             for member_name, member_shape in output_shape.members.items():
-                self._doc_member_for_output(doc, member_name, member_shape, stack=[])
-
-    def _doc_member_for_output(self, doc, member_name, member_shape, stack):
-        if member_shape.name in stack:
-            # Document the recursion once, otherwise just
-            # note the fact that it's recursive and return.
-            if stack.count(member_shape.name) > 1:
-                if member_shape.type_name == 'structure':
-                    doc.write('( ... recursive ... )')
-                return
-        stack.append(member_shape.name)
-        try:
-            self._do_doc_member_for_output(doc, member_name,
-                                           member_shape, stack)
-        finally:
-            stack.pop()
-
-    def _do_doc_member_for_output(self, doc, member_name, member_shape, stack):
-        docs = member_shape.documentation
-        if member_name:
-            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
-                                      member_shape, member_shape.type_name)))
-        else:
-            doc.write('(%s)' % member_shape.type_name)
-        doc.style.indent()
-        doc.style.new_paragraph()
-        doc.include_doc_string(docs)
-        doc.style.new_paragraph()
-        member_type_name = member_shape.type_name
-        if member_type_name == 'structure':
-            for sub_name, sub_shape in member_shape.members.items():
-                self._doc_member_for_output(doc, sub_name, sub_shape, stack)
-        elif member_type_name == 'map':
-            key_shape = member_shape.key
-            key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member_for_output(doc, key_name, key_shape, stack)
-            value_shape = member_shape.value
-            value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member_for_output(doc, value_name, value_shape, stack)
-        elif member_type_name == 'list':
-            self._doc_member_for_output(doc, '', member_shape.member, stack)
-        doc.style.dedent()
-        doc.style.new_paragraph()
+                self._doc_member(doc, member_name, member_shape, stack=[])
 
     def doc_options_end(self, help_command, **kwargs):
         self._add_top_level_args_reference(help_command)

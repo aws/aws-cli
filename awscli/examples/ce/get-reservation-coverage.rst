@@ -1,4 +1,3 @@
-
 **To retrieve the reservation coverage for EC2 t2.nano instances in the us-east-1 region**
 
 This example retrieves the reservation coverage for EC2 t2.nano instances in the us-east-1 region for July-September of 2017.

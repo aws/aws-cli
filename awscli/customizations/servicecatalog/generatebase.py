@@ -30,7 +30,6 @@ class GenerateBaseCommand(BasicCommand):
         )
         self.s3_uploader = S3Uploader(self.s3_client,
                                       parsed_args.bucket_name,
-                                      self.region,
                                       force_upload=True)
         try:
             self.s3_uploader.upload(parsed_args.file_path,

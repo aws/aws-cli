@@ -1,18 +1,15 @@
 **To start a DB instance**
 
-This example starts a DB instance::
+The following ``start-db-instance`` example starts the specified DB instance. ::
 
-    aws rds start-db-instance --db-instance-identifier test-instance
+    aws rds start-db-instance \
+        --db-instance-identifier test-instance
 
 Output::
 
-{
-    "DBInstance": {
-
-<...output omitted...>
-
-        "DBInstanceStatus": "starting",
-
-<...output omitted...>
-
-}
+    {
+        "DBInstance": {
+            "DBInstanceStatus": "starting",
+            ...some output truncated...
+        }
+    }

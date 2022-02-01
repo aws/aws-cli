@@ -14,9 +14,6 @@ import argparse
 import os
 import sys
 
-import mock
-from mock import patch, Mock, MagicMock
-
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
@@ -25,7 +22,7 @@ from awscli.customizations.s3.subcommands import CommandParameters, \
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
-from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
+from awscli.testutils import mock, unittest, BaseAWSHelpOutputTest, \
     BaseAWSCommandParamsTest, FileCreator
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
 from awscli.compat import StringIO
@@ -41,7 +38,7 @@ class FakeArgs(object):
 
 class TestGetClient(unittest.TestCase):
     def test_client(self):
-        session = Mock()
+        session = mock.Mock()
         endpoint = get_client(session, region='us-west-1', endpoint_url='URL',
                               verify=True)
         session.create_client.assert_called_with(
@@ -195,8 +192,18 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.file_creator)
 
+    def _get_file_path(self, file):
+        try:
+            return os.path.relpath(file)
+        except ValueError:
+            # In some cases (usually it happens inside Windows based GitHub
+            # Action) tests are situated on one volume and temp folder on
+            # another one, in such a case there is no relative path between
+            # them and we use absolute path instead
+            return os.path.abspath(file)
+
     def test_set_client_no_source(self):
-        session = Mock()
+        session = mock.Mock()
         cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-west-1',
                                        'endpoint_url': None,
@@ -220,7 +227,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         )
 
     def test_set_client_with_source(self):
-        session = Mock()
+        session = mock.Mock()
         cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-west-1',
                                        'endpoint_url': None,
@@ -250,7 +257,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         )
 
     def test_set_sigv4_clients_with_sse_kms(self):
-        session = Mock()
+        session = mock.Mock()
         cmd_arc = CommandArchitecture(
             session, 'sync',
             {'region': 'us-west-1', 'endpoint_url': None, 'verify_ssl': None,
@@ -301,7 +308,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                                 's3_handler'])
 
     def test_choose_sync_strategy_default(self):
-        session = Mock()
+        session = mock.Mock()
         cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-east-1',
                                        'endpoint_url': None,
@@ -324,20 +331,20 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         )
 
     def test_choose_sync_strategy_overwrite(self):
-        session = Mock()
+        session = mock.Mock()
         cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-east-1',
                                        'endpoint_url': None,
                                        'verify_ssl': None})
-        # Check that the default sync strategy is overwritted if a plugin
+        # Check that the default sync strategy is overwritten if a plugin
         # returns its sync strategy.
-        mock_strategy = Mock()
+        mock_strategy = mock.Mock()
         mock_strategy.sync_type = 'file_at_src_and_dest'
 
-        mock_not_at_dest_sync_strategy = Mock()
+        mock_not_at_dest_sync_strategy = mock.Mock()
         mock_not_at_dest_sync_strategy.sync_type = 'file_not_at_dest'
 
-        mock_not_at_src_sync_strategy = Mock()
+        mock_not_at_src_sync_strategy = mock.Mock()
         mock_not_at_src_sync_strategy.sync_type = 'file_not_at_src'
 
         responses = [(None, mock_strategy),
@@ -365,7 +372,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
@@ -385,7 +392,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def test_error_on_same_line_as_status(self):
         s3_file = 's3://' + 'bucket-does-not-exist' + '/' + 'text1.txt'
         local_file = self.loc_files[0]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': False, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
@@ -416,7 +423,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': local_file, 'filters': filters,
@@ -513,7 +520,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         local_file = self.loc_files[0]
         s3_prefix = 's3://' + self.bucket + '/'
         local_dir = self.loc_files[3]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': local_dir, 'dest': s3_prefix, 'filters': filters,
@@ -539,10 +546,10 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
 class CommandParametersTest(unittest.TestCase):
     def setUp(self):
         self.environ = {}
-        self.environ_patch = patch('os.environ', self.environ)
+        self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.mock = MagicMock()
-        self.mock.get_config = MagicMock(return_value={'region': None})
+        self.mock = mock.MagicMock()
+        self.mock.get_config = mock.MagicMock(return_value={'region': None})
         self.file_creator = FileCreator()
         self.loc_files = make_loc_files(self.file_creator)
         self.bucket = 's3testbucket'
@@ -651,14 +658,14 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError, '--sse-c must be specified'):
+        with self.assertRaisesRegex(ValueError, '--sse-c must be specified'):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_key(self):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                                      '--sse-c-key must be specified'):
             cmd_param.add_paths(paths)
 
@@ -666,7 +673,7 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                                      '--sse-c-copy-source must be specified'):
             cmd_param.add_paths(paths)
 
@@ -674,7 +681,7 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                 '--sse-c-copy-source-key must be specified'):
             cmd_param.add_paths(paths)
 
@@ -683,7 +690,7 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256',
                   'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                                      'only supported for copy operations'):
             cmd_param.add_paths(paths)
 

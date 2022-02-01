@@ -18,15 +18,16 @@ import sys
 
 
 def register_ecr_commands(cli):
-    cli.register('building-command-table.ecr', _inject_get_login)
+    cli.register('building-command-table.ecr', _inject_commands)
 
 
-def _inject_get_login(command_table, session, **kwargs):
+def _inject_commands(command_table, session, **kwargs):
     command_table['get-login'] = ECRLogin(session)
+    command_table['get-login-password'] = ECRGetLoginPassword(session)
 
 
 class ECRLogin(BasicCommand):
-    """Log in with docker login"""
+    """Log in with 'docker login'"""
     NAME = 'get-login'
 
     DESCRIPTION = BasicCommand.FROM_FILE('ecr/get-login_description.rst')
@@ -49,8 +50,8 @@ class ECRLogin(BasicCommand):
             'help_text': (
                 "Specify if the '-e' flag should be included in the "
                 "'docker login' command.  The '-e' option has been deprecated "
-                "and is removed in docker version 17.06 and later.  You must "
-                "specify --no-include-email if you're using docker version "
+                "and is removed in Docker version 17.06 and later.  You must "
+                "specify --no-include-email if you're using Docker version "
                 "17.06 or later.  The default behavior is to include the "
                 "'-e' flag in the 'docker login' output."),
         },
@@ -82,4 +83,25 @@ class ECRLogin(BasicCommand):
             command.append(auth['proxyEndpoint'])
             sys.stdout.write(' '.join(command))
             sys.stdout.write('\n')
+        return 0
+
+
+class ECRGetLoginPassword(BasicCommand):
+    """Get a password to be used with container clients such as Docker"""
+    NAME = 'get-login-password'
+
+    DESCRIPTION = BasicCommand.FROM_FILE(
+            'ecr/get-login-password_description.rst')
+
+    def _run_main(self, parsed_args, parsed_globals):
+        ecr_client = create_client_from_parsed_globals(
+                self._session,
+                'ecr',
+                parsed_globals)
+        result = ecr_client.get_authorization_token()
+        auth = result['authorizationData'][0]
+        auth_token = b64decode(auth['authorizationToken']).decode()
+        _, password = auth_token.split(':')
+        sys.stdout.write(password)
+        sys.stdout.write('\n')
         return 0

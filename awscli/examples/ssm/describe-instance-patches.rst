@@ -1,38 +1,58 @@
-**To get the patch compliance details for an instance**
+**Example 1: To get the patch state details for an instance**
 
-This example gets the patch compliance details for an instance.
+The following ``describe-instance-patches`` example retrieves details about the patches for the specified instance. ::
 
-Command::
-
-  aws ssm describe-instance-patches --instance-id "i-08ee91c0b17045407"
+    aws ssm describe-instance-patches \
+        --instance-id "i-1234567890abcdef0"
 
 Output::
 
-  {
-	"NextToken":"--token string truncated--",
-	"Patches":[
-		{
-			"KBId":"KB2919355",
-			"Severity":"Critical",
-			"Classification":"SecurityUpdates",
-			"Title":"Windows 8.1 Update for x64-based Systems (KB2919355)",
-			"State":"Installed",
-			"InstalledTime":"2014-03-18T12:00:00Z"
-		},
-		{
-			"KBId":"KB2977765",
-			"Severity":"Important",
-			"Classification":"SecurityUpdates",
-			"Title":"Security Update for Microsoft .NET Framework 4.5.1 and 4.5.2 on Windows 8.1 and Windows Server 2012 R2 x64-based Systems (KB2977765)",
-			"State":"Installed",
-			"InstalledTime":"2014-10-15T12:00:00Z"
-		},
-		{
-			"KBId":"KB2978126",
-			"Severity":"Important",
-			"Classification":"SecurityUpdates",
-			"Title":"Security Update for Microsoft .NET Framework 4.5.1 and 4.5.2 on Windows 8.1 (KB2978126)",
-			"State":"Installed",
-			"InstalledTime":"2014-11-18T12:00:00Z"
-		},
-		---output truncated---
+    {
+        "Patches": [
+            {
+                "Title": "2019-01 Security Update for Adobe Flash Player for Windows Server 2016 for x64-based Systems (KB4480979)",
+                "KBId": "KB4480979",
+                "Classification": "SecurityUpdates",
+                "Severity": "Critical",
+                "State": "Installed",
+                "InstalledTime": 1546992000.0
+            },
+            {
+                "Title": "",
+                "KBId": "KB4481031",
+                "Classification": "",
+                "Severity": "",
+                "State": "InstalledOther",
+                "InstalledTime": 1549584000.0
+            },
+            ...
+        ],
+        "NextToken": "--token string truncated--"
+    }
+
+**Example 2: To get a list of patches in the Missing state for an instance**
+
+The following ``describe-instance-patches`` example retrieves information about patches that are in the Missing state for the specified instance. ::
+
+    aws ssm describe-instance-patches \
+        --instance-id "i-1234567890abcdef0" \
+        --filters Key=State,Values=Missing
+
+Output::
+
+    {
+      "Patches": [
+          {
+              "Title": "Windows Malicious Software Removal Tool x64 - February 2019 (KB890830)",
+              "KBId": "KB890830",
+              "Classification": "UpdateRollups",
+              "Severity": "Unspecified",
+              "State": "Missing",
+              "InstalledTime": 0.0
+          },
+          ...
+      ],
+      "NextToken": "--token string truncated--"
+    }
+
+For more information, see `About Patch Compliance States <https://docs.aws.amazon.com/systems-manager/latest/userguide/about-patch-compliance-states.html>`__ in the *AWS Systems Manager User Guide*.

@@ -30,7 +30,7 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
-    RequestParamsMapper, split_s3_bucket_key
+    RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
@@ -158,14 +158,13 @@ GRANTS = {
         'the granted permissions, and can be set to read, readacl, '
         'writeacl, or full.</li><li><code>Grantee_Type</code> - '
         'Specifies how the grantee is to be identified, and can be set '
-        'to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - '
+        'to uri or id.</li><li><code>Grantee_ID</code> - '
         'Specifies the grantee based on Grantee_Type. The '
         '<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> '
         '- The group\'s URI. For more information, see '
         '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
         'ACLOverview.html#SpecifyingGrantee">'
         'Who Is a Grantee?</a></li>'
-        '<li><b>emailaddress</b> - The account\'s email address.</li>'
         '<li><b>id</b> - The account\'s canonical ID</li></ul>'
         '</li></ul>'
         'For more information on Amazon S3 access control, see '
@@ -210,10 +209,10 @@ SSE_C_KEY = {
 SSE_KMS_KEY_ID = {
     'name': 'sse-kms-key-id',
     'help_text': (
-        'The AWS KMS key ID that should be used to server-side '
-        'encrypt the object in S3. Note that you should only '
-        'provide this parameter if KMS key ID is different the '
-        'default S3 master KMS key.'
+        'The customer-managed AWS Key Management Service (KMS) key ID that '
+        'should be used to server-side encrypt the object in S3. You should '
+        'only provide this parameter if you are using a customer managed '
+        'customer master key (CMK) and not the AWS managed KMS CMK.'
     )
 }
 
@@ -249,12 +248,13 @@ SSE_C_COPY_SOURCE_KEY = {
 
 STORAGE_CLASS = {'name': 'storage-class',
                  'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA',
-                             'ONEZONE_IA', 'INTELLIGENT_TIERING', 'GLACIER'],
+                             'ONEZONE_IA', 'INTELLIGENT_TIERING', 'GLACIER',
+                             'DEEP_ARCHIVE', 'GLACIER_IR'],
                  'help_text': (
                      "The type of storage to use for the object. "
                      "Valid choices are: STANDARD | REDUCED_REDUNDANCY "
                      "| STANDARD_IA | ONEZONE_IA | INTELLIGENT_TIERING "
-                     "| GLACIER. "
+                     "| GLACIER | DEEP_ARCHIVE | GLACIER_IR. "
                      "Defaults to 'STANDARD'")}
 
 
@@ -385,7 +385,7 @@ EXPECTED_SIZE = {'name': 'expected-size',
                      'This argument specifies the expected size of a stream '
                      'in terms of bytes. Note that this argument is needed '
                      'only when a stream is being uploaded to s3 and the size '
-                     'is larger than 5GB.  Failure to include this argument '
+                     'is larger than 50GB.  Failure to include this argument '
                      'under these conditions may result in a failed upload '
                      'due to too many parts in upload.')}
 
@@ -420,7 +420,7 @@ REQUEST_PAYER = {
     'name': 'request-payer', 'choices': ['requester'],
     'nargs': '?', 'const': 'requester',
     'help_text': (
-        'Confirms that the requester knows that she or he will be charged '
+        'Confirms that the requester knows that they will be charged '
         'for the request. Bucket owners need not specify this parameter in '
         'their requests. Documentation on downloading objects from requester '
         'pays buckets can be found at '
@@ -636,11 +636,12 @@ class WebsiteCommand(S3Command):
         # bucketname
         #
         # We also strip off the trailing slash if a user
-        # accidently appends a slash.
+        # accidentally appends a slash.
         if path.startswith('s3://'):
             path = path[5:]
         if path.endswith('/'):
             path = path[:-1]
+        block_unsupported_resources(path)
         return path
 
 
@@ -1099,7 +1100,7 @@ class CommandArchitecture(object):
         )
 
     def _map_sse_c_params(self, request_parameters, paths_type):
-        # SSE-C may be neaded for HeadObject for copies/downloads/deletes
+        # SSE-C may be needed for HeadObject for copies/downloads/deletes
         # If the operation is s3 to s3, the FileGenerator should use the
         # copy source key and algorithm. Otherwise, use the regular
         # SSE-C key and algorithm. Note the reverse FileGenerator does

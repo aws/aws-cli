@@ -1,4 +1,3 @@
-
 **To retrieve the tags for the dimension SERVICE, with a value of "Elastic"**
 
 This example retrieves the tags for the dimension SERVICE, with a value of "Elastic" for January 01 2017 through May 18 2017.

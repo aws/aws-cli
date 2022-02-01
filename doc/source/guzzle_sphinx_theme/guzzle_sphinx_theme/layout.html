@@ -1,5 +1,11 @@
 {%- extends "basic/layout.html" %}
 
+{% set deprecated_commands = ({
+    'reference/ecr/get-login': ['reference/ecr/get-login-password', 'get-login-password'],
+    'reference/cloudtrail/create-subscription': None,
+    'reference/cloudtrail/update-subscription': None,
+}) %}
+
 {# Do this so that bootstrap is included before the main css file #}
 {%- block htmltitle %}
   {{ super() }}
@@ -33,8 +39,11 @@
   {% endif %}
 {%- endmacro %}
 
-{%- block extrahead %}
+  {%- block extrahead %}
+  <script type="text/javascript" src="/assets/js/awsdocs-boot.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="guide-name" content="API Reference">
+  <meta name="service-name" content="AWS CLI">
   <link rel="stylesheet" type="text/css" href="{{ pathto('_static/bootstrap-responsive.min.css', 1) }}" />
   {% if theme_touch_icon %}
   <link rel="apple-touch-icon" href="{{ pathto('_static/' ~ theme_touch_icon, 1) }}" />
@@ -81,6 +90,30 @@
           {%- block sidebar1 %}{{ sidebar() }}{% endblock %}
           {%- block document %}
             <div class="body">
+                <div class="well">
+                    <p>
+                        <strong>Note:</strong>
+                        You are viewing the documentation for an older major version of the AWS CLI (version 1).
+                    </p>
+                    <p>
+                        AWS CLI version 2, the latest major version of AWS CLI, is now stable and recommended for general use.
+                        {% if pagename in deprecated_commands %}
+                            {% if deprecated_commands[pagename] %}
+                                This command is deprecated in AWS CLI version 2, use
+                                <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/{{ deprecated_commands[pagename][0] }}.html">{{ deprecated_commands[pagename][1] }}</a> instead.
+                            {% else %}
+                                This command is deprecated and no longer available in AWS CLI version 2.
+                            {% endif %}
+                        {% else %}
+                            To view this page for the AWS CLI version 2, click
+                            <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/{{ pagename }}.html">here</a>.
+                        {% endif %}
+                        For more information see the AWS CLI version 2
+                        <a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">installation instructions</a>
+                        and
+                        <a href="https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html">migration guide</a>.
+                    </p>
+                </div>
               {% block body %} {% endblock %}
             </div>
           {%- endblock %}
@@ -103,23 +136,12 @@
 
     </div>
   {%- endif %}
-  <script type="text/javascript" src="https://media.amazonwebservices.com/js/sitecatalyst/s_code.min.js"></script>
-  <script type="text/javascript">
-  s.prop66 = 'AWS CLI';
-  s.eVar66 = 'D=c66';
-  s.prop65 = 'API Reference';
-  s.eVar65 = 'D=c65';
-  var s_code = s.t();
-  if (s_code) document.write(s_code);
-  </script>
 {%- endblock %}
 
 {%- block footer %}
 
-  {%- block footer_wrapper %}
-  <div class="footer container">
-    &copy; Copyright {{ copyright }}. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
-  </div>
+ {%- block footer_wrapper %}
+  <div id="awsdocs-legal-zone-copyright" class="footer container"></div>
   {%- endblock %}
 
   {%- block ga %}
@@ -158,4 +180,3 @@
   {% endblock %}
 
 {%- endblock %}
-

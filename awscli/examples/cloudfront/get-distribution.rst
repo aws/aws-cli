@@ -1,102 +1,126 @@
-The following command gets a distribution with the ID ``S11A16G5KZMEQD``::
+**To get a CloudFront distribution**
 
-  aws cloudfront get-distribution --id S11A16G5KZMEQD
+The following example gets the CloudFront distribution with the ID
+``EDFDVBD6EXAMPLE``, including its ``ETag``. The distribution ID is returned in
+the `create-distribution <create-distribution.html>`_ and `list-distributions
+<list-distributions.html>`_ commands.
 
-The distribution ID is available in the output of ``create-distribution`` and ``list-distributions``. 
+::
+
+    aws cloudfront get-distribution --id EDFDVBD6EXAMPLE
 
 Output::
 
-  {
-      "Distribution": {
-          "Status": "Deployed",
-          "DomainName": "d2wkuj2w9l34gt.cloudfront.net",
-          "InProgressInvalidationBatches": 0,
-          "DistributionConfig": {
-              "Comment": "",
-              "CacheBehaviors": {
-                  "Quantity": 0
-              },
-              "Logging": {
-                  "Bucket": "",
-                  "Prefix": "",
-                  "Enabled": false,
-                  "IncludeCookies": false
-              },
-              "Origins": {
-                  "Items": [
-                      {
-                          "OriginPath": "",
-                          "S3OriginConfig": {
-                              "OriginAccessIdentity": ""
-                          },
-                          "Id": "my-origin",
-                          "DomainName": "my-bucket.s3.amazonaws.com"
-                      }
-                  ],
-                  "Quantity": 1
-              },
-              "DefaultRootObject": "",
-              "PriceClass": "PriceClass_All",
-              "Enabled": true,
-              "DefaultCacheBehavior": {
-                  "TrustedSigners": {
-                      "Enabled": false,
-                      "Quantity": 0
-                  },
-                  "TargetOriginId": "my-origin",
-                  "ViewerProtocolPolicy": "allow-all",
-                  "ForwardedValues": {
-                      "Headers": {
-                          "Quantity": 0
-                      },
-                      "Cookies": {
-                          "Forward": "none"
-                      },
-                      "QueryString": true
-                  },
-                  "MaxTTL": 31536000,
-                  "SmoothStreaming": false,
-                  "DefaultTTL": 86400,
-                  "AllowedMethods": {
-                      "Items": [
-                          "HEAD",
-                          "GET"
-                      ],
-                      "CachedMethods": {
-                          "Items": [
-                              "HEAD",
-                              "GET"
-                          ],
-                          "Quantity": 2
-                      },
-                      "Quantity": 2
-                  },
-                  "MinTTL": 3600
-              },
-              "CallerReference": "my-distribution-2015-09-01",
-              "ViewerCertificate": {
-                  "CloudFrontDefaultCertificate": true,
-                  "MinimumProtocolVersion": "SSLv3"
-              },
-              "CustomErrorResponses": {
-                  "Quantity": 0
-              },
-              "Restrictions": {
-                  "GeoRestriction": {
-                      "RestrictionType": "none",
-                      "Quantity": 0
-                  }
-              },
-              "Aliases": {
-                  "Quantity": 0
-              }
-          },
-          "ActiveTrustedSigners": {
-              "Enabled": false,
-              "Quantity": 0
-          },
-          "LastModifiedTime": "2015-08-31T21:11:29.093Z",
-          "Id": "S11A16G5KZMEQD"
-      },
-      "ETag": "E37HOT42DHPVYH"
-  }
+    {
+        "ETag": "E2QWRUHEXAMPLE",
+        "Distribution": {
+            "Id": "EDFDVBD6EXAMPLE",
+            "ARN": "arn:aws:cloudfront::123456789012:distribution/EDFDVBD6EXAMPLE",
+            "Status": "Deployed",
+            "LastModifiedTime": "2019-12-04T23:35:41.433Z",
+            "InProgressInvalidationBatches": 0,
+            "DomainName": "d111111abcdef8.cloudfront.net",
+            "ActiveTrustedSigners": {
+                "Enabled": false,
+                "Quantity": 0
+            },
+            "DistributionConfig": {
+                "CallerReference": "cli-example",
+                "Aliases": {
+                    "Quantity": 0
+                },
+                "DefaultRootObject": "index.html",
+                "Origins": {
+                    "Quantity": 1,
+                    "Items": [
+                        {
+                            "Id": "awsexamplebucket.s3.amazonaws.com-cli-example",
+                            "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                            "OriginPath": "",
+                            "CustomHeaders": {
+                                "Quantity": 0
+                            },
+                            "S3OriginConfig": {
+                                "OriginAccessIdentity": ""
+                            }
+                        }
+                    ]
+                },
+                "OriginGroups": {
+                    "Quantity": 0
+                },
+                "DefaultCacheBehavior": {
+                    "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-cli-example",
+                    "ForwardedValues": {
+                        "QueryString": false,
+                        "Cookies": {
+                            "Forward": "none"
+                        },
+                        "Headers": {
+                            "Quantity": 0
+                        },
+                        "QueryStringCacheKeys": {
+                            "Quantity": 0
+                        }
+                    },
+                    "TrustedSigners": {
+                        "Enabled": false,
+                        "Quantity": 0
+                    },
+                    "ViewerProtocolPolicy": "allow-all",
+                    "MinTTL": 0,
+                    "AllowedMethods": {
+                        "Quantity": 2,
+                        "Items": [
+                            "HEAD",
+                            "GET"
+                        ],
+                        "CachedMethods": {
+                            "Quantity": 2,
+                            "Items": [
+                                "HEAD",
+                                "GET"
+                            ]
+                        }
+                    },
+                    "SmoothStreaming": false,
+                    "DefaultTTL": 86400,
+                    "MaxTTL": 31536000,
+                    "Compress": false,
+                    "LambdaFunctionAssociations": {
+                        "Quantity": 0
+                    },
+                    "FieldLevelEncryptionId": ""
+                },
+                "CacheBehaviors": {
+                    "Quantity": 0
+                },
+                "CustomErrorResponses": {
+                    "Quantity": 0
+                },
+                "Comment": "",
+                "Logging": {
+                    "Enabled": false,
+                    "IncludeCookies": false,
+                    "Bucket": "",
+                    "Prefix": ""
+                },
+                "PriceClass": "PriceClass_All",
+                "Enabled": true,
+                "ViewerCertificate": {
+                    "CloudFrontDefaultCertificate": true,
+                    "MinimumProtocolVersion": "TLSv1",
+                    "CertificateSource": "cloudfront"
+                },
+                "Restrictions": {
+                    "GeoRestriction": {
+                        "RestrictionType": "none",
+                        "Quantity": 0
+                    }
+                },
+                "WebACLId": "",
+                "HttpVersion": "http2",
+                "IsIPV6Enabled": true
+            }
+        }
+    }

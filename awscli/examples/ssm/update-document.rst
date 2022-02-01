@@ -1,11 +1,21 @@
 **To create a new version of a document**
 
-This creates a new version of a document. The document must be in JSON format. Note that ``file://`` must be referenced followed by the path of the content file.
+The following ``update-document`` example creates a new version of a document when run on a Windows computer. The document specified by ``--document`` must be in JSON format. Note that ``file://`` must be referenced followed by the path of the content file. Because of the ``$`` at the beginning of the ``--document-version`` parameter, On Windows you must surround the value with double quotes. On Linux, MacOS, or at a PowerShell prompt, you must surround the value with single quotes.
 
-Command::
+**Windows version**::
 
-  aws ssm update-document --name "RunShellScript" --content "file://RunShellScript.json" --document-version "$LATEST"
-  
+    aws ssm update-document \
+        --name "RunShellScript" \
+        --content "file://RunShellScript.json" \
+        --document-version "$LATEST"
+
+**Linux/Mac version**::
+
+    aws ssm update-document \
+        --name "RunShellScript" \
+        --content "file://RunShellScript.json" \
+        --document-version '$LATEST'
+
 Output::
 
   {
@@ -34,3 +44,5 @@ Output::
         "Description": "Run an updated script"
     }
   }
+
+

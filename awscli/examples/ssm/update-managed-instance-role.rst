@@ -1,7 +1,11 @@
-**To update the role of a managed instance**
+**To update the IAM role of a managed instance**
 
-This example updates the role of a managed instance. There is no output if the command succeeds.
+The following ``update-managed-instance-role`` example updates the IAM instance profile of a managed instance. ::
 
-Command::
+    aws ssm update-managed-instance-role \
+        --instance-id "mi-08ab247cdfEXAMPLE" \
+        --iam-role "ExampleRole"
 
-  aws ssm update-managed-instance-role --instance-id "mi-08ab247cdf1046573" --iam-role "AutomationRole"
+This command produces no output.
+
+For more information, see `Step 4: Create an IAM Instance Profile for Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/setup-instance-profile.html>`__ in the *AWS Systems Manager User Guide*.

@@ -1,4 +1,4 @@
-**Create a project**
+**To create a project**
 
 The following command creates a new project named ``my-project``::
 

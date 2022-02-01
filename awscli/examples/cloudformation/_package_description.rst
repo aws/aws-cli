@@ -21,6 +21,8 @@ This command can upload local artifacts referenced in the following places:
     - ``Location`` parameter for the ``AWS::Include`` transform
     - ``SourceBundle`` property for the ``AWS::ElasticBeanstalk::ApplicationVersion`` resource
     - ``TemplateURL`` property for the ``AWS::CloudFormation::Stack`` resource
+    - ``Command.ScriptLocation`` property for the ``AWS::Glue::Job`` resource
+    - ``DefinitionS3Location`` property for the ``AWS::StepFunctions::StateMachine`` resource
 
 
 To specify a local artifact in your template, specify a path to a local file or folder,
@@ -29,7 +31,7 @@ that is relative to your template's location.
 
 For example, if your AWS Lambda function source code is in the
 ``/home/user/code/lambdafunction/`` folder, specify
-`` CodeUri: /home/user/code/lambdafunction`` for the
+``CodeUri: /home/user/code/lambdafunction`` for the
 ``AWS::Serverless::Function`` resource. The command returns a template and replaces
 the local path with the S3 location: ``CodeUri: s3://mybucket/lambdafunction.zip``.
 
@@ -42,6 +44,6 @@ if you don't specify a ``BodyS3Location``, this command will not upload an artif
 Before the command uploads artifacts, it checks if the artifacts are already
 present in the S3 bucket to prevent unnecessary uploads. The command uses MD5
 checksums to compare files. If the values match, the command doesn't upload the
-artifacts. Use the ``--force flag`` to skip this check and always upload the
+artifacts. Use the ``--force-upload flag`` to skip this check and always upload the
 artifacts.
 

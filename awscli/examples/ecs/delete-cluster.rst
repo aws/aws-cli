@@ -1,21 +1,23 @@
 **To delete an empty cluster**
 
-This example command deletes an empty cluster in your default region.
+The following ``delete-cluster`` example deletes the specified empty cluster. ::
 
-Command::
-
-  aws ecs delete-cluster --cluster my_cluster
+    aws ecs delete-cluster --cluster MyCluster
 
 Output::
 
-	{
-	    "cluster": {
-	        "status": "INACTIVE",
-	        "clusterName": "my_cluster",
-	        "registeredContainerInstancesCount": 0,
-	        "pendingTasksCount": 0,
-	        "runningTasksCount": 0,
-			"activeServicesCount": 0,
-	        "clusterArn": "arn:aws:ecs:<region>:<aws_account_id>:cluster/my_cluster"
-	    }
-	}
+    {
+        "cluster": {
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+            "status": "INACTIVE",
+            "clusterName": "MyCluster",
+            "registeredContainerInstancesCount": 0,
+            "pendingTasksCount": 0,
+            "runningTasksCount": 0,
+            "activeServicesCount": 0
+            "statistics": [],
+            "tags": []
+        }
+    }
+
+For more information, see `Deleting a Cluster <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/delete_cluster.html>`_ in the *Amazon ECS Developer Guide*.

@@ -4,59 +4,61 @@ This example associates a configuration document with multiple instances. The ou
 
 Command::
 
-  aws ssm create-association-batch --entries "Name=AWS-UpdateSSMAgent,InstanceId=i-0cb2b964d3e14fd9f" "Name=AWS-UpdateSSMAgent,InstanceId=i-0000293ffd8c57862"
+  aws ssm create-association-batch --entries "Name=AWS-UpdateSSMAgent,InstanceId=i-1234567890abcdef0" "Name=AWS-UpdateSSMAgent,InstanceId=i-9876543210abcdef0"
 
 Output::
 
   {
     "Successful": [
         {
-            "Status": {
-                "Date": 1487876122.564,
-                "Message": "Associated with AWS-UpdateSSMAgent",
-                "Name": "Associated"
-            },
             "Name": "AWS-UpdateSSMAgent",
-            "InstanceId": "i-0000293ffd8c57862",
+            "InstanceId": "i-1234567890abcdef0",
+            "AssociationVersion": "1",
+            "Date": 1550504725.007,
+            "LastUpdateAssociationDate": 1550504725.007,
+            "Status": {
+                "Date": 1550504725.007,
+                "Name": "Associated",
+                "Message": "Associated with AWS-UpdateSSMAgent"
+            },
             "Overview": {
                 "Status": "Pending",
                 "DetailedStatus": "Creating"
             },
-            "AssociationId": "d8617c07-2079-4c18-9847-1655fc2698b0",
             "DocumentVersion": "$DEFAULT",
-            "LastUpdateAssociationDate": 1487876122.564,
-            "Date": 1487876122.564,
+            "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
             "Targets": [
                 {
+                    "Key": "InstanceIds",
                     "Values": [
-                        "i-0000293ffd8c57862"
-                    ],
-                    "Key": "InstanceIds"
+                        "i-1234567890abcdef0"
+                    ]
                 }
             ]
         },
         {
-            "Status": {
-                "Date": 1487876122.595,
-                "Message": "Associated with AWS-UpdateSSMAgent",
-                "Name": "Associated"
-            },
             "Name": "AWS-UpdateSSMAgent",
-            "InstanceId": "i-0cb2b964d3e14fd9f",
+            "InstanceId": "i-9876543210abcdef0",
+            "AssociationVersion": "1",
+            "Date": 1550504725.057,
+            "LastUpdateAssociationDate": 1550504725.057,
+            "Status": {
+                "Date": 1550504725.057,
+                "Name": "Associated",
+                "Message": "Associated with AWS-UpdateSSMAgent"
+            },
             "Overview": {
                 "Status": "Pending",
                 "DetailedStatus": "Creating"
             },
-            "AssociationId": "2ccfbc46-5fe4-4e5c-ba46-70b56cc93f53",
             "DocumentVersion": "$DEFAULT",
-            "LastUpdateAssociationDate": 1487876122.595,
-            "Date": 1487876122.595,
+            "AssociationId": "9c9f7f20-5154-4fed-a83e-0123456789ab",
             "Targets": [
                 {
+                    "Key": "InstanceIds",
                     "Values": [
-                        "i-0cb2b964d3e14fd9f"
-                    ],
-                    "Key": "InstanceIds"
+                        "i-9876543210abcdef0"
+                    ]
                 }
             ]
         }

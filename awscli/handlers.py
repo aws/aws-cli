@@ -29,6 +29,7 @@ from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.cloudsearch import initialize as cloudsearch_init
 from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
+from awscli.customizations.codeartifact import register_codeartifact_commands
 from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.codedeploy.codedeploy import initialize as \
     codedeploy_init
@@ -49,7 +50,10 @@ from awscli.customizations.ec2.runinstances import register_runinstances
 from awscli.customizations.ec2.secgroupsimplify import register_secgroup
 from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
+from awscli.customizations.ecr_public import register_ecr_public_commands
 from awscli.customizations.emr.emr import emr_initialize
+from awscli.customizations.emrcontainers import \
+    initialize as emrcontainers_initialize
 from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.ecs import initialize as ecs_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
@@ -72,7 +76,6 @@ from awscli.customizations.rekognition import register_rekognition_detect_labels
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import s3_plugin_initialize
-from awscli.customizations.s3endpoint import register_s3_endpoint
 from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.sessendemail import register_ses_send_email
@@ -86,13 +89,15 @@ from awscli.customizations.sagemaker import register_alias_sagemaker_runtime_com
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
 from awscli.customizations.s3events import register_event_stream_arg
 from awscli.customizations.sessionmanager import register_ssm_session
+from awscli.customizations.sms_voice import register_sms_voice_hide
+from awscli.customizations.dynamodb import register_dynamodb_paginator_fix
 
 
 def awscli_initialize(event_handlers):
     event_handlers.register('session-initialized', register_uri_param_handler)
     param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
-    # The s3 error mesage needs to registered before the
+    # The s3 error message needs to registered before the
     # generic error handler.
     register_s3_error_msg(event_handlers)
 #    # The following will get fired for every option we are
@@ -130,15 +135,16 @@ def awscli_initialize(event_handlers):
     register_configure_cmd(event_handlers)
     cloudtrail_init(event_handlers)
     register_ecr_commands(event_handlers)
+    register_ecr_public_commands(event_handlers)
     register_bool_params(event_handlers)
     register_protocol_args(event_handlers)
     datapipeline.register_customizations(event_handlers)
     cloudsearch_init(event_handlers)
     emr_initialize(event_handlers)
+    emrcontainers_initialize(event_handlers)
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
-    register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
     register_assume_role_provider(event_handlers)
     register_add_waiters(event_handlers)
@@ -152,6 +158,7 @@ def awscli_initialize(event_handlers):
     register_fix_kms_create_grant_docs(event_handlers)
     register_create_hosted_zone_doc_fix(event_handlers)
     register_modify_put_configuration_recorder(event_handlers)
+    register_codeartifact_commands(event_handlers)
     codecommit_init(event_handlers)
     register_custom_endpoint_note(event_handlers)
     event_handlers.register(
@@ -174,3 +181,5 @@ def awscli_initialize(event_handlers):
     register_event_stream_arg(event_handlers)
     dlm_initialize(event_handlers)
     register_ssm_session(event_handlers)
+    register_sms_voice_hide(event_handlers)
+    register_dynamodb_paginator_fix(event_handlers)

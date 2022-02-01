@@ -41,31 +41,16 @@ class TestRmCommand(BaseS3TransferCommandTest):
     def test_recursive_delete_with_requests(self):
         cmdline = '%s s3://mybucket/ --recursive --request-payer' % self.prefix
         self.parsed_responses = [
-            {
-                'Contents': [
-                    {'Key': 'mykey',
-                     'LastModified': '00:00:00Z',
-                     'Size': 100},
-                ],
-                'CommonPrefixes': []
-            },
-            {},
+            self.list_objects_response(['mykey']),
+            self.empty_response(),
         ]
-
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjectsV2', {
-                    'Bucket': 'mybucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester'
-                }),
-                ('DeleteObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester'
-                })
+                self.list_objects_request(
+                    'mybucket', RequestPayer='requester'),
+                self.delete_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
             ]
 
         )

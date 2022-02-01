@@ -119,3 +119,5 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
             'Output\n======\n'
             'This command generates no output'
         )
+        self.assert_not_contains('[outfile')
+        self.assert_contains('outfile')

@@ -2,7 +2,7 @@
 
 The following ``delete-access-key`` command deletes the specified access key (access key ID and secret access key) for the IAM user named ``Bob``::
 
-  aws iam delete-access-key --access-key AKIDPMS9RO4H3FEXAMPLE --user-name Bob
+  aws iam delete-access-key --access-key-id AKIDPMS9RO4H3FEXAMPLE --user-name Bob
 
 To list the access keys defined for an IAM user, use the ``list-access-keys`` command.
 

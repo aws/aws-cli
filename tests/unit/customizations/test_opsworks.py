@@ -14,12 +14,11 @@
 import argparse
 import datetime
 import json
-import mock
 
 from botocore.exceptions import ClientError
 
 from awscli.customizations import opsworks
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestOpsWorksBase(unittest.TestCase):
@@ -219,6 +218,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             self.register._name_for_iam = "HOSTNAME"
 
             self.register.create_iam_entities(self._build_args())
+            policy = "arn:aws:iam::aws:policy/AWSOpsWorksInstanceRegistration"
 
             mock_iam.create_group.assert_any_call(
                 Path="/AWS/OpsWorks/", GroupName="OpsWorks-STACKID")
@@ -227,6 +227,9 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             mock_iam.add_user_to_group.assert_any_call(
                 UserName="OpsWorks-STACKNAME-HOSTNAME",
                 GroupName="OpsWorks-STACKID")
+            mock_iam.attach_user_policy.assert_any_call(
+                PolicyArn=policy,
+                UserName="OpsWorks-STACKNAME-HOSTNAME")
             mock_iam.create_access_key.assert_any_call(
                 UserName="OpsWorks-STACKNAME-HOSTNAME")
 
@@ -290,6 +293,29 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                 GroupName="OpsWorks-STACKID")
             mock_iam.create_access_key.assert_any_call(
                 UserName="OpsWorks-STACKNAME-HOSTNAME+2")
+
+    def test_create_iam_entities_attach_user_policy_unauthorized(self):
+        """Should call PutUserPolicy when AttachUserPolicy is unauthorized."""
+
+        with mock.patch.object(self.register, "iam", create=True) as mock_iam:
+            self.register._stack = dict(
+                StackId="STACKID", Name="STACKNAME", Arn="ARN")
+            self.register._name_for_iam = "HOSTNAME"
+            policy = "arn:aws:iam::aws:policy/AWSOpsWorksInstanceRegistration"
+
+            mock_iam.attach_user_policy.side_effect = ClientError(
+                {'Error': {'Code': 'AccessDenied', 'Message': ''}},
+                'AttachUserPolicy')
+
+            self.register.create_iam_entities(self._build_args())
+
+            mock_iam.attach_user_policy.assert_any_call(
+                PolicyArn=policy,
+                UserName="OpsWorks-STACKNAME-HOSTNAME")
+            mock_iam.put_user_policy.assert_any_call(
+                PolicyName="OpsWorks-Instance",
+                PolicyDocument=mock.ANY,
+                UserName="OpsWorks-STACKNAME-HOSTNAME")
 
     def test_create_iam_entities_long_names(self):
         """Should shorten IAM entity names to a valid size."""
@@ -474,7 +500,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         self.assertEqual(cmd[0], "ssh")
         self.assertEqual(cmd[1], "-tt")
         self.assertEqual(cmd[2], "ip")
-        self.assertRegexpMatches(cmd[3], r"/bin/sh -c ")
+        self.assertRegex(cmd[3], r"/bin/sh -c ")
 
     @mock.patch.object(opsworks, "platform")
     @mock.patch.object(opsworks, "subprocess")
@@ -501,7 +527,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         self.register.setup_target_machine(args)
 
         cmd = mock_subprocess.check_call.call_args[0][0]
-        self.assertRegexpMatches(cmd, r'^plink ".*" -m ".*"$')
+        self.assertRegex(cmd, r'^plink ".*" -m ".*"$')
 
     @mock.patch.object(opsworks, "subprocess")
     def test_setup_target_machine_local(self, mock_subprocess):

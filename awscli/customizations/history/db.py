@@ -16,7 +16,7 @@ import json
 import datetime
 import threading
 import logging
-from collections import MutableMapping
+from awscli.compat import collections_abc
 
 from botocore.history import BaseHistoryHandler
 
@@ -119,7 +119,7 @@ class PayloadSerializer(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return self._encode_datetime(obj)
-        elif isinstance(obj, MutableMapping):
+        elif isinstance(obj, collections_abc.MutableMapping):
             return self._encode_mutable_mapping(obj)
         elif isinstance(obj, binary_type):
             # In PY3 the bytes type differs from the str type so the default

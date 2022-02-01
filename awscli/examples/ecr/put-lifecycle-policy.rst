@@ -1,15 +1,14 @@
 **To create a lifecycle policy**
 
-This example creates a lifecycle policy defined by ``policy.json` for a repository called
-``project-a/amazon-ecs-sample`` in the default registry for an account.
+The following ``put-lifecycle-policy`` example creates a lifecycle policy for the specified repository in the default registry for an account. ::
 
-Command::
+    aws ecr put-lifecycle-policy \
+        --repository-name "project-a/amazon-ecs-sample" \
+        --lifecycle-policy-text "file://policy.json"
 
-  aws ecr put-lifecycle-policy --repository-name "project-a/amazon-ecs-sample" --lifecycle-policy-text "file://policy.json"
+Contents of ``policy.json``::
 
-JSON file format::
-
-   {
+    {
        "rules": [
            {
                "rulePriority": 1,
@@ -25,12 +24,14 @@ JSON file format::
                }
            }
        ]
-   }
+    }
 
 Output::
 
-  {
-    "registryId": "<aws_account_id>",
-    "repositoryName": "project-a/amazon-ecs-sample",
-    "lifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"Expire images older than 14 days\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":14},\"action\":{\"type\":\"expire\"}}]}"
-   }
+    {
+       "registryId": "<aws_account_id>",
+       "repositoryName": "project-a/amazon-ecs-sample",
+       "lifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"Expire images older than 14 days\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":14},\"action\":{\"type\":\"expire\"}}]}"
+    }
+
+For more information, see `Lifecycle Policies <https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html>`__ in the *Amazon ECR User Guide*.

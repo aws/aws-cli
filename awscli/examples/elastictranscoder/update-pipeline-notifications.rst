@@ -1,4 +1,3 @@
-
 **To update the notifications of an ElasticTranscoder pipeline**
 
 This example updates the notifications of the specified ElasticTranscoder pipeline.

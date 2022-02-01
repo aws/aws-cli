@@ -15,8 +15,8 @@ import hashlib
 import json
 
 from botocore import compat
-from awscli.testutils import unittest
-from awscli.customizations.ecs.deploy import CodeDeployer
+from awscli.testutils import capture_output, mock, unittest
+from awscli.customizations.ecs.deploy import CodeDeployer, MAX_WAIT_MIN
 from awscli.customizations.ecs.exceptions import MissingPropertyError
 
 
@@ -38,7 +38,12 @@ class TestCodeDeployer(unittest.TestCase):
     }
 
     def setUp(self):
-        self.deployer = CodeDeployer(None, self.TEST_APPSPEC)
+        waiter = mock.Mock()
+        waiter.wait.return_value = {}
+        mock_cd = mock.Mock()
+        mock_cd.get_waiter.return_value = waiter
+
+        self.deployer = CodeDeployer(mock_cd, self.TEST_APPSPEC)
 
     def test_update_task_def_arn(self):
         test_arn = 'arn:aws:ecs::1234567890:task-definition/new-thing:3'
@@ -89,3 +94,34 @@ class TestCodeDeployer(unittest.TestCase):
 
         actual_hash = self.deployer._get_appspec_hash()
         self.assertEqual(actual_hash, expected_hash)
+
+    def test_wait_for_deploy_success_default_wait(self):
+        mock_id = 'd-1234567XX'
+        expected_stdout = self.deployer.MSG_WAITING.format(
+            deployment_id=mock_id, wait=30)
+
+        with capture_output() as captured:
+            self.deployer.wait_for_deploy_success('d-1234567XX', 0)
+            self.assertEqual(expected_stdout, captured.stdout.getvalue())
+
+    def test_wait_for_deploy_success_custom_wait(self):
+        mock_id = 'd-1234567XX'
+        mock_wait = 40
+
+        expected_stdout = self.deployer.MSG_WAITING.format(
+            deployment_id=mock_id, wait=mock_wait)
+
+        with capture_output() as captured:
+            self.deployer.wait_for_deploy_success('d-1234567XX', mock_wait)
+            self.assertEqual(expected_stdout, captured.stdout.getvalue())
+
+    def test_wait_for_deploy_success_max_wait_exceeded(self):
+        mock_id = 'd-1234567XX'
+        mock_wait = MAX_WAIT_MIN + 15
+
+        expected_stdout = self.deployer.MSG_WAITING.format(
+            deployment_id=mock_id, wait=MAX_WAIT_MIN)
+
+        with capture_output() as captured:
+            self.deployer.wait_for_deploy_success('d-1234567XX', mock_wait)
+            self.assertEqual(expected_stdout, captured.stdout.getvalue())

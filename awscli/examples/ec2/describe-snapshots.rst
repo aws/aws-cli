@@ -1,66 +1,91 @@
-**To describe a snapshot**
+**Example 1: To describe a snapshot**
 
-This example command describes a snapshot with the snapshot ID of ``snap-1234567890abcdef0``.
+The following ``describe-snapshots`` example describes the specified snapshot. ::
 
-Command::
-
-  aws ec2 describe-snapshots --snapshot-id snap-1234567890abcdef0
-
-Output::
-
-   {
-       "Snapshots": [
-           {
-               "Description": "This is my snapshot.",
-               "VolumeId": "vol-049df61146c4d7901",
-               "State": "completed",
-               "VolumeSize": 8,
-               "Progress": "100%",
-               "StartTime": "2014-02-28T21:28:32.000Z",
-               "SnapshotId": "snap-1234567890abcdef0",
-               "OwnerId": "012345678910"
-           }
-       ]
-   }
-
-**To describe snapshots using filters**
-
-This example command describes all snapshots owned by the ID 012345678910 that are in the ``pending`` status.
-
-Command::
-
-  aws ec2 describe-snapshots --owner-ids 012345678910 --filters Name=status,Values=pending
+    aws ec2 describe-snapshots \
+        --snapshot-ids snap-1234567890abcdef0
 
 Output::
 
-   {
-       "Snapshots": [
-           {
-               "Description": "This is my copied snapshot.",
-               "VolumeId": "vol-1234567890abcdef0",
-               "State": "pending",
-               "VolumeSize": 8,
-               "Progress": "87%",
-               "StartTime": "2014-02-28T21:37:27.000Z",
-               "SnapshotId": "snap-066877671789bd71b",
-               "OwnerId": "012345678910"
-           }
-       ]
-   }
+    {
+        "Snapshots": [
+            {
+                "Description": "This is my snapshot",
+                "Encrypted": false,
+                "VolumeId": "vol-049df61146c4d7901",
+                "State": "completed",
+                "VolumeSize": 8,
+                "StartTime": "2019-02-28T21:28:32.000Z",
+                "Progress": "100%",
+                "OwnerId": "012345678910",
+                "SnapshotId": "snap-01234567890abcdef",
+                "Tags": [
+                    {
+                        "Key": "Stack",
+                        "Value": "test"
+                    }
+                ]
+            }
+        ]
+    }
 
-**To describe tagged snapshots and filter the output**
+For more information, see `Amazon EBS snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html>`__ in the *Amazon EC2 User Guide*.
 
-This example command describes all snapshots that have the tag ``Group=Prod``. The output is filtered to display only the snapshot IDs and the time the snapshot was started.
+**Example 2: To describe snapshots based on filters**
 
-Command::
+The following ``describe-snapshots`` example uses filters to scope the results to snapshots owned by your AWS account that are in the ``pending`` state. The example uses the ``--query`` parameter to display only the snapshot IDs and the time the snapshot was started. ::
 
-  aws ec2 describe-snapshots --filters Name=tag:Group,Values=Prod --query "Snapshots[*].{ID:SnapshotId,Time:StartTime}"
+    aws ec2 describe-snapshots \
+        --owner-ids self \
+        --filters Name=status,Values=pending \
+        --query "Snapshots[*].{ID:SnapshotId,Time:StartTime}"
 
 Output::
 
-   [
-     {
-        "ID": "snap-1234567890abcdef0", 
-        "Time": "2014-08-04T12:48:18.000Z"
-     }
-   ]
+    [
+        {
+            "ID": "snap-1234567890abcdef0", 
+            "Time": "2019-08-04T12:48:18.000Z"
+        },
+        {
+            "ID": "snap-066877671789bd71b",
+            "Time": "2019-08-04T02:45:16.000Z
+        },
+        ...
+    ]
+
+The following ``describe-snapshots`` example uses filters to scope the results to snapshots created from the specified volume. The example uses the ``--query`` parameter to display only the snapshot IDs. ::
+
+    aws ec2 describe-snapshots \
+        --filters Name=volume-id,Values=049df61146c4d7901 \
+        --query "Snapshots[*].[SnapshotId]" \
+        --output text
+
+Output::
+
+    snap-1234567890abcdef0
+    snap-08637175a712c3fb9
+    ...
+
+For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
+
+**Example 3: To describe snapshots based on tags**
+
+The following ``describe-snapshots`` example uses tag filters to scope the results to snapshots that have the tag ``Stack=Prod``. ::
+
+    aws ec2 describe-snapshots \
+        --filters Name=tag:Stack,Values=prod
+
+For an example of the output for ``describe-snapshots``, see Example 1.
+
+For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.
+
+**Example 4: To describe snapshots based on age**
+
+The following ``describe-snapshots`` example uses JMESPath expressions to describe all snapshots created by your AWS account before the specified date. It displays only the snapshot IDs. ::
+
+    aws ec2 describe-snapshots \
+        --owner-ids 012345678910 \
+        --query "Snapshots[?(StartTime<='2020-03-31')].[SnapshotId]"
+
+For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.

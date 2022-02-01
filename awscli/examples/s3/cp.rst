@@ -92,12 +92,12 @@ Output::
 
 You can combine ``--exclude`` and ``--include`` options to copy only objects that match a pattern, excluding all others::
 
-    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ --recursive --exclude "*" --include "*.log" 
+    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ --recursive --exclude "*" --include "*.log"
 
 Output::
 
-    copy: s3://mybucket/test/test.log to s3://mybucket2/test/test.log
-    copy: s3://mybucket/test3.log to s3://mybucket2/test3.log
+    copy: s3://mybucket/logs/test/test.log to s3://mybucket2/logs/test/test.log
+    copy: s3://mybucket/logs/test3.log to s3://mybucket2/logs/test3.log
 
 **Setting the Access Control List (ACL) while copying an S3 object**
 
@@ -141,9 +141,9 @@ Output::
 **Granting permissions for an S3 object**
 
 The following ``cp`` command illustrates the use of the ``--grants`` option to grant read access to all users and full
-control to a specific user identified by their email address::
+control to a specific user identified by their URI::
 
-  aws s3 cp file.txt s3://mybucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=emailaddress=user@example.com
+  aws s3 cp file.txt s3://mybucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=uri=79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be
 
 Output::
 
@@ -151,17 +151,43 @@ Output::
 
 **Uploading a local file stream to S3**
 
-WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
+.. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
 
 The following ``cp`` command uploads a local file stream from standard input to a specified bucket and key::
 
     aws s3 cp - s3://mybucket/stream.txt
 
+**Uploading a local file stream that is larger than 50GB to S3**
+
+The following ``cp`` command uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000::
+
+    aws s3 cp - s3://mybucket/stream.txt --expected-size 54760833024
 
 **Downloading an S3 object as a local file stream**
 
-WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirected output.
+.. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirected output.
 
 The following ``cp`` command downloads an S3 object locally as a stream to standard output. Downloading as a stream is not currently compatible with the ``--recursive`` parameter::
 
     aws s3 cp s3://mybucket/stream.txt -
+
+**Uploading to an S3 access point**
+
+The following ``cp`` command uploads a single file (``mydoc.txt``) to the access point (``myaccesspoint``) at the key (``mykey``)::
+
+    aws s3 cp mydoc.txt s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+Output::
+
+    upload: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+
+**Downloading from an S3 access point**
+
+The following ``cp`` command downloads a single object (``mykey``) from the access point (``myaccesspoint``) to the local file (``mydoc.txt``)::
+
+    aws s3 cp s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey mydoc.txt
+
+Output::
+
+    download: s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey to mydoc.txt

@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 import re
-
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import applicationutils
 from awscli.customizations.emr import argumentschema
@@ -59,6 +58,8 @@ class CreateCluster(Command):
          'help_text': helptext.CLUSTER_NAME},
         {'name': 'log-uri',
          'help_text': helptext.LOG_URI},
+        {'name': 'log-encryption-kms-key-id',
+         'help_text': helptext.LOG_ENCRYPTION_KMS_KEY_ID},
         {'name': 'service-role',
          'help_text': helptext.SERVICE_ROLE},
         {'name': 'auto-scaling-role',
@@ -117,9 +118,21 @@ class CreateCluster(Command):
          'help_text' : helptext.REPO_UPGRADE_ON_BOOT},
         {'name': 'kerberos-attributes',
          'schema': argumentschema.KERBEROS_ATTRIBUTES_SCHEMA,
-         'help_text': helptext.KERBEROS_ATTRIBUTES}
+         'help_text': helptext.KERBEROS_ATTRIBUTES},
+        {'name': 'step-concurrency-level',
+         'cli_type_name': 'integer',
+         'help_text': helptext.STEP_CONCURRENCY_LEVEL},
+        {'name': 'managed-scaling-policy',
+         'schema': argumentschema.MANAGED_SCALING_POLICY_SCHEMA,
+         'help_text': helptext.MANAGED_SCALING_POLICY},
+        {'name': 'placement-group-configs',
+         'schema': argumentschema.PLACEMENT_GROUP_CONFIGS_SCHEMA,
+         'help_text': helptext.PLACEMENT_GROUP_CONFIGS},
+        {'name': 'auto-termination-policy',
+         'schema': argumentschema.AUTO_TERMINATION_POLICY_SCHEMA,
+         'help_text': helptext.AUTO_TERMINATION_POLICY}
     ]
-    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
+    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
     def _run_main_command(self, parsed_args, parsed_globals):
@@ -185,6 +198,10 @@ class CreateCluster(Command):
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)
+
+        if parsed_args.log_encryption_kms_key_id is not None:
+            emrutils.apply_dict(params, 'LogEncryptionKmsKeyId',
+                parsed_args.log_encryption_kms_key_id)
 
         if parsed_args.use_default_roles is True:
             parsed_args.service_role = EMR_ROLE_NAME
@@ -330,6 +347,23 @@ class CreateCluster(Command):
             emrutils.apply_dict(
                 params, 'KerberosAttributes', parsed_args.kerberos_attributes)
 
+        if parsed_args.step_concurrency_level is not None:
+            params['StepConcurrencyLevel'] = parsed_args.step_concurrency_level
+
+        if parsed_args.managed_scaling_policy is not None:
+            emrutils.apply_dict(
+                params, 'ManagedScalingPolicy', parsed_args.managed_scaling_policy)
+
+        if parsed_args.placement_group_configs is not None:
+            emrutils.apply_dict(
+                params, 'PlacementGroupConfigs',
+                parsed_args.placement_group_configs)
+
+        if parsed_args.auto_termination_policy is not None:
+            emrutils.apply_dict(
+                params, 'AutoTerminationPolicy',
+                parsed_args.auto_termination_policy)
+
         self._validate_required_applications(parsed_args)
 
         run_job_flow_response = emrutils.call(
@@ -344,11 +378,14 @@ class CreateCluster(Command):
 
     def _construct_result(self, run_job_flow_result):
         jobFlowId = None
+        clusterArn = None
         if run_job_flow_result is not None:
             jobFlowId = run_job_flow_result.get('JobFlowId')
+            clusterArn = run_job_flow_result.get('ClusterArn')
 
         if jobFlowId is not None:
-            return {'ClusterId': jobFlowId}
+            return {'ClusterId': jobFlowId,
+                    'ClusterArn': clusterArn }
         else:
             return {}
 
@@ -536,8 +573,8 @@ class CreateCluster(Command):
                                                 parsed_args, parsed_configs):
         if parsed_args.use_default_roles:
             configurations = [x for x in configurations
-                              if x.name is not 'service_role' and
-                              x.name is not 'instance_profile']
+                              if x.name != 'service_role' and
+                              x.name != 'instance_profile']
         return configurations
 
     def _handle_emrfs_parameters(self, cluster, emrfs_args, release_label):

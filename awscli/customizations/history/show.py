@@ -18,6 +18,7 @@ import xml.dom.minidom
 
 import colorama
 
+from awscli.table import COLORAMA_KWARGS
 from awscli.compat import six
 from awscli.customizations.history.commands import HistorySubcommand
 from awscli.customizations.history.filters import RegexFilter
@@ -179,7 +180,7 @@ class DetailedFormatter(Formatter):
         self._colorize = colorize
         self._value_pformatter = SectionValuePrettyFormatter()
         if self._colorize:
-            colorama.init(autoreset=True, strip=False)
+            colorama.init(**COLORAMA_KWARGS)
 
     def _display(self, event_record):
         section_definition = self._SECTIONS.get(event_record['event_type'])

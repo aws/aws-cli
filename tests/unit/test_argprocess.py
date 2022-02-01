@@ -12,11 +12,11 @@
 # language governing permissions and limitations under the License.
 import json
 
-import mock
 from botocore import xform_name
 from botocore import model
 from botocore.compat import OrderedDict
 
+from awscli.testutils import mock
 from awscli.testutils import unittest
 from awscli.testutils import BaseCLIDriverTest
 from awscli.testutils import temporary_file
@@ -253,6 +253,7 @@ class TestParamShorthand(BaseArgProcessTest):
         bool_param = mock.Mock()
         bool_param.cli_type_name = 'boolean'
         bool_param.argument_model.type_name = 'boolean'
+        bool_param.argument_model.is_document_type = False
         self.assertTrue(unpack_cli_arg(bool_param, True))
         self.assertTrue(unpack_cli_arg(bool_param, 'True'))
         self.assertTrue(unpack_cli_arg(bool_param, 'true'))
@@ -395,7 +396,7 @@ class TestParamShorthand(BaseArgProcessTest):
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName=bar'
         error_msg = "Error parsing parameter '--source-configuration'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, value)
 
     def test_improper_separator(self):
@@ -405,19 +406,19 @@ class TestParamShorthand(BaseArgProcessTest):
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName:bar'
         error_msg = "Error parsing parameter '--source-configuration'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, value)
 
     def test_improper_separator_for_filters_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         error_msg = "Error parsing parameter '--filters'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ["Name:tag:Name,Values:foo"])
 
     def test_csv_syntax_escaped(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
         returned = self.parse_shorthand(
-            p, ["ParameterKey=key,ParameterValue=foo\,bar"])
+            p, [r"ParameterKey=key,ParameterValue=foo\,bar"])
         expected = [{"ParameterKey": "key",
                      "ParameterValue": "foo,bar"}]
         self.assertEqual(returned, expected)
@@ -441,13 +442,13 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_csv_syntax_errors(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
         error_msg = "Error parsing parameter '--parameters'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar'])
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=foo,bar"'])
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
 
@@ -581,6 +582,27 @@ class TestDocGen(BaseArgProcessTest):
         with mock.patch(uses_old_list, mock.Mock(return_value=True)):
             self.assert_generated_example_is(argument, '--arg Bar1 Bar2 Bar3')
 
+    def test_generates_single_example_with_min_max_1(self):
+        # An example of this is
+        # 'workspaces rebuild-workspaces --rebuild-workspace-requests'
+        argument = self.create_argument({
+            'Arg': {
+                'type': 'list',
+                'max': 1,
+                'min': 1,
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Bar': {'type': 'string'}
+                    }
+                }
+            }
+        }, 'arg')
+        argument.argument_model = argument.argument_model.members['Arg']
+        uses_old_list = 'awscli.argprocess.ParamShorthand._uses_old_list_case'
+        with mock.patch(uses_old_list, mock.Mock(return_value=True)):
+            self.assert_generated_example_is(argument, '--arg Bar1')
+
     def test_does_not_flatten_unmarked_single_member_structure_list(self):
         argument = self.create_argument({
             'Arg': {
@@ -658,7 +680,7 @@ class TestDocGen(BaseArgProcessTest):
     def test_can_document_nested_structs(self):
         argument = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
         generated_example = self.get_generated_example_for(argument)
-        self.assertRegexpMatches(generated_example, 'Ebs={\w+=\w+')
+        self.assertRegex(generated_example, r'Ebs={\w+=\w+')
 
     def test_can_document_nested_lists(self):
         argument = self.create_argument({
@@ -806,7 +828,7 @@ class TestUnpackJSONParams(BaseArgProcessTest):
         # Parameter name should be in error message.
         self.assertIn('--block-device-mappings', str(e.exception))
         # The actual JSON itself should be in the error message.
-        # Becaues this is a list, only the first element in the JSON
+        # Because this is a list, only the first element in the JSON
         # will show.  This will at least let customers know what
         # we tried to parse.
         self.assertIn('[{', str(e.exception))

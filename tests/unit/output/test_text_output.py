@@ -12,7 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 import json
 import os
 import sys
@@ -21,7 +21,6 @@ import locale
 
 from awscli.compat import six
 from six.moves import cStringIO
-import mock
 
 from awscli.formatter import Formatter
 
@@ -75,6 +74,85 @@ class TestListUsers(BaseAWSCommandParamsTest):
         self.assertEqual(
             output,
             'ENGINEDEFAULTS\tNone\n')
+
+
+class TestDescribeChangesets(BaseAWSCommandParamsTest):
+
+    def setUp(self):
+        super(TestDescribeChangesets, self).setUp()
+        self.first_parsed_response = {
+            'Capabilities': ['CAPABILITY_IAM'],
+            'ChangeSetId': (
+                'arn:aws:cloudformation:us-west-2:12345:changeSet'
+                '/mychangeset/12345'
+            ),
+            'ChangeSetName': 'mychangeset',
+            'Changes': [{"ChangeId": "1"}],
+            'CreationTime': '2019-04-08T14:21:53.765Z',
+            'ExecutionStatus': 'AVAILABLE',
+            'NotificationARNs': [],
+            'RollbackConfiguration': {'RollbackTriggers': []},
+            'StackId': (
+                'arn:aws:cloudformation:us-west-2:12345:stack'
+                '/MyStack/12345'
+            ),
+            'StackName': 'MyStack',
+            'Status': 'CREATE_COMPLETE',
+            'NextToken': "more stuff"
+        }
+        self.second_parsed_response = {
+            'Capabilities': ['CAPABILITY_IAM'],
+            'ChangeSetId': (
+                'arn:aws:cloudformation:us-west-2:12345:changeSet'
+                '/mychangeset/12345'
+            ),
+            'ChangeSetName': 'mychangeset',
+            'Changes': [{"ChangeId": "2"}],
+            'CreationTime': '2019-04-08T14:21:53.765Z',
+            'ExecutionStatus': 'AVAILABLE',
+            'NotificationARNs': [],
+            'RollbackConfiguration': {'RollbackTriggers': []},
+            'StackId': (
+                'arn:aws:cloudformation:us-west-2:12345:stack'
+                '/MyStack/12345'
+            ),
+            'StackName': 'MyStack',
+            'Status': 'CREATE_COMPLETE'
+        }
+        self.parsed_responses = [
+            self.first_parsed_response,
+            self.second_parsed_response,
+        ]
+
+    def test_non_aggregate_keys(self):
+        output = self.run_cmd(
+            ('cloudformation describe-change-set --change-set-name mychangeset'
+             ' --stack-name MyStack --output text'),
+            expected_rc=0
+        )[0]
+        fields = output.split()
+        self.assertIn((
+            "arn:aws:cloudformation:us-west-2:12345:changeSet/mychangeset/"
+            "12345"), fields)
+        self.assert_in("CAPABILITY_IAM", fields, 1)
+        self.assert_in("mychangeset", fields, 1)
+        self.assert_in("2019-04-08T14:21:53.765Z", fields, 1)
+        self.assert_in("AVAILABLE", fields, 1)
+        self.assert_in("MyStack", fields, 1)
+        self.assert_in("CREATE_COMPLETE", fields, 1)
+
+    def assert_in(self, key, fields, count=None):
+        if count is None:
+            self.assertIn(key, fields)
+        else:
+            actual_count = fields.count(key)
+            self.assertEqual(
+                count,
+                actual_count,
+                "%s was found in the output %s times. Expected %s." % (
+                    key, actual_count, count
+                )
+            )
 
 
 class CustomFormatter(Formatter):

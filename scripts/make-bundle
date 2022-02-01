@@ -14,31 +14,22 @@ ecosystem.
 """
 import os
 import sys
-import time
 import subprocess
 import shutil
 import tempfile
 import zipfile
 from contextlib import contextmanager
-# These are package versions that are needed to boostrap
-# the installation process.  It is *not* the deps required
-# by awscli/botocore.
-PACKAGE_VERSION = {
-    'virtualenv': '15.1.0',
-    # These packages are included because they are required for
-    # python2.6, but our normal dependency downloading via pip
-    # only works if you use python2.6.  To fix this issue, we're
-    # explicitly saying that we need to download these packages
-    # even if pip doesn't think we need them.  That way we can
-    # run make-bundle in python versions besides 2.6.
-    'ordereddict': '1.1',
-    'simplejson': '3.3.0',
-    'argparse': '1.2.1',
-    'python-dateutil': '2.6.1',
-    'setuptools-scm': '1.15.7',
-    'urllib3': '1.22',
-}
-INSTALL_ARGS = '--allow-all-external --no-use-wheel'
+
+
+EXTRA_RUNTIME_DEPS = [
+    # Use an up to date virtualenv/pip/setuptools on > 2.6.
+    ('virtualenv', '16.7.8'),
+]
+BUILDTIME_DEPS = [
+    ('setuptools-scm', '3.3.3'),
+    ('wheel', '0.33.6'),
+]
+PIP_DOWNLOAD_ARGS = '--no-binary :all:'
 
 
 class BadRCError(Exception):
@@ -80,34 +71,18 @@ def create_scratch_dir():
 
 def download_package_tarballs(dirname, packages):
     with cd(dirname):
-        for package in packages:
-            run('pip install -d . %s==%s %s' % (
-                package, PACKAGE_VERSION[package], INSTALL_ARGS))
+        for package, package_version in packages:
+            run('%s -m pip download %s==%s %s' % (
+                sys.executable, package, package_version, PIP_DOWNLOAD_ARGS
+            ))
 
 
 def download_cli_deps(scratch_dir):
-    # As far as i can tell this is a bug in pip.
-    # Running 'pip intall -d . ~/clidir' does not work.
-    # Running 'pip install -d foo ~/clidir' results
-    # in python consuming 100% CPU.
-    # This problem is surprisingly hard, specifically that
-    # of downloading all the dependent python packages of
-    # the awscli as tarballs.
-    # So here's what we do.
-    # Step one create a virtualenv.
-    venv_dir = tempfile.mkdtemp()
-    try:
-        run('virtualenv --no-download  %s' % venv_dir)
-        pip = os.path.join(venv_dir, 'bin', 'pip')
-        assert os.path.isfile(pip)
-        awscli_dir = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
-        with cd(scratch_dir):
-            run('%s install %s -d . -e %s' % (pip, INSTALL_ARGS, awscli_dir))
-        # Remove the awscli package, we'll create our own sdist.
-        _remove_cli_zip(scratch_dir)
-    finally:
-        shutil.rmtree(venv_dir)
+    awscli_dir = os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))
+    with cd(scratch_dir):
+        run('pip download %s %s' % (
+            PIP_DOWNLOAD_ARGS, awscli_dir))
 
 
 def _remove_cli_zip(scratch_dir):
@@ -122,7 +97,7 @@ def add_cli_sdist(scratch_dir):
     if os.path.exists(os.path.join(awscli_dir, 'dist')):
         shutil.rmtree(os.path.join(awscli_dir, 'dist'))
     with cd(awscli_dir):
-        run('python setup.py sdist')
+        run('%s setup.py sdist' % sys.executable)
         filename = os.listdir('dist')[0]
         shutil.move(os.path.join('dist', filename),
                     os.path.join(scratch_dir, filename))
@@ -152,9 +127,11 @@ def zip_dir(scratch_dir):
 def verify_preconditions():
     # The pip version looks like:
     # 'pip 1.4.1 from ....'
-    pip_version = run('pip --version').strip().split()[1]
+    pip_version = run(
+        '%s -m pip --version' % sys.executable).strip().split()[1]
     # Virtualenv version just has the version string: '1.14.5\n'
-    virtualenv_version = run('virtualenv --version').strip()
+    virtualenv_version = run(
+        '%s -m virtualenv --version' % sys.executable).strip()
     _min_version_required('9.0.1', pip_version, 'pip')
     _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
 
@@ -178,10 +155,7 @@ def main():
     print("Bundle dir at: %s" % scratch_dir)
     download_package_tarballs(
         package_dir,
-        packages=[
-            'virtualenv', 'ordereddict', 'simplejson',
-            'argparse', 'python-dateutil', 'urllib3',
-        ]
+        packages=EXTRA_RUNTIME_DEPS,
     )
 
     # Some packages require setup time dependencies, and so we will need to
@@ -192,7 +166,7 @@ def main():
     setup_dir = os.path.join(package_dir, 'setup')
     download_package_tarballs(
         setup_dir,
-        packages=['setuptools-scm']
+        packages=BUILDTIME_DEPS,
     )
     download_cli_deps(package_dir)
     add_cli_sdist(package_dir)

@@ -1,51 +1,48 @@
 **To describe a policy used for SSL negotiation**
 
-This example describes the specified policy used for SSL negotiation.
+The following ``describe-ssl-policies`` example displays details of the specified policy used for SSL negotiation. ::
 
-Command::
-
-  aws elbv2 describe-ssl-policies --names ELBSecurityPolicy-2015-05
+    aws elbv2 describe-ssl-policies \
+        --names ELBSecurityPolicy-2016-08
       
 Output::
 
-  {
-    "SslPolicies": [
-        {
-            "SslProtocols": [
-                "TLSv1",
-                "TLSv1.1",
-                "TLSv1.2"
-            ],
-            "Ciphers": [
-                {
-                    "Priority": 1,
-                    "Name": "ECDHE-ECDSA-AES128-GCM-SHA256"
-                },
-                {
-                    "Priority": 2,
-                    "Name": "ECDHE-RSA-AES128-GCM-SHA256"
-                },
-                {
-                    "Priority": 3,
-                    "Name": "ECDHE-ECDSA-AES128-SHA256"
-                },
+    {
+        "SslPolicies": [
+            {
+                "SslProtocols": [
+                    "TLSv1",
+                    "TLSv1.1",
+                    "TLSv1.2"
+                ],
+                "Ciphers": [
+                    {
+                        "Priority": 1,
+                        "Name": "ECDHE-ECDSA-AES128-GCM-SHA256"
+                    },
+                    {
+                        "Priority": 2,
+                        "Name": "ECDHE-RSA-AES128-GCM-SHA256"
+                    },
+                    {
+                        "Priority": 3,
+                        "Name": "ECDHE-ECDSA-AES128-SHA256"
+                    },
 
-                ...
+                    ...some output truncated...
 
-                {
-                    "Priority": 19,
-                    "Name": "AES256-SHA"
-                }
-            ],
-            "Name": "ELBSecurityPolicy-2015-05"
-        }
-    ]
-  }
+                    {
+                        "Priority": 18,
+                        "Name": "AES256-SHA"
+                    }
+                ],
+                "Name": "ELBSecurityPolicy-2016-08"
+            }
+        ]
+    }
 
 **To describe all policies used for SSL negotiation**
 
-This example describes all the policies that you can use for SSL negotiation.
+The following ``describe-ssl-policies`` example displays details for all the policies that you can use for SSL negotiation. ::
 
-Command::
-
-  aws elbv2 describe-ssl-policies
+    aws elbv2 describe-ssl-policies

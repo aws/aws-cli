@@ -1,5 +1,3 @@
-
-
 **To retrieve the budgets associated with an account**
 
 This example retrieves the Cost and Usage budgets for an account.

@@ -1,61 +1,35 @@
-**To describe Dedicated hosts in your account and generate a machine-readable list**
+**Example 1: To enable auto-placement for a Dedicated Host**
 
-To output a list of Dedicated host IDs in JSON (comma separated).
+The following ``modify-hosts`` example enables auto-placement for a Dedicated Host so that it accepts any untargeted instance launches that match its instance type configuration. ::
 
-Command::
-
-  aws ec2 describe-hosts --query 'Hosts[].HostId' --output json
-
-Output::
-
-  [
-  "h-085664df5899941c",
-  "h-056c1b0724170dc38"
-  ]
-
-To output a list of Dedicated host IDs in plaintext (comma separated).
-
-Command::
-
-  aws ec2 describe-hosts --query 'Hosts[].HostId' --output text
-
-Output::
-h-085664df5899941c
-h-056c1b0724170dc38
-
-**To describe available Dedicated hosts in your account**
-
-Command::
-
-  aws ec2 describe-hosts --filter "Name=state,Values=available"
+    aws ec2 modify-hosts \
+        --host-id h-06c2f189b4EXAMPLE \
+        --auto-placement on
 
 Output::
 
-  { 
-    "Hosts":  [
-        {
-            "HostId": "h-085664df5899941c"
-            "HostProperties: {
-                "Cores": 20,
-                 "Sockets": 2,
-                  "InstanceType": "m3.medium".
-                  "TotalVCpus": 32
-             },
-             "Instances": [],
-              "State": "available",
-              "AvailabilityZone": "us-east-1b",
-              "AvailableCapacity": {
-                  "AvailableInstanceCapacity": [
-                      {
-                            "AvailableCapacity": 32,
-                            "InstanceType": "m3.medium",
-                            "TotalCapacity": 32
-                      }
-                   ],
-                   "AvailableVCpus": 32
-              },
-              "AutoPlacement": "off"
-       }
-    ]
-  }
-  
+    {
+        "Successful": [
+            "h-06c2f189b4EXAMPLE"
+        ],
+        "Unsuccessful": []
+    }
+
+**Example 2: To enable host recovery for a Dedicated Host**
+
+The following ``modify-hosts`` example enables host recovery for the specified Dedicated Host. ::
+
+    aws ec2 modify-hosts \
+        --host-id h-06c2f189b4EXAMPLE \
+        --host-recovery on
+
+Output::
+
+    {
+        "Successful": [
+            "h-06c2f189b4EXAMPLE"
+        ],
+        "Unsuccessful": []
+    }
+
+For more information, see `Modifying Dedicated Host Auto-Placement <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#modify-host-auto-placement>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

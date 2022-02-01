@@ -2,4 +2,4 @@
 
 The following example shows you how to remove an account from an organization: ::
 
-	aws organizations remove-account --account-id 333333333333
+    aws organizations remove-account-from-organization --account-id 333333333333

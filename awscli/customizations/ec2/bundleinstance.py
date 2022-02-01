@@ -98,8 +98,8 @@ def _check_args(parsed_args, **kwargs):
     logger.debug(parsed_args)
     arg_dict = vars(parsed_args)
     if arg_dict['storage']:
-        for key in ('bucket', 'prefix', 'owner-akid',
-                    'owner-sak', 'policy'):
+        for key in ('bucket', 'prefix', 'owner_akid',
+                    'owner_sak', 'policy'):
             if arg_dict[key]:
                 msg = ('Mixing the --storage option '
                        'with the simple, scalar options is '
@@ -135,7 +135,7 @@ def _generate_signature(params):
         policy = base64.b64encode(six.b(policy)).decode('utf-8')
         new_hmac = hmac.new(sak.encode('utf-8'), digestmod=sha1)
         new_hmac.update(six.b(policy))
-        ps = base64.encodestring(new_hmac.digest()).strip().decode('utf-8')
+        ps = base64.encodebytes(new_hmac.digest()).strip().decode('utf-8')
         params['UploadPolicySignature'] = ps
         del params['_SAK']
 

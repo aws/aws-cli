@@ -1,18 +1,15 @@
 **To stop a DB instance**
 
-This example stops a DB instance::
+The following ``stop-db-instance`` example stops the specified DB instance. ::
 
-    aws rds stop-db-instance --db-instance-identifier test-instance
+    aws rds stop-db-instance \
+        --db-instance-identifier test-instance
 
 Output::
 
-{
-    "DBInstance": {
-
-<...output omitted...>
-
-        "DBInstanceStatus": "stopping",
-
-<...output omitted...>
-
-}
+    {
+        "DBInstance": {
+            "DBInstanceStatus": "stopping",
+            ...some output truncated...
+        }
+    }

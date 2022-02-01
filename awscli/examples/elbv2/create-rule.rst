@@ -1,67 +1,105 @@
-**To create a rule using a path condition**
+**Example 1: To create a rule using a path condition and a forward action**
 
-This example creates a rule that forwards requests to the specified target group if the URL contains the specified pattern (for example, /img/*).
+The following ``create-rule`` example creates a rule that forwards requests to the specified target group if the URL contains the specified pattern. ::
 
-Command::
+    aws elbv2 create-rule \
+        --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 \
+        --priority 5 \
+        --conditions file://conditions-pattern.json 
+        --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-  aws elbv2 create-rule --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 --priority 10 --conditions Field=path-pattern,Values='/img/*' --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
+Contents of ``conditions-pattern.json``::
 
-Output::
-
-  {
-    "Rules": [
+    [
         {
-            "Actions": [
-                {
-                    "Type": "forward",
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067"
-                }
-            ],
-            "IsDefault": false,
-            "Conditions": [
-                {
-                    "Field": "path-pattern",
-                    "Values": [
-                        "/img/*"
-                    ]
-                }
-            ],
-            "Priority": "10",
-            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/9683b2d02a6cabee"
+            "Field": "path-pattern",
+            "PathPatternConfig": {
+                "Values": ["/images/*"]
+            }
         }
     ]
-  }
 
-**To create a rule using a host condition**
+**Example 2: To create a rule using a host condition and a fixed response**
 
-This example creates a rule that forwards requests to the specified target group if the hostname in the host header matches the specified hostname (for example, *.example.com).
+The following ``create-rule`` example creates a rule that provides a fixed response if the hostname in the host header matches the specified hostname. ::
 
-Command::
+    aws elbv2 create-rule \
+        --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 \
+        --priority 10 \
+        --conditions file://conditions-host.json \
+        --actions file://actions-fixed-response.json
 
-  aws elbv2 create-rule --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 --priority 5 --conditions Field=host-header,Values='*.example.com' --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
+Contents of ``conditions-host.json`` ::
 
-Output::
+  [
+    {
+        "Field": "host-header",
+        "HostHeaderConfig": {
+            "Values": ["*.example.com"]
+        }
+    }
+  ]
 
-  {
-    "Rules": [
+Contents of ``actions-fixed-response.json`` ::
+
+    [
         {
-            "Actions": [
-                {
-                    "Type": "forward",
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067"
-                }
-            ],
-            "IsDefault": false,
-            "Conditions": [
-                {
-                    "Field": "host-header",
-                    "Values": [
-                        "*.example.com"
-                    ]
-                }
-            ],
-            "Priority": "5",
-            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/db8b4ff9007785e9"
+            "Type": "fixed-response",
+            "FixedResponseConfig": {
+                "MessageBody": "Hello world",
+                "StatusCode": "200",
+                "ContentType": "text/plain"
+            }
         }
     ]
-  }
+
+**Example 3: To create a rule using a source IP address condition, an authenticate action, and a forward action**
+
+The following ``create-rule`` example creates a rule that authenticates the user if the source IP address matches the specified IP address, and forwards the request to the specified target group if authentication is successful. :: 
+
+    aws elbv2 create-rule \
+        --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 \
+        --priority 20 \
+        --conditions file://conditions-source-ip.json \
+        --actions file://actions-authenticate.json
+
+Contents of ``conditions-source-ip.json`` ::
+
+    [
+        {
+            "Field": "source-ip",
+            "SourceIpConfig": {
+                "Values": ["192.0.2.0/24", "198.51.100.10/32"]
+            }
+        }
+    ]
+
+Contents of ``actions-authenticate.json`` ::
+
+    [
+        {
+            "Type": "authenticate-oidc",
+            "AuthenticateOidcConfig": {
+                "Issuer": "https://idp-issuer.com",
+                "AuthorizationEndpoint": "https://authorization-endpoint.com",
+                "TokenEndpoint": "https://token-endpoint.com",
+                "UserInfoEndpoint": "https://user-info-endpoint.com",
+                "ClientId": "abcdefghijklmnopqrstuvwxyz123456789",
+                "ClientSecret": "123456789012345678901234567890",
+                "SessionCookieName": "my-cookie",
+                "SessionTimeout": 3600,
+                "Scope": "email",
+                "AuthenticationRequestExtraParams": {
+                    "display": "page",
+                    "prompt": "login"
+                },
+                "OnUnauthenticatedRequest": "deny"
+            },
+            "Order": 1
+        },
+        {
+            "Type": "forward",
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:880185128111:targetgroup/cli-test/642a97ecb0e0f26b",
+            "Order": 2
+        }
+    ]

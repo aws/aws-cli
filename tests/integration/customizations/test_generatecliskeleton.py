@@ -14,10 +14,9 @@ import os
 import json
 import logging
 
-import mock
-from nose.tools import assert_equal
+import pytest
 
-from awscli.testutils import unittest, aws, capture_output
+from awscli.testutils import mock, unittest, aws, capture_output
 from awscli.clidriver import create_clidriver
 from awscli.customizations.preview import PREVIEW_SERVICES
 
@@ -32,39 +31,46 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
     skeleton. It is only testing wheter the skeleton generator argument works
     for various services.
     """
+    def _assert_skeleton_matches(self, actual_skeleton, expected_skeleton):
+        # Assert all expected keys are present, however there may be more
+        # keys in the actual skeleton generated if the API updates
+        for key, value in expected_skeleton.items():
+            self.assertEqual(value, actual_skeleton[key])
+
     def test_generate_cli_skeleton_s3api(self):
         p = aws('s3api delete-object --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {
-                'Bucket': '',
-                'BypassGovernanceRetention': True,
-                'Key': '',
-                'MFA': '',
-                'VersionId': '',
-                'RequestPayer': 'requester',
-            }
-        )
+        expected_skeleton = {
+            'Bucket': '',
+            'BypassGovernanceRetention': True,
+            'Key': '',
+            'MFA': '',
+            'VersionId': '',
+            'RequestPayer': 'requester',
+        }
+        actual_skeleton = json.loads(p.stdout)
+        self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
     def test_generate_cli_skeleton_sqs(self):
         p = aws('sqs change-message-visibility --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {'QueueUrl': '', 'ReceiptHandle': '', 'VisibilityTimeout': 0}
-        )
+        expected_skeleton = {
+            'QueueUrl': '',
+            'ReceiptHandle': '',
+            'VisibilityTimeout': 0,
+        }
+        actual_skeleton = json.loads(p.stdout)
+        self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
     def test_generate_cli_skeleton_iam(self):
         p = aws('iam create-group --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {'Path': '', 'GroupName': ''}
-        )
+        expected_skeleton = {'Path': '', 'GroupName': ''}
+        actual_skeleton = json.loads(p.stdout)
+        self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
 
-def test_can_generate_skeletons_for_all_service_comands():
+def _all_commands():
     environ = {
         'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
         'AWS_DEFAULT_REGION': 'us-east-1',
@@ -89,10 +95,14 @@ def test_can_generate_skeletons_for_all_service_comands():
                     op_help = sub_command.create_help_command()
                     arg_table = op_help.arg_table
                     if 'generate-cli-skeleton' in arg_table:
-                        yield _test_gen_skeleton, command_name, sub_name,
+                        yield command_name, sub_name
 
 
-def _test_gen_skeleton(command_name, operation_name):
+@pytest.mark.parametrize(
+    "command_name, operation_name",
+    _all_commands()
+)
+def test_can_generate_skeletons_for_all_service_comands(command_name, operation_name):
     command = '%s %s --generate-cli-skeleton' % (command_name,
                                                  operation_name)
     stdout, stderr, _ = _run_cmd(command)
@@ -101,10 +111,9 @@ def _test_gen_skeleton(command_name, operation_name):
         json.loads(stdout)
     except ValueError as e:
         raise AssertionError(
-            "Could not generate CLI skeleton for command: %s %s\n"
-            "stdout:\n%s\n"
-            "stderr:\n%s\n" % (command_name, operation_name, stdout,
-                               stderr))
+            f"Could not generate CLI skeleton for command: {command_name} "
+            f"{operation_name}\n stdout:\n{stdout}\nstderr:\n{stderr}\n"
+        )
 
 
 def _run_cmd(cmd, expected_rc=0):
@@ -132,9 +141,8 @@ def _run_cmd(cmd, expected_rc=0):
             rc = e.code
     stderr = captured.stderr.getvalue()
     stdout = captured.stdout.getvalue()
-    assert_equal(
-        rc, expected_rc,
+    assert rc == expected_rc, (
         "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-        "stdout:\n%sstderr:\n%s" % (
-            expected_rc, rc, cmd, stdout, stderr))
+        "stdout:\n%sstderr:\n%s" % (expected_rc, rc, cmd, stdout, stderr)
+    )
     return stdout, stderr, rc

@@ -10,13 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
-import mock
+from awscli.testutils import mock, unittest
 
 from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
 from awscli.customizations.commands import BasicDocHandler
-from botocore.docs.bcdoc.restdoc import ReSTDocument
+from awscli.bcdoc.restdoc import ReSTDocument
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
 
@@ -92,7 +91,7 @@ class TestBasicCommand(unittest.TestCase):
         sub_help_command = subcommand.create_help_command()
         # Note that the name of this Subcommand was never changed even
         # though it was put into the table as ``basic``. If no name
-        # is overriden it uses the name ``commandname``.
+        # is overridden it uses the name ``commandname``.
         self.assertEqual(sub_help_command.event_class, 'mock.commandname')
 
 

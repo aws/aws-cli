@@ -16,6 +16,14 @@ from awscli.compat import six
 from difflib import get_close_matches
 
 
+AWS_CLI_V2_MESSAGE = (
+    'Note: AWS CLI version 2, the latest major version '
+    'of the AWS CLI, is now stable and recommended for general '
+    'use. For more information, see the AWS CLI version 2 '
+    'installation instructions at: https://docs.aws.amazon.com/cli/'
+    'latest/userguide/install-cliv2.html'
+)
+
 HELP_BLURB = (
     "To see help text, you can run:\n"
     "\n"
@@ -24,8 +32,10 @@ HELP_BLURB = (
     "  aws <command> <subcommand> help\n"
 )
 USAGE = (
-    "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
-    "%s" % HELP_BLURB
+    "\r%s\n\n"
+    "usage: aws [options] <command> <subcommand> "
+    "[<subcommand> ...] [parameters]\n"
+    "%s" % (AWS_CLI_V2_MESSAGE, HELP_BLURB)
 )
 
 

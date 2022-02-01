@@ -22,6 +22,8 @@ import botocore.exceptions
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
 
+from awscli.compat import collections_abc
+
 LOG = logging.getLogger(__name__)
 
 
@@ -53,13 +55,12 @@ class S3Uploader(object):
 
     @artifact_metadata.setter
     def artifact_metadata(self, val):
-        if val is not None and type(val) is not dict:
+        if val is not None and not isinstance(val, collections_abc.Mapping):
             raise TypeError("Artifact metadata should be in dict type")
         self._artifact_metadata = val
 
     def __init__(self, s3_client,
                  bucket_name,
-                 region,
                  prefix=None,
                  kms_key_id=None,
                  force_upload=False,
@@ -69,7 +70,6 @@ class S3Uploader(object):
         self.kms_key_id = kms_key_id or None
         self.force_upload = force_upload
         self.s3 = s3_client
-        self.region = region
 
         self.transfer_manager = transfer_manager
         if not transfer_manager:
@@ -90,7 +90,7 @@ class S3Uploader(object):
 
         # Check if a file with same data exists
         if not self.force_upload and self.file_exists(remote_path):
-            LOG.debug("File with same data is already exists at {0}. "
+            LOG.debug("File with same data already exists at {0}. "
                       "Skipping upload".format(remote_path))
             return self.make_url(remote_path)
 
@@ -195,10 +195,7 @@ class S3Uploader(object):
             This link describes the format of Path Style URLs
             http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
         """
-        base = "https://s3.amazonaws.com"
-        if self.region and self.region != "us-east-1":
-            base = "https://s3-{0}.amazonaws.com".format(self.region)
-
+        base = self.s3.meta.endpoint_url
         result = "{0}/{1}/{2}".format(base, self.bucket_name, key)
         if version:
             result = "{0}?versionId={1}".format(result, version)

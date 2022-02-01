@@ -58,6 +58,7 @@ def replace_event_stream_docs(help_command, **kwargs):
 
 
 class S3SelectStreamOutputArgument(CustomArgument):
+    _DOCUMENT_AS_REQUIRED = True
 
     def __init__(self, stream_key, session, **kwargs):
         super(S3SelectStreamOutputArgument, self).__init__(**kwargs)

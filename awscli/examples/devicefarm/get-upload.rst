@@ -1,4 +1,4 @@
-**Viewing an upload**
+**To view an upload**
 
 The following command retrieves information about an upload::
 

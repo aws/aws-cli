@@ -1,7 +1,10 @@
 **To deregister a managed instance**
 
-This example deregisters a managed instance. There is no output if the command succeeds.
+The following ``deregister-managed-instance`` example deregisters the specified managed instance. ::
 
-Command::
+    aws ssm deregister-managed-instance 
+        --instance-id "mi-08ab247cdfEXAMPLE"  
 
-  aws ssm deregister-managed-instance --instance-id "mi-08ab247cdf1046573"
+This command produces no output.
+
+For more information, see `Deregistering Managed Instances in a Hybrid Environment <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-managed-instances-advanced-deregister.html>`__ in the *AWS Systems Manager User Guide*.

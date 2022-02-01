@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
 import os
 import copy
-import mock
 
+
+from awscli.testutils import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 
@@ -630,11 +630,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         if expected_error_msg:
             grl_patch.return_value = None
             result = self.run_cmd(cmd, 255)
-            self.assertEquals(expected_error_msg, result[1])
+            self.assertEqual(expected_error_msg, result[1])
         if expected_result_release:
             grl_patch.return_value = 'emr-4.0'
             result = self.run_cmd(cmd, 255)
-            self.assertEquals(expected_result_release, result[1])
+            self.assertEqual(expected_result_release, result[1])
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,26 +1,23 @@
-**To view details about existing document versions**
+**To list document versions**
 
-This example lists all the versions for a document.
+The following ``list-document-versions`` example lists all versions for a Systems Manager document. ::
 
-Command::
-
-  aws ssm list-document-versions --name "patchWindowsAmi"
+    aws ssm list-document-versions \
+        --name "Example"
 
 Output::
 
-  {
-	"DocumentVersions": [
-		{
-			"IsDefaultVersion": false, 
-			"Name": "patchWindowsAmi", 
-			"DocumentVersion": "2", 
-			"CreatedDate": 1475799950.484
-		}, 
-		{
-			"IsDefaultVersion": false, 
-			"Name": "patchWindowsAmi", 
-			"DocumentVersion": "1", 
-			"CreatedDate": 1475799931.064
-		}
-	]
-  }
+    {
+        "DocumentVersions": [
+            {
+                "Name": "Example",
+                "DocumentVersion": "1",
+                "CreatedDate": 1583257938.266,
+                "IsDefaultVersion": true,
+                "DocumentFormat": "YAML",
+                "Status": "Active"
+            }
+        ]
+    }  
+
+For more information, see `Sending Commands that Use the Document Version Parameter <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command-version.html>`__ in the *AWS Systems Manager User Guide*.

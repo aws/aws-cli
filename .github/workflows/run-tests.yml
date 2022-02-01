@@ -1,0 +1,37 @@
+name: Run tests
+
+on:
+  push:
+  pull_request:
+    branches-ignore: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9, 3.10-dev]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        pip install codecov
+        python scripts/ci/install
+        python scripts/ci/install-check
+    - name: Run tests
+      run: python scripts/ci/run-tests --with-cov
+    - name: Run checks
+      run: python scripts/ci/run-check
+    - name: codecov
+      run: |
+        rm tests/coverage.xml
+        mv tests/.coverage ./
+        codecov

@@ -51,13 +51,16 @@ class AddInstanceGroups(Command):
     def _construct_result(self, add_instance_groups_result):
         jobFlowId = None
         instanceGroupIds = None
+        clusterArn = None
         if add_instance_groups_result is not None:
             jobFlowId = add_instance_groups_result.get('JobFlowId')
             instanceGroupIds = add_instance_groups_result.get(
                 'InstanceGroupIds')
+            clusterArn = add_instance_groups_result.get('ClusterArn')
 
         if jobFlowId is not None and instanceGroupIds is not None:
             return {'ClusterId': jobFlowId,
-                    'InstanceGroupIds': instanceGroupIds}
+                    'InstanceGroupIds': instanceGroupIds,
+                    'ClusterArn': clusterArn}
         else:
             return {}

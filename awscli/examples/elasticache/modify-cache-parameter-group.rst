@@ -1,17 +1,15 @@
-**To modify cache parameter groups**
+**To modify a cache parameter group**
 
-This example modifies parameters for the specified cache parameter group.
+The following ``modify-cache-parameter-group`` example modifies the parameters of the specified cache parameter group. ::
 
-Command::
-
-  aws elasticache modify-cache-parameter-group \
-  --cache-parameter-group-name my-redis-28 --parameter-name-values \
-  ParameterName=close-on-slave-write,ParameterValue=no \
-  ParameterName=timeout,ParameterValue=60
+    aws elasticache modify-cache-parameter-group \
+        --cache-parameter-group-name "mygroup" \
+        --parameter-name-values "ParameterName=activedefrag, ParameterValue=no"
 
 Output::
 
-  {
-      "CacheParameterGroupName": "my-redis-28"
-  }
+    {
+        "CacheParameterGroupName": "mygroup"
+    }
 
+For more information, see `Modifying a Parameter Group <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/ParameterGroups.Modifying.html>`__ in the *Elasticache User Guide*.

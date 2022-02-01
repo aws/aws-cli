@@ -46,6 +46,12 @@ def build_instance_groups(parsed_instance_groups):
         if 'AutoScalingPolicy' in keys:
             ig_config['AutoScalingPolicy'] = instance_group['AutoScalingPolicy']
 
+        if 'Configurations' in keys:
+            ig_config['Configurations'] = instance_group['Configurations']
+
+        if 'CustomAmiId' in keys:
+            ig_config['CustomAmiId'] = instance_group['CustomAmiId']
+
         instance_groups.append(ig_config)
     return instance_groups
 

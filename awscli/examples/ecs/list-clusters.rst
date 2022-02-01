@@ -1,16 +1,16 @@
 **To list your available clusters**
 
-This example command lists all of your available clusters in your default region.
+The following ``list-clusters`` example lists all of the available clusters. ::
 
-Command::
-
-  aws ecs list-clusters
+    aws ecs list-clusters
 
 Output::
 
-	{
-	    "clusterArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/test",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/default"
-	    ]
-	}
+    {
+        "clusterArns": [
+            "arn:aws:ecs:us-west-2:123456789012:cluster/MyECSCluster1",
+            "arn:aws:ecs:us-west-2:123456789012:cluster/AnotherECSCluster"
+        ]
+    }
+
+For more information, see `Amazon ECS Clusters <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_clusters.html>`_ in the *Amazon ECS Developer Guide*.

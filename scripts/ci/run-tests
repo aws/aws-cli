@@ -3,18 +3,67 @@
 # We want to ensure we're importing from the installed
 # binary package not from the CWD.
 
+import argparse
 import os
+from contextlib import contextmanager
 from subprocess import check_call
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
-os.chdir(os.path.join(REPO_ROOT, 'tests'))
+PACKAGE = "awscli"
+
+
+@contextmanager
+def cd(path):
+    """Change directory while inside context manager."""
+    cwd = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 def run(command):
     return check_call(command, shell=True)
 
 
-run('nosetests --with-coverage --cover-erase --cover-package awscli '
-    '--with-xunit --cover-xml -v unit/ functional/')
+def process_args(args):
+    runner = args.test_runner
+    test_args = ""
+    if args.with_cov:
+        test_args += f"--cov={PACKAGE} --cov-report xml "
+    dirs = " ".join(args.test_dirs)
+
+    return runner, test_args, dirs
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "test_dirs",
+        default=["unit/", "functional/"],
+        nargs="*",
+        help="One or more directories containing tests.",
+    )
+    parser.add_argument(
+        "-r",
+        "--test-runner",
+        default="pytest",
+        help="Test runner to execute tests. Defaults to pytest.",
+    )
+    parser.add_argument(
+        "-c",
+        "--with-cov",
+        default=False,
+        action="store_true",
+        help="Run default test-runner with code coverage enabled.",
+    )
+    raw_args = parser.parse_args()
+    test_runner, test_args, test_dirs = process_args(raw_args)
+
+    cmd = f"{test_runner} {test_args}{test_dirs}"
+    print(f"Running {cmd}...")
+    with cd(os.path.join(REPO_ROOT, "tests")):
+        run(cmd)

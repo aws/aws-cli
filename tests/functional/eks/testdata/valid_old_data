@@ -1,0 +1,44 @@
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATADATA=
+    server: https://existingEndpoint.eks.amazonaws.com
+  name: arn:aws:eks:us-west-2:111222333444:cluster/Existing
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tDQpWR1Z6ZEdsdVp5QkVZWFJoRFFwVVpYTjBhVzVuSUVSaGRHRU5DbFJsYzNScGJtY2dSR0YwWVEwS2EzVmlaWEp1WlhSbGN6QWVGdzBLVkdWemRHbHVaeUJFWVhSaERRcFVaWE4wYVc1bklFUmhkR0ZWQkFNVERRcHJkV0psY201bGRHVnpNQUVpTUEwS1ZHVnpkR2x1WnlCRVlYUmhEUXBVWlhOMGFXNW5JRVJoZEdFTkNsUmxjM1JwYm1jZ1JHRjBZY3UvR1FnbmFTcDNZaHBDTWhGVVpYTjBhVzVuSUVSaGRHRXl3clZqeEpWNjNwNFVHRmpZdHdGR1drUldJVkV1VkdWemRHbHVaeUJFWVhSaGJzT0MxSVJiTDhPd0lpMVhiWGg2VkdWemRHbHVaeUJFWVhSaFpXVndTTk9VVUZKNmN5QWJaaFpnWVNkTUV3MEtGMVJsYzNScGJtY2dSR0YwWVFZRFZSMFBBUUVFQkFNQ0FsUmxjM1JwYm1jZ1JHRjBZUUV3RFFvR0NTcElEUXBVWlhOMGFXNW5JRVJoZEdGcEgxc1pPRTNMa3lrMU9DWUNHUloyTEZjM3paOCtHell3WEZSbGMzUnBibWNnUkdGMFlYMUR5NjFNMVlGV1AxWVRIMVJsYzNScGJtY2dSR0YwWVd0aE5oMVphM2dWUDBGaGNSWjdKaW9oZVc4N1JsUmxjM1JwYm1jZ1JHRjBZUVpIVHd4NE9IdzZmZz09DQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t
+    server: https://endpoint.amazonaws.com
+  name: arn:aws:eks:region:111222333444:cluster/ExampleCluster
+contexts:
+- context:
+    cluster: arn:aws:eks:us-west-2:111222333444:cluster/Existing
+    user: arn:aws:eks:us-west-2:111222333444:cluster/Existing
+  name: arn:aws:eks:us-west-2:111222333444:cluster/Existing
+- context:
+    cluster: arn:aws:eks:region:111222333444:cluster/ExampleCluster
+    user: arn:aws:eks:region:111222333444:cluster/ExampleCluster
+  name: arn:aws:eks:region:111222333444:cluster/ExampleCluster
+current-context: arn:aws:eks:region:111222333444:cluster/ExampleCluster
+kind: Config
+preferences: {}
+users:
+- name: arn:aws:eks:us-west-2:111222333444:cluster/Existing
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1alpha1
+      args:
+      - --region
+      - us-west-2
+      - eks
+      - get-token
+      - --cluster-name
+      - Existing
+      command: aws
+- name: arn:aws:eks:region:111222333444:cluster/ExampleCluster
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1alpha1
+      args:
+      - token
+      - -i
+      - ExampleCluster
+      command: aws-iam-authenticator

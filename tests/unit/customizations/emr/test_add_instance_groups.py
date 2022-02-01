@@ -16,7 +16,8 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 import json
-from mock import patch
+from awscli.testutils import mock
+
 
 INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'
@@ -46,6 +47,9 @@ INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS_ARG = (
 MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES_VOLUME_ARG = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100},VolumesPerInstance=4}]} InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=20}},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=40}}]}')
 
+INSTANCE_GROUPS_WITH_CUSTOM_AMI_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,CustomAmiId=ami-deadbeef'
+)
 
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
                             'InstanceCount': 10,
@@ -53,6 +57,15 @@ DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
                             'Market': 'ON_DEMAND',
                             'InstanceType': 'm2.large'
                             }]
+
+
+DEFAULT_INSTANCE_GROUPS_WITH_CUSTOM_AMI = \
+    [{'CustomAmiId':'ami-deadbeef',
+    'InstanceRole': 'TASK',
+    'InstanceCount': 2,
+    'Name': 'TASK',
+    'Market': 'ON_DEMAND',
+    'InstanceType': 'd2.xlarge'}]
 
 DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG = \
     [{'EbsConfiguration': 
@@ -178,6 +191,7 @@ ADD_INSTANCE_GROUPS_RESULT = {
     "InstanceGroupIds": [
         "ig-XXXX"
     ],
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX",
     "JobFlowId": "j-YYYY"
 }
 
@@ -185,6 +199,7 @@ CONSTRUCTED_RESULT = {
     "InstanceGroupIds": [
         "ig-XXXX"
     ],
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX",
     "ClusterId": "j-YYYY"
 }
 
@@ -337,7 +352,14 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
                   'InstanceGroups': DEFAULT_MULTIPLE_INSTANCE_GROUPS_WITH_EBS_CONFIG}
         self.assert_params_for_cmd(cmd, result)
 
-    @patch('awscli.customizations.emr.emrutils.call')
+    def test_instance_groups_with_custom_ami_instance_groups(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_CUSTOM_AMI_ARG
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': DEFAULT_INSTANCE_GROUPS_WITH_CUSTOM_AMI}
+        self.assert_params_for_cmd(cmd, result)
+
+    @mock.patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):
         call_patch.return_value = ADD_INSTANCE_GROUPS_RESULT
         cmd = self.prefix
@@ -346,7 +368,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, expected_rc=0)
         result_json = json.loads(result[0])
 
-        self.assertEquals(result_json, CONSTRUCTED_RESULT)
+        self.assertEqual(result_json, CONSTRUCTED_RESULT)
 
 if __name__ == "__main__":
     unittest.main()

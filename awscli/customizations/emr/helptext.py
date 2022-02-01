@@ -65,6 +65,12 @@ LOG_URI = (
     'logs files are not written to Amazon S3 from the master node '
     'and are lost if the master node terminates.</p>')
 
+LOG_ENCRYPTION_KMS_KEY_ID = (
+    '<p> Specifies the KMS Id utilized for log encryption. If a value is '
+    'not provided, log files will be encrypted by default encryption method '
+    'AES-256. This attribute is only available with EMR version 5.30.0 and later, '
+    'excluding EMR 6.0.0.</p>')
+
 SERVICE_ROLE = (
     '<p>Specifies an IAM service role, which Amazon EMR requires to call other AWS services '
     'on your behalf during cluster operation. This parameter '
@@ -102,7 +108,7 @@ RELEASE_LABEL = (
     ' the application versions and features available in that version.'
     ' For details about application versions and features available'
     ' in each release, see the Amazon EMR Release Guide:</p>'
-    '<p>https://docs.aws.amazon.com/emr/ReleaseGuide</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ReleaseGuide</p>'
     '<p>Use <code>--release-label</code> only for Amazon EMR release version 4.0'
     ' and later. Use <code>--ami-version</code> for earlier versions.'
     ' You cannot specify both a release label and AMI version.</p>')
@@ -177,8 +183,10 @@ INSTANCE_FLEETS = (
     ' type with the Spot purchasing option launches.</li>'
     '<li><code>[LaunchSpecifications]</code> - When <code>TargetSpotCapacity</code> is specified,'
     ' specifies the block duration and timeout action for Spot Instances.'
-    '<li><code>InstanceTypeConfigs</code> - Specifies up to five EC2 instance types to'
-    ' use in the instance fleet, including details such as Spot price and Amazon EBS configuration.</li>')
+    '<li><code>InstanceTypeConfigs</code> - Specify up to five EC2 instance types to'
+    ' use in the instance fleet, including details such as Spot price and Amazon EBS configuration.'
+    ' When you use an On-Demand or Spot Instance allocation strategy,'
+    ' you can specify up to 30 instance types per instance fleet.</li>')
 
 INSTANCE_TYPE = (
     '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>.'
@@ -197,16 +205,29 @@ INSTANCE_COUNT = (
     ' are used for the core node type.</p>')
 
 ADDITIONAL_INFO = (
-    '<p>Specifies additional information during cluster creation.</p>')
+    '<p>Specifies additional information during cluster creation. To set development mode when starting your EMR cluster,'
+    ' set this parameter to <code>{"clusterType":"development"}</code>.</p>')
 
 EC2_ATTRIBUTES = (
     '<p>Configures cluster and Amazon EC2 instance configurations. Accepts'
     ' the following arguments:</p>'
     '<li><code>KeyName</code> - Specifies the name of the AWS EC2 key pair that will be used for'
     ' SSH connections to the master node and other instances on the cluster.</li>'
-    '<li><code>AvailabilityZone</code> - Specifies the availability zone in which to launch'
-    ' the cluster. For example, <code>us-west-1b</code>.</li>'
-    '<li><code>SubnetId</code> - Specifies the VPC subnet in which to create the cluster.</li>'
+    '<li><code>AvailabilityZone</code> - Applies to clusters that use the uniform instance group configuration.'
+    ' Specifies the availability zone in which to launch the cluster.'
+    ' For example, <code>us-west-1b</code>. <code>AvailabilityZone</code> is used for uniform instance groups,'
+    ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
+    '<li><code>AvailabilityZones</code> - Applies to clusters that use the instance fleet configuration.'
+    ' When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances' 
+    ' in the optimal Availability Zone. <code>AvailabilityZone</code> is used for uniform instance groups,'
+    ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
+    '<li><code>SubnetId</code> - Applies to clusters that use the uniform instance group configuration.' 
+    ' Specify the VPC subnet in which to create the cluster. <code>SubnetId</code> is used for uniform instance groups,'
+    ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
+    '<li><code>SubnetIds</code> - Applies to clusters that use the instance fleet configuration.'
+    ' When multiple EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.'
+    ' <code>SubnetId</code> is used for uniform instance groups,'
+    ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
     '<li><code>InstanceProfile</code> - An IAM role that allows EC2 instances to'
     ' access other AWS services, such as Amazon S3, that'
     ' are required for operations.</li>'
@@ -240,14 +261,13 @@ SCALE_DOWN_BEHAVIOR = (
     ' terminate EC2 instances at the instance-hour boundary, regardless of when'
     ' the request to terminate was submitted.</li>'
 )
+
 VISIBILITY = (
-    '<p>Specifies whether the cluster is visible to all IAM users of'
-    ' the AWS account associated with the cluster. If set to'
-    ' <code>--visible-to-all-users</code>, all IAM users of that AWS account'
-    ' can view it. If they have the proper policy permissions set, they can '
-    ' also manage the cluster. If it is set to <code>--no-visible-to-all-users</code>,'
-    ' only the IAM user that created the cluster can view and manage it. '
-    ' Clusters are visible by default.</p>')
+    '<p>Specifies whether the cluster is visible to all IAM users'
+    ' of the AWS account associated with the cluster. If a user'
+    ' has the proper policy permissions set, they can also manage the cluster.</p>'
+    '<p>Visibility is on by default. The <code>--no-visible-to-all-users</code> option'
+    ' is no longer supported. To restrict cluster visibility, use an IAM policy.</p>')
 
 DEBUGGING = (
     '<p>Specifies that the debugging tool is enabled for the cluster,'
@@ -334,7 +354,7 @@ INSTALL_APPLICATIONS = (
     '<code>Name</code> and <code>Args</code>.</p>')
 
 EBS_ROOT_VOLUME_SIZE = (
-    '<p>Applies only to Amazon EMR release version 4.0 and earlier. Specifies the size,'
+    '<p>This option is available only with Amazon EMR version 4.x and later. Specifies the size,'
     ' in GiB, of the EBS root device volume of the Amazon Linux AMI'
     ' that is used for each EC2 instance in the cluster. </p>')
 
@@ -413,9 +433,9 @@ LIST_CLUSTERS_CREATED_AFTER = (
     ' <code>--created-after 2017-07-04T00:01:30.</p>')
 
 LIST_CLUSTERS_CREATED_BEFORE = (
-    '<p>List only those clusters created after the date and time'
+    '<p>List only those clusters created before the date and time'
     ' specified in the format yyyy-mm-ddThh:mm:ss. For example,'
-    ' <code>--created-after 2017-07-04T00:01:30.</p>')
+    ' <code>--created-before 2017-07-04T00:01:30.</p>')
 
 EMR_MANAGED_MASTER_SECURITY_GROUP = (
     '<p>The identifier of the Amazon EC2 security group '
@@ -440,3 +460,34 @@ ADDITIONAL_SLAVE_SECURITY_GROUPS = (
 AVAILABLE_ONLY_FOR_AMI_VERSIONS = (
     'This command is only available when using Amazon EMR versions'
     'earlier than 4.0.')
+
+STEP_CONCURRENCY_LEVEL = (
+    'This command specifies the step concurrency level of the cluster.'
+    'Default is 1 which is non-concurrent.'
+)
+
+MANAGED_SCALING_POLICY = (
+    '<p>Managed scaling policy for an Amazon EMR cluster. The policy '
+    'specifies the limits for resources that can be added or terminated '
+    'from a cluster. You can specify the ComputeLimits which include '
+    'the MaximumCapacityUnits, MaximumCoreCapacityUnits, MinimumCapacityUnits, '
+    'MaximumOnDemandCapacityUnits and UnitType. For an '
+    'InstanceFleet cluster, the UnitType must be InstanceFleetUnits. For '
+    'InstanceGroup clusters, the UnitType can be either VCPU or Instances.</p>'
+)
+
+PLACEMENT_GROUP_CONFIGS = (
+    '<p>Placement group configuration for an Amazon EMR ' 
+    'cluster. The configuration specifies the EC2 placement group ' 
+    'strategy associated with each EMR Instance Role.</p> ' 
+    '<p>Currently, we support placement group only for <code>MASTER</code> ' 
+    'role with <code>SPREAD</code> strategy by default. You can opt-in by '
+    'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
+    'during cluster creation.</p>'
+)
+
+AUTO_TERMINATION_POLICY = (
+    '<p>Auto termination policy for an Amazon EMR cluster. '
+    'The configuration specifies the termination idle timeout'
+    'threshold for an cluster.</p> '
+)

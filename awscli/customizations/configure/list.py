@@ -54,9 +54,8 @@ class ConfigureListCommand(BasicCommand):
         self._display_config_value(ConfigValue('-----', '----', '--------'),
                                    '----')
 
-        if self._session.profile is not None:
-            profile = ConfigValue(self._session.profile, 'manual',
-                                  '--profile')
+        if parsed_globals and parsed_globals.profile is not None:
+            profile = ConfigValue(self._session.profile, 'manual', '--profile')
         else:
             profile = self._lookup_config('profile')
         self._display_config_value(profile, 'profile')

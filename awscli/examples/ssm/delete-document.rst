@@ -1,7 +1,10 @@
 **To delete a document**
 
-This example deletes a document. There is no output if the command succeeds.
+The following ``delete-document`` example deletes a Systems Manager document. ::
 
-Command::
+    aws ssm delete-document \
+        --name "Example"
 
-  aws ssm delete-document --name "Config_2"
+This command produces no output.
+
+For more information, see `Creating Systems Manager Documents <https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-doc.html>`__ in the *AWS Systems Manager User Guide*.

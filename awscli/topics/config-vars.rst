@@ -78,6 +78,10 @@ ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA 
 parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
 -------------------- ----------- --------------------- --------------------- ----------------------------
 tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
+-------------------- ----------- --------------------- --------------------- ----------------------------
+max_attempts         N/A         max_attempts          AWS_MAX_ATTEMPTS      Number of total requests
+-------------------- ----------- --------------------- --------------------- ----------------------------
+retry_mode           N/A         retry_mode            AWS_RETRY_MODE        Type of retries performed
 ==================== =========== ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
@@ -112,6 +116,9 @@ variable are:
 when serializing requests. The default is True. You can disable parameter
 validation for performance reasons. Otherwise, it's recommended to leave
 parameter validation enabled.
+
+The ``max_attempts`` and ``retry_mode`` are explained in the
+"Retry Configuration" section below.
 
 When you specify a profile, either using ``--profile profile-name`` or by
 setting a value for the ``AWS_PROFILE`` environment variable, profile
@@ -284,6 +291,62 @@ the source credentials for the assume role call::
   role_arn=arn:aws:iam:...
   credential_source=Ec2InstanceMetadata
 
+Assume Role With Web Identity
+--------------------------------------
+
+Within the ``~/.aws/config`` file, you can also configure a profile to indicate
+that the AWS CLI should assume a role.  When you do this, the AWS CLI will
+automatically make the corresponding ``AssumeRoleWithWebIdentity`` calls to AWS
+STS on your behalf.
+
+When you specify a profile that has IAM role configuration, the AWS CLI will
+make an ``AssumeRoleWithWebIdentity`` call to retrieve temporary credentials.
+These credentials are then stored (in ``~/.aws/cli/cache``).  Subsequent AWS
+CLI commands will use the cached temporary credentials until they expire, in
+which case the AWS CLI will automatically refresh credentials.
+
+You can specify the following configuration values for configuring an
+assume role with web identity profile in the shared config:
+
+
+* ``role_arn`` - The ARN of the role you want to assume.
+* ``web_identity_token_file`` - The path to a file which contains an OAuth 2.0
+  access token or OpenID Connect ID token that is provided by the identity
+  provider. The contents of this file will be loaded and passed as the
+  ``WebIdentityToken`` argument to the ``AssumeRoleWithWebIdentity`` operation.
+* ``role_session_name`` - The name applied to this assume-role session. This
+  value affects the assumed role user ARN  (such as
+  arn:aws:sts::123456789012:assumed-role/role_name/role_session_name). This
+  maps to the ``RoleSessionName`` parameter in the
+  ``AssumeRoleWithWebIdentity`` operation.  This is an optional parameter. If
+  you do not provide this value, a session name will be automatically
+  generated.
+
+Below is an example configuration for the minimal amount of configuration
+needed to configure an assume role with web identity profile::
+
+  # In ~/.aws/config
+  [profile web-identity]
+  role_arn=arn:aws:iam:...
+  web_identity_token_file=/path/to/a/token
+
+This provider can also be configured via the environment:
+
+``AWS_ROLE_ARN``
+    The ARN of the role you want to assume.
+
+``AWS_WEB_IDENTITY_TOKEN_FILE``
+    The path to the web identity token file.
+
+``AWS_ROLE_SESSION_NAME``
+    The name applied to this assume-role session.
+
+.. note::
+
+    These environment variables currently only apply to the assume role with
+    web identity provider and do not apply to the general assume role provider
+    configuration.
+
 
 Sourcing Credentials From External Processes
 --------------------------------------------
@@ -295,6 +358,9 @@ Sourcing Credentials From External Processes
     credential providers should be preferred if at all possible. If using
     this option, you should make sure that the config file is as locked down
     as possible using security best practices for your operating system.
+    Ensure that your custom credential tool does not write any secret 
+    information to StdErr because the SDKs and CLI can capture and log such 
+    information, potentially exposing it to unauthorized users.
 
 If you have a method of sourcing credentials that isn't built in to the AWS
 CLI, you can integrate it by using ``credential_process`` in the config file.
@@ -363,6 +429,73 @@ that service's commands is representative of the specified API version.
 In the example configuration, the ``ec2`` CLI commands will be representative
 of Amazon EC2's ``2015-03-01`` API version and the ``cloudfront`` CLI commands
 will be representative of Amazon CloudFront's ``2015-09-17`` API version.
+
+
+AWS STS
+-------
+
+To set STS endpoint resolution logic, use the ``AWS_STS_REGIONAL_ENDPOINTS``
+environment variable or ``sts_regional_endpoints`` configuration file option.
+By default, this configuration option is set to ``legacy``. Valid values are:
+
+* ``regional``
+   Uses the STS endpoint that corresponds to the configured region. For
+   example if the client is configured to use ``us-west-2``, all calls
+   to STS will be make to the ``sts.us-west-2.amazonaws.com`` regional
+   endpoint instead of the global ``sts.amazonaws.com`` endpoint.
+
+* ``legacy``
+   Uses the global STS endpoint, ``sts.amazonaws.com``, for the following
+   configured regions:
+
+   * ``ap-northeast-1``
+   * ``ap-south-1``
+   * ``ap-southeast-1``
+   * ``ap-southeast-2``
+   * ``aws-global``
+   * ``ca-central-1``
+   * ``eu-central-1``
+   * ``eu-north-1``
+   * ``eu-west-1``
+   * ``eu-west-2``
+   * ``eu-west-3``
+   * ``sa-east-1``
+   * ``us-east-1``
+   * ``us-east-2``
+   * ``us-west-1``
+   * ``us-west-2``
+
+   All other regions will use their respective regional endpoint.
+
+
+Retry Configuration
+-------------------
+
+These configuration variables control how the AWS CLI retries requests.
+
+``max_attempts``
+    An integer representing the maximum number attempts that will be made for
+    a single request, including the initial attempt.  For example,
+    setting this value to 5 will result in a request being retried up to
+    4 times.  If not provided, the number of retries will default to whatever
+    is modeled, which is typically 5 total attempts in the ``legacy`` retry mode,
+    and 3 in the ``standard`` and ``adaptive`` retry modes.
+
+``retry_mode``
+    A string representing the type of retries the AWS CLI will perform.  Value
+    values are:
+
+        * ``legacy`` - The pre-existing retry behavior.  This is default value if
+          no retry mode is provided.
+        * ``standard`` - A standardized set of retry rules across the AWS SDKs.
+          This includes a standard set of errors that are retried as well as
+          support for retry quotas, which limit the number of unsuccessful retries
+          an SDK can make.  This mode will default the maximum number of attempts
+          to 3 unless a ``max_attempts`` is explicitly provided.
+        * ``adaptive`` - An experimental retry mode that includes all the
+          functionality of ``standard`` mode along with automatic client side
+          throttling.  This is a provisional mode that may change behavior in
+          the future.
 
 
 Amazon S3

@@ -1,61 +1,45 @@
-**To describe Dedicated hosts in your account and generate a machine-readable list**
+**To view details about Dedicated Hosts**
 
-To output a list of Dedicated host IDs in JSON (comma separated).
+The following ``describe-hosts`` example displays details for the ``available`` Dedicated Hosts in your AWS account. ::
 
-Command::
-
-  aws ec2 describe-hosts --query 'Hosts[].HostId' --output json
+    aws ec2 describe-hosts --filter "Name=state,Values=available"
 
 Output::
 
-  [
-  "h-085664df5899941c",
-  "h-056c1b0724170dc38"
-  ]
+    {
+        "Hosts": [
+            {
+                "HostId": "h-07879acf49EXAMPLE",
+                "Tags": [
+                    {
+                        "Value": "production",
+                        "Key": "purpose"
+                    }
+                ],
+                "HostProperties": {
+                    "Cores": 48,
+                    "TotalVCpus": 96,
+                    "InstanceType": "m5.large",
+                    "Sockets": 2
+                },
+                "Instances": [],
+                "State": "available",
+                "AvailabilityZone": "eu-west-1a",
+                "AvailableCapacity": {
+                    "AvailableInstanceCapacity": [
+                        {
+                            "AvailableCapacity": 48,
+                            "InstanceType": "m5.large",
+                            "TotalCapacity": 48
+                        }
+                    ],
+                    "AvailableVCpus": 96
+                },
+                "HostRecovery": "on",
+                "AllocationTime": "2019-08-19T08:57:44.000Z",
+                "AutoPlacement": "off"
+            }
+        ]
+    }
 
-To output a list of Dedicated host IDs in plaintext (comma separated).
-
-Command::
-
-  aws ec2 describe-hosts --query 'Hosts[].HostId' --output text
-
-Output::
-h-085664df5899941c
-h-056c1b0724170dc38
-
-**To describe available Dedicated hosts in your account**
-
-Command::
-
-  aws ec2 describe-hosts --filter "Name=state,Values=available"
-
-Output::
-
-  { 
-    "Hosts":  [
-        {
-            "HostId": "h-085664df5899941c"
-            "HostProperties: {
-                "Cores": 20,
-                 "Sockets": 2,
-                  "InstanceType": "m3.medium".
-                  "TotalVCpus": 32
-             },
-             "Instances": [],
-              "State": "available",
-              "AvailabilityZone": "us-east-1b",
-              "AvailableCapacity": {
-                  "AvailableInstanceCapacity": [
-                      {
-                            "AvailableCapacity": 32,
-                            "InstanceType": "m3.medium",
-                            "TotalCapacity": 32
-                      }
-                   ],
-                   "AvailableVCpus": 32
-              },
-              "AutoPlacement": "off"
-       }
-    ]
-  }
-  
+For more information, see `Viewing Dedicated Hosts <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#dedicated-hosts-managing>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

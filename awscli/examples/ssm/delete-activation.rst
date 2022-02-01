@@ -1,7 +1,10 @@
-**To delete an activation**
+**To delete a managed instance activation**
 
-This example deletes an activation. There is no output if the command succeeds.
+The following ``delete-activation`` example deletes a managed instance activation. ::
 
-Command::
+    aws ssm delete-activation \
+        --activation-id "aa673477-d926-42c1-8757-1358cEXAMPLE"
+  
+This command produces no output.
 
-  aws ssm delete-activation --activation-id "bcf6faa8-83fd-419e-9534-96ad14131eb7"
+For more information, see `Setting Up AWS Systems Manager for Hybrid Environments <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-managedinstances.html>`__ in the *AWS Systems Manager User Guide*.

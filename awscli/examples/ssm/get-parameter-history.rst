@@ -1,21 +1,51 @@
 **To get a value history for a parameter**
 
-This example lists the value history for a parameter.
+The following ``get-parameter-history`` example lists the history of changes for the specified parameter, including its value. ::
 
-Command::
-
-  aws ssm get-parameter-history --name "welcome"
+    aws ssm get-parameter-history \
+        --name "MyStringParameter"
   
 Output::
 
-  {
-    "Parameters": [
-        {
-            "LastModifiedUser": "arn:aws:iam::812345678901:user/admin",
-            "LastModifiedDate": 1487880053.085,
-            "Type": "String",
-            "Name": "welcome",
-            "Value": "helloWorld"
-        }
-    ]
-  }
+    {
+        "Parameters": [
+            {
+                "Name": "MyStringParameter",
+                "Type": "String",
+                "LastModifiedDate": 1582154711.976,
+                "LastModifiedUser": "arn:aws:iam::111222333444:user/Mary-Major",
+                "Description": "This is the first version of my String parameter",
+                "Value": "Veni",
+                "Version": 1,
+                "Labels": [],
+                "Tier": "Standard",
+                "Policies": []
+            },
+            {
+                "Name": "MyStringParameter",
+                "Type": "String",
+                "LastModifiedDate": 1582156093.471,
+                "LastModifiedUser": "arn:aws:iam::111222333444:user/Mary-Major",
+                "Description": "This is the second version of my String parameter",
+                "Value": "Vidi",
+                "Version": 2,
+                "Labels": [],
+                "Tier": "Standard",
+                "Policies": []
+            },
+            {
+                "Name": "MyStringParameter",
+                "Type": "String",
+                "LastModifiedDate": 1582156117.545,
+                "LastModifiedUser": "arn:aws:iam::111222333444:user/Mary-Major",
+                "Description": "This is the third version of my String parameter",
+                "Value": "Vici",
+                "Version": 3,
+                "Labels": [],
+                "Tier": "Standard",
+                "Policies": []
+            }
+        ]
+    }
+
+For more information, see `Working with parameter versions <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-versions.html>`__ in the *AWS Systems Manager User Guide*.

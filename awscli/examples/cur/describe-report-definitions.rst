@@ -1,4 +1,3 @@
-
 **To retrieve a list of AWS Cost and Usage Reports**
 
 This example describes a list of AWS Cost and Usage Reports owned by an account.

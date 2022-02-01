@@ -14,4 +14,4 @@ The following example shows how to attach a service control policy directly to a
 
 	aws organizations attach-policy 
 			--policy-id p-examplepolicyid111
-			--target-id = 333333333333
+			--target-id 333333333333

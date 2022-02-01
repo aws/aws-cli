@@ -1,4 +1,4 @@
-**Listing projects**
+**To list projects**
 
 The following retrieves a list of projects::
 

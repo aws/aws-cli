@@ -6,9 +6,16 @@ The following ``create-db-security-group`` command creates a new Amazon RDS DB s
 
 In the example, the new DB security group is named ``mysecgroup`` and has a description.
 
-This command output a JSON block that contains information about the DB security group.
+Output::
 
-For more information, see `Create an Amazon RDS DB Security Group`_ in the *AWS Command Line Interface User Guide*.
-
-.. _`Create an Amazon RDS DB Security Group`: http://docs.aws.amazon.com/cli/latest/userguide/cli-rds-create-secgroup.html
-
+    {
+        "DBSecurityGroup": {
+            "OwnerId": "123456789012",
+            "DBSecurityGroupName": "mysecgroup",
+            "DBSecurityGroupDescription": "My Test Security Group",
+            "VpcId": "vpc-a1b2c3d4",
+            "EC2SecurityGroups": [],
+            "IPRanges": [],
+            "DBSecurityGroupArn": "arn:aws:rds:us-west-2:123456789012:secgrp:mysecgroup"
+        }
+    }

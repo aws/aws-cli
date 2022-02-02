@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.22.47
+=======
+
+* api-change:``emr``: Update emr command to latest version
+* api-change:``elasticache``: Documentation update for AWS ElastiCache
+* enhancement:datapipeline: Deprecated support for the datapipeline create-default-roles command
+* api-change:``es``: Allows customers to get progress updates for blue/green deployments
+* api-change:``fis``: Added GetTargetResourceType and ListTargetResourceTypesAPI actions. These actions return additional details about resource types and parameters that can be targeted by FIS actions. Added a parameters field for the targets that can be specified in experiment templates.
+* api-change:``comprehend``: Amazon Comprehend now supports sharing and importing custom trained models from one AWS account to another within the same region.
+* api-change:``dynamodb``: Documentation update for DynamoDB Java SDK.
+* api-change:``iot``: This release adds support for configuring AWS IoT logging level per client ID, source IP, or principal ID.
+* api-change:``ce``: Doc-only update for Cost Explorer API that adds INVOICING_ENTITY dimensions
+* api-change:``appflow``: Launching Amazon AppFlow Custom Connector SDK.
+* api-change:``glue``: Launch Protobuf support for AWS Glue Schema Registry
+* api-change:``personalize``: Adding minRecommendationRequestsPerSecond attribute to recommender APIs.
+
+
 1.22.46
 =======
 

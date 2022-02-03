@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.4.16
+======
+
+* enhancement:datapipeline: Deprecated support for the datapipeline create-default-roles command
+* api-change:``iot``: This release adds support for configuring AWS IoT logging level per client ID, source IP, or principal ID.
+* api-change:``appconfig``: Documentation updates for AWS AppConfig
+* api-change:``sagemaker``: This release added a new NNA accelerator compilation support for Sagemaker Neo.
+* api-change:``appconfigdata``: Documentation updates for AWS AppConfig Data.
+* api-change:``glue``: Launch Protobuf support for AWS Glue Schema Registry
+* api-change:``appflow``: Launching Amazon AppFlow Custom Connector SDK.
+* api-change:``dynamodb``: Documentation update for DynamoDB Java SDK.
+* api-change:``ce``: Doc-only update for Cost Explorer API that adds INVOICING_ENTITY dimensions
+* api-change:``emr``: Update emr command to latest version
+* api-change:``rbin``: Add EC2 Image recycle bin support.
+* api-change:``cognito-idp``: Doc updates for Cognito user pools API Reference.
+* api-change:``secretsmanager``: Feature are ready to release on Jan 28th
+* api-change:``comprehend``: Amazon Comprehend now supports sharing and importing custom trained models from one AWS account to another within the same region.
+* api-change:``es``: Allows customers to get progress updates for blue/green deployments
+* api-change:``elasticache``: Documentation update for AWS ElastiCache
+* api-change:``meteringmarketplace``: Add CustomerAWSAccountId to ResolveCustomer API response and increase UsageAllocation limit to 2500.
+* api-change:``ec2``: adds support for AMIs in Recycle Bin
+* api-change:``robomaker``: The release deprecates the use various APIs of RoboMaker Deployment Service in favor of AWS IoT GreenGrass v2.0.
+* api-change:``fis``: Added GetTargetResourceType and ListTargetResourceTypesAPI actions. These actions return additional details about resource types and parameters that can be targeted by FIS actions. Added a parameters field for the targets that can be specified in experiment templates.
+* api-change:``personalize``: Adding minRecommendationRequestsPerSecond attribute to recommender APIs.
+* api-change:``athena``: This release adds a field, AthenaError, to the GetQueryExecution response object when a query fails.
+
+
 2.4.15
 ======
 

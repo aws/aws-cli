@@ -511,6 +511,16 @@
       "max":1011,
       "min":1
     },
+    "AthenaError":{
+      "type":"structure",
+      "members":{
+        "ErrorCategory":{
+          "shape":"ErrorCategory",
+          "documentation":"<p>An integer value that specifies the category of a query failure error. The following list shows the category for each integer value.</p> <p> <b>1</b> - System</p> <p> <b>2</b> - User</p> <p> <b>3</b> - Unknown</p>"
+        }
+      },
+      "documentation":"<p>Provides information about an Athena query error. The <code>AthenaError</code> feature provides standardized error information to help you understand failed queries and take steps after a query failure occurs. <code>AthenaError</code> includes an <code>ErrorCategory</code> field that specifies whether the cause of the failed query is due to system error, user error, or unknown error.</p>"
+    },
     "BatchGetNamedQueryInput":{
       "type":"structure",
       "required":["NamedQueryIds"],
@@ -669,7 +679,7 @@
       "members":{
         "Name":{
           "shape":"CatalogNameString",
-          "documentation":"<p>The name of the data catalog to create. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 128 alphanumeric, underscore, at sign, or hyphen characters.</p>"
+          "documentation":"<p>The name of the data catalog to create. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.</p>"
         },
         "Type":{
           "shape":"DataCatalogType",
@@ -805,7 +815,7 @@
       "members":{
         "Name":{
           "shape":"CatalogNameString",
-          "documentation":"<p>The name of the data catalog. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 128 alphanumeric, underscore, at sign, or hyphen characters.</p>"
+          "documentation":"<p>The name of the data catalog. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.</p>"
         },
         "Description":{
           "shape":"DescriptionString",
@@ -827,7 +837,7 @@
       "members":{
         "CatalogName":{
           "shape":"CatalogNameString",
-          "documentation":"<p>The name of the data catalog.</p>"
+          "documentation":"<p>The name of the data catalog. The catalog name is unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.</p>"
         },
         "Type":{
           "shape":"DataCatalogType",
@@ -1006,6 +1016,12 @@
       "member":{"shape":"EngineVersion"},
       "max":10,
       "min":0
+    },
+    "ErrorCategory":{
+      "type":"integer",
+      "box":true,
+      "max":3,
+      "min":1
     },
     "ErrorCode":{
       "type":"string",
@@ -1819,6 +1835,10 @@
         "CompletionDateTime":{
           "shape":"Date",
           "documentation":"<p>The date and time that the query completed.</p>"
+        },
+        "AthenaError":{
+          "shape":"AthenaError",
+          "documentation":"<p>Provides information about an Athena query error.</p>"
         }
       },
       "documentation":"<p>The completion date, current state, submission time, and state change reason (if applicable) for the query execution.</p>"
@@ -2176,7 +2196,7 @@
       "members":{
         "Name":{
           "shape":"CatalogNameString",
-          "documentation":"<p>The name of the data catalog to update. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 128 alphanumeric, underscore, at sign, or hyphen characters.</p>"
+          "documentation":"<p>The name of the data catalog to update. The catalog name must be unique for the Amazon Web Services account and can use a maximum of 127 alphanumeric, underscore, at sign, or hyphen characters. The remainder of the length constraint of 256 is reserved for use by Athena.</p>"
         },
         "Type":{
           "shape":"DataCatalogType",

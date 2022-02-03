@@ -78,6 +78,21 @@
       ],
       "documentation":"<p> Enables your application to delete an existing flow. Before deleting the flow, Amazon AppFlow validates the request by checking the flow configuration and status. You can delete flows one at a time. </p>"
     },
+    "DescribeConnector":{
+      "name":"DescribeConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describe-connector"
+      },
+      "input":{"shape":"DescribeConnectorRequest"},
+      "output":{"shape":"DescribeConnectorResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes the given custom connector registered in your Amazon Web Services account. This API can be used for custom connectors that are registered in your account and also for Amazon authored connectors.</p>"
+    },
     "DescribeConnectorEntity":{
       "name":"DescribeConnectorEntity",
       "http":{
@@ -169,6 +184,20 @@
       ],
       "documentation":"<p> Returns the list of available connector entities supported by Amazon AppFlow. For example, you can query Salesforce for <i>Account</i> and <i>Opportunity</i> entities, or query ServiceNow for the <i>Incident</i> entity. </p>"
     },
+    "ListConnectors":{
+      "name":"ListConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-connectors"
+      },
+      "input":{"shape":"ListConnectorsRequest"},
+      "output":{"shape":"ListConnectorsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the list of all registered custom connectors in your Amazon Web Services account. This API lists only custom connectors registered in this account, not the Amazon Web Services authored connectors. </p>"
+    },
     "ListFlows":{
       "name":"ListFlows",
       "http":{
@@ -197,6 +226,27 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p> Retrieves the tags that are associated with a specified flow. </p>"
+    },
+    "RegisterConnector":{
+      "name":"RegisterConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/register-connector"
+      },
+      "input":{"shape":"RegisterConnectorRequest"},
+      "output":{"shape":"RegisterConnectorResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConnectorServerException"},
+        {"shape":"ConnectorAuthenticationException"}
+      ],
+      "documentation":"<p>Registers a new connector with your Amazon Web Services account. Before you can register the connector, you must deploy lambda in your account.</p>"
     },
     "StartFlow":{
       "name":"StartFlow",
@@ -244,6 +294,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p> Applies a tag to the specified flow. </p>"
+    },
+    "UnregisterConnector":{
+      "name":"UnregisterConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/unregister-connector"
+      },
+      "input":{"shape":"UnregisterConnectorRequest"},
+      "output":{"shape":"UnregisterConnectorResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Unregisters the custom connector registered in your account that matches the connectorLabel provided in the request.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -303,6 +368,15 @@
       "max":512,
       "pattern":"arn:aws:.*:.*:[0-9]+:.*"
     },
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>AppFlow/Requester has invalid or missing permissions.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
     "AccessKeyId":{
       "type":"string",
       "max":256,
@@ -311,7 +385,7 @@
     },
     "AccessToken":{
       "type":"string",
-      "max":512,
+      "max":2048,
       "pattern":"\\S+",
       "sensitive":true
     },
@@ -385,7 +459,23 @@
     "ApiKey":{
       "type":"string",
       "max":256,
-      "pattern":"\\S+"
+      "pattern":"\\S+",
+      "sensitive":true
+    },
+    "ApiKeyCredentials":{
+      "type":"structure",
+      "required":["apiKey"],
+      "members":{
+        "apiKey":{
+          "shape":"ApiKey",
+          "documentation":"<p>The API key required for API key authentication.</p>"
+        },
+        "apiSecretKey":{
+          "shape":"ApiSecretKey",
+          "documentation":"<p>The API secret key required for API key authentication.</p>"
+        }
+      },
+      "documentation":"<p>The API key credentials required for API key authentication.</p>"
     },
     "ApiSecretKey":{
       "type":"string",
@@ -394,6 +484,11 @@
       "sensitive":true
     },
     "ApiToken":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
+    },
+    "ApiVersion":{
       "type":"string",
       "max":256,
       "pattern":"\\S+"
@@ -413,6 +508,11 @@
       "max":512,
       "pattern":"\\S+"
     },
+    "ApplicationType":{
+      "type":"string",
+      "max":512,
+      "pattern":"\\S+"
+    },
     "AuthCode":{
       "type":"string",
       "max":512,
@@ -422,6 +522,83 @@
       "type":"string",
       "max":256,
       "pattern":"^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+    },
+    "AuthCodeUrlList":{
+      "type":"list",
+      "member":{"shape":"AuthCodeUrl"}
+    },
+    "AuthParameter":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"Key",
+          "documentation":"<p>The authentication key required to authenticate with the connector.</p>"
+        },
+        "isRequired":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this authentication parameter is required.</p>"
+        },
+        "label":{
+          "shape":"Label",
+          "documentation":"<p>Label used for authentication parameter.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description about the authentication parameter.</p>"
+        },
+        "isSensitiveField":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this authentication parameter is a sensitive field.</p>"
+        },
+        "connectorSuppliedValues":{
+          "shape":"ConnectorSuppliedValueList",
+          "documentation":"<p>Contains default values for this authentication parameter that are supplied by the connector.</p>"
+        }
+      },
+      "documentation":"<p>Information about required authentication parameters.</p>"
+    },
+    "AuthParameterList":{
+      "type":"list",
+      "member":{"shape":"AuthParameter"}
+    },
+    "AuthenticationConfig":{
+      "type":"structure",
+      "members":{
+        "isBasicAuthSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether basic authentication is supported by the connector.</p>"
+        },
+        "isApiKeyAuthSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether API key authentication is supported by the connector</p>"
+        },
+        "isOAuth2Supported":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether OAuth 2.0 authentication is supported by the connector.</p>"
+        },
+        "isCustomAuthSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether custom authentication is supported by the connector</p>"
+        },
+        "oAuth2Defaults":{
+          "shape":"OAuth2Defaults",
+          "documentation":"<p>Contains the default values required for OAuth 2.0 authentication.</p>"
+        },
+        "customAuthConfigs":{
+          "shape":"CustomAuthConfigList",
+          "documentation":"<p>Contains information required for custom authentication.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the authentication config that the connector supports.</p>"
+    },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":[
+        "OAUTH2",
+        "APIKEY",
+        "BASIC",
+        "CUSTOM"
+      ]
     },
     "BasicAuthCredentials":{
       "type":"structure",
@@ -536,6 +713,78 @@
         "connectorMetadata":{
           "shape":"ConnectorMetadata",
           "documentation":"<p> Specifies connector-specific metadata such as <code>oAuthScopes</code>, <code>supportedRegions</code>, <code>privateLinkServiceUrl</code>, and so on. </p>"
+        },
+        "connectorType":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The connector type.</p>"
+        },
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label used for registering the connector.</p>"
+        },
+        "connectorDescription":{
+          "shape":"ConnectorDescription",
+          "documentation":"<p>A description about the connector.</p>"
+        },
+        "connectorOwner":{
+          "shape":"ConnectorOwner",
+          "documentation":"<p>The owner who developed the connector.</p>"
+        },
+        "connectorName":{
+          "shape":"ConnectorName",
+          "documentation":"<p>The connector name.</p>"
+        },
+        "connectorVersion":{
+          "shape":"ConnectorVersion",
+          "documentation":"<p>The connector version.</p>"
+        },
+        "connectorArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registered connector.</p>"
+        },
+        "connectorModes":{
+          "shape":"ConnectorModeList",
+          "documentation":"<p>The connection modes that the connector supports.</p>"
+        },
+        "authenticationConfig":{
+          "shape":"AuthenticationConfig",
+          "documentation":"<p>The authentication config required for the connector.</p>"
+        },
+        "connectorRuntimeSettings":{
+          "shape":"ConnectorRuntimeSettingList",
+          "documentation":"<p>The required connector runtime settings.</p>"
+        },
+        "supportedApiVersions":{
+          "shape":"SupportedApiVersionList",
+          "documentation":"<p>A list of API versions that are supported by the connector.</p>"
+        },
+        "supportedOperators":{
+          "shape":"SupportedOperatorList",
+          "documentation":"<p>A list of operators supported by the connector.</p>"
+        },
+        "supportedWriteOperations":{
+          "shape":"SupportedWriteOperationList",
+          "documentation":"<p>A list of write operations supported by the connector.</p>"
+        },
+        "connectorProvisioningType":{
+          "shape":"ConnectorProvisioningType",
+          "documentation":"<p>The provisioning type used to register the connector.</p>"
+        },
+        "connectorProvisioningConfig":{
+          "shape":"ConnectorProvisioningConfig",
+          "documentation":"<p>The configuration required for registering the connector.</p>"
+        },
+        "logoURL":{
+          "shape":"LogoURL",
+          "documentation":"<p>Logo URL of the connector.</p>"
+        },
+        "registeredAt":{
+          "shape":"Date",
+          "documentation":"<p>The date on which the connector was registered.</p>"
+        },
+        "registeredBy":{
+          "shape":"RegisteredBy",
+          "documentation":"<p>Information about who registered the connector.</p>"
         }
       },
       "documentation":"<p> The configuration settings related to a given connector. </p>"
@@ -544,6 +793,61 @@
       "type":"map",
       "key":{"shape":"ConnectorType"},
       "value":{"shape":"ConnectorConfiguration"}
+    },
+    "ConnectorDescription":{
+      "type":"string",
+      "max":2048,
+      "pattern":"[\\w!@#\\-.?,\\s]*"
+    },
+    "ConnectorDetail":{
+      "type":"structure",
+      "members":{
+        "connectorDescription":{
+          "shape":"ConnectorDescription",
+          "documentation":"<p>A description about the registered connector.</p>"
+        },
+        "connectorName":{
+          "shape":"ConnectorName",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "connectorOwner":{
+          "shape":"ConnectorOwner",
+          "documentation":"<p>The owner of the connector.</p>"
+        },
+        "connectorVersion":{
+          "shape":"ConnectorVersion",
+          "documentation":"<p>The connector version.</p>"
+        },
+        "applicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The application type of the connector.</p>"
+        },
+        "connectorType":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The connector type.</p>"
+        },
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>A label used for the connector.</p>"
+        },
+        "registeredAt":{
+          "shape":"Date",
+          "documentation":"<p>The time at which the connector was registered.</p>"
+        },
+        "registeredBy":{
+          "shape":"RegisteredBy",
+          "documentation":"<p>The user who registered the connector.</p>"
+        },
+        "connectorProvisioningType":{
+          "shape":"ConnectorProvisioningType",
+          "documentation":"<p>The provisioning type that the connector uses.</p>"
+        },
+        "connectorModes":{
+          "shape":"ConnectorModeList",
+          "documentation":"<p>The connection mode that the connector supports.</p>"
+        }
+      },
+      "documentation":"<p>Information about the registered connector.</p>"
     },
     "ConnectorEntity":{
       "type":"structure",
@@ -572,9 +876,25 @@
           "shape":"Identifier",
           "documentation":"<p> The unique identifier of the connector field. </p>"
         },
+        "parentIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The parent identifier of the connector field.</p>"
+        },
         "label":{
           "shape":"Label",
           "documentation":"<p> The label applied to a connector entity field. </p>"
+        },
+        "isPrimaryKey":{
+          "shape":"Boolean",
+          "documentation":"<p>Booelan value that indicates whether this field can be used as a primary key.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>Default value that can be assigned to this field.</p>"
+        },
+        "isDeprecated":{
+          "shape":"Boolean",
+          "documentation":"<p>Booelan value that indicates whether this field is deprecated or not.</p>"
         },
         "supportedFieldTypeDetails":{
           "shape":"SupportedFieldTypeDetails",
@@ -591,6 +911,10 @@
         "destinationProperties":{
           "shape":"DestinationFieldProperties",
           "documentation":"<p> The properties applied to a field when the connector is being used as a destination. </p>"
+        },
+        "customProperties":{
+          "shape":"CustomProperties",
+          "documentation":"<p>A map that has specific properties related to the ConnectorEntityField.</p>"
         }
       },
       "documentation":"<p> Describes the data model of a connector field. For example, for an <i>account</i> entity, the fields would be <i>account name</i>, <i>account ID</i>, and so on. </p>"
@@ -607,6 +931,15 @@
       "type":"map",
       "key":{"shape":"Group"},
       "value":{"shape":"ConnectorEntityList"}
+    },
+    "ConnectorLabel":{
+      "type":"string",
+      "max":256,
+      "pattern":"[a-zA-Z0-9][\\w!@#.-]+"
+    },
+    "ConnectorList":{
+      "type":"list",
+      "member":{"shape":"ConnectorDetail"}
     },
     "ConnectorMetadata":{
       "type":"structure",
@@ -695,6 +1028,20 @@
       },
       "documentation":"<p> A structure to specify connector-specific metadata such as <code>oAuthScopes</code>, <code>supportedRegions</code>, <code>privateLinkServiceUrl</code>, and so on. </p>"
     },
+    "ConnectorMode":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
+    },
+    "ConnectorModeList":{
+      "type":"list",
+      "member":{"shape":"ConnectorMode"}
+    },
+    "ConnectorName":{
+      "type":"string",
+      "max":256,
+      "pattern":".*"
+    },
     "ConnectorOAuthRequest":{
       "type":"structure",
       "members":{
@@ -771,9 +1118,18 @@
         "SAPOData":{
           "shape":"SAPODataConnectorOperator",
           "documentation":"<p> The operation to be performed on the provided SAPOData source fields. </p>"
+        },
+        "CustomConnector":{
+          "shape":"Operator",
+          "documentation":"<p>Operators supported by the custom connector.</p>"
         }
       },
       "documentation":"<p> The operation to be performed on the provided source fields. </p>"
+    },
+    "ConnectorOwner":{
+      "type":"string",
+      "max":256,
+      "pattern":".*"
     },
     "ConnectorProfile":{
       "type":"structure",
@@ -789,6 +1145,10 @@
         "connectorType":{
           "shape":"ConnectorType",
           "documentation":"<p> The type of connector, such as Salesforce, Amplitude, and so on. </p>"
+        },
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label for the connector profile being created.</p>"
         },
         "connectionMode":{
           "shape":"ConnectionMode",
@@ -820,7 +1180,7 @@
     "ConnectorProfileArn":{
       "type":"string",
       "max":512,
-      "pattern":"arn:aws:kms:.*:[0-9]+:.*"
+      "pattern":"arn:aws:appflow:.*:[0-9]+:.*"
     },
     "ConnectorProfileConfig":{
       "type":"structure",
@@ -907,7 +1267,8 @@
           "shape":"ZendeskConnectorProfileCredentials",
           "documentation":"<p> The connector-specific credentials required when using Zendesk. </p>"
         },
-        "SAPOData":{"shape":"SAPODataConnectorProfileCredentials"}
+        "SAPOData":{"shape":"SAPODataConnectorProfileCredentials"},
+        "CustomConnector":{"shape":"CustomConnectorProfileCredentials"}
       },
       "documentation":"<p> The connector-specific credentials required by a connector. </p>"
     },
@@ -993,9 +1354,76 @@
           "shape":"ZendeskConnectorProfileProperties",
           "documentation":"<p> The connector-specific properties required by Zendesk. </p>"
         },
-        "SAPOData":{"shape":"SAPODataConnectorProfileProperties"}
+        "SAPOData":{"shape":"SAPODataConnectorProfileProperties"},
+        "CustomConnector":{
+          "shape":"CustomConnectorProfileProperties",
+          "documentation":"<p>The properties required by the custom connector.</p>"
+        }
       },
       "documentation":"<p> The connector-specific profile properties required by each connector. </p>"
+    },
+    "ConnectorProvisioningConfig":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"LambdaConnectorProvisioningConfig",
+          "documentation":"<p>Contains information about the configuration of the lambda which is being registered as the connector.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration of the connector being registered.</p>"
+    },
+    "ConnectorProvisioningType":{
+      "type":"string",
+      "documentation":"<p>The type of provisioning that the connector supports, such as Lambda.</p>",
+      "enum":["LAMBDA"]
+    },
+    "ConnectorRuntimeSetting":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"Key",
+          "documentation":"<p>Contains value information about the connector runtime setting.</p>"
+        },
+        "dataType":{
+          "shape":"ConnectorRuntimeSettingDataType",
+          "documentation":"<p>Data type of the connector runtime setting.</p>"
+        },
+        "isRequired":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this connector runtime setting is required.</p>"
+        },
+        "label":{
+          "shape":"Label",
+          "documentation":"<p>A label used for connector runtime setting.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description about the connector runtime setting.</p>"
+        },
+        "scope":{
+          "shape":"ConnectorRuntimeSettingScope",
+          "documentation":"<p>Indicates the scope of the connector runtime setting.</p>"
+        },
+        "connectorSuppliedValueOptions":{
+          "shape":"ConnectorSuppliedValueOptionList",
+          "documentation":"<p>Contains default values for the connector runtime setting that are supplied by the connector.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the connector runtime settings that are required for flow execution.</p>"
+    },
+    "ConnectorRuntimeSettingDataType":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
+    },
+    "ConnectorRuntimeSettingList":{
+      "type":"list",
+      "member":{"shape":"ConnectorRuntimeSetting"}
+    },
+    "ConnectorRuntimeSettingScope":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
     },
     "ConnectorServerException":{
       "type":"structure",
@@ -1005,6 +1433,19 @@
       "documentation":"<p> An error occurred when retrieving data from the connector endpoint. </p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ConnectorSuppliedValue":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
+    },
+    "ConnectorSuppliedValueList":{
+      "type":"list",
+      "member":{"shape":"ConnectorSuppliedValue"}
+    },
+    "ConnectorSuppliedValueOptionList":{
+      "type":"list",
+      "member":{"shape":"ConnectorSuppliedValue"}
     },
     "ConnectorType":{
       "type":"string",
@@ -1030,7 +1471,8 @@
         "Upsolver",
         "Honeycode",
         "CustomerProfiles",
-        "SAPOData"
+        "SAPOData",
+        "CustomConnector"
       ]
     },
     "ConnectorTypeList":{
@@ -1038,6 +1480,11 @@
       "member":{"shape":"ConnectorType"},
       "max":100,
       "min":0
+    },
+    "ConnectorVersion":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
     },
     "CreateConnectorProfileRequest":{
       "type":"structure",
@@ -1059,6 +1506,10 @@
         "connectorType":{
           "shape":"ConnectorType",
           "documentation":"<p> The type of connector, such as Salesforce, Amplitude, and so on. </p>"
+        },
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label of the connector. The label is unique for each <code>ConnectorRegistration</code> in your Amazon Web Services account. Only needed if calling for CUSTOMCONNECTOR connector type/.</p>"
         },
         "connectionMode":{
           "shape":"ConnectionMode",
@@ -1139,6 +1590,162 @@
     "CreatedBy":{
       "type":"string",
       "max":256,
+      "pattern":"\\S+"
+    },
+    "CredentialsMap":{
+      "type":"map",
+      "key":{"shape":"CredentialsMapKey"},
+      "value":{"shape":"CredentialsMapValue"},
+      "max":50,
+      "min":0
+    },
+    "CredentialsMapKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w]+",
+      "sensitive":true
+    },
+    "CredentialsMapValue":{
+      "type":"string",
+      "max":2048,
+      "pattern":"\\S+",
+      "sensitive":true
+    },
+    "CustomAuthConfig":{
+      "type":"structure",
+      "members":{
+        "customAuthenticationType":{
+          "shape":"CustomAuthenticationType",
+          "documentation":"<p>The authentication type that the custom connector uses.</p>"
+        },
+        "authParameters":{
+          "shape":"AuthParameterList",
+          "documentation":"<p>Information about authentication parameters required for authentication.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information required for custom authentication.</p>"
+    },
+    "CustomAuthConfigList":{
+      "type":"list",
+      "member":{"shape":"CustomAuthConfig"}
+    },
+    "CustomAuthCredentials":{
+      "type":"structure",
+      "required":["customAuthenticationType"],
+      "members":{
+        "customAuthenticationType":{
+          "shape":"CustomAuthenticationType",
+          "documentation":"<p>The custom authentication type that the connector uses.</p>"
+        },
+        "credentialsMap":{
+          "shape":"CredentialsMap",
+          "documentation":"<p>A map that holds custom authentication credentials.</p>"
+        }
+      },
+      "documentation":"<p>The custom credentials required for custom authentication.</p>"
+    },
+    "CustomAuthenticationType":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
+    },
+    "CustomConnectorDestinationProperties":{
+      "type":"structure",
+      "required":["entityName"],
+      "members":{
+        "entityName":{
+          "shape":"EntityName",
+          "documentation":"<p>The entity specified in the custom connector as a destination in the flow.</p>"
+        },
+        "errorHandlingConfig":{
+          "shape":"ErrorHandlingConfig",
+          "documentation":"<p>The settings that determine how Amazon AppFlow handles an error when placing data in the custom connector as destination.</p>"
+        },
+        "writeOperationType":{
+          "shape":"WriteOperationType",
+          "documentation":"<p>Specifies the type of write operation to be performed in the custom connector when it's used as destination.</p>"
+        },
+        "idFieldNames":{
+          "shape":"IdFieldNameList",
+          "documentation":"<p>The name of the field that Amazon AppFlow uses as an ID when performing a write operation such as update, delete, or upsert.</p>"
+        },
+        "customProperties":{
+          "shape":"CustomProperties",
+          "documentation":"<p>The custom properties that are specific to the connector when it's used as a destination in the flow.</p>"
+        }
+      },
+      "documentation":"<p>The properties that are applied when the custom connector is being used as a destination.</p>"
+    },
+    "CustomConnectorProfileCredentials":{
+      "type":"structure",
+      "required":["authenticationType"],
+      "members":{
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type that the custom connector uses for authenticating while creating a connector profile.</p>"
+        },
+        "basic":{
+          "shape":"BasicAuthCredentials",
+          "documentation":"<p>The basic credentials that are required for the authentication of the user.</p>"
+        },
+        "oauth2":{
+          "shape":"OAuth2Credentials",
+          "documentation":"<p>The OAuth 2.0 credentials required for the authentication of the user.</p>"
+        },
+        "apiKey":{
+          "shape":"ApiKeyCredentials",
+          "documentation":"<p>The API keys required for the authentication of the user.</p>"
+        },
+        "custom":{
+          "shape":"CustomAuthCredentials",
+          "documentation":"<p>If the connector uses the custom authentication mechanism, this holds the required credentials.</p>"
+        }
+      },
+      "documentation":"<p>The connector-specific profile credentials that are required when using the custom connector.</p>"
+    },
+    "CustomConnectorProfileProperties":{
+      "type":"structure",
+      "members":{
+        "profileProperties":{
+          "shape":"ProfilePropertiesMap",
+          "documentation":"<p>A map of properties that are required to create a profile for the custom connector.</p>"
+        },
+        "oAuth2Properties":{"shape":"OAuth2Properties"}
+      },
+      "documentation":"<p>The profile properties required by the custom connector.</p>"
+    },
+    "CustomConnectorSourceProperties":{
+      "type":"structure",
+      "required":["entityName"],
+      "members":{
+        "entityName":{
+          "shape":"EntityName",
+          "documentation":"<p>The entity specified in the custom connector as a source in the flow.</p>"
+        },
+        "customProperties":{
+          "shape":"CustomProperties",
+          "documentation":"<p>Custom properties that are required to use the custom connector as a source.</p>"
+        }
+      },
+      "documentation":"<p>The properties that are applied when the custom connector is being used as a source.</p>"
+    },
+    "CustomProperties":{
+      "type":"map",
+      "key":{"shape":"CustomPropertyKey"},
+      "value":{"shape":"CustomPropertyValue"},
+      "max":50,
+      "min":0
+    },
+    "CustomPropertyKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w]+"
+    },
+    "CustomPropertyValue":{
+      "type":"string",
+      "max":2048,
       "pattern":"\\S+"
     },
     "CustomerProfilesDestinationProperties":{
@@ -1289,7 +1896,7 @@
       "required":["connectorEntityName"],
       "members":{
         "connectorEntityName":{
-          "shape":"Name",
+          "shape":"EntityName",
           "documentation":"<p> The entity name for that connector. </p>"
         },
         "connectorType":{
@@ -1299,6 +1906,10 @@
         "connectorProfileName":{
           "shape":"ConnectorProfileName",
           "documentation":"<p> The name of the connector profile. The name is unique for each <code>ConnectorProfile</code> in the Amazon Web Services account. </p>"
+        },
+        "apiVersion":{
+          "shape":"ApiVersion",
+          "documentation":"<p>The version of the API that's used by the connector.</p>"
         }
       }
     },
@@ -1323,6 +1934,10 @@
           "shape":"ConnectorType",
           "documentation":"<p> The type of connector, such as Salesforce, Amplitude, and so on. </p>"
         },
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The name of the connector. The name is unique for each <code>ConnectorRegistration</code> in your Amazon Web Services account. Only needed if calling for CUSTOMCONNECTOR connector type/.</p>"
+        },
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p> Specifies the maximum number of items that should be returned in the result set. The default for <code>maxResults</code> is 20 (for all paginated API operations). </p>"
@@ -1346,12 +1961,39 @@
         }
       }
     },
+    "DescribeConnectorRequest":{
+      "type":"structure",
+      "required":["connectorType"],
+      "members":{
+        "connectorType":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The connector type, such as CUSTOMCONNECTOR, Saleforce, Marketo. Please choose CUSTOMCONNECTOR for Lambda based custom connectors.</p>"
+        },
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label of the connector. The label is unique for each <code>ConnectorRegistration</code> in your Amazon Web Services account. Only needed if calling for CUSTOMCONNECTOR connector type/.</p>"
+        }
+      }
+    },
+    "DescribeConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorConfiguration":{
+          "shape":"ConnectorConfiguration",
+          "documentation":"<p>Configuration info of all the connectors that the user requested.</p>"
+        }
+      }
+    },
     "DescribeConnectorsRequest":{
       "type":"structure",
       "members":{
         "connectorTypes":{
           "shape":"ConnectorTypeList",
           "documentation":"<p> The type of connector, such as Salesforce, Amplitude, and so on. </p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items that should be returned in the result set. The default is 20.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1365,6 +2007,10 @@
         "connectorConfigurations":{
           "shape":"ConnectorConfigurationsMap",
           "documentation":"<p> The configuration that is applied to the connectors used in the flow. </p>"
+        },
+        "connectors":{
+          "shape":"ConnectorList",
+          "documentation":"<p>Information about the connectors supported in Amazon AppFlow.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1529,6 +2175,10 @@
         "Zendesk":{
           "shape":"ZendeskDestinationProperties",
           "documentation":"<p>The properties required to query Zendesk.</p>"
+        },
+        "CustomConnector":{
+          "shape":"CustomConnectorDestinationProperties",
+          "documentation":"<p>The properties that are required to query the custom Connector.</p>"
         }
       },
       "documentation":"<p> This stores the information that is required to query a particular connector. </p>"
@@ -1557,6 +2207,10 @@
           "shape":"Boolean",
           "documentation":"<p> Specifies whether the field can be updated during an <code>UPDATE</code> or <code>UPSERT</code> write operation. </p>"
         },
+        "isDefaultedOnCreate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the field can use the default value during a Create operation.</p>"
+        },
         "supportedWriteOperations":{
           "shape":"SupportedWriteOperationList",
           "documentation":"<p> A list of supported write operations. For each write operation listed, this field can be used in <code>idFieldNames</code> when that write operation is present as a destination option. </p>"
@@ -1574,6 +2228,10 @@
         "connectorType":{
           "shape":"ConnectorType",
           "documentation":"<p> The type of connector, such as Salesforce, Amplitude, and so on. </p>"
+        },
+        "apiVersion":{
+          "shape":"ApiVersion",
+          "documentation":"<p>The API version that the destination connector uses.</p>"
         },
         "connectorProfileName":{
           "shape":"ConnectorProfileName",
@@ -1600,6 +2258,7 @@
       "max":64,
       "pattern":"\\S+"
     },
+    "Double":{"type":"double"},
     "DynatraceConnectorOperator":{
       "type":"string",
       "enum":[
@@ -1663,6 +2322,11 @@
       "type":"string",
       "max":256,
       "pattern":"[\\s\\w/!@#+=.-]*"
+    },
+    "EntityName":{
+      "type":"string",
+      "max":1024,
+      "pattern":"\\S+"
     },
     "ErrorHandlingConfig":{
       "type":"structure",
@@ -1830,6 +2494,22 @@
         "supportedValues":{
           "shape":"SupportedValueList",
           "documentation":"<p> The list of values that a field can contain. For example, a Boolean <code>fieldType</code> can have two values: \"true\" and \"false\". </p>"
+        },
+        "valueRegexPattern":{
+          "shape":"String",
+          "documentation":"<p>The regular expression pattern for the field name.</p>"
+        },
+        "supportedDateFormat":{
+          "shape":"String",
+          "documentation":"<p>The date format that the field supports.</p>"
+        },
+        "fieldValueRange":{
+          "shape":"Range",
+          "documentation":"<p>The range of values this field can hold.</p>"
+        },
+        "fieldLengthRange":{
+          "shape":"Range",
+          "documentation":"<p>This is the allowable length range for this field's value.</p>"
         }
       },
       "documentation":"<p> Contains details regarding the supported field type and the operators that can be applied for filtering. </p>"
@@ -1874,9 +2554,17 @@
           "shape":"ConnectorType",
           "documentation":"<p> Specifies the source connector type, such as Salesforce, Amazon S3, Amplitude, and so on. </p>"
         },
+        "sourceConnectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label of the source connector in the flow.</p>"
+        },
         "destinationConnectorType":{
           "shape":"ConnectorType",
           "documentation":"<p> Specifies the destination connector type, such as Salesforce, Amazon S3, Amplitude, and so on. </p>"
+        },
+        "destinationConnectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label of the destination connector in the flow.</p>"
         },
         "triggerType":{
           "shape":"TriggerType",
@@ -2059,7 +2747,6 @@
       "type":"list",
       "member":{"shape":"Name"},
       "documentation":"<p> A list of field names that can be used as an ID field when performing a write operation. </p>",
-      "max":1,
       "min":0
     },
     "Identifier":{
@@ -2183,6 +2870,17 @@
       "max":128,
       "pattern":".*"
     },
+    "LambdaConnectorProvisioningConfig":{
+      "type":"structure",
+      "required":["lambdaArn"],
+      "members":{
+        "lambdaArn":{
+          "shape":"ARN",
+          "documentation":"<p>Lambda ARN of the connector being registered.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration of the lambda which is being registered as the connector.</p>"
+    },
     "ListConnectorEntitiesRequest":{
       "type":"structure",
       "members":{
@@ -2197,6 +2895,10 @@
         "entitiesPath":{
           "shape":"EntitiesPath",
           "documentation":"<p> This optional parameter is specific to connector implementation. Some connectors support multiple levels or categories of entities. You can find out the list of roots for such providers by sending a request without the <code>entitiesPath</code> parameter. If the connector supports entities at different roots, this initial request returns the list of roots. Otherwise, this request returns all entities supported by the provider. </p>"
+        },
+        "apiVersion":{
+          "shape":"ApiVersion",
+          "documentation":"<p>The version of the API that's used by the connector.</p>"
         }
       }
     },
@@ -2207,6 +2909,32 @@
         "connectorEntityMap":{
           "shape":"ConnectorEntityMap",
           "documentation":"<p> The response of <code>ListConnectorEntities</code> lists entities grouped by category. This map's key represents the group name, and its value contains the list of entities belonging to that group. </p>"
+        }
+      }
+    },
+    "ListConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Specifies the maximum number of items that should be returned in the result set. The default for <code>maxResults</code> is 20 (for all paginated API operations).</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token for the next page of data.</p>"
+        }
+      }
+    },
+    "ListConnectorsResponse":{
+      "type":"structure",
+      "members":{
+        "connectors":{
+          "shape":"ConnectorList",
+          "documentation":"<p>Contains information about the connectors supported by Amazon AppFlow.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token for the next page of data. If nextToken=null, this means that all records have been fetched.</p>"
         }
       }
     },
@@ -2256,6 +2984,11 @@
           "documentation":"<p> The tags used to organize, track, or control access for your flow. </p>"
         }
       }
+    },
+    "LogoURL":{
+      "type":"string",
+      "max":256,
+      "pattern":"^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
     },
     "LogonLanguage":{
       "type":"string",
@@ -2364,6 +3097,80 @@
       "max":2048,
       "pattern":"\\S+"
     },
+    "OAuth2Credentials":{
+      "type":"structure",
+      "members":{
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>The identifier for the desired client.</p>"
+        },
+        "clientSecret":{
+          "shape":"ClientSecret",
+          "documentation":"<p>The client secret used by the OAuth client to authenticate to the authorization server.</p>"
+        },
+        "accessToken":{
+          "shape":"AccessToken",
+          "documentation":"<p>The access token used to access the connector on your behalf.</p>"
+        },
+        "refreshToken":{
+          "shape":"RefreshToken",
+          "documentation":"<p>The refresh token used to refresh an expired access token.</p>"
+        },
+        "oAuthRequest":{"shape":"ConnectorOAuthRequest"}
+      },
+      "documentation":"<p>The OAuth 2.0 credentials required for OAuth 2.0 authentication.</p>"
+    },
+    "OAuth2Defaults":{
+      "type":"structure",
+      "members":{
+        "oauthScopes":{
+          "shape":"OAuthScopeList",
+          "documentation":"<p>OAuth 2.0 scopes that the connector supports.</p>"
+        },
+        "tokenUrls":{
+          "shape":"TokenUrlList",
+          "documentation":"<p>Token URLs that can be used for OAuth 2.0 authentication.</p>"
+        },
+        "authCodeUrls":{
+          "shape":"AuthCodeUrlList",
+          "documentation":"<p>Auth code URLs that can be used for OAuth 2.0 authentication.</p>"
+        },
+        "oauth2GrantTypesSupported":{
+          "shape":"OAuth2GrantTypeSupportedList",
+          "documentation":"<p>OAuth 2.0 grant types supported by the connector.</p>"
+        }
+      },
+      "documentation":"<p>Contains the default values required for OAuth 2.0 authentication.</p>"
+    },
+    "OAuth2GrantType":{
+      "type":"string",
+      "enum":[
+        "CLIENT_CREDENTIALS",
+        "AUTHORIZATION_CODE"
+      ]
+    },
+    "OAuth2GrantTypeSupportedList":{
+      "type":"list",
+      "member":{"shape":"OAuth2GrantType"}
+    },
+    "OAuth2Properties":{
+      "type":"structure",
+      "required":[
+        "tokenUrl",
+        "oAuth2GrantType"
+      ],
+      "members":{
+        "tokenUrl":{
+          "shape":"TokenUrl",
+          "documentation":"<p>The token URL required for OAuth 2.0 authentication.</p>"
+        },
+        "oAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>The OAuth 2.0 grant type used by connector for OAuth 2.0 authentication.</p>"
+        }
+      },
+      "documentation":"<p>The OAuth 2.0 properties required for OAuth 2.0 authentication.</p>"
+    },
     "OAuthCredentials":{
       "type":"structure",
       "required":[
@@ -2420,7 +3227,7 @@
     "OAuthScope":{
       "type":"string",
       "max":128,
-      "pattern":"[/\\w]*"
+      "pattern":"\\S+"
     },
     "OAuthScopeList":{
       "type":"list",
@@ -2480,6 +3287,32 @@
         "CONCAT_FORMAT",
         "SUBFIELD_CATEGORY_MAP",
         "EXCLUDE_SOURCE_FIELDS_LIST"
+      ]
+    },
+    "Operators":{
+      "type":"string",
+      "enum":[
+        "PROJECTION",
+        "LESS_THAN",
+        "GREATER_THAN",
+        "CONTAINS",
+        "BETWEEN",
+        "LESS_THAN_OR_EQUAL_TO",
+        "GREATER_THAN_OR_EQUAL_TO",
+        "EQUAL_TO",
+        "NOT_EQUAL_TO",
+        "ADDITION",
+        "MULTIPLICATION",
+        "DIVISION",
+        "SUBTRACTION",
+        "MASK_ALL",
+        "MASK_FIRST_N",
+        "MASK_LAST_N",
+        "VALIDATE_NON_NULL",
+        "VALIDATE_NON_ZERO",
+        "VALIDATE_NON_NEGATIVE",
+        "VALIDATE_NUMERIC",
+        "NO_OP"
       ]
     },
     "Password":{
@@ -2571,10 +3404,42 @@
       "max":512,
       "pattern":"^$|com.amazonaws.vpce.[\\w/!:@#.\\-]+"
     },
+    "ProfilePropertiesMap":{
+      "type":"map",
+      "key":{"shape":"ProfilePropertyKey"},
+      "value":{"shape":"ProfilePropertyValue"},
+      "max":50,
+      "min":0
+    },
+    "ProfilePropertyKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w]+"
+    },
+    "ProfilePropertyValue":{
+      "type":"string",
+      "max":2048,
+      "pattern":"\\S+"
+    },
     "Property":{
       "type":"string",
       "max":2048,
       "pattern":".+"
+    },
+    "Range":{
+      "type":"structure",
+      "members":{
+        "maximum":{
+          "shape":"Double",
+          "documentation":"<p>Maximum value supported by the field.</p>"
+        },
+        "minimum":{
+          "shape":"Double",
+          "documentation":"<p>Minimum value supported by the field.</p>"
+        }
+      },
+      "documentation":"<p>The range of values that the property supports.</p>"
     },
     "RedirectUri":{
       "type":"string",
@@ -2660,7 +3525,7 @@
     },
     "RefreshToken":{
       "type":"string",
-      "max":512,
+      "max":1024,
       "pattern":"\\S+"
     },
     "Region":{
@@ -2671,6 +3536,41 @@
     "RegionList":{
       "type":"list",
       "member":{"shape":"Region"}
+    },
+    "RegisterConnectorRequest":{
+      "type":"structure",
+      "members":{
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p> The name of the connector. The name is unique for each <code>ConnectorRegistration</code> in your Amazon Web Services account.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description about the connector that's being registered.</p>"
+        },
+        "connectorProvisioningType":{
+          "shape":"ConnectorProvisioningType",
+          "documentation":"<p>The provisioning type of the connector. Currently the only supported value is LAMBDA. </p>"
+        },
+        "connectorProvisioningConfig":{
+          "shape":"ConnectorProvisioningConfig",
+          "documentation":"<p>The provisioning type of the connector. Currently the only supported value is LAMBDA.</p>"
+        }
+      }
+    },
+    "RegisterConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the connector being registered.</p>"
+        }
+      }
+    },
+    "RegisteredBy":{
+      "type":"string",
+      "max":512,
+      "pattern":"\\S+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3427,7 +4327,8 @@
           "shape":"ZendeskSourceProperties",
           "documentation":"<p> Specifies the information that is required for querying Zendesk. </p>"
         },
-        "SAPOData":{"shape":"SAPODataSourceProperties"}
+        "SAPOData":{"shape":"SAPODataSourceProperties"},
+        "CustomConnector":{"shape":"CustomConnectorSourceProperties"}
       },
       "documentation":"<p> Specifies the information that is required to query a particular connector. </p>"
     },
@@ -3441,6 +4342,10 @@
         "isQueryable":{
           "shape":"Boolean",
           "documentation":"<p> Indicates if the field can be queried. </p>"
+        },
+        "isTimestampFieldForIncrementalQueries":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this timestamp field can be used for incremental queries.</p>"
         }
       },
       "documentation":"<p> The properties that can be applied to a field when the connector is being used as a source. </p>"
@@ -3459,6 +4364,10 @@
         "connectorType":{
           "shape":"ConnectorType",
           "documentation":"<p> The type of connector, such as Salesforce, Amplitude, and so on. </p>"
+        },
+        "apiVersion":{
+          "shape":"ApiVersion",
+          "documentation":"<p>The API version of the connector when it's used as a source in the flow.</p>"
         },
         "connectorProfileName":{
           "shape":"ConnectorProfileName",
@@ -3535,6 +4444,15 @@
       "max":2048,
       "pattern":".*"
     },
+    "SupportedApiVersion":{
+      "type":"string",
+      "max":256,
+      "pattern":"\\S+"
+    },
+    "SupportedApiVersionList":{
+      "type":"list",
+      "member":{"shape":"SupportedApiVersion"}
+    },
     "SupportedFieldTypeDetails":{
       "type":"structure",
       "required":["v1"],
@@ -3545,6 +4463,10 @@
         }
       },
       "documentation":"<p> Contains details regarding all the supported <code>FieldTypes</code> and their corresponding <code>filterOperators</code> and <code>supportedValues</code>. </p>"
+    },
+    "SupportedOperatorList":{
+      "type":"list",
+      "member":{"shape":"Operators"}
     },
     "SupportedValueList":{
       "type":"list",
@@ -3654,6 +4576,15 @@
       "type":"list",
       "member":{"shape":"Task"}
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>API calls have exceeded the maximum allowed API request rate per account and per Region. </p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "Timezone":{
       "type":"string",
       "max":256,
@@ -3663,6 +4594,10 @@
       "type":"string",
       "max":256,
       "pattern":"^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+    },
+    "TokenUrlList":{
+      "type":"list",
+      "member":{"shape":"TokenUrl"}
     },
     "TrendmicroConnectorOperator":{
       "type":"string",
@@ -3753,6 +4688,25 @@
     "TriggerTypeList":{
       "type":"list",
       "member":{"shape":"TriggerType"}
+    },
+    "UnregisterConnectorRequest":{
+      "type":"structure",
+      "required":["connectorLabel"],
+      "members":{
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The label of the connector. The label is unique for each <code>ConnectorRegistration</code> in your Amazon Web Services account.</p>"
+        },
+        "forceDelete":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether Amazon AppFlow should unregister the connector, even if it is currently in use in one or more connector profiles. The default value is false.</p>"
+        }
+      }
+    },
+    "UnregisterConnectorResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UnsupportedOperationException":{
       "type":"structure",
@@ -4032,7 +4986,8 @@
       "enum":[
         "INSERT",
         "UPSERT",
-        "UPDATE"
+        "UPDATE",
+        "DELETE"
       ]
     },
     "ZendeskConnectorOperator":{

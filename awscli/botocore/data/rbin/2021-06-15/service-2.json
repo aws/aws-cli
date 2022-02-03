@@ -26,7 +26,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-create-rule\"> Create Recycle Bin retention rules</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-create-rule\"> Create Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "DeleteRule":{
       "name":"DeleteRule",
@@ -42,7 +42,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes a Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-delete-rule\"> Delete Recycle Bin retention rules</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Deletes a Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-delete-rule\"> Delete Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "GetRule":{
       "name":"GetRule",
@@ -89,7 +89,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the tags assigned a specific resource.</p>"
+      "documentation":"<p>Lists the tags assigned to a retention rule.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -106,7 +106,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Assigns tags to the specified resource.</p>"
+      "documentation":"<p>Assigns tags to the specified retention rule.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -122,7 +122,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Unassigns a tag from a resource.</p>"
+      "documentation":"<p>Unassigns a tag from a retention rule.</p>"
     },
     "UpdateRule":{
       "name":"UpdateRule",
@@ -138,7 +138,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates an existing Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-update-rule\"> Update Recycle Bin retention rules</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Updates an existing Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-update-rule\"> Update Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     }
   },
   "shapes":{
@@ -155,7 +155,7 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A brief description for the retention rule.</p>"
+          "documentation":"<p>The retention rule description.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -163,11 +163,11 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only Amazon EBS snapshots are supported.</p>"
+          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only Amazon EBS snapshots and EBS-backed AMIs are supported. To retain snapshots, specify <code>EBS_SNAPSHOT</code>. To retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags to use to identify resources that are to be retained by the retention rule. The retention rule retains only deleted snapshots that have one or more of the specified tag key and value pairs. If a snapshot is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p>"
+          "documentation":"<p>Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
         }
       }
     },
@@ -176,7 +176,7 @@
       "members":{
         "Identifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The unique identifier of the retention rule.</p>"
+          "documentation":"<p>The unique ID of the retention rule.</p>"
         },
         "RetentionPeriod":{"shape":"RetentionPeriod"},
         "Description":{
@@ -185,7 +185,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags assigned to the retention rule.</p>"
+          "documentation":"<p>Information about the tags assigned to the retention rule.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
@@ -197,7 +197,7 @@
         },
         "Status":{
           "shape":"RuleStatus",
-          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain snapshots.</p>"
+          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
         }
       }
     },
@@ -207,7 +207,7 @@
       "members":{
         "Identifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The unique ID of the retention rule to delete.</p>",
+          "documentation":"<p>The unique ID of the retention rule.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -244,23 +244,23 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description assigned to the retention rule.</p>"
+          "documentation":"<p>The retention rule description.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type retained by the retention rule. Currently, only Amazon EBS snapshots are supported.</p>"
+          "documentation":"<p>The resource type retained by the retention rule.</p>"
         },
         "RetentionPeriod":{
           "shape":"RetentionPeriod",
-          "documentation":"<p>Information about the period for which the retention rule retains resources.</p>"
+          "documentation":"<p>Information about the retention period for which the retention rule is to retain resources.</p>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>The resource tags used to identify resources that are to be retained by the retention rule.</p>"
+          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "Status":{
           "shape":"RuleStatus",
-          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain snapshots.</p>"
+          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
         }
       }
     },
@@ -280,19 +280,19 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return for the request in a single page. The remaining results can be seen by sending another request with the returned <code>nextToken</code> value. This value can be between 5 and 500. If <code>maxResults</code> is given a larger value than 500, you receive an error.</p>"
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+          "documentation":"<p>The token for the next page of results.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type retained by the retention rule. Only retention rules that retain the specified resource type are listed.</p>"
+          "documentation":"<p>The resource type retained by the retention rule. Only retention rules that retain the specified resource type are listed. Currently, only Amazon EBS snapshots and EBS-backed AMIs are supported. To list retention rules that retain snapshots, specify <code>EBS_SNAPSHOT</code>. To list retention rules that retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>The tags used to identify resources that are to be retained by the retention rule.</p>"
+          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         }
       }
     },
@@ -315,7 +315,7 @@
       "members":{
         "ResourceArn":{
           "shape":"RuleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to list the tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -326,7 +326,7 @@
       "members":{
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Information about the tags assigned to the resource.</p>"
+          "documentation":"<p>Information about the tags assigned to the retention rule.</p>"
         }
       }
     },
@@ -369,7 +369,7 @@
           "documentation":"<p>The tag value.</p>"
         }
       },
-      "documentation":"<p>Information about a resource tag used to identify resources that are to be retained by a Recycle Bin retention rule.</p>"
+      "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
     },
     "ResourceTagKey":{
       "type":"string",
@@ -387,7 +387,10 @@
     },
     "ResourceType":{
       "type":"string",
-      "enum":["EBS_SNAPSHOT"]
+      "enum":[
+        "EBS_SNAPSHOT",
+        "EC2_IMAGE"
+      ]
     },
     "RetentionPeriod":{
       "type":"structure",
@@ -405,7 +408,7 @@
           "documentation":"<p>The unit of time in which the retention period is measured. Currently, only <code>DAYS</code> is supported.</p>"
         }
       },
-      "documentation":"<p>Information about the retention period for which a retention rule is to retain resources.</p>"
+      "documentation":"<p>Information about the retention period for which the retention rule is to retain resources.</p>"
     },
     "RetentionPeriodUnit":{
       "type":"string",
@@ -442,11 +445,11 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description for the retention rule.</p>"
+          "documentation":"<p>The retention rule description.</p>"
         },
         "RetentionPeriod":{
           "shape":"RetentionPeriod",
-          "documentation":"<p>Information about the retention period for which the retention rule retains resources</p>"
+          "documentation":"<p>Information about the retention period for which the retention rule is to retain resources.</p>"
         }
       },
       "documentation":"<p>Information about a Recycle Bin retention rule.</p>"
@@ -488,7 +491,7 @@
           "documentation":"<p>The tag value.</p>"
         }
       },
-      "documentation":"<p>Information about the tags assigned to a Recycle Bin retention rule.</p>"
+      "documentation":"<p>Information about the tags to assign to the retention rule.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -517,13 +520,13 @@
       "members":{
         "ResourceArn":{
           "shape":"RuleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which to assign the tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Information about the tags to assign to the resource.</p>"
+          "documentation":"<p>Information about the tags to assign to the retention rule.</p>"
         }
       }
     },
@@ -547,13 +550,13 @@
       "members":{
         "ResourceArn":{
           "shape":"RuleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to unassign the tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "TagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>Information about the tags to unassign from the resource.</p>",
+          "documentation":"<p>The tag keys of the tags to unassign. All tags that have the specified tag key are unassigned.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -570,7 +573,7 @@
       "members":{
         "Identifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The unique ID of the retention rule to update.</p>",
+          "documentation":"<p>The unique ID of the retention rule.</p>",
           "location":"uri",
           "locationName":"identifier"
         },
@@ -584,11 +587,11 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only Amazon EBS snapshots are supported.</p>"
+          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only Amazon EBS snapshots and EBS-backed AMIs are supported. To retain snapshots, specify <code>EBS_SNAPSHOT</code>. To retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags to use to identify resources that are to be retained by the retention rule. The retention rule retains only deleted snapshots that have one or more of the specified tag key and value pairs. If a snapshot is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule. </p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p>"
+          "documentation":"<p>Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
         }
       }
     },
@@ -614,7 +617,7 @@
         },
         "Status":{
           "shape":"RuleStatus",
-          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain snapshots.</p>"
+          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
         }
       }
     },
@@ -639,5 +642,5 @@
       ]
     }
   },
-  "documentation":"<p>This is the <i>Recycle Bin API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in Recycle Bin.</p> <p>Recycle Bin is a snapshot recovery feature that enables you to restore accidentally deleted snapshots. When using Recycle Bin, if your snapshots are deleted, they are retained in the Recycle Bin for a time period that you specify.</p> <p>You can restore a snapshot from the Recycle Bin at any time before its retention period expires. After you restore a snapshot from the Recycle Bin, the snapshot is removed from the Recycle Bin, and you can then use it in the same way you use any other snapshot in your account. If the retention period expires and the snapshot is not restored, the snapshot is permanently deleted from the Recycle Bin and is no longer available for recovery. For more information about Recycle Bin, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-recycle-bin.html\"> Recycle Bin</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+  "documentation":"<p>This is the <i>Recycle Bin API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in Recycle Bin.</p> <p>Recycle Bin is a resource recovery feature that enables you to restore accidentally deleted snapshots and EBS-backed AMIs. When using Recycle Bin, if your resources are deleted, they are retained in the Recycle Bin for a time period that you specify.</p> <p>You can restore a resource from the Recycle Bin at any time before its retention period expires. After you restore a resource from the Recycle Bin, the resource is removed from the Recycle Bin, and you can then use it in the same way you use any other resource of that type in your account. If the retention period expires and the resource is not restored, the resource is permanently deleted from the Recycle Bin and is no longer available for recovery. For more information about Recycle Bin, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-recycle-bin.html\"> Recycle Bin</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
 }

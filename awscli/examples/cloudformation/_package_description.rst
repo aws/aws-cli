@@ -5,8 +5,8 @@ bucket. The command returns a copy of your template, replacing references to
 local artifacts with the S3 location where the command uploaded the artifacts.
 
 Use this command to quickly upload local artifacts that might be required by
-your template. After you package your template's artifacts, run the deploy
-command to ``deploy`` the returned template.
+your template. After you package your template's artifacts, run the ``deploy``
+command to deploy the returned template.
 
 This command can upload local artifacts referenced in the following places:
 

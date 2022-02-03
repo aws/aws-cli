@@ -29,7 +29,7 @@ For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/lat
 
 **Example 2: To create a channel with recording enabled, using the RecordingConfiguration resource specified by its ARN**
 
-The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up recording for the channel::
+The following ``create-channel`` example creates a new channel and an associated stream key to start streaming, and sets up recording for the channel. ::
 
     aws ivs create-channel \
         --name test-channel-with-recording \
@@ -57,4 +57,4 @@ Output::
         }
     }
 
-For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-S3.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Record to Amazon S3 <https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html>`__ in the *Amazon Interactive Video Service User Guide*.

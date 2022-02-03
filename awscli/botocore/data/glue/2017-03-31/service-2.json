@@ -459,6 +459,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"AlreadyExistsException"},
         {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Creates a new registry which may be used to hold a collection of schemas.</p>"
@@ -477,6 +478,7 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"AlreadyExistsException"},
         {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Creates a new schema set and registers the schema definition. Returns an error if the schema set already exists without actually registering the version.</p> <p>When the schema set is created, a version checkpoint will be set to the first version. Compatibility mode \"DISABLED\" restricts any additional schema versions from being added after the first schema version. For all other compatibility modes, validation of compatibility settings will be applied only from the second version onwards when the <code>RegisterSchemaVersion</code> API is used.</p> <p>When this API is called without a <code>RegistryId</code>, this will create an entry for a \"default-registry\" in the registry database tables, if it is not already present.</p>"
@@ -3782,7 +3784,7 @@
       "members":{
         "DataFormat":{
           "shape":"DataFormat",
-          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code> and <code>JSON</code> are supported.</p>"
+          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.</p>"
         },
         "SchemaDefinition":{
           "shape":"SchemaDefinitionString",
@@ -5385,7 +5387,7 @@
         },
         "DataFormat":{
           "shape":"DataFormat",
-          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code> and <code>JSON</code> are supported.</p>"
+          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.</p>"
         },
         "Compatibility":{
           "shape":"Compatibility",
@@ -5430,7 +5432,7 @@
         },
         "DataFormat":{
           "shape":"DataFormat",
-          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code> and <code>JSON</code> are supported.</p>"
+          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.</p>"
         },
         "Compatibility":{
           "shape":"Compatibility",
@@ -5807,7 +5809,8 @@
       "type":"string",
       "enum":[
         "AVRO",
-        "JSON"
+        "JSON",
+        "PROTOBUF"
       ]
     },
     "DataLakePrincipal":{
@@ -8213,7 +8216,7 @@
         },
         "DataFormat":{
           "shape":"DataFormat",
-          "documentation":"<p>The data format of the schema definition. Currently only <code>AVRO</code> and <code>JSON</code> are supported.</p>"
+          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.</p>"
         },
         "Status":{
           "shape":"SchemaVersionStatus",
@@ -8260,7 +8263,7 @@
         },
         "DataFormat":{
           "shape":"DataFormat",
-          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code> and <code>JSON</code> are supported.</p>"
+          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.</p>"
         },
         "Compatibility":{
           "shape":"Compatibility",
@@ -8322,7 +8325,7 @@
         },
         "DataFormat":{
           "shape":"DataFormat",
-          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code> and <code>JSON</code> are supported.</p>"
+          "documentation":"<p>The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.</p>"
         },
         "SchemaArn":{
           "shape":"GlueResourceArn",

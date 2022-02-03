@@ -1,4 +1,6 @@
 import mock
+import pytest
+
 import awscli.customizations.datapipeline.createdefaultroles \
     as createdefaultroles
 from awscli.customizations.datapipeline.constants\
@@ -13,6 +15,7 @@ from awscli.customizations.datapipeline.translator import dict_to_string
 from botocore.compat import json
 
 
+@pytest.mark.filterwarnings('ignore::UserWarning')
 class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     prefix = 'datapipeline create-default-roles'
 

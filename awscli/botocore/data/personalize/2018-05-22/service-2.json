@@ -181,7 +181,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates a recommender with the recipe (a Domain dataset group use case) you specify. You create recommenders for a Domain dataset group and specify the recommender's Amazon Resource Name (ARN) when you make a <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html\">GetRecommendations</a> request. </p> <p> <b>Status</b> </p> <p>A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the recommender status, call <a>DescribeRecommender</a>.</p> <note> <p>Wait until the <code>status</code> of the recommender is <code>ACTIVE</code> before asking the recommender for recommendations.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a>ListRecommenders</a> </p> </li> <li> <p> <a>DescribeRecommender</a> </p> </li> <li> <p> <a>UpdateRecommender</a> </p> </li> <li> <p> <a>DeleteRecommender</a> </p> </li> </ul>",
+      "documentation":"<p>Creates a recommender with the recipe (a Domain dataset group use case) you specify. You create recommenders for a Domain dataset group and specify the recommender's Amazon Resource Name (ARN) when you make a <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html\">GetRecommendations</a> request. </p> <p> <b>Minimum recommendation requests per second</b> </p> <p>When you create a recommender, you can configure the recommender's minimum recommendation requests per second. The minimum recommendation requests per second (<code>minRecommendationRequestsPerSecond</code>) specifies the baseline recommendation request throughput provisioned by Amazon Personalize. The default minRecommendationRequestsPerSecond is <code>1</code>. A recommendation request is a single <code>GetRecommendations</code> operation. Request throughput is measured in requests per second and Amazon Personalize uses your requests per second to derive your requests per hour and the price of your recommender usage. </p> <p> If your requests per second increases beyond <code>minRecommendationRequestsPerSecond</code>, Amazon Personalize auto-scales the provisioned capacity up and down, but never below <code>minRecommendationRequestsPerSecond</code>. There's a short time delay while the capacity is increased that might cause loss of requests.</p> <p> Your bill is the greater of either the minimum requests per hour (based on minRecommendationRequestsPerSecond) or the actual number of requests. The actual request throughput used is calculated as the average requests/second within a one-hour window. We recommend starting with the default <code>minRecommendationRequestsPerSecond</code>, track your usage using Amazon CloudWatch metrics, and then increase the <code>minRecommendationRequestsPerSecond</code> as necessary. </p> <p> <b>Status</b> </p> <p>A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the recommender status, call <a>DescribeRecommender</a>.</p> <note> <p>Wait until the <code>status</code> of the recommender is <code>ACTIVE</code> before asking the recommender for recommendations.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a>ListRecommenders</a> </p> </li> <li> <p> <a>DescribeRecommender</a> </p> </li> <li> <p> <a>UpdateRecommender</a> </p> </li> <li> <p> <a>DeleteRecommender</a> </p> </li> </ul>",
       "idempotent":true
     },
     "CreateSchema":{
@@ -3744,6 +3744,10 @@
         "itemExplorationConfig":{
           "shape":"HyperParameters",
           "documentation":"<p>Specifies the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide <code>itemExplorationConfig</code> data only if your recommenders generate personalized recommendations for a user (not popular items or similar items).</p>"
+        },
+        "minRecommendationRequestsPerSecond":{
+          "shape":"TransactionsPerSecond",
+          "documentation":"<p>Specifies the requested minimum provisioned recommendation requests per second that Amazon Personalize will support.</p>"
         }
       },
       "documentation":"<p>The configuration details of the recommender.</p>"
@@ -3810,7 +3814,7 @@
           "documentation":"<p>If a recommender update fails, the reason behind the failure.</p>"
         }
       },
-      "documentation":"<p>Provides a summary of the properties of a recommender update. For a complete listing, call the <a>DescribeRecommender</a> API.</p>"
+      "documentation":"<p>Provides a summary of the properties of a recommender update. For a complete listing, call the DescribeRecommender API operation.</p>"
     },
     "Recommenders":{
       "type":"list",
@@ -3862,7 +3866,7 @@
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key that Amazon Personalize uses to encrypt or decrypt the input and output files of a batch inference job.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key that Amazon Personalize uses to encrypt or decrypt the input and output files.</p>"
         }
       },
       "documentation":"<p>The configuration details of an Amazon S3 input or output bucket.</p>"

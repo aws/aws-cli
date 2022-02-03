@@ -219,6 +219,22 @@
       ],
       "documentation":"<p>Provides scheduled Auto-Tune action details for the Elasticsearch domain, such as Auto-Tune action type, description, severity, and scheduled date.</p>"
     },
+    "DescribeDomainChangeProgress":{
+      "name":"DescribeDomainChangeProgress",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/progress"
+      },
+      "input":{"shape":"DescribeDomainChangeProgressRequest"},
+      "output":{"shape":"DescribeDomainChangeProgressResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns information about the current blue/green deployment happening on a domain, including a change ID, status, and progress stages.</p>"
+    },
     "DescribeElasticsearchDomain":{
       "name":"DescribeElasticsearchDomain",
       "http":{
@@ -1089,6 +1105,91 @@
       },
       "documentation":"<p>The result of a <code>CancelElasticsearchServiceSoftwareUpdate</code> operation. Contains the status of the update.</p>"
     },
+    "ChangeProgressDetails":{
+      "type":"structure",
+      "members":{
+        "ChangeId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique change identifier associated with a specific domain configuration change.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>Contains an optional message associated with the domain configuration change.</p>"
+        }
+      },
+      "documentation":"<p>Specifies change details of the domain configuration change.</p>"
+    },
+    "ChangeProgressStage":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ChangeProgressStageName",
+          "documentation":"<p>The name of the specific progress stage.</p>"
+        },
+        "Status":{
+          "shape":"ChangeProgressStageStatus",
+          "documentation":"<p>The overall status of a specific progress stage.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the progress stage.</p>"
+        },
+        "LastUpdated":{
+          "shape":"LastUpdated",
+          "documentation":"<p>The last updated timestamp of the progress stage.</p>"
+        }
+      },
+      "documentation":"<p>A progress stage details of a specific domain configuration change.</p>"
+    },
+    "ChangeProgressStageList":{
+      "type":"list",
+      "member":{"shape":"ChangeProgressStage"},
+      "documentation":"<p>The list of progress stages of a specific domain configuration change.</p>"
+    },
+    "ChangeProgressStageName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ChangeProgressStageStatus":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ChangeProgressStatusDetails":{
+      "type":"structure",
+      "members":{
+        "ChangeId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique change identifier associated with a specific domain configuration change.</p>"
+        },
+        "StartTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The time at which the configuration change is made on the domain.</p>"
+        },
+        "Status":{
+          "shape":"OverallChangeStatus",
+          "documentation":"<p>The overall status of the domain configuration change. This field can take the following values: <code>PENDING</code>, <code>PROCESSING</code>, <code>COMPLETED</code> and <code>FAILED</code></p>"
+        },
+        "PendingProperties":{
+          "shape":"StringList",
+          "documentation":"<p>The list of properties involved in the domain configuration change that are still in pending.</p>"
+        },
+        "CompletedProperties":{
+          "shape":"StringList",
+          "documentation":"<p>The list of properties involved in the domain configuration change that are completed.</p>"
+        },
+        "TotalNumberOfStages":{
+          "shape":"TotalNumberOfStages",
+          "documentation":"<p>The total number of stages required for the configuration change.</p>"
+        },
+        "ChangeProgressStages":{
+          "shape":"ChangeProgressStageList",
+          "documentation":"<p>The specific stages that the domain is going through to perform the configuration change.</p>"
+        }
+      },
+      "documentation":"<p>The progress details of a specific domain configuration change.</p>"
+    },
     "CloudWatchLogsLogGroupArn":{
       "type":"string",
       "documentation":"<p>ARN of the Cloudwatch log group to which log needs to be published.</p>"
@@ -1487,6 +1588,35 @@
       },
       "documentation":"<p>The result of <code>DescribeDomainAutoTunes</code> request. See the <a href=\"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html\" target=\"_blank\">Developer Guide</a> for more information. </p>"
     },
+    "DescribeDomainChangeProgressRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain you want to get the progress information about.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ChangeId":{
+          "shape":"GUID",
+          "documentation":"<p>The specific change ID for which you want to get progress information. This is an optional parameter. If omitted, the service returns information about the most recent configuration change. </p>",
+          "location":"querystring",
+          "locationName":"changeid"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DescribeDomainChangeProgress</code> operation. Specifies the domain name and optional change specific identity for which you want progress information. </p>"
+    },
+    "DescribeDomainChangeProgressResponse":{
+      "type":"structure",
+      "members":{
+        "ChangeProgressStatus":{
+          "shape":"ChangeProgressStatusDetails",
+          "documentation":"<p>Progress information for the configuration change that is requested in the <code>DescribeDomainChangeProgress</code> request. </p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>DescribeDomainChangeProgress</code> request. Contains the progress information of the requested domain change. </p>"
+    },
     "DescribeElasticsearchDomainConfigRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -1796,6 +1926,7 @@
       },
       "documentation":"<p>Container for results from <code>DescribeReservedElasticsearchInstances</code></p>"
     },
+    "Description":{"type":"string"},
     "DisableTimestamp":{"type":"timestamp"},
     "DisabledOperationException":{
       "type":"structure",
@@ -2256,6 +2387,10 @@
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsStatus",
           "documentation":"<p>Specifies <code>AutoTuneOptions</code> for the domain. </p>"
+        },
+        "ChangeProgressDetails":{
+          "shape":"ChangeProgressDetails",
+          "documentation":"<p>Specifies change details of the domain configuration change.</p>"
         }
       },
       "documentation":"<p>The configuration of an Elasticsearch domain.</p>"
@@ -2361,6 +2496,10 @@
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsOutput",
           "documentation":"<p>The current status of the Elasticsearch domain's Auto-Tune options.</p>"
+        },
+        "ChangeProgressDetails":{
+          "shape":"ChangeProgressDetails",
+          "documentation":"<p>Specifies change details of the domain configuration change.</p>"
         }
       },
       "documentation":"<p>The current status of an Elasticsearch domain.</p>"
@@ -3150,6 +3289,16 @@
       "type":"list",
       "member":{"shape":"OutboundCrossClusterSearchConnection"}
     },
+    "OverallChangeStatus":{
+      "type":"string",
+      "documentation":"<p>The overall status value of the domain configuration change.</p>",
+      "enum":[
+        "PENDING",
+        "PROCESSING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
     "OwnerId":{
       "type":"string",
       "max":12,
@@ -3836,6 +3985,7 @@
       "documentation":"<p>Specifies the unit of a maintenance schedule duration. Valid value is HOUR. See the <a href=\"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html\" target=\"_blank\">Developer Guide</a> for more information.</p>",
       "enum":["HOURS"]
     },
+    "TotalNumberOfStages":{"type":"integer"},
     "UIntValue":{
       "type":"integer",
       "min":0
@@ -3988,7 +4138,8 @@
         "PerformCheckOnly":{
           "shape":"Boolean",
           "documentation":"<p> This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. </p>"
-        }
+        },
+        "ChangeProgressDetails":{"shape":"ChangeProgressDetails"}
       },
       "documentation":"<p> Container for response returned by <code> <a>UpgradeElasticsearchDomain</a> </code> operation. </p>"
     },

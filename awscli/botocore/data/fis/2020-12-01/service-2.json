@@ -90,6 +90,21 @@
       ],
       "documentation":"<p>Gets information about the specified experiment template.</p>"
     },
+    "GetTargetResourceType":{
+      "name":"GetTargetResourceType",
+      "http":{
+        "method":"GET",
+        "requestUri":"/targetResourceTypes/{resourceType}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTargetResourceTypeRequest"},
+      "output":{"shape":"GetTargetResourceTypeResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets information about the specified resource type.</p>"
+    },
     "ListActions":{
       "name":"ListActions",
       "http":{
@@ -142,6 +157,20 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "documentation":"<p>Lists the tags for the specified resource.</p>"
+    },
+    "ListTargetResourceTypes":{
+      "name":"ListTargetResourceTypes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/targetResourceTypes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTargetResourceTypesRequest"},
+      "output":{"shape":"ListTargetResourceTypesResponse"},
+      "errors":[
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the target resource types.</p>"
     },
     "StartExperiment":{
       "name":"StartExperiment",
@@ -312,7 +341,7 @@
       "type":"structure",
       "members":{
         "resourceType":{
-          "shape":"TargetResourceType",
+          "shape":"TargetResourceTypeId",
           "documentation":"<p>The resource type of the target.</p>"
         }
       },
@@ -452,8 +481,8 @@
       ],
       "members":{
         "resourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The Amazon Web Services resource type. The resource type must be supported for the specified action.</p>"
+          "shape":"TargetResourceTypeId",
+          "documentation":"<p>The resource type. The resource type must be supported for the specified action.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
@@ -470,6 +499,10 @@
         "selectionMode":{
           "shape":"ExperimentTemplateTargetSelectionMode",
           "documentation":"<p>Scopes the identified resources to a specific count of the resources at random, or a percentage of the resources. All identified resources are included in the target.</p> <ul> <li> <p>ALL - Run the action on all identified targets. This is the default.</p> </li> <li> <p>COUNT(n) - Run the action on the specified number of targets, chosen from the identified targets at random. For example, COUNT(1) selects one of the targets.</p> </li> <li> <p>PERCENT(n) - Run the action on the specified percentage of targets, chosen from the identified targets at random. For example, PERCENT(25) selects 25% of the targets.</p> </li> </ul>"
+        },
+        "parameters":{
+          "shape":"ExperimentTemplateTargetParameterMap",
+          "documentation":"<p>The resource type parameters.</p>"
         }
       },
       "documentation":"<p>Specifies a target for an experiment. You must specify at least one Amazon Resource Name (ARN) or at least one resource tag. You cannot specify both ARNs and tags.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/targets.html\">Targets</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
@@ -767,7 +800,7 @@
       "type":"structure",
       "members":{
         "resourceType":{
-          "shape":"ResourceType",
+          "shape":"TargetResourceTypeId",
           "documentation":"<p>The resource type.</p>"
         },
         "resourceArns":{
@@ -785,6 +818,10 @@
         "selectionMode":{
           "shape":"ExperimentTargetSelectionMode",
           "documentation":"<p>Scopes the identified resources to a specific count or percentage.</p>"
+        },
+        "parameters":{
+          "shape":"ExperimentTargetParameterMap",
+          "documentation":"<p>The resource type parameters.</p>"
         }
       },
       "documentation":"<p>Describes a target for an experiment.</p>"
@@ -830,6 +867,21 @@
       "type":"string",
       "max":64,
       "pattern":"[\\S]+"
+    },
+    "ExperimentTargetParameterMap":{
+      "type":"map",
+      "key":{"shape":"ExperimentTargetParameterName"},
+      "value":{"shape":"ExperimentTargetParameterValue"}
+    },
+    "ExperimentTargetParameterName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
+    "ExperimentTargetParameterValue":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "ExperimentTargetSelectionMode":{
       "type":"string",
@@ -1015,7 +1067,7 @@
       "type":"structure",
       "members":{
         "resourceType":{
-          "shape":"ResourceType",
+          "shape":"TargetResourceTypeId",
           "documentation":"<p>The resource type.</p>"
         },
         "resourceArns":{
@@ -1033,6 +1085,10 @@
         "selectionMode":{
           "shape":"ExperimentTemplateTargetSelectionMode",
           "documentation":"<p>Scopes the identified resources to a specific count or percentage.</p>"
+        },
+        "parameters":{
+          "shape":"ExperimentTemplateTargetParameterMap",
+          "documentation":"<p>The resource type parameters.</p>"
         }
       },
       "documentation":"<p>Describes a target for an experiment template.</p>"
@@ -1101,6 +1157,22 @@
       "max":64,
       "pattern":"[\\S]+"
     },
+    "ExperimentTemplateTargetParameterMap":{
+      "type":"map",
+      "key":{"shape":"ExperimentTemplateTargetParameterName"},
+      "value":{"shape":"ExperimentTemplateTargetParameterValue"}
+    },
+    "ExperimentTemplateTargetParameterName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
+    "ExperimentTemplateTargetParameterValue":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+$"
+    },
     "ExperimentTemplateTargetSelectionMode":{
       "type":"string",
       "max":64,
@@ -1166,6 +1238,27 @@
         "experimentTemplate":{
           "shape":"ExperimentTemplate",
           "documentation":"<p>Information about the experiment template.</p>"
+        }
+      }
+    },
+    "GetTargetResourceTypeRequest":{
+      "type":"structure",
+      "required":["resourceType"],
+      "members":{
+        "resourceType":{
+          "shape":"TargetResourceTypeId",
+          "documentation":"<p>The resource type.</p>",
+          "location":"uri",
+          "locationName":"resourceType"
+        }
+      }
+    },
+    "GetTargetResourceTypeResponse":{
+      "type":"structure",
+      "members":{
+        "targetResourceType":{
+          "shape":"TargetResourceType",
+          "documentation":"<p>Information about the resource type.</p>"
         }
       }
     },
@@ -1299,6 +1392,42 @@
         }
       }
     },
+    "ListTargetResourceTypesMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListTargetResourceTypesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListTargetResourceTypesMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTargetResourceTypesResponse":{
+      "type":"structure",
+      "members":{
+        "targetResourceTypes":{
+          "shape":"TargetResourceTypeSummaryList",
+          "documentation":"<p>The target resource types.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "NextToken":{
       "type":"string",
       "max":1024,
@@ -1324,11 +1453,6 @@
       "documentation":"<p>The specified resource cannot be found.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
-    },
-    "ResourceType":{
-      "type":"string",
-      "max":64,
-      "pattern":"[\\S]+"
     },
     "RoleArn":{
       "type":"string",
@@ -1453,9 +1577,81 @@
       "pattern":"[\\s\\S]*"
     },
     "TargetResourceType":{
+      "type":"structure",
+      "members":{
+        "resourceType":{
+          "shape":"TargetResourceTypeId",
+          "documentation":"<p>The resource type.</p>"
+        },
+        "description":{
+          "shape":"TargetResourceTypeDescription",
+          "documentation":"<p>A description of the resource type.</p>"
+        },
+        "parameters":{
+          "shape":"TargetResourceTypeParameterMap",
+          "documentation":"<p>The parameters for the resource type.</p>"
+        }
+      },
+      "documentation":"<p>Describes a resource type.</p>"
+    },
+    "TargetResourceTypeDescription":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\s\\S]+"
+    },
+    "TargetResourceTypeId":{
       "type":"string",
       "max":128,
       "pattern":"[\\S]+"
+    },
+    "TargetResourceTypeParameter":{
+      "type":"structure",
+      "members":{
+        "description":{
+          "shape":"TargetResourceTypeParameterDescription",
+          "documentation":"<p>A description of the parameter.</p>"
+        },
+        "required":{
+          "shape":"TargetResourceTypeParameterRequired",
+          "documentation":"<p>Indicates whether the parameter is required.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Describes the parameters for a resource type. Use parameters to determine which tasks are identified during target resolution.</p>"
+    },
+    "TargetResourceTypeParameterDescription":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\s\\S]+"
+    },
+    "TargetResourceTypeParameterMap":{
+      "type":"map",
+      "key":{"shape":"TargetResourceTypeParameterName"},
+      "value":{"shape":"TargetResourceTypeParameter"}
+    },
+    "TargetResourceTypeParameterName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
+    "TargetResourceTypeParameterRequired":{"type":"boolean"},
+    "TargetResourceTypeSummary":{
+      "type":"structure",
+      "members":{
+        "resourceType":{
+          "shape":"TargetResourceTypeId",
+          "documentation":"<p>The resource type.</p>"
+        },
+        "description":{
+          "shape":"TargetResourceTypeDescription",
+          "documentation":"<p>A description of the resource type.</p>"
+        }
+      },
+      "documentation":"<p>Describes a resource type.</p>"
+    },
+    "TargetResourceTypeSummaryList":{
+      "type":"list",
+      "member":{"shape":"TargetResourceTypeSummary"}
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -1579,8 +1775,8 @@
       ],
       "members":{
         "resourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The Amazon Web Services resource type. The resource type must be supported for the specified action.</p>"
+          "shape":"TargetResourceTypeId",
+          "documentation":"<p>The resource type. The resource type must be supported for the specified action.</p>"
         },
         "resourceArns":{
           "shape":"ResourceArnList",
@@ -1597,6 +1793,10 @@
         "selectionMode":{
           "shape":"ExperimentTemplateTargetSelectionMode",
           "documentation":"<p>Scopes the identified resources to a specific count or percentage.</p>"
+        },
+        "parameters":{
+          "shape":"ExperimentTemplateTargetParameterMap",
+          "documentation":"<p>The resource type parameters.</p>"
         }
       },
       "documentation":"<p>Specifies a target for an experiment. You must specify at least one Amazon Resource Name (ARN) or at least one resource tag. You cannot specify both.</p>"

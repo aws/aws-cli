@@ -242,6 +242,21 @@
       ],
       "documentation":"<p>Deletes an entity recognizer.</p> <p>Only those recognizers that are in terminated states (IN_ERROR, TRAINED) will be deleted. If an active inference job is using the model, a <code>ResourceInUseException</code> will be returned.</p> <p>This is an asynchronous action that puts the recognizer into a DELETING state, and it is then removed by a background job. Once removed, the recognizer disappears from your account and is no longer available for use. </p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a resource-based policy that is attached to a custom model.</p>"
+    },
     "DescribeDocumentClassificationJob":{
       "name":"DescribeDocumentClassificationJob",
       "http":{
@@ -386,6 +401,21 @@
       ],
       "documentation":"<p>Gets the properties associated with a PII entities detection job. For example, you can use this operation to get the job status.</p>"
     },
+    "DescribeResourcePolicy":{
+      "name":"DescribeResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeResourcePolicyRequest"},
+      "output":{"shape":"DescribeResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the details of a resource-based policy that is attached to a custom model, including the JSON body of the policy.</p>"
+    },
     "DescribeSentimentDetectionJob":{
       "name":"DescribeSentimentDetectionJob",
       "http":{
@@ -513,6 +543,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Inspects text for syntax and the part of speech of words in the document. For more information, <a>how-syntax</a>.</p>"
+    },
+    "ImportModel":{
+      "name":"ImportModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportModelRequest"},
+      "output":{"shape":"ImportModelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceUnavailableException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"KmsKeyValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new custom model that replicates a source custom model that you import. The source model can be in your AWS account or another one.</p> <p>If the source model is in another AWS account, then it must have a resource-based policy that authorizes you to import it.</p> <p>The source model must be in the same AWS region that you're using when you import. You can't import a model that's in a different region.</p>"
     },
     "ListDocumentClassificationJobs":{
       "name":"ListDocumentClassificationJobs",
@@ -733,6 +784,21 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets a list of the topic detection jobs that you have submitted.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attaches a resource-based policy to a custom model. You can use this policy to authorize an entity in another AWS account to import the custom model, which replicates it in Amazon Comprehend in their account.</p>"
     },
     "StartDocumentClassificationJob":{
       "name":"StartDocumentClassificationJob",
@@ -1589,6 +1655,10 @@
         "ModelKmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "ModelPolicy":{
+          "shape":"Policy",
+          "documentation":"<p>The resource-based policy to attach to your custom document classifier model. You can use this policy to allow another AWS account to import your custom model.</p> <p>Provide your policy as a JSON body that you enter as a UTF-8 encoded string without line breaks. To provide valid JSON, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>\"{\\\"attribute\\\": \\\"value\\\", \\\"attribute\\\": [\\\"value\\\"]}\"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>'{\"attribute\": \"value\", \"attribute\": [\"value\"]}'</code> </p>"
         }
       }
     },
@@ -1694,6 +1764,10 @@
         "ModelKmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "ModelPolicy":{
+          "shape":"Policy",
+          "documentation":"<p>The JSON resource-based policy to attach to your custom entity recognizer model. You can use this policy to allow another AWS account to import your custom model.</p> <p>Provide your JSON as a UTF-8 encoded string without line breaks. To provide valid JSON for your policy, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>\"{\\\"attribute\\\": \\\"value\\\", \\\"attribute\\\": [\\\"value\\\"]}\"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>'{\"attribute\": \"value\", \"attribute\": [\"value\"]}'</code> </p>"
         }
       }
     },
@@ -1757,6 +1831,25 @@
       }
     },
     "DeleteEntityRecognizerResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom model version that has the policy to delete.</p>"
+        },
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the policy to delete.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
       "type":"structure",
       "members":{
       }
@@ -1927,6 +2020,37 @@
       "type":"structure",
       "members":{
         "PiiEntitiesDetectionJobProperties":{"shape":"PiiEntitiesDetectionJobProperties"}
+      }
+    },
+    "DescribeResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy to describe.</p>"
+        }
+      }
+    },
+    "DescribeResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "ResourcePolicy":{
+          "shape":"Policy",
+          "documentation":"<p>The JSON body of the resource-based policy.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the policy was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the policy was last modified.</p>"
+        },
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.</p>"
+        }
       }
     },
     "DescribeSentimentDetectionJobRequest":{
@@ -2384,6 +2508,10 @@
         "VersionName":{
           "shape":"VersionName",
           "documentation":"<p>The version name that you assigned to the document classifier.</p>"
+        },
+        "SourceModelArn":{
+          "shape":"DocumentClassifierArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source model. This model was imported from a different AWS account to create the document classifier model in your AWS account.</p>"
         }
       },
       "documentation":"<p>Provides information about a document classifier.</p>"
@@ -3030,6 +3158,10 @@
         "VersionName":{
           "shape":"VersionName",
           "documentation":"<p>The version name you assigned to the entity recognizer.</p>"
+        },
+        "SourceModelArn":{
+          "shape":"EntityRecognizerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source model. This model was imported from a different AWS account to create the entity recognizer model in your AWS account.</p>"
         }
       },
       "documentation":"<p>Describes information about an entity recognizer.</p>"
@@ -3085,7 +3217,7 @@
     "EntityTypeName":{
       "type":"string",
       "max":64,
-      "pattern":"^(?:(?!\\\\n+|\\\\t+|\\\\r+|[\\r\\t\\n,]).)+$"
+      "pattern":"^(?![^\\n\\r\\t,]*\\\\n|\\\\r|\\\\t)[^\\n\\r\\t,]+$"
     },
     "EntityTypesEvaluationMetrics":{
       "type":"structure",
@@ -3212,6 +3344,45 @@
       "max":2048,
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+"
+    },
+    "ImportModelRequest":{
+      "type":"structure",
+      "required":["SourceModelArn"],
+      "members":{
+        "SourceModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom model to import.</p>"
+        },
+        "ModelName":{
+          "shape":"ComprehendArnName",
+          "documentation":"<p>The name to assign to the custom model that is created in Amazon Comprehend by this import.</p>"
+        },
+        "VersionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The version name given to the custom model that is created by this import. Version names can have a maximum of 256 characters. Alphanumeric characters, hyphens (-) and underscores (_) are allowed. The version name must be unique among all models with the same classifier name in the account/AWS Region.</p>"
+        },
+        "ModelKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that allows Amazon Comprehend to use Amazon Key Management Service (KMS) to encrypt or decrypt the custom model.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to be associated with the custom model that is created by this import. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+        }
+      }
+    },
+    "ImportModelResponse":{
+      "type":"structure",
+      "members":{
+        "ModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom model being imported.</p>"
+        }
+      }
     },
     "InferenceUnitsInteger":{
       "type":"integer",
@@ -4151,6 +4322,47 @@
         }
       },
       "documentation":"<p>Provides configuration parameters for the output of PII entity detection jobs.</p>"
+    },
+    "Policy":{
+      "type":"string",
+      "max":20000,
+      "min":1,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
+    },
+    "PolicyRevisionId":{
+      "type":"string",
+      "max":64,
+      "pattern":"[0-9A-Fa-f]+"
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "ResourcePolicy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom model to attach the policy to.</p>"
+        },
+        "ResourcePolicy":{
+          "shape":"Policy",
+          "documentation":"<p>The JSON resource-based policy to attach to your custom model. Provide your JSON as a UTF-8 encoded string without line breaks. To provide valid JSON for your policy, enclose the attribute names and values in double quotes. If the JSON body is also enclosed in double quotes, then you must escape the double quotes that are inside the policy:</p> <p> <code>\"{\\\"attribute\\\": \\\"value\\\", \\\"attribute\\\": [\\\"value\\\"]}\"</code> </p> <p>To avoid escaping quotes, you can use single quotes to enclose the policy and double quotes to enclose the JSON names and values:</p> <p> <code>'{\"attribute\": \"value\", \"attribute\": [\"value\"]}'</code> </p>"
+        },
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID that Amazon Comprehend assigned to the policy that you are updating. If you are creating a new policy that has no prior version, don't use this parameter. Amazon Comprehend creates the revision ID for you.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.</p>"
+        }
+      }
     },
     "RedactionConfig":{
       "type":"structure",

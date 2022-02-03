@@ -616,7 +616,7 @@
       },
       "input":{"shape":"CreateImageRequest"},
       "output":{"shape":"CreateImageResult"},
-      "documentation":"<p>Creates an Amazon EBS-backed AMI from an Amazon EBS-backed instance that is either running or stopped.</p> <p>If you customized your instance with instance store volumes or Amazon EBS volumes in addition to the root device volume, the new AMI contains block device mapping information for those volumes. When you launch an instance from this new AMI, the instance automatically launches with those additional volumes.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Creating Amazon EBS-Backed Linux AMIs</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates an Amazon EBS-backed AMI from an Amazon EBS-backed instance that is either running or stopped.</p> <important> <p>By default, Amazon EC2 shuts down and reboots the instance before creating the AMI to ensure that everything on the instance is stopped and in a consistent state during the creation process. If you're confident that your instance is in a consistent state appropriate for AMI creation, use the <b>NoReboot</b> parameter to prevent Amazon EC2 from shutting down and rebooting the instance. </p> </important> <p>If you customized your instance with instance store volumes or Amazon EBS volumes in addition to the root device volume, the new AMI contains block device mapping information for those volumes. When you launch an instance from this new AMI, the instance automatically launches with those additional volumes.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Creating Amazon EBS-Backed Linux AMIs</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "CreateInstanceEventWindow":{
       "name":"CreateInstanceEventWindow",
@@ -1812,7 +1812,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"DeregisterImageRequest"},
-      "documentation":"<p>Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances; however, it doesn't affect any instances that you've already launched from the AMI. You'll continue to incur usage costs for those instances until you terminate them.</p> <p>When you deregister an Amazon EBS-backed AMI, it doesn't affect the snapshot that was created for the root volume of the instance during the AMI creation process. When you deregister an instance store-backed AMI, it doesn't affect the files that you uploaded to Amazon S3 when you created the AMI.</p>"
+      "documentation":"<p>Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.</p> <p>If you deregister an AMI that matches a Recycle Bin retention rule, the AMI is retained in the Recycle Bin for the specified retention period. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\">Recycle Bin</a> in the Amazon Elastic Compute Cloud User Guide.</p> <p>When you deregister an AMI, it doesn't affect any instances that you've already launched from the AMI. You'll continue to incur usage costs for those instances until you terminate them.</p> <p>When you deregister an Amazon EBS-backed AMI, it doesn't affect the snapshot that was created for the root volume of the instance during the AMI creation process. When you deregister an instance store-backed AMI, it doesn't affect the files that you uploaded to Amazon S3 when you created the AMI.</p>"
     },
     "DeregisterInstanceEventNotificationAttributes":{
       "name":"DeregisterInstanceEventNotificationAttributes",
@@ -3239,7 +3239,7 @@
       },
       "input":{"shape":"DisableFastLaunchRequest"},
       "output":{"shape":"DisableFastLaunchResult"},
-      "documentation":"<p>Discontinue faster launching for a Windows AMI, and clean up existing pre-provisioned snapshots. When you disable faster launching, the AMI uses the standard launch process for each instance. All pre-provisioned snapshots must be removed before you can enable faster launching again.</p>"
+      "documentation":"<p>Discontinue faster launching for a Windows AMI, and clean up existing pre-provisioned snapshots. When you disable faster launching, the AMI uses the standard launch process for each instance. All pre-provisioned snapshots must be removed before you can enable faster launching again.</p> <note> <p>To change these settings, you must own the AMI.</p> </note>"
     },
     "DisableFastSnapshotRestores":{
       "name":"DisableFastSnapshotRestores",
@@ -3446,7 +3446,7 @@
       },
       "input":{"shape":"EnableFastLaunchRequest"},
       "output":{"shape":"EnableFastLaunchResult"},
-      "documentation":"<p>When you enable faster launching for a Windows AMI, images are pre-provisioned, using snapshots to launch instances up to 65% faster. To create the optimized Windows image, Amazon EC2 launches an instance and runs through Sysprep steps, rebooting as required. Then it creates a set of reserved snapshots that are used for subsequent launches. The reserved snapshots are automatically replenished as they are used, depending on your settings for launch frequency.</p>"
+      "documentation":"<p>When you enable faster launching for a Windows AMI, images are pre-provisioned, using snapshots to launch instances up to 65% faster. To create the optimized Windows image, Amazon EC2 launches an instance and runs through Sysprep steps, rebooting as required. Then it creates a set of reserved snapshots that are used for subsequent launches. The reserved snapshots are automatically replenished as they are used, depending on your settings for launch frequency.</p> <note> <p>To change these settings, you must own the AMI.</p> </note>"
     },
     "EnableFastSnapshotRestores":{
       "name":"EnableFastSnapshotRestores",
@@ -3975,6 +3975,16 @@
       "input":{"shape":"ImportVolumeRequest"},
       "output":{"shape":"ImportVolumeResult"},
       "documentation":"<p>Creates an import volume task using metadata from the specified disk image.</p> <p>This API action supports only single-volume VMs. To import multi-volume VMs, use <a>ImportImage</a> instead. To import a disk to a snapshot, use <a>ImportSnapshot</a> instead.</p> <p>This API action is not supported by the Command Line Interface (CLI). For information about using the Amazon EC2 CLI, which is deprecated, see <a href=\"https://awsdocs.s3.amazonaws.com/EC2/ec2-clt.pdf#importing-your-volumes-into-amazon-ebs\">Importing Disks to Amazon EBS</a> in the <i>Amazon EC2 CLI Reference</i> PDF file.</p> <p>For information about the import manifest referenced by this API action, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/manifest.html\">VM Import Manifest</a>.</p>"
+    },
+    "ListImagesInRecycleBin":{
+      "name":"ListImagesInRecycleBin",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListImagesInRecycleBinRequest"},
+      "output":{"shape":"ListImagesInRecycleBinResult"},
+      "documentation":"<p>Lists one or more AMIs that are currently in the Recycle Bin. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\">Recycle Bin</a> in the Amazon Elastic Compute Cloud User Guide.</p>"
     },
     "ListSnapshotsInRecycleBin":{
       "name":"ListSnapshotsInRecycleBin",
@@ -4897,6 +4907,16 @@
       "input":{"shape":"RestoreAddressToClassicRequest"},
       "output":{"shape":"RestoreAddressToClassicResult"},
       "documentation":"<p>Restores an Elastic IP address that was previously moved to the EC2-VPC platform back to the EC2-Classic platform. You cannot move an Elastic IP address that was originally allocated for use in EC2-VPC. The Elastic IP address must not be associated with an instance or network interface.</p>"
+    },
+    "RestoreImageFromRecycleBin":{
+      "name":"RestoreImageFromRecycleBin",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreImageFromRecycleBinRequest"},
+      "output":{"shape":"RestoreImageFromRecycleBinResult"},
+      "documentation":"<p>Restores an AMI from the Recycle Bin. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\">Recycle Bin</a> in the Amazon Elastic Compute Cloud User Guide.</p>"
     },
     "RestoreManagedPrefixListVersion":{
       "name":"RestoreManagedPrefixListVersion",
@@ -9083,22 +9103,32 @@
     "ClientLoginBannerOptions":{
       "type":"structure",
       "members":{
-        "Enabled":{"shape":"Boolean"},
-        "BannerText":{"shape":"String"}
-      }
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable or disable a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>"
+        },
+        "BannerText":{
+          "shape":"String",
+          "documentation":"<p>Customizable text that will be displayed in a banner on Amazon Web Services provided clients when a VPN session is established. UTF-8 encoded characters only. Maximum of 1400 characters.</p>"
+        }
+      },
+      "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
     },
     "ClientLoginBannerResponseOptions":{
       "type":"structure",
       "members":{
         "Enabled":{
           "shape":"Boolean",
+          "documentation":"<p>Current state of text banner feature.</p> <p>Valid values: <code>true | false</code> </p>",
           "locationName":"enabled"
         },
         "BannerText":{
           "shape":"String",
+          "documentation":"<p>Customizable text that will be displayed in a banner on Amazon Web Services provided clients when a VPN session is established. UTF-8 encoded characters only. Maximum of 1400 characters.</p>",
           "locationName":"bannerText"
         }
-      }
+      },
+      "documentation":"<p>Current state of options for customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
     },
     "ClientVpnAssociationId":{"type":"string"},
     "ClientVpnAuthentication":{
@@ -9413,10 +9443,12 @@
         },
         "SessionTimeoutHours":{
           "shape":"Integer",
+          "documentation":"<p>The maximum VPN session duration time in hours.</p> <p>Valid values: <code>8 | 10 | 12 | 24</code> </p> <p>Default value: <code>24</code> </p>",
           "locationName":"sessionTimeoutHours"
         },
         "ClientLoginBannerOptions":{
           "shape":"ClientLoginBannerResponseOptions",
+          "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>",
           "locationName":"clientLoginBannerOptions"
         }
       },
@@ -10386,8 +10418,14 @@
           "shape":"ClientConnectOptions",
           "documentation":"<p>The options for managing connection authorization for new client connections.</p>"
         },
-        "SessionTimeoutHours":{"shape":"Integer"},
-        "ClientLoginBannerOptions":{"shape":"ClientLoginBannerOptions"}
+        "SessionTimeoutHours":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum VPN session duration time in hours.</p> <p>Valid values: <code>8 | 10 | 12 | 24</code> </p> <p>Default value: <code>24</code> </p>"
+        },
+        "ClientLoginBannerOptions":{
+          "shape":"ClientLoginBannerOptions",
+          "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
+        }
       }
     },
     "CreateClientVpnEndpointResult":{
@@ -23134,7 +23172,7 @@
         },
         "MaxParallelLaunches":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of parallel instances to launch for creating resources.</p>"
+          "documentation":"<p>The maximum number of parallel instances to launch for creating resources. Value must be <code>6</code> or greater. </p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -27701,6 +27739,44 @@
       "type":"list",
       "member":{
         "shape":"Image",
+        "locationName":"item"
+      }
+    },
+    "ImageRecycleBinInfo":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the AMI.</p>",
+          "locationName":"imageId"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the AMI.</p>",
+          "locationName":"name"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the AMI.</p>",
+          "locationName":"description"
+        },
+        "RecycleBinEnterTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the AMI entered the Recycle Bin.</p>",
+          "locationName":"recycleBinEnterTime"
+        },
+        "RecycleBinExitTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the AMI is to be permanently deleted from the Recycle Bin.</p>",
+          "locationName":"recycleBinExitTime"
+        }
+      },
+      "documentation":"<p>Information about an AMI that is currently in the Recycle Bin.</p>"
+    },
+    "ImageRecycleBinInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageRecycleBinInfo",
         "locationName":"item"
       }
     },
@@ -33660,6 +33736,48 @@
         "locationName":"item"
       }
     },
+    "ListImagesInRecycleBinMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "ListImagesInRecycleBinRequest":{
+      "type":"structure",
+      "members":{
+        "ImageIds":{
+          "shape":"ImageIdStringList",
+          "documentation":"<p>The IDs of the AMIs to list. Omit this parameter to list all of the AMIs that are in the Recycle Bin. You can specify up to 20 IDs in a single request.</p>",
+          "locationName":"ImageId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListImagesInRecycleBinMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If you do not specify a value for <i>MaxResults</i>, the request returns 1,000 items per page by default. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\"> Pagination</a>.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ListImagesInRecycleBinResult":{
+      "type":"structure",
+      "members":{
+        "Images":{
+          "shape":"ImageRecycleBinInfoList",
+          "documentation":"<p>Information about the AMIs.</p>",
+          "locationName":"imageSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListSnapshotsInRecycleBinMaxResults":{
       "type":"integer",
       "max":1000,
@@ -34595,8 +34713,14 @@
           "shape":"ClientConnectOptions",
           "documentation":"<p>The options for managing connection authorization for new client connections.</p>"
         },
-        "SessionTimeoutHours":{"shape":"Integer"},
-        "ClientLoginBannerOptions":{"shape":"ClientLoginBannerOptions"}
+        "SessionTimeoutHours":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum VPN session duration time in hours.</p> <p>Valid values: <code>8 | 10 | 12 | 24</code> </p> <p>Default value: <code>24</code> </p>"
+        },
+        "ClientLoginBannerOptions":{
+          "shape":"ClientLoginBannerOptions",
+          "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
+        }
       }
     },
     "ModifyClientVpnEndpointResult":{
@@ -42295,6 +42419,30 @@
           "shape":"Status",
           "documentation":"<p>The move status for the IP address.</p>",
           "locationName":"status"
+        }
+      }
+    },
+    "RestoreImageFromRecycleBinRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI to restore.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "RestoreImageFromRecycleBinResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
         }
       }
     },

@@ -52,6 +52,7 @@ class TestDeployCommand(unittest.TestCase):
                                                          "Key2=Value2"],
                                     no_execute_changeset=False,
                                     execute_changeset=True,
+                                    disable_rollback=True,
                                     capabilities=None,
                                     role_arn=None,
                                     notification_arns=[],
@@ -119,6 +120,7 @@ class TestDeployCommand(unittest.TestCase):
                     [],
                     None,
                     fake_tags,
+                    True,
                     True
                 )
 
@@ -205,6 +207,7 @@ class TestDeployCommand(unittest.TestCase):
                 [],
                 s3UploaderObject,
                 [{"Key": "tagkey1", "Value": "tagvalue1"}],
+                True,
                 True
             )
 
@@ -257,7 +260,7 @@ class TestDeployCommand(unittest.TestCase):
                                                      tags=tags)
 
         # since execute_changeset is set to True, deploy() will execute changeset
-        self.deployer.execute_changeset.assert_called_once_with(changeset_id, stack_name)
+        self.deployer.execute_changeset.assert_called_once_with(changeset_id, stack_name, False)
         self.deployer.wait_for_execute.assert_called_once_with(stack_name, changeset_type)
 
 

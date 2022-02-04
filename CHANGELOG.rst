@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.49
+=======
+
+* api-change:``lakeformation``: Add support for calling Update Table Objects without a TransactionId.
+* api-change:``athena``: You can now optionally specify the account ID that you expect to be the owner of your query results output location bucket in Athena. If the account ID of the query results bucket owner does not match the specified account ID, attempts to output to the bucket will fail with an S3 permissions error.
+* api-change:``rds``: updates for RDS Custom for Oracle 12.1 support
+
+
 1.22.48
 =======
 

@@ -1,11 +1,13 @@
+import asyncio
+import contextlib
 import dataclasses
-from io import BytesIO, TextIOWrapper
+from io import BytesIO
 import collections
 import copy
 import os
 import sys
+import threading
 import time
-from typing import Optional, Callable
 
 # Both nose and py.test will add the first parent directory it
 # encounters that does not have a __init__.py to the sys.path. In
@@ -37,12 +39,14 @@ import botocore.validate
 from botocore.exceptions import ClientError, WaiterError
 
 import prompt_toolkit
+import prompt_toolkit.buffer
 import prompt_toolkit.input
 import prompt_toolkit.output
 import prompt_toolkit.input.defaults
 import prompt_toolkit.keys
 import prompt_toolkit.utils
 import prompt_toolkit.key_binding.key_processor
+from prompt_toolkit.input.ansi_escape_sequences import REVERSE_ANSI_SEQUENCES
 
 # Botocore testing utilities that we want to preserve import statements for
 # in botocore specific tests.
@@ -370,117 +374,82 @@ class RawResponse(BytesIO):
             contents = self.read()
 
 
-class FakeApplicationInput(prompt_toolkit.input.DummyInput):
-    def fileno(self):
-        return 0
-
-    @property
-    def closed(self):
-        return False
-
-
-class FakeApplicationOutput(prompt_toolkit.output.DummyOutput):
-    def fileno(self):
-        return 1
-
-
 @dataclasses.dataclass
-class AppKeyPressAction:
-    key: str
+class AppRunContext:
+    return_value = None
+    raised_exception = None
 
 
-@dataclasses.dataclass
-class AppAssertionAction:
-    assertion: Callable[[prompt_toolkit.Application], None]
-    failure_message_format: Optional[str] = None
+class ThreadedAppRunner:
+    _SLEEP_DURATION_FOR_WAITS = 0.75
+    _MAX_ATTEMPTS_FOR_WAITS = 20
 
+    def __init__(self, app, pre_run=None):
+        self.app = app
+        self.app.timeoutlen = None
+        self.app.ttimeoutlen = 0
+        self._pre_run = pre_run
 
-@dataclasses.dataclass
-class AppCallbackAction:
-    callback: Callable[[prompt_toolkit.Application], None]
+    @contextlib.contextmanager
+    def run_app_in_thread(self, target=None, args=None):
+        if target is None:
+            target = self.app.run
+        if args is None:
+            args = (self._pre_run,)
 
+        run_context = AppRunContext()
 
-class PromptToolkitApplicationStubber:
-    def __init__(self, app):
-        self._app = app
-        self._queue = []
+        def run_app():
+            try:
+                # When we run the app in a separate thread, there is no
+                # default event loop. This ensures we create one as it is
+                # likely the application will try to grab the default loop
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                run_context.return_value = target(*args)
+            except BaseException as e:
+                run_context.raised_exception = e
+            finally:
+                loop.close()
 
-    def add_keypress(self, key, app_assertion=None):
-        self._queue.append(AppKeyPressAction(key))
-        if app_assertion:
-            failure_message_format = (
-                f'Incorrect action on key press "{key}": '
-                '{message}'
+        thread = threading.Thread(target=run_app)
+        try:
+            thread.start()
+            self._wait_until_app_is_running()
+            self._wait_until_app_ui_is_no_longer_redrawing()
+            yield run_context
+        finally:
+            if self.app.is_running:
+                self.app.exit()
+            thread.join()
+
+    def feed_input(self, *keys):
+        for key in keys:
+            self.app.input.send_text(
+                self._convert_key_to_vt100_data(key)
             )
-            self._queue.append(
-                AppAssertionAction(
-                    assertion=app_assertion,
-                    failure_message_format=failure_message_format
-                )
-            )
+            self._wait_until_app_ui_is_no_longer_redrawing()
 
-    def add_app_assertion(self, assertion):
-        self._queue.append(AppAssertionAction(assertion))
+    def _wait_until_app_is_running(self):
+        self._wait_until('is_running', True)
 
-    def start_completion_for_current_buffer(self):
-        def start_completion(app):
-            app.current_buffer.start_completion()
-        self._queue.append(AppCallbackAction(callback=start_completion))
+    def _wait_until_app_ui_is_no_longer_redrawing(self):
+        # Wait some time to allow for the application to determine
+        # whether it needs to be redrawn.
+        time.sleep(self._SLEEP_DURATION_FOR_WAITS)
+        self._wait_until('invalidated', False)
 
-    def add_text_to_current_buffer(self, text):
-        def set_current_buffer(app):
-            app.current_buffer.text = text
-            app.current_buffer.cursor_position = len(text)
-        self._queue.append(AppCallbackAction(callback=set_current_buffer))
+    def _wait_until(self, property_name, desired_value):
+        for _ in range(self._MAX_ATTEMPTS_FOR_WAITS):
+            if getattr(self.app, property_name) == desired_value:
+                return True
+            time.sleep(self._SLEEP_DURATION_FOR_WAITS)
+        raise RuntimeError(
+            f'App runner timed out waiting for application '
+            f'property: {property_name} to be {desired_value}')
 
-    def run(self, pre_run=None):
-        key_processor = self._app.key_processor
-        # After each rendering application will run this callback
-        # it takes the next action from the queue and performs it
-        # some key_presses can lead to rerender, after which this callback
-        # will be run again before re-rendering app.invalidated property
-        # set to True.
-        # On exit this callback also run so we need to remove it before exit
-
-        def callback(app):
-            while self._queue and not app.invalidated:
-                action = self._queue.pop(0)
-                if hasattr(action, 'key'):
-                    key_processor.feed(
-                        prompt_toolkit.key_binding.key_processor.KeyPress(
-                            action.key, ''
-                        )
-                    )
-                    key_processor.process_keys()
-                if hasattr(action, 'callback'):
-                    action.callback(app)
-                if getattr(action, 'assertion', None):
-                    try:
-                        action.assertion(app)
-                    except AssertionError as e:
-                        message = str(e)
-                        if getattr(action, 'failure_message_format'):
-                            message = action.failure_message_format.format(
-                                message=message
-                            )
-                        app.after_render = prompt_toolkit.utils.Event(
-                            app, None)
-                        app.exit(exception=AssertionError(message))
-                        return
-                if app.future.done():
-                    app.after_render = prompt_toolkit.utils.Event(app, None)
-                    return
-            if not self._queue:
-                app.after_render = prompt_toolkit.utils.Event(app, None)
-                app.exit()
-
-        self._app.input = FakeApplicationInput()
-        self._app.after_render = prompt_toolkit.utils.Event(
-            self._app, callback)
-
-        _stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
-        self._app.output.stdout = _stdout
-        self._app.run(pre_run=pre_run)
+    def _convert_key_to_vt100_data(self, key):
+        return REVERSE_ANSI_SEQUENCES.get(key, key)
 
 
 class S3Utils:

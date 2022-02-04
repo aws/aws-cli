@@ -80,7 +80,7 @@ class PromptToolkitPrompter:
         self.output_buffer = None
         if app is None:
             app = self.create_application()
-        self._app = app
+        self.app = app
         self._args = []
         self._driver = driver
         self._docs_getter = DocsGetter(self._driver)
@@ -161,7 +161,7 @@ class PromptToolkitPrompter:
 
     def _set_debug_mode(self):
         if '--debug' in self._args:
-            self._app.debug = True
+            self.app.debug = True
 
     def pre_run(self):
         if '--cli-auto-prompt' in self._args:
@@ -212,7 +212,7 @@ class PromptToolkitPrompter:
         self._args = self._quote_args_with_spaces(original_args)
         self._set_debug_mode()
         logging_manager = nullcontext
-        if self._app.debug:
+        if self.app.debug:
             # NOTE: The CRT library is not integrated with the Python stdlib
             # logger and only allows you to write to file names and
             # stdout/stderr. Therefore we currently are unable to switch it
@@ -223,7 +223,7 @@ class PromptToolkitPrompter:
             disable_crt_logging()
             logging_manager = loggers_handler_switcher
         with logging_manager():
-            self._app.run(pre_run=self.pre_run)
+            self.app.run(pre_run=self.pre_run)
         cmd_line_text = self.input_buffer.document.text
         # Once the application is finished running, the screen is cleared.
         # Here, we display the command to be run so that the user knows what

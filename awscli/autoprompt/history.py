@@ -61,15 +61,15 @@ class HistoryCompleter(Completer):
 
     def __init__(self, buffer):
         self.buffer = buffer
-        self.working_lines = buffer.history.get_strings()
 
     def get_completions(self, document, *args):
+        working_lines = self.buffer.history.get_strings()
         found_completions = set()
         completions = []
         current_line = document.current_line_before_cursor.lstrip()
         try:
             # going backwards from newest commands to oldest
-            for line in self.working_lines[::-1]:
+            for line in working_lines[::-1]:
                 s_line = line.strip()
                 if s_line and s_line not in found_completions:
                     found_completions.add(s_line)

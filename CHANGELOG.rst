@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.22.50
+=======
+
+* api-change:``auditmanager``: This release updates 3 API parameters. UpdateAssessmentFrameworkControlSet now requires the controls attribute, and CreateAssessmentFrameworkControl requires the id attribute. Additionally, UpdateAssessmentFramework now has a minimum length constraint for the controlSets attribute.
+* api-change:``events``: Update events command to latest version
+* api-change:``ssm-incidents``: Update RelatedItem enum to support SSM Automation
+* api-change:``synthetics``: Adding names parameters to the Describe APIs.
+
+
 1.22.49
 =======
 

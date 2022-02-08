@@ -23,7 +23,8 @@
       "output":{"shape":"CreateCanaryResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"RequestEntityTooLargeException"}
       ],
       "documentation":"<p>Creates a canary. Canaries are scripts that monitor your endpoints and APIs from the outside-in. Canaries help you check the availability and latency of your web services and troubleshoot anomalies by investigating load time data, screenshots of the UI, logs, and metrics. You can set up a canary to run continuously or just once. </p> <p>Do not use <code>CreateCanary</code> to modify an existing canary. Use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_UpdateCanary.html\">UpdateCanary</a> instead.</p> <p>To create canaries, you must have the <code>CloudWatchSyntheticsFullAccess</code> policy. If you are creating a new IAM role for the canary, you also need the the <code>iam:CreateRole</code>, <code>iam:CreatePolicy</code> and <code>iam:AttachRolePolicy</code> permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Roles\">Necessary Roles and Permissions</a>.</p> <p>Do not include secrets or proprietary information in your canary names. The canary name makes up part of the Amazon Resource Name (ARN) for the canary, and the ARN is included in outbound calls over the internet. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/servicelens_canaries_security.html\">Security Considerations for Synthetics Canaries</a>.</p>"
     },
@@ -55,7 +56,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>This operation returns a list of the canaries in your account, along with full details about each canary.</p> <p>This operation does not have resource-level authorization, so if a user is able to use <code>DescribeCanaries</code>, the user can see all of the canaries in the account. A deny policy can only be used to restrict access to all canaries. It cannot be used on specific resources. </p>"
+      "documentation":"<p>This operation returns a list of the canaries in your account, along with full details about each canary.</p> <p>This operation supports resource-level authorization using an IAM policy and the <code>Names</code> parameter. If you specify the <code>Names</code> parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use the <code>Names</code> parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html\"> Limiting a user to viewing specific canaries</a>.</p>"
     },
     "DescribeCanariesLastRun":{
       "name":"DescribeCanariesLastRun",
@@ -69,7 +70,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Use this operation to see information from the most recent run of each canary that you have created.</p>"
+      "documentation":"<p>Use this operation to see information from the most recent run of each canary that you have created.</p> <p>This operation supports resource-level authorization using an IAM policy and the <code>Names</code> parameter. If you specify the <code>Names</code> parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use the <code>Names</code> parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html\"> Limiting a user to viewing specific canaries</a>.</p>"
     },
     "DescribeRuntimeVersions":{
       "name":"DescribeRuntimeVersions",
@@ -203,7 +204,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"RequestEntityTooLargeException"}
       ],
       "documentation":"<p>Use this operation to change the settings of a canary that has already been created.</p> <p>You can't use this operation to update the tags of an existing canary. To change the tags of an existing canary, use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_TagResource.html\">TagResource</a>.</p>"
     }
@@ -360,7 +362,7 @@
         },
         "ZipFile":{
           "shape":"Blob",
-          "documentation":"<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 256 Kb.</p>"
+          "documentation":"<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>"
         },
         "Handler":{
           "shape":"String",
@@ -703,6 +705,12 @@
       "members":{
       }
     },
+    "DescribeCanariesLastRunNameFilter":{
+      "type":"list",
+      "member":{"shape":"CanaryName"},
+      "max":5,
+      "min":1
+    },
     "DescribeCanariesLastRunRequest":{
       "type":"structure",
       "members":{
@@ -713,6 +721,10 @@
         "MaxResults":{
           "shape":"MaxSize100",
           "documentation":"<p>Specify this parameter to limit how many runs are returned each time you use the <code>DescribeLastRun</code> operation. If you omit this parameter, the default of 100 is used.</p>"
+        },
+        "Names":{
+          "shape":"DescribeCanariesLastRunNameFilter",
+          "documentation":"<p>Use this parameter to return only canaries that match the names that you specify here. You can specify as many as five canary names.</p> <p>If you specify this parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use the <code>Names</code> parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html\"> Limiting a user to viewing specific canaries</a>.</p>"
         }
       }
     },
@@ -729,6 +741,12 @@
         }
       }
     },
+    "DescribeCanariesNameFilter":{
+      "type":"list",
+      "member":{"shape":"CanaryName"},
+      "max":5,
+      "min":1
+    },
     "DescribeCanariesRequest":{
       "type":"structure",
       "members":{
@@ -739,6 +757,10 @@
         "MaxResults":{
           "shape":"MaxCanaryResults",
           "documentation":"<p>Specify this parameter to limit how many canaries are returned each time you use the <code>DescribeCanaries</code> operation. If you omit this parameter, the default of 100 is used.</p>"
+        },
+        "Names":{
+          "shape":"DescribeCanariesNameFilter",
+          "documentation":"<p>Use this parameter to return only canaries that match the names that you specify here. You can specify as many as five canary names.</p> <p>If you specify this parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use this parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html\"> Limiting a user to viewing specific canaries</a>.</p>"
         }
       }
     },
@@ -926,6 +948,15 @@
       "min":960
     },
     "NullableBoolean":{"type":"boolean"},
+    "RequestEntityTooLargeException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>One of the input resources is larger than is allowed.</p>",
+      "error":{"httpStatusCode":413},
+      "exception":true
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{

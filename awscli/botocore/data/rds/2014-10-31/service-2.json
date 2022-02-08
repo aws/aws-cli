@@ -276,7 +276,7 @@
         {"shape":"CustomDBEngineVersionQuotaExceededFault"},
         {"shape":"KMSKeyNotAccessibleFault"}
       ],
-      "documentation":"<p>Creates a custom DB engine version (CEV). A CEV is a binary volume snapshot of a database engine and specific AMI. The only supported engine is Oracle Database 19c Enterprise Edition with the January 2021 or later RU/RUR.</p> <p>Amazon RDS, which is a fully managed service, supplies the Amazon Machine Image (AMI) and database software. The Amazon RDS database software is preinstalled, so you need only select a DB engine and version, and create your database. With Amazon RDS Custom for Oracle, you upload your database installation files in Amazon S3.</p> <p>When you create a custom engine version, you specify the files in a JSON document called a CEV manifest. This document describes installation .zip files stored in Amazon S3. RDS Custom creates your CEV from the installation files that you provided. This service model is called Bring Your Own Media (BYOM).</p> <p>Creation takes approximately two hours. If creation fails, RDS Custom issues <code>RDS-EVENT-0196</code> with the message <code>Creation failed for custom engine version</code>, and includes details about the failure. For example, the event prints missing files.</p> <p>After you create the CEV, it is available for use. You can create multiple CEVs, and create multiple RDS Custom instances from any CEV. You can also change the status of a CEV to make it available or inactive.</p> <note> <p>The MediaImport service that imports files from Amazon S3 to create CEVs isn't integrated with Amazon Web Services CloudTrail. If you turn on data logging for Amazon RDS in CloudTrail, calls to the <code>CreateCustomDbEngineVersion</code> event aren't logged. However, you might see calls from the API gateway that accesses your Amazon S3 bucket. These calls originate from the MediaImport service for the <code>CreateCustomDbEngineVersion</code> event.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.html#custom-cev.create\"> Creating a CEV</a> in the <i>Amazon RDS User Guide</i>.</p>"
+      "documentation":"<p>Creates a custom DB engine version (CEV). A CEV is a binary volume snapshot of a database engine and specific AMI. The supported engines are the following:</p> <ul> <li> <p> Oracle Database 12.1 Enterprise Edition with the January 2021 or later RU/RUR</p> </li> <li> <p> Oracle Database 19c Enterprise Edition with the January 2021 or later RU/RUR</p> </li> </ul> <p>Amazon RDS, which is a fully managed service, supplies the Amazon Machine Image (AMI) and database software. The Amazon RDS database software is preinstalled, so you need only select a DB engine and version, and create your database. With Amazon RDS Custom for Oracle, you upload your database installation files in Amazon S3.</p> <p>When you create a custom engine version, you specify the files in a JSON document called a CEV manifest. This document describes installation .zip files stored in Amazon S3. RDS Custom creates your CEV from the installation files that you provided. This service model is called Bring Your Own Media (BYOM).</p> <p>Creation takes approximately two hours. If creation fails, RDS Custom issues <code>RDS-EVENT-0196</code> with the message <code>Creation failed for custom engine version</code>, and includes details about the failure. For example, the event prints missing files.</p> <p>After you create the CEV, it is available for use. You can create multiple CEVs, and create multiple RDS Custom instances from any CEV. You can also change the status of a CEV to make it available or inactive.</p> <note> <p>The MediaImport service that imports files from Amazon S3 to create CEVs isn't integrated with Amazon Web Services CloudTrail. If you turn on data logging for Amazon RDS in CloudTrail, calls to the <code>CreateCustomDbEngineVersion</code> event aren't logged. However, you might see calls from the API gateway that accesses your Amazon S3 bucket. These calls originate from the MediaImport service for the <code>CreateCustomDbEngineVersion</code> event.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.html#custom-cev.create\"> Creating a CEV</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
     "CreateDBCluster":{
       "name":"CreateDBCluster",
@@ -3474,7 +3474,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>A DB subnet group to associate with this DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>A DB subnet group to associate with this DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mydbsubnetgroup</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Engine":{
           "shape":"String",
@@ -3740,7 +3740,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>A DB subnet group to associate with this DB instance.</p> <p>If there is no DB subnet group, then it is a non-VPC DB instance.</p>"
+          "documentation":"<p>A DB subnet group to associate with this DB instance.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "PreferredMaintenanceWindow":{
           "shape":"String",
@@ -3955,7 +3955,7 @@
         "Tags":{"shape":"TagList"},
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>Specifies a DB subnet group for the DB instance. The new DB instance is created in the VPC associated with the DB subnet group. If no DB subnet group is specified, then the new DB instance isn't created in a VPC.</p> <p>Constraints:</p> <ul> <li> <p>Can only be specified if the source DB instance identifier specifies a DB instance in another Amazon Web Services Region.</p> </li> <li> <p>If supplied, must match the name of an existing DBSubnetGroup.</p> </li> <li> <p>The specified DB subnet group must be in the same Amazon Web Services Region in which the operation is running.</p> </li> <li> <p>All read replicas in one Amazon Web Services Region that are created from the same source DB instance must either:&gt;</p> <ul> <li> <p>Specify DB subnet groups from the same VPC. All these read replicas are created in the same VPC.</p> </li> <li> <p>Not specify a DB subnet group. All these read replicas are created outside of any VPC.</p> </li> </ul> </li> </ul> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>Specifies a DB subnet group for the DB instance. The new DB instance is created in the VPC associated with the DB subnet group. If no DB subnet group is specified, then the new DB instance isn't created in a VPC.</p> <p>Constraints:</p> <ul> <li> <p>Can only be specified if the source DB instance identifier specifies a DB instance in another Amazon Web Services Region.</p> </li> <li> <p>If supplied, must match the name of an existing DBSubnetGroup.</p> </li> <li> <p>The specified DB subnet group must be in the same Amazon Web Services Region in which the operation is running.</p> </li> <li> <p>All read replicas in one Amazon Web Services Region that are created from the same source DB instance must either:&gt;</p> <ul> <li> <p>Specify DB subnet groups from the same VPC. All these read replicas are created in the same VPC.</p> </li> <li> <p>Not specify a DB subnet group. All these read replicas are created outside of any VPC.</p> </li> </ul> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "VpcSecurityGroupIds":{
           "shape":"VpcSecurityGroupIdList",
@@ -4248,7 +4248,7 @@
       "members":{
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The name for the DB subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 letters, numbers, periods, underscores, spaces, or hyphens. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>The name for the DB subnet group. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain no more than 255 letters, numbers, periods, underscores, spaces, or hyphens.</p> </li> <li> <p>Must not be default.</p> </li> <li> <p>First character must be a letter.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "DBSubnetGroupDescription":{
           "shape":"String",
@@ -7348,7 +7348,7 @@
       "members":{
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the database subnet group to delete.</p> <note> <p>You can't delete the default subnet group.</p> </note> <p>Constraints:</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>The name of the database subnet group to delete.</p> <note> <p>You can't delete the default subnet group.</p> </note> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         }
       },
       "documentation":"<p/>"
@@ -10227,7 +10227,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The new DB subnet group for the DB instance. You can use this parameter to move your DB instance to a different VPC. If your DB instance isn't in a VPC, you can also use this parameter to move your DB instance into a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html#USER_VPC.Non-VPC2VPC\">Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide</i>. </p> <p>Changing the subnet group causes an outage during the change. The change is applied during the next maintenance window, unless you enable <code>ApplyImmediately</code>.</p> <p> This parameter doesn't apply to RDS Custom.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetGroup</code> </p>"
+          "documentation":"<p>The new DB subnet group for the DB instance. You can use this parameter to move your DB instance to a different VPC. If your DB instance isn't in a VPC, you can also use this parameter to move your DB instance into a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html#USER_VPC.Non-VPC2VPC\">Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide</i>. </p> <p>Changing the subnet group causes an outage during the change. The change is applied during the next maintenance window, unless you enable <code>ApplyImmediately</code>.</p> <p> This parameter doesn't apply to RDS Custom.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "DBSecurityGroups":{
           "shape":"DBSecurityGroupNameList",
@@ -10601,7 +10601,7 @@
       "members":{
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The name for the DB subnet group. This value is stored as a lowercase string. You can't modify the default subnet group. </p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>The name for the DB subnet group. This value is stored as a lowercase string. You can't modify the default subnet group. </p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "DBSubnetGroupDescription":{
           "shape":"String",
@@ -12184,7 +12184,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>A DB subnet group to associate with the restored DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup. </p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>A DB subnet group to associate with the restored DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "Engine":{
           "shape":"String",
@@ -12317,7 +12317,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the DB subnet group to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DB subnet group.</p> <p>Example: <code>mySubnetgroup</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>The name of the DB subnet group to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DB subnet group.</p> <p>Example: <code>mydbsubnetgroup</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "DatabaseName":{
           "shape":"String",
@@ -12437,7 +12437,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The DB subnet group name to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>The DB subnet group name to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "OptionGroupName":{
           "shape":"String",
@@ -12546,7 +12546,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The DB subnet group name to use for the new instance.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>The DB subnet group name to use for the new instance.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
@@ -12603,7 +12603,7 @@
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB instance to snapshots of the DB instance. By default, tags are not copied.</p>"
+          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB instance to snapshots of the DB instance.</p> <p>In most cases, tags aren't copied by default. However, when you restore a DB instance from a DB snapshot, RDS checks whether you specify new tags. If yes, the new tags are added to the restored DB instance. If there are no new tags, RDS looks for the tags from the source DB instance for the DB snapshot, and then adds those tags to the restored DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html#USER_Tagging.CopyTags\"> Copying tags to DB instance snapshots</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "DomainIAMRoleName":{
           "shape":"String",
@@ -12639,7 +12639,7 @@
         },
         "CustomIamInstanceProfile":{
           "shape":"String",
-          "documentation":"<p>The instance profile associated with the underlying Amazon EC2 instance of an RDS Custom DB instance. The instance profile must meet the following requirements:</p> <ul> <li> <p>The profile must exist in your account.</p> </li> <li> <p>The profile must have an IAM role that Amazon EC2 has permissions to assume.</p> </li> <li> <p>The instance profile name and the associated IAM role name must start with the prefix <code>AWSRDSCustom</code>.</p> </li> </ul> <p>For the list of permissions required for the IAM role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc\"> Configure IAM and your VPC</a> in the <i>Amazon Relational Database Service User Guide</i>.</p> <p>This setting is required for RDS Custom.</p>"
+          "documentation":"<p>The instance profile associated with the underlying Amazon EC2 instance of an RDS Custom DB instance. The instance profile must meet the following requirements:</p> <ul> <li> <p>The profile must exist in your account.</p> </li> <li> <p>The profile must have an IAM role that Amazon EC2 has permissions to assume.</p> </li> <li> <p>The instance profile name and the associated IAM role name must start with the prefix <code>AWSRDSCustom</code>.</p> </li> </ul> <p>For the list of permissions required for the IAM role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc\"> Configure IAM and your VPC</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting is required for RDS Custom.</p>"
         },
         "BackupTarget":{
           "shape":"String",
@@ -12708,7 +12708,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>A DB subnet group to associate with this DB instance.</p>"
+          "documentation":"<p>A DB subnet group to associate with this DB instance.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "PreferredMaintenanceWindow":{
           "shape":"String",
@@ -12884,7 +12884,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The DB subnet group name to use for the new instance.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>The DB subnet group name to use for the new instance.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
@@ -13055,7 +13055,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>SNS has responded that there is a problem with the SND topic specified.</p>",
+      "documentation":"<p>SNS has responded that there is a problem with the SNS topic specified.</p>",
       "error":{
         "code":"SNSInvalidTopic",
         "httpStatusCode":400,

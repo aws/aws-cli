@@ -27,7 +27,7 @@ from awscli.autoprompt.prompttoolkit import (
 )
 from awscli.autoprompt.history import HistoryDriver
 from awscli.testutils import mock, FileCreator, cd
-from tests import ThreadedAppRunner
+from tests import PromptToolkitAppRunner
 
 
 def _ec2_only_command_table(command_table, **kwargs):
@@ -107,7 +107,7 @@ def prompter(model_index, history_file, ptk_app_session):
 
 @pytest.fixture
 def app_runner(prompter):
-    return ThreadedAppRunner(
+    return PromptToolkitAppRunner(
         app=prompter.app, pre_run=prompter.pre_run)
 
 
@@ -276,6 +276,7 @@ class TestHistoryMode(BasicPromptToolkitTest):
             self.assert_selected_history_completion(
                 app_runner.app, 's3 ls')
             app_runner.feed_input(Keys.Enter)
+            self.assert_history_mode_is_disabled(app_runner.app)
             self.assert_current_buffer(app_runner.app, 'input_buffer')
             self.assert_current_buffer_text(app_runner.app, 's3 ls')
 
@@ -299,6 +300,7 @@ class TestCompletions(BasicPromptToolkitTest):
     def test_service_full_name_shown(self, app_runner, prompter):
         prompter.args = ['e']
         with app_runner.run_app_in_thread():
+            app_runner.wait_for_completions_on_current_buffer()
             first_completion = app_runner.app.current_buffer.\
                 complete_state.completions[0]
             assert 'Elastic Compute' in first_completion.display_meta_text

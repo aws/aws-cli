@@ -380,15 +380,16 @@ class AppRunContext:
     raised_exception = None
 
 
-class ThreadedAppRunner:
-    _SLEEP_DURATION_FOR_WAITS = 0.75
-    _MAX_ATTEMPTS_FOR_WAITS = 20
+class PromptToolkitAppRunner:
+    _EVENT_WAIT_TIMEOUT = 2
 
     def __init__(self, app, pre_run=None):
         self.app = app
-        self.app.timeoutlen = None
-        self.app.ttimeoutlen = 0
         self._pre_run = pre_run
+        self._done_rendering_event = threading.Event()
+        self.app.after_render = prompt_toolkit.utils.Event(
+            self.app, self._notify_done_rendering)
+        self._done_completing_event = threading.Event()
 
     @contextlib.contextmanager
     def run_app_in_thread(self, target=None, args=None):
@@ -415,8 +416,7 @@ class ThreadedAppRunner:
         thread = threading.Thread(target=run_app)
         try:
             thread.start()
-            self._wait_until_app_is_running()
-            self._wait_until_app_ui_is_no_longer_redrawing()
+            self._wait_until_app_is_done_rendering()
             yield run_context
         finally:
             if self.app.is_running:
@@ -425,28 +425,41 @@ class ThreadedAppRunner:
 
     def feed_input(self, *keys):
         for key in keys:
+            self._done_rendering_event.clear()
             self.app.input.send_text(
                 self._convert_key_to_vt100_data(key)
             )
-            self._wait_until_app_ui_is_no_longer_redrawing()
+            self._wait_until_app_is_done_updating()
 
-    def _wait_until_app_is_running(self):
-        self._wait_until('is_running', True)
+    def wait_for_completions_on_current_buffer(self):
+        if self.app.current_buffer.complete_state:
+            return
+        self.app.current_buffer.on_completions_changed.add_handler(
+            self._notify_done_completing
+        )
+        self._done_completing_event.wait(self._EVENT_WAIT_TIMEOUT)
+        self._done_completing_event.clear()
 
-    def _wait_until_app_ui_is_no_longer_redrawing(self):
-        # Wait some time to allow for the application to determine
-        # whether it needs to be redrawn.
-        time.sleep(self._SLEEP_DURATION_FOR_WAITS)
-        self._wait_until('invalidated', False)
+    def _wait_until_app_is_done_updating(self):
+        self._wait_until_app_is_done_rendering()
+        # Generally it is not a safe assumption to make that once the
+        # app is done rendering the UI will be in its final state.
+        # It is possible that because of the rendering it triggers another
+        # redraw of the application. So here we manually invalidate the app
+        # to flush out any pending changes to the UI and then wait for those
+        # changes to be rendered.
+        self.app.invalidate()
+        self._wait_until_app_is_done_rendering()
 
-    def _wait_until(self, property_name, desired_value):
-        for _ in range(self._MAX_ATTEMPTS_FOR_WAITS):
-            if getattr(self.app, property_name) == desired_value:
-                return True
-            time.sleep(self._SLEEP_DURATION_FOR_WAITS)
-        raise RuntimeError(
-            f'App runner timed out waiting for application '
-            f'property: {property_name} to be {desired_value}')
+    def _wait_until_app_is_done_rendering(self):
+        self._done_rendering_event.wait(self._EVENT_WAIT_TIMEOUT)
+        self._done_rendering_event.clear()
+
+    def _notify_done_rendering(self, app):
+        self._done_rendering_event.set()
+
+    def _notify_done_completing(self, app):
+        self._done_completing_event.set()
 
     def _convert_key_to_vt100_data(self, key):
         return REVERSE_ANSI_SEQUENCES.get(key, key)

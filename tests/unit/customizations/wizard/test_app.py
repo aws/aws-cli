@@ -19,7 +19,7 @@ from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
 import pytest
 
-from tests import ThreadedAppRunner
+from tests import PromptToolkitAppRunner
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
     WizardAppRunner, WizardTraverser, WizardValues, FileIO
@@ -74,7 +74,7 @@ def make_stubbed_wizard_runner(ptk_app_session, mock_botocore_session):
             app_input=ptk_app_session.input,
         )
         ptk_app_session.app = app
-        return ThreadedAppRunner(app=app)
+        return PromptToolkitAppRunner(app=app)
     yield _make_stubbed_wizard_runner
 
 

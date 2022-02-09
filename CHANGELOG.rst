@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.52
+=======
+
+* api-change:``cloudformation``: This SDK release is for the feature launch of AWS CloudFormation Hooks.
+
+
 1.22.51
 =======
 

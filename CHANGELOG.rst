@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.4.18
+======
+
+* api-change:``wafv2``: Adds support for AWS WAF Fraud Control account takeover prevention (ATP), with configuration options for the new managed rule group AWSManagedRulesATPRuleSet and support for application integration SDKs for Android and iOS mobile apps.
+* api-change:``pinpoint``: This SDK release adds a new paramater creation date for GetApp and GetApps Api call
+* api-change:``sns``: Customer requested typo fix in API documentation.
+* api-change:``lookoutvision``: This release makes CompilerOptions in Lookout for Vision's StartModelPackagingJob's Configuration object optional.
+* api-change:``cloudformation``: This SDK release is for the feature launch of AWS CloudFormation Hooks.
+* api-change:``cloudformation``: This SDK release adds AWS CloudFormation Hooks HandlerErrorCodes
+
+
 2.4.17
 ======
 

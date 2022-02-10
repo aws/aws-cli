@@ -3134,6 +3134,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.53
+=======
+
+* api-change:``cloudformation``: This SDK release adds AWS CloudFormation Hooks HandlerErrorCodes
+* api-change:``lookoutvision``: This release makes CompilerOptions in Lookout for Vision's StartModelPackagingJob's Configuration object optional.
+* api-change:``pinpoint``: This SDK release adds a new paramater creation date for GetApp and GetApps Api call
+* api-change:``sns``: Customer requested typo fix in API documentation.
+* api-change:``wafv2``: Adds support for AWS WAF Fraud Control account takeover prevention (ATP), with configuration options for the new managed rule group AWSManagedRulesATPRuleSet and support for application integration SDKs for Android and iOS mobile apps.
+
+
+1.22.52
+=======
+
+* api-change:``cloudformation``: This SDK release is for the feature launch of AWS CloudFormation Hooks.
+
+
 1.22.51
 =======
 

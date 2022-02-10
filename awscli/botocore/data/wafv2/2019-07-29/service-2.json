@@ -300,6 +300,22 @@
       ],
       "documentation":"<p>Disassociates a web ACL from a regional application resource. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, or an AppSync GraphQL API. </p> <p>For Amazon CloudFront, don't use this call. Instead, use your CloudFront distribution configuration. To disassociate a web ACL, provide an empty web ACL ID in the CloudFront call <code>UpdateDistribution</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>.</p>"
     },
+    "GenerateMobileSdkReleaseUrl":{
+      "name":"GenerateMobileSdkReleaseUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GenerateMobileSdkReleaseUrlRequest"},
+      "output":{"shape":"GenerateMobileSdkReleaseUrlResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Generates a presigned download URL for the specified release of the mobile SDK.</p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage Security Token Service (STS) security tokens for use in HTTP(S) requests from a mobile device to WAF. </p>"
+    },
     "GetIPSet":{
       "name":"GetIPSet",
       "http":{
@@ -347,6 +363,22 @@
         {"shape":"WAFInvalidOperationException"}
       ],
       "documentation":"<p>Retrieves the specified managed rule set. </p> <note> <p>This is intended for use only by vendors of managed rule sets. Vendors are Amazon Web Services and Amazon Web Services Marketplace sellers. </p> <p>Vendors, you can use the managed rule set APIs to provide controlled rollout of your versioned managed rule group offerings for your customers. The APIs are <code>ListManagedRuleSets</code>, <code>GetManagedRuleSet</code>, <code>PutManagedRuleSetVersions</code>, and <code>UpdateManagedRuleSetVersionExpiryDate</code>.</p> </note>"
+    },
+    "GetMobileSdkRelease":{
+      "name":"GetMobileSdkRelease",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetMobileSdkReleaseRequest"},
+      "output":{"shape":"GetMobileSdkReleaseResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves information for the specified mobile SDK release, including release notes and tags.</p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage Security Token Service (STS) security tokens for use in HTTP(S) requests from a mobile device to WAF. </p>"
     },
     "GetPermissionPolicy":{
       "name":"GetPermissionPolicy",
@@ -533,6 +565,21 @@
         {"shape":"WAFInvalidOperationException"}
       ],
       "documentation":"<p>Retrieves the managed rule sets that you own. </p> <note> <p>This is intended for use only by vendors of managed rule sets. Vendors are Amazon Web Services and Amazon Web Services Marketplace sellers. </p> <p>Vendors, you can use the managed rule set APIs to provide controlled rollout of your versioned managed rule group offerings for your customers. The APIs are <code>ListManagedRuleSets</code>, <code>GetManagedRuleSet</code>, <code>PutManagedRuleSetVersions</code>, and <code>UpdateManagedRuleSetVersionExpiryDate</code>.</p> </note>"
+    },
+    "ListMobileSdkReleases":{
+      "name":"ListMobileSdkReleases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMobileSdkReleasesRequest"},
+      "output":{"shape":"ListMobileSdkReleasesResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves a list of the available releases for the mobile SDK and the specified device platform. </p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage Security Token Service (STS) security tokens for use in HTTP(S) requests from a mobile device to WAF. </p>"
     },
     "ListRegexPatternSets":{
       "name":"ListRegexPatternSets",
@@ -1858,6 +1905,7 @@
       "members":{
       }
     },
+    "DownloadUrl":{"type":"string"},
     "EntityDescription":{
       "type":"string",
       "max":256,
@@ -1906,6 +1954,12 @@
         "MATCH",
         "NO_MATCH"
       ]
+    },
+    "FieldIdentifier":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":".*\\S.*"
     },
     "FieldToMatch":{
       "type":"structure",
@@ -2076,6 +2130,32 @@
         "ANY"
       ]
     },
+    "GenerateMobileSdkReleaseUrlRequest":{
+      "type":"structure",
+      "required":[
+        "Platform",
+        "ReleaseVersion"
+      ],
+      "members":{
+        "Platform":{
+          "shape":"Platform",
+          "documentation":"<p>The device platform.</p>"
+        },
+        "ReleaseVersion":{
+          "shape":"VersionKeyString",
+          "documentation":"<p>The release version. For the latest available version, specify <code>LATEST</code>.</p>"
+        }
+      }
+    },
+    "GenerateMobileSdkReleaseUrlResponse":{
+      "type":"structure",
+      "members":{
+        "Url":{
+          "shape":"DownloadUrl",
+          "documentation":"<p>The presigned download URL for the specified SDK release.</p>"
+        }
+      }
+    },
     "GeoMatchStatement":{
       "type":"structure",
       "members":{
@@ -2176,6 +2256,32 @@
         "LockToken":{
           "shape":"LockToken",
           "documentation":"<p>A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. </p>"
+        }
+      }
+    },
+    "GetMobileSdkReleaseRequest":{
+      "type":"structure",
+      "required":[
+        "Platform",
+        "ReleaseVersion"
+      ],
+      "members":{
+        "Platform":{
+          "shape":"Platform",
+          "documentation":"<p>The device platform.</p>"
+        },
+        "ReleaseVersion":{
+          "shape":"VersionKeyString",
+          "documentation":"<p>The release version. For the latest available version, specify <code>LATEST</code>.</p>"
+        }
+      }
+    },
+    "GetMobileSdkReleaseResponse":{
+      "type":"structure",
+      "members":{
+        "MobileSdkRelease":{
+          "shape":"MobileSdkRelease",
+          "documentation":"<p>Information for a specified SDK release, including release notes and tags.</p>"
         }
       }
     },
@@ -2411,6 +2517,10 @@
         "LockToken":{
           "shape":"LockToken",
           "documentation":"<p>A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. </p>"
+        },
+        "ApplicationIntegrationURL":{
+          "shape":"OutputUrl",
+          "documentation":"<p>The URL to use in SDK integrations with Amazon Web Services managed rule groups. For example, you can use the integration SDKs with the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code>. This is only populated if you are using a rule group in your web ACL that integrates with your applications in this way. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF application integration</a> in the <i>WAF Developer Guide</i>.</p>"
         }
       }
     },
@@ -2904,6 +3014,37 @@
       "max":500,
       "min":1
     },
+    "ListMobileSdkReleasesRequest":{
+      "type":"structure",
+      "required":["Platform"],
+      "members":{
+        "Platform":{
+          "shape":"Platform",
+          "documentation":"<p>The device platform to retrieve the list for.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        },
+        "Limit":{
+          "shape":"PaginationLimit",
+          "documentation":"<p>The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListMobileSdkReleasesResponse":{
+      "type":"structure",
+      "members":{
+        "ReleaseSummaries":{
+          "shape":"ReleaseSummaries",
+          "documentation":"<p>High level information for the available SDK releases. </p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        }
+      }
+    },
     "ListRegexPatternSetsRequest":{
       "type":"structure",
       "required":["Scope"],
@@ -3115,6 +3256,39 @@
       },
       "documentation":"<p>Filtering that specifies which web requests are kept in the logs and which are dropped, defined for a web ACL's <a>LoggingConfiguration</a>. </p> <p>You can filter on the rule action and on the web request labels that were applied by matching rules during web ACL evaluation. </p>"
     },
+    "LoginPathString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ManagedRuleGroupConfig":{
+      "type":"structure",
+      "members":{
+        "LoginPath":{
+          "shape":"LoginPathString",
+          "documentation":"<p>The login endpoint for your application. For example <code>https://example.com/web/login</code>.</p>"
+        },
+        "PayloadType":{
+          "shape":"PayloadType",
+          "documentation":"<p>The payload type for your login endpoint, either JSON or form encoded.</p>"
+        },
+        "UsernameField":{
+          "shape":"UsernameField",
+          "documentation":"<p>Details about your login page username field. </p>"
+        },
+        "PasswordField":{
+          "shape":"PasswordField",
+          "documentation":"<p>Details about your login page password field. </p>"
+        }
+      },
+      "documentation":"<p>Additional information that's used by a managed rule group. Most managed rule groups don't require this.</p> <p>Use this for the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code>, to provide information about the sign-in page of your application. </p>"
+    },
+    "ManagedRuleGroupConfigs":{
+      "type":"list",
+      "member":{"shape":"ManagedRuleGroupConfig"},
+      "min":1
+    },
     "ManagedRuleGroupStatement":{
       "type":"structure",
       "required":[
@@ -3141,6 +3315,10 @@
         "ScopeDownStatement":{
           "shape":"Statement",
           "documentation":"<p>An optional nested statement that narrows the scope of the web requests that are evaluated by the managed rule group. Requests are only evaluated by the rule group if they match the scope-down statement. You can use any nestable <a>Statement</a> in the scope-down statement, and you can nest statements at any level, the same as you can for a rule statement. </p>"
+        },
+        "ManagedRuleGroupConfigs":{
+          "shape":"ManagedRuleGroupConfigs",
+          "documentation":"<p>Additional information that's used by a managed rule group. Most managed rule groups don't require this.</p> <p>Use this for the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code>, to provide information about the sign-in page of your application. </p>"
         }
       },
       "documentation":"<p>A rule statement used to run the rules that are defined in a managed rule group. To use this, provide the vendor name and the name of the rule group in this statement. You can retrieve the required names by calling <a>ListAvailableManagedRuleGroups</a>.</p> <p>You cannot nest a <code>ManagedRuleGroupStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. It can only be referenced as a top-level statement within a rule.</p>"
@@ -3300,6 +3478,28 @@
       "min":1,
       "pattern":"^[\\w#:\\.\\-/]+$"
     },
+    "MobileSdkRelease":{
+      "type":"structure",
+      "members":{
+        "ReleaseVersion":{
+          "shape":"VersionKeyString",
+          "documentation":"<p>The release version. </p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the release. </p>"
+        },
+        "ReleaseNotes":{
+          "shape":"ReleaseNotes",
+          "documentation":"<p>Notes describing the release.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags that are associated with the release. </p>"
+        }
+      },
+      "documentation":"<p>Information for a release of the mobile SDK, including release notes and tags.</p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage Security Token Service (STS) security tokens for use in HTTP(S) requests from a mobile device to WAF. </p>"
+    },
     "NextMarker":{
       "type":"string",
       "max":256,
@@ -3334,6 +3534,7 @@
       },
       "documentation":"<p>A logical rule statement used to combine other rule statements with OR logic. You provide more than one <a>Statement</a> within the <code>OrStatement</code>. </p>"
     },
+    "OutputUrl":{"type":"string"},
     "OverrideAction":{
       "type":"structure",
       "members":{
@@ -3412,12 +3613,39 @@
         "EXPIRE_TIMESTAMP",
         "CHANGE_PROPAGATION_STATUS",
         "ASSOCIABLE_RESOURCE",
-        "LOG_DESTINATION"
+        "LOG_DESTINATION",
+        "MANAGED_RULE_GROUP_CONFIG",
+        "PAYLOAD_TYPE"
       ]
     },
     "ParameterExceptionParameter":{
       "type":"string",
       "min":1
+    },
+    "PasswordField":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"FieldIdentifier",
+          "documentation":"<p>The name of the password field. For example <code>/form/password</code>.</p>"
+        }
+      },
+      "documentation":"<p>Details about your login page password field, used in a <code>ManagedRuleGroupConfig</code>. </p>"
+    },
+    "PayloadType":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "FORM_ENCODED"
+      ]
+    },
+    "Platform":{
+      "type":"string",
+      "enum":[
+        "IOS",
+        "ANDROID"
+      ]
     },
     "PolicyString":{
       "type":"string",
@@ -3710,6 +3938,25 @@
     "RegularExpressionList":{
       "type":"list",
       "member":{"shape":"Regex"}
+    },
+    "ReleaseNotes":{"type":"string"},
+    "ReleaseSummaries":{
+      "type":"list",
+      "member":{"shape":"ReleaseSummary"}
+    },
+    "ReleaseSummary":{
+      "type":"structure",
+      "members":{
+        "ReleaseVersion":{
+          "shape":"VersionKeyString",
+          "documentation":"<p>The release version. </p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the release. </p>"
+        }
+      },
+      "documentation":"<p>High level information for an SDK release. </p>"
     },
     "ResourceArn":{
       "type":"string",
@@ -4593,6 +4840,17 @@
       "members":{
       },
       "documentation":"<p>The path component of the URI of a web request. This is the part of a web request that identifies a resource. For example, <code>/images/daily-ad.jpg</code>.</p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"UriPath\": {}</code> </p>"
+    },
+    "UsernameField":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"FieldIdentifier",
+          "documentation":"<p>The name of the username field. For example <code>/form/username</code>.</p>"
+        }
+      },
+      "documentation":"<p>Details about your login page username field, used in a <code>ManagedRuleGroupConfig</code>. </p>"
     },
     "VendorName":{
       "type":"string",

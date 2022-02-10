@@ -23,8 +23,8 @@ Output::
                     "CidrBlock": "10.0.0.0/16",
                     "CidrBlockState": {
                         "State": "associated"
-                }
-            "NetworkBorderGroup": "us-west-2-lax-1"
+                    },
+                    "NetworkBorderGroup": "us-west-2-lax-1"
                 }
             ],
             "IsDefault": false,

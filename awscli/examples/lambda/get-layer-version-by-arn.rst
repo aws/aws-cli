@@ -21,7 +21,7 @@ Output::
         "CompatibleRuntimes": [
             "python3.7"
         ],
-        "LicenseInfo": "SciPy: https://github.com/scipy/scipy/blob/master/LICENSE.txt, NumPy: https://github.com/numpy/numpy/blob/master/LICENSE.txt"
+        "LicenseInfo": "SciPy: https://github.com/scipy/scipy/blob/main/LICENSE.txt, NumPy: https://github.com/numpy/numpy/blob/main/LICENSE.txt"
     }
 
 For more information, see `AWS Lambda Layers <https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html>`__ in the *AWS Lambda Developer Guide*.

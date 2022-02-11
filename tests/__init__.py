@@ -432,7 +432,7 @@ class PromptToolkitAppRunner:
             self._wait_until_app_is_done_updating()
 
     def wait_for_completions_on_current_buffer(self):
-        if self.app.current_buffer.complete_state:
+        if self._current_buffer_has_completions():
             return
         self.app.current_buffer.on_completions_changed.add_handler(
             self._notify_done_completing
@@ -460,6 +460,12 @@ class PromptToolkitAppRunner:
 
     def _notify_done_completing(self, app):
         self._done_completing_event.set()
+
+    def _current_buffer_has_completions(self):
+        return (
+            self.app.current_buffer.complete_state and
+            self.app.current_buffer.complete_state.completions
+        )
 
     def _convert_key_to_vt100_data(self, key):
         return REVERSE_ANSI_SEQUENCES.get(key, key)

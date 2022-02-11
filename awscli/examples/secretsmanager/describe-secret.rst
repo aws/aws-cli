@@ -14,8 +14,10 @@ Output::
         "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/EXAMPLE1-90ab-cdef-fedc-ba987EXAMPLE",
         "RotationEnabled": true,
         "RotationLambdaARN": "arn:aws:lambda:us-west-2:123456789012:function:MyTestRotationLambda",
-        "RotationRules": { 
-            "AutomaticallyAfterDays": 30
+        "RotationRules": {
+            "AutomaticallyAfterDays": 2,
+            "Duration": "2h",
+            "ScheduleExpression": "cron(0 16 1,15 * ? *)"
         },
         "LastRotatedDate": 1525747253.72,
         "LastChangedDate": 1523477145.729,

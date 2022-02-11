@@ -1,11 +1,13 @@
+import asyncio
+import contextlib
 import dataclasses
-from io import BytesIO, TextIOWrapper
+from io import BytesIO
 import collections
 import copy
 import os
 import sys
+import threading
 import time
-from typing import Optional, Callable
 
 # Both nose and py.test will add the first parent directory it
 # encounters that does not have a __init__.py to the sys.path. In
@@ -37,12 +39,14 @@ import botocore.validate
 from botocore.exceptions import ClientError, WaiterError
 
 import prompt_toolkit
+import prompt_toolkit.buffer
 import prompt_toolkit.input
 import prompt_toolkit.output
 import prompt_toolkit.input.defaults
 import prompt_toolkit.keys
 import prompt_toolkit.utils
 import prompt_toolkit.key_binding.key_processor
+from prompt_toolkit.input.ansi_escape_sequences import REVERSE_ANSI_SEQUENCES
 
 # Botocore testing utilities that we want to preserve import statements for
 # in botocore specific tests.
@@ -370,117 +374,101 @@ class RawResponse(BytesIO):
             contents = self.read()
 
 
-class FakeApplicationInput(prompt_toolkit.input.DummyInput):
-    def fileno(self):
-        return 0
-
-    @property
-    def closed(self):
-        return False
-
-
-class FakeApplicationOutput(prompt_toolkit.output.DummyOutput):
-    def fileno(self):
-        return 1
-
-
 @dataclasses.dataclass
-class AppKeyPressAction:
-    key: str
+class AppRunContext:
+    return_value = None
+    raised_exception = None
 
 
-@dataclasses.dataclass
-class AppAssertionAction:
-    assertion: Callable[[prompt_toolkit.Application], None]
-    failure_message_format: Optional[str] = None
+class PromptToolkitAppRunner:
+    _EVENT_WAIT_TIMEOUT = 2
 
+    def __init__(self, app, pre_run=None):
+        self.app = app
+        self._pre_run = pre_run
+        self._done_rendering_event = threading.Event()
+        self.app.after_render = prompt_toolkit.utils.Event(
+            self.app, self._notify_done_rendering)
+        self._done_completing_event = threading.Event()
 
-@dataclasses.dataclass
-class AppCallbackAction:
-    callback: Callable[[prompt_toolkit.Application], None]
+    @contextlib.contextmanager
+    def run_app_in_thread(self, target=None, args=None):
+        if target is None:
+            target = self.app.run
+        if args is None:
+            args = (self._pre_run,)
 
+        run_context = AppRunContext()
 
-class PromptToolkitApplicationStubber:
-    def __init__(self, app):
-        self._app = app
-        self._queue = []
+        def run_app():
+            try:
+                # When we run the app in a separate thread, there is no
+                # default event loop. This ensures we create one as it is
+                # likely the application will try to grab the default loop
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                run_context.return_value = target(*args)
+            except BaseException as e:
+                run_context.raised_exception = e
+            finally:
+                loop.close()
 
-    def add_keypress(self, key, app_assertion=None):
-        self._queue.append(AppKeyPressAction(key))
-        if app_assertion:
-            failure_message_format = (
-                f'Incorrect action on key press "{key}": '
-                '{message}'
+        thread = threading.Thread(target=run_app)
+        try:
+            thread.start()
+            self._wait_until_app_is_done_rendering()
+            yield run_context
+        finally:
+            if self.app.is_running:
+                self.app.exit()
+            thread.join()
+
+    def feed_input(self, *keys):
+        for key in keys:
+            self._done_rendering_event.clear()
+            self.app.input.send_text(
+                self._convert_key_to_vt100_data(key)
             )
-            self._queue.append(
-                AppAssertionAction(
-                    assertion=app_assertion,
-                    failure_message_format=failure_message_format
-                )
-            )
+            self._wait_until_app_is_done_updating()
 
-    def add_app_assertion(self, assertion):
-        self._queue.append(AppAssertionAction(assertion))
+    def wait_for_completions_on_current_buffer(self):
+        if self._current_buffer_has_completions():
+            return
+        self.app.current_buffer.on_completions_changed.add_handler(
+            self._notify_done_completing
+        )
+        self._done_completing_event.wait(self._EVENT_WAIT_TIMEOUT)
+        self._done_completing_event.clear()
 
-    def start_completion_for_current_buffer(self):
-        def start_completion(app):
-            app.current_buffer.start_completion()
-        self._queue.append(AppCallbackAction(callback=start_completion))
+    def _wait_until_app_is_done_updating(self):
+        self._wait_until_app_is_done_rendering()
+        # Generally it is not a safe assumption to make that once the
+        # app is done rendering the UI will be in its final state.
+        # It is possible that because of the rendering it triggers another
+        # redraw of the application. So here we manually invalidate the app
+        # to flush out any pending changes to the UI and then wait for those
+        # changes to be rendered.
+        self.app.invalidate()
+        self._wait_until_app_is_done_rendering()
 
-    def add_text_to_current_buffer(self, text):
-        def set_current_buffer(app):
-            app.current_buffer.text = text
-            app.current_buffer.cursor_position = len(text)
-        self._queue.append(AppCallbackAction(callback=set_current_buffer))
+    def _wait_until_app_is_done_rendering(self):
+        self._done_rendering_event.wait(self._EVENT_WAIT_TIMEOUT)
+        self._done_rendering_event.clear()
 
-    def run(self, pre_run=None):
-        key_processor = self._app.key_processor
-        # After each rendering application will run this callback
-        # it takes the next action from the queue and performs it
-        # some key_presses can lead to rerender, after which this callback
-        # will be run again before re-rendering app.invalidated property
-        # set to True.
-        # On exit this callback also run so we need to remove it before exit
+    def _notify_done_rendering(self, app):
+        self._done_rendering_event.set()
 
-        def callback(app):
-            while self._queue and not app.invalidated:
-                action = self._queue.pop(0)
-                if hasattr(action, 'key'):
-                    key_processor.feed(
-                        prompt_toolkit.key_binding.key_processor.KeyPress(
-                            action.key, ''
-                        )
-                    )
-                    key_processor.process_keys()
-                if hasattr(action, 'callback'):
-                    action.callback(app)
-                if getattr(action, 'assertion', None):
-                    try:
-                        action.assertion(app)
-                    except AssertionError as e:
-                        message = str(e)
-                        if getattr(action, 'failure_message_format'):
-                            message = action.failure_message_format.format(
-                                message=message
-                            )
-                        app.after_render = prompt_toolkit.utils.Event(
-                            app, None)
-                        app.exit(exception=AssertionError(message))
-                        return
-                if app.future.done():
-                    app.after_render = prompt_toolkit.utils.Event(app, None)
-                    return
-            if not self._queue:
-                app.after_render = prompt_toolkit.utils.Event(app, None)
-                app.exit()
+    def _notify_done_completing(self, app):
+        self._done_completing_event.set()
 
-        self._app.input = FakeApplicationInput()
-        self._app.after_render = prompt_toolkit.utils.Event(
-            self._app, callback)
+    def _current_buffer_has_completions(self):
+        return (
+            self.app.current_buffer.complete_state and
+            self.app.current_buffer.complete_state.completions
+        )
 
-        _stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
-        self._app.output.stdout = _stdout
-        self._app.run(pre_run=pre_run)
+    def _convert_key_to_vt100_data(self, key):
+        return REVERSE_ANSI_SEQUENCES.get(key, key)
 
 
 class S3Utils:

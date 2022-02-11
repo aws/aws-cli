@@ -10,21 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from io import BytesIO, TextIOWrapper
 from awscli.testutils import unittest, mock
 
 from botocore.session import Session
 from prompt_toolkit.application import Application
 from prompt_toolkit.completion import PathCompleter, Completion
-from prompt_toolkit.eventloop import Future
-from prompt_toolkit.input.defaults import create_pipe_input
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
+import pytest
 
-from tests import (
-    PromptToolkitApplicationStubber as ApplicationStubber,
-    FakeApplicationOutput, FakeApplicationInput
-)
+from tests import PromptToolkitAppRunner
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
     WizardAppRunner, WizardTraverser, WizardValues, FileIO
@@ -36,12 +31,482 @@ from awscli.customizations.wizard.exceptions import (
 from awscli.customizations.wizard.core import BaseStep, Executor
 
 
+@pytest.fixture
+def mock_botocore_session():
+    return mock.Mock(spec=Session)
+
+
+@pytest.fixture
+def mock_iam_client(mock_botocore_session):
+    mock_client = mock.Mock()
+    mock_botocore_session.create_client.return_value = mock_client
+    mock_client.list_policies.return_value = {
+        'Policies': [
+            {
+                'PolicyName': 'policy1',
+                'Arn': 'policy1_arn'
+            },
+            {
+                'PolicyName': 'policy2',
+                'Arn': 'policy2_arn'
+            }
+        ]
+    }
+    mock_client.get_policy.return_value = {
+        'Policy': {'DefaultVersionId': 'policy_id'}
+    }
+    mock_client.get_policy_version.return_value = {
+        'PolicyVersion': {'Document': {'policy': 'policy_document'}}
+    }
+    mock_client.create_role.return_value = {
+        'Role': {'Arn': 'returned-role-arn'}
+    }
+    return mock_client
+
+
+@pytest.fixture
+def make_stubbed_wizard_runner(ptk_app_session, mock_botocore_session):
+    def _make_stubbed_wizard_runner(definition):
+        app = create_wizard_app(
+            definition=definition,
+            session=mock_botocore_session,
+            output=ptk_app_session.output,
+            app_input=ptk_app_session.input,
+        )
+        ptk_app_session.app = app
+        return PromptToolkitAppRunner(app=app)
+    yield _make_stubbed_wizard_runner
+
+
+@pytest.fixture
+def patch_path_completer():
+    with mock.patch(
+            'awscli.customizations.wizard.ui.prompt.PathCompleter',
+            FakePathCompleter) as completer:
+        yield completer
+
+
+class FakePathCompleter(PathCompleter):
+    def get_completions(self, document, complete_event):
+        prefix_len = len(document.text)
+        yield from [
+            Completion('file1'[prefix_len:], 0, display='file1'),
+            Completion('file2'[prefix_len:], 0, display='file2'),
+        ]
+
+
+@pytest.fixture
+def empty_definition():
+    return {
+        'title': 'Wizard title',
+        'plan': {
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def basic_definition():
+    return {
+        'title': 'Basic Wizard',
+        'plan': {
+            'first_section': {
+                'shortname': 'First',
+                'values': {
+                    'prompt1': {
+                        'description': 'Description of first prompt',
+                        'type': 'prompt'
+                    },
+                    'prompt2': {
+                        'description': 'Description of second prompt',
+                        'type': 'prompt',
+                        'default_value': 'foo'
+                    },
+                }
+            },
+            'second_section': {
+                'shortname': 'Second',
+                'values': {
+                    'second_section_prompt': {
+                        'description': 'Description of prompt',
+                        'type': 'prompt'
+                    },
+                    'template_section': {
+                        'type': 'template',
+                        'value': 'some text',
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {},
+        '__OUTPUT__': {'value': 'output: {template_section}'}
+    }
+
+
+@pytest.fixture
+def conditional_definition():
+    return {
+        'title': 'Conditional wizard',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'before_conditional': {
+                        'description': 'Description of first prompt',
+                        'type': 'prompt'
+                    },
+                    'conditional': {
+                        'description': 'Description of second prompt',
+                        'type': 'prompt',
+                        'condition': {
+                            'variable': 'before_conditional',
+                            'equals': 'condition-met'
+                        }
+                    },
+                    'after_conditional': {
+                        'description': 'Description of second prompt',
+                        'type': 'prompt',
+                    },
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def choices_definition():
+    return {
+        'title': 'Conditional wizard',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'choices_prompt': {
+                        'description': 'Description of first prompt',
+                        'type': 'prompt',
+                        'choices': [
+                            {
+                                'display': 'Option 1',
+                                'actual_value': 'actual_option_1'
+                            },
+                            {
+                                'display': 'Option 2',
+                                'actual_value': 'actual_option_2'
+                            }
+                        ]
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def corrupted_choice_definition():
+    return {
+        'title': 'Conditional wizard',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'choices_prompt': {
+                        'description': 'Description of first prompt',
+                        'type': 'prompt',
+                        'choices': 'corrupted_choice'
+                    },
+                    'corrupted_choice': {
+                        'description': 'Description of first prompt',
+                        'type': 'apicall',
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def mixed_prompt_definition():
+    return {
+        'title': 'Wizard with both buffer inputs and select inputs',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'buffer_input_prompt': {
+                        'description': 'Type answer',
+                        'type': 'prompt',
+                    },
+                    'select_prompt': {
+                        'description': 'Select answer',
+                        'type': 'prompt',
+                        'choices': [
+                            'select_answer_1',
+                            'select_answer_2'
+                        ]
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def data_convert_definition():
+    return {
+        'title': 'Wizard with both buffer inputs and select inputs',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'buffer_input_int': {
+                        'description': 'Type answer',
+                        'type': 'prompt',
+                        'datatype': 'int'
+                    },
+                    'buffer_input_bool': {
+                        'description': 'Type answer',
+                        'type': 'prompt',
+                        'datatype': 'bool'
+                    },
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def api_call_definition():
+    return {
+        'title': 'Uses API call in prompting stage',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'existing_policies': {
+                        'type': 'apicall',
+                        'operation': 'iam.ListPolicies',
+                        'params': {},
+                        'query': (
+                            'sort_by(Policies[].{display: PolicyName, '
+                            'actual_value: Arn}, &display)'
+                        )
+                    },
+                    'choose_policy': {
+                        'description': 'Choose policy',
+                        'type': 'prompt',
+                        'choices': 'existing_policies'
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def details_definition():
+    return {
+        'title': 'Show details in prompting stage',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'version_id': {
+                        'type': 'apicall',
+                        'operation': 'iam.GetPolicy',
+                        'params': {
+                            'PolicyArn': '{policy_arn}'
+                        },
+                        'query': 'Policy.DefaultVersionId',
+                        'cache': True
+                    },
+                    'policy_document': {
+                        'type': 'apicall',
+                        'operation': 'iam.GetPolicyVersion',
+                        'params': {
+                            'PolicyArn': '{policy_arn}',
+                            'VersionId': '{version_id}'
+                        },
+                        'query': 'PolicyVersion.Document',
+                        'cache': True
+                    },
+                    'existing_policies': {
+                        'type': 'apicall',
+                        'operation': 'iam.ListPolicies',
+                        'params': {},
+                        'query': (
+                            'sort_by(Policies[].{display: PolicyName, '
+                            'actual_value: Arn}, &display)'
+                        )
+                    },
+                    'policy_arn': {
+                        'description': 'Choose policy',
+                        'type': 'prompt',
+                        'choices': 'existing_policies',
+                        'details': {
+                            'value': 'policy_document',
+                            'description': 'Policy Document',
+                            'output': 'json'
+                        },
+                    },
+                    'some_prompt': {
+                        'description': 'Choose something',
+                        'type': 'prompt',
+                        'choices': [1, 2, 3],
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
+@pytest.fixture
+def preview_definition():
+    return {
+        'title': 'Show details in prompting stage',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'option1': {
+                        'type': 'template',
+                        'value': "First option details"
+                    },
+                    'option2': {
+                        'type': 'template',
+                        'value': "Second option details"
+                    },
+                    'some_prompt': {
+                        'description': 'Choose something',
+                        'type': 'prompt',
+                        'choices': [{
+                            'display': '1', 'actual_value': '2'
+                        }],
+                    },
+                    'choose_option': {
+                        'description': 'Choose option',
+                        'type': 'prompt',
+                        'choices': [
+                            {'display': 'Option 1',
+                             'actual_value': 'option1'},
+                            {'display': 'Option 2',
+                             'actual_value': 'option2'},
+                        ],
+                        'details': {
+                            'visible': True,
+                            'value': '__selected_choice__',
+                            'description': 'Option details',
+                        },
+                    },
+                }
+            },
+            '__DONE__': {},
+        }
+    }
+
+
+@pytest.fixture
+def shared_config_definition():
+    return {
+        'title': 'Uses shared config API in prompting stage',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'existing_profiles': {
+                        'type': 'sharedconfig',
+                        'operation': 'ListProfiles',
+                    },
+                    'choose_profile': {
+                        'description': 'Choose profile',
+                        'type': 'prompt',
+                        'choices': 'existing_profiles'
+                    }
+                }
+            },
+            '__DONE__': {},
+        }
+    }
+
+
+@pytest.fixture
+def run_wizard_definition():
+    return {
+        'title': 'For running execute step',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'role_name': {
+                        'type': 'prompt',
+                        'description': 'Enter role name'
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {
+            'default': [
+                {
+                    'type': 'apicall',
+                    'operation': 'iam.CreateRole',
+                    'params': {
+                        'RoleName': "{role_name}"
+                    },
+                    'output_var': 'role_arn',
+                    'query': 'Role.Arn',
+                }
+
+            ]
+        }
+    }
+
+
+@pytest.fixture
+def file_prompt_definition():
+    return {
+        'title': 'Uses API call in prompting stage',
+        'plan': {
+            'section': {
+                'shortname': 'Section',
+                'values': {
+                    'choose_file': {
+                        'description': 'Choose file',
+                        'type': 'prompt',
+                        'completer': 'file_completer'
+                    },
+                    'second_prompt': {
+                        'description': 'Second prompt',
+                        'type': 'prompt',
+                    }
+                }
+            },
+            '__DONE__': {},
+        },
+        'execute': {}
+    }
+
+
 class TestWizardAppRunner(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(Session)
         self.app_factory = mock.Mock(create_wizard_app)
         self.app = mock.Mock(Application)
-        self.app.future = mock.Mock(Future)
         self.app.traverser = mock.Mock(WizardTraverser)
         self.app_factory.return_value = self.app
         self.definition = {}
@@ -52,111 +517,61 @@ class TestWizardAppRunner(unittest.TestCase):
     def test_run_calls_expected_app_interfaces(self):
         self.runner.run(self.definition)
         self.app.run.assert_called_with()
-        self.app.future.result.assert_called_with()
         self.app.traverser.get_output.assert_called_with()
 
-    def test_run_propagates_error_from_app_future(self):
+    def test_run_propagates_error_from_app_run(self):
         expected_exception = KeyboardInterrupt
-        self.app.future.result.side_effect = KeyboardInterrupt
+        self.app.run.side_effect = KeyboardInterrupt
         with self.assertRaises(expected_exception):
             self.runner.run(self.definition)
 
 
-class BaseWizardApplicationTest(unittest.TestCase):
-    def setUp(self):
-        self.definition = self.get_definition()
-        self.session = mock.Mock(spec=Session)
-        self.app = create_wizard_app(
-            self.definition, self.session, FakeApplicationOutput(),
-            app_input=FakeApplicationInput()
-        )
-        self.stubbed_app = ApplicationStubber(self.app)
+class BaseWizardApplicationTest:
+    def assert_app_values(self, app, **expected_values):
+        assert dict(app.values) == expected_values
 
-    def get_definition(self):
-        return {
-            'title': 'Wizard title',
-            'plan': {
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
+    def assert_buffer_text(self, app, buffer_name, expected_text):
+        buffer = app.layout.get_buffer_by_name(buffer_name)
+        assert buffer.document.text == expected_text
 
-    def add_answer_submission(self, answer):
-        self.stubbed_app.add_text_to_current_buffer(answer)
-        self.stubbed_app.add_keypress(Keys.Enter)
+    def assert_current_buffer(self, app, buffer_name):
+        assert app.layout.current_buffer.name, buffer_name
 
-    def add_app_values_assertion(self, **expected_values):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(dict(app.values), expected_values)
-        )
+    def assert_expected_buffer_completions(
+            self, app, buffer_name, expected_completions):
+        buffer = app.layout.get_buffer_by_name(buffer_name)
+        assert buffer.complete_state.completions == expected_completions
 
-    def add_buffer_text_assertion(self, buffer_name, text):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(
-                app.layout.get_buffer_by_name(buffer_name).document.text,
-                text)
-        )
+    def assert_prompt_is_visible(self, app, prompt_name):
+        assert prompt_name in self.get_visible_buffers(app)
 
-    def add_current_buffer_assertion(self, buffer_name):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(
-                app.layout.current_buffer.name, buffer_name)
+    def assert_prompt_is_not_visible(self, app, prompt_name):
+        assert prompt_name not in self.get_visible_buffers(app)
+
+    def assert_run_wizard_dialog_is_visible(self, app):
+        dialog_container = app.layout.run_wizard_dialog.container
+        assert dialog_container in self.get_visible_containers(app)
+
+    def assert_run_wizard_dialog_is_not_visible(self, app):
+        dialog_container = app.layout.run_wizard_dialog.container
+        assert dialog_container not in self.get_visible_containers(app)
+
+    def assert_toolbar_has_text(self, app, text):
+        assert any(
+            [text in tip[1]
+             for tip in list(filter(
+                lambda x: getattr(x, 'name', '') == 'toolbar_panel',
+                app.layout.find_all_controls())
+            )[0].text()()]
         )
 
-    def add_buffer_completions_assertion(self, buffer_name, completions):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(
-                app.layout.get_buffer_by_name(
-                    buffer_name).complete_state.completions,
-                completions)
-        )
-
-    def add_prompt_is_visible_assertion(self, name):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertIn(name, self.get_visible_buffers(app))
-        )
-
-    def add_prompt_is_not_visible_assertion(self, name):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertNotIn(name, self.get_visible_buffers(app))
-        )
-
-    def add_run_wizard_dialog_is_visible(self):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertIn(
-                app.layout.run_wizard_dialog.container,
-                self.get_visible_containers(app)
-            )
-        )
-
-    def add_run_wizard_dialog_is_not_visible(self):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertNotIn(
-                app.layout.run_wizard_dialog.container,
-                self.get_visible_containers(app)
-            )
-        )
-
-    def add_toolbar_has_text_assertion(self, text):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertTrue(any(
-                [text in tip[1]
-                 for tip in list(filter(
-                    lambda x: getattr(x, 'name', '') == 'toolbar_panel',
-                    app.layout.find_all_controls())
-                 )[0].text()()]
-            ))
-        )
-
-    def add_toolbar_has_not_text_assertion(self, text):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertFalse(any(
-                [text in tip[1]
-                 for tip in list(filter(
-                    lambda x: getattr(x, 'name', '') == 'toolbar_panel',
-                    app.layout.find_all_controls())
-                 )[0].text()()]
-            ))
+    def assert_toolbar_does_not_have_text(self, app, text):
+        assert not any(
+            [text in tip[1]
+             for tip in list(filter(
+                lambda x: getattr(x, 'name', '') == 'toolbar_panel',
+                app.layout.find_all_controls())
+            )[0].text()()]
         )
 
     def get_visible_buffers(self, app):
@@ -171,859 +586,533 @@ class BaseWizardApplicationTest(unittest.TestCase):
 
 
 class TestBasicWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Basic Wizard',
-            'plan': {
-                'first_section': {
-                    'shortname': 'First',
-                    'values': {
-                        'prompt1': {
-                            'description': 'Description of first prompt',
-                            'type': 'prompt'
-                        },
-                        'prompt2': {
-                            'description': 'Description of second prompt',
-                            'type': 'prompt',
-                            'default_value': 'foo'
-                        },
-                    }
-                },
-                'second_section': {
-                    'shortname': 'Second',
-                    'values': {
-                        'second_section_prompt': {
-                            'description': 'Description of prompt',
-                            'type': 'prompt'
-                        },
-                        'template_section': {
-                            'type': 'template',
-                            'value': 'some text',
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {},
-            '__OUTPUT__': {'value': 'output: {template_section}'}
-        }
+    def test_can_answer_single_prompt(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('val1\n')
+            self.assert_app_values(app_runner.app, prompt1='val1')
 
-    def test_can_answer_single_prompt(self):
-        self.stubbed_app.add_text_to_current_buffer('val1')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(prompt1='val1')
-        self.stubbed_app.run()
+    def test_can_answer_multiple_prompts(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('val1\n')
+            # This is to remove the default answer of foo for prompt 2
+            app_runner.feed_input(
+                Keys.Backspace, Keys.Backspace, Keys.Backspace)
+            app_runner.feed_input('val2\n')
+            self.assert_app_values(
+                app_runner.app, prompt1='val1', prompt2='val2')
 
-    def test_can_answer_multiple_prompts(self):
-        self.stubbed_app.add_text_to_current_buffer('val1')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.stubbed_app.add_text_to_current_buffer('val2')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(prompt1='val1', prompt2='val2')
-        self.stubbed_app.run()
+    def test_can_use_tab_to_submit_answer(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('val1')
+            app_runner.feed_input(Keys.Tab)
+            self.assert_app_values(app_runner.app, prompt1='val1')
 
-    def test_can_use_tab_to_submit_answer(self):
-        self.stubbed_app.add_text_to_current_buffer('val1')
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.add_app_values_assertion(prompt1='val1')
-        self.stubbed_app.run()
+    def test_can_use_prompt_default_value(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Tab)
+            app_runner.feed_input(Keys.Tab)
+            self.assert_app_values(app_runner.app, prompt1='', prompt2='foo')
 
-    def test_can_use_prompt_default_value(self):
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.add_app_values_assertion(prompt1='', prompt2='foo')
-        self.stubbed_app.run()
+    def test_can_use_shift_tab_to_toggle_backwards_and_change_answer(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('1\n')
+            app_runner.feed_input(Keys.BackTab)
+            app_runner.feed_input(Keys.Backspace)
+            app_runner.feed_input('override1\n')
+            self.assert_app_values(
+                app_runner.app, prompt1='override1', prompt2='foo')
 
-    def test_can_use_shift_tab_to_toggle_backwards_and_change_answer(self):
-        self.add_answer_submission('orig1')
-        self.stubbed_app.add_keypress(Keys.BackTab)
-        self.add_answer_submission('override1')
-        self.add_app_values_assertion(prompt1='override1', prompt2='foo')
-        self.stubbed_app.run()
+    def test_can_answer_prompts_across_sections(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('val1\n')
+            app_runner.feed_input('\n')
+            app_runner.feed_input('second_section_val1\n')
+            self.assert_app_values(
+                app_runner.app, prompt1='val1', prompt2='foo',
+                second_section_prompt='second_section_val1'
+            )
 
-    def test_can_answer_prompts_across_sections(self):
-        self.add_answer_submission('val1')
-        self.add_answer_submission('val2')
-        self.add_answer_submission('second_section_val1')
-        self.add_app_values_assertion(
-            prompt1='val1', prompt2='val2',
-            second_section_prompt='second_section_val1'
-        )
-        self.stubbed_app.run()
+    def test_can_move_back_to_a_prompt_in_previous_section(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('val1\n')
+            app_runner.feed_input('\n')
+            app_runner.feed_input('second_section_val1\n')
+            # At DONE step, hit back tab to select "Go back" button
+            # and enter to select that button.
+            app_runner.feed_input(Keys.BackTab, Keys.Enter)
+            app_runner.feed_input(Keys.BackTab)
+            # This is to remove the default answer of foo for prompt 2
+            app_runner.feed_input(
+                Keys.Backspace, Keys.Backspace, Keys.Backspace)
+            app_runner.feed_input('override2\n')
+            self.assert_app_values(
+                app_runner.app, prompt1='val1', prompt2='override2',
+                second_section_prompt='second_section_val1'
+            )
 
-    def test_can_move_back_to_a_prompt_in_previous_section(self):
-        self.add_answer_submission('val1')
-        self.add_answer_submission('val2')
-        self.add_answer_submission('second_section_val1')
-        self.stubbed_app.add_keypress(Keys.BackTab)  # At DONE step
-        self.stubbed_app.add_keypress(Keys.BackTab)
-        self.add_answer_submission('override2')
-        self.add_app_values_assertion(
-            prompt1='val1', prompt2='override2',
-            second_section_prompt='second_section_val1'
-        )
-        self.stubbed_app.run()
+    def test_prompts_are_not_visible_across_sections(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            self.assert_prompt_is_visible(app_runner.app, 'prompt1')
+            self.assert_prompt_is_visible(app_runner.app, 'prompt2')
+            self.assert_prompt_is_not_visible(
+                app_runner.app, 'second_section_prompt')
 
-    def test_prompts_are_not_visible_across_sections(self):
-        self.add_prompt_is_visible_assertion('prompt1')
-        self.add_prompt_is_visible_assertion('prompt2')
-        self.add_prompt_is_not_visible_assertion('second_section_prompt')
+            app_runner.feed_input('val1\n')
+            app_runner.feed_input('val2\n')
 
-        self.add_answer_submission('val1')
-        self.add_answer_submission('val2')
+            self.assert_prompt_is_not_visible(app_runner.app, 'prompt1')
+            self.assert_prompt_is_not_visible(app_runner.app, 'prompt2')
+            self.assert_prompt_is_visible(
+                app_runner.app, 'second_section_prompt')
 
-        self.add_prompt_is_not_visible_assertion('prompt1')
-        self.add_prompt_is_not_visible_assertion('prompt2')
-        self.add_prompt_is_visible_assertion('second_section_prompt')
-        self.stubbed_app.run()
+    def test_run_wizard_dialog_appears_only_at_end_of_wizard(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
 
-    def test_run_wizard_dialog_appears_only_at_end_of_wizard(self):
-        self.add_run_wizard_dialog_is_not_visible()
-        self.add_answer_submission('val1')
-        self.add_run_wizard_dialog_is_not_visible()
-        self.add_answer_submission('val2')
-        self.add_run_wizard_dialog_is_not_visible()
-        self.add_answer_submission('second_section_val1')
-        self.add_run_wizard_dialog_is_visible()
-        self.stubbed_app.run()
+        with app_runner.run_app_in_thread():
+            self.assert_run_wizard_dialog_is_not_visible(app_runner.app)
+            app_runner.feed_input('val1\n')
+            self.assert_run_wizard_dialog_is_not_visible(app_runner.app)
+            app_runner.feed_input('val2\n')
+            self.assert_run_wizard_dialog_is_not_visible(app_runner.app)
+            app_runner.feed_input('second_section_val1\n')
+            self.assert_run_wizard_dialog_is_visible(app_runner.app)
 
-    def test_enter_at_wizard_dialog_exits_app_with_zero_rc(self):
-        self.add_answer_submission('val1')
-        self.add_answer_submission('val2')
-        self.add_answer_submission('second_section_val1')
-        self.add_run_wizard_dialog_is_visible()
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.stubbed_app.run()
-        self.assertEqual(self.app.future.result(), 0)
+    def test_enter_at_wizard_dialog_exits_app_with_zero_rc(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread() as ctx:
+            app_runner.feed_input('val1\n')
+            app_runner.feed_input('val2\n')
+            app_runner.feed_input('second_section_val1\n')
+            self.assert_run_wizard_dialog_is_visible(app_runner.app)
+            app_runner.feed_input(Keys.Enter)
+        assert ctx.return_value == 0
 
-    def test_can_go_back_from_run_wizard_dialog(self):
-        self.add_answer_submission('val1')
-        self.add_answer_submission('val2')
-        self.add_answer_submission('second_section_val1')
-        self.add_run_wizard_dialog_is_visible()
-        self.stubbed_app.add_keypress(Keys.Right)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_answer_submission('override_second_section_val1')
-        self.add_app_values_assertion(
-            prompt1='val1', prompt2='val2',
-            second_section_prompt='override_second_section_val1'
-        )
-        self.stubbed_app.run()
+    def test_can_go_back_from_run_wizard_dialog(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('val1\n')
+            app_runner.feed_input('\n')
+            app_runner.feed_input('second_section_val1\n')
+            self.assert_run_wizard_dialog_is_visible(app_runner.app)
+            app_runner.feed_input(Keys.Right, Keys.Enter)
+            app_runner.feed_input('_override\n')
+            self.assert_app_values(
+                app_runner.app, prompt1='val1', prompt2='foo',
+                second_section_prompt='second_section_val1_override'
+            )
 
-    def test_traverser_get_output(self):
-        self.assertEqual('output: some text',
-                         self.app.traverser.get_output())
+    def test_traverser_get_output(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        assert app_runner.app.traverser.get_output() == 'output: some text'
 
-    def test_can_exit_and_propagate_ctrl_c_from_wizard(self):
-        self.stubbed_app.add_keypress(Keys.ControlC)
-        with self.assertRaises(KeyboardInterrupt):
-            self.stubbed_app.run()
-            self.app.future.result()
+    def test_can_exit_and_propagate_ctrl_c_from_wizard(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread() as ctx:
+            app_runner.feed_input(Keys.ControlC)
+        assert isinstance(ctx.raised_exception, KeyboardInterrupt)
 
-    def test_captures_unexpected_errors_when_processing_input(self):
+    def test_captures_unexpected_errors_when_processing_input(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
         unexpected_error = ValueError('Not expected')
 
-        @self.app.key_bindings.add('a')
+        @app_runner.app.key_bindings.add('a')
         def trigger_unexpected_error(event):
             raise unexpected_error
 
-        self.app.output.stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
+        with app_runner.run_app_in_thread() as ctx:
+            app_runner.feed_input('a')
+        assert isinstance(ctx.raised_exception, UnexpectedWizardException)
+        assert ctx.raised_exception.original_exception is unexpected_error
 
-        pipe_input = create_pipe_input()
-        captured_exception = None
-        try:
-            pipe_input.send_text('a')
-            self.app.input = pipe_input
-            self.app.run()
-        except UnexpectedWizardException as e:
-            captured_exception = e
-        finally:
-            pipe_input.close()
-        self.assertIsInstance(captured_exception, UnexpectedWizardException)
-        self.assertIs(captured_exception.original_exception, unexpected_error)
-
-    def test_cant_open_save_panel_if_no_details_available(self):
-        self.stubbed_app.add_keypress(
-            Keys.ControlS,
-            lambda app: self.assertNotIn(
-                'save_details_dialogue', self.get_visible_buffers(app))
-        )
-        self.stubbed_app.run()
+    def test_cant_open_save_panel_if_no_details_available(
+            self, make_stubbed_wizard_runner, basic_definition):
+        app_runner = make_stubbed_wizard_runner(basic_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.ControlS)
+            assert 'save_details_dialogue' not in self.get_visible_buffers(
+                app_runner.app)
 
 
 class TestConditionalWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Conditional wizard',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'before_conditional': {
-                            'description': 'Description of first prompt',
-                            'type': 'prompt'
-                        },
-                        'conditional': {
-                            'description': 'Description of second prompt',
-                            'type': 'prompt',
-                            'condition': {
-                                'variable': 'before_conditional',
-                                'equals': 'condition-met'
-                            }
-                        },
-                        'after_conditional': {
-                            'description': 'Description of second prompt',
-                            'type': 'prompt',
-                        },
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
+    def test_conditional_prompt_is_skipped_when_condition_not_met(
+            self, make_stubbed_wizard_runner, conditional_definition):
+        app_runner = make_stubbed_wizard_runner(conditional_definition)
+        with app_runner.run_app_in_thread():
+            self.assert_prompt_is_not_visible(app_runner.app, 'conditional')
+            app_runner.feed_input('condition-not-met\n')
+            self.assert_prompt_is_not_visible(app_runner.app, 'conditional')
+            app_runner.feed_input('after-conditional-val\n')
+            self.assert_app_values(
+                app_runner.app, before_conditional='condition-not-met',
+                after_conditional='after-conditional-val',
+            )
 
-    def test_conditional_prompt_is_skipped_when_condition_not_met(self):
-        self.add_prompt_is_not_visible_assertion('conditional')
-        self.add_answer_submission('condition-not-met')
-        self.add_prompt_is_not_visible_assertion('conditional')
-        self.add_answer_submission('after-conditional-val')
-        self.add_app_values_assertion(
-            before_conditional='condition-not-met',
-            after_conditional='after-conditional-val',
-        )
-        self.stubbed_app.run()
-
-    def test_conditional_prompt_appears_when_condition_met(self):
-        self.add_prompt_is_not_visible_assertion('conditional')
-        self.add_answer_submission('condition-met')
-        self.add_prompt_is_visible_assertion('conditional')
-        self.add_answer_submission('val-at-conditional')
-        self.add_app_values_assertion(
-            before_conditional='condition-met',
-            conditional='val-at-conditional',
-        )
-        self.stubbed_app.run()
+    def test_conditional_prompt_appears_when_condition_met(
+            self, make_stubbed_wizard_runner, conditional_definition):
+        app_runner = make_stubbed_wizard_runner(conditional_definition)
+        with app_runner.run_app_in_thread():
+            self.assert_prompt_is_not_visible(app_runner.app, 'conditional')
+            app_runner.feed_input('condition-met\n')
+            self.assert_prompt_is_visible(app_runner.app, 'conditional')
+            app_runner.feed_input('val-at-conditional\n')
+            self.assert_app_values(
+                app_runner.app, before_conditional='condition-met',
+                conditional='val-at-conditional',
+            )
 
 
 class TestChoicesWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Conditional wizard',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'choices_prompt': {
-                            'description': 'Description of first prompt',
-                            'type': 'prompt',
-                            'choices': [
-                                {
-                                    'display': 'Option 1',
-                                    'actual_value': 'actual_option_1'
-                                },
-                                {
-                                    'display': 'Option 2',
-                                    'actual_value': 'actual_option_2'
-                                }
-                            ]
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
+    def test_immediately_pressing_enter_selects_first_choice(
+            self, make_stubbed_wizard_runner, choices_definition):
+        app_runner = make_stubbed_wizard_runner(choices_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Enter)
+            self.assert_app_values(
+                app_runner.app, choices_prompt='actual_option_1')
 
-    def test_immediately_pressing_enter_selects_first_choice(self):
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(choices_prompt='actual_option_1')
-        self.stubbed_app.run()
-
-    def test_can_select_choice_in_prompt(self):
-        self.stubbed_app.add_keypress(Keys.Down)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(choices_prompt='actual_option_2')
-        self.stubbed_app.run()
+    def test_can_select_choice_in_prompt(
+            self, make_stubbed_wizard_runner, choices_definition):
+        app_runner = make_stubbed_wizard_runner(choices_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Down, Keys.Enter)
+            self.assert_app_values(
+                app_runner.app, choices_prompt='actual_option_2')
 
 
 class TestCorruptedChoicesWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Conditional wizard',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'choices_prompt': {
-                            'description': 'Description of first prompt',
-                            'type': 'prompt',
-                            'choices': 'corrupted_choice'
-                        },
-                        'corrupted_choice': {
-                            'description': 'Description of first prompt',
-                            'type': 'apicall',
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
+    def test_can_handle_corrupted_choices(
+            self, make_stubbed_wizard_runner, corrupted_choice_definition):
+        app_runner = make_stubbed_wizard_runner(corrupted_choice_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Down, Keys.Enter)
+            self.assert_app_values(
+                app_runner.app, choices_prompt=None)
 
-    def test_can_handle_corrupted_choices(self):
-        self.stubbed_app.add_keypress(Keys.Down)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(choices_prompt=None)
-        self.stubbed_app.run()
+    def test_show_error_message_on_get_value_exception(
+            self, make_stubbed_wizard_runner, corrupted_choice_definition):
+        app_runner = make_stubbed_wizard_runner(corrupted_choice_definition)
+        with app_runner.run_app_in_thread():
+            self.assert_buffer_text(
+                app_runner.app,
+                'error_bar',
+                'Encountered following error in wizard:\n\n\'operation\''
+            )
 
-    def test_show_error_message_on_get_value_exception(self):
-        self.add_buffer_text_assertion(
-            'error_bar',
-            'Encountered following error in wizard:\n\n\'operation\''
-        )
-        self.stubbed_app.run()
-
-    def test_toolbar_text_on_get_value_exception(self):
-        self.add_toolbar_has_text_assertion('error message')
-        self.stubbed_app.run()
+    def test_toolbar_text_on_get_value_exception(
+            self, make_stubbed_wizard_runner, corrupted_choice_definition):
+        app_runner = make_stubbed_wizard_runner(corrupted_choice_definition)
+        with app_runner.run_app_in_thread():
+            self.assert_toolbar_has_text(app_runner.app, 'error message')
 
 
 class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Wizard with both buffer inputs and select inputs',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'buffer_input_prompt': {
-                            'description': 'Type answer',
-                            'type': 'prompt',
-                        },
-                        'select_prompt': {
-                            'description': 'Select answer',
-                            'type': 'prompt',
-                            'choices': [
-                                'select_answer_1',
-                                'select_answer_2'
-                            ]
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
-
-    def test_can_answer_buffer_prompt_followed_by_select_prompt(self):
-        self.add_answer_submission('buffer_answer')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(
-            buffer_input_prompt='buffer_answer',
-            select_prompt='select_answer_1'
-        )
-        self.stubbed_app.run()
+    def test_can_answer_buffer_prompt_followed_by_select_prompt(
+            self, make_stubbed_wizard_runner, mixed_prompt_definition):
+        app_runner = make_stubbed_wizard_runner(mixed_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('buffer_answer\n')
+            app_runner.feed_input(Keys.Enter)
+            self.assert_app_values(
+                app_runner.app, buffer_input_prompt='buffer_answer',
+                select_prompt='select_answer_1'
+            )
 
 
 class TestPromptWithDataConvertWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Wizard with both buffer inputs and select inputs',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'buffer_input_int': {
-                            'description': 'Type answer',
-                            'type': 'prompt',
-                            'datatype': 'int'
-                        },
-                        'buffer_input_bool': {
-                            'description': 'Type answer',
-                            'type': 'prompt',
-                            'datatype': 'bool'
-                        },
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
+    def test_can_convert_integers(
+            self, make_stubbed_wizard_runner, data_convert_definition):
+        app_runner = make_stubbed_wizard_runner(data_convert_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('100\n')
+            self.assert_app_values(app_runner.app, buffer_input_int=100)
 
-    def test_can_convert_integers(self):
-        self.add_answer_submission('100')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(
-            buffer_input_int=100,
-            buffer_input_bool=False
-        )
-        self.stubbed_app.run()
+    def test_can_convert_bool(
+            self, make_stubbed_wizard_runner, data_convert_definition):
+        app_runner = make_stubbed_wizard_runner(data_convert_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('0\n')
+            app_runner.feed_input('true\n')
+            self.assert_app_values(
+                app_runner.app, buffer_input_int=0, buffer_input_bool=True
+            )
 
-    def test_can_convert_bool(self):
-        self.add_answer_submission('0')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_answer_submission('true')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(
-            buffer_input_int=100,
-            buffer_input_bool=True
-        )
-        self.stubbed_app.run()
+    def test_show_error_and_stop_on_incorrect_input(
+            self, make_stubbed_wizard_runner, data_convert_definition):
+        app_runner = make_stubbed_wizard_runner(data_convert_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('foo\n')
+            self.assert_buffer_text(
+                app_runner.app,
+                'error_bar',
+                'Encountered following error in wizard:\n\n'
+                'Invalid value foo for datatype int'
+            )
+            self.assert_current_buffer(app_runner.app, 'buffer_input_int')
 
-    def test_show_error_and_stop_on_incorrect_input(self):
-        self.add_answer_submission('foo')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_buffer_text_assertion(
-            'error_bar',
-            'Encountered following error in wizard:\n\n'
-            'Invalid value foo for datatype int'
-        )
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(
-                app.layout.current_buffer.name, 'buffer_input_int')
-        )
-        self.stubbed_app.run()
-
-    def test_clear_error_and_go_on_after_correction(self):
-        self.add_answer_submission('foo')
-        self.add_buffer_text_assertion(
-            'error_bar',
-            'Encountered following error in wizard:\n\n'
-            'Invalid value foo for datatype int'
-        )
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(
-                app.layout.current_buffer.name, 'buffer_input_int')
-        )
-        self.add_answer_submission('100')
-        self.add_buffer_text_assertion('error_bar', '')
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(
-                app.layout.current_buffer.name, 'buffer_input_bool')
-        )
-        self.stubbed_app.run()
+    def test_clear_error_and_go_on_after_correction(
+            self, make_stubbed_wizard_runner, data_convert_definition):
+        app_runner = make_stubbed_wizard_runner(data_convert_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('foo\n')
+            self.assert_buffer_text(
+                app_runner.app,
+                'error_bar',
+                'Encountered following error in wizard:\n\n'
+                'Invalid value foo for datatype int'
+            )
+            self.assert_current_buffer(app_runner.app, 'buffer_input_int')
+            app_runner.feed_input(
+                Keys.Backspace, Keys.Backspace, Keys.Backspace)
+            app_runner.feed_input('100\n')
+            self.assert_buffer_text(
+                app_runner.app, 'error_bar', ''
+            )
+            self.assert_current_buffer(app_runner.app, 'buffer_input_bool')
 
 
 class TestApiCallWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Uses API call in prompting stage',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'existing_policies': {
-                            'type': 'apicall',
-                            'operation': 'iam.ListPolicies',
-                            'params': {},
-                            'query': (
-                                'sort_by(Policies[].{display: PolicyName, '
-                                'actual_value: Arn}, &display)'
-                            )
-                        },
-                        'choose_policy': {
-                            'description': 'Choose policy',
-                            'type': 'prompt',
-                            'choices': 'existing_policies'
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
-
-    def test_uses_choices_from_api_call(self):
-        mock_client = mock.Mock()
-        self.session.create_client.return_value = mock_client
-        mock_client.list_policies.return_value = {
-            'Policies': [
-                {
-                    'PolicyName': 'policy1',
-                    'Arn': 'policy1_arn'
-                },
-                {
-                    'PolicyName': 'policy2',
-                    'Arn': 'policy2_arn'
-                }
-            ]
-        }
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(choose_policy='policy1_arn')
-        self.stubbed_app.run()
+    def test_uses_choices_from_api_call(
+            self, make_stubbed_wizard_runner, api_call_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(api_call_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Enter)
+            self.assert_app_values(app_runner.app, choose_policy='policy1_arn')
 
 
 class TestDetailsWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Show details in prompting stage',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'version_id': {
-                            'type': 'apicall',
-                            'operation': 'iam.GetPolicy',
-                            'params': {
-                                'PolicyArn': '{policy_arn}'
-                            },
-                            'query': 'Policy.DefaultVersionId',
-                            'cache': True
-                        },
-                        'policy_document': {
-                            'type': 'apicall',
-                            'operation': 'iam.GetPolicyVersion',
-                            'params': {
-                                'PolicyArn': '{policy_arn}',
-                                'VersionId': '{version_id}'
-                            },
-                            'query': 'PolicyVersion.Document',
-                            'cache': True
-                        },
-                        'existing_policies': {
-                            'type': 'apicall',
-                            'operation': 'iam.ListPolicies',
-                            'params': {},
-                            'query': (
-                                'sort_by(Policies[].{display: PolicyName, '
-                                'actual_value: Arn}, &display)'
-                            )
-                        },
-                        'policy_arn': {
-                            'description': 'Choose policy',
-                            'type': 'prompt',
-                            'choices': 'existing_policies',
-                            'details': {
-                                'value': 'policy_document',
-                                'description': 'Policy Document',
-                                'output': 'json'
-                            },
-                        },
-                        'some_prompt': {
-                            'description': 'Choose something',
-                            'type': 'prompt',
-                            'choices': [1, 2, 3],
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
-
-    def setUp(self):
-        super(TestDetailsWizardApplication, self).setUp()
-        self.mock_client = mock.Mock()
-        self.session.create_client.return_value = self.mock_client
-        self.mock_client.list_policies.return_value = {
-            'Policies': [
-                {
-                    'PolicyName': 'policy1',
-                    'Arn': 'policy1_arn'
-                },
-                {
-                    'PolicyName': 'policy2',
-                    'Arn': 'policy2_arn'
-                }
-            ]
-        }
-        self.mock_client.get_policy.return_value = {
-            'Policy': {'DefaultVersionId': 'policy_id'}
-        }
-        self.mock_client.get_policy_version.return_value = {
-            'PolicyVersion': {'Document': {'policy': 'policy_document'}}
-        }
-
-    def test_get_details_for_choice(self):
-        self.stubbed_app.add_keypress(Keys.F3)
-        self.add_buffer_text_assertion(
-            'details_buffer',
-            '{\n    "policy": "policy_document"\n}'
-        )
-        self.stubbed_app.run()
-
-    def test_details_disabled_for_choice_wo_details(self):
-        self.add_prompt_is_visible_assertion('toolbar_details')
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.add_prompt_is_not_visible_assertion('toolbar_details')
-        self.stubbed_app.add_keypress(Keys.F3)
-        self.add_prompt_is_not_visible_assertion('details_buffer')
-
-    def test_can_switch_focus_to_details_panel(self):
-        self.stubbed_app.add_keypress(Keys.F3)
-        self.stubbed_app.add_keypress(
-            Keys.F2,
-            lambda app: self.assertEqual(
-                app.layout.current_buffer.name, 'details_buffer')
-        )
-        self.stubbed_app.add_keypress(
-            Keys.F3,
-            lambda app: self.assertIsNone(app.layout.current_buffer)
-        )
-        self.stubbed_app.run()
-
-    def test_can_toggle_save_panel(self):
-        self.stubbed_app.add_keypress(
-            Keys.ControlS,
-            lambda app: self.assertEqual(
-                app.layout.current_buffer.name, 'save_details_dialogue'
+    def test_get_details_for_choice(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.F3)
+            self.assert_buffer_text(
+                app_runner.app,
+                'details_buffer',
+                '{\n    "policy": "policy_document"\n}'
             )
-        )
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertIn(
-                'save_details_dialogue', self.get_visible_buffers(app))
-        )
-        # The details panel will automatically be visible when
-        # Ctrl-S is pressed.
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertTrue(app.details_visible)
-        )
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertTrue(app.save_details_visible)
-        )
-        self.stubbed_app.run()
 
-    def test_can_not_switch_focus_to_details_panel_if_it_not_visible(self):
-        self.stubbed_app.add_keypress(
-            Keys.F2,
-            lambda app: self.assertIsNone(app.layout.current_buffer)
-        )
-        self.stubbed_app.run()
+    def test_details_disabled_for_choice_wo_details(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Tab)
+            self.assert_prompt_is_not_visible(
+                app_runner.app, 'toolbar_details')
+            app_runner.feed_input(Keys.F3)
+            self.assert_prompt_is_not_visible(app_runner.app, 'details_buffer')
 
-    def test_can_set_details_panel_title(self):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(app.details_title, 'Policy Document')
-        )
-        self.stubbed_app.add_keypress(
-            Keys.F3,
-            lambda app: self.assertEqual(app.details_title, 'Policy Document')
-        )
-        self.stubbed_app.run()
+    def test_can_switch_focus_to_details_panel(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.F3)
+            app_runner.feed_input(Keys.F2)
+            self.assert_current_buffer(app_runner.app, 'details_buffer')
+            app_runner.feed_input(Keys.F3)
+            assert app_runner.app.layout.current_buffer is None
 
-    def test_can_set_details_toolbar_text(self):
-        self.add_toolbar_has_text_assertion('Policy Document')
-        self.stubbed_app.run()
+    def test_can_toggle_save_panel(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.ControlS)
+            self.assert_current_buffer(app_runner.app, 'save_details_dialogue')
+            self.assert_prompt_is_visible(
+                app_runner.app, 'save_details_dialogue')
+            assert app_runner.app.details_visible
+            assert app_runner.app.save_details_visible
+
+    def test_can_not_switch_focus_to_details_panel_if_it_not_visible(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.F2)
+            assert app_runner.app.layout.current_buffer is None
+
+    def test_can_set_details_panel_title(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            assert app_runner.app.details_title == 'Policy Document'
+            app_runner.feed_input(Keys.F3)
+            assert app_runner.app.details_title == 'Policy Document'
+
+    def test_can_set_details_toolbar_text(
+            self, make_stubbed_wizard_runner, details_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(details_definition)
+        with app_runner.run_app_in_thread():
+            self.assert_toolbar_has_text(app_runner.app, 'Policy Document')
 
 
 class TestPreviewWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Show details in prompting stage',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'option1': {
-                            'type': 'template',
-                            'value': "First option details"
-                        },
-                        'option2': {
-                            'type': 'template',
-                            'value': "Second option details"
-                        },
-                        'some_prompt': {
-                            'description': 'Choose something',
-                            'type': 'prompt',
-                            'choices': [{
-                                'display': '1', 'actual_value': '2'
-                            }],
-                        },
-                        'choose_option': {
-                            'description': 'Choose option',
-                            'type': 'prompt',
-                            'choices': [
-                                {'display': 'Option 1',
-                                 'actual_value': 'option1'},
-                                {'display': 'Option 2',
-                                 'actual_value': 'option2'},
-                            ],
-                            'details': {
-                                'visible': True,
-                                'value': '__selected_choice__',
-                                'description': 'Option details',
-                            },
-                        },
-                    }
-                },
-                '__DONE__': {},
-            }
-        }
+    def test_details_panel_visible_by_default(
+            self, make_stubbed_wizard_runner, preview_definition):
+        app_runner = make_stubbed_wizard_runner(preview_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Tab)
+            self.assert_prompt_is_visible(app_runner.app, 'details_buffer')
 
-    def test_details_panel_visible_by_default(self):
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.add_prompt_is_visible_assertion('details_buffer')
-        self.stubbed_app.run()
+    def test_get_details_for_choice(
+            self, make_stubbed_wizard_runner, preview_definition):
+        app_runner = make_stubbed_wizard_runner(preview_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Tab)
+            self.assert_buffer_text(
+                app_runner.app,
+                'details_buffer',
+                'First option details'
+            )
 
-    def test_get_details_for_choice(self):
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.add_buffer_text_assertion(
-            'details_buffer',
-            'First option details'
-        )
-        self.stubbed_app.run()
-
-    def test_get_details_for_second_choice(self):
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.stubbed_app.add_keypress(Keys.Down)
-        self.add_buffer_text_assertion(
-            'details_buffer',
-            'Second option details'
-        )
-        self.stubbed_app.run()
+    def test_get_details_for_second_choice(
+            self, make_stubbed_wizard_runner, preview_definition):
+        app_runner = make_stubbed_wizard_runner(preview_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Tab)
+            app_runner.feed_input(Keys.Down)
+            self.assert_buffer_text(
+                app_runner.app,
+                'details_buffer',
+                'Second option details'
+            )
 
 
 class TestSharedConfigWizardApplication(BaseWizardApplicationTest):
-    def get_definition(self):
-        return {
-            'title': 'Uses shared config API in prompting stage',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'existing_profiles': {
-                            'type': 'sharedconfig',
-                            'operation': 'ListProfiles',
-                        },
-                        'choose_profile': {
-                            'description': 'Choose profile',
-                            'type': 'prompt',
-                            'choices': 'existing_profiles'
-                        }
-                    }
-                },
-                '__DONE__': {},
-            }
-        }
-
-    def test_uses_choices_from_api_call(self):
-        self.session.available_profiles = ['profile1', 'profile2']
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(choose_profile='profile1')
-        self.stubbed_app.run()
+    def test_uses_choices_from_api_call(
+            self, make_stubbed_wizard_runner, shared_config_definition,
+            mock_botocore_session):
+        mock_botocore_session.available_profiles = ['profile1', 'profile2']
+        app_runner = make_stubbed_wizard_runner(shared_config_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.Enter)
+            self.assert_app_values(app_runner.app, choose_profile='profile1')
 
 
 class TestRunWizardApplication(BaseWizardApplicationTest):
-    def setUp(self):
-        super().setUp()
-        self.client = mock.Mock()
-        self.session.create_client.return_value = self.client
-        self.role_arn = 'returned-role-arn'
-        self.create_role_response = {
-            'Role': {
-                'Arn': self.role_arn
-            }
-        }
+    def assert_error_bar_is_visible(self, app):
+        assert 'error_bar' in self.get_visible_buffers(app)
 
-    def get_definition(self):
-        return {
-            'title': 'For running execute step',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'role_name': {
-                            'type': 'prompt',
-                            'description': 'Enter role name'
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {
-                'default': [
-                    {
-                        'type': 'apicall',
-                        'operation': 'iam.CreateRole',
-                        'params': {
-                            'RoleName': "{role_name}"
-                        },
-                        'output_var': 'role_arn',
-                        'query': 'Role.Arn',
-                    }
+    def assert_error_bar_is_not_visible(self, app):
+        assert 'error_bar' not in self.get_visible_buffers(app)
 
-                ]
-            }
-        }
+    def test_run_wizard_execute(
+            self, make_stubbed_wizard_runner, run_wizard_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(run_wizard_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('role-name\n')
+            app_runner.feed_input(Keys.Enter)
+        mock_iam_client.create_role.assert_called_with(RoleName='role-name')
+        assert app_runner.app.values['role_arn'] == 'returned-role-arn'
 
-    def add_error_bar_is_not_visible_assertion(self):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertNotIn(
-                'error_bar', self.get_visible_buffers(app))
-        )
+    def test_run_wizard_captures_and_displays_errors(
+            self, make_stubbed_wizard_runner, run_wizard_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(run_wizard_definition)
+        mock_iam_client.create_role.side_effect = Exception(
+            'Error creating role')
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('role-name\n')
+            app_runner.feed_input(Keys.Enter)
+            self.assert_buffer_text(
+                app_runner.app,
+                'error_bar',
+                'Encountered following error in wizard:\n\nError creating role'
+            )
 
-    def add_error_bar_is_visible_assertion(self):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertIn(
-                'error_bar', self.get_visible_buffers(app))
-        )
-
-    def test_run_wizard_execute(self):
-        self.client.create_role.return_value = self.create_role_response
-        self.add_answer_submission('role-name')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.stubbed_app.run()
-        self.client.create_role.assert_called_with(RoleName='role-name')
-        self.assertEqual(self.app.values['role_arn'], self.role_arn)
-
-    def test_run_wizard_captures_and_displays_errors(self):
-        self.client.create_role.side_effect = Exception('Error creating role')
-        self.add_answer_submission('role-name')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_buffer_text_assertion(
-            'error_bar',
-            'Encountered following error in wizard:\n\nError creating role'
-        )
-        self.stubbed_app.run()
-
-    def test_can_change_answers_on_run_wizard_failure(self):
-        self.client.create_role.side_effect = [
+    def test_can_change_answers_on_run_wizard_failure(
+            self, make_stubbed_wizard_runner, run_wizard_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(run_wizard_definition)
+        mock_iam_client.create_role.side_effect = [
             Exception('Initial error'),
-            self.create_role_response
+            mock_iam_client.create_role.return_value,
         ]
-        self.add_answer_submission('role-name')
-        self.add_error_bar_is_not_visible_assertion()
-        self.add_run_wizard_dialog_is_visible()
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_buffer_text_assertion(
-            'error_bar',
-            'Encountered following error in wizard:\n\nInitial error'
-        )
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('role-name\n')
+            self.assert_error_bar_is_not_visible(app_runner.app)
+            self.assert_run_wizard_dialog_is_visible(app_runner.app)
+            app_runner.feed_input(Keys.Enter)
+            self.assert_buffer_text(
+                app_runner.app,
+                'error_bar',
+                'Encountered following error in wizard:\n\nInitial error'
+            )
 
-        # Make sure dialog closed on error but error message is still visible
-        self.add_run_wizard_dialog_is_not_visible()
-        self.add_error_bar_is_visible_assertion()
-        self.add_answer_submission('new-role-name')
+            # Make sure dialog closed on error but error message is visible
+            self.assert_run_wizard_dialog_is_not_visible(app_runner.app)
+            self.assert_error_bar_is_visible(app_runner.app)
+            app_runner.feed_input('-new\n')
 
-        # Make sure we select "Yes" button in dialog
-        self.stubbed_app.add_keypress(Keys.Left)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.stubbed_app.run()
-        self.client.create_role.assert_called_with(RoleName='new-role-name')
-        self.assertEqual(self.app.values['role_arn'], self.role_arn)
+            # Enter "Yes" to the done dialog again
+            app_runner.feed_input(Keys.Enter)
 
-    def test_can_switch_exception_panel(self):
-        self.client.create_role.side_effect = [
+        mock_iam_client.create_role.assert_called_with(
+            RoleName='role-name-new')
+        assert app_runner.app.values['role_arn'] == 'returned-role-arn'
+
+    def test_can_switch_exception_panel(
+            self, make_stubbed_wizard_runner, run_wizard_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(run_wizard_definition)
+        mock_iam_client.create_role.side_effect = [
             Exception('Initial error'),
-            self.create_role_response
+            mock_iam_client.create_role.return_value,
         ]
-        self.add_answer_submission('role-name')
-        self.add_error_bar_is_not_visible_assertion()
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_error_bar_is_visible_assertion()
-        self.stubbed_app.add_keypress(Keys.F2)
-        self.add_error_bar_is_not_visible_assertion()
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('role-name\n')
+            self.assert_error_bar_is_not_visible(app_runner.app)
+            app_runner.feed_input(Keys.Enter)
+            self.assert_error_bar_is_visible(app_runner.app)
+            app_runner.feed_input(Keys.F4)
+            self.assert_error_bar_is_not_visible(app_runner.app)
 
-    def test_toolbar_has_exception_panel_hot_key(self):
-        self.client.create_role.side_effect = [
+    def test_toolbar_has_exception_panel_hot_key(
+            self, make_stubbed_wizard_runner, run_wizard_definition,
+            mock_iam_client):
+        app_runner = make_stubbed_wizard_runner(run_wizard_definition)
+        mock_iam_client.create_role.side_effect = [
             Exception('Initial error'),
-            self.create_role_response
+            mock_iam_client.create_role.return_value,
         ]
-        self.add_answer_submission('role-name')
-        self.add_error_bar_is_not_visible_assertion()
-        self.add_toolbar_has_not_text_assertion('error message')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_error_bar_is_visible_assertion()
-        self.add_toolbar_has_text_assertion('error message')
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('role-name\n')
+            self.assert_error_bar_is_not_visible(app_runner.app)
+            self.assert_toolbar_does_not_have_text(
+                app_runner.app, 'error message')
+            app_runner.feed_input(Keys.Enter)
+            self.assert_error_bar_is_visible(app_runner.app)
+            self.assert_toolbar_has_text(
+                app_runner.app, 'error message')
 
 
 class TestWizardTraverser(unittest.TestCase):
@@ -1575,116 +1664,75 @@ class TestWizardValues(unittest.TestCase):
         self.exception_handler.assert_called_with(e)
 
 
-class FakePathCompleter(PathCompleter):
-    def get_completions(self, document, complete_event):
-        prefix_len = len(document.text)
-
-        yield from [
-            Completion('file1'[prefix_len:], 0, display='file1'),
-            Completion('file2'[prefix_len:], 0, display='file2'),
-        ]
-
-
 class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
-    def setUp(self):
-        self.patch = mock.patch(
-            'awscli.customizations.wizard.ui.prompt.PathCompleter',
-            FakePathCompleter)
-        self.patch.start()
-        super().setUp()
+    def test_show_completions_for_buffer_text(
+            self, make_stubbed_wizard_runner, file_prompt_definition,
+            patch_path_completer):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('fi')
+            self.assert_expected_buffer_completions(
+                app_runner.app,
+                'choose_file',
+                [
+                    Completion('le1', 0, display='file1'),
+                    Completion('le2', 0, display='file2'),
+                ]
+            )
 
-    def tearDown(self):
-        super().tearDown()
-        self.patch.stop()
+    def test_choose_completion_on_Enter_and_stays_on_the_same_prompt(
+            self, make_stubbed_wizard_runner, file_prompt_definition,
+            patch_path_completer):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('fi')
+            app_runner.feed_input(Keys.Down, Keys.Enter)
+            self.assert_buffer_text(app_runner.app, 'choose_file', 'file1')
+            self.assert_current_buffer(app_runner.app, 'choose_file')
 
-    def get_definition(self):
-        return {
-            'title': 'Uses API call in prompting stage',
-            'plan': {
-                'section': {
-                    'shortname': 'Section',
-                    'values': {
-                        'choose_file': {
-                            'description': 'Choose file',
-                            'type': 'prompt',
-                            'completer': 'file_completer'
-                        },
-                        'second_prompt': {
-                            'description': 'Second prompt',
-                            'type': 'prompt',
-                        }
-                    }
-                },
-                '__DONE__': {},
-            },
-            'execute': {}
-        }
+    def test_choose_completion_on_Enter_and_move_on_second_Enter(
+            self, make_stubbed_wizard_runner, file_prompt_definition,
+            patch_path_completer):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('fi')
+            app_runner.feed_input(Keys.Down, Keys.Enter)
+            app_runner.feed_input(Keys.Enter)
+            self.assert_current_buffer(app_runner.app, 'second_prompt')
 
-    def test_show_completions_for_buffer_text(self):
-        self.stubbed_app.add_text_to_current_buffer('fi')
-        self.stubbed_app.start_completion_for_current_buffer()
-        self.add_buffer_completions_assertion('choose_file',
-            [
-                Completion('le1', 0, display='file1'),
-                Completion('le2', 0, display='file2'),
-            ]
-        )
-        self.stubbed_app.run()
+    def test_switch_completions_on_tab(
+            self, make_stubbed_wizard_runner, file_prompt_definition,
+            patch_path_completer):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('fi')
+            app_runner.feed_input(Keys.Tab, Keys.Tab, Keys.Enter)
+            self.assert_buffer_text(app_runner.app, 'choose_file', 'file2')
+            self.assert_current_buffer(app_runner.app, 'choose_file')
 
-    def test_choose_completion_on_Enter_and_stays_on_the_same_prompt(self):
-        self.stubbed_app.add_text_to_current_buffer('fi')
-        self.stubbed_app.start_completion_for_current_buffer()
-        self.stubbed_app.add_keypress(Keys.Down)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_buffer_text_assertion('choose_file', 'file1')
-        self.add_current_buffer_assertion('choose_file')
-        self.stubbed_app.run()
+    def test_switch_completions_on_back_tab(
+            self, make_stubbed_wizard_runner, file_prompt_definition,
+            patch_path_completer):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('fi')
+            app_runner.feed_input(Keys.Tab, Keys.Tab, Keys.BackTab, Keys.Enter)
+            self.assert_buffer_text(app_runner.app, 'choose_file', 'file1')
+            self.assert_current_buffer(app_runner.app, 'choose_file')
 
-    def test_choose_completion_on_Enter_and_move_on_second_Enter(self):
-        self.stubbed_app.add_text_to_current_buffer('fi')
-        self.stubbed_app.start_completion_for_current_buffer()
-        self.stubbed_app.add_keypress(Keys.Down)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_current_buffer_assertion('second_prompt')
-        self.stubbed_app.run()
-
-    def test_switch_completions_on_tab(self):
-        self.stubbed_app.add_text_to_current_buffer('fi')
-        self.stubbed_app.start_completion_for_current_buffer()
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_buffer_text_assertion('choose_file', 'file2')
-        self.add_current_buffer_assertion('choose_file')
-        self.stubbed_app.run()
-
-    def test_switch_completions_on_back_tab(self):
-        self.stubbed_app.add_text_to_current_buffer('fi')
-        self.stubbed_app.start_completion_for_current_buffer()
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.stubbed_app.add_keypress(Keys.BackTab)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_buffer_text_assertion('choose_file', 'file1')
-        self.add_current_buffer_assertion('choose_file')
-        self.stubbed_app.run()
-
-    def test_switch_prompt_on_tab_if_it_is_not_completing(self):
-        self.stubbed_app.add_text_to_current_buffer('rrrr')
-        self.stubbed_app.add_keypress(Keys.Tab)
-        self.add_current_buffer_assertion('second_prompt')
-        self.stubbed_app.run()
+    def test_switch_prompt_on_tab_if_it_is_not_completing(
+            self, make_stubbed_wizard_runner, file_prompt_definition,
+            patch_path_completer):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input('rrrr')
+            app_runner.feed_input(Keys.Tab)
+            self.assert_current_buffer(app_runner.app, 'second_prompt')
 
 
 class TestSaveDetailsWizard(BaseWizardApplicationTest):
-    def setUp(self):
-        super(TestSaveDetailsWizard, self).setUp()
-        self.mock_file_io = mock.Mock(spec=FileIO)
-        self.app.file_io = self.mock_file_io
-
-    def get_definition(self):
-        return {
+    def test_file_saved_to_disk(self, make_stubbed_wizard_runner):
+        definition = {
             'title': 'Show details in prompting stage',
             'plan': {
                 'section': {
@@ -1706,23 +1754,19 @@ class TestSaveDetailsWizard(BaseWizardApplicationTest):
             },
             'execute': {}
         }
-
-    def test_file_saved_to_disk(self):
-        self.app.values['test_value'] = {'foo': 'bar'}
-        self.stubbed_app.add_keypress(Keys.F3)
-        details_contents = '{\n    "foo": "bar"\n}'
-        self.add_buffer_text_assertion(
-            'details_buffer',
-            details_contents,
-        )
-        self.stubbed_app.add_keypress(Keys.ControlS)
-        self.stubbed_app.add_text_to_current_buffer('/tmp/myfile.json')
-        self.stubbed_app.add_keypress(Keys.Enter)
-        # We should switch back to the control associated with
-        # the current prompt.
-        self.stubbed_app.add_app_assertion(
-            lambda app: app.layout.current_control.buffer.name
-        )
-        self.stubbed_app.run()
-        self.mock_file_io.write_file_contents.assert_called_with(
-            '/tmp/myfile.json', details_contents)
+        app_runner = make_stubbed_wizard_runner(definition)
+        mock_file_io = mock.Mock(spec=FileIO)
+        app_runner.app.file_io = mock_file_io
+        app_runner.app.values['test_value'] = {'foo': 'bar'}
+        details_content = '{\n    "foo": "bar"\n}'
+        with app_runner.run_app_in_thread():
+            app_runner.feed_input(Keys.F3)
+            self.assert_buffer_text(
+                app_runner.app,
+                'details_buffer',
+                details_content
+            )
+            app_runner.feed_input(Keys.ControlS)
+            app_runner.feed_input('/tmp/myfile.json\n')
+            mock_file_io.write_file_contents.assert_called_with(
+                '/tmp/myfile.json', details_content)

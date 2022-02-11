@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+from asyncio import get_event_loop
 from collections.abc import MutableMapping
 
 from prompt_toolkit.application import Application
-from prompt_toolkit.eventloop import get_event_loop, run_until_complete
 
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.style import get_default_style
@@ -35,8 +35,6 @@ class WizardAppRunner(object):
         """Run a single wizard given the contents as a string."""
         app = self._app_factory(loaded, self._session)
         app.run()
-        # Propagates any exceptions that got set while in the app
-        app.future.result()
         print(app.traverser.get_output())
 
 
@@ -67,13 +65,12 @@ class WizardApp(Application):
         previous_exc_handler = loop.get_exception_handler()
         loop.set_exception_handler(self._handle_exception)
         try:
-            f = self.run_async(pre_run=pre_run)
-            run_until_complete(f)
-            return f.result()
+            f = self.run_async(pre_run=pre_run, set_exception_handler=False)
+            return loop.run_until_complete(f)
         finally:
             loop.set_exception_handler(previous_exc_handler)
 
-    def _handle_exception(self, context):
+    def _handle_exception(self, loop, context):
         self.exit(
             exception=UnexpectedWizardException(context['exception'])
         )

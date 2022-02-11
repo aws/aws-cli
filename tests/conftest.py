@@ -10,8 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import logging
+import threading
 
+from prompt_toolkit.application import create_app_session
+from prompt_toolkit.input import create_pipe_input
+from prompt_toolkit.output import DummyOutput
 import pytest
 
 import awscli.logger
@@ -31,3 +36,14 @@ def clear_loggers():
         logger.handlers = []
         logger.setLevel(logging.NOTSET)
     awscli.logger.disable_crt_logging()
+
+
+@pytest.fixture
+def ptk_app_session():
+    pipe_input = create_pipe_input()
+    output = DummyOutput()
+    try:
+        with create_app_session(input=pipe_input, output=output) as session:
+            yield session
+    finally:
+        pipe_input.close()

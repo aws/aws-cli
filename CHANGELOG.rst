@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.54
+=======
+
+* api-change:``ssm``: Documentation updates for AWS Systems Manager.
+
+
 1.22.53
 =======
 

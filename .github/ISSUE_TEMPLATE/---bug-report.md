@@ -8,9 +8,9 @@ assignees: ''
 ---
 
 Confirm by changing [ ] to [x] below to ensure that it's a bug:
-- [ ] I've gone though the [User Guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) and the [API reference](https://docs.aws.amazon.com/cli/latest/reference/)
+- [ ] I've gone through the [User Guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) and the [API reference](https://docs.aws.amazon.com/cli/latest/reference/)
 - [ ] I've searched for [previous similar issues](https://github.com/aws/aws-cli/issues) and didn't find any solution
-  
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

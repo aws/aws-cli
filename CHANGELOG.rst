@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.55
+=======
+
+* api-change:``rds``: Adds support for determining which Aurora PostgreSQL versions support Babelfish.
+* api-change:``appflow``: Launching Amazon AppFlow SAP as a destination connector SDK.
+* api-change:``athena``: This release adds a subfield, ErrorType, to the AthenaError response object in the GetQueryExecution API when a query fails.
+
+
 1.22.54
 =======
 

@@ -1127,87 +1127,135 @@
       }
     ]
   },
-    {
-        "description": "Tagged Unions",
-        "metadata": {
-            "protocol": "rest-json"
+  {
+    "description": "Tagged Unions",
+    "metadata": {
+      "protocol": "rest-json"
+    },
+    "shapes": {
+      "OutputShape": {
+        "type": "structure",
+        "members": {
+          "UnionMember": {
+            "shape": "UnionType"
+          }
+        }
+      },
+      "UnionType": {
+        "type": "structure",
+        "members": {
+          "S":{"shape":"StringType"},
+          "L": {"shape": "ListType"}
         },
-        "shapes": {
-            "OutputShape": {
-                "type": "structure",
-                "members": {
-                    "UnionMember": {
-                        "shape": "UnionType"
-                    }
-                }
-            },
-            "UnionType": {
-                "type": "structure",
-                "members": {
-                    "S":{"shape":"StringType"},
-                    "L": {"shape": "ListType"}
-                },
-                "union": true
-            },
-            "ListType": {
-                "type": "list",
-                "member": {
-                    "shape": "StringType"
-                }
-            },
-            "StringType": {
-                "type": "string"
-            }
+        "union": true
+      },
+      "ListType": {
+        "type": "list",
+        "member": {
+          "shape": "StringType"
+        }
+      },
+      "StringType": {
+        "type": "string"
+      }
+    },
+    "cases": [
+      {
+        "given": {
+          "output": {
+            "shape": "OutputShape"
+          },
+          "name": "OperationName"
         },
-        "cases": [
-            {
-                "given": {
-                    "output": {
-                        "shape": "OutputShape"
-                    },
-                    "name": "OperationName"
-                },
-                "result": {
-                    "UnionMember": {"S":  "mystring"}
-                },
-                "response": {
-                    "status_code": 200,
-                    "headers": {},
-                    "body": "{\"UnionMember\": {\"S\": \"mystring\"}}"
-                }
-            },
-            {
-                "given": {
-                    "output": {
-                        "shape": "OutputShape"
-                    },
-                    "name": "OperationName"
-                },
-                "result": {
-                    "UnionMember": {"L":  ["a", "b"]}
-                },
-                "response": {
-                    "status_code": 200,
-                    "headers": {},
-                    "body": "{\"UnionMember\": {\"L\": [\"a\", \"b\"]}}"
-                }
-            },
-            {
-                "given": {
-                    "output": {
-                        "shape": "OutputShape"
-                    },
-                    "name": "OperationName"
-                },
-                "result": {
-                    "UnionMember": {"SDK_UNKNOWN_MEMBER":  {"name": "SomeUnknownMember"}}
-                },
-                "response": {
-                    "status_code": 200,
-                    "headers": {},
-                    "body": "{\"UnionMember\": {\"SomeUnknownMember\": \"foo\"}}"
-                }
-            }
-        ]
-    }
+        "result": {
+          "UnionMember": {"S":  "mystring"}
+        },
+        "response": {
+          "status_code": 200,
+          "headers": {},
+          "body": "{\"UnionMember\": {\"S\": \"mystring\"}}"
+        }
+      },
+      {
+        "given": {
+          "output": {
+            "shape": "OutputShape"
+          },
+          "name": "OperationName"
+        },
+        "result": {
+          "UnionMember": {"L":  ["a", "b"]}
+        },
+        "response": {
+          "status_code": 200,
+          "headers": {},
+          "body": "{\"UnionMember\": {\"L\": [\"a\", \"b\"]}}"
+        }
+      },
+      {
+        "given": {
+          "output": {
+            "shape": "OutputShape"
+          },
+          "name": "OperationName"
+        },
+        "result": {
+          "UnionMember": {"SDK_UNKNOWN_MEMBER":  {"name": "SomeUnknownMember"}}
+        },
+        "response": {
+          "status_code": 200,
+          "headers": {},
+          "body": "{\"UnionMember\": {\"SomeUnknownMember\": \"foo\"}}"
+        }
+      }
+    ]
+  },
+  {
+    "description": "List in header",
+    "metadata": {
+      "protocol": "rest-json"
+    },
+    "shapes": {
+      "OutputShape": {
+        "type": "structure",
+        "members": {
+          "ListMember": {
+            "shape": "ListShape",
+            "location": "header",
+            "locationName": "x-amz-list-member"
+          }
+        }
+      },
+      "ListShape": {
+        "type": "list",
+        "member": {
+          "shape": "EnumType"
+        }
+      },
+      "EnumType": {
+        "type": "string",
+        "enum": ["one", "two", "three"]
+      }
+    },
+    "cases": [
+      {
+        "given": {
+          "output": {
+            "shape": "OutputShape"
+          },
+          "name": "OperationName"
+        },
+        "result": {
+          "ListMember": ["one", "two", "three"]
+        },
+        "response": {
+          "status_code": 200,
+          "headers": {
+              "x-amz-list-member": " one,two , three "
+          },
+          "body": ""
+        }
+      }
+    ]
+  }
 ]

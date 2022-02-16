@@ -941,6 +941,13 @@ class BaseRestParser(ResponseParser):
             parsed = json.loads(decoded)
         return parsed
 
+    def _handle_list(self, shape, node):
+        location = shape.serialization.get('location')
+        if location == 'header' and not isinstance(node, list):
+            # List in headers may be a comma separated string as per RFC7230
+            node = [e.strip() for e in node.split(',')]
+        return super(BaseRestParser, self)._handle_list(shape, node)
+
 
 class RestJSONParser(BaseRestParser, BaseJSONParser):
 

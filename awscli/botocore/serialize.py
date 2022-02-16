@@ -585,6 +585,9 @@ class BaseRestSerializer(Serializer):
                 partitioned['query_string_kwargs'][key_name] = param_value
         elif location == 'header':
             shape = shape_members[param_name]
+            if not param_value and shape.type_name == 'list':
+                # Empty lists should not be set on the headers
+                return
             value = self._convert_header_value(shape, param_value)
             partitioned['headers'][key_name] = str(value)
         elif location == 'headers':
@@ -616,6 +619,12 @@ class BaseRestSerializer(Serializer):
             timestamp_format = shape.serialization.get(
                 'timestampFormat', self.HEADER_TIMESTAMP_FORMAT)
             return self._convert_timestamp_to_str(timestamp, timestamp_format)
+        elif shape.type_name == 'list':
+            converted_value = [
+                self._convert_header_value(shape.member, v)
+                for v in value if v is not None
+            ]
+            return ",".join(converted_value)
         elif is_json_value_header(shape):
             # Serialize with no spaces after separators to save space in
             # the header.

@@ -403,7 +403,7 @@ class PromptToolkitAppRunner:
             target=self._do_run_app, args=(target, args, run_context))
         try:
             thread.start()
-            self._wait_until_app_is_done_rendering()
+            self._wait_until_app_is_done_updating()
             yield run_context
         finally:
             if self._app_is_exitable():

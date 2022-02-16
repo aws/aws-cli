@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.56
+=======
+
+* api-change:``glue``: Support for optimistic locking in UpdateTable
+* api-change:``ec2``: Documentation updates for EC2.
+* api-change:``budgets``: Adds support for auto-adjusting budgets, a new budget method alongside fixed and planned. Auto-adjusting budgets introduces new metadata to configure a budget limit baseline using a historical lookback average or current period forecast.
+* api-change:``ssm``: Assorted ticket fixes and updates for AWS Systems Manager.
+* api-change:``ce``: AWS Cost Anomaly Detection now supports SNS FIFO topic subscribers.
+
+
 1.22.55
 =======
 

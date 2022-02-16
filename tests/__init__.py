@@ -399,27 +399,14 @@ class PromptToolkitAppRunner:
             args = (self._pre_run,)
 
         run_context = AppRunContext()
-
-        def run_app():
-            try:
-                # When we run the app in a separate thread, there is no
-                # default event loop. This ensures we create one as it is
-                # likely the application will try to grab the default loop
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                run_context.return_value = target(*args)
-            except BaseException as e:
-                run_context.raised_exception = e
-            finally:
-                loop.close()
-
-        thread = threading.Thread(target=run_app)
+        thread = threading.Thread(
+            target=self._do_run_app, args=(target, args, run_context))
         try:
             thread.start()
             self._wait_until_app_is_done_rendering()
             yield run_context
         finally:
-            if self.app.is_running:
+            if self._app_is_exitable():
                 self.app.exit()
             thread.join()
 
@@ -439,6 +426,21 @@ class PromptToolkitAppRunner:
         )
         self._done_completing_event.wait(self._EVENT_WAIT_TIMEOUT)
         self._done_completing_event.clear()
+
+    def _do_run_app(self, target, target_args, app_run_context):
+        # This is the function that will be passed to our thread to
+        # actually run the application
+        try:
+            # When we run the app in a separate thread, there is no
+            # default event loop. This ensures we create one as it is
+            # likely the application will try to grab the default loop
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            app_run_context.return_value = target(*target_args)
+        except BaseException as e:
+            app_run_context.raised_exception = e
+        finally:
+            loop.close()
 
     def _wait_until_app_is_done_updating(self):
         self._wait_until_app_is_done_rendering()
@@ -466,6 +468,16 @@ class PromptToolkitAppRunner:
             self.app.current_buffer.complete_state and
             self.app.current_buffer.complete_state.completions
         )
+
+    def _app_is_exitable(self):
+        # This needs to be used instead of app.done() because prompt toolkit
+        # sets the future to None when it finishes run_async. So it is
+        # indeterminable whether app.done() is actually done because
+        # the future being None results in a return value of False.
+        # So instead we have our own custom check to see if there is a future
+        # present on the app (meaning the run_async has not finished) and the
+        # result for that future has not been set.
+        return self.app.future and not self.app.future.done()
 
     def _convert_key_to_vt100_data(self, key):
         return REVERSE_ANSI_SEQUENCES.get(key, key)

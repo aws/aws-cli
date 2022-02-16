@@ -160,10 +160,10 @@ class BaseClientDriverTest(unittest.TestCase):
 
     def setUp(self):
         self.driver = ClientDriver()
-        env = None
+        env = os.environ.copy()
         if self.INJECT_DUMMY_CREDS:
-            env = {'AWS_ACCESS_KEY_ID': 'foo',
-                   'AWS_SECRET_ACCESS_KEY': 'bar'}
+            env['AWS_ACCESS_KEY_ID'] = 'foo'
+            env['AWS_SECRET_ACCESS_KEY'] = 'bar'
         self.driver.start(env=env)
 
     def cmd(self, *args):

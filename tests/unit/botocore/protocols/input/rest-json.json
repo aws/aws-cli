@@ -2107,5 +2107,65 @@
         }
       }
     ]
+  },
+  {
+    "description": "List in header",
+    "metadata": {
+      "protocol": "rest-json",
+      "apiVersion": "2014-01-01"
+    },
+    "clientEndpoint": "https://rest-json-test.amazonaws.com",
+    "shapes": {
+      "InputShape": {
+        "type": "structure",
+        "members": {
+          "ListParam": {
+            "shape": "ListShape",
+            "location": "header",
+            "locationName": "x-amz-list-param"
+          }
+        }
+      },
+      "ListShape": {
+        "type": "list",
+        "member": {
+          "shape": "EnumType"
+        }
+      },
+      "EnumType": {
+        "type": "string",
+        "enum": ["one", "two", "three"]
+      }
+    },
+    "cases": [
+      {
+        "given": {
+          "http": {
+            "method": "POST",
+            "requestUri": "/2014-01-01/example"
+          },
+          "input": {
+            "shape": "InputShape",
+            "locationName": "OperationRequest"
+          },
+          "name": "OperationName"
+        },
+        "params": {
+          "ListParam": [
+            "one",
+            "two",
+            "three"
+          ]
+        },
+        "serialized": {
+          "method": "POST",
+          "body": "",
+          "uri": "/2014-01-01/example",
+          "headers": {
+            "x-amz-list-param": "one,two,three"
+          }
+        }
+      }
+    ]
   }
 ]

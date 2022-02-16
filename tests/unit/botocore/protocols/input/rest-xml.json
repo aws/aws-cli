@@ -1888,5 +1888,65 @@
         }
       }
     ]
+  },
+  {
+    "description": "List in header",
+    "metadata": {
+      "protocol": "rest-xml",
+      "apiVersion": "2014-01-01"
+    },
+    "shapes": {
+      "InputShape": {
+        "type": "structure",
+        "members": {
+          "ListParam": {
+            "shape": "ListShape",
+            "location": "header",
+            "locationName": "x-amz-list-param"
+          }
+        }
+      },
+      "ListShape": {
+        "type": "list",
+        "member": {
+          "shape": "EnumType"
+        }
+      },
+      "EnumType": {
+        "type": "string",
+        "enum": ["one", "two", "three"]
+      }
+    },
+    "cases": [
+      {
+        "given": {
+          "http": {
+            "method": "POST",
+            "requestUri": "/2014-01-01/example"
+          },
+          "input": {
+            "shape": "InputShape",
+            "locationName": "OperationRequest",
+            "xmlNamespace": {"uri": "https://foo/"}
+          },
+          "name": "OperationName"
+        },
+        "params": {
+          "ListParam": [
+            "one",
+            "two",
+            "three"
+          ]
+        },
+        "serialized": {
+          "method": "POST",
+          "body": "",
+          "uri": "/2014-01-01/example",
+          "headers": {
+            "x-amz-list-param": "one,two,three"
+          }
+        }
+      }
+    ]
   }
 ]

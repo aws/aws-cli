@@ -1221,5 +1221,53 @@
               }
           }
       ]
+  },
+  {
+    "description": "List in header",
+    "metadata": {
+      "protocol": "rest-xml"
+    },
+    "shapes": {
+      "OutputShape": {
+        "type": "structure",
+        "members": {
+          "ListMember": {
+            "shape": "ListShape",
+            "location": "header",
+            "locationName": "x-amz-list-member"
+          }
+        }
+      },
+      "ListShape": {
+        "type": "list",
+        "member": {
+          "shape": "EnumType"
+        }
+      },
+      "EnumType": {
+        "type": "string",
+        "enum": ["one", "two", "three"]
+      }
+    },
+    "cases": [
+      {
+        "given": {
+          "output": {
+            "shape": "OutputShape"
+          },
+          "name": "OperationName"
+        },
+        "result": {
+          "ListMember": ["one", "two", "three"]
+        },
+        "response": {
+          "status_code": 200,
+          "headers": {
+              "x-amz-list-member": " one,two , three "
+          },
+          "body": ""
+        }
+      }
+    ]
   }
 ]

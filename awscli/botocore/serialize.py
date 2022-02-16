@@ -616,6 +616,12 @@ class BaseRestSerializer(Serializer):
             timestamp_format = shape.serialization.get(
                 'timestampFormat', self.HEADER_TIMESTAMP_FORMAT)
             return self._convert_timestamp_to_str(timestamp, timestamp_format)
+        elif shape.type_name == 'list':
+            converted_value = [
+                self._convert_header_value(shape.member, v)
+                for v in value if v is not None
+            ]
+            return ",".join(converted_value)
         elif is_json_value_header(shape):
             # Serialize with no spaces after separators to save space in
             # the header.

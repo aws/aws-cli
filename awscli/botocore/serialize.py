@@ -585,6 +585,9 @@ class BaseRestSerializer(Serializer):
                 partitioned['query_string_kwargs'][key_name] = param_value
         elif location == 'header':
             shape = shape_members[param_name]
+            if not param_value and shape.type_name == 'list':
+                # Empty lists should not be set on the headers
+                return
             value = self._convert_header_value(shape, param_value)
             partitioned['headers'][key_name] = str(value)
         elif location == 'headers':

@@ -2179,6 +2179,10 @@
         "CustomConnector":{
           "shape":"CustomConnectorDestinationProperties",
           "documentation":"<p>The properties that are required to query the custom Connector.</p>"
+        },
+        "SAPOData":{
+          "shape":"SAPODataDestinationProperties",
+          "documentation":"<p>The properties required to query SAPOData.</p>"
         }
       },
       "documentation":"<p> This stores the information that is required to query a particular connector. </p>"
@@ -3762,6 +3766,24 @@
       },
       "documentation":"<p> The connector-specific profile properties required when using SAPOData. </p>"
     },
+    "SAPODataDestinationProperties":{
+      "type":"structure",
+      "required":["objectPath"],
+      "members":{
+        "objectPath":{
+          "shape":"Object",
+          "documentation":"<p>The object path specified in the SAPOData flow destination.</p>"
+        },
+        "successResponseHandlingConfig":{
+          "shape":"SuccessResponseHandlingConfig",
+          "documentation":"<p>Determines how Amazon AppFlow handles the success response that it gets from the connector after placing data.</p> <p>For example, this setting would determine where to write the response from a destination connector upon a successful insert operation.</p>"
+        },
+        "idFieldNames":{"shape":"IdFieldNameList"},
+        "errorHandlingConfig":{"shape":"ErrorHandlingConfig"},
+        "writeOperationType":{"shape":"WriteOperationType"}
+      },
+      "documentation":"<p>The properties that are applied when using SAPOData as a flow destination</p>"
+    },
     "SAPODataMetadata":{
       "type":"structure",
       "members":{
@@ -4444,6 +4466,20 @@
       "max":2048,
       "pattern":".*"
     },
+    "SuccessResponseHandlingConfig":{
+      "type":"structure",
+      "members":{
+        "bucketPrefix":{
+          "shape":"BucketPrefix",
+          "documentation":"<p>The Amazon S3 bucket prefix.</p>"
+        },
+        "bucketName":{
+          "shape":"BucketName",
+          "documentation":"<p>The name of the Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Determines how Amazon AppFlow handles the success response that it gets from the connector after placing data.</p> <p>For example, this setting would determine where to write the response from the destination connector upon a successful insert operation.</p>"
+    },
     "SupportedApiVersion":{
       "type":"string",
       "max":256,
@@ -4568,6 +4604,7 @@
         "Map_all",
         "Mask",
         "Merge",
+        "Passthrough",
         "Truncate",
         "Validate"
       ]

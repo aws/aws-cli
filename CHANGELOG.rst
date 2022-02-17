@@ -3145,6 +3145,39 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.57
+=======
+
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``evidently``: Add support for filtering list of experiments and launches by status
+* api-change:``redshift``: SDK release for Cross region datasharing and cost-control for cross region datasharing
+* api-change:``backup``: AWS Backup add new S3_BACKUP_OBJECT_FAILED and S3_RESTORE_OBJECT_FAILED event types in BackupVaultNotifications events list.
+
+
+1.22.56
+=======
+
+* api-change:``glue``: Support for optimistic locking in UpdateTable
+* api-change:``ec2``: Documentation updates for EC2.
+* api-change:``budgets``: Adds support for auto-adjusting budgets, a new budget method alongside fixed and planned. Auto-adjusting budgets introduces new metadata to configure a budget limit baseline using a historical lookback average or current period forecast.
+* api-change:``ssm``: Assorted ticket fixes and updates for AWS Systems Manager.
+* api-change:``ce``: AWS Cost Anomaly Detection now supports SNS FIFO topic subscribers.
+
+
+1.22.55
+=======
+
+* api-change:``rds``: Adds support for determining which Aurora PostgreSQL versions support Babelfish.
+* api-change:``appflow``: Launching Amazon AppFlow SAP as a destination connector SDK.
+* api-change:``athena``: This release adds a subfield, ErrorType, to the AthenaError response object in the GetQueryExecution API when a query fails.
+
+
+1.22.54
+=======
+
+* api-change:``ssm``: Documentation updates for AWS Systems Manager.
+
+
 1.22.53
 =======
 

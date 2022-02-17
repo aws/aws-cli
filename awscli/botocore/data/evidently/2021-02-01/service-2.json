@@ -112,6 +112,7 @@
       "input":{"shape":"DeleteExperimentRequest"},
       "output":{"shape":"DeleteExperimentResponse"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"},
@@ -207,6 +208,7 @@
       "output":{"shape":"GetExperimentResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
@@ -258,6 +260,7 @@
       "output":{"shape":"GetLaunchResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
@@ -291,7 +294,8 @@
       "output":{"shape":"ListExperimentsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns configuration details about all the experiments in the specified project.</p>"
     },
@@ -409,6 +413,7 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
@@ -1313,7 +1318,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "ExperimentReport":{
       "type":"structure",
@@ -1527,7 +1532,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "FeatureStatus":{
       "type":"string",
@@ -1788,7 +1793,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "GroupToWeightMap":{
       "type":"map",
@@ -1975,7 +1980,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "LaunchStatus":{
       "type":"string",
@@ -2023,6 +2028,12 @@
           "documentation":"<p>The name or ARN of the project to return the experiment list from.</p>",
           "location":"uri",
           "locationName":"project"
+        },
+        "status":{
+          "shape":"ExperimentStatus",
+          "documentation":"<p>Use this optional parameter to limit the returned results to only the experiments with the status that you specify here.</p>",
+          "location":"querystring",
+          "locationName":"status"
         }
       }
     },
@@ -2097,6 +2108,12 @@
           "documentation":"<p>The name or ARN of the project to return the launch list from.</p>",
           "location":"uri",
           "locationName":"project"
+        },
+        "status":{
+          "shape":"LaunchStatus",
+          "documentation":"<p>Use this optional parameter to limit the returned results to only the launches with the status that you specify here.</p>",
+          "location":"querystring",
+          "locationName":"status"
         }
       }
     },
@@ -2221,6 +2238,11 @@
     },
     "MetricDefinitionConfig":{
       "type":"structure",
+      "required":[
+        "entityIdKey",
+        "name",
+        "valueKey"
+      ],
       "members":{
         "entityIdKey":{
           "shape":"JsonPath",
@@ -2476,7 +2498,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "ProjectRef":{
       "type":"string",
@@ -3078,7 +3100,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "TreatmentNameList":{
       "type":"list",
@@ -3468,7 +3490,7 @@
       "type":"string",
       "max":127,
       "min":1,
-      "pattern":"[-a-zA-Z0-9._]*"
+      "pattern":"^[-a-zA-Z0-9._]*$"
     },
     "VariationNameList":{
       "type":"list",

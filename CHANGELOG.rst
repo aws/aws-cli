@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.22.57
+=======
+
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``evidently``: Add support for filtering list of experiments and launches by status
+* api-change:``redshift``: SDK release for Cross region datasharing and cost-control for cross region datasharing
+* api-change:``backup``: AWS Backup add new S3_BACKUP_OBJECT_FAILED and S3_RESTORE_OBJECT_FAILED event types in BackupVaultNotifications events list.
+
+
 1.22.56
 =======
 

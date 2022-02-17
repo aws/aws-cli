@@ -14,12 +14,9 @@ import botocore
 import botocore.session
 from botocore.exceptions import WaiterError
 
-from tests import unittest
-from tests import FileCreator
-from tests import S3Utils
-from tests import random_bucket_name
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
+from tests import FileCreator, S3Utils, random_bucket_name, unittest
 
 
 class BaseTransferManagerIntegTest(unittest.TestCase):
@@ -45,16 +42,12 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
         cls.s3_utils.delete_bucket(cls.bucket_name)
 
     def create_client(self, **override_kwargs):
-        kwargs = {
-            'region_name': self.region
-        }
+        kwargs = {'region_name': self.region}
         kwargs.update(override_kwargs)
         return self.session.create_client('s3', **kwargs)
 
     def delete_object(self, key):
-        self.client.delete_object(
-            Bucket=self.bucket_name,
-            Key=key)
+        self.client.delete_object(Bucket=self.bucket_name, Key=key)
 
     def object_exists(self, key, extra_args=None):
         try:
@@ -68,9 +61,7 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
             extra_args = {}
         try:
             self.client.get_waiter('object_not_exists').wait(
-                Bucket=self.bucket_name,
-                Key=key,
-                **extra_args
+                Bucket=self.bucket_name, Key=key, **extra_args
             )
             return True
         except WaiterError:
@@ -81,9 +72,7 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
             extra_args = {}
         for _ in range(5):
             self.client.get_waiter('object_exists').wait(
-                Bucket=self.bucket_name,
-                Key=key,
-                **extra_args
+                Bucket=self.bucket_name, Key=key, **extra_args
             )
 
     def create_transfer_manager(self, config=None, client=None):

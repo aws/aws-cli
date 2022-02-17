@@ -14,16 +14,18 @@ import os
 import shutil
 import tempfile
 
-from tests import mock, unittest
-from s3transfer.bandwidth import RequestExceededException
-from s3transfer.bandwidth import RequestToken
-from s3transfer.bandwidth import TimeUtils
-from s3transfer.bandwidth import BandwidthLimiter
-from s3transfer.bandwidth import BandwidthLimitedStream
-from s3transfer.bandwidth import LeakyBucket
-from s3transfer.bandwidth import ConsumptionScheduler
-from s3transfer.bandwidth import BandwidthRateTracker
+from s3transfer.bandwidth import (
+    BandwidthLimitedStream,
+    BandwidthLimiter,
+    BandwidthRateTracker,
+    ConsumptionScheduler,
+    LeakyBucket,
+    RequestExceededException,
+    RequestToken,
+    TimeUtils,
+)
 from s3transfer.futures import TransferCoordinator
+from tests import mock, unittest
 
 
 class FixedIncrementalTickTimeUtils(TimeUtils):
@@ -49,10 +51,7 @@ class TestTimeUtils(unittest.TestCase):
     def test_sleep(self, mock_sleep):
         time_utils = TimeUtils()
         time_utils.sleep(1)
-        self.assertEqual(
-            mock_sleep.call_args_list,
-            [mock.call(1)]
-        )
+        self.assertEqual(mock_sleep.call_args_list, [mock.call(1)])
 
 
 class BaseBandwidthLimitTest(unittest.TestCase):
@@ -70,24 +69,22 @@ class BaseBandwidthLimitTest(unittest.TestCase):
         shutil.rmtree(self.tempdir)
 
     def assert_consume_calls(self, amts):
-        expected_consume_args = [
-            mock.call(amt, mock.ANY) for amt in amts
-        ]
+        expected_consume_args = [mock.call(amt, mock.ANY) for amt in amts]
         self.assertEqual(
-            self.leaky_bucket.consume.call_args_list,
-            expected_consume_args
+            self.leaky_bucket.consume.call_args_list, expected_consume_args
         )
 
 
 class TestBandwidthLimiter(BaseBandwidthLimitTest):
     def setUp(self):
-        super(TestBandwidthLimiter, self).setUp()
+        super().setUp()
         self.bandwidth_limiter = BandwidthLimiter(self.leaky_bucket)
 
     def test_get_bandwidth_limited_stream(self):
         with open(self.filename, 'rb') as f:
             stream = self.bandwidth_limiter.get_bandwith_limited_stream(
-                f, self.coordinator)
+                f, self.coordinator
+            )
             self.assertIsInstance(stream, BandwidthLimitedStream)
             self.assertEqual(stream.read(len(self.content)), self.content)
             self.assert_consume_calls(amts=[len(self.content)])
@@ -95,7 +92,8 @@ class TestBandwidthLimiter(BaseBandwidthLimitTest):
     def test_get_disabled_bandwidth_limited_stream(self):
         with open(self.filename, 'rb') as f:
             stream = self.bandwidth_limiter.get_bandwith_limited_stream(
-                f, self.coordinator, enabled=False)
+                f, self.coordinator, enabled=False
+            )
             self.assertIsInstance(stream, BandwidthLimitedStream)
             self.assertEqual(stream.read(len(self.content)), self.content)
             self.leaky_bucket.consume.assert_not_called()
@@ -103,7 +101,7 @@ class TestBandwidthLimiter(BaseBandwidthLimitTest):
 
 class TestBandwidthLimitedStream(BaseBandwidthLimitTest):
     def setUp(self):
-        super(TestBandwidthLimitedStream, self).setUp()
+        super().setUp()
         self.bytes_threshold = 1
 
     def tearDown(self):
@@ -111,23 +109,24 @@ class TestBandwidthLimitedStream(BaseBandwidthLimitTest):
 
     def get_bandwidth_limited_stream(self, f):
         return BandwidthLimitedStream(
-            f, self.leaky_bucket, self.coordinator, self.time_utils,
-            self.bytes_threshold)
+            f,
+            self.leaky_bucket,
+            self.coordinator,
+            self.time_utils,
+            self.bytes_threshold,
+        )
 
     def assert_sleep_calls(self, amts):
-        expected_sleep_args_list = [
-            mock.call(amt) for amt in amts
-        ]
+        expected_sleep_args_list = [mock.call(amt) for amt in amts]
         self.assertEqual(
-            self.time_utils.sleep.call_args_list,
-            expected_sleep_args_list
+            self.time_utils.sleep.call_args_list, expected_sleep_args_list
         )
 
     def get_unique_consume_request_tokens(self):
-        return set(
-            call_args[0][1] for call_args in
-            self.leaky_bucket.consume.call_args_list
-        )
+        return {
+            call_args[0][1]
+            for call_args in self.leaky_bucket.consume.call_args_list
+        }
 
     def test_read(self):
         with open(self.filename, 'rb') as f:
@@ -144,7 +143,7 @@ class TestBandwidthLimitedStream(BaseBandwidthLimitTest):
             amt_requested = len(self.content)
             self.leaky_bucket.consume.side_effect = [
                 RequestExceededException(amt_requested, retry_time),
-                len(self.content)
+                len(self.content),
             ]
             data = stream.read(len(self.content))
             self.assertEqual(self.content, data)
@@ -182,38 +181,26 @@ class TestBandwidthLimitedStream(BaseBandwidthLimitTest):
         mock_fileobj = mock.Mock()
         stream = self.get_bandwidth_limited_stream(mock_fileobj)
         stream.seek(1)
-        self.assertEqual(
-            mock_fileobj.seek.call_args_list,
-            [mock.call(1, 0)]
-        )
+        self.assertEqual(mock_fileobj.seek.call_args_list, [mock.call(1, 0)])
 
     def test_tell(self):
         mock_fileobj = mock.Mock()
         stream = self.get_bandwidth_limited_stream(mock_fileobj)
         stream.tell()
-        self.assertEqual(
-            mock_fileobj.tell.call_args_list,
-            [mock.call()]
-        )
+        self.assertEqual(mock_fileobj.tell.call_args_list, [mock.call()])
 
     def test_close(self):
         mock_fileobj = mock.Mock()
         stream = self.get_bandwidth_limited_stream(mock_fileobj)
         stream.close()
-        self.assertEqual(
-            mock_fileobj.close.call_args_list,
-            [mock.call()]
-        )
+        self.assertEqual(mock_fileobj.close.call_args_list, [mock.call()])
 
     def test_context_manager(self):
         mock_fileobj = mock.Mock()
         stream = self.get_bandwidth_limited_stream(mock_fileobj)
         with stream as stream_handle:
             self.assertIs(stream_handle, stream)
-        self.assertEqual(
-            mock_fileobj.close.call_args_list,
-            [mock.call()]
-        )
+        self.assertEqual(mock_fileobj.close.call_args_list, [mock.call()])
 
     def test_reuses_request_token(self):
         with open(self.filename, 'rb') as f:
@@ -303,8 +290,7 @@ class TestLeakyBucket(unittest.TestCase):
         self.scheduler.is_scheduled.return_value = False
         self.rate_tracker = mock.Mock(BandwidthRateTracker)
         self.leaky_bucket = LeakyBucket(
-            self.max_rate, self.time_utils, self.rate_tracker,
-            self.scheduler
+            self.max_rate, self.time_utils, self.rate_tracker, self.scheduler
         )
 
     def set_projected_rate(self, rate):
@@ -316,12 +302,13 @@ class TestLeakyBucket(unittest.TestCase):
     def assert_recorded_consumed_amt(self, expected_amt):
         self.assertEqual(
             self.rate_tracker.record_consumption_rate.call_args,
-            mock.call(expected_amt, self.time_utils.time.return_value))
+            mock.call(expected_amt, self.time_utils.time.return_value),
+        )
 
     def assert_was_scheduled(self, amt, token):
         self.assertEqual(
             self.scheduler.schedule_consumption.call_args,
-            mock.call(amt, token, amt/(self.max_rate))
+            mock.call(amt, token, amt / (self.max_rate)),
         )
 
     def assert_nothing_scheduled(self):
@@ -330,12 +317,12 @@ class TestLeakyBucket(unittest.TestCase):
     def assert_processed_request_token(self, request_token):
         self.assertEqual(
             self.scheduler.process_scheduled_consumption.call_args,
-            mock.call(request_token)
+            mock.call(request_token),
         )
 
     def test_consume_under_max_rate(self):
         amt = 1
-        self.set_projected_rate(self.max_rate/2)
+        self.set_projected_rate(self.max_rate / 2)
         self.assertEqual(self.leaky_bucket.consume(amt, RequestToken()), amt)
         self.assert_recorded_consumed_amt(amt)
         self.assert_nothing_scheduled()
@@ -381,20 +368,23 @@ class TestConsumptionScheduler(unittest.TestCase):
         token = RequestToken()
         consume_time = 5
         actual_wait_time = self.scheduler.schedule_consumption(
-            1, token, consume_time)
+            1, token, consume_time
+        )
         self.assertEqual(consume_time, actual_wait_time)
 
     def test_schedule_consumption_for_multiple_requests(self):
         token = RequestToken()
         consume_time = 5
         actual_wait_time = self.scheduler.schedule_consumption(
-            1, token, consume_time)
+            1, token, consume_time
+        )
         self.assertEqual(consume_time, actual_wait_time)
 
         other_consume_time = 3
         other_token = RequestToken()
         next_wait_time = self.scheduler.schedule_consumption(
-            1, other_token, other_consume_time)
+            1, other_token, other_consume_time
+        )
 
         # This wait time should be the previous time plus its desired
         # wait time
@@ -420,7 +410,7 @@ class TestConsumptionScheduler(unittest.TestCase):
         # as it has been completed.
         self.assertEqual(
             self.scheduler.schedule_consumption(1, token, different_time),
-            different_time
+            different_time,
         )
 
 
@@ -458,6 +448,5 @@ class TestBandwidthRateTracker(unittest.TestCase):
     def test_get_projected_rate_for_same_timestamp(self):
         self.rate_tracker.record_consumption_rate(1, 1)
         self.assertEqual(
-            self.rate_tracker.get_projected_rate(1, 1),
-            float('inf')
+            self.rate_tracker.get_projected_rate(1, 1), float('inf')
         )

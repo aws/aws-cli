@@ -15,9 +15,8 @@ import shutil
 import socket
 import tempfile
 
-from tests import unittest
-from tests import skip_if_windows
 from s3transfer.utils import OSUtils
+from tests import skip_if_windows, unittest
 
 
 @skip_if_windows('Windows does not support UNIX special files')

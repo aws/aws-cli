@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from s3transfer.tasks import Task
-from s3transfer.tasks import SubmissionTask
+from s3transfer.tasks import SubmissionTask, Task
 
 
 class DeleteSubmissionTask(SubmissionTask):
@@ -48,8 +47,8 @@ class DeleteSubmissionTask(SubmissionTask):
                     'key': call_args.key,
                     'extra_args': call_args.extra_args,
                 },
-                is_final=True
-            )
+                is_final=True,
+            ),
         )
 
 

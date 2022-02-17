@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import BaseGeneralInterfaceTest
 from s3transfer.manager import TransferManager
+from tests import BaseGeneralInterfaceTest
 
 
 class TestDeleteObject(BaseGeneralInterfaceTest):
@@ -19,7 +19,7 @@ class TestDeleteObject(BaseGeneralInterfaceTest):
     __test__ = True
 
     def setUp(self):
-        super(TestDeleteObject, self).setUp()
+        super().setUp()
         self.bucket = 'mybucket'
         self.key = 'mykey'
         self.manager = TransferManager(self.client)
@@ -49,18 +49,21 @@ class TestDeleteObject(BaseGeneralInterfaceTest):
 
             [{'method': 'put_object', 'service_response': {}}]
         """
-        return [{
-            'method': 'delete_object',
-            'service_response': {},
-            'expected_params': {'Bucket': self.bucket, 'Key': self.key},
-        }]
+        return [
+            {
+                'method': 'delete_object',
+                'service_response': {},
+                'expected_params': {'Bucket': self.bucket, 'Key': self.key},
+            }
+        ]
 
     def create_expected_progress_callback_info(self):
         return []
 
     def test_known_allowed_args_in_input_shape(self):
         op_model = self.client.meta.service_model.operation_model(
-            'DeleteObject')
+            'DeleteObject'
+        )
         for allowed_arg in self.manager.ALLOWED_DELETE_ARGS:
             self.assertIn(allowed_arg, op_model.input_shape.members)
 

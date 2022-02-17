@@ -14,16 +14,15 @@ from tests.integration.s3transfer import BaseTransferManagerIntegTest
 
 
 class TestDeleteObject(BaseTransferManagerIntegTest):
-
     def test_can_delete_object(self):
         key_name = 'mykey'
-        self.client.put_object(Bucket=self.bucket_name,
-                               Key=key_name, Body=b'hello world')
+        self.client.put_object(
+            Bucket=self.bucket_name, Key=key_name, Body=b'hello world'
+        )
         self.assertTrue(self.object_exists(key_name))
 
         transfer_manager = self.create_transfer_manager()
-        future = transfer_manager.delete(bucket=self.bucket_name,
-                                         key=key_name)
+        future = transfer_manager.delete(bucket=self.bucket_name, key=key_name)
         future.result()
 
         self.assertTrue(self.object_not_exists(key_name))

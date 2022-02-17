@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import s3transfer
 
-
 KB = 1024
 MB = KB * KB
 GB = MB * KB

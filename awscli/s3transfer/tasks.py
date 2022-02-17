@@ -15,19 +15,24 @@ import logging
 
 from s3transfer.utils import get_callbacks
 
-
 logger = logging.getLogger(__name__)
 
 
-class Task(object):
+class Task:
     """A task associated to a TransferFuture request
 
     This is a base class for other classes to subclass from. All subclassed
     classes must implement the main() method.
     """
-    def __init__(self, transfer_coordinator, main_kwargs=None,
-                 pending_main_kwargs=None, done_callbacks=None,
-                 is_final=False):
+
+    def __init__(
+        self,
+        transfer_coordinator,
+        main_kwargs=None,
+        pending_main_kwargs=None,
+        done_callbacks=None,
+        is_final=False,
+    ):
         """
         :type transfer_coordinator: s3transfer.futures.TransferCoordinator
         :param transfer_coordinator: The context associated to the
@@ -80,14 +85,22 @@ class Task(object):
         # These are the general main_kwarg parameters that we want to
         # display in the repr.
         params_to_display = [
-            'bucket', 'key', 'part_number', 'final_filename',
-            'transfer_future', 'offset', 'extra_args'
+            'bucket',
+            'key',
+            'part_number',
+            'final_filename',
+            'transfer_future',
+            'offset',
+            'extra_args',
         ]
         main_kwargs_to_display = self._get_kwargs_with_params_to_include(
-            self._main_kwargs, params_to_display)
-        return '%s(transfer_id=%s, %s)' % (
-            self.__class__.__name__, self._transfer_coordinator.transfer_id,
-            main_kwargs_to_display)
+            self._main_kwargs, params_to_display
+        )
+        return '{}(transfer_id={}, {})'.format(
+            self.__class__.__name__,
+            self._transfer_coordinator.transfer_id,
+            main_kwargs_to_display,
+        )
 
     @property
     def transfer_id(self):
@@ -117,7 +130,7 @@ class Task(object):
             # Gather up all of the main keyword arguments for main().
             # This includes the immediately provided main_kwargs and
             # the values for pending_main_kwargs that source from the return
-            # values from the task's depenent futures.
+            # values from the task's dependent futures.
             kwargs = self._get_all_main_kwargs()
             # If the task is not done (really only if some other related
             # task to the TransferFuture had failed) then execute the task's
@@ -141,11 +154,10 @@ class Task(object):
         # if they are going to make the logs hard to follow.
         params_to_exclude = ['data']
         kwargs_to_display = self._get_kwargs_with_params_to_exclude(
-            kwargs, params_to_exclude)
-        # Log what is about to be executed.
-        logger.debug(
-            "Executing task %s with kwargs %s" % (self, kwargs_to_display)
+            kwargs, params_to_exclude
         )
+        # Log what is about to be executed.
+        logger.debug(f"Executing task {self} with kwargs {kwargs_to_display}")
 
         return_value = self._main(**kwargs)
         # If the task is the final task, then set the TransferFuture's
@@ -175,7 +187,7 @@ class Task(object):
             # If the pending main keyword arg is a list then extend the list.
             if isinstance(future, list):
                 futures_to_wait_on.extend(future)
-            # If the pending main keword arg is a future append it to the list.
+            # If the pending main keyword arg is a future append it to the list.
             else:
                 futures_to_wait_on.append(future)
         # Now wait for all of the futures to complete.
@@ -191,14 +203,15 @@ class Task(object):
         # concurrency bug by removing any association with concurrent.futures
         # implementation of waiters.
         logger.debug(
-            '%s about to wait for the following futures %s', self, futures)
+            '%s about to wait for the following futures %s', self, futures
+        )
         for future in futures:
             try:
                 logger.debug('%s about to wait for %s', self, future)
                 future.result()
             except Exception:
                 # result() can also produce exceptions. We want to ignore
-                # these to be deffered to error handling down the road.
+                # these to be deferred to error handling down the road.
                 pass
         logger.debug('%s done waiting for dependent futures', self)
 
@@ -230,6 +243,7 @@ class SubmissionTask(Task):
     Submission tasks are the top-level task used to submit a series of tasks
     to execute a particular transfer.
     """
+
     def _main(self, transfer_future, **kwargs):
         """
         :type transfer_future: s3transfer.futures.TransferFuture
@@ -260,7 +274,7 @@ class SubmissionTask(Task):
             # the first place so we need to account accordingly.
             #
             # Note that BaseException is caught, instead of Exception, because
-            # for some implmentations of executors, specifically the serial
+            # for some implementations of executors, specifically the serial
             # implementation, the SubmissionTask is directly exposed to
             # KeyboardInterupts and so needs to cleanup and signal done
             # for those as well.
@@ -269,7 +283,7 @@ class SubmissionTask(Task):
             self._log_and_set_exception(e)
 
             # Wait for all possibly associated futures that may have spawned
-            # from this submission task have finished before we anounce the
+            # from this submission task have finished before we announce the
             # transfer done.
             self._wait_for_all_submitted_futures_to_complete()
 
@@ -278,7 +292,7 @@ class SubmissionTask(Task):
             self._transfer_coordinator.announce_done()
 
     def _submit(self, transfer_future, **kwargs):
-        """The submition method to be implemented
+        """The submission method to be implemented
 
         :type transfer_future: s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future associated with the
@@ -303,8 +317,9 @@ class SubmissionTask(Task):
             self._wait_until_all_complete(submitted_futures)
             # However, more futures may have been submitted as we waited so
             # we need to check again for any more associated futures.
-            possibly_more_submitted_futures = \
+            possibly_more_submitted_futures = (
                 self._transfer_coordinator.associated_futures
+            )
             # If the current list of submitted futures is equal to the
             # the list of associated futures for when after the wait completes,
             # we can ensure no more futures were submitted in waiting on
@@ -318,6 +333,7 @@ class SubmissionTask(Task):
 
 class CreateMultipartUploadTask(Task):
     """Task to initiate a multipart upload"""
+
     def _main(self, client, bucket, key, extra_args):
         """
         :param client: The client to use when calling CreateMultipartUpload
@@ -330,19 +346,23 @@ class CreateMultipartUploadTask(Task):
         """
         # Create the multipart upload.
         response = client.create_multipart_upload(
-            Bucket=bucket, Key=key, **extra_args)
+            Bucket=bucket, Key=key, **extra_args
+        )
         upload_id = response['UploadId']
 
         # Add a cleanup if the multipart upload fails at any point.
         self._transfer_coordinator.add_failure_cleanup(
-            client.abort_multipart_upload, Bucket=bucket, Key=key,
-            UploadId=upload_id
+            client.abort_multipart_upload,
+            Bucket=bucket,
+            Key=key,
+            UploadId=upload_id,
         )
         return upload_id
 
 
 class CompleteMultipartUploadTask(Task):
     """Task to complete a multipart upload"""
+
     def _main(self, client, bucket, key, upload_id, parts, extra_args):
         """
         :param client: The client to use when calling CompleteMultipartUpload
@@ -359,6 +379,9 @@ class CompleteMultipartUploadTask(Task):
             used in completing the multipart transfer.
         """
         client.complete_multipart_upload(
-            Bucket=bucket, Key=key, UploadId=upload_id,
+            Bucket=bucket,
+            Key=key,
+            UploadId=upload_id,
             MultipartUpload={'Parts': parts},
-            **extra_args)
+            **extra_args,
+        )

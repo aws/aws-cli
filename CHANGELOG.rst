@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.4.19
+======
+
+* api-change:``glue``: Support for optimistic locking in UpdateTable
+* enhancement:protocol: Add support for lists in headers
+* api-change:``budgets``: Adds support for auto-adjusting budgets, a new budget method alongside fixed and planned. Auto-adjusting budgets introduces new metadata to configure a budget limit baseline using a historical lookback average or current period forecast.
+* api-change:``evidently``: Add support for filtering list of experiments and launches by status
+* api-change:``ce``: AWS Cost Anomaly Detection now supports SNS FIFO topic subscribers.
+* api-change:``redshift``: SDK release for Cross region datasharing and cost-control for cross region datasharing
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``rds``: Adds support for determining which Aurora PostgreSQL versions support Babelfish.
+* api-change:``ssm``: Assorted ticket fixes and updates for AWS Systems Manager.
+* api-change:``athena``: This release adds a subfield, ErrorType, to the AthenaError response object in the GetQueryExecution API when a query fails.
+* Depedency:prompt-toolkit: Update to prompt-toolkit dependency to 3.x (`#6507 <https://github.com/aws/aws-cli/issues/6507>`__).
+* api-change:``appflow``: Launching Amazon AppFlow SAP as a destination connector SDK.
+* api-change:``ec2``: Documentation updates for EC2.
+* api-change:``backup``: AWS Backup add new S3_BACKUP_OBJECT_FAILED and S3_RESTORE_OBJECT_FAILED event types in BackupVaultNotifications events list.
+* api-change:``ssm``: Documentation updates for AWS Systems Manager.
+
+
 2.4.18
 ======
 

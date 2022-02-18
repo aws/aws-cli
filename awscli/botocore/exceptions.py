@@ -668,3 +668,11 @@ class InvalidProxiesConfigError(BotoCoreError):
     fmt = (
         'Invalid configuration value(s) provided for proxies_config.'
     )
+
+
+class AwsChunkedWrapperError(BotoCoreError):
+    fmt = '{error_msg}'
+
+
+class FlexibleChecksumError(BotoCoreError):
+    fmt = '{error_msg}'

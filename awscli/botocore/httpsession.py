@@ -23,7 +23,7 @@ except ImportError:
 import botocore.awsrequest
 from botocore.vendored import six
 from botocore.vendored.six.moves.urllib_parse import unquote
-from botocore.compat import filter_ssl_warnings, urlparse
+from botocore.compat import filter_ssl_warnings, urlparse, ensure_bytes
 from botocore.exceptions import (
     ConnectionClosedError, EndpointConnectionError, HTTPClientError,
     ReadTimeoutError, ProxyConnectionError, ConnectTimeoutError, SSLError,
@@ -322,7 +322,9 @@ class URLLib3Session(object):
             return self._path_url(url)
 
     def _chunked(self, headers):
-        return headers.get('Transfer-Encoding', '') == 'chunked'
+        transfer_encoding = headers.get('Transfer-Encoding', b'')
+        transfer_encoding = ensure_bytes(transfer_encoding)
+        return transfer_encoding.lower() == b'chunked'
 
     def send(self, request):
         try:

@@ -25,6 +25,7 @@ import os
 import socket
 import cgi
 import warnings
+import io
 
 import dateutil.parser
 from dateutil.tz import tzutc
@@ -103,6 +104,12 @@ IPV6_ADDRZ_RE = re.compile("^" + IPV6_ADDRZ_PAT + "$")
 
 # These are the characters that are stripped by post-bpo-43882 urlparse().
 UNSAFE_URL_CHARS = frozenset('\t\r\n')
+
+# This pattern can be used to detect if a header is a flexible checksum header
+CHECKSUM_HEADER_PATTERN = re.compile(
+    r'^X-Amz-Checksum-([a-z0-9]*)$',
+    flags=re.IGNORECASE,
+)
 
 
 def ensure_boolean(val):
@@ -2337,6 +2344,35 @@ def should_bypass_proxies(url):
     return False
 
 
+def determine_content_length(body):
+    # No body, content length of 0
+    if not body:
+        return 0
+
+    # Try asking the body for it's length
+    try:
+        return len(body)
+    except (AttributeError, TypeError):
+        pass
+
+    # Try getting the length from a seekable stream
+    if hasattr(body, 'seek') and hasattr(body, 'tell'):
+        try:
+            orig_pos = body.tell()
+            body.seek(0, 2)
+            end_file_pos = body.tell()
+            body.seek(orig_pos)
+            return end_file_pos - orig_pos
+        except io.UnsupportedOperation:
+            # in case when body is, for example, io.BufferedIOBase object
+            # it has "seek" method which throws "UnsupportedOperation"
+            # exception in such case we want to fall back to "chunked"
+            # encoding
+            pass
+    # Failed to determine the length
+    return None
+
+
 def get_encoding_from_headers(headers, default='ISO-8859-1'):
     """Returns encodings from given HTTP Header Dict.
 
@@ -2384,6 +2420,16 @@ def conditionally_calculate_md5(params, **kwargs):
     """Only add a Content-MD5 if the system supports it."""
     headers = params['headers']
     body = params['body']
+    checksum_context = params.get('context', {}).get('checksum', {})
+    checksum_algorithm = checksum_context.get('request_algorithm')
+    if checksum_algorithm and checksum_algorithm != 'conditional-md5':
+        # Skip for requests that will have a flexible checksum applied
+        return
+    # If a header matching the x-amz-checksum-* pattern is present, we
+    # assume a checksum has already been provided and an md5 is not needed
+    for header in headers:
+        if CHECKSUM_HEADER_PATTERN.match(header):
+            return
     if MD5_AVAILABLE and body is not None and 'Content-MD5' not in headers:
         md5_digest = calculate_md5(body, **kwargs)
         params['headers']['Content-MD5'] = md5_digest

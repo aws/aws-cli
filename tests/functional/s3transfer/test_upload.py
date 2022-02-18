@@ -166,6 +166,18 @@ class TestNonMultipartUpload(BaseUploadTest):
         self.assert_expected_client_calls_were_correct()
         self.assert_put_object_body_was_correct()
 
+    def test_upload_with_checksum(self):
+        self.extra_args['ChecksumAlgorithm'] = 'crc32'
+        self.add_put_object_response_with_default_expected_params(
+            extra_expected_params={'ChecksumAlgorithm': 'crc32'}
+        )
+        future = self.manager.upload(
+            self.filename, self.bucket, self.key, self.extra_args
+        )
+        future.result()
+        self.assert_expected_client_calls_were_correct()
+        self.assert_put_object_body_was_correct()
+
     def test_upload_for_fileobj(self):
         self.add_put_object_response_with_default_expected_params()
         with open(self.filename, 'rb') as f:
@@ -355,6 +367,13 @@ class TestMultipartUpload(BaseUploadTest):
             }
             if extra_expected_params:
                 expected_params.update(extra_expected_params)
+                # If ChecksumAlgorithm is present stub the response checksums
+                if 'ChecksumAlgorithm' in extra_expected_params:
+                    name = extra_expected_params['ChecksumAlgorithm']
+                    checksum_member = 'Checksum%s' % name.upper()
+                    response = upload_part_response['service_response']
+                    response[checksum_member] = 'sum%s==' % (i + 1)
+
             upload_part_response['expected_params'] = expected_params
             self.stubber.add_response(**upload_part_response)
 
@@ -530,6 +549,50 @@ class TestMultipartUpload(BaseUploadTest):
         )
         self.add_upload_part_responses_with_default_expected_params()
         self.add_complete_multipart_response_with_default_expected_params()
+
+        future = self.manager.upload(
+            self.filename, self.bucket, self.key, self.extra_args
+        )
+        future.result()
+        self.assert_expected_client_calls_were_correct()
+
+    def test_multipart_upload_passes_checksums(self):
+        self.extra_args['ChecksumAlgorithm'] = 'sha1'
+
+        # ChecksumAlgorithm should be passed on the create_multipart call
+        self.add_create_multipart_response_with_default_expected_params(
+            extra_expected_params={'ChecksumAlgorithm': 'sha1'},
+        )
+
+        # ChecksumAlgorithm should be forwarded and a SHA1 will come back
+        self.add_upload_part_responses_with_default_expected_params(
+            extra_expected_params={'ChecksumAlgorithm': 'sha1'},
+        )
+
+        # The checksums should be used in the complete call like etags
+        self.add_complete_multipart_response_with_default_expected_params(
+            extra_expected_params={
+                'MultipartUpload': {
+                    'Parts': [
+                        {
+                            'ETag': 'etag-1',
+                            'PartNumber': 1,
+                            'ChecksumSHA1': 'sum1==',
+                        },
+                        {
+                            'ETag': 'etag-2',
+                            'PartNumber': 2,
+                            'ChecksumSHA1': 'sum2==',
+                        },
+                        {
+                            'ETag': 'etag-3',
+                            'PartNumber': 3,
+                            'ChecksumSHA1': 'sum3==',
+                        },
+                    ]
+                }
+            },
+        )
 
         future = self.manager.upload(
             self.filename, self.bucket, self.key, self.extra_args

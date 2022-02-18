@@ -17,6 +17,7 @@ MB = KB * KB
 GB = MB * KB
 
 ALLOWED_DOWNLOAD_ARGS = [
+    'ChecksumMode',
     'VersionId',
     'SSECustomerAlgorithm',
     'SSECustomerKey',

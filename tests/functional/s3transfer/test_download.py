@@ -380,6 +380,24 @@ class TestNonRangedDownload(BaseDownloadTest):
         with open(self.filename, 'rb') as f:
             self.assertEqual(self.content, f.read())
 
+    def test_download_with_checksum_enabled(self):
+        self.extra_args['ChecksumMode'] = 'ENABLED'
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+            'ChecksumMode': 'ENABLED',
+        }
+        self.add_head_object_response(expected_params)
+        self.add_successful_get_object_responses(expected_params)
+        future = self.manager.download(
+            self.bucket, self.key, self.filename, self.extra_args
+        )
+        future.result()
+
+        # Ensure that the contents are correct
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.content, f.read())
+
     def test_allowed_copy_params_are_valid(self):
         op_model = self.client.meta.service_model.operation_model('GetObject')
         for allowed_upload_arg in self._manager.ALLOWED_DOWNLOAD_ARGS:
@@ -480,6 +498,28 @@ class TestRangedDownload(BaseDownloadTest):
             'Bucket': self.bucket,
             'Key': self.key,
             'RequestPayer': 'requester',
+        }
+        expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
+        self.add_head_object_response(expected_params)
+        self.add_successful_get_object_responses(
+            expected_params, expected_ranges
+        )
+
+        future = self.manager.download(
+            self.bucket, self.key, self.filename, self.extra_args
+        )
+        future.result()
+
+        # Ensure that the contents are correct
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.content, f.read())
+
+    def test_download_with_checksum_enabled(self):
+        self.extra_args['ChecksumMode'] = 'ENABLED'
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+            'ChecksumMode': 'ENABLED',
         }
         expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
         self.add_head_object_response(expected_params)

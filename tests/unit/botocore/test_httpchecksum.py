@@ -13,7 +13,7 @@
 import unittest
 from io import BytesIO
 
-from tests import requires_crt, mock
+from tests import mock
 
 from botocore.awsrequest import AWSResponse
 from botocore.model import OperationModel
@@ -28,7 +28,6 @@ from botocore.httpchecksum import (
     CrtCrc32Checksum,
     CrtCrc32cChecksum,
 )
-from botocore.httpchecksum import _CHECKSUM_CLS
 from botocore.httpchecksum import (
     apply_request_checksum,
     resolve_request_checksum_algorithm,
@@ -576,7 +575,7 @@ class TestChecksumImplementations(unittest.TestCase):
         self.assertEqual(actual_digest, expected_digest)
 
     def test_crc32(self):
-        self.assert_base64_checksum(Crc32Checksum, "DUoRhQ==")
+        self.assert_base64_checksum(CrtCrc32Checksum, "DUoRhQ==")
 
     def test_sha1(self):
         self.assert_base64_checksum(
@@ -588,25 +587,8 @@ class TestChecksumImplementations(unittest.TestCase):
             Sha256Checksum, "uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek=",
         )
 
-    @requires_crt()
-    def test_crt_crc32(self):
-        self.assert_base64_checksum(CrtCrc32Checksum, "DUoRhQ==")
-
-    @requires_crt()
     def test_crt_crc32c(self):
         self.assert_base64_checksum(CrtCrc32cChecksum, "yZRlqg==")
-
-
-class TestCrtChecksumOverrides(unittest.TestCase):
-    @requires_crt()
-    def test_crt_crc32_available(self):
-        actual_cls = _CHECKSUM_CLS.get("crc32")
-        self.assertEqual(actual_cls, CrtCrc32Checksum)
-
-    @requires_crt()
-    def test_crt_crc32c_available(self):
-        actual_cls = _CHECKSUM_CLS.get("crc32c")
-        self.assertEqual(actual_cls, CrtCrc32cChecksum)
 
 
 class TestStreamingChecksumBody(unittest.TestCase):

@@ -24,17 +24,13 @@ import logging
 from binascii import crc32
 from hashlib import sha1, sha256
 
-from botocore.compat import HAS_CRT
+from awscrt import checksums as crt_checksums
+
 from botocore.exceptions import AwsChunkedWrapperError
 from botocore.exceptions import FlexibleChecksumError
 from botocore.response import StreamingBody
 from botocore.utils import determine_content_length
 from botocore.utils import conditionally_calculate_md5
-
-if HAS_CRT:
-    from awscrt import checksums as crt_checksums
-else:
-    crt_checksums = None
 
 logger = logging.getLogger(__name__)
 
@@ -437,16 +433,12 @@ def _handle_bytes_response(http_response, response, algorithm):
 
 
 _CHECKSUM_CLS = {
-    "crc32": Crc32Checksum,
+    "crc32c": CrtCrc32cChecksum,
+    "crc32": CrtCrc32Checksum,
     "sha1": Sha1Checksum,
     "sha256": Sha256Checksum,
 }
 
-if HAS_CRT:
-    # Use CRT checksum implementations if available
-    _CHECKSUM_CLS.update(
-        {"crc32": CrtCrc32Checksum, "crc32c": CrtCrc32cChecksum}
-    )
 
 _SUPPORTED_CHECKSUM_ALGORITHMS = list(_CHECKSUM_CLS.keys())
 _ALGORITHMS_PRIORITY_LIST = ['crc32c', 'crc32', 'sha1', 'sha256']

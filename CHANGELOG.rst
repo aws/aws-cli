@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.58
+=======
+
+* api-change:``budgets``: This change introduces DescribeBudgetNotificationsForAccount API which returns budget notifications for the specified account
+* api-change:``gamelift``: Increase string list limit from 10 to 100.
+* api-change:``transfer``: Properties for Transfer Family used with SFTP, FTP, and FTPS protocols. Display Banners are bodies of text that can be displayed before and/or after a user authenticates onto a server using one of the previously mentioned protocols.
+
+
 1.22.57
 =======
 

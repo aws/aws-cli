@@ -13,30 +13,25 @@
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 
-from tests import BaseGeneralInterfaceTest
-from tests import FileSizeProvider
-from s3transfer.manager import TransferManager
-from s3transfer.manager import TransferConfig
+from s3transfer.manager import TransferConfig, TransferManager
 from s3transfer.utils import MIN_UPLOAD_CHUNKSIZE
+from tests import BaseGeneralInterfaceTest, FileSizeProvider
 
 
 class BaseCopyTest(BaseGeneralInterfaceTest):
     def setUp(self):
-        super(BaseCopyTest, self).setUp()
+        super().setUp()
         self.config = TransferConfig(
             max_request_concurrency=1,
             multipart_chunksize=MIN_UPLOAD_CHUNKSIZE,
-            multipart_threshold=MIN_UPLOAD_CHUNKSIZE * 4
+            multipart_threshold=MIN_UPLOAD_CHUNKSIZE * 4,
         )
         self._manager = TransferManager(self.client, self.config)
 
         # Initialize some default arguments
         self.bucket = 'mybucket'
         self.key = 'mykey'
-        self.copy_source = {
-            'Bucket': 'mysourcebucket',
-            'Key': 'mysourcekey'
-        }
+        self.copy_source = {'Bucket': 'mysourcebucket', 'Key': 'mysourcekey'}
         self.extra_args = {}
         self.subscribers = []
 
@@ -59,22 +54,15 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
         }
 
     def create_invalid_extra_args(self):
-        return {
-            'Foo': 'bar'
-        }
+        return {'Foo': 'bar'}
 
     def create_stubbed_responses(self):
         return [
             {
                 'method': 'head_object',
-                'service_response': {
-                    'ContentLength': len(self.content)
-                }
+                'service_response': {'ContentLength': len(self.content)},
             },
-            {
-                'method': 'copy_object',
-                'service_response': {}
-            }
+            {'method': 'copy_object', 'service_response': {}},
         ]
 
     def create_expected_progress_callback_info(self):
@@ -91,8 +79,11 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
         stubber.add_response(**head_response)
 
     def add_successful_copy_responses(
-            self, expected_copy_params=None, expected_create_mpu_params=None,
-            expected_complete_mpu_params=None):
+        self,
+        expected_copy_params=None,
+        expected_create_mpu_params=None,
+        expected_complete_mpu_params=None,
+    ):
 
         # Add all responses needed to do the copy of the object.
         # Should account for both ranged and nonranged downloads.
@@ -107,7 +98,8 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
         # Add the expected create multipart upload params.
         if expected_create_mpu_params:
             stubbed_responses[0][
-                'expected_params'] = expected_create_mpu_params
+                'expected_params'
+            ] = expected_create_mpu_params
 
         # Add any expected copy parameters.
         if expected_copy_params:
@@ -120,7 +112,8 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
         # Add the expected complete multipart upload params.
         if expected_complete_mpu_params:
             stubbed_responses[-1][
-                'expected_params'] = expected_complete_mpu_params
+                'expected_params'
+            ] = expected_complete_mpu_params
 
         # Add the responses to the stubber.
         for stubbed_response in stubbed_responses:
@@ -144,7 +137,7 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
         expected_params = {
             'Bucket': 'mysourcebucket',
             'Key': 'mysourcekey',
-            'VersionId': 'mysourceversionid'
+            'VersionId': 'mysourceversionid',
         }
 
         self.add_head_object_response(expected_params=expected_params)
@@ -162,8 +155,11 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
 
     def test_provide_copy_source_client(self):
         source_client = self.session.create_client(
-            's3', 'eu-central-1', aws_access_key_id='foo',
-            aws_secret_access_key='bar')
+            's3',
+            'eu-central-1',
+            aws_access_key_id='foo',
+            aws_secret_access_key='bar',
+        )
         source_stubber = Stubber(source_client)
         source_stubber.activate()
         self.addCleanup(source_stubber.deactivate)
@@ -188,16 +184,17 @@ class TestNonMultipartCopy(BaseCopyTest):
     def test_copy(self):
         expected_head_params = {
             'Bucket': 'mysourcebucket',
-            'Key': 'mysourcekey'
+            'Key': 'mysourcekey',
         }
         expected_copy_object = {
             'Bucket': self.bucket,
             'Key': self.key,
-            'CopySource': self.copy_source
+            'CopySource': self.copy_source,
         }
         self.add_head_object_response(expected_params=expected_head_params)
         self.add_successful_copy_responses(
-            expected_copy_params=expected_copy_object)
+            expected_copy_params=expected_copy_object
+        )
 
         future = self.manager.copy(**self.create_call_kwargs())
         future.result()
@@ -208,18 +205,19 @@ class TestNonMultipartCopy(BaseCopyTest):
 
         expected_head_params = {
             'Bucket': 'mysourcebucket',
-            'Key': 'mysourcekey'
+            'Key': 'mysourcekey',
         }
         expected_copy_object = {
             'Bucket': self.bucket,
             'Key': self.key,
             'CopySource': self.copy_source,
-            'MetadataDirective': 'REPLACE'
+            'MetadataDirective': 'REPLACE',
         }
 
         self.add_head_object_response(expected_params=expected_head_params)
         self.add_successful_copy_responses(
-            expected_copy_params=expected_copy_object)
+            expected_copy_params=expected_copy_object
+        )
 
         call_kwargs = self.create_call_kwargs()
         call_kwargs['extra_args'] = self.extra_args
@@ -233,18 +231,19 @@ class TestNonMultipartCopy(BaseCopyTest):
         expected_head_params = {
             'Bucket': 'mysourcebucket',
             'Key': 'mysourcekey',
-            'SSECustomerAlgorithm': 'AES256'
+            'SSECustomerAlgorithm': 'AES256',
         }
         expected_copy_object = {
             'Bucket': self.bucket,
             'Key': self.key,
             'CopySource': self.copy_source,
-            'CopySourceSSECustomerAlgorithm': 'AES256'
+            'CopySourceSSECustomerAlgorithm': 'AES256',
         }
 
         self.add_head_object_response(expected_params=expected_head_params)
         self.add_successful_copy_responses(
-            expected_copy_params=expected_copy_object)
+            expected_copy_params=expected_copy_object
+        )
 
         call_kwargs = self.create_call_kwargs()
         call_kwargs['extra_args'] = self.extra_args
@@ -258,9 +257,7 @@ class TestNonMultipartCopy(BaseCopyTest):
             self.assertIn(allowed_upload_arg, op_model.input_shape.members)
 
     def test_copy_with_tagging(self):
-        extra_args = {
-            'Tagging': 'tag1=val1', 'TaggingDirective': 'REPLACE'
-        }
+        extra_args = {'Tagging': 'tag1=val1', 'TaggingDirective': 'REPLACE'}
         self.add_head_object_response()
         self.add_successful_copy_responses(
             expected_copy_params={
@@ -268,11 +265,12 @@ class TestNonMultipartCopy(BaseCopyTest):
                 'Key': self.key,
                 'CopySource': self.copy_source,
                 'Tagging': 'tag1=val1',
-                'TaggingDirective': 'REPLACE'
+                'TaggingDirective': 'REPLACE',
             }
         )
         future = self.manager.copy(
-            self.copy_source, self.bucket, self.key, extra_args)
+            self.copy_source, self.bucket, self.key, extra_args
+        )
         future.result()
         self.stubber.assert_no_pending_responses()
 
@@ -285,8 +283,10 @@ class TestNonMultipartCopy(BaseCopyTest):
             self.manager.copy(self.copy_source, s3_object_lambda_arn, self.key)
 
     def test_raise_exception_on_s3_object_lambda_resource_as_source(self):
-        source = {'Bucket': 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
-                            'accesspoint:my-accesspoint'}
+        source = {
+            'Bucket': 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+            'accesspoint:my-accesspoint'
+        }
         with self.assertRaisesRegex(ValueError, 'methods do not support'):
             self.manager.copy(source, self.bucket, self.key)
 
@@ -295,54 +295,37 @@ class TestMultipartCopy(BaseCopyTest):
     __test__ = True
 
     def setUp(self):
-        super(TestMultipartCopy, self).setUp()
+        super().setUp()
         self.config = TransferConfig(
-            max_request_concurrency=1, multipart_threshold=1,
-            multipart_chunksize=4)
+            max_request_concurrency=1,
+            multipart_threshold=1,
+            multipart_chunksize=4,
+        )
         self._manager = TransferManager(self.client, self.config)
 
     def create_stubbed_responses(self):
         return [
             {
                 'method': 'head_object',
-                'service_response': {
-                    'ContentLength': len(self.content)
-                }
+                'service_response': {'ContentLength': len(self.content)},
             },
             {
                 'method': 'create_multipart_upload',
-                'service_response': {
-                    'UploadId': 'my-upload-id'
-                }
+                'service_response': {'UploadId': 'my-upload-id'},
             },
             {
                 'method': 'upload_part_copy',
-                'service_response': {
-                    'CopyPartResult': {
-                        'ETag': 'etag-1'
-                    }
-                }
+                'service_response': {'CopyPartResult': {'ETag': 'etag-1'}},
             },
             {
                 'method': 'upload_part_copy',
-                'service_response': {
-                    'CopyPartResult': {
-                        'ETag': 'etag-2'
-                    }
-                }
+                'service_response': {'CopyPartResult': {'ETag': 'etag-2'}},
             },
             {
                 'method': 'upload_part_copy',
-                'service_response': {
-                    'CopyPartResult': {
-                        'ETag': 'etag-3'
-                    }
-                }
+                'service_response': {'CopyPartResult': {'ETag': 'etag-3'}},
             },
-            {
-                'method': 'complete_multipart_upload',
-                'service_response': {}
-            }
+            {'method': 'complete_multipart_upload', 'service_response': {}},
         ]
 
     def create_expected_progress_callback_info(self):
@@ -351,7 +334,7 @@ class TestMultipartCopy(BaseCopyTest):
         return [
             {'bytes_transferred': MIN_UPLOAD_CHUNKSIZE},
             {'bytes_transferred': MIN_UPLOAD_CHUNKSIZE},
-            {'bytes_transferred': self.half_chunksize}
+            {'bytes_transferred': self.half_chunksize},
         ]
 
     def add_create_multipart_upload_response(self):
@@ -374,8 +357,11 @@ class TestMultipartCopy(BaseCopyTest):
 
         expected_copy_params = []
         # Add expected parameters to the copy part
-        ranges = ['bytes=0-5242879', 'bytes=5242880-10485759',
-                  'bytes=10485760-13107199']
+        ranges = [
+            'bytes=0-5242879',
+            'bytes=5242880-10485759',
+            'bytes=10485760-13107199',
+        ]
         for i, range_val in enumerate(ranges):
             expected_copy_params.append(
                 {
@@ -384,21 +370,22 @@ class TestMultipartCopy(BaseCopyTest):
                     'CopySource': self.copy_source,
                     'UploadId': upload_id,
                     'PartNumber': i + 1,
-                    'CopySourceRange': range_val
+                    'CopySourceRange': range_val,
                 }
             )
 
         # Add expected parameters for the complete multipart
         expected_complete_mpu_params = {
             'Bucket': self.bucket,
-            'Key': self.key, 'UploadId': upload_id,
+            'Key': self.key,
+            'UploadId': upload_id,
             'MultipartUpload': {
                 'Parts': [
                     {'ETag': 'etag-1', 'PartNumber': 1},
                     {'ETag': 'etag-2', 'PartNumber': 2},
-                    {'ETag': 'etag-3', 'PartNumber': 3}
+                    {'ETag': 'etag-3', 'PartNumber': 3},
                 ]
-            }
+            },
         }
 
         return expected_head_params, {
@@ -408,7 +395,8 @@ class TestMultipartCopy(BaseCopyTest):
         }
 
     def _add_params_to_expected_params(
-            self, add_copy_kwargs, operation_types, new_params):
+        self, add_copy_kwargs, operation_types, new_params
+    ):
 
         expected_params_to_update = []
         for operation_type in operation_types:
@@ -441,8 +429,10 @@ class TestMultipartCopy(BaseCopyTest):
         self.add_head_object_response(expected_params=head_params)
 
         self._add_params_to_expected_params(
-            add_copy_kwargs, ['create_mpu', 'copy', 'complete_mpu'],
-            self.extra_args)
+            add_copy_kwargs,
+            ['create_mpu', 'copy', 'complete_mpu'],
+            self.extra_args,
+        )
         self.add_successful_copy_responses(**add_copy_kwargs)
 
         call_kwargs = self.create_call_kwargs()
@@ -472,7 +462,8 @@ class TestMultipartCopy(BaseCopyTest):
         self.add_head_object_response(expected_params=head_params)
 
         self._add_params_to_expected_params(
-            add_copy_kwargs, ['create_mpu'], self.extra_args)
+            add_copy_kwargs, ['create_mpu'], self.extra_args
+        )
         self.add_successful_copy_responses(**add_copy_kwargs)
 
         call_kwargs = self.create_call_kwargs()
@@ -490,7 +481,8 @@ class TestMultipartCopy(BaseCopyTest):
         self.add_head_object_response(expected_params=head_params)
 
         self._add_params_to_expected_params(
-            add_copy_kwargs, ['create_mpu', 'copy'], self.extra_args)
+            add_copy_kwargs, ['create_mpu', 'copy'], self.extra_args
+        )
         self.add_successful_copy_responses(**add_copy_kwargs)
 
         call_kwargs = self.create_call_kwargs()
@@ -511,7 +503,8 @@ class TestMultipartCopy(BaseCopyTest):
 
         # However, it needs to remain the same for UploadPartCopy.
         self._add_params_to_expected_params(
-            add_copy_kwargs, ['copy'], self.extra_args)
+            add_copy_kwargs, ['copy'], self.extra_args
+        )
         self.add_successful_copy_responses(**add_copy_kwargs)
 
         call_kwargs = self.create_call_kwargs()
@@ -535,8 +528,8 @@ class TestMultipartCopy(BaseCopyTest):
             expected_params={
                 'Bucket': self.bucket,
                 'Key': self.key,
-                'UploadId': 'my-upload-id'
-            }
+                'UploadId': 'my-upload-id',
+            },
         )
 
         future = self.manager.copy(**self.create_call_kwargs())
@@ -545,9 +538,7 @@ class TestMultipartCopy(BaseCopyTest):
         self.stubber.assert_no_pending_responses()
 
     def test_mp_copy_with_tagging_directive(self):
-        extra_args = {
-            'Tagging': 'tag1=val1', 'TaggingDirective': 'REPLACE'
-        }
+        extra_args = {'Tagging': 'tag1=val1', 'TaggingDirective': 'REPLACE'}
         self.add_head_object_response()
         self.add_successful_copy_responses(
             expected_create_mpu_params={
@@ -557,6 +548,7 @@ class TestMultipartCopy(BaseCopyTest):
             }
         )
         future = self.manager.copy(
-            self.copy_source, self.bucket, self.key, extra_args)
+            self.copy_source, self.bucket, self.key, extra_args
+        )
         future.result()
         self.stubber.assert_no_pending_responses()

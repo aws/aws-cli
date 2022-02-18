@@ -10,17 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.session import Session
 from botocore.credentials import CredentialResolver, ReadOnlyCredentials
+from botocore.session import Session
+
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.utils import CallArgs
-
-from tests import (
-    FileCreator, requires_crt, HAS_CRT, mock, unittest
-)
+from tests import HAS_CRT, FileCreator, mock, requires_crt, unittest
 
 if HAS_CRT:
     import awscrt.s3
+
     import s3transfer.crt
 
 
@@ -35,7 +34,8 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.session = Session()
         self.session.set_config_variable('region', self.region)
         self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
-            self.session)
+            self.session
+        )
         self.bucket = "test_bucket"
         self.key = "test_key"
         self.files = FileCreator()
@@ -48,14 +48,19 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
 
     def test_upload_request(self):
         callargs = CallArgs(
-            bucket=self.bucket, key=self.key, fileobj=self.filename,
-            extra_args={}, subscribers=[])
+            bucket=self.bucket,
+            key=self.key,
+            fileobj=self.filename,
+            extra_args={},
+            subscribers=[],
+        )
         coordinator = s3transfer.crt.CRTTransferCoordinator()
         future = s3transfer.crt.CRTTransferFuture(
-            s3transfer.crt.CRTTransferMeta(call_args=callargs),
-            coordinator)
+            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        )
         crt_request = self.request_serializer.serialize_http_request(
-            "put_object", future)
+            "put_object", future
+        )
         self.assertEqual("PUT", crt_request.method)
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
@@ -63,14 +68,19 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
 
     def test_download_request(self):
         callargs = CallArgs(
-            bucket=self.bucket, key=self.key, fileobj=self.filename,
-            extra_args={}, subscribers=[])
+            bucket=self.bucket,
+            key=self.key,
+            fileobj=self.filename,
+            extra_args={},
+            subscribers=[],
+        )
         coordinator = s3transfer.crt.CRTTransferCoordinator()
         future = s3transfer.crt.CRTTransferFuture(
-            s3transfer.crt.CRTTransferMeta(call_args=callargs),
-            coordinator)
+            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        )
         crt_request = self.request_serializer.serialize_http_request(
-            "get_object", future)
+            "get_object", future
+        )
         self.assertEqual("GET", crt_request.method)
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
@@ -78,14 +88,15 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
 
     def test_delete_request(self):
         callargs = CallArgs(
-            bucket=self.bucket, key=self.key,
-            extra_args={}, subscribers=[])
+            bucket=self.bucket, key=self.key, extra_args={}, subscribers=[]
+        )
         coordinator = s3transfer.crt.CRTTransferCoordinator()
         future = s3transfer.crt.CRTTransferFuture(
-            s3transfer.crt.CRTTransferMeta(call_args=callargs),
-            coordinator)
+            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        )
         crt_request = self.request_serializer.serialize_http_request(
-            "delete_object", future)
+            "delete_object", future
+        )
         self.assertEqual("DELETE", crt_request.method)
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
@@ -94,15 +105,14 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
 
 @requires_crt
 class TestCRTCredentialProviderAdapter(unittest.TestCase):
-
     def setUp(self):
         self.botocore_credential_provider = mock.Mock(CredentialResolver)
         self.access_key = "access_key"
         self.secret_key = "secret_key"
         self.token = "token"
-        self.botocore_credential_provider.load_credentials.return_value.\
-            get_frozen_credentials.return_value = ReadOnlyCredentials(
-                self.access_key, self.secret_key, self.token)
+        self.botocore_credential_provider.load_credentials.return_value.get_frozen_credentials.return_value = ReadOnlyCredentials(
+            self.access_key, self.secret_key, self.token
+        )
 
     def _call_adapter_and_check(self, credentails_provider_adapter):
         credentials = credentails_provider_adapter()
@@ -111,22 +121,27 @@ class TestCRTCredentialProviderAdapter(unittest.TestCase):
         self.assertEqual(credentials.session_token, self.token)
 
     def test_fetch_crt_credentials_successfully(self):
-        credentails_provider_adapter = \
+        credentails_provider_adapter = (
             s3transfer.crt.CRTCredentialProviderAdapter(
-                self.botocore_credential_provider)
+                self.botocore_credential_provider
+            )
+        )
         self._call_adapter_and_check(credentails_provider_adapter)
 
     def test_load_credentials_once(self):
-        credentails_provider_adapter = \
+        credentails_provider_adapter = (
             s3transfer.crt.CRTCredentialProviderAdapter(
-                self.botocore_credential_provider)
+                self.botocore_credential_provider
+            )
+        )
         called_times = 5
         for i in range(called_times):
             self._call_adapter_and_check(credentails_provider_adapter)
         # Assert that the load_credentails of botocore credential provider
         # will only be called once
         self.assertEqual(
-            self.botocore_credential_provider.load_credentials.call_count, 1)
+            self.botocore_credential_provider.load_credentials.call_count, 1
+        )
 
 
 @requires_crt
@@ -138,7 +153,8 @@ class TestCRTTransferFuture(unittest.TestCase):
         self.coordinator = s3transfer.crt.CRTTransferCoordinator()
         self.coordinator.set_s3_request(self.mock_s3_request)
         self.future = s3transfer.crt.CRTTransferFuture(
-            coordinator=self.coordinator)
+            coordinator=self.coordinator
+        )
 
     def test_set_exception(self):
         self.future.set_exception(CustomFutureException())

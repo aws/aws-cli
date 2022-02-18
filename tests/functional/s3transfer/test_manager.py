@@ -11,16 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from io import BytesIO
+
 from botocore.awsrequest import create_request_object
 
-from tests import mock
-from tests import skip_if_using_serial_implementation
-from tests import StubbedClientTest
-from s3transfer.exceptions import CancelledError
-from s3transfer.exceptions import FatalError
+from s3transfer.exceptions import CancelledError, FatalError
 from s3transfer.futures import BaseExecutor
-from s3transfer.manager import TransferManager
-from s3transfer.manager import TransferConfig
+from s3transfer.manager import TransferConfig, TransferManager
+from tests import StubbedClientTest, mock, skip_if_using_serial_implementation
 
 
 class ArbitraryException(Exception):
@@ -29,8 +26,9 @@ class ArbitraryException(Exception):
 
 class SignalTransferringBody(BytesIO):
     """A mocked body with the ability to signal when transfers occur"""
+
     def __init__(self):
-        super(SignalTransferringBody, self).__init__()
+        super().__init__()
         self.signal_transferring_call_count = 0
         self.signal_not_transferring_call_count = 0
 
@@ -75,7 +73,8 @@ class TestTransferManager(StubbedClientTest):
         manager = TransferManager(
             self.client,
             TransferConfig(
-                max_request_concurrency=1, max_submission_concurrency=1)
+                max_request_concurrency=1, max_submission_concurrency=1
+            ),
         )
         try:
             with manager:
@@ -112,7 +111,8 @@ class TestTransferManager(StubbedClientTest):
         manager = TransferManager(
             self.client,
             TransferConfig(
-                max_request_concurrency=1, max_submission_concurrency=1)
+                max_request_concurrency=1, max_submission_concurrency=1
+            ),
         )
         try:
             with manager:
@@ -122,47 +122,54 @@ class TestTransferManager(StubbedClientTest):
         except KeyboardInterrupt:
             # At least one of the submitted futures should have been
             # cancelled.
-            with self.assertRaisesRegex(
-                    CancelledError, 'KeyboardInterrupt()'):
+            with self.assertRaisesRegex(CancelledError, 'KeyboardInterrupt()'):
                 for future in futures:
                     future.result()
 
     def test_enable_disable_callbacks_only_ever_registered_once(self):
         body = SignalTransferringBody()
-        request = create_request_object({
-            'method': 'PUT',
-            'url': 'https://s3.amazonaws.com',
-            'body': body,
-            'headers': {},
-            'context': {}
-        })
+        request = create_request_object(
+            {
+                'method': 'PUT',
+                'url': 'https://s3.amazonaws.com',
+                'body': body,
+                'headers': {},
+                'context': {},
+            }
+        )
         # Create two TransferManager's using the same client
         TransferManager(self.client)
         TransferManager(self.client)
         self.client.meta.events.emit(
-            'request-created.s3', request=request, operation_name='PutObject')
+            'request-created.s3', request=request, operation_name='PutObject'
+        )
         # The client should have only have the enable/disable callback
         # handlers registered once depite being used for two different
         # TransferManagers.
         self.assertEqual(
-            body.signal_transferring_call_count, 1,
-            'The enable_callback() should have only ever been registered once')
+            body.signal_transferring_call_count,
+            1,
+            'The enable_callback() should have only ever been registered once',
+        )
         self.assertEqual(
-            body.signal_not_transferring_call_count, 1,
+            body.signal_not_transferring_call_count,
+            1,
             'The disable_callback() should have only ever been registered '
-            'once')
+            'once',
+        )
 
     def test_use_custom_executor_implementation(self):
         mocked_executor_cls = mock.Mock(BaseExecutor)
         transfer_manager = TransferManager(
-            self.client, executor_cls=mocked_executor_cls)
+            self.client, executor_cls=mocked_executor_cls
+        )
         transfer_manager.delete('bucket', 'key')
         self.assertTrue(mocked_executor_cls.return_value.submit.called)
 
     def test_unicode_exception_in_context_manager(self):
         with self.assertRaises(ArbitraryException):
             with TransferManager(self.client):
-                raise ArbitraryException(u'\u2713')
+                raise ArbitraryException('\u2713')
 
     def test_client_property(self):
         manager = TransferManager(self.client)

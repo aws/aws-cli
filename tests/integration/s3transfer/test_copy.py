@@ -10,31 +10,31 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from s3transfer.manager import TransferConfig
 from tests import RecordingSubscriber
 from tests.integration.s3transfer import BaseTransferManagerIntegTest
-from s3transfer.manager import TransferConfig
 
 
 class TestCopy(BaseTransferManagerIntegTest):
     def setUp(self):
-        super(TestCopy, self).setUp()
+        super().setUp()
         self.multipart_threshold = 5 * 1024 * 1024
         self.config = TransferConfig(
-            multipart_threshold=self.multipart_threshold)
+            multipart_threshold=self.multipart_threshold
+        )
 
     def test_copy_below_threshold(self):
         transfer_manager = self.create_transfer_manager(self.config)
         key = '1mb.txt'
         new_key = '1mb-copy.txt'
 
-        filename = self.files.create_file_with_size(
-            key, filesize=1024 * 1024)
+        filename = self.files.create_file_with_size(key, filesize=1024 * 1024)
         self.upload_file(filename, key)
 
         future = transfer_manager.copy(
             copy_source={'Bucket': self.bucket_name, 'Key': key},
             bucket=self.bucket_name,
-            key=new_key
+            key=new_key,
         )
 
         future.result()
@@ -46,13 +46,14 @@ class TestCopy(BaseTransferManagerIntegTest):
         new_key = '20mb-copy.txt'
 
         filename = self.files.create_file_with_size(
-            key, filesize=20 * 1024 * 1024)
+            key, filesize=20 * 1024 * 1024
+        )
         self.upload_file(filename, key)
 
         future = transfer_manager.copy(
             copy_source={'Bucket': self.bucket_name, 'Key': key},
             bucket=self.bucket_name,
-            key=new_key
+            key=new_key,
         )
 
         future.result()
@@ -65,14 +66,15 @@ class TestCopy(BaseTransferManagerIntegTest):
         new_key = '20mb-copy.txt'
 
         filename = self.files.create_file_with_size(
-            key, filesize=20 * 1024 * 1024)
+            key, filesize=20 * 1024 * 1024
+        )
         self.upload_file(filename, key)
 
         future = transfer_manager.copy(
             copy_source={'Bucket': self.bucket_name, 'Key': key},
             bucket=self.bucket_name,
             key=new_key,
-            subscribers=[subscriber]
+            subscribers=[subscriber],
         )
 
         future.result()

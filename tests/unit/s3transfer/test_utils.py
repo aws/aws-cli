@@ -10,47 +10,48 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os.path
+import random
+import re
 import shutil
 import tempfile
 import threading
-import random
-import re
 import time
-import io
+from io import BytesIO, StringIO
 
-
-from tests import mock, unittest, RecordingSubscriber, NonSeekableWriter
-from s3transfer.compat import six
-from s3transfer.futures import TransferFuture
-from s3transfer.futures import TransferMeta
-from s3transfer.utils import get_callbacks
-from s3transfer.utils import random_file_extension
-from s3transfer.utils import invoke_progress_callbacks
-from s3transfer.utils import calculate_num_parts
-from s3transfer.utils import calculate_range_parameter
-from s3transfer.utils import get_filtered_dict
-from s3transfer.utils import CallArgs
-from s3transfer.utils import FunctionContainer
-from s3transfer.utils import CountCallbackInvoker
-from s3transfer.utils import OSUtils
-from s3transfer.utils import DeferredOpenFile
-from s3transfer.utils import ReadFileChunk
-from s3transfer.utils import StreamReaderProgress
-from s3transfer.utils import TaskSemaphore
-from s3transfer.utils import SlidingWindowSemaphore
-from s3transfer.utils import NoResourcesAvailable
-from s3transfer.utils import ChunksizeAdjuster
-from s3transfer.utils import MIN_UPLOAD_CHUNKSIZE, MAX_SINGLE_UPLOAD_SIZE
-from s3transfer.utils import MAX_PARTS
+from s3transfer.futures import TransferFuture, TransferMeta
+from s3transfer.utils import (
+    MAX_PARTS,
+    MAX_SINGLE_UPLOAD_SIZE,
+    MIN_UPLOAD_CHUNKSIZE,
+    CallArgs,
+    ChunksizeAdjuster,
+    CountCallbackInvoker,
+    DeferredOpenFile,
+    FunctionContainer,
+    NoResourcesAvailable,
+    OSUtils,
+    ReadFileChunk,
+    SlidingWindowSemaphore,
+    StreamReaderProgress,
+    TaskSemaphore,
+    calculate_num_parts,
+    calculate_range_parameter,
+    get_callbacks,
+    get_filtered_dict,
+    invoke_progress_callbacks,
+    random_file_extension,
+)
+from tests import NonSeekableWriter, RecordingSubscriber, mock, unittest
 
 
 class TestGetCallbacks(unittest.TestCase):
     def setUp(self):
         self.subscriber = RecordingSubscriber()
         self.second_subscriber = RecordingSubscriber()
-        self.call_args = CallArgs(subscribers=[
-            self.subscriber, self.second_subscriber]
+        self.call_args = CallArgs(
+            subscribers=[self.subscriber, self.second_subscriber]
         )
         self.transfer_meta = TransferMeta(self.call_args)
         self.transfer_future = TransferFuture(self.transfer_meta)
@@ -65,8 +66,7 @@ class TestGetCallbacks(unittest.TestCase):
         # one of them and checking that the future was used in the call.
         callbacks[0]()
         self.assertEqual(
-            self.subscriber.on_queued_calls,
-            [{'future': self.transfer_future}]
+            self.subscriber.on_queued_calls, [{'future': self.transfer_future}]
         )
 
     def test_get_callbacks_for_missing_type(self):
@@ -78,14 +78,10 @@ class TestGetCallbacks(unittest.TestCase):
 
 class TestGetFilteredDict(unittest.TestCase):
     def test_get_filtered_dict(self):
-        original = {
-            'Include': 'IncludeValue',
-            'NotInlude': 'NotIncludeValue'
-        }
+        original = {'Include': 'IncludeValue', 'NotInlude': 'NotIncludeValue'}
         whitelist = ['Include']
         self.assertEqual(
-            get_filtered_dict(original, whitelist),
-            {'Include': 'IncludeValue'}
+            get_filtered_dict(original, whitelist), {'Include': 'IncludeValue'}
         )
 
 
@@ -102,15 +98,20 @@ class TestFunctionContainer(unittest.TestCase):
 
     def test_call(self):
         func_container = FunctionContainer(
-            self.get_args_kwargs, 'foo', bar='baz')
+            self.get_args_kwargs, 'foo', bar='baz'
+        )
         self.assertEqual(func_container(), (('foo',), {'bar': 'baz'}))
 
     def test_repr(self):
         func_container = FunctionContainer(
-            self.get_args_kwargs, 'foo', bar='baz')
+            self.get_args_kwargs, 'foo', bar='baz'
+        )
         self.assertEqual(
-            str(func_container), 'Function: %s with args %s and kwargs %s' % (
-                self.get_args_kwargs, ('foo',), {'bar': 'baz'}))
+            str(func_container),
+            'Function: {} with args {} and kwargs {}'.format(
+                self.get_args_kwargs, ('foo',), {'bar': 'baz'}
+            ),
+        )
 
 
 class TestCountCallbackInvoker(unittest.TestCase):
@@ -166,8 +167,7 @@ class TestCountCallbackInvoker(unittest.TestCase):
 
 class TestRandomFileExtension(unittest.TestCase):
     def test_has_proper_length(self):
-        self.assertEqual(
-            len(random_file_extension(num_digits=4)), 4)
+        self.assertEqual(len(random_file_extension(num_digits=4)), 4)
 
 
 class TestInvokeProgressCallbacks(unittest.TestCase):
@@ -198,17 +198,20 @@ class TestCalculateRangeParameter(unittest.TestCase):
 
     def test_calculate_range_paramter(self):
         range_val = calculate_range_parameter(
-            self.part_size, self.part_index, self.num_parts)
+            self.part_size, self.part_index, self.num_parts
+        )
         self.assertEqual(range_val, 'bytes=5-9')
 
     def test_last_part_with_no_total_size(self):
         range_val = calculate_range_parameter(
-            self.part_size, self.part_index, num_parts=2)
+            self.part_size, self.part_index, num_parts=2
+        )
         self.assertEqual(range_val, 'bytes=5-')
 
     def test_last_part_with_total_size(self):
         range_val = calculate_range_parameter(
-            self.part_size, self.part_index, num_parts=2, total_size=8)
+            self.part_size, self.part_index, num_parts=2, total_size=8
+        )
         self.assertEqual(range_val, 'bytes=5-7')
 
 
@@ -235,11 +238,13 @@ class BaseUtilsTest(unittest.TestCase):
 class TestOSUtils(BaseUtilsTest):
     def test_get_file_size(self):
         self.assertEqual(
-            OSUtils().get_file_size(self.filename), len(self.content))
+            OSUtils().get_file_size(self.filename), len(self.content)
+        )
 
     def test_open_file_chunk_reader(self):
         reader = OSUtils().open_file_chunk_reader(
-            self.filename, 0, 3, [self.callback])
+            self.filename, 0, 3, [self.callback]
+        )
 
         # The returned reader should be a ReadFileChunk.
         self.assertIsInstance(reader, ReadFileChunk)
@@ -251,7 +256,8 @@ class TestOSUtils(BaseUtilsTest):
     def test_open_file_chunk_reader_from_fileobj(self):
         with open(self.filename, 'rb') as f:
             reader = OSUtils().open_file_chunk_reader_from_fileobj(
-                f, len(self.content), len(self.content), [self.callback])
+                f, len(self.content), len(self.content), [self.callback]
+            )
 
             # The returned reader should be a ReadFileChunk.
             self.assertIsInstance(reader, ReadFileChunk)
@@ -298,17 +304,17 @@ class TestOSUtils(BaseUtilsTest):
         self.assertIsNotNone(
             re.match(
                 r'%s\.[0-9A-Fa-f]{8}$' % filename,
-                OSUtils().get_temp_filename(filename)
+                OSUtils().get_temp_filename(filename),
             )
         )
 
     def test_get_temp_filename_len_255(self):
-        filename = 'a'*255
+        filename = 'a' * 255
         temp_filename = OSUtils().get_temp_filename(filename)
         self.assertLessEqual(len(temp_filename), 255)
 
     def test_get_temp_filename_len_gt_255(self):
-        filename = 'a'*280
+        filename = 'a' * 280
         temp_filename = OSUtils().get_temp_filename(filename)
         self.assertLessEqual(len(temp_filename), 255)
 
@@ -335,18 +341,19 @@ class TestOSUtils(BaseUtilsTest):
 
 class TestDeferredOpenFile(BaseUtilsTest):
     def setUp(self):
-        super(TestDeferredOpenFile, self).setUp()
+        super().setUp()
         self.filename = os.path.join(self.tempdir, 'foo')
         self.contents = b'my contents'
         with open(self.filename, 'wb') as f:
             f.write(self.contents)
         self.deferred_open_file = DeferredOpenFile(
-            self.filename, open_function=self.recording_open_function)
+            self.filename, open_function=self.recording_open_function
+        )
         self.open_call_args = []
 
     def tearDown(self):
         self.deferred_open_file.close()
-        super(TestDeferredOpenFile, self).tearDown()
+        super().tearDown()
 
     def recording_open_function(self, filename, mode):
         self.open_call_args.append((filename, mode))
@@ -354,11 +361,12 @@ class TestDeferredOpenFile(BaseUtilsTest):
 
     def open_nonseekable(self, filename, mode):
         self.open_call_args.append((filename, mode))
-        return NonSeekableWriter(six.BytesIO(self.content))
+        return NonSeekableWriter(BytesIO(self.content))
 
     def test_instantiation_does_not_open_file(self):
         DeferredOpenFile(
-            self.filename, open_function=self.recording_open_function)
+            self.filename, open_function=self.recording_open_function
+        )
         self.assertEqual(len(self.open_call_args), 0)
 
     def test_name(self):
@@ -373,8 +381,10 @@ class TestDeferredOpenFile(BaseUtilsTest):
 
     def test_write(self):
         self.deferred_open_file = DeferredOpenFile(
-            self.filename, mode='wb',
-            open_function=self.recording_open_function)
+            self.filename,
+            mode='wb',
+            open_function=self.recording_open_function,
+        )
 
         write_content = b'foo'
         self.deferred_open_file.write(write_content)
@@ -382,7 +392,7 @@ class TestDeferredOpenFile(BaseUtilsTest):
         self.deferred_open_file.close()
         # Both of the writes should now be in the file.
         with open(self.filename, 'rb') as f:
-            self.assertEqual(f.read(), write_content*2)
+            self.assertEqual(f.read(), write_content * 2)
         # Open should have only been called once.
         self.assertEqual(len(self.open_call_args), 1)
 
@@ -394,8 +404,11 @@ class TestDeferredOpenFile(BaseUtilsTest):
 
     def test_open_does_not_seek_with_zero_start_byte(self):
         self.deferred_open_file = DeferredOpenFile(
-            self.filename, mode='wb', start_byte=0,
-            open_function=self.open_nonseekable)
+            self.filename,
+            mode='wb',
+            start_byte=0,
+            open_function=self.open_nonseekable,
+        )
 
         try:
             # If this seeks, an UnsupportedOperation error will be raised.
@@ -405,8 +418,11 @@ class TestDeferredOpenFile(BaseUtilsTest):
 
     def test_open_seeks_with_nonzero_start_byte(self):
         self.deferred_open_file = DeferredOpenFile(
-            self.filename, mode='wb', start_byte=5,
-            open_function=self.open_nonseekable)
+            self.filename,
+            mode='wb',
+            start_byte=5,
+            open_function=self.open_nonseekable,
+        )
 
         # Since a non-seekable file is being opened, calling Seek will raise
         # an UnsupportedOperation error.
@@ -425,8 +441,10 @@ class TestDeferredOpenFile(BaseUtilsTest):
 
     def test_open_args(self):
         self.deferred_open_file = DeferredOpenFile(
-            self.filename, mode='ab+',
-            open_function=self.recording_open_function)
+            self.filename,
+            mode='ab+',
+            open_function=self.recording_open_function,
+        )
         # Force an open
         self.deferred_open_file.write(b'data')
         self.assertEqual(len(self.open_call_args), 1)
@@ -443,7 +461,8 @@ class TestReadFileChunk(BaseUtilsTest):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=0, chunk_size=3)
+            filename, start_byte=0, chunk_size=3
+        )
         self.assertEqual(chunk.read(), b'one')
         self.assertEqual(chunk.read(), b'')
 
@@ -452,7 +471,8 @@ class TestReadFileChunk(BaseUtilsTest):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=11, chunk_size=4)
+            filename, start_byte=11, chunk_size=4
+        )
         self.assertEqual(chunk.read(1), b'f')
         self.assertEqual(chunk.read(1), b'o')
         self.assertEqual(chunk.read(1), b'u')
@@ -464,7 +484,8 @@ class TestReadFileChunk(BaseUtilsTest):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=11, chunk_size=4)
+            filename, start_byte=11, chunk_size=4
+        )
         self.assertEqual(chunk.read(), b'four')
         chunk.seek(0)
         self.assertEqual(chunk.read(), b'four')
@@ -474,7 +495,8 @@ class TestReadFileChunk(BaseUtilsTest):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=36, chunk_size=100000)
+            filename, start_byte=36, chunk_size=100000
+        )
         self.assertEqual(chunk.read(), b'ten')
         self.assertEqual(chunk.read(), b'')
         self.assertEqual(len(chunk), 3)
@@ -484,7 +506,8 @@ class TestReadFileChunk(BaseUtilsTest):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=36, chunk_size=100000)
+            filename, start_byte=36, chunk_size=100000
+        )
         self.assertEqual(chunk.tell(), 0)
         self.assertEqual(chunk.read(), b'ten')
         self.assertEqual(chunk.tell(), 3)
@@ -514,7 +537,8 @@ class TestReadFileChunk(BaseUtilsTest):
         file_objects = [
             ReadFileChunk.from_filename(
                 filename, start_byte=start_pos, chunk_size=chunk_size
-            )]
+            )
+        ]
 
         # Uncomment next line to validate we match Python's io.BytesIO
         # file_objects.append(io.BytesIO(data[start_pos:start_pos+chunk_size]))
@@ -609,9 +633,9 @@ class TestReadFileChunk(BaseUtilsTest):
         filename = os.path.join(self.tempdir, 'foo')
         with open(filename, 'wb') as f:
             f.write(b'abc')
-        with ReadFileChunk.from_filename(filename,
-                                         start_byte=0,
-                                         chunk_size=2) as chunk:
+        with ReadFileChunk.from_filename(
+            filename, start_byte=0, chunk_size=2
+        ) as chunk:
             val = chunk.read()
             self.assertEqual(val, b'ab')
 
@@ -621,13 +645,17 @@ class TestReadFileChunk(BaseUtilsTest):
         filename = os.path.join(self.tempdir, 'foo')
         open(filename, 'wb').close()
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=0, chunk_size=10)
+            filename, start_byte=0, chunk_size=10
+        )
         self.assertEqual(list(chunk), [])
 
     def test_callback_is_invoked_on_read(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3,
-            callbacks=[self.callback])
+            self.filename,
+            start_byte=0,
+            chunk_size=3,
+            callbacks=[self.callback],
+        )
         chunk.read(1)
         chunk.read(1)
         chunk.read(1)
@@ -635,8 +663,11 @@ class TestReadFileChunk(BaseUtilsTest):
 
     def test_all_callbacks_invoked_on_read(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3,
-            callbacks=[self.callback, self.callback])
+            self.filename,
+            start_byte=0,
+            chunk_size=3,
+            callbacks=[self.callback, self.callback],
+        )
         chunk.read(1)
         chunk.read(1)
         chunk.read(1)
@@ -646,8 +677,11 @@ class TestReadFileChunk(BaseUtilsTest):
 
     def test_callback_can_be_disabled(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3,
-            callbacks=[self.callback])
+            self.filename,
+            start_byte=0,
+            chunk_size=3,
+            callbacks=[self.callback],
+        )
         chunk.disable_callback()
         # Now reading from the ReadFileChunk should not invoke
         # the callback.
@@ -656,8 +690,11 @@ class TestReadFileChunk(BaseUtilsTest):
 
     def test_callback_will_also_be_triggered_by_seek(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3,
-            callbacks=[self.callback])
+            self.filename,
+            start_byte=0,
+            chunk_size=3,
+            callbacks=[self.callback],
+        )
         chunk.read(2)
         chunk.seek(0)
         chunk.read(2)
@@ -673,8 +710,8 @@ class TestReadFileChunk(BaseUtilsTest):
         with open(filename, 'wb') as f:
             f.write(data)
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=10, chunk_size=10,
-            callbacks=[self.callback])
+            filename, start_byte=10, chunk_size=10, callbacks=[self.callback]
+        )
 
         # Seek calls that generate "0" progress are skipped by
         # invoke_progress_callbacks and won't appear in the list.
@@ -691,18 +728,18 @@ class TestReadFileChunk(BaseUtilsTest):
 
         # (position, change)
         chunk.seek(20)  # (20, 10)
-        chunk.seek(5)   # (5, -5)
+        chunk.seek(5)  # (5, -5)
         chunk.seek(20)  # (20, 5)
-        chunk.seek(9)   # (9, -1)
+        chunk.seek(9)  # (9, -1)
         chunk.seek(20)  # (20, 1)
         chunk.seek(11)  # (11, 0)
         chunk.seek(20)  # (20, 0)
-        chunk.seek(9)   # (9, -1)
+        chunk.seek(9)  # (9, -1)
         chunk.seek(20)  # (20, 1)
-        chunk.seek(5)   # (5, -5)
+        chunk.seek(5)  # (5, -5)
         chunk.seek(20)  # (20, 5)
-        chunk.seek(0)   # (0, -10)
-        chunk.seek(0)   # (0, 0)
+        chunk.seek(0)  # (0, -10)
+        chunk.seek(0)  # (0, 0)
 
         self.assertEqual(self.amounts_seen, expected)
 
@@ -712,18 +749,18 @@ class TestReadFileChunk(BaseUtilsTest):
         self.assertEqual(self.amounts_seen, [])
 
         # (position, change)
-        chunk.seek(20, 1)     # (20, 10)
-        chunk.seek(-15, 1)    # (5, -5)
-        chunk.seek(15, 1)     # (20, 5)
-        chunk.seek(-11, 1)    # (9, -1)
-        chunk.seek(11, 1)     # (20, 1)
-        chunk.seek(-9, 1)     # (11, 0)
-        chunk.seek(9, 1)      # (20, 0)
-        chunk.seek(-11, 1)    # (9, -1)
-        chunk.seek(11, 1)     # (20, 1)
-        chunk.seek(-15, 1)    # (5, -5)
-        chunk.seek(15, 1)     # (20, 5)
-        chunk.seek(-20, 1)    # (0, -10)
+        chunk.seek(20, 1)  # (20, 10)
+        chunk.seek(-15, 1)  # (5, -5)
+        chunk.seek(15, 1)  # (20, 5)
+        chunk.seek(-11, 1)  # (9, -1)
+        chunk.seek(11, 1)  # (20, 1)
+        chunk.seek(-9, 1)  # (11, 0)
+        chunk.seek(9, 1)  # (20, 0)
+        chunk.seek(-11, 1)  # (9, -1)
+        chunk.seek(11, 1)  # (20, 1)
+        chunk.seek(-15, 1)  # (5, -5)
+        chunk.seek(15, 1)  # (20, 5)
+        chunk.seek(-20, 1)  # (0, -10)
         chunk.seek(-1000, 1)  # (0, 0)
 
         self.assertEqual(self.amounts_seen, expected)
@@ -734,48 +771,63 @@ class TestReadFileChunk(BaseUtilsTest):
         self.assertEqual(self.amounts_seen, [])
 
         # (position, change)
-        chunk.seek(10, 2)     # (20, 10)
-        chunk.seek(-5, 2)     # (5, -5)
-        chunk.seek(10, 2)     # (20, 5)
-        chunk.seek(-1, 2)     # (9, -1)
-        chunk.seek(10, 2)     # (20, 1)
-        chunk.seek(1, 2)      # (11, 0)
-        chunk.seek(10, 2)     # (20, 0)
-        chunk.seek(-1, 2)     # (9, -1)
-        chunk.seek(10, 2)     # (20, 1)
-        chunk.seek(-5, 2)     # (5, -5)
-        chunk.seek(10, 2)     # (20, 5)
-        chunk.seek(-10, 2)    # (0, -10)
+        chunk.seek(10, 2)  # (20, 10)
+        chunk.seek(-5, 2)  # (5, -5)
+        chunk.seek(10, 2)  # (20, 5)
+        chunk.seek(-1, 2)  # (9, -1)
+        chunk.seek(10, 2)  # (20, 1)
+        chunk.seek(1, 2)  # (11, 0)
+        chunk.seek(10, 2)  # (20, 0)
+        chunk.seek(-1, 2)  # (9, -1)
+        chunk.seek(10, 2)  # (20, 1)
+        chunk.seek(-5, 2)  # (5, -5)
+        chunk.seek(10, 2)  # (20, 5)
+        chunk.seek(-10, 2)  # (0, -10)
         chunk.seek(-1000, 2)  # (0, 0)
 
         self.assertEqual(self.amounts_seen, expected)
 
     def test_close_callbacks(self):
         with open(self.filename) as f:
-            chunk = ReadFileChunk(f, chunk_size=1, full_file_size=3,
-                                  close_callbacks=[self.close_callback])
+            chunk = ReadFileChunk(
+                f,
+                chunk_size=1,
+                full_file_size=3,
+                close_callbacks=[self.close_callback],
+            )
             chunk.close()
             self.assertEqual(self.num_close_callback_calls, 1)
 
     def test_close_callbacks_when_not_enabled(self):
         with open(self.filename) as f:
-            chunk = ReadFileChunk(f, chunk_size=1, full_file_size=3,
-                                  enable_callbacks=False,
-                                  close_callbacks=[self.close_callback])
+            chunk = ReadFileChunk(
+                f,
+                chunk_size=1,
+                full_file_size=3,
+                enable_callbacks=False,
+                close_callbacks=[self.close_callback],
+            )
             chunk.close()
             self.assertEqual(self.num_close_callback_calls, 0)
 
     def test_close_callbacks_when_context_handler_is_used(self):
         with open(self.filename) as f:
-            with ReadFileChunk(f, chunk_size=1, full_file_size=3,
-                               close_callbacks=[self.close_callback]) as chunk:
+            with ReadFileChunk(
+                f,
+                chunk_size=1,
+                full_file_size=3,
+                close_callbacks=[self.close_callback],
+            ) as chunk:
                 chunk.read(1)
             self.assertEqual(self.num_close_callback_calls, 1)
 
     def test_signal_transferring(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3,
-            callbacks=[self.callback])
+            self.filename,
+            start_byte=0,
+            chunk_size=3,
+            callbacks=[self.callback],
+        )
         chunk.signal_not_transferring()
         chunk.read(1)
         self.assertEqual(self.amounts_seen, [])
@@ -824,14 +876,15 @@ class TestReadFileChunk(BaseUtilsTest):
 
 class TestStreamReaderProgress(BaseUtilsTest):
     def test_proxies_to_wrapped_stream(self):
-        original_stream = six.StringIO('foobarbaz')
+        original_stream = StringIO('foobarbaz')
         wrapped = StreamReaderProgress(original_stream)
         self.assertEqual(wrapped.read(), 'foobarbaz')
 
     def test_callback_invoked(self):
-        original_stream = six.StringIO('foobarbaz')
+        original_stream = StringIO('foobarbaz')
         wrapped = StreamReaderProgress(
-            original_stream, [self.callback, self.callback])
+            original_stream, [self.callback, self.callback]
+        )
         self.assertEqual(wrapped.read(), 'foobarbaz')
         self.assertEqual(self.amounts_seen, [9, 9])
 
@@ -1083,8 +1136,9 @@ class TestThreadingPropertiesForSlidingWindowSemaphore(unittest.TestCase):
         # Should have all the available resources freed.
         self.assertEqual(sem.current_count(), 5)
         # Should have acquired num_threads * num_iterations
-        self.assertEqual(sem.acquire('a', blocking=False),
-                         num_threads * num_iterations)
+        self.assertEqual(
+            sem.acquire('a', blocking=False), num_threads * num_iterations
+        )
 
 
 class TestAdjustChunksize(unittest.TestCase):

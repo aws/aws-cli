@@ -11,25 +11,29 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
 import socket
-from tests import mock, unittest
-from contextlib import closing
-
-from botocore.vendored import six
+import tempfile
 from concurrent import futures
+from contextlib import closing
+from io import BytesIO, StringIO
 
-from s3transfer.exceptions import RetriesExceededError
-from s3transfer.exceptions import S3UploadFailedError
-from s3transfer import ReadFileChunk, StreamReaderProgress
-from s3transfer import S3Transfer
-from s3transfer import OSUtils, TransferConfig
-from s3transfer import MultipartDownloader, MultipartUploader
-from s3transfer import ShutdownQueue
-from s3transfer import QueueShutdownError
-from s3transfer import random_file_extension
-from s3transfer import disable_upload_callbacks, enable_upload_callbacks
+from s3transfer import (
+    MultipartDownloader,
+    MultipartUploader,
+    OSUtils,
+    QueueShutdownError,
+    ReadFileChunk,
+    S3Transfer,
+    ShutdownQueue,
+    StreamReaderProgress,
+    TransferConfig,
+    disable_upload_callbacks,
+    enable_upload_callbacks,
+    random_file_extension,
+)
+from s3transfer.exceptions import RetriesExceededError, S3UploadFailedError
+from tests import mock, unittest
 
 
 class InMemoryOSLayer(OSUtils):
@@ -40,11 +44,11 @@ class InMemoryOSLayer(OSUtils):
         return len(self.filemap[filename])
 
     def open_file_chunk_reader(self, filename, start_byte, size, callback):
-        return closing(six.BytesIO(self.filemap[filename]))
+        return closing(BytesIO(self.filemap[filename]))
 
     def open(self, filename, mode):
         if 'wb' in mode:
-            fileobj = six.BytesIO()
+            fileobj = BytesIO()
             self.filemap[filename] = fileobj
             return closing(fileobj)
         else:
@@ -56,11 +60,10 @@ class InMemoryOSLayer(OSUtils):
 
     def rename_file(self, current_filename, new_filename):
         if current_filename in self.filemap:
-            self.filemap[new_filename] = self.filemap.pop(
-                current_filename)
+            self.filemap[new_filename] = self.filemap.pop(current_filename)
 
 
-class SequentialExecutor(object):
+class SequentialExecutor:
     def __init__(self, max_workers):
         pass
 
@@ -99,8 +102,9 @@ class TestOSUtils(unittest.TestCase):
     def test_open_file_chunk_reader(self):
         with mock.patch('s3transfer.ReadFileChunk') as m:
             OSUtils().open_file_chunk_reader('myfile', 0, 100, None)
-            m.from_filename.assert_called_with('myfile', 0, 100,
-                                               None, enable_callback=False)
+            m.from_filename.assert_called_with(
+                'myfile', 0, 100, None, enable_callback=False
+            )
 
     def test_open_file(self):
         fileobj = OSUtils().open(os.path.join(self.tempdir, 'foo'), 'w')
@@ -135,7 +139,8 @@ class TestReadFileChunk(unittest.TestCase):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=0, chunk_size=3)
+            filename, start_byte=0, chunk_size=3
+        )
         self.assertEqual(chunk.read(), b'one')
         self.assertEqual(chunk.read(), b'')
 
@@ -144,7 +149,8 @@ class TestReadFileChunk(unittest.TestCase):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=11, chunk_size=4)
+            filename, start_byte=11, chunk_size=4
+        )
         self.assertEqual(chunk.read(1), b'f')
         self.assertEqual(chunk.read(1), b'o')
         self.assertEqual(chunk.read(1), b'u')
@@ -156,7 +162,8 @@ class TestReadFileChunk(unittest.TestCase):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=11, chunk_size=4)
+            filename, start_byte=11, chunk_size=4
+        )
         self.assertEqual(chunk.read(), b'four')
         chunk.seek(0)
         self.assertEqual(chunk.read(), b'four')
@@ -166,7 +173,8 @@ class TestReadFileChunk(unittest.TestCase):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=36, chunk_size=100000)
+            filename, start_byte=36, chunk_size=100000
+        )
         self.assertEqual(chunk.read(), b'ten')
         self.assertEqual(chunk.read(), b'')
         self.assertEqual(len(chunk), 3)
@@ -176,7 +184,8 @@ class TestReadFileChunk(unittest.TestCase):
         with open(filename, 'wb') as f:
             f.write(b'onetwothreefourfivesixseveneightnineten')
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=36, chunk_size=100000)
+            filename, start_byte=36, chunk_size=100000
+        )
         self.assertEqual(chunk.tell(), 0)
         self.assertEqual(chunk.read(), b'ten')
         self.assertEqual(chunk.tell(), 3)
@@ -187,9 +196,9 @@ class TestReadFileChunk(unittest.TestCase):
         filename = os.path.join(self.tempdir, 'foo')
         with open(filename, 'wb') as f:
             f.write(b'abc')
-        with ReadFileChunk.from_filename(filename,
-                                         start_byte=0,
-                                         chunk_size=2) as chunk:
+        with ReadFileChunk.from_filename(
+            filename, start_byte=0, chunk_size=2
+        ) as chunk:
             val = chunk.read()
             self.assertEqual(val, b'ab')
 
@@ -199,13 +208,14 @@ class TestReadFileChunk(unittest.TestCase):
         filename = os.path.join(self.tempdir, 'foo')
         open(filename, 'wb').close()
         chunk = ReadFileChunk.from_filename(
-            filename, start_byte=0, chunk_size=10)
+            filename, start_byte=0, chunk_size=10
+        )
         self.assertEqual(list(chunk), [])
 
 
 class TestReadFileChunkWithCallback(TestReadFileChunk):
     def setUp(self):
-        super(TestReadFileChunkWithCallback, self).setUp()
+        super().setUp()
         self.filename = os.path.join(self.tempdir, 'foo')
         with open(self.filename, 'wb') as f:
             f.write(b'abc')
@@ -216,7 +226,8 @@ class TestReadFileChunkWithCallback(TestReadFileChunk):
 
     def test_callback_is_invoked_on_read(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3, callback=self.callback)
+            self.filename, start_byte=0, chunk_size=3, callback=self.callback
+        )
         chunk.read(1)
         chunk.read(1)
         chunk.read(1)
@@ -224,7 +235,8 @@ class TestReadFileChunkWithCallback(TestReadFileChunk):
 
     def test_callback_can_be_disabled(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3, callback=self.callback)
+            self.filename, start_byte=0, chunk_size=3, callback=self.callback
+        )
         chunk.disable_callback()
         # Now reading from the ReadFileChunk should not invoke
         # the callback.
@@ -233,7 +245,8 @@ class TestReadFileChunkWithCallback(TestReadFileChunk):
 
     def test_callback_will_also_be_triggered_by_seek(self):
         chunk = ReadFileChunk.from_filename(
-            self.filename, start_byte=0, chunk_size=3, callback=self.callback)
+            self.filename, start_byte=0, chunk_size=3, callback=self.callback
+        )
         chunk.read(2)
         chunk.seek(0)
         chunk.read(2)
@@ -243,9 +256,8 @@ class TestReadFileChunkWithCallback(TestReadFileChunk):
 
 
 class TestStreamReaderProgress(unittest.TestCase):
-
     def test_proxies_to_wrapped_stream(self):
-        original_stream = six.StringIO('foobarbaz')
+        original_stream = StringIO('foobarbaz')
         wrapped = StreamReaderProgress(original_stream)
         self.assertEqual(wrapped.read(), 'foobarbaz')
 
@@ -255,7 +267,7 @@ class TestStreamReaderProgress(unittest.TestCase):
         def callback(amount):
             amounts_seen.append(amount)
 
-        original_stream = six.StringIO('foobarbaz')
+        original_stream = StringIO('foobarbaz')
         wrapped = StreamReaderProgress(original_stream, callback)
         self.assertEqual(wrapped.read(), 'foobarbaz')
         self.assertEqual(amounts_seen, [9])
@@ -265,8 +277,11 @@ class TestMultipartUploader(unittest.TestCase):
     def test_multipart_upload_uses_correct_client_calls(self):
         client = mock.Mock()
         uploader = MultipartUploader(
-            client, TransferConfig(),
-            InMemoryOSLayer({'filename': b'foobar'}), SequentialExecutor)
+            client,
+            TransferConfig(),
+            InMemoryOSLayer({'filename': b'foobar'}),
+            SequentialExecutor,
+        )
         client.create_multipart_upload.return_value = {'UploadId': 'upload_id'}
         client.upload_part.return_value = {'ETag': 'first'}
 
@@ -277,41 +292,55 @@ class TestMultipartUploader(unittest.TestCase):
         # 1. The upload_id was plumbed through
         # 2. The collected etags were added to the complete call.
         client.create_multipart_upload.assert_called_with(
-            Bucket='bucket', Key='key')
+            Bucket='bucket', Key='key'
+        )
         # Should be two parts.
         client.upload_part.assert_called_with(
-            Body=mock.ANY, Bucket='bucket',
-            UploadId='upload_id', Key='key', PartNumber=1)
+            Body=mock.ANY,
+            Bucket='bucket',
+            UploadId='upload_id',
+            Key='key',
+            PartNumber=1,
+        )
         client.complete_multipart_upload.assert_called_with(
             MultipartUpload={'Parts': [{'PartNumber': 1, 'ETag': 'first'}]},
             Bucket='bucket',
             UploadId='upload_id',
-            Key='key')
+            Key='key',
+        )
 
     def test_multipart_upload_injects_proper_kwargs(self):
         client = mock.Mock()
         uploader = MultipartUploader(
-            client, TransferConfig(),
-            InMemoryOSLayer({'filename': b'foobar'}), SequentialExecutor)
+            client,
+            TransferConfig(),
+            InMemoryOSLayer({'filename': b'foobar'}),
+            SequentialExecutor,
+        )
         client.create_multipart_upload.return_value = {'UploadId': 'upload_id'}
         client.upload_part.return_value = {'ETag': 'first'}
 
         extra_args = {
             'SSECustomerKey': 'fakekey',
             'SSECustomerAlgorithm': 'AES256',
-            'StorageClass': 'REDUCED_REDUNDANCY'
+            'StorageClass': 'REDUCED_REDUNDANCY',
         }
         uploader.upload_file('filename', 'bucket', 'key', None, extra_args)
 
         client.create_multipart_upload.assert_called_with(
-            Bucket='bucket', Key='key',
+            Bucket='bucket',
+            Key='key',
             # The initial call should inject all the storage class params.
             SSECustomerKey='fakekey',
             SSECustomerAlgorithm='AES256',
-            StorageClass='REDUCED_REDUNDANCY')
+            StorageClass='REDUCED_REDUNDANCY',
+        )
         client.upload_part.assert_called_with(
-            Body=mock.ANY, Bucket='bucket',
-            UploadId='upload_id', Key='key', PartNumber=1,
+            Body=mock.ANY,
+            Bucket='bucket',
+            UploadId='upload_id',
+            Key='key',
+            PartNumber=1,
             # We only have to forward certain **extra_args in subsequent
             # UploadPart calls.
             SSECustomerKey='fakekey',
@@ -321,24 +350,30 @@ class TestMultipartUploader(unittest.TestCase):
             MultipartUpload={'Parts': [{'PartNumber': 1, 'ETag': 'first'}]},
             Bucket='bucket',
             UploadId='upload_id',
-            Key='key')
+            Key='key',
+        )
 
     def test_multipart_upload_is_aborted_on_error(self):
         # If the create_multipart_upload succeeds and any upload_part
         # fails, then abort_multipart_upload will be called.
         client = mock.Mock()
         uploader = MultipartUploader(
-            client, TransferConfig(),
-            InMemoryOSLayer({'filename': b'foobar'}), SequentialExecutor)
+            client,
+            TransferConfig(),
+            InMemoryOSLayer({'filename': b'foobar'}),
+            SequentialExecutor,
+        )
         client.create_multipart_upload.return_value = {'UploadId': 'upload_id'}
         client.upload_part.side_effect = Exception(
-            "Some kind of error occurred.")
+            "Some kind of error occurred."
+        )
 
         with self.assertRaises(S3UploadFailedError):
             uploader.upload_file('filename', 'bucket', 'key', None, {})
 
         client.abort_multipart_upload.assert_called_with(
-            Bucket='bucket', Key='key', UploadId='upload_id')
+            Bucket='bucket', Key='key', UploadId='upload_id'
+        )
 
 
 class TestMultipartDownloader(unittest.TestCase):
@@ -348,47 +383,50 @@ class TestMultipartDownloader(unittest.TestCase):
     def test_multipart_download_uses_correct_client_calls(self):
         client = mock.Mock()
         response_body = b'foobarbaz'
-        client.get_object.return_value = {'Body': six.BytesIO(response_body)}
+        client.get_object.return_value = {'Body': BytesIO(response_body)}
 
-        downloader = MultipartDownloader(client, TransferConfig(),
-                                         InMemoryOSLayer({}),
-                                         SequentialExecutor)
-        downloader.download_file('bucket', 'key', 'filename',
-                                 len(response_body), {})
+        downloader = MultipartDownloader(
+            client, TransferConfig(), InMemoryOSLayer({}), SequentialExecutor
+        )
+        downloader.download_file(
+            'bucket', 'key', 'filename', len(response_body), {}
+        )
 
         client.get_object.assert_called_with(
-            Range='bytes=0-',
-            Bucket='bucket',
-            Key='key'
+            Range='bytes=0-', Bucket='bucket', Key='key'
         )
 
     def test_multipart_download_with_multiple_parts(self):
         client = mock.Mock()
         response_body = b'foobarbaz'
-        client.get_object.return_value = {'Body': six.BytesIO(response_body)}
+        client.get_object.return_value = {'Body': BytesIO(response_body)}
         # For testing purposes, we're testing with a multipart threshold
         # of 4 bytes and a chunksize of 4 bytes.  Given b'foobarbaz',
         # this should result in 3 calls.  In python slices this would be:
         # r[0:4], r[4:8], r[8:9].  But the Range param will be slightly
         # different because they use inclusive ranges.
-        config = TransferConfig(multipart_threshold=4,
-                                multipart_chunksize=4)
+        config = TransferConfig(multipart_threshold=4, multipart_chunksize=4)
 
-        downloader = MultipartDownloader(client, config,
-                                         InMemoryOSLayer({}),
-                                         SequentialExecutor)
-        downloader.download_file('bucket', 'key', 'filename',
-                                 len(response_body), {})
+        downloader = MultipartDownloader(
+            client, config, InMemoryOSLayer({}), SequentialExecutor
+        )
+        downloader.download_file(
+            'bucket', 'key', 'filename', len(response_body), {}
+        )
 
         # We're storing these in **extra because the assertEqual
         # below is really about verifying we have the correct value
         # for the Range param.
         extra = {'Bucket': 'bucket', 'Key': 'key'}
-        self.assertEqual(client.get_object.call_args_list,
-                         # Note these are inclusive ranges.
-                         [mock.call(Range='bytes=0-3', **extra),
-                          mock.call(Range='bytes=4-7', **extra),
-                          mock.call(Range='bytes=8-', **extra)])
+        self.assertEqual(
+            client.get_object.call_args_list,
+            # Note these are inclusive ranges.
+            [
+                mock.call(Range='bytes=0-3', **extra),
+                mock.call(Range='bytes=4-7', **extra),
+                mock.call(Range='bytes=8-', **extra),
+            ],
+        )
 
     def test_retry_on_failures_from_stream_reads(self):
         # If we get an exception during a call to the response body's .read()
@@ -398,31 +436,35 @@ class TestMultipartDownloader(unittest.TestCase):
         stream_with_errors = mock.Mock()
         stream_with_errors.read.side_effect = [
             socket.error("fake error"),
-            response_body
+            response_body,
         ]
         client.get_object.return_value = {'Body': stream_with_errors}
-        config = TransferConfig(multipart_threshold=4,
-                                multipart_chunksize=4)
+        config = TransferConfig(multipart_threshold=4, multipart_chunksize=4)
 
-        downloader = MultipartDownloader(client, config,
-                                         InMemoryOSLayer({}),
-                                         SequentialExecutor)
-        downloader.download_file('bucket', 'key', 'filename',
-                                 len(response_body), {})
+        downloader = MultipartDownloader(
+            client, config, InMemoryOSLayer({}), SequentialExecutor
+        )
+        downloader.download_file(
+            'bucket', 'key', 'filename', len(response_body), {}
+        )
 
         # We're storing these in **extra because the assertEqual
         # below is really about verifying we have the correct value
         # for the Range param.
         extra = {'Bucket': 'bucket', 'Key': 'key'}
-        self.assertEqual(client.get_object.call_args_list,
-                         # The first call to range=0-3 fails because of the
-                         # side_effect above where we make the .read() raise a
-                         # socket.error.
-                         # The second call to range=0-3 then succeeds.
-                         [mock.call(Range='bytes=0-3', **extra),
-                          mock.call(Range='bytes=0-3', **extra),
-                          mock.call(Range='bytes=4-7', **extra),
-                          mock.call(Range='bytes=8-', **extra)])
+        self.assertEqual(
+            client.get_object.call_args_list,
+            # The first call to range=0-3 fails because of the
+            # side_effect above where we make the .read() raise a
+            # socket.error.
+            # The second call to range=0-3 then succeeds.
+            [
+                mock.call(Range='bytes=0-3', **extra),
+                mock.call(Range='bytes=0-3', **extra),
+                mock.call(Range='bytes=4-7', **extra),
+                mock.call(Range='bytes=8-', **extra),
+            ],
+        )
 
     def test_exception_raised_on_exceeded_retries(self):
         client = mock.Mock()
@@ -430,33 +472,35 @@ class TestMultipartDownloader(unittest.TestCase):
         stream_with_errors = mock.Mock()
         stream_with_errors.read.side_effect = socket.error("fake error")
         client.get_object.return_value = {'Body': stream_with_errors}
-        config = TransferConfig(multipart_threshold=4,
-                                multipart_chunksize=4)
+        config = TransferConfig(multipart_threshold=4, multipart_chunksize=4)
 
-        downloader = MultipartDownloader(client, config,
-                                         InMemoryOSLayer({}),
-                                         SequentialExecutor)
+        downloader = MultipartDownloader(
+            client, config, InMemoryOSLayer({}), SequentialExecutor
+        )
         with self.assertRaises(RetriesExceededError):
-            downloader.download_file('bucket', 'key', 'filename',
-                                     len(response_body), {})
+            downloader.download_file(
+                'bucket', 'key', 'filename', len(response_body), {}
+            )
 
     def test_io_thread_failure_triggers_shutdown(self):
         client = mock.Mock()
         response_body = b'foobarbaz'
-        client.get_object.return_value = {'Body': six.BytesIO(response_body)}
+        client.get_object.return_value = {'Body': BytesIO(response_body)}
         os_layer = mock.Mock()
         mock_fileobj = mock.MagicMock()
         mock_fileobj.__enter__.return_value = mock_fileobj
         mock_fileobj.write.side_effect = Exception("fake IO error")
         os_layer.open.return_value = mock_fileobj
 
-        downloader = MultipartDownloader(client, TransferConfig(),
-                                         os_layer, SequentialExecutor)
+        downloader = MultipartDownloader(
+            client, TransferConfig(), os_layer, SequentialExecutor
+        )
         # We're verifying that the exception raised from the IO future
-        # propogates back up via download_file().
+        # propagates back up via download_file().
         with self.assertRaisesRegex(Exception, "fake IO error"):
-            downloader.download_file('bucket', 'key', 'filename',
-                                     len(response_body), {})
+            downloader.download_file(
+                'bucket', 'key', 'filename', len(response_body), {}
+            )
 
     def test_download_futures_fail_triggers_shutdown(self):
         class FailedDownloadParts(SequentialExecutor):
@@ -468,27 +512,28 @@ class TestMultipartDownloader(unittest.TestCase):
                 if self.is_first:
                     # This is the download_parts_thread.
                     future.set_exception(
-                        Exception("fake download parts error"))
+                        Exception("fake download parts error")
+                    )
                     self.is_first = False
                 return future
 
         client = mock.Mock()
         response_body = b'foobarbaz'
-        client.get_object.return_value = {'Body': six.BytesIO(response_body)}
+        client.get_object.return_value = {'Body': BytesIO(response_body)}
 
-        downloader = MultipartDownloader(client, TransferConfig(),
-                                         InMemoryOSLayer({}),
-                                         FailedDownloadParts)
+        downloader = MultipartDownloader(
+            client, TransferConfig(), InMemoryOSLayer({}), FailedDownloadParts
+        )
         with self.assertRaisesRegex(Exception, "fake download parts error"):
-            downloader.download_file('bucket', 'key', 'filename',
-                                     len(response_body), {})
+            downloader.download_file(
+                'bucket', 'key', 'filename', len(response_body), {}
+            )
 
 
 class TestS3Transfer(unittest.TestCase):
     def setUp(self):
         self.client = mock.Mock()
-        self.random_file_patch = mock.patch(
-            's3transfer.random_file_extension')
+        self.random_file_patch = mock.patch('s3transfer.random_file_extension')
         self.random_file = self.random_file_patch.start()
         self.random_file.return_value = 'RANDOM'
 
@@ -524,16 +569,14 @@ class TestS3Transfer(unittest.TestCase):
 
     def test_extra_args_on_uploaded_passed_to_api_call(self):
         extra_args = {'ACL': 'public-read'}
-        fake_files = {
-            'smallfile': b'hello world'
-        }
+        fake_files = {'smallfile': b'hello world'}
         osutil = InMemoryOSLayer(fake_files)
         transfer = S3Transfer(self.client, osutil=osutil)
-        transfer.upload_file('smallfile', 'bucket', 'key',
-                             extra_args=extra_args)
+        transfer.upload_file(
+            'smallfile', 'bucket', 'key', extra_args=extra_args
+        )
         self.client.put_object.assert_called_with(
-            Bucket='bucket', Key='key', Body=mock.ANY,
-            ACL='public-read'
+            Bucket='bucket', Key='key', Body=mock.ANY, ACL='public-read'
         )
 
     def test_uses_multipart_upload_when_over_threshold(self):
@@ -542,13 +585,15 @@ class TestS3Transfer(unittest.TestCase):
                 'smallfile': b'foobar',
             }
             osutil = InMemoryOSLayer(fake_files)
-            config = TransferConfig(multipart_threshold=2,
-                                    multipart_chunksize=2)
+            config = TransferConfig(
+                multipart_threshold=2, multipart_chunksize=2
+            )
             transfer = S3Transfer(self.client, osutil=osutil, config=config)
             transfer.upload_file('smallfile', 'bucket', 'key')
 
             uploader.return_value.upload_file.assert_called_with(
-                'smallfile', 'bucket', 'key', None, {})
+                'smallfile', 'bucket', 'key', None, {}
+            )
 
     def test_uses_multipart_download_when_over_threshold(self):
         with mock.patch('s3transfer.MultipartDownloader') as downloader:
@@ -559,31 +604,43 @@ class TestS3Transfer(unittest.TestCase):
             self.client.head_object.return_value = {
                 'ContentLength': over_multipart_threshold,
             }
-            transfer.download_file('bucket', 'key', 'filename',
-                                   callback=callback)
+            transfer.download_file(
+                'bucket', 'key', 'filename', callback=callback
+            )
 
             downloader.return_value.download_file.assert_called_with(
-                # Note how we're downloading to a temorary random file.
-                'bucket', 'key', 'filename.RANDOM', over_multipart_threshold,
-                {}, callback)
+                # Note how we're downloading to a temporary random file.
+                'bucket',
+                'key',
+                'filename.RANDOM',
+                over_multipart_threshold,
+                {},
+                callback,
+            )
 
     def test_download_file_with_invalid_extra_args(self):
         below_threshold = 20
         osutil = InMemoryOSLayer({})
         transfer = S3Transfer(self.client, osutil=osutil)
         self.client.head_object.return_value = {
-            'ContentLength': below_threshold}
+            'ContentLength': below_threshold
+        }
         with self.assertRaises(ValueError):
-            transfer.download_file('bucket', 'key', '/tmp/smallfile',
-                                   extra_args={'BadValue': 'foo'})
+            transfer.download_file(
+                'bucket',
+                'key',
+                '/tmp/smallfile',
+                extra_args={'BadValue': 'foo'},
+            )
 
     def test_upload_file_with_invalid_extra_args(self):
         osutil = InMemoryOSLayer({})
         transfer = S3Transfer(self.client, osutil=osutil)
         bad_args = {"WebsiteRedirectLocation": "/foo"}
         with self.assertRaises(ValueError):
-            transfer.upload_file('bucket', 'key', '/tmp/smallfile',
-                                 extra_args=bad_args)
+            transfer.upload_file(
+                'bucket', 'key', '/tmp/smallfile', extra_args=bad_args
+            )
 
     def test_download_file_fowards_extra_args(self):
         extra_args = {
@@ -594,12 +651,12 @@ class TestS3Transfer(unittest.TestCase):
         osutil = InMemoryOSLayer({'smallfile': b'hello world'})
         transfer = S3Transfer(self.client, osutil=osutil)
         self.client.head_object.return_value = {
-            'ContentLength': below_threshold}
-        self.client.get_object.return_value = {
-            'Body': six.BytesIO(b'foobar')
+            'ContentLength': below_threshold
         }
-        transfer.download_file('bucket', 'key', '/tmp/smallfile',
-                               extra_args=extra_args)
+        self.client.get_object.return_value = {'Body': BytesIO(b'foobar')}
+        transfer.download_file(
+            'bucket', 'key', '/tmp/smallfile', extra_args=extra_args
+        )
 
         # Note that we need to invoke the HeadObject call
         # and the PutObject call with the extra_args.
@@ -607,20 +664,24 @@ class TestS3Transfer(unittest.TestCase):
         # will return a 400 if you don't provide the required
         # params.
         self.client.get_object.assert_called_with(
-            Bucket='bucket', Key='key', SSECustomerAlgorithm='AES256',
-            SSECustomerKey='foo')
+            Bucket='bucket',
+            Key='key',
+            SSECustomerAlgorithm='AES256',
+            SSECustomerKey='foo',
+        )
 
     def test_get_object_stream_is_retried_and_succeeds(self):
         below_threshold = 20
         osutil = InMemoryOSLayer({'smallfile': b'hello world'})
         transfer = S3Transfer(self.client, osutil=osutil)
         self.client.head_object.return_value = {
-            'ContentLength': below_threshold}
+            'ContentLength': below_threshold
+        }
         self.client.get_object.side_effect = [
             # First request fails.
             socket.error("fake error"),
             # Second succeeds.
-            {'Body': six.BytesIO(b'foobar')}
+            {'Body': BytesIO(b'foobar')},
         ]
         transfer.download_file('bucket', 'key', '/tmp/smallfile')
 
@@ -631,9 +692,10 @@ class TestS3Transfer(unittest.TestCase):
         osutil = InMemoryOSLayer({})
         transfer = S3Transfer(self.client, osutil=osutil)
         self.client.head_object.return_value = {
-            'ContentLength': below_threshold}
+            'ContentLength': below_threshold
+        }
         # Here we're raising an exception every single time, which
-        # will exhaust our retry count and propogate a
+        # will exhaust our retry count and propagate a
         # RetriesExceededError.
         self.client.get_object.side_effect = socket.error("fake error")
         with self.assertRaises(RetriesExceededError):
@@ -649,10 +711,9 @@ class TestS3Transfer(unittest.TestCase):
         osutil = InMemoryOSLayer({'smallfile': b'hello world'})
         transfer = S3Transfer(self.client, osutil=osutil)
         self.client.head_object.return_value = {
-            'ContentLength': below_threshold}
-        self.client.get_object.return_value = {
-            'Body': six.BytesIO(b'foobar')
+            'ContentLength': below_threshold
         }
+        self.client.get_object.return_value = {'Body': BytesIO(b'foobar')}
         transfer.download_file('bucket', 'key', 'smallfile')
 
         self.client.get_object.assert_called_with(Bucket='bucket', Key='key')
@@ -677,8 +738,7 @@ class TestShutdownQueue(unittest.TestCase):
 
 class TestRandomFileExtension(unittest.TestCase):
     def test_has_proper_length(self):
-        self.assertEqual(
-            len(random_file_extension(num_digits=4)), 4)
+        self.assertEqual(len(random_file_extension(num_digits=4)), 4)
 
 
 class TestCallbackHandlers(unittest.TestCase):
@@ -713,10 +773,8 @@ class TestCallbackHandlers(unittest.TestCase):
 
     def test_dont_disable_if_wrong_operation(self):
         disable_upload_callbacks(self.request, 'OtherOperation')
-        self.assertFalse(
-            self.request.body.disable_callback.called)
+        self.assertFalse(self.request.body.disable_callback.called)
 
     def test_dont_enable_if_wrong_operation(self):
         enable_upload_callbacks(self.request, 'OtherOperation')
-        self.assertFalse(
-            self.request.body.enable_callback.called)
+        self.assertFalse(self.request.body.enable_callback.called)

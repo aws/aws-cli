@@ -145,6 +145,21 @@ class TestLoginCommand(BaseSSOTest):
             stderr
         )
 
+    def test_login_minimal_sso_configuration(self):
+        content = (
+            '[default]\n'
+            'sso_start_url={start_url}\n'
+            'sso_region={sso_region}\n'
+        ).format(start_url=self.start_url, sso_region=self.sso_region)
+        self.set_config_file_content(content=content)
+        self.add_oidc_workflow_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            expected_token=self.access_token
+        )
+
     def test_login_partially_missing_sso_configuration(self):
         content = (
             '[default]\n'
@@ -158,6 +173,8 @@ class TestLoginCommand(BaseSSOTest):
         )
         self.assertIn('sso_region', stderr)
         self.assertNotIn('sso_start_url', stderr)
+        self.assertNotIn('sso_account_id', stderr)
+        self.assertNotIn('sso_role_name', stderr)
 
     def test_token_cache_datetime_format(self):
         self.add_oidc_workflow_responses(self.access_token)

@@ -26,14 +26,15 @@ class LoginCommand(BasicCommand):
         'Retrieves and caches an AWS SSO access token to exchange for AWS '
         'credentials. To login, the requested profile must have first been '
         'setup using ``aws configure sso``. Each time the ``login`` command '
-        'is called, a new SSO access token will be retrieved.'
+        'is called, a new SSO access token will be retrieved. Please note '
+        'that only one login session can be active for a given SSO Start URL '
+        'and creating multiple profiles does not allow for multiple users to '
+        'be authenticated against the same SSO Start URL.'
     )
     ARG_TABLE = []
     _REQUIRED_SSO_CONFIG_VARS = [
         'sso_start_url',
         'sso_region',
-        'sso_role_name',
-        'sso_account_id',
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

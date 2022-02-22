@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.60
+=======
+
+* api-change:``apprunner``: AWS App Runner adds a Java platform (Corretto 8, Corretto 11 runtimes) and a Node.js 14 runtime.
+* api-change:``translate``: This release enables customers to use translation settings for formality customization in their synchronous translation output.
+* api-change:``wafv2``: Updated descriptions for logging configuration.
+
+
 1.22.59
 =======
 

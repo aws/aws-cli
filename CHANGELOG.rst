@@ -3165,6 +3165,30 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.60
+=======
+
+* api-change:``apprunner``: AWS App Runner adds a Java platform (Corretto 8, Corretto 11 runtimes) and a Node.js 14 runtime.
+* api-change:``translate``: This release enables customers to use translation settings for formality customization in their synchronous translation output.
+* api-change:``wafv2``: Updated descriptions for logging configuration.
+
+
+1.22.59
+=======
+
+* api-change:``customer-profiles``: This release introduces apis CreateIntegrationWorkflow, DeleteWorkflow, ListWorkflows, GetWorkflow and GetWorkflowSteps. These apis are used to manage and view integration workflows.
+* api-change:``imagebuilder``: This release adds support to enable faster launching for Windows AMIs created by EC2 Image Builder.
+* api-change:``dynamodb``: DynamoDB ExecuteStatement API now supports Limit as a request parameter to specify the maximum number of items to evaluate. If specified, the service will process up to the Limit and the results will include a LastEvaluatedKey value to continue the read in a subsequent operation.
+
+
+1.22.58
+=======
+
+* api-change:``budgets``: This change introduces DescribeBudgetNotificationsForAccount API which returns budget notifications for the specified account
+* api-change:``gamelift``: Increase string list limit from 10 to 100.
+* api-change:``transfer``: Properties for Transfer Family used with SFTP, FTP, and FTPS protocols. Display Banners are bodies of text that can be displayed before and/or after a user authenticates onto a server using one of the previously mentioned protocols.
+
+
 1.22.57
 =======
 

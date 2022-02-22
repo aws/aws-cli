@@ -411,7 +411,7 @@
         {"shape":"InternalServerError"},
         {"shape":"DuplicateItemException"}
       ],
-      "documentation":"<p>This operation allows you to perform reads and singleton writes on data stored in DynamoDB, using PartiQL.</p>"
+      "documentation":"<p>This operation allows you to perform reads and singleton writes on data stored in DynamoDB, using PartiQL.</p> <p>For PartiQL reads (<code>SELECT</code> statement), if the total number of processed items exceeds the maximum dataset size limit of 1 MB, the read stops and results are returned to the user as a <code>LastEvaluatedKey</code> value to continue the read in a subsequent operation. If the filter criteria in <code>WHERE</code> clause does not match any data, the read will return an empty result set.</p> <p>A single <code>SELECT</code> statement response can return up to the maximum number of items (if using the Limit parameter) or a maximum of 1 MB of data (and then apply any filtering to the results using <code>WHERE</code> clause). If <code>LastEvaluatedKey</code> is present in the response, you need to paginate the result set.</p>"
     },
     "ExecuteTransaction":{
       "name":"ExecuteTransaction",
@@ -2477,7 +2477,11 @@
           "shape":"PartiQLNextToken",
           "documentation":"<p>Set this value to get remaining results, if <code>NextToken</code> was returned in the statement response.</p>"
         },
-        "ReturnConsumedCapacity":{"shape":"ReturnConsumedCapacity"}
+        "ReturnConsumedCapacity":{"shape":"ReturnConsumedCapacity"},
+        "Limit":{
+          "shape":"PositiveIntegerObject",
+          "documentation":"<p>The maximum number of items to evaluate (not necessarily the number of matching items). If DynamoDB processes the number of items up to the limit while processing the results, it stops the operation and returns the matching values up to that point, along with a key in <code>LastEvaluatedKey</code> to apply in a subsequent operation so you can pick up where you left off. Also, if the processed dataset size exceeds 1 MB before DynamoDB reaches this limit, it stops the operation and returns the matching values up to the limit, and a key in <code>LastEvaluatedKey</code> to apply in a subsequent operation to continue the operation. </p>"
+        }
       }
     },
     "ExecuteStatementOutput":{
@@ -2491,7 +2495,11 @@
           "shape":"PartiQLNextToken",
           "documentation":"<p>If the response of a read request exceeds the response payload limit DynamoDB will set this value in the response. If set, you can use that this value in the subsequent request to get the remaining results.</p>"
         },
-        "ConsumedCapacity":{"shape":"ConsumedCapacity"}
+        "ConsumedCapacity":{"shape":"ConsumedCapacity"},
+        "LastEvaluatedKey":{
+          "shape":"Key",
+          "documentation":"<p>The primary key of the item where the operation stopped, inclusive of the previous result set. Use this value to start a new operation, excluding this value in the new request. If <code>LastEvaluatedKey</code> is empty, then the \"last page\" of results has been processed and there is no more data to be retrieved. If <code>LastEvaluatedKey</code> is not empty, it does not necessarily mean that there is more data in the result set. The only way to know when you have reached the end of the result set is when <code>LastEvaluatedKey</code> is empty. </p>"
+        }
       }
     },
     "ExecuteTransactionInput":{

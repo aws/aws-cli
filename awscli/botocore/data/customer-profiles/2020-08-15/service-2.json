@@ -47,6 +47,23 @@
       ],
       "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true. </p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p>"
     },
+    "CreateIntegrationWorkflow":{
+      "name":"CreateIntegrationWorkflow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/workflows/integrations"
+      },
+      "input":{"shape":"CreateIntegrationWorkflowRequest"},
+      "output":{"shape":"CreateIntegrationWorkflowResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Creates an integration workflow. An integration workflow is an async process which ingests historic data and sets up an integration for ongoing updates. The supported Amazon AppFlow sources are Salesforce, ServiceNow, and Marketo. </p>"
+    },
     "CreateProfile":{
       "name":"CreateProfile",
       "http":{
@@ -166,6 +183,23 @@
       ],
       "documentation":"<p>Removes a ProfileObjectType from a specific domain as well as removes all the ProfileObjects of that type. It also disables integrations from this specific ProfileObjectType. In addition, it scrubs all of the fields of the standard profile that were populated from this ProfileObjectType.</p>"
     },
+    "DeleteWorkflow":{
+      "name":"DeleteWorkflow",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/workflows/{WorkflowId}"
+      },
+      "input":{"shape":"DeleteWorkflowRequest"},
+      "output":{"shape":"DeleteWorkflowResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the specified workflow and all its corresponding resources. This is an async process.</p>"
+    },
     "GetAutoMergingPreview":{
       "name":"GetAutoMergingPreview",
       "http":{
@@ -249,7 +283,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Before calling this API, use <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable identity resolution: set <code>Matching</code> to true.</p> <p>GetMatches returns potentially matching profiles, based on the results of the latest run of a machine learning process. </p> <important> <p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p> </important> <p>Amazon Connect uses the following profile attributes to identify matches:</p> <ul> <li> <p>PhoneNumber</p> </li> <li> <p>HomePhoneNumber</p> </li> <li> <p>BusinessPhoneNumber</p> </li> <li> <p>MobilePhoneNumber</p> </li> <li> <p>EmailAddress</p> </li> <li> <p>PersonalEmailAddress</p> </li> <li> <p>BusinessEmailAddress</p> </li> <li> <p>FullName</p> </li> <li> <p>BusinessName</p> </li> </ul> <p>For example, two or more profiles—with spelling mistakes such as <b>John Doe</b> and <b>Jhn Doe</b>, or different casing email addresses such as <b>JOHN_DOE@ANYCOMPANY.COM</b> and <b>johndoe@anycompany.com</b>, or different phone number formats such as <b>555-010-0000</b> and <b>+1-555-010-0000</b>—can be detected as belonging to the same customer <b>John Doe</b> and merged into a unified profile.</p>"
+      "documentation":"<p>Before calling this API, use <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable identity resolution: set <code>Matching</code> to true.</p> <p>GetMatches returns potentially matching profiles, based on the results of the latest run of a machine learning process. </p> <important> <p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p> </important> <p>Amazon Connect uses the following profile attributes to identify matches:</p> <ul> <li> <p>PhoneNumber</p> </li> <li> <p>HomePhoneNumber</p> </li> <li> <p>BusinessPhoneNumber</p> </li> <li> <p>MobilePhoneNumber</p> </li> <li> <p>EmailAddress</p> </li> <li> <p>PersonalEmailAddress</p> </li> <li> <p>BusinessEmailAddress</p> </li> <li> <p>FullName</p> </li> </ul> <p>For example, two or more profiles—with spelling mistakes such as <b>John Doe</b> and <b>Jhn Doe</b>, or different casing email addresses such as <b>JOHN_DOE@ANYCOMPANY.COM</b> and <b>johndoe@anycompany.com</b>, or different phone number formats such as <b>555-010-0000</b> and <b>+1-555-010-0000</b>—can be detected as belonging to the same customer <b>John Doe</b> and merged into a unified profile.</p>"
     },
     "GetProfileObjectType":{
       "name":"GetProfileObjectType",
@@ -284,6 +318,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns the template information for a specific object type.</p> <p>A template is a predefined ProfileObjectType, such as “Salesforce-Account” or “Salesforce-Contact.” When a user sends a ProfileObject, using the PutProfileObject API, with an ObjectTypeName that matches one of the TemplateIds, it uses the mappings from the template.</p>"
+    },
+    "GetWorkflow":{
+      "name":"GetWorkflow",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/workflows/{WorkflowId}"
+      },
+      "input":{"shape":"GetWorkflowRequest"},
+      "output":{"shape":"GetWorkflowResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get details of specified workflow.</p>"
+    },
+    "GetWorkflowSteps":{
+      "name":"GetWorkflowSteps",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/workflows/{WorkflowId}/steps"
+      },
+      "input":{"shape":"GetWorkflowStepsRequest"},
+      "output":{"shape":"GetWorkflowStepsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get granular list of steps in workflow.</p>"
     },
     "ListAccountIntegrations":{
       "name":"ListAccountIntegrations",
@@ -418,6 +486,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Displays the tags associated with an Amazon Connect Customer Profiles resource. In Connect Customer Profiles, domains, profile object types, and integrations can be tagged.</p>"
+    },
+    "ListWorkflows":{
+      "name":"ListWorkflows",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/workflows"
+      },
+      "input":{"shape":"ListWorkflowsRequest"},
+      "output":{"shape":"ListWorkflowsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Query to list all workflows.</p>"
     },
     "MergeProfiles":{
       "name":"MergeProfiles",
@@ -672,6 +757,111 @@
       },
       "documentation":"<p>A generic address associated with the customer that is not mailing, shipping, or billing.</p>"
     },
+    "AppflowIntegration":{
+      "type":"structure",
+      "required":["FlowDefinition"],
+      "members":{
+        "FlowDefinition":{"shape":"FlowDefinition"},
+        "Batches":{
+          "shape":"Batches",
+          "documentation":"<p>Batches in workflow of type <code>APPFLOW_INTEGRATION</code>.</p>"
+        }
+      },
+      "documentation":"<p>Details for workflow of type <code>APPFLOW_INTEGRATION</code>.</p>"
+    },
+    "AppflowIntegrationWorkflowAttributes":{
+      "type":"structure",
+      "required":[
+        "SourceConnectorType",
+        "ConnectorProfileName"
+      ],
+      "members":{
+        "SourceConnectorType":{
+          "shape":"SourceConnectorType",
+          "documentation":"<p>Specifies the source connector type, such as Salesforce, ServiceNow, and Marketo. Indicates source of ingestion.</p>"
+        },
+        "ConnectorProfileName":{
+          "shape":"ConnectorProfileName",
+          "documentation":"<p>The name of the AppFlow connector profile used for ingestion.</p>"
+        },
+        "RoleArn":{
+          "shape":"string1To255",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Customer Profiles assumes this role to create resources on your behalf as part of workflow execution.</p>"
+        }
+      },
+      "documentation":"<p>Structure holding all <code>APPFLOW_INTEGRATION</code> specific workflow attributes.</p>"
+    },
+    "AppflowIntegrationWorkflowMetrics":{
+      "type":"structure",
+      "required":[
+        "RecordsProcessed",
+        "StepsCompleted",
+        "TotalSteps"
+      ],
+      "members":{
+        "RecordsProcessed":{
+          "shape":"long",
+          "documentation":"<p>Number of records processed in <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "StepsCompleted":{
+          "shape":"long",
+          "documentation":"<p>Total steps completed in <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "TotalSteps":{
+          "shape":"long",
+          "documentation":"<p>Total steps in <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        }
+      },
+      "documentation":"<p>Workflow specific execution metrics for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+    },
+    "AppflowIntegrationWorkflowStep":{
+      "type":"structure",
+      "required":[
+        "FlowName",
+        "Status",
+        "ExecutionMessage",
+        "RecordsProcessed",
+        "BatchRecordsStartTime",
+        "BatchRecordsEndTime",
+        "CreatedAt",
+        "LastUpdatedAt"
+      ],
+      "members":{
+        "FlowName":{
+          "shape":"FlowName",
+          "documentation":"<p>Name of the flow created during execution of workflow step. <code>APPFLOW_INTEGRATION</code> workflow type creates an appflow flow during workflow step execution on the customers behalf.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Workflow step status for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "ExecutionMessage":{
+          "shape":"string1To255",
+          "documentation":"<p>Message indicating execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "RecordsProcessed":{
+          "shape":"long",
+          "documentation":"<p>Total number of records processed during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "BatchRecordsStartTime":{
+          "shape":"string1To255",
+          "documentation":"<p>Start datetime of records pulled in batch during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "BatchRecordsEndTime":{
+          "shape":"string1To255",
+          "documentation":"<p>End datetime of records pulled in batch during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>Creation timestamp of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>Last updated timestamp for workflow step for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        }
+      },
+      "documentation":"<p>Workflow step details for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+    },
     "AttributeSourceIdMap":{
       "type":"map",
       "key":{"shape":"string1To255"},
@@ -709,6 +899,28 @@
       "documentation":"<p>The input you provided is invalid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "Batch":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"timestamp",
+          "documentation":"<p>Start time of batch to split ingestion.</p>"
+        },
+        "EndTime":{
+          "shape":"timestamp",
+          "documentation":"<p>End time of batch to split ingestion.</p>"
+        }
+      },
+      "documentation":"<p>Batch defines the boundaries for ingestion for each step in <code>APPFLOW_INTEGRATION</code> workflow. <code>APPFLOW_INTEGRATION</code> workflow splits ingestion based on these boundaries.</p>"
+    },
+    "Batches":{
+      "type":"list",
+      "member":{"shape":"Batch"}
     },
     "BucketName":{
       "type":"string",
@@ -860,6 +1072,61 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateIntegrationWorkflowRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "WorkflowType",
+        "IntegrationConfig",
+        "ObjectTypeName",
+        "RoleArn"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "WorkflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of workflow. The only supported value is APPFLOW_INTEGRATION.</p>"
+        },
+        "IntegrationConfig":{
+          "shape":"IntegrationConfig",
+          "documentation":"<p>Configuration data for integration workflow.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name of the profile object type.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Customer Profiles assumes this role to create resources on your behalf as part of workflow execution.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateIntegrationWorkflowResponse":{
+      "type":"structure",
+      "required":[
+        "WorkflowId",
+        "Message"
+      ],
+      "members":{
+        "WorkflowId":{
+          "shape":"uuid",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
+        },
+        "Message":{
+          "shape":"string1To255",
+          "documentation":"<p>A message indicating create request was received.</p>"
         }
       }
     },
@@ -1166,6 +1433,32 @@
           "shape":"message",
           "documentation":"<p>A message that indicates the delete request is done.</p>"
         }
+      }
+    },
+    "DeleteWorkflowRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "WorkflowId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "WorkflowId":{
+          "shape":"string1To255",
+          "documentation":"<p>Unique identifier for the workflow.</p>",
+          "location":"uri",
+          "locationName":"WorkflowId"
+        }
+      }
+    },
+    "DeleteWorkflowResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "DestinationField":{
@@ -1613,6 +1906,10 @@
         "ObjectTypeNames":{
           "shape":"ObjectTypeNames",
           "documentation":"<p>A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.</p>"
+        },
+        "WorkflowId":{
+          "shape":"string1To255",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
         }
       }
     },
@@ -1784,6 +2081,118 @@
         }
       }
     },
+    "GetWorkflowRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "WorkflowId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "WorkflowId":{
+          "shape":"uuid",
+          "documentation":"<p>Unique identifier for the workflow.</p>",
+          "location":"uri",
+          "locationName":"WorkflowId"
+        }
+      }
+    },
+    "GetWorkflowResponse":{
+      "type":"structure",
+      "members":{
+        "WorkflowId":{
+          "shape":"uuid",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
+        },
+        "WorkflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of workflow. The only supported value is APPFLOW_INTEGRATION.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Status of workflow execution.</p>"
+        },
+        "ErrorDescription":{
+          "shape":"string1To255",
+          "documentation":"<p>Workflow error messages during execution (if any).</p>"
+        },
+        "StartDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp that represents when workflow execution started.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp that represents when workflow execution last updated.</p>"
+        },
+        "Attributes":{
+          "shape":"WorkflowAttributes",
+          "documentation":"<p>Attributes provided for workflow execution.</p>"
+        },
+        "Metrics":{
+          "shape":"WorkflowMetrics",
+          "documentation":"<p>Workflow specific execution metrics.</p>"
+        }
+      }
+    },
+    "GetWorkflowStepsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "WorkflowId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "WorkflowId":{
+          "shape":"uuid",
+          "documentation":"<p>Unique identifier for the workflow.</p>",
+          "location":"uri",
+          "locationName":"WorkflowId"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "GetWorkflowStepsResponse":{
+      "type":"structure",
+      "members":{
+        "WorkflowId":{
+          "shape":"uuid",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
+        },
+        "WorkflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of workflow. The only supported value is APPFLOW_INTEGRATION.</p>"
+        },
+        "Items":{
+          "shape":"WorkflowStepsList",
+          "documentation":"<p>List containing workflow step details.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "IdentityResolutionJob":{
       "type":"structure",
       "members":{
@@ -1847,6 +2256,16 @@
         }
       },
       "documentation":"<p>Specifies the configuration used when importing incremental records from the source.</p>"
+    },
+    "IntegrationConfig":{
+      "type":"structure",
+      "members":{
+        "AppflowIntegration":{
+          "shape":"AppflowIntegration",
+          "documentation":"<p>Configuration data for <code>APPFLOW_INTEGRATION</code> workflow type.</p>"
+        }
+      },
+      "documentation":"<p>Configuration data for integration workflow.</p>"
     },
     "IntegrationList":{
       "type":"list",
@@ -1946,6 +2365,12 @@
           "documentation":"<p>The maximum number of objects returned per page.</p>",
           "location":"querystring",
           "locationName":"max-results"
+        },
+        "IncludeHidden":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>Boolean to indicate if hidden integration should be returned. Defaults to <code>False</code>.</p>",
+          "location":"querystring",
+          "locationName":"include-hidden"
         }
       }
     },
@@ -2092,6 +2517,10 @@
         "ObjectTypeNames":{
           "shape":"ObjectTypeNames",
           "documentation":"<p>A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.</p>"
+        },
+        "WorkflowId":{
+          "shape":"string1To255",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
         }
       },
       "documentation":"<p>An integration in list of integrations.</p>"
@@ -2117,6 +2546,12 @@
           "documentation":"<p>The maximum number of objects returned per page.</p>",
           "location":"querystring",
           "locationName":"max-results"
+        },
+        "IncludeHidden":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>Boolean to indicate if hidden integration should be returned. Defaults to <code>False</code>.</p>",
+          "location":"querystring",
+          "locationName":"include-hidden"
         }
       }
     },
@@ -2337,6 +2772,97 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "ListWorkflowsItem":{
+      "type":"structure",
+      "required":[
+        "WorkflowType",
+        "WorkflowId",
+        "Status",
+        "StatusDescription",
+        "CreatedAt",
+        "LastUpdatedAt"
+      ],
+      "members":{
+        "WorkflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of workflow. The only supported value is APPFLOW_INTEGRATION.</p>"
+        },
+        "WorkflowId":{
+          "shape":"string1To255",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Status of workflow execution.</p>"
+        },
+        "StatusDescription":{
+          "shape":"string1To255",
+          "documentation":"<p>Description for workflow execution status.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>Creation timestamp for workflow.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>Last updated timestamp for workflow.</p>"
+        }
+      },
+      "documentation":"<p>A workflow in list of workflows.</p>"
+    },
+    "ListWorkflowsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "WorkflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of workflow. The only supported value is APPFLOW_INTEGRATION.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Status of workflow execution.</p>"
+        },
+        "QueryStartDate":{
+          "shape":"timestamp",
+          "documentation":"<p>Retrieve workflows started after timestamp.</p>"
+        },
+        "QueryEndDate":{
+          "shape":"timestamp",
+          "documentation":"<p>Retrieve workflows ended after timestamp.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListWorkflowsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"WorkflowList",
+          "documentation":"<p>List containing workflow details.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
     },
@@ -2772,6 +3298,10 @@
         "ObjectTypeNames":{
           "shape":"ObjectTypeNames",
           "documentation":"<p>A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.</p>"
+        },
+        "WorkflowId":{
+          "shape":"string1To255",
+          "documentation":"<p>Unique identifier for the workflow.</p>"
         }
       }
     },
@@ -2931,6 +3461,11 @@
       "documentation":"<p>The requested resource does not exist, or access was denied.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "RoleArn":{
+      "type":"string",
+      "max":512,
+      "pattern":"arn:aws:iam:.*:[0-9]+:.*"
     },
     "S3ConnectorOperator":{
       "type":"string",
@@ -3260,6 +3795,18 @@
     "StandardIdentifierList":{
       "type":"list",
       "member":{"shape":"StandardIdentifier"}
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED",
+        "SPLIT",
+        "RETRY",
+        "CANCELLED"
+      ]
     },
     "TagArn":{
       "type":"string",
@@ -3674,6 +4221,48 @@
           "documentation":"<p>The unique identifier of a customer profile.</p>"
         }
       }
+    },
+    "WorkflowAttributes":{
+      "type":"structure",
+      "members":{
+        "AppflowIntegration":{
+          "shape":"AppflowIntegrationWorkflowAttributes",
+          "documentation":"<p>Workflow attributes specific to <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        }
+      },
+      "documentation":"<p>Structure to hold workflow attributes.</p>"
+    },
+    "WorkflowList":{
+      "type":"list",
+      "member":{"shape":"ListWorkflowsItem"}
+    },
+    "WorkflowMetrics":{
+      "type":"structure",
+      "members":{
+        "AppflowIntegration":{
+          "shape":"AppflowIntegrationWorkflowMetrics",
+          "documentation":"<p>Workflow execution metrics for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        }
+      },
+      "documentation":"<p>Generic object containing workflow execution metrics.</p>"
+    },
+    "WorkflowStepItem":{
+      "type":"structure",
+      "members":{
+        "AppflowIntegration":{
+          "shape":"AppflowIntegrationWorkflowStep",
+          "documentation":"<p>Workflow step information specific to <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+        }
+      },
+      "documentation":"<p>List containing steps in workflow.</p>"
+    },
+    "WorkflowStepsList":{
+      "type":"list",
+      "member":{"shape":"WorkflowStepItem"}
+    },
+    "WorkflowType":{
+      "type":"string",
+      "enum":["APPFLOW_INTEGRATION"]
     },
     "ZendeskConnectorOperator":{
       "type":"string",

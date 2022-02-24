@@ -4400,6 +4400,15 @@
         "bucket-owner-full-control"
       ]
     },
+    "S3ChecksumAlgorithm":{
+      "type":"string",
+      "enum":[
+        "CRC32",
+        "CRC32C",
+        "SHA1",
+        "SHA256"
+      ]
+    },
     "S3ContentLength":{
       "type":"long",
       "min":0
@@ -4476,6 +4485,10 @@
         "BucketKeyEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption with server-side encryption using Amazon Web Services KMS (SSE-KMS). Setting this header to <code>true</code> causes Amazon S3 to use an S3 Bucket Key for object encryption with SSE-KMS.</p> <p>Specifying this header with an <i>object</i> action doesn’t affect <i>bucket-level</i> settings for S3 Bucket Key.</p>"
+        },
+        "ChecksumAlgorithm":{
+          "shape":"S3ChecksumAlgorithm",
+          "documentation":"<p>Indicates the algorithm you want Amazon S3 to use to create the checksum. For more information see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/CheckingObjectIntegrity.xml\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains the configuration parameters for a PUT Copy object operation. S3 Batch Operations passes every object to the underlying PUT Copy object API. For more information about the parameters for this operation, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html\">PUT Object - Copy</a>.</p>"

@@ -45,6 +45,7 @@ SIGNED_HEADERS_BLACKLIST = [
     'x-amzn-trace-id',
 ]
 UNSIGNED_PAYLOAD = 'UNSIGNED-PAYLOAD'
+STREAMING_UNSIGNED_PAYLOAD_TRAILER = 'STREAMING-UNSIGNED-PAYLOAD-TRAILER'
 
 
 def _host_from_url(url):
@@ -277,8 +278,15 @@ class SigV4Auth(BaseSigner):
         l = sorted(l)
         return ';'.join(l)
 
+    def _is_streaming_checksum_payload(self, request):
+        checksum_context = request.context.get('checksum', {})
+        algorithm = checksum_context.get('request_algorithm')
+        return isinstance(algorithm, dict) and algorithm.get('in') == 'trailer'
+
     def payload(self, request):
-        if not self._should_sha256_sign_payload(request):
+        if self._is_streaming_checksum_payload(request):
+            return STREAMING_UNSIGNED_PAYLOAD_TRAILER
+        elif not self._should_sha256_sign_payload(request):
             # When payload signing is disabled, we use this static string in
             # place of the payload checksum.
             return UNSIGNED_PAYLOAD
@@ -450,12 +458,17 @@ class S3SigV4Auth(SigV4Auth):
         if sign_payload is not None:
             return sign_payload
 
-        # We require that both content-md5 be present and https be enabled
+        # We require that both a checksum be present and https be enabled
         # to implicitly disable body signing. The combination of TLS and
-        # content-md5 is sufficiently secure and durable for us to be
+        # a checksum is sufficiently secure and durable for us to be
         # confident in the request without body signing.
+        checksum_header = 'Content-MD5'
+        checksum_context = request.context.get('checksum', {})
+        algorithm = checksum_context.get('request_algorithm')
+        if isinstance(algorithm, dict) and algorithm.get('in') == 'header':
+            checksum_header = algorithm['name']
         if not request.url.startswith('https') or \
-                'Content-MD5' not in request.headers:
+                checksum_header not in request.headers:
             return True
 
         # If the input is streaming we disable body signing by default.

@@ -259,7 +259,14 @@ class ResponseParser(object):
             headers = response['headers']
             response_metadata['HTTPHeaders'] = lowercase_dict(headers)
             parsed['ResponseMetadata'] = response_metadata
+            self._add_checksum_response_metadata(response, response_metadata)
         return parsed
+
+    def _add_checksum_response_metadata(self, response, response_metadata):
+        checksum_context = response.get('context', {}).get('checksum', {})
+        algorithm = checksum_context.get('response_algorithm')
+        if algorithm:
+            response_metadata['ChecksumAlgorithm'] = algorithm
 
     def _is_modeled_error_shape(self, shape):
         return shape is not None and shape.metadata.get('exception', False)

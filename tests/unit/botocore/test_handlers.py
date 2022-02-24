@@ -1239,6 +1239,31 @@ class TestAddMD5(BaseMD5Test):
             request_dict['headers']['Content-MD5'],
             'OFj2IjCsPJFfMAxmQxLGPw==')
 
+    def test_skip_md5_when_flexible_checksum_context(self):
+        request_dict = {
+            'body': six.BytesIO(b'foobar'),
+            'headers': {},
+            'context': {
+                'checksum': {
+                    'request_algorithm': {
+                        'in': 'header',
+                        'algorithm': 'crc32',
+                        'name': 'x-amz-checksum-crc32',
+                    }
+                }
+            }
+        }
+        conditionally_calculate_md5(request_dict)
+        self.assertNotIn('Content-MD5', request_dict['headers'])
+
+    def test_skip_md5_when_flexible_checksum_explicit_header(self):
+        request_dict = {
+            'body': six.BytesIO(b'foobar'),
+            'headers': {'x-amz-checksum-crc32': 'foo'},
+        }
+        conditionally_calculate_md5(request_dict)
+        self.assertNotIn('Content-MD5', request_dict['headers'])
+
 
 class TestParameterAlias(unittest.TestCase):
     def setUp(self):

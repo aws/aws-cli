@@ -279,6 +279,20 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
         sha_header = self.request.headers['X-Amz-Content-SHA256']
         self.assertEqual(sha_header, 'UNSIGNED-PAYLOAD')
 
+    def test_does_not_use_sha256_if_checksum_set(self):
+        self.request.context['has_streaming_input'] = True
+        self.request.context['checksum'] = {
+            'request_algorithm': {
+                'in': 'header',
+                'name': 'x-amz-checksum-sha256',
+                'algorithm': 'sha256',
+            }
+        }
+        self.request.headers.add_header('X-Amz-Checksum-sha256', 'foo')
+        self.auth.add_auth(self.request)
+        sha_header = self.request.headers['X-Amz-Content-SHA256']
+        self.assertEqual(sha_header, 'UNSIGNED-PAYLOAD')
+
     def test_does_not_use_sha256_if_context_config_set(self):
         self.request.context['payload_signing_enabled'] = False
         self.request.headers.add_header('Content-MD5', 'foo')

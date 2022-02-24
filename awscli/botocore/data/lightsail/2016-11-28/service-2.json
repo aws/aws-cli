@@ -194,7 +194,7 @@
         {"shape":"ServiceException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a new access key for the specified Amazon Lightsail bucket. Access keys consist of an access key ID and corresponding secret access key.</p> <p>Access keys grant full programmatic access to the specified bucket and its objects. You can have a maximum of two access keys per bucket. Use the <a>GetBucketAccessKeys</a> action to get a list of current access keys for a specific bucket. For more information about access keys, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-bucket-access-keys\">Creating access keys for a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> <important> <p>The <code>secretAccessKey</code> value is returned only in response to the <code>CreateBucketAccessKey</code> action. You can get a secret access key only when you first create an access key; you cannot get the secret access key later. If you lose the secret access key, you must create a new access key.</p> </important>"
+      "documentation":"<p>Creates a new access key for the specified Amazon Lightsail bucket. Access keys consist of an access key ID and corresponding secret access key.</p> <p>Access keys grant full programmatic access to the specified bucket and its objects. You can have a maximum of two access keys per bucket. Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketAccessKeys.html\">GetBucketAccessKeys</a> action to get a list of current access keys for a specific bucket. For more information about access keys, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-bucket-access-keys\">Creating access keys for a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> <important> <p>The <code>secretAccessKey</code> value is returned only in response to the <code>CreateBucketAccessKey</code> action. You can get a secret access key only when you first create an access key; you cannot get the secret access key later. If you lose the secret access key, you must create a new access key.</p> </important>"
     },
     "CreateCertificate":{
       "name":"CreateCertificate",
@@ -488,7 +488,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates an SSH key pair.</p> <p>The <code>create key pair</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Creates a custom SSH key pair that you can use with an Amazon Lightsail instance.</p> <note> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_DownloadDefaultKeyPair.html\">DownloadDefaultKeyPair</a> action to create a Lightsail default key pair in an Amazon Web Services Region where a default key pair does not currently exist.</p> </note> <p>The <code>create key pair</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "CreateLoadBalancer":{
       "name":"CreateLoadBalancer",
@@ -873,7 +873,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Deletes a specific SSH key pair.</p> <p>The <code>delete key pair</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>key pair name</code>. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Deletes the specified key pair by removing the public key from Amazon Lightsail.</p> <p>You can delete key pairs that were created using the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_ImportKeyPair.html\">ImportKeyPair</a> and <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateKeyPair.html\">CreateKeyPair</a> actions, as well as the Lightsail default key pair. A new default key pair will not be created unless you launch an instance without specifying a custom key pair, or you call the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_DownloadDefaultKeyPair.html\">DownloadDefaultKeyPair</a> API. </p> <p>The <code>delete key pair</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>key pair name</code>. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "DeleteKnownHostKeys":{
       "name":"DeleteKnownHostKeys",
@@ -1080,7 +1080,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Downloads the default SSH key pair from the user's account.</p>"
+      "documentation":"<p>Downloads the regional Amazon Lightsail default key pair.</p> <p>This action also creates a Lightsail default key pair if a default key pair does not currently exist in the Amazon Web Services Region.</p>"
     },
     "EnableAddOn":{
       "name":"EnableAddOn",
@@ -1208,7 +1208,7 @@
         {"shape":"ServiceException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Returns the existing access key IDs for the specified Amazon Lightsail bucket.</p> <important> <p>This action does not return the secret access key value of an access key. You can get a secret access key only when you create it from the response of the <a>CreateBucketAccessKey</a> action. If you lose the secret access key, you must create a new access key.</p> </important>"
+      "documentation":"<p>Returns the existing access key IDs for the specified Amazon Lightsail bucket.</p> <important> <p>This action does not return the secret access key value of an access key. You can get a secret access key only when you create it from the response of the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html\">CreateBucketAccessKey</a> action. If you lose the secret access key, you must create a new access key.</p> </important>"
     },
     "GetBucketBundles":{
       "name":"GetBucketBundles",
@@ -1224,7 +1224,7 @@
         {"shape":"ServiceException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Returns the bundles that you can apply to a Amazon Lightsail bucket.</p> <p>The bucket bundle specifies the monthly cost, storage quota, and data transfer quota for a bucket.</p> <p>Use the <a>UpdateBucketBundle</a> action to update the bundle for a bucket.</p>"
+      "documentation":"<p>Returns the bundles that you can apply to a Amazon Lightsail bucket.</p> <p>The bucket bundle specifies the monthly cost, storage quota, and data transfer quota for a bucket.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html\">UpdateBucketBundle</a> action to update the bundle for a bucket.</p>"
     },
     "GetBucketMetricData":{
       "name":"GetBucketMetricData",
@@ -1653,7 +1653,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Returns all export snapshot records created as a result of the <code>export snapshot</code> operation.</p> <p>An export snapshot record can be used to create a new Amazon EC2 instance and its related resources with the <a>CreateCloudFormationStack</a> action.</p>"
+      "documentation":"<p>Returns all export snapshot records created as a result of the <code>export snapshot</code> operation.</p> <p>An export snapshot record can be used to create a new Amazon EC2 instance and its related resources with the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateCloudFormationStack.html\">CreateCloudFormationStack</a> action.</p>"
     },
     "GetInstance":{
       "name":"GetInstance",
@@ -2705,7 +2705,7 @@
         {"shape":"ServiceException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Updates the bundle, or storage plan, of an existing Amazon Lightsail bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket. You can update a bucket's bundle only one time within a monthly AWS billing cycle. To determine if you can update a bucket's bundle, use the <a>GetBuckets</a> action. The <code>ableToUpdateBundle</code> parameter in the response will indicate whether you can currently update a bucket's bundle.</p> <p>Update a bucket's bundle if it's consistently going over its storage space or data transfer quota, or if a bucket's usage is consistently in the lower range of its storage space or data transfer quota. Due to the unpredictable usage fluctuations that a bucket might experience, we strongly recommend that you update a bucket's bundle only as a long-term strategy, instead of as a short-term, monthly cost-cutting measure. Choose a bucket bundle that will provide the bucket with ample storage space and data transfer for a long time to come.</p>"
+      "documentation":"<p>Updates the bundle, or storage plan, of an existing Amazon Lightsail bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket. You can update a bucket's bundle only one time within a monthly AWS billing cycle. To determine if you can update a bucket's bundle, use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBuckets.html\">GetBuckets</a> action. The <code>ableToUpdateBundle</code> parameter in the response will indicate whether you can currently update a bucket's bundle.</p> <p>Update a bucket's bundle if it's consistently going over its storage space or data transfer quota, or if a bucket's usage is consistently in the lower range of its storage space or data transfer quota. Due to the unpredictable usage fluctuations that a bucket might experience, we strongly recommend that you update a bucket's bundle only as a long-term strategy, instead of as a short-term, monthly cost-cutting measure. Choose a bucket bundle that will provide the bucket with ample storage space and data transfer for a long time to come.</p>"
     },
     "UpdateContainerService":{
       "name":"UpdateContainerService",
@@ -2877,10 +2877,10 @@
         },
         "lastUsed":{
           "shape":"AccessKeyLastUsed",
-          "documentation":"<p>An object that describes the last time the access key was used.</p> <note> <p>This object does not include data in the response of a <a>CreateBucketAccessKey</a> action. If the access key has not been used, the <code>region</code> and <code>serviceName</code> values are <code>N/A</code>, and the <code>lastUsedDate</code> value is null.</p> </note>"
+          "documentation":"<p>An object that describes the last time the access key was used.</p> <note> <p>This object does not include data in the response of a <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html\">CreateBucketAccessKey</a> action. If the access key has not been used, the <code>region</code> and <code>serviceName</code> values are <code>N/A</code>, and the <code>lastUsedDate</code> value is null.</p> </note>"
         }
       },
-      "documentation":"<p>Describes an access key for an Amazon Lightsail bucket.</p> <p>Access keys grant full programmatic access to the specified bucket and its objects. You can have a maximum of two access keys per bucket. Use the <a>CreateBucketAccessKey</a> action to create an access key for a specific bucket. For more information about access keys, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-bucket-access-keys\">Creating access keys for a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> <important> <p>The <code>secretAccessKey</code> value is returned only in response to the <code>CreateBucketAccessKey</code> action. You can get a secret access key only when you first create an access key; you cannot get the secret access key later. If you lose the secret access key, you must create a new access key.</p> </important>"
+      "documentation":"<p>Describes an access key for an Amazon Lightsail bucket.</p> <p>Access keys grant full programmatic access to the specified bucket and its objects. You can have a maximum of two access keys per bucket. Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html\">CreateBucketAccessKey</a> action to create an access key for a specific bucket. For more information about access keys, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-bucket-access-keys\">Creating access keys for a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> <important> <p>The <code>secretAccessKey</code> value is returned only in response to the <code>CreateBucketAccessKey</code> action. You can get a secret access key only when you first create an access key; you cannot get the secret access key later. If you lose the secret access key, you must create a new access key.</p> </important>"
     },
     "AccessKeyLastUsed":{
       "type":"structure",
@@ -2898,7 +2898,7 @@
           "documentation":"<p>The name of the AWS service with which this access key was most recently used.</p> <p>This value is <code>N/A</code> if the access key has not been used.</p>"
         }
       },
-      "documentation":"<p>Describes the last time an access key was used.</p> <note> <p>This object does not include data in the response of a <a>CreateBucketAccessKey</a> action.</p> </note>"
+      "documentation":"<p>Describes the last time an access key was used.</p> <note> <p>This object does not include data in the response of a <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html\">CreateBucketAccessKey</a> action.</p> </note>"
     },
     "AccessKeyList":{
       "type":"list",
@@ -3421,7 +3421,7 @@
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the bundle currently applied to the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a>UpdateBucketBundle</a> action to change the bundle of a bucket.</p>"
+          "documentation":"<p>The ID of the bundle currently applied to the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html\">UpdateBucketBundle</a> action to change the bundle of a bucket.</p>"
         },
         "createdAt":{
           "shape":"IsoDate",
@@ -3450,7 +3450,7 @@
         },
         "ableToUpdateBundle":{
           "shape":"boolean",
-          "documentation":"<p>Indicates whether the bundle that is currently applied to a bucket can be changed to another bundle.</p> <p>You can update a bucket's bundle only one time within a monthly AWS billing cycle.</p> <p>Use the <a>UpdateBucketBundle</a> action to change a bucket's bundle.</p>"
+          "documentation":"<p>Indicates whether the bundle that is currently applied to a bucket can be changed to another bundle.</p> <p>You can update a bucket's bundle only one time within a monthly AWS billing cycle.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html\">UpdateBucketBundle</a> action to change a bucket's bundle.</p>"
         },
         "readonlyAccessAccounts":{
           "shape":"PartnerIdList",
@@ -3458,7 +3458,7 @@
         },
         "resourcesReceivingAccess":{
           "shape":"AccessReceiverList",
-          "documentation":"<p>An array of objects that describe Lightsail instances that have access to the bucket.</p> <p>Use the <a>SetResourceAccessForBucket</a> action to update the instances that have access to a bucket.</p>"
+          "documentation":"<p>An array of objects that describe Lightsail instances that have access to the bucket.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html\">SetResourceAccessForBucket</a> action to update the instances that have access to a bucket.</p>"
         },
         "state":{
           "shape":"BucketState",
@@ -3641,7 +3641,7 @@
           "documentation":"<p>The cache behavior for the specified path.</p> <p>You can specify one of the following per-path cache behaviors:</p> <ul> <li> <p> <b> <code>cache</code> </b> - This behavior caches the specified path. </p> </li> <li> <p> <b> <code>dont-cache</code> </b> - This behavior doesn't cache the specified path. </p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes the per-path cache behavior of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>A per-path cache behavior is used to override, or add an exception to, the default cache behavior of a distribution. For example, if the <code>cacheBehavior</code> is set to <code>cache</code>, then a per-path cache behavior can be used to specify a directory, file, or file type that your distribution will cache. Alternately, if the distribution's <code>cacheBehavior</code> is <code>dont-cache</code>, then a per-path cache behavior can be used to specify a directory, file, or file type that your distribution will not cache.</p> <p>if the cacheBehavior's behavior is set to 'cache', then</p>"
+      "documentation":"<p>Describes the per-path cache behavior of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>A per-path cache behavior is used to override, or add an exception to, the default cache behavior of a distribution. For example, if the <code>cacheBehavior</code> is set to <code>cache</code>, then a per-path cache behavior can be used to specify a directory, file, or file type that your distribution will cache. Alternately, if the distribution's <code>cacheBehavior</code> is <code>dont-cache</code>, then a per-path cache behavior can be used to specify a directory, file, or file type that your distribution will not cache.</p>"
     },
     "CacheSettings":{
       "type":"structure",
@@ -4502,11 +4502,11 @@
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the bundle to use for the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a>GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p> <p>Use the <a>UpdateBucketBundle</a> action to change the bundle after the bucket is created.</p>"
+          "documentation":"<p>The ID of the bundle to use for the bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketBundles.html\">GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html\">UpdateBucketBundle</a> action to change the bundle after the bucket is created.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>The tag keys and optional values to add to the bucket during creation.</p> <p>Use the <a>TagResource</a> action to tag the bucket after it's created.</p>"
+          "documentation":"<p>The tag keys and optional values to add to the bucket during creation.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_TagResource.html\">TagResource</a> action to tag the bucket after it's created.</p>"
         },
         "enableObjectVersioning":{
           "shape":"boolean",
@@ -4834,7 +4834,7 @@
         },
         "origin":{
           "shape":"InputOrigin",
-          "documentation":"<p>An object that describes the origin resource for the distribution, such as a Lightsail instance or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>"
+          "documentation":"<p>An object that describes the origin resource for the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>"
         },
         "defaultCacheBehavior":{
           "shape":"CacheBehavior",
@@ -5414,7 +5414,7 @@
         },
         "accessKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the access key to delete.</p> <p>Use the <a>GetBucketAccessKeys</a> action to get a list of access key IDs that you can specify.</p>"
+          "documentation":"<p>The ID of the access key to delete.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketAccessKeys.html\">GetBucketAccessKeys</a> action to get a list of access key IDs that you can specify.</p>"
         }
       }
     },
@@ -5433,11 +5433,11 @@
       "members":{
         "bucketName":{
           "shape":"BucketName",
-          "documentation":"<p>The name of the bucket to delete.</p> <p>Use the <a>GetBuckets</a> action to get a list of bucket names that you can specify.</p>"
+          "documentation":"<p>The name of the bucket to delete.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBuckets.html\">GetBuckets</a> action to get a list of bucket names that you can specify.</p>"
         },
         "forceDelete":{
           "shape":"boolean",
-          "documentation":"<p>A Boolean value that indicates whether to force delete the bucket.</p> <p>You must force delete the bucket if it has one of the following conditions:</p> <ul> <li> <p>The bucket is the origin of a distribution.</p> </li> <li> <p>The bucket has instances that were granted access to it using the <a>SetResourceAccessForBucket</a> action.</p> </li> <li> <p>The bucket has objects.</p> </li> <li> <p>The bucket has access keys.</p> </li> </ul> <important> <p>Force deleting a bucket might impact other resources that rely on the bucket, such as instances, distributions, or software that use the issued access keys.</p> </important>"
+          "documentation":"<p>A Boolean value that indicates whether to force delete the bucket.</p> <p>You must force delete the bucket if it has one of the following conditions:</p> <ul> <li> <p>The bucket is the origin of a distribution.</p> </li> <li> <p>The bucket has instances that were granted access to it using the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html\">SetResourceAccessForBucket</a> action.</p> </li> <li> <p>The bucket has objects.</p> </li> <li> <p>The bucket has access keys.</p> </li> </ul> <important> <p>Force deleting a bucket might impact other resources that rely on the bucket, such as instances, distributions, or software that use the issued access keys.</p> </important>"
         }
       }
     },
@@ -5679,6 +5679,10 @@
         "keyPairName":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the key pair to delete.</p>"
+        },
+        "expectedFingerprint":{
+          "shape":"string",
+          "documentation":"<p>The RSA fingerprint of the Lightsail default key pair to delete.</p> <note> <p>The <code>expectedFingerprint</code> parameter is required only when specifying to delete a Lightsail default key pair.</p> </note>"
         }
       }
     },
@@ -6318,6 +6322,10 @@
         "privateKeyBase64":{
           "shape":"Base64",
           "documentation":"<p>A base64-encoded RSA private key.</p>"
+        },
+        "createdAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp when the default key pair was created.</p>"
         }
       }
     },
@@ -6699,7 +6707,7 @@
         },
         "includeConnectedResources":{
           "shape":"boolean",
-          "documentation":"<p>A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the <a>SetResourceAccessForBucket</a> action.</p>"
+          "documentation":"<p>A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html\">SetResourceAccessForBucket</a> action.</p>"
         }
       }
     },
@@ -7464,6 +7472,10 @@
         "pageToken":{
           "shape":"string",
           "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetKeyPairs</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>"
+        },
+        "includeDefaultKeyPair":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include the default key pair in the response of your request.</p>"
         }
       }
     },
@@ -8193,7 +8205,7 @@
           "documentation":"<p>The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.</p>"
         }
       },
-      "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
+      "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
     },
     "Instance":{
       "type":"structure",
@@ -8827,7 +8839,7 @@
         },
         "origin":{
           "shape":"Origin",
-          "documentation":"<p>An object that describes the origin resource of the distribution, such as a Lightsail instance or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>"
+          "documentation":"<p>An object that describes the origin resource of the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>"
         },
         "originPublicDNS":{
           "shape":"string",
@@ -9632,7 +9644,7 @@
           "documentation":"<p>The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.</p>"
         }
       },
-      "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
+      "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
     },
     "OriginProtocolPolicyEnum":{
       "type":"string",
@@ -10984,7 +10996,7 @@
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the new bundle to apply to the bucket.</p> <p>Use the <a>GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p>"
+          "documentation":"<p>The ID of the new bundle to apply to the bucket.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketBundles.html\">GetBucketBundles</a> action to get a list of bundle IDs that you can specify.</p>"
         }
       }
     },
@@ -11100,7 +11112,7 @@
         },
         "origin":{
           "shape":"InputOrigin",
-          "documentation":"<p>An object that describes the origin resource for the distribution, such as a Lightsail instance or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>"
+          "documentation":"<p>An object that describes the origin resource for the distribution, such as a Lightsail instance, bucket, or load balancer.</p> <p>The distribution pulls, caches, and serves content from the origin.</p>"
         },
         "defaultCacheBehavior":{
           "shape":"CacheBehavior",

@@ -590,10 +590,17 @@
           "shape":"WorkflowStepName",
           "documentation":"<p>The name of the step, used as an identifier.</p>"
         },
-        "DestinationFileLocation":{"shape":"InputFileLocation"},
+        "DestinationFileLocation":{
+          "shape":"InputFileLocation",
+          "documentation":"<p>Specifies the location for the file being copied. Only applicable for Copy type workflow steps. Use <code>${Transfer:username}</code> in this field to parametrize the destination prefix by username.</p>"
+        },
         "OverwriteExisting":{
           "shape":"OverwriteExisting",
           "documentation":"<p>A flag that indicates whether or not to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+        },
+        "SourceFileLocation":{
+          "shape":"SourceFileLocation",
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
@@ -616,7 +623,7 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <note> <p>If the target of a logical directory entry does not exist in Amazon S3 or EFS, the entry is ignored. As a workaround, you can use the Amazon S3 API or EFS API to create 0 byte objects as place holders for your directory. If using the CLI, use the <code>s3api</code> or <code>efsapi</code> call instead of <code>s3</code> or <code>efs</code> so you can use the put-object operation. For example, you use the following: <code>aws s3api put-object --bucket bucketname --key path/to/folder/</code>. Make sure that the end of the key name ends in a <code>/</code> for it to be considered a folder.</p> </note>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
@@ -741,7 +748,7 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <note> <p>If the target of a logical directory entry does not exist in Amazon S3 or EFS, the entry is ignored. As a workaround, you can use the Amazon S3 API or EFS API to create 0 byte objects as place holders for your directory. If using the CLI, use the <code>s3api</code> or <code>efsapi</code> call instead of <code>s3</code> or <code>efs</code> so you can use the put-object operation. For example, you use the following: <code>aws s3api put-object --bucket bucketname --key path/to/folder/</code>. Make sure that the end of the key name ends in a <code>/</code> for it to be considered a folder.</p> </note>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
@@ -836,6 +843,10 @@
         "TimeoutSeconds":{
           "shape":"CustomStepTimeoutSeconds",
           "documentation":"<p>Timeout, in seconds, for the step.</p>"
+        },
+        "SourceFileLocation":{
+          "shape":"SourceFileLocation",
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
@@ -913,6 +924,10 @@
         "Name":{
           "shape":"WorkflowStepName",
           "documentation":"<p>The name of the step, used as an identifier.</p>"
+        },
+        "SourceFileLocation":{
+          "shape":"SourceFileLocation",
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The name of the step, used to identify the delete step.</p>"
@@ -1392,9 +1407,9 @@
     },
     "EfsPath":{
       "type":"string",
-      "max":100,
+      "max":65536,
       "min":1,
-      "pattern":"^(\\/|(\\/(?!\\.)+[^$#<>;`|&?{}^*/\\n]+){1,4})$"
+      "pattern":"^[^\\x00]+$"
     },
     "EndpointDetails":{
       "type":"structure",
@@ -1554,7 +1569,7 @@
           "documentation":"<p>Represents the map target that is used in a <code>HomeDirectorymapEntry</code>.</p>"
         }
       },
-      "documentation":"<p>Represents an object that contains entries and targets for <code>HomeDirectoryMappings</code>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <note> <p>If the target of a logical directory entry does not exist in Amazon S3 or EFS, the entry is ignored. As a workaround, you can use the Amazon S3 API or EFS API to create 0 byte objects as place holders for your directory. If using the CLI, use the <code>s3api</code> or <code>efsapi</code> call instead of <code>s3</code> or <code>efs</code> so you can use the put-object operation. For example, you use the following: <code>aws s3api put-object --bucket bucketname --key path/to/folder/</code>. Make sure that the end of the key name ends in a <code>/</code> for it to be considered a folder.</p> </note>"
+      "documentation":"<p>Represents an object that contains entries and targets for <code>HomeDirectoryMappings</code>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
     },
     "HomeDirectoryMappings":{
       "type":"list",
@@ -2443,6 +2458,11 @@
       "min":3,
       "pattern":"^[\\w-]*$"
     },
+    "SourceFileLocation":{
+      "type":"string",
+      "max":256,
+      "pattern":"^\\$\\{(\\w+.)+\\w+\\}$"
+    },
     "SourceIp":{
       "type":"string",
       "max":32,
@@ -2585,6 +2605,10 @@
         "Tags":{
           "shape":"S3Tags",
           "documentation":"<p>Array that contains from 1 to 10 key/value pairs.</p>"
+        },
+        "SourceFileLocation":{
+          "shape":"SourceFileLocation",
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p> <p>The key/value pairs used to tag a file during the execution of a workflow step.</p>"
@@ -2645,7 +2669,7 @@
         },
         "Message":{
           "shape":"Message",
-          "documentation":"<p>A message that indicates whether the test was successful or not.</p>"
+          "documentation":"<p>A message that indicates whether the test was successful or not.</p> <note> <p>If an empty string is returned, the most likely cause is that the authentication failed due to an incorrect username or password.</p> </note>"
         },
         "Url":{
           "shape":"Url",
@@ -2703,7 +2727,7 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <note> <p>If the target of a logical directory entry does not exist in Amazon S3 or EFS, the entry is ignored. As a workaround, you can use the Amazon S3 API or EFS API to create 0 byte objects as place holders for your directory. If using the CLI, use the <code>s3api</code> or <code>efsapi</code> call instead of <code>s3</code> or <code>efs</code> so you can use the put-object operation. For example, you use the following: <code>aws s3api put-object --bucket bucketname --key path/to/folder/</code>. Make sure that the end of the key name ends in a <code>/</code> for it to be considered a folder.</p> </note>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
@@ -2820,7 +2844,7 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <note> <p>If the target of a logical directory entry does not exist in Amazon S3 or EFS, the entry is ignored. As a workaround, you can use the Amazon S3 API or EFS API to create 0 byte objects as place holders for your directory. If using the CLI, use the <code>s3api</code> or <code>efsapi</code> call instead of <code>s3</code> or <code>efs</code> so you can use the put-object operation. For example, you use the following: <code>aws s3api put-object --bucket bucketname --key path/to/folder/</code>. Make sure that the end of the key name ends in a <code>/</code> for it to be considered a folder.</p> </note>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry:\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",

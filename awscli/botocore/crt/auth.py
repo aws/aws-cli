@@ -5,7 +5,8 @@ import awscrt.auth
 
 from botocore.auth import (
     _host_from_url, _get_body_as_dict, BaseSigner,
-    SIGNED_HEADERS_BLACKLIST, UNSIGNED_PAYLOAD
+    SIGNED_HEADERS_BLACKLIST, UNSIGNED_PAYLOAD,
+    STREAMING_UNSIGNED_PAYLOAD_TRAILER,
 )
 from botocore.compat import HTTPHeaders, parse_qs, urlsplit, urlunsplit
 from botocore.utils import percent_encode_sequence
@@ -29,6 +30,11 @@ class CrtSigV4Auth(BaseSigner):
         self._region_name = region_name
         self._expiration_in_seconds = None
 
+    def _is_streaming_checksum_payload(self, request):
+        checksum_context = request.context.get('checksum', {})
+        algorithm = checksum_context.get('request_algorithm')
+        return isinstance(algorithm, dict) and algorithm.get('in') == 'trailer'
+
     def add_auth(self, request):
         if self.credentials is None:
             raise NoCredentialsError()
@@ -48,7 +54,9 @@ class CrtSigV4Auth(BaseSigner):
             secret_access_key=self.credentials.secret_key,
             session_token=self.credentials.token)
 
-        if self._should_sha256_sign_payload(request):
+        if self._is_streaming_checksum_payload(request):
+            explicit_payload = STREAMING_UNSIGNED_PAYLOAD_TRAILER
+        elif self._should_sha256_sign_payload(request):
             if existing_sha256:
                 explicit_payload = existing_sha256
             else:
@@ -173,12 +181,17 @@ class CrtS3SigV4Auth(CrtSigV4Auth):
         if sign_payload is not None:
             return sign_payload
 
-        # We require that both content-md5 be present and https be enabled
+        # We require that both a checksum be present and https be enabled
         # to implicitly disable body signing. The combination of TLS and
-        # content-md5 is sufficiently secure and durable for us to be
+        # a checksum is sufficiently secure and durable for us to be
         # confident in the request without body signing.
+        checksum_header = 'Content-MD5'
+        checksum_context = request.context.get('checksum', {})
+        algorithm = checksum_context.get('request_algorithm')
+        if isinstance(algorithm, dict) and algorithm.get('in') == 'header':
+            checksum_header = algorithm['name']
         if not request.url.startswith('https') or \
-                'Content-MD5' not in request.headers:
+                checksum_header not in request.headers:
             return True
 
         # If the input is streaming we disable body signing by default.
@@ -231,7 +244,9 @@ class CrtSigV4AsymAuth(BaseSigner):
             secret_access_key=self.credentials.secret_key,
             session_token=self.credentials.token)
 
-        if self._should_sha256_sign_payload(request):
+        if self._is_streaming_checksum_payload(request):
+            explicit_payload = STREAMING_UNSIGNED_PAYLOAD_TRAILER
+        elif self._should_sha256_sign_payload(request):
             if existing_sha256:
                 explicit_payload = existing_sha256
             else:
@@ -313,6 +328,11 @@ class CrtSigV4AsymAuth(BaseSigner):
 
     def _get_existing_sha256(self, request):
         return request.headers.get('X-Amz-Content-SHA256')
+
+    def _is_streaming_checksum_payload(self, request):
+        checksum_context = request.context.get('checksum', {})
+        algorithm = checksum_context.get('request_algorithm')
+        return isinstance(algorithm, dict) and algorithm.get('in') == 'trailer'
 
     def _should_sha256_sign_payload(self, request):
         # Payloads will always be signed over insecure connections.

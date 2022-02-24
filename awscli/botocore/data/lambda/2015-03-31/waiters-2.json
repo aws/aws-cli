@@ -22,7 +22,7 @@
       "delay": 5,
       "maxAttempts": 60,
       "operation": "GetFunctionConfiguration",
-      "description": "Waits for the function's State to be Active.",
+      "description": "Waits for the function's State to be Active. This waiter uses GetFunctionConfiguration API. This should be used after new function creation.",
       "acceptors": [
         {
           "state": "success",
@@ -48,7 +48,7 @@
       "delay": 5,
       "maxAttempts": 60,
       "operation": "GetFunctionConfiguration",
-      "description": "Waits for the function's LastUpdateStatus to be Successful.",
+      "description": "Waits for the function's LastUpdateStatus to be Successful. This waiter uses GetFunctionConfiguration API. This should be used after function updates.",
       "acceptors": [
         {
           "state": "success",
@@ -66,6 +66,58 @@
           "state": "retry",
           "matcher": "path",
           "argument": "LastUpdateStatus",
+          "expected": "InProgress"
+        }
+      ]
+    },
+    "FunctionActiveV2": {
+      "delay": 1,
+      "maxAttempts": 300,
+      "operation": "GetFunction",
+      "description": "Waits for the function's State to be Active. This waiter uses GetFunction API. This should be used after new function creation.",
+      "acceptors": [
+        {
+          "state": "success",
+          "matcher": "path",
+          "argument": "Configuration.State",
+          "expected": "Active"
+        },
+        {
+          "state": "failure",
+          "matcher": "path",
+          "argument": "Configuration.State",
+          "expected": "Failed"
+        },
+        {
+          "state": "retry",
+          "matcher": "path",
+          "argument": "Configuration.State",
+          "expected": "Pending"
+        }
+      ]
+    },
+    "FunctionUpdatedV2": {
+      "delay": 1,
+      "maxAttempts": 300,
+      "operation": "GetFunction",
+      "description": "Waits for the function's LastUpdateStatus to be Successful. This waiter uses GetFunction API. This should be used after function updates.",
+      "acceptors": [
+        {
+          "state": "success",
+          "matcher": "path",
+          "argument": "Configuration.LastUpdateStatus",
+          "expected": "Successful"
+        },
+        {
+          "state": "failure",
+          "matcher": "path",
+          "argument": "Configuration.LastUpdateStatus",
+          "expected": "Failed"
+        },
+        {
+          "state": "retry",
+          "matcher": "path",
+          "argument": "Configuration.LastUpdateStatus",
           "expected": "InProgress"
         }
       ]

@@ -393,32 +393,7 @@ class AWSRequestPreparer(object):
         return body
 
     def _determine_content_length(self, body):
-        # No body, content length of 0
-        if not body:
-            return 0
-
-        # Try asking the body for it's length
-        try:
-            return len(body)
-        except (AttributeError, TypeError) as e:
-            pass
-
-        # Try getting the length from a seekable stream
-        if hasattr(body, 'seek') and hasattr(body, 'tell'):
-            try:
-                orig_pos = body.tell()
-                body.seek(0, 2)
-                end_file_pos = body.tell()
-                body.seek(orig_pos)
-                return end_file_pos - orig_pos
-            except io.UnsupportedOperation:
-                # in case when body is, for example, io.BufferedIOBase object
-                # it has "seek" method which throws "UnsupportedOperation"
-                # exception in such case we want to fall back to "chunked"
-                # encoding
-                pass
-        # Failed to determine the length
-        return None
+        return botocore.utils.determine_content_length(body)
 
 
 class AWSRequest(object):

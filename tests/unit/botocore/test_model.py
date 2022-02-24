@@ -407,6 +407,38 @@ class TestOperationModelFromService(unittest.TestCase):
         operation_name = self.service_model.operation_model('OperationName')
         self.assertIsNone(operation_name.endpoint_discovery)
 
+    def test_http_checksum_absent(self):
+        operation_name = self.service_model.operation_model('OperationName')
+        self.assertEqual(operation_name.http_checksum, {})
+
+    def test_http_checksum_present(self):
+        operation = self.model['operations']['OperationName']
+        operation['httpChecksum'] = {
+            "requestChecksumRequired": True,
+            "requestAlgorithmMember": "ChecksumAlgorithm",
+            "requestValidationModeMember": "ChecksumMode",
+            "responseAlgorithms": ["crc32", "crc32c", "sha256", "sha1"],
+        }
+        service_model = model.ServiceModel(self.model)
+        operation_model = service_model.operation_model('OperationName')
+        http_checksum = operation_model.http_checksum
+        self.assertEqual(
+            http_checksum["requestChecksumRequired"],
+            True,
+        )
+        self.assertEqual(
+            http_checksum["requestAlgorithmMember"],
+            "ChecksumAlgorithm",
+        )
+        self.assertEqual(
+            http_checksum["requestValidationModeMember"],
+            "ChecksumMode",
+        )
+        self.assertEqual(
+            http_checksum["responseAlgorithms"],
+            ["crc32", "crc32c", "sha256", "sha1"],
+        )
+
 
 class TestOperationModelEventStreamTypes(unittest.TestCase):
     def setUp(self):

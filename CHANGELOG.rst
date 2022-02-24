@@ -3180,6 +3180,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.62
+=======
+
+* api-change:``lightsail``: This release adds support to delete and create Lightsail default key pairs that you can use with Lightsail instances.
+* api-change:``s3``: This release adds support for new integrity checking capabilities in Amazon S3. You can choose from four supported checksum algorithms for data integrity checking on your upload and download requests. In addition, AWS SDK can automatically calculate a checksum as it streams data into S3
+* api-change:``fms``: AWS Firewall Manager now supports the configuration of AWS Network Firewall policies with either centralized or distributed deployment models. This release also adds support for custom endpoint configuration, where you can choose which Availability Zones to create firewall endpoints in.
+* api-change:``s3control``: Amazon S3 Batch Operations adds support for new integrity checking capabilities in Amazon S3.
+* api-change:``route53``: SDK doc update for Route 53 to update some parameters with new information.
+* api-change:``autoscaling``: You can now hibernate instances in a warm pool to stop instances without deleting their RAM contents. You can now also return instances to the warm pool on scale in, instead of always terminating capacity that you will need later.
+* api-change:``transfer``: Support automatic pagination when listing AWS Transfer Family resources.
+* api-change:``databrew``: This AWS Glue Databrew release adds feature to merge job outputs into a max number of files for S3 File output type.
+
+
+1.22.61
+=======
+
+* api-change:``textract``: Added support for merged cells and column header for table response.
+* api-change:``lambda``: Lambda releases .NET 6 managed runtime to be available in all commercial regions.
+* api-change:``transfer``: The file input selection feature provides the ability to use either the originally uploaded file or the output file from the previous workflow step, enabling customers to make multiple copies of the original file while keeping the source file intact for file archival.
+
+
 1.22.60
 =======
 

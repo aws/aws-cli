@@ -87,22 +87,12 @@ def escape_xml_payload(params, **kwargs):
     # this operation \r and \n can only appear in the XML document if they were
     # passed as part of the customer input.
     body = params['body']
-    replaced = False
     if b'\r' in body:
-        replaced = True
         body = body.replace(b'\r', b'&#xD;')
     if b'\n' in body:
-        replaced = True
         body = body.replace(b'\n', b'&#xA;')
 
-    if not replaced:
-        return
-
     params['body'] = body
-    if 'Content-MD5' in params['headers']:
-        # The Content-MD5 is now wrong, so we'll need to recalculate it
-        del params['headers']['Content-MD5']
-        conditionally_calculate_md5(params, **kwargs)
 
 
 def check_for_200_error(response, **kwargs):

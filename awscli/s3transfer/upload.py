@@ -513,6 +513,7 @@ class UploadSubmissionTask(SubmissionTask):
     """Task for submitting tasks to execute an upload"""
 
     UPLOAD_PART_ARGS = [
+        'ChecksumAlgorithm',
         'SSECustomerKey',
         'SSECustomerAlgorithm',
         'SSECustomerKeyMD5',
@@ -792,4 +793,10 @@ class UploadPartTask(Task):
                 **extra_args
             )
         etag = response['ETag']
-        return {'ETag': etag, 'PartNumber': part_number}
+        part_metadata = {'ETag': etag, 'PartNumber': part_number}
+        if 'ChecksumAlgorithm' in extra_args:
+            algorithm_name = extra_args['ChecksumAlgorithm'].upper()
+            checksum_member = f'Checksum{algorithm_name}'
+            if checksum_member in response:
+                part_metadata[checksum_member] = response[checksum_member]
+        return part_metadata

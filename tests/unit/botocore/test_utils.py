@@ -83,6 +83,7 @@ from botocore.utils import SSOTokenLoader
 from botocore.utils import is_valid_uri, is_valid_ipv6_endpoint_url
 from botocore.utils import original_ld_library_path
 from botocore.utils import has_header
+from botocore.utils import determine_content_length
 from botocore.exceptions import SSOTokenLoadError
 from botocore.utils import IMDSFetcher
 from botocore.utils import BadIMDSRequestError
@@ -3074,3 +3075,53 @@ class TestOriginalLDLibraryPath(unittest.TestCase):
 )
 def test_has_header(header_name, headers, expected):
     assert has_header(header_name, headers) is expected
+
+
+class TestDetermineContentLength(unittest.TestCase):
+    def test_basic_bytes(self):
+        length = determine_content_length(b'hello')
+        self.assertEqual(length, 5)
+
+    def test_empty_bytes(self):
+        length = determine_content_length(b'')
+        self.assertEqual(length, 0)
+
+    def test_buffered_io_base(self):
+        length = determine_content_length(io.BufferedIOBase())
+        self.assertIsNone(length)
+
+    def test_none(self):
+        length = determine_content_length(None)
+        self.assertEqual(length, 0)
+
+    def test_basic_len_obj(self):
+        class HasLen(object):
+            def __len__(self):
+                return 12
+
+        length = determine_content_length(HasLen())
+        self.assertEqual(length, 12)
+
+    def test_non_seekable_fileobj(self):
+        class Readable(object):
+            def read(self, *args, **kwargs):
+                pass
+
+        length = determine_content_length(Readable())
+        self.assertIsNone(length)
+
+    def test_seekable_fileobj(self):
+        class Seekable(object):
+            _pos = 0
+
+            def read(self, *args, **kwargs):
+                pass
+
+            def tell(self, *args, **kwargs):
+                return self._pos
+
+            def seek(self, *args, **kwargs):
+                self._pos = 50
+
+        length = determine_content_length(Seekable())
+        self.assertEqual(length, 50)

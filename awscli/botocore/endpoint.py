@@ -27,6 +27,7 @@ from botocore.hooks import first_non_none_response
 from botocore.history import get_global_history_recorder
 from botocore.response import StreamingBody
 from botocore import parsers
+from botocore.httpchecksum import handle_checksum_body
 
 
 logger = logging.getLogger(__name__)
@@ -164,7 +165,7 @@ class Endpoint(object):
         # If an exception occurs then the success_response is None.
         # If no exception occurs then exception is None.
         success_response, exception = self._do_get_response(
-            request, operation_model)
+            request, operation_model, context)
         kwargs_to_emit = {
             'response_dict': None,
             'parsed_response': None,
@@ -182,7 +183,7 @@ class Endpoint(object):
                 service_id, operation_model.name), **kwargs_to_emit)
         return success_response, exception
 
-    def _do_get_response(self, request, operation_model):
+    def _do_get_response(self, request, operation_model, context):
         try:
             logger.debug("Sending http request: %s", request)
             history_recorder.record('HTTP_REQUEST', {
@@ -206,6 +207,9 @@ class Endpoint(object):
             return (None, e)
         # This returns the http_response and the parsed_data.
         response_dict = convert_to_response_dict(http_response, operation_model)
+        handle_checksum_body(
+            http_response, response_dict, context, operation_model,
+        )
 
         http_response_record_dict = response_dict.copy()
         http_response_record_dict['streaming'] = \

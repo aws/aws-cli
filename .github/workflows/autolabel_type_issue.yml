@@ -1,0 +1,24 @@
+name: "Set label for the type of issue"
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-github-ops/aws-issue-triage-manager@main
+        with:
+          parameters: >
+            [
+             {"area": "SECURITY", "keywords": ["SECURITY", "credentials", "leaking", "exposed"], "labels": ["SECURITY"]},
+             {"area": "configuration", "keywords": ["configuration", "configure"], "labels": ["configuration"]},
+             {"area": "feature-request", "keywords": ["feature-request", "would be", "currently", "add", "would like", "d like", "to be able to"], "labels": ["feature-request"]},
+             {"area": "bug", "keywords": ["bug", "should work", "not working", "test failed", "breaks", "fails", "broken"], "labels": ["bug"]},
+             {"area": "installation", "keywords": ["installation", "installed", "installing", "setup", "upgrade", "updates"], "labels": ["installation"]},
+             {"area": "documentation", "keywords": ["documentation", "document", "docs", "typo", "wording", "example", "redact", "quote", "detail", "info", ".rst", "README", "spelling"], "labels": ["documentation"]}
+             ]
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          excluded-expressions: "[ TypeScript | Java | Python ]"

@@ -29,6 +29,18 @@ SSO_TOKEN_DIR = os.path.expanduser(
     os.path.join('~', '.aws', 'sso', 'cache')
 )
 
+LOGIN_ARGS = [
+    {
+        'name': 'no-browser',
+        'action': 'store_true',
+        'default': False,
+        'help_text': (
+            'Disables automatically opening the verfication URL in the '
+            'default browser.'
+        )
+    }
+]
+
 
 def _serialize_utc_timestamp(obj):
     if isinstance(obj, datetime.datetime):
@@ -65,25 +77,55 @@ def open_browser_with_original_ld_path(url):
         webbrowser.open_new_tab(url)
 
 
-class OpenBrowserHandler(object):
+class BaseAuthorizationhandler:
+    def __call__(
+        self, userCode, verificationUri, verificationUriComplete, **kwargs
+    ):
+        # Pending authorization handlers should always take **kwargs in case
+        # the API begins to return new values.
+        raise NotImplementedError("authorization_handler")
+
+
+class PrintOnlyHandler(BaseAuthorizationhandler):
+    def __init__(self, outfile=None):
+        self._outfile = outfile
+
+    def __call__(
+        self, userCode, verificationUri, verificationUriComplete, **kwargs
+    ):
+        opening_msg = (
+            f'Browser will not be automatically opened.\n'
+            f'Please visit the following URL:\n'
+            f'\n{verificationUri}\n'
+            f'\nThen enter the code:\n'
+            f'\n{userCode}\n'
+            f'\nAlternatively, you may visit the following URL which will '
+            f'autofill the code upon loading:'
+            f'\n{verificationUriComplete}\n'
+        )
+        uni_print(opening_msg, self._outfile)
+
+
+class OpenBrowserHandler(BaseAuthorizationhandler):
     def __init__(self, outfile=None, open_browser=None):
         self._outfile = outfile
         if open_browser is None:
             open_browser = webbrowser.open_new_tab
         self._open_browser = open_browser
 
-    def __call__(self, userCode, verificationUri,
-                 verificationUriComplete, **kwargs):
+    def __call__(
+        self, userCode, verificationUri, verificationUriComplete, **kwargs
+    ):
         opening_msg = (
-            'Attempting to automatically open the SSO authorization page in '
-            'your default browser.\nIf the browser does not open or you wish '
-            'to use a different device to authorize this request, open the '
-            'following URL:\n'
-            '\n%s\n'
-            '\nThen enter the code:\n'
-            '\n%s\n'
+            f'Attempting to automatically open the SSO authorization page in '
+            f'your default browser.\nIf the browser does not open or you wish '
+            f'to use a different device to authorize this request, open the '
+            f'following URL:\n'
+            f'\n{verificationUri}\n'
+            f'\nThen enter the code:\n'
+            f'\n{userCode}\n'
         )
-        uni_print(opening_msg % (verificationUri, userCode), self._outfile)
+        uni_print(opening_msg, self._outfile)
         if self._open_browser:
             try:
                 return self._open_browser(verificationUriComplete)

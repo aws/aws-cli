@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.sso.utils import do_sso_login
+from awscli.customizations.sso.utils import (
+    do_sso_login, PrintOnlyHandler, LOGIN_ARGS,
+)
 from awscli.customizations.utils import uni_print
 from awscli.customizations.exceptions import ConfigurationError
 
@@ -31,7 +33,7 @@ class LoginCommand(BasicCommand):
         'and creating multiple profiles does not allow for multiple users to '
         'be authenticated against the same SSO Start URL.'
     )
-    ARG_TABLE = []
+    ARG_TABLE = LOGIN_ARGS
     _REQUIRED_SSO_CONFIG_VARS = [
         'sso_start_url',
         'sso_region',
@@ -39,10 +41,14 @@ class LoginCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         sso_config = self._get_sso_config()
+        on_pending_authorization = None
+        if parsed_args.no_browser:
+            on_pending_authorization = PrintOnlyHandler()
         do_sso_login(
             session=self._session,
             sso_region=sso_config['sso_region'],
             start_url=sso_config['sso_start_url'],
+            on_pending_authorization=on_pending_authorization,
             force_refresh=True
         )
         success_msg = 'Successully logged into Start URL: %s\n'

@@ -29,7 +29,9 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure import profile_to_section
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard.ui.selectmenu import select_menu
-from awscli.customizations.sso.utils import do_sso_login
+from awscli.customizations.sso.utils import (
+    do_sso_login, PrintOnlyHandler, LOGIN_ARGS,
+)
 from awscli.formatter import CLI_OUTPUT_FORMATS
 
 
@@ -126,9 +128,10 @@ class ConfigureSSOCommand(BasicCommand):
         'file. By default, ``~/.aws/config``.'
     )
     # TODO: Add CLI parameters to skip prompted values, --start-url, etc.
+    ARG_TABLE = LOGIN_ARGS
 
     def __init__(self, session, prompter=None, selector=None,
-                 config_writer=None, sso_token_cache=None):
+                 config_writer=None, sso_token_cache=None, sso_login=None):
         super(ConfigureSSOCommand, self).__init__(session)
         if prompter is None:
             prompter = PTKPrompt()
@@ -138,6 +141,9 @@ class ConfigureSSOCommand(BasicCommand):
         self._selector = selector
         if config_writer is None:
             config_writer = ConfigFileWriter()
+        if sso_login is None:
+            sso_login = do_sso_login
+        self._sso_login = sso_login
         self._config_writer = config_writer
         self._sso_token_cache = sso_token_cache
 
@@ -295,11 +301,15 @@ class ConfigureSSOCommand(BasicCommand):
         self._unset_session_profile()
         start_url = self._prompt_for_start_url()
         sso_region = self._prompt_for_sso_region()
-        sso_token = do_sso_login(
+        on_pending_authorization = None
+        if parsed_args.no_browser:
+            on_pending_authorization = PrintOnlyHandler()
+        sso_token = self._sso_login(
             self._session,
             sso_region,
             start_url,
             token_cache=self._sso_token_cache,
+            on_pending_authorization=on_pending_authorization,
         )
 
         # Construct an SSO client to explore the accounts / roles

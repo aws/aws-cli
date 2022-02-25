@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.22.63
+=======
+
+* api-change:``panorama``: Added NTP server configuration parameter to ProvisionDevice operation. Added alternate software fields to DescribeDevice response
+* api-change:``elasticache``: Doc only update for ElastiCache
+
+
 1.22.62
 =======
 

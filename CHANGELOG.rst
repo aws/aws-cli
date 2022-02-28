@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.22.64
+=======
+
+* api-change:``ec2``: This release adds support for new AMI property 'lastLaunchedTime'
+* api-change:``fsx``: This release adds support for the following FSx for OpenZFS features: snapshot lifecycle transition messages, force flag for deleting file systems with child resources, LZ4 data compression, custom record sizes, and unsetting volume quotas and reservations.
+* api-change:``route53-recovery-cluster``: This release adds a new API option to enable overriding safety rules to allow routing control state updates.
+* api-change:``fis``: This release adds logging support for AWS Fault Injection Simulator experiments. Experiment templates can now be configured to send experiment activity logs to Amazon CloudWatch Logs or to an S3 bucket.
+* api-change:``servicecatalog-appregistry``: AppRegistry is deprecating Application and Attribute-Group Name update feature. In this release, we are marking the name attributes for Update APIs as deprecated to give a heads up to our customers.
+* api-change:``athena``: This release adds support for updating an existing named query.
+* api-change:``finspace-data``: Add new APIs for managing Users and Permission Groups.
+* api-change:``amplifyuibuilder``: We are adding the ability to configure workflows and actions for components.
+* api-change:``amplify``: Add repositoryCloneMethod field for hosting an Amplify app. This field shows what authorization method is used to clone the repo: SSH, TOKEN, or SIGV4.
+
+
 1.22.63
 =======
 

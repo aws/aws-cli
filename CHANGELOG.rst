@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.4.22
+======
+
+* api-change:``fsx``: This release adds support for the following FSx for OpenZFS features: snapshot lifecycle transition messages, force flag for deleting file systems with child resources, LZ4 data compression, custom record sizes, and unsetting volume quotas and reservations.
+* api-change:``ec2``: This release adds support for new AMI property 'lastLaunchedTime'
+* api-change:``amplify``: Add repositoryCloneMethod field for hosting an Amplify app. This field shows what authorization method is used to clone the repo: SSH, TOKEN, or SIGV4.
+* api-change:``rds``: Documentation updates for Multi-AZ DB clusters.
+* api-change:``amplifyuibuilder``: We are adding the ability to configure workflows and actions for components.
+* api-change:``elasticache``: Doc only update for ElastiCache
+* api-change:``fis``: This release adds logging support for AWS Fault Injection Simulator experiments. Experiment templates can now be configured to send experiment activity logs to Amazon CloudWatch Logs or to an S3 bucket.
+* api-change:``route53-recovery-cluster``: This release adds a new API option to enable overriding safety rules to allow routing control state updates.
+* api-change:``panorama``: Added NTP server configuration parameter to ProvisionDevice operation. Added alternate software fields to DescribeDevice response
+* api-change:``kafkaconnect``: Adds operation for custom plugin deletion (DeleteCustomPlugin) and adds new StateDescription field to DescribeCustomPlugin and DescribeConnector responses to return errors from asynchronous resource creation.
+* api-change:``mediapackage``: This release adds Hybridcast as an available profile option for Dash Origin Endpoints.
+* api-change:``finspace-data``: Add new APIs for managing Users and Permission Groups.
+* api-change:``athena``: This release adds support for updating an existing named query.
+* api-change:``servicecatalog-appregistry``: AppRegistry is deprecating Application and Attribute-Group Name update feature. In this release, we are marking the name attributes for Update APIs as deprecated to give a heads up to our customers.
+* api-change:``mgn``: Add support for GP3 and IO2 volume types. Add bootMode to LaunchConfiguration object (and as a parameter to UpdateLaunchConfigurationRequest).
+
+
 2.4.21
 ======
 

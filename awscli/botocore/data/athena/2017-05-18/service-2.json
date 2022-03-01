@@ -475,6 +475,21 @@
       ],
       "documentation":"<p>Updates the data catalog that has the specified name.</p>"
     },
+    "UpdateNamedQuery":{
+      "name":"UpdateNamedQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateNamedQueryInput"},
+      "output":{"shape":"UpdateNamedQueryOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Updates a <a>NamedQuery</a> object. The database or workgroup cannot be updated.</p>",
+      "idempotent":true
+    },
     "UpdatePreparedStatement":{
       "name":"UpdatePreparedStatement",
       "http":{
@@ -516,14 +531,14 @@
       "members":{
         "ErrorCategory":{
           "shape":"ErrorCategory",
-          "documentation":"<p>An integer value that specifies the category of a query failure error. The following list shows the category for each integer value.</p> <p> <b>1</b> - System</p> <p> <b>2</b> - User</p> <p> <b>3</b> - Unknown</p>"
+          "documentation":"<p>An integer value that specifies the category of a query failure error. The following list shows the category for each integer value.</p> <p> <b>1</b> - System</p> <p> <b>2</b> - User</p> <p> <b>3</b> - Other</p>"
         },
         "ErrorType":{
           "shape":"ErrorType",
           "documentation":"<p>An integer value that provides specific information about an Athena query error. For the meaning of specific values, see the <a href=\"https://docs.aws.amazon.com/athena/latest/ug/error-reference.html#error-reference-error-type-reference\">Error Type Reference</a> in the <i>Amazon Athena User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>Provides information about an Athena query error. The <code>AthenaError</code> feature provides standardized error information to help you understand failed queries and take steps after a query failure occurs. <code>AthenaError</code> includes an <code>ErrorCategory</code> field that specifies whether the cause of the failed query is due to system error, user error, or unknown error.</p>"
+      "documentation":"<p>Provides information about an Athena query error. The <code>AthenaError</code> feature provides standardized error information to help you understand failed queries and take steps after a query failure occurs. <code>AthenaError</code> includes an <code>ErrorCategory</code> field that specifies whether the cause of the failed query is due to system error, user error, or other error.</p>"
     },
     "BatchGetNamedQueryInput":{
       "type":"structure",
@@ -1637,7 +1652,7 @@
         },
         "QueryString":{
           "shape":"QueryString",
-          "documentation":"<p>The SQL query statements that comprise the query.</p>"
+          "documentation":"<p>The SQL statements that make up the query.</p>"
         },
         "NamedQueryId":{
           "shape":"NamedQueryId",
@@ -1648,7 +1663,12 @@
           "documentation":"<p>The name of the workgroup that contains the named query.</p>"
         }
       },
-      "documentation":"<p>A query, where <code>QueryString</code> is the list of SQL query statements that comprise the query.</p>"
+      "documentation":"<p>A query, where <code>QueryString</code> contains the SQL statements that make up the query.</p>"
+    },
+    "NamedQueryDescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "NamedQueryId":{"type":"string"},
     "NamedQueryIdList":{
@@ -1927,7 +1947,7 @@
           "documentation":"<p>The metadata that describes the column structure and data types of a table of query results.</p>"
         }
       },
-      "documentation":"<p>The metadata and rows that comprise a query result set. The metadata describes the column structure and data types. To return a <code>ResultSet</code> object, use <a>GetQueryResults</a>.</p>"
+      "documentation":"<p>The metadata and rows that make up a query result set. The metadata describes the column structure and data types. To return a <code>ResultSet</code> object, use <a>GetQueryResults</a>.</p>"
     },
     "ResultSetMetadata":{
       "type":"structure",
@@ -1947,7 +1967,7 @@
           "documentation":"<p>The data that populates a row in a query result table.</p>"
         }
       },
-      "documentation":"<p>The rows that comprise a query result table.</p>"
+      "documentation":"<p>The rows that make up a query result table.</p>"
     },
     "RowList":{
       "type":"list",
@@ -2235,6 +2255,37 @@
       }
     },
     "UpdateDataCatalogOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateNamedQueryInput":{
+      "type":"structure",
+      "required":[
+        "NamedQueryId",
+        "Name",
+        "QueryString"
+      ],
+      "members":{
+        "NamedQueryId":{
+          "shape":"NamedQueryId",
+          "documentation":"<p>The unique identifier (UUID) of the query.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the query.</p>"
+        },
+        "Description":{
+          "shape":"NamedQueryDescriptionString",
+          "documentation":"<p>The query description.</p>"
+        },
+        "QueryString":{
+          "shape":"QueryString",
+          "documentation":"<p>The contents of the query with all query statements.</p>"
+        }
+      }
+    },
+    "UpdateNamedQueryOutput":{
       "type":"structure",
       "members":{
       }

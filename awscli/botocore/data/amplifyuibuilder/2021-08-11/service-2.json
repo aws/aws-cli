@@ -236,6 +236,48 @@
     }
   },
   "shapes":{
+    "ActionParameters":{
+      "type":"structure",
+      "members":{
+        "anchor":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The HTML anchor link to the location to open. Specify this value for a navigation action.</p>"
+        },
+        "fields":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>A dictionary of key-value pairs mapping Amplify Studio properties to fields in a data model. Use when the action performs an operation on an Amplify DataStore model.</p>"
+        },
+        "global":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>Specifies whether the user should be signed out globally. Specify this value for an auth sign out action.</p>"
+        },
+        "id":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The unique ID of the component that the <code>ActionParameters</code> apply to.</p>"
+        },
+        "model":{
+          "shape":"String",
+          "documentation":"<p>The name of the data model. Use when the action performs an operation on an Amplify DataStore model.</p>"
+        },
+        "state":{
+          "shape":"MutationActionSetStateParameter",
+          "documentation":"<p>A key-value pair that specifies the state property name and its initial value.</p>"
+        },
+        "target":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The element within the same component to modify when the action occurs.</p>"
+        },
+        "type":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The type of navigation action. Valid values are <code>url</code> and <code>anchor</code>. This value is required for a navigation action.</p>"
+        },
+        "url":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The URL to the location to open. Specify this value for a navigation action.</p>"
+        }
+      },
+      "documentation":"<p>Represents the event action configuration for an element of a <code>Component</code> or <code>ComponentChild</code>. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components. <code>ActionParameters</code> defines the action that is performed when an event occurs on the component.</p>"
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -261,7 +303,7 @@
         },
         "bindingProperties":{
           "shape":"ComponentBindingProperties",
-          "documentation":"<p>The information to connect a component's properties to data at runtime.</p>"
+          "documentation":"<p>The information to connect a component's properties to data at runtime. You can't specify <code>tags</code> as a valid property for <code>bindingProperties</code>.</p> <p/>"
         },
         "children":{
           "shape":"ComponentChildList",
@@ -269,7 +311,7 @@
         },
         "collectionProperties":{
           "shape":"ComponentCollectionProperties",
-          "documentation":"<p>The data binding configuration for the component's properties. Use this for a collection component.</p>"
+          "documentation":"<p>The data binding configuration for the component's properties. Use this for a collection component. You can't specify <code>tags</code> as a valid property for <code>collectionProperties</code>.</p>"
         },
         "componentType":{
           "shape":"ComponentType",
@@ -282,6 +324,10 @@
         "environmentName":{
           "shape":"String",
           "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
+        },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>Describes the events that can be raised on the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
         },
         "id":{
           "shape":"Uuid",
@@ -297,11 +343,15 @@
         },
         "overrides":{
           "shape":"ComponentOverrides",
-          "documentation":"<p>Describes the component's properties that can be overriden in a customized instance of the component.</p>"
+          "documentation":"<p>Describes the component's properties that can be overriden in a customized instance of the component. You can't specify <code>tags</code> as a valid property for <code>overrides</code>.</p>"
         },
         "properties":{
           "shape":"ComponentProperties",
-          "documentation":"<p>Describes the component's properties.</p>"
+          "documentation":"<p>Describes the component's properties. You can't specify <code>tags</code> as a valid property for <code>properties</code>.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the component when it was imported.</p>"
         },
         "sourceId":{
           "shape":"String",
@@ -391,13 +441,17 @@
           "shape":"String",
           "documentation":"<p>The type of the child component. </p>"
         },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>Describes the events that can be raised on the child component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
+        },
         "name":{
           "shape":"String",
           "documentation":"<p>The name of the child component.</p>"
         },
         "properties":{
           "shape":"ComponentProperties",
-          "documentation":"<p>Describes the properties of the child component.</p>"
+          "documentation":"<p>Describes the properties of the child component. You can't specify <code>tags</code> as a valid property for <code>properties</code>.</p>"
         }
       },
       "documentation":"<p>A nested UI configuration within a parent <code>Component</code>.</p>"
@@ -425,6 +479,10 @@
         "operand":{
           "shape":"String",
           "documentation":"<p>The value of the property to evaluate.</p>"
+        },
+        "operandType":{
+          "shape":"String",
+          "documentation":"<p>The type of the property to evaluate.</p>"
         },
         "operator":{
           "shape":"String",
@@ -463,6 +521,25 @@
         }
       },
       "documentation":"<p>Describes the configuration for binding a component's properties to data.</p>"
+    },
+    "ComponentEvent":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"String",
+          "documentation":"<p>The action to perform when a specific event is raised.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>Describes information about the action.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of an event. You can bind an event and a corresponding action to a <code>Component</code> or a <code>ComponentChild</code>. A button click is an example of an event. </p>"
+    },
+    "ComponentEvents":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ComponentEvent"}
     },
     "ComponentList":{
       "type":"list",
@@ -503,13 +580,17 @@
           "shape":"ComponentPropertyBindingProperties",
           "documentation":"<p>The information to bind the component property to data at runtime. Use this for collection components.</p>"
         },
+        "componentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the component that is affected by an event.</p>"
+        },
         "concat":{
           "shape":"ComponentPropertyList",
           "documentation":"<p>A list of component properties to concatenate to create the value to assign to this component property.</p>"
         },
         "condition":{
           "shape":"ComponentConditionProperty",
-          "documentation":"<p>The conditional expression to use to assign a value to the component property..</p>"
+          "documentation":"<p>The conditional expression to use to assign a value to the component property.</p>"
         },
         "configured":{
           "shape":"Boolean",
@@ -525,11 +606,15 @@
         },
         "importedValue":{
           "shape":"String",
-          "documentation":"<p>The default value assigned to property when the component is imported into an app.</p>"
+          "documentation":"<p>The default value assigned to the property when the component is imported into an app.</p>"
         },
         "model":{
           "shape":"String",
           "documentation":"<p>The data model to use to assign a value to the component property.</p>"
+        },
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The name of the component's property that is affected by an event.</p>"
         },
         "type":{
           "shape":"String",
@@ -612,11 +697,11 @@
       "members":{
         "overrides":{
           "shape":"ComponentOverrides",
-          "documentation":"<p>The properties of the component variant that can be overriden when customizing an instance of the component.</p>"
+          "documentation":"<p>The properties of the component variant that can be overriden when customizing an instance of the component. You can't specify <code>tags</code> as a valid property for <code>overrides</code>.</p>"
         },
         "variantValues":{
           "shape":"ComponentVariantValues",
-          "documentation":"<p>The combination of variants that comprise this variant.</p>"
+          "documentation":"<p>The combination of variants that comprise this variant. You can't specify <code>tags</code> as a valid property for <code>variantValues</code>.</p>"
         }
       },
       "documentation":"<p>Describes the style configuration of a unique variation of a main component.</p>"
@@ -657,6 +742,10 @@
           "shape":"ComponentType",
           "documentation":"<p>The component type. This can be an Amplify custom UI component or another custom component.</p>"
         },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>The event configuration for the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
+        },
         "name":{
           "shape":"ComponentName",
           "documentation":"<p>The name of the component</p>"
@@ -668,6 +757,10 @@
         "properties":{
           "shape":"ComponentProperties",
           "documentation":"<p>Describes the component's properties.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the component when it was imported.</p>"
         },
         "sourceId":{
           "shape":"String",
@@ -932,6 +1025,12 @@
           "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
           "location":"uri",
           "locationName":"environmentName"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         }
       }
     },
@@ -942,6 +1041,10 @@
         "entities":{
           "shape":"ComponentList",
           "documentation":"<p>Represents the configuration of the exported components.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
         }
       }
     },
@@ -963,6 +1066,12 @@
           "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
           "location":"uri",
           "locationName":"environmentName"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         }
       }
     },
@@ -973,6 +1082,10 @@
         "entities":{
           "shape":"ThemeList",
           "documentation":"<p>Represents the configuration of the exported themes.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
         }
       }
     },
@@ -1208,6 +1321,29 @@
           "documentation":"<p>The pagination token that's returned if more results are available.</p>"
         }
       }
+    },
+    "MutationActionSetStateParameter":{
+      "type":"structure",
+      "required":[
+        "componentName",
+        "property",
+        "set"
+      ],
+      "members":{
+        "componentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the component that is being modified.</p>"
+        },
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The name of the component property to apply the state configuration to.</p>"
+        },
+        "set":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The state configuration to assign to the property.</p>"
+        }
+      },
+      "documentation":"<p>Represents the state configuration when an action modifies a property of another element within the same component.</p>"
     },
     "Predicate":{
       "type":"structure",
@@ -1535,6 +1671,10 @@
           "shape":"ComponentType",
           "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
         },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>The event configuration for the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
+        },
         "id":{
           "shape":"Uuid",
           "documentation":"<p>The unique ID of the component to update.</p>"
@@ -1550,6 +1690,10 @@
         "properties":{
           "shape":"ComponentProperties",
           "documentation":"<p>Describes the component's properties.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the component when it was imported.</p>"
         },
         "sourceId":{
           "shape":"String",
@@ -1689,5 +1833,5 @@
     },
     "Uuid":{"type":"string"}
   },
-  "documentation":"<p>The Amplify UI Builder API provides a programmatic interface for creating and configuring user interface (UI) component libraries and themes for use in your Amplify applications. You can then connect these UI components to an application's backend Amazon Web Services resources.</p> <p>You can also use the Amplify Studio visual designer to create UI components and model data for an app. For more information, see <a href=\"https://docs.amplify.aws/console/adminui/intro\">Introduction</a> in the <i>Amplify Docs</i>.</p> <p>The Amplify Framework is a comprehensive set of SDKs, libraries, tools, and documentation for client app development. For more information, see the <a href=\"https://docs.amplify.aws/\">Amplify Framework</a>. For more information about deploying an Amplify application to Amazon Web Services, see the <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html\">Amplify Console User Guide</a>.</p>"
+  "documentation":"<p>The Amplify UI Builder API provides a programmatic interface for creating and configuring user interface (UI) component libraries and themes for use in your Amplify applications. You can then connect these UI components to an application's backend Amazon Web Services resources.</p> <p>You can also use the Amplify Studio visual designer to create UI components and model data for an app. For more information, see <a href=\"https://docs.amplify.aws/console/adminui/intro\">Introduction</a> in the <i>Amplify Docs</i>.</p> <p>The Amplify Framework is a comprehensive set of SDKs, libraries, tools, and documentation for client app development. For more information, see the <a href=\"https://docs.amplify.aws/\">Amplify Framework</a>. For more information about deploying an Amplify application to Amazon Web Services, see the <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html\">Amplify User Guide</a>.</p>"
 }

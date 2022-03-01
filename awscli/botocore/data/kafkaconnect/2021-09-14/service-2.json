@@ -97,6 +97,27 @@
       "documentation":"<p>Deletes the specified connector.</p>",
       "idempotent":true
     },
+    "DeleteCustomPlugin":{
+      "name":"DeleteCustomPlugin",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/custom-plugins/{customPluginArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCustomPluginRequest"},
+      "output":{"shape":"DeleteCustomPluginResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Deletes a custom plugin.</p>",
+      "idempotent":true
+    },
     "DescribeConnector":{
       "name":"DescribeConnector",
       "http":{
@@ -552,7 +573,7 @@
           "documentation":"<p>Information about the capacity allocated to the connector. Exactly one of the two properties must be specified.</p>"
         },
         "connectorConfiguration":{
-          "shape":"__mapOf__string",
+          "shape":"SyntheticCreateConnectorRequest__mapOf__string",
           "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
         },
         "connectorDescription":{
@@ -677,7 +698,7 @@
           "documentation":"<p>The name of the worker configuration.</p>"
         },
         "propertiesFileContent":{
-          "shape":"__string",
+          "shape":"SyntheticCreateWorkerConfigurationRequest__string",
           "documentation":"<p>Base64 encoded contents of connect-distributed.properties file.</p>"
         }
       }
@@ -879,6 +900,31 @@
         }
       }
     },
+    "DeleteCustomPluginRequest":{
+      "type":"structure",
+      "required":["customPluginArn"],
+      "members":{
+        "customPluginArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom plugin that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"customPluginArn"
+        }
+      }
+    },
+    "DeleteCustomPluginResponse":{
+      "type":"structure",
+      "members":{
+        "customPluginArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom plugin that you requested to delete.</p>"
+        },
+        "customPluginState":{
+          "shape":"CustomPluginState",
+          "documentation":"<p>The state of the custom plugin.</p>"
+        }
+      }
+    },
     "DescribeConnectorRequest":{
       "type":"structure",
       "required":["connectorArn"],
@@ -903,7 +949,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
         },
         "connectorConfiguration":{
-          "shape":"__mapOf__string",
+          "shape":"SyntheticDescribeConnectorResponse__mapOf__string",
           "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
         },
         "connectorDescription":{
@@ -954,6 +1000,10 @@
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used by the connector to access Amazon Web Services resources.</p>"
         },
+        "stateDescription":{
+          "shape":"StateDescription",
+          "documentation":"<p>Details about the state of a connector.</p>"
+        },
         "workerConfiguration":{
           "shape":"WorkerConfigurationDescription",
           "documentation":"<p>Specifies which worker configuration was used for the connector.</p>"
@@ -998,6 +1048,10 @@
         "name":{
           "shape":"__string",
           "documentation":"<p>The name of the custom plugin.</p>"
+        },
+        "stateDescription":{
+          "shape":"StateDescription",
+          "documentation":"<p>Details about the state of a custom plugin.</p>"
         }
       }
     },
@@ -1522,6 +1576,40 @@
       "exception":true,
       "fault":true
     },
+    "StateDescription":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"__string",
+          "documentation":"<p>A code that describes the state of a resource.</p>"
+        },
+        "message":{
+          "shape":"__string",
+          "documentation":"<p>A message that describes the state of a resource.</p>"
+        }
+      },
+      "documentation":"<p>Details about the state of a resource.</p>"
+    },
+    "SyntheticCreateConnectorRequest__mapOf__string":{
+      "type":"map",
+      "key":{"shape":"__string"},
+      "value":{"shape":"__string"},
+      "sensitive":true
+    },
+    "SyntheticCreateWorkerConfigurationRequest__string":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SyntheticDescribeConnectorResponse__mapOf__string":{
+      "type":"map",
+      "key":{"shape":"__string"},
+      "value":{"shape":"__string"},
+      "sensitive":true
+    },
+    "SyntheticWorkerConfigurationRevisionDescription__string":{
+      "type":"string",
+      "sensitive":true
+    },
     "TooManyRequestsException":{
       "type":"structure",
       "members":{
@@ -1658,7 +1746,7 @@
           "documentation":"<p>The description of the worker configuration revision.</p>"
         },
         "propertiesFileContent":{
-          "shape":"__string",
+          "shape":"SyntheticWorkerConfigurationRevisionDescription__string",
           "documentation":"<p>Base64 encoded contents of the connect-distributed.properties file.</p>"
         },
         "revision":{
@@ -1794,11 +1882,6 @@
       "type":"long",
       "max":9223372036854775807,
       "min":1
-    },
-    "__mapOf__string":{
-      "type":"map",
-      "key":{"shape":"__string"},
-      "value":{"shape":"__string"}
     },
     "__string":{"type":"string"},
     "__stringMax1024":{

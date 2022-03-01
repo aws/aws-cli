@@ -171,7 +171,7 @@
         {"shape":"InternalServerError"},
         {"shape":"MissingFileSystemConfiguration"}
       ],
-      "documentation":"<p>Creates a new Amazon FSx for Lustre, Amazon FSx for Windows File Server, or Amazon FSx for OpenZFS file system from an existing Amazon FSx backup.</p> <p>If a file system with the specified client request token exists and the parameters match, this operation returns the description of the file system. If a client request token with the specified by the file system exists and the parameters don't match, this call returns <code>IncompatibleParameterError</code>. If a file system with the specified client request token doesn't exist, this operation does the following:</p> <ul> <li> <p>Creates a new Amazon FSx file system from backup with an assigned ID, and an initial lifecycle state of <code>CREATING</code>.</p> </li> <li> <p>Returns the description of the file system.</p> </li> </ul> <p>Parameters like the Active Directory, default share name, automatic backup, and backup settings default to the parameters of the file system that was backed up, unless overridden. You can explicitly supply other settings.</p> <p>By using the idempotent operation, you can retry a <code>CreateFileSystemFromBackup</code> call without the risk of creating an extra file system. This approach can be useful when an initial call fails in a way that makes it unclear whether a file system was created. Examples are if a transport level timeout occurred, or your connection was reset. If you use the same client request token and the initial call created a file system, the client receives a success message as long as the parameters are the same.</p> <note> <p>The <code>CreateFileSystemFromBackup</code> call returns while the file system's lifecycle state is still <code>CREATING</code>. You can check the file-system creation status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\"> DescribeFileSystems</a> operation, which returns the file system state along with other information.</p> </note>"
+      "documentation":"<p>Creates a new Amazon FSx for Lustre, Amazon FSx for Windows File Server, or Amazon FSx for OpenZFS file system from an existing Amazon FSx backup.</p> <p>If a file system with the specified client request token exists and the parameters match, this operation returns the description of the file system. If a file system with the specified client request token exists but the parameters don't match, this call returns <code>IncompatibleParameterError</code>. If a file system with the specified client request token doesn't exist, this operation does the following:</p> <ul> <li> <p>Creates a new Amazon FSx file system from backup with an assigned ID, and an initial lifecycle state of <code>CREATING</code>.</p> </li> <li> <p>Returns the description of the file system.</p> </li> </ul> <p>Parameters like the Active Directory, default share name, automatic backup, and backup settings default to the parameters of the file system that was backed up, unless overridden. You can explicitly supply other settings.</p> <p>By using the idempotent operation, you can retry a <code>CreateFileSystemFromBackup</code> call without the risk of creating an extra file system. This approach can be useful when an initial call fails in a way that makes it unclear whether a file system was created. Examples are if a transport level timeout occurred, or your connection was reset. If you use the same client request token and the initial call created a file system, the client receives a success message as long as the parameters are the same.</p> <note> <p>The <code>CreateFileSystemFromBackup</code> call returns while the file system's lifecycle state is still <code>CREATING</code>. You can check the file-system creation status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\"> DescribeFileSystems</a> operation, which returns the file system state along with other information.</p> </note>"
     },
     "CreateSnapshot":{
       "name":"CreateSnapshot",
@@ -187,7 +187,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Creates a snapshot of an existing Amazon FSx for OpenZFS file system. With snapshots, you can easily undo file changes and compare file versions by restoring the volume to a previous version.</p> <p>If a snapshot with the specified client request token exists, and the parameters match, this operation returns the description of the existing snapshot. If a snapshot with the specified client request token exists, and the parameters don't match, this operation returns <code>IncompatibleParameterError</code>. If a snapshot with the specified client request token doesn't exist, <code>CreateSnapshot</code> does the following: </p> <ul> <li> <p>Creates a new OpenZFS snapshot with an assigned ID, and an initial lifecycle state of <code>CREATING</code>.</p> </li> <li> <p>Returns the description of the snapshot.</p> </li> </ul> <p>By using the idempotent operation, you can retry a <code>CreateSnapshot</code> operation without the risk of creating an extra snapshot. This approach can be useful when an initial call fails in a way that makes it unclear whether a snapshot was created. If you use the same client request token and the initial call created a snapshot, the operation returns a successful result because all the parameters are the same.</p> <p>The <code>CreateSnapshot</code> operation returns while the snapshot's lifecycle state is still <code>CREATING</code>. You can check the snapshot creation status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeSnapshots.html\">DescribeSnapshots</a> operation, which returns the snapshot state along with other information. </p>",
+      "documentation":"<p>Creates a snapshot of an existing Amazon FSx for OpenZFS volume. With snapshots, you can easily undo file changes and compare file versions by restoring the volume to a previous version.</p> <p>If a snapshot with the specified client request token exists, and the parameters match, this operation returns the description of the existing snapshot. If a snapshot with the specified client request token exists, and the parameters don't match, this operation returns <code>IncompatibleParameterError</code>. If a snapshot with the specified client request token doesn't exist, <code>CreateSnapshot</code> does the following:</p> <ul> <li> <p>Creates a new OpenZFS snapshot with an assigned ID, and an initial lifecycle state of <code>CREATING</code>.</p> </li> <li> <p>Returns the description of the snapshot.</p> </li> </ul> <p>By using the idempotent operation, you can retry a <code>CreateSnapshot</code> operation without the risk of creating an extra snapshot. This approach can be useful when an initial call fails in a way that makes it unclear whether a snapshot was created. If you use the same client request token and the initial call created a snapshot, the operation returns a successful result because all the parameters are the same.</p> <p>The <code>CreateSnapshot</code> operation returns while the snapshot's lifecycle state is still <code>CREATING</code>. You can check the snapshot creation status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeSnapshots.html\">DescribeSnapshots</a> operation, which returns the snapshot state along with other information.</p>",
       "idempotent":true
     },
     "CreateStorageVirtualMachine":{
@@ -318,7 +318,7 @@
         {"shape":"InternalServerError"},
         {"shape":"SnapshotNotFound"}
       ],
-      "documentation":"<p>Deletes the Amazon FSx snapshot. After deletion, the snapshot no longer exists, and its data is gone. Deleting a snapshot doesn't affect snapshots stored in a file system backup. </p> <p>The <code>DeleteSnapshot</code> operation returns instantly. The snapshot appears with the lifecycle status of <code>DELETING</code> until the deletion is complete.</p>",
+      "documentation":"<p>Deletes an Amazon FSx for OpenZFS snapshot. After deletion, the snapshot no longer exists, and its data is gone. Deleting a snapshot doesn't affect snapshots stored in a file system backup. </p> <p>The <code>DeleteSnapshot</code> operation returns instantly. The snapshot appears with the lifecycle status of <code>DELETING</code> until the deletion is complete.</p>",
       "idempotent":true
     },
     "DeleteStorageVirtualMachine":{
@@ -447,7 +447,7 @@
         {"shape":"InternalServerError"},
         {"shape":"SnapshotNotFound"}
       ],
-      "documentation":"<p>Returns the description of specific Amazon FSx snapshots, if a <code>SnapshotIds</code> value is provided. Otherwise, this operation returns all snapshots owned by your Amazon Web Services account in the Amazon Web Services Region of the endpoint that you're calling.</p> <p>When retrieving all snapshots, you can optionally specify the <code>MaxResults</code> parameter to limit the number of snapshots in a response. If more backups remain, Amazon FSx returns a <code>NextToken</code> value in the response. In this case, send a later request with the <code>NextToken</code> request parameter set to the value of <code>NextToken</code> from the last response. </p> <p>Use this operation in an iterative process to retrieve a list of your snapshots. <code>DescribeSnapshots</code> is called first without a <code>NextToken</code> value. Then the operation continues to be called with the <code>NextToken</code> parameter set to the value of the last <code>NextToken</code> value until a response has no <code>NextToken</code> value.</p> <p>When using this operation, keep the following in mind:</p> <ul> <li> <p>The operation might return fewer than the <code>MaxResults</code> value of snapshot descriptions while still including a <code>NextToken</code> value.</p> </li> <li> <p>The order of snapshots returned in the response of one <code>DescribeSnapshots</code> call and the order of backups returned across the responses of a multi-call iteration is unspecified. </p> </li> </ul>"
+      "documentation":"<p>Returns the description of specific Amazon FSx for OpenZFS snapshots, if a <code>SnapshotIds</code> value is provided. Otherwise, this operation returns all snapshots owned by your Amazon Web Services account in the Amazon Web Services Region of the endpoint that you're calling.</p> <p>When retrieving all snapshots, you can optionally specify the <code>MaxResults</code> parameter to limit the number of snapshots in a response. If more backups remain, Amazon FSx returns a <code>NextToken</code> value in the response. In this case, send a later request with the <code>NextToken</code> request parameter set to the value of <code>NextToken</code> from the last response. </p> <p>Use this operation in an iterative process to retrieve a list of your snapshots. <code>DescribeSnapshots</code> is called first without a <code>NextToken</code> value. Then the operation continues to be called with the <code>NextToken</code> parameter set to the value of the last <code>NextToken</code> value until a response has no <code>NextToken</code> value.</p> <p>When using this operation, keep the following in mind:</p> <ul> <li> <p>The operation might return fewer than the <code>MaxResults</code> value of snapshot descriptions while still including a <code>NextToken</code> value.</p> </li> <li> <p>The order of snapshots returned in the response of one <code>DescribeSnapshots</code> call and the order of backups returned across the responses of a multi-call iteration is unspecified. </p> </li> </ul>"
     },
     "DescribeStorageVirtualMachines":{
       "name":"DescribeStorageVirtualMachines",
@@ -631,7 +631,7 @@
         {"shape":"SnapshotNotFound"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Updates the name of a snapshot. </p>",
+      "documentation":"<p>Updates the name of an Amazon FSx for OpenZFS snapshot.</p>",
       "idempotent":true
     },
     "UpdateStorageVirtualMachine":{
@@ -1447,7 +1447,7 @@
           "documentation":"<p>The configuration Amazon FSx uses when creating the root value of the Amazon FSx for OpenZFS file system. All volumes are children of the root volume. </p>"
         }
       },
-      "documentation":"<p>The OpenZFS configuration properties for the file system that you are creating.</p>"
+      "documentation":"<p>The Amazon FSx for OpenZFS configuration properties for the file system that you are creating.</p>"
     },
     "CreateFileSystemRequest":{
       "type":"structure",
@@ -1616,23 +1616,27 @@
       "members":{
         "ParentVolumeId":{
           "shape":"VolumeId",
-          "documentation":"<p>The ID of the volume to use as the parent volume. </p>"
+          "documentation":"<p>The ID of the volume to use as the parent volume.</p>"
         },
         "StorageCapacityReservationGiB":{
-          "shape":"IntegerNoMax",
-          "documentation":"<p>The amount of storage in gibibytes (GiB) to reserve from the parent volume. You can't reserve more storage than the parent volume has reserved.</p>"
+          "shape":"IntegerNoMaxFromNegativeOne",
+          "documentation":"<p>The amount of storage in gibibytes (GiB) to reserve from the parent volume. You can't reserve more storage than the parent volume has reserved. To not specify a storage capacity reservation, set this to <code>-1</code>.</p>"
         },
         "StorageCapacityQuotaGiB":{
-          "shape":"IntegerNoMax",
-          "documentation":"<p>The maximum amount of storage in gibibytes (GiB) that the volume can use from its parent. You can specify a quota larger than the storage on the parent volume.</p>"
+          "shape":"IntegerNoMaxFromNegativeOne",
+          "documentation":"<p>The maximum amount of storage in gibibytes (GiB) that the volume can use from its parent. You can't specify a quota larger than the storage on the parent volume. To not specify a storage capacity quota, set this to <code>-1</code>. </p>"
+        },
+        "RecordSizeKiB":{
+          "shape":"IntegerRecordSizeKiB",
+          "documentation":"<p>Specifies the record size of an OpenZFS volume, in kibibytes (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The default is 128 KiB. Most workloads should use the default record size. Database workflows can benefit from a smaller record size, while streaming workflows can benefit from a larger record size. For additional guidance on when to set a custom record size, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#performance-tips-zfs\"> Tips for maximizing performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "DataCompressionType":{
           "shape":"OpenZFSDataCompressionType",
-          "documentation":"<p>Specifies the method used to compress the data on the volume. Unless the compression type is specified, volumes inherit the <code>DataCompressionType</code> value of their parent volume.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. This algorithm reduces the amount of space used on your volume and has very little impact on compute resources.</p> </li> </ul>"
+          "documentation":"<p>Specifies the method used to compress the data on the volume. The compression type is <code>NONE</code> by default.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume. <code>NONE</code> is the default.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. Compared to LZ4, Z-Standard provides a better compression ratio to minimize on-disk storage utilization.</p> </li> <li> <p> <code>LZ4</code> - Compresses the data in the volume using the LZ4 compression algorithm. Compared to Z-Standard, LZ4 is less compute-intensive and delivers higher write throughput speeds.</p> </li> </ul>"
         },
         "CopyTagsToSnapshots":{
           "shape":"Flag",
-          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code>, and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value. </p>"
+          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code>, and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value.</p>"
         },
         "OriginSnapshot":{
           "shape":"CreateOpenZFSOriginSnapshotConfiguration",
@@ -1640,18 +1644,18 @@
         },
         "ReadOnly":{
           "shape":"ReadOnly",
-          "documentation":"<p>A Boolean value indicating whether the volume is read-only. </p>"
+          "documentation":"<p>A Boolean value indicating whether the volume is read-only.</p>"
         },
         "NfsExports":{
           "shape":"OpenZFSNfsExports",
-          "documentation":"<p>The configuration object for mounting a Network File System (NFS) file system. </p>"
+          "documentation":"<p>The configuration object for mounting a Network File System (NFS) file system.</p>"
         },
         "UserAndGroupQuotas":{
           "shape":"OpenZFSUserAndGroupQuotas",
-          "documentation":"<p>An object specifying how much storage users or groups can use on the volume. </p>"
+          "documentation":"<p>An object specifying how much storage users or groups can use on the volume.</p>"
         }
       },
-      "documentation":"<p>Specifies the configuration of the OpenZFS volume that you are creating.</p>"
+      "documentation":"<p>Specifies the configuration of the Amazon FSx for OpenZFS volume that you are creating.</p>"
     },
     "CreateSnapshotRequest":{
       "type":"structure",
@@ -2217,11 +2221,27 @@
       "members":{
         "SkipFinalBackup":{
           "shape":"Flag",
-          "documentation":"<p>By default, Amazon FSx for OpenZFS takes a final backup on your behalf when the <code>DeleteFileSystem</code> operation is invoked. Doing this helps protect you from data loss, and we highly recommend taking the final backup. If you want to skip this backup, use this value to do so. </p>"
+          "documentation":"<p>By default, Amazon FSx for OpenZFS takes a final backup on your behalf when the <code>DeleteFileSystem</code> operation is invoked. Doing this helps protect you from data loss, and we highly recommend taking the final backup. If you want to skip taking a final backup, set this value to <code>true</code>.</p>"
         },
-        "FinalBackupTags":{"shape":"Tags"}
+        "FinalBackupTags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags to apply to the file system's final backup.</p>"
+        },
+        "Options":{
+          "shape":"DeleteFileSystemOpenZFSOptions",
+          "documentation":"<p>To delete a file system if there are child volumes present below the root volume, use the string <code>DELETE_CHILD_VOLUMES_AND_SNAPSHOTS</code>. If your file system has child volumes and you don't use this option, the delete request will fail.</p>"
+        }
       },
-      "documentation":"<p>The configuration object for the OpenZFS file system used in the <code>DeleteFileSystem</code> operation.</p>"
+      "documentation":"<p>The configuration object for the Amazon FSx for OpenZFS file system used in the <code>DeleteFileSystem</code> operation.</p>"
+    },
+    "DeleteFileSystemOpenZFSOption":{
+      "type":"string",
+      "enum":["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"]
+    },
+    "DeleteFileSystemOpenZFSOptions":{
+      "type":"list",
+      "member":{"shape":"DeleteFileSystemOpenZFSOption"},
+      "max":1
     },
     "DeleteFileSystemOpenZFSResponse":{
       "type":"structure",
@@ -3047,6 +3067,16 @@
       "max":2147483647,
       "min":0
     },
+    "IntegerNoMaxFromNegativeOne":{
+      "type":"integer",
+      "max":2147483647,
+      "min":-1
+    },
+    "IntegerRecordSizeKiB":{
+      "type":"integer",
+      "max":1024,
+      "min":4
+    },
     "InternalServerError":{
       "type":"structure",
       "members":{
@@ -3488,11 +3518,11 @@
       "members":{
         "Clients":{
           "shape":"OpenZFSClients",
-          "documentation":"<p>A value that specifies who can mount the file system. You can provide a wildcard character (<code>*</code>), an IP address (<code>0.0.0.0</code>), or a CIDR address (<code>192.0.2.0/24</code>. By default, Amazon FSx uses the wildcard character when specifying the client. </p>"
+          "documentation":"<p>A value that specifies who can mount the file system. You can provide a wildcard character (<code>*</code>), an IP address (<code>0.0.0.0</code>), or a CIDR address (<code>192.0.2.0/24</code>). By default, Amazon FSx uses the wildcard character when specifying the client. </p>"
         },
         "Options":{
           "shape":"OpenZFSNfsExportOptions",
-          "documentation":"<p>The options to use when mounting the file system. For a list of options that you can use with Network File System (NFS), see the <a href=\"https://linux.die.net/man/5/exports\">exports(5) - Linux man page</a>. When choosing your options, consider the following:</p> <ul> <li> <p> <code>crossmount</code> is used by default. If you don't specify <code>crossmount</code> when changing the client configuration, you won't be able to see or access snapshots in your file system's snapshot directory.</p> </li> <li> <p> <code>sync</code> is used by default. If you instead specify <code>async</code>, the system acknowledges writes before writing to disk. If the system crashes before the writes are finished, you lose the unwritten data. </p> </li> </ul>"
+          "documentation":"<p>The options to use when mounting the file system. For a list of options that you can use with Network File System (NFS), see the <a href=\"https://linux.die.net/man/5/exports\">exports(5) - Linux man page</a>. When choosing your options, consider the following:</p> <ul> <li> <p> <code>crossmnt</code> is used by default. If you don't specify <code>crossmnt</code> when changing the client configuration, you won't be able to see or access snapshots in your file system's snapshot directory.</p> </li> <li> <p> <code>sync</code> is used by default. If you instead specify <code>async</code>, the system acknowledges writes before writing to disk. If the system crashes before the writes are finished, you lose the unwritten data. </p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies who can mount the file system and the options that can be used while mounting the file system.</p>"
@@ -3518,9 +3548,13 @@
     "OpenZFSCreateRootVolumeConfiguration":{
       "type":"structure",
       "members":{
+        "RecordSizeKiB":{
+          "shape":"IntegerRecordSizeKiB",
+          "documentation":"<p>Specifies the record size of an OpenZFS root volume, in kibibytes (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The default is 128 KiB. Most workloads should use the default record size. Database workflows can benefit from a smaller record size, while streaming workflows can benefit from a larger record size. For additional guidance on setting a custom record size, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#performance-tips-zfs\"> Tips for maximizing performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
+        },
         "DataCompressionType":{
           "shape":"OpenZFSDataCompressionType",
-          "documentation":"<p>Specifies the method used to compress the data on the volume. Unless the compression type is specified, volumes inherit the <code>DataCompressionType</code> value of their parent volume.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the ZStandard (ZSTD) compression algorithm. This algorithm reduces the amount of space used on your volume and has very little impact on compute resources.</p> </li> </ul>"
+          "documentation":"<p>Specifies the method used to compress the data on the volume. The compression type is <code>NONE</code> by default.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume. <code>NONE</code> is the default.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. Compared to LZ4, Z-Standard provides a better compression ratio to minimize on-disk storage utilization.</p> </li> <li> <p> <code>LZ4</code> - Compresses the data in the volume using the LZ4 compression algorithm. Compared to Z-Standard, LZ4 is less compute-intensive and delivers higher write throughput speeds.</p> </li> </ul>"
         },
         "NfsExports":{
           "shape":"OpenZFSNfsExports",
@@ -3532,7 +3566,7 @@
         },
         "CopyTagsToSnapshots":{
           "shape":"Flag",
-          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value. </p>"
+          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots of the volume. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value. </p>"
         },
         "ReadOnly":{
           "shape":"ReadOnly",
@@ -3545,7 +3579,8 @@
       "type":"string",
       "enum":[
         "NONE",
-        "ZSTD"
+        "ZSTD",
+        "LZ4"
       ]
     },
     "OpenZFSDeploymentType":{
@@ -3571,7 +3606,7 @@
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps), in 2 to the nth increments, between 2^3 (8) and 2^11 (2048). </p>"
+          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps). Valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{"shape":"DiskIopsConfiguration"},
@@ -3675,13 +3710,17 @@
           "shape":"IntegerNoMax",
           "documentation":"<p>The maximum amount of storage in gibibtyes (GiB) that the volume can use from its parent. You can specify a quota larger than the storage on the parent volume.</p>"
         },
+        "RecordSizeKiB":{
+          "shape":"IntegerRecordSizeKiB",
+          "documentation":"<p>The record size of an OpenZFS volume, in kibibytes (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The default is 128 KiB. Most workloads should use the default record size. For guidance on when to set a custom record size, see the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
+        },
         "DataCompressionType":{
           "shape":"OpenZFSDataCompressionType",
-          "documentation":"<p>The method used to compress the data on the volume. Unless a compression type is specified, volumes inherit the <code>DataCompressionType</code> value of their parent volume.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. This algorithm reduces the amount of space used on your volume and has very little impact on compute resources.</p> </li> </ul>"
+          "documentation":"<p>Specifies the method used to compress the data on the volume. The compression type is <code>NONE</code> by default.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume. <code>NONE</code> is the default.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. Compared to LZ4, Z-Standard provides a better compression ratio to minimize on-disk storage utilization.</p> </li> <li> <p> <code>LZ4</code> - Compresses the data in the volume using the LZ4 compression algorithm. Compared to Z-Standard, LZ4 is less compute-intensive and delivers higher write throughput speeds.</p> </li> </ul>"
         },
         "CopyTagsToSnapshots":{
           "shape":"Flag",
-          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value. </p>"
+          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value.</p>"
         },
         "OriginSnapshot":{
           "shape":"OpenZFSOriginSnapshotConfiguration",
@@ -3697,7 +3736,7 @@
         },
         "UserAndGroupQuotas":{
           "shape":"OpenZFSUserAndGroupQuotas",
-          "documentation":"<p>An object specifying how much storage users or groups can use on the volume. </p>"
+          "documentation":"<p>An object specifying how much storage users or groups can use on the volume.</p>"
         }
       },
       "documentation":"<p>The configuration of an Amazon FSx for OpenZFS volume.</p>"
@@ -4022,6 +4061,7 @@
           "shape":"SnapshotLifecycle",
           "documentation":"<p>The lifecycle status of the snapshot.</p> <ul> <li> <p> <code>PENDING</code> - Amazon FSx hasn't started creating the snapshot.</p> </li> <li> <p> <code>CREATING</code> - Amazon FSx is creating the snapshot.</p> </li> <li> <p> <code>DELETING</code> - Amazon FSx is deleting the snapshot.</p> </li> <li> <p> <code>AVAILABLE</code> - The snapshot is fully available.</p> </li> </ul>"
         },
+        "LifecycleTransitionReason":{"shape":"LifecycleTransitionReason"},
         "Tags":{"shape":"Tags"},
         "AdministrativeActions":{
           "shape":"AdministrativeActions",
@@ -4562,16 +4602,16 @@
         "AutomaticBackupRetentionDays":{"shape":"AutomaticBackupRetentionDays"},
         "CopyTagsToBackups":{
           "shape":"Flag",
-          "documentation":"<p>A Boolean value indicating whether tags for the file system should be copied to backups. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the file system are copied to all automatic and user-initiated backups where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to backups. If you specify one or more tags when creating a user-initiated backup, no tags are copied from the file system, regardless of this value. </p>"
+          "documentation":"<p>A Boolean value indicating whether tags for the file system should be copied to backups. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the file system are copied to all automatic and user-initiated backups where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to backups. If you specify one or more tags when creating a user-initiated backup, no tags are copied from the file system, regardless of this value.</p>"
         },
         "CopyTagsToVolumes":{
           "shape":"Flag",
-          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value. </p>"
+          "documentation":"<p>A Boolean value indicating whether tags for the volume should be copied to snapshots. This value defaults to <code>false</code>. If it's set to <code>true</code>, all tags for the volume are copied to snapshots where the user doesn't specify tags. If this value is <code>true</code> and you specify one or more tags, only the specified tags are copied to snapshots. If you specify one or more tags when creating the snapshot, no tags are copied from the volume, regardless of this value.</p>"
         },
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps), in 2 to the nth increments, between 2^3 (8) and 2^12 (4096). </p>"
+          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps). Valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{"shape":"DiskIopsConfiguration"}
@@ -4678,16 +4718,20 @@
       "type":"structure",
       "members":{
         "StorageCapacityReservationGiB":{
-          "shape":"IntegerNoMax",
-          "documentation":"<p>The amount of storage in gibibytes (GiB) to reserve from the parent volume. You can't reserve more storage than the parent volume has reserved.</p>"
+          "shape":"IntegerNoMaxFromNegativeOne",
+          "documentation":"<p>The amount of storage in gibibytes (GiB) to reserve from the parent volume. You can't reserve more storage than the parent volume has reserved. You can specify a value of <code>-1</code> to unset a volume's storage capacity reservation.</p>"
         },
         "StorageCapacityQuotaGiB":{
-          "shape":"IntegerNoMax",
-          "documentation":"<p/> <p>The maximum amount of storage in gibibytes (GiB) that the volume can use from its parent. You can specify a quota larger than the storage on the parent volume.</p>"
+          "shape":"IntegerNoMaxFromNegativeOne",
+          "documentation":"<p>The maximum amount of storage in gibibytes (GiB) that the volume can use from its parent. You can specify a quota larger than the storage on the parent volume. You can specify a value of <code>-1</code> to unset a volume's storage capacity quota.</p>"
+        },
+        "RecordSizeKiB":{
+          "shape":"IntegerRecordSizeKiB",
+          "documentation":"<p>Specifies the record size of an OpenZFS volume, in kibibytes (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The default is 128 KiB. Most workloads should use the default record size. Database workflows can benefit from a smaller record size, while streaming workflows can benefit from a larger record size. For additional guidance on when to set a custom record size, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#performance-tips-zfs\"> Tips for maximizing performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "DataCompressionType":{
           "shape":"OpenZFSDataCompressionType",
-          "documentation":"<p/> <p>Specifies the method used to compress the data on the volume. Unless the compression type is specified, volumes inherit the <code>DataCompressionType</code> value of their parent volume.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. This algorithm reduces the amount of space used on your volume and has very little impact on compute resources.</p> </li> </ul>"
+          "documentation":"<p>Specifies the method used to compress the data on the volume. The compression type is <code>NONE</code> by default.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume. <code>NONE</code> is the default.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. Compared to LZ4, Z-Standard provides a better compression ratio to minimize on-disk storage utilization.</p> </li> <li> <p> <code>LZ4</code> - Compresses the data in the volume using the LZ4 compression algorithm. Compared to Z-Standard, LZ4 is less compute-intensive and delivers higher write throughput speeds.</p> </li> </ul>"
         },
         "NfsExports":{
           "shape":"OpenZFSNfsExports",
@@ -4717,7 +4761,7 @@
         },
         "Name":{
           "shape":"SnapshotName",
-          "documentation":"<p>The name of the snapshot to update. </p>"
+          "documentation":"<p>The name of the snapshot to update.</p>"
         },
         "SnapshotId":{
           "shape":"SnapshotId",
@@ -4919,7 +4963,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>No Amazon FSx for NetApp ONTAP volumes were found based upon the supplied parameters.</p>",
+      "documentation":"<p>No Amazon FSx volumes were found based upon the supplied parameters.</p>",
       "exception":true
     },
     "VolumePath":{

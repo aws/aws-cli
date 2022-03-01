@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.22.65
+=======
+
+* api-change:``mgn``: Add support for GP3 and IO2 volume types. Add bootMode to LaunchConfiguration object (and as a parameter to UpdateLaunchConfigurationRequest).
+* api-change:``rds``: Documentation updates for Multi-AZ DB clusters.
+* api-change:``mediapackage``: This release adds Hybridcast as an available profile option for Dash Origin Endpoints.
+* api-change:``kafkaconnect``: Adds operation for custom plugin deletion (DeleteCustomPlugin) and adds new StateDescription field to DescribeCustomPlugin and DescribeConnector responses to return errors from asynchronous resource creation.
+
+
 1.22.64
 =======
 

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.66
+=======
+
+* api-change:``athena``: This release adds support for S3 Object Ownership by allowing the S3 bucket owner full control canned ACL to be set when Athena writes query results to S3 buckets.
+* api-change:``ecr``: This release adds support for tracking images lastRecordedPullTime.
+* api-change:``keyspaces``: This release adds support for data definition language (DDL) operations
+* api-change:``gamelift``: Minor updates to address errors.
+* api-change:``cloudtrail``: Add bytesScanned field into responses of DescribeQuery and GetQueryResults.
+
+
 1.22.65
 =======
 

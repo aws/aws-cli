@@ -5,7 +5,7 @@ The following ``create-secret`` example creates a secret with two key-value pair
     aws secretsmanager create-secret \
         --name MyTestSecret \
         --description "My test secret created with the CLI." \
-        --secret-string "{\"user\":\"diegor\",\"password\":\"i29wwX!%9wFV\"}" 
+        --secret-string "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}" 
 
 Output::
 
@@ -30,7 +30,7 @@ Contents of ``mycreds.json``::
     {
       "engine": "mysql",
       "username": "saanvis",
-      "password": "i29wwX!%9wFV",
+      "password": "EXAMPLE-PASSWORD",
       "host": "my-database-endpoint.us-west-2.rds.amazonaws.com",
       "dbname": "myDatabase",
       "port": "3306"

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.4.23
+======
+
+* api-change:``appflow``: Launching Amazon AppFlow Marketo as a destination connector SDK.
+* api-change:``keyspaces``: This release adds support for data definition language (DDL) operations
+* api-change:``greengrassv2``: Doc only update that clarifies Create Deployment section.
+* api-change:``cloudtrail``: Add bytesScanned field into responses of DescribeQuery and GetQueryResults.
+* api-change:``timestream-query``: Documentation only update for SDK and CLI
+* api-change:``kendra``: Amazon Kendra now suggests spell corrections for a query. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/query-spell-check.html
+* api-change:``ecr``: This release adds support for tracking images lastRecordedPullTime.
+* api-change:``gamelift``: Minor updates to address errors.
+* api-change:``fsx``: This release adds support for data repository associations to use root ("/") as the file system path
+* api-change:``athena``: This release adds support for S3 Object Ownership by allowing the S3 bucket owner full control canned ACL to be set when Athena writes query results to S3 buckets.
+
+
 2.4.22
 ======
 

@@ -1654,7 +1654,7 @@
           "documentation":"<p>A list of regular expression patterns that apply to a URL on the Confluence server. An exclusion pattern can apply to a blog post, a page, a space, or an attachment. Items that match the pattern are excluded from the index. Items that don't match the pattern are included in the index. If a item matches both an exclusion pattern and an inclusion pattern, the item isn't included in the index.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for data sources that connect to Confluence.</p>"
+      "documentation":"<p>Provides the configuration information to connect to Confluence as your data source.</p>"
     },
     "ConfluencePageConfiguration":{
       "type":"structure",
@@ -1815,7 +1815,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of credentials stored in Secrets Manager. The credentials should be a user/password pair. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-database.html\">Using a Database Data Source</a>. For more information about Secrets Manager, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\"> What Is Secrets Manager</a> in the <i> Secrets Manager </i> user guide.</p>"
         }
       },
-      "documentation":"<p>Provides the information necessary to connect to a database.</p>"
+      "documentation":"<p>Provides the configuration information that's required to connect to a database.</p>"
     },
     "ContentSourceConfiguration":{
       "type":"structure",
@@ -1833,7 +1833,7 @@
           "documentation":"<p> <code>TRUE</code> to use documents you indexed directly using the <code>BatchPutDocument</code> API.</p>"
         }
       },
-      "documentation":"<p>Configuration information for your content sources, such as data sources, FAQs, and content indexed directly via <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_BatchPutDocument.html\">BatchPutDocument</a>.</p>"
+      "documentation":"<p>Provides the configuration information for your content sources, such as data sources, FAQs, and content indexed directly via <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_BatchPutDocument.html\">BatchPutDocument</a>.</p>"
     },
     "ContentType":{
       "type":"string",
@@ -1844,6 +1844,32 @@
         "PLAIN_TEXT",
         "PPT"
       ]
+    },
+    "Correction":{
+      "type":"structure",
+      "members":{
+        "BeginOffset":{
+          "shape":"Integer",
+          "documentation":"<p>The zero-based location in the response string or text where the corrected word starts.</p>"
+        },
+        "EndOffset":{
+          "shape":"Integer",
+          "documentation":"<p>The zero-based location in the response string or text where the corrected word ends.</p>"
+        },
+        "Term":{
+          "shape":"String",
+          "documentation":"<p>The string or text of a misspelled word in a query.</p>"
+        },
+        "CorrectedTerm":{
+          "shape":"String",
+          "documentation":"<p>The string or text of a corrected misspelled word in a query.</p>"
+        }
+      },
+      "documentation":"<p>A corrected misspelled word in a query.</p>"
+    },
+    "CorrectionList":{
+      "type":"list",
+      "member":{"shape":"Correction"}
     },
     "CrawlDepth":{
       "type":"integer",
@@ -1872,7 +1898,7 @@
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>The connector configuration information that is required to access the repository.</p> <p>You can't specify the <code>Configuration</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>Configuration</code> parameter is required for all other data sources.</p>"
+          "documentation":"<p>Configuration information that is required to access the data source repository.</p> <p>You can't specify the <code>Configuration</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>Configuration</code> parameter is required for all other data sources.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -1936,7 +1962,7 @@
         },
         "Configuration":{
           "shape":"ExperienceConfiguration",
-          "documentation":"<p>Provides the configuration information for your Amazon Kendra experience. This includes <code>ContentSourceConfiguration</code>, which specifies the data source IDs and/or FAQ IDs, and <code>UserIdentityConfiguration</code>, which specifies the user or group information to grant access to your Amazon Kendra experience.</p>"
+          "documentation":"<p>Configuration information for your Amazon Kendra experience. This includes <code>ContentSourceConfiguration</code>, which specifies the data source IDs and/or FAQ IDs, and <code>UserIdentityConfiguration</code>, which specifies the user or group information to grant access to your Amazon Kendra experience.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -2200,27 +2226,27 @@
       "members":{
         "S3Configuration":{
           "shape":"S3DataSourceConfiguration",
-          "documentation":"<p>Provides information to create a data source connector for a document repository in an Amazon S3 bucket.</p>"
+          "documentation":"<p>Provides the configuration information to connect to an Amazon S3 bucket as your data source.</p>"
         },
         "SharePointConfiguration":{
           "shape":"SharePointConfiguration",
-          "documentation":"<p>Provides information necessary to create a data source connector for a Microsoft SharePoint site.</p>"
+          "documentation":"<p>Provides the configuration information to connect to Microsoft SharePoint as your data source.</p>"
         },
         "DatabaseConfiguration":{
           "shape":"DatabaseConfiguration",
-          "documentation":"<p>Provides information necessary to create a data source connector for a database.</p>"
+          "documentation":"<p>Provides the configuration information to connect to a database as your data source.</p>"
         },
         "SalesforceConfiguration":{
           "shape":"SalesforceConfiguration",
-          "documentation":"<p>Provides configuration information for data sources that connect to a Salesforce site.</p>"
+          "documentation":"<p>Provides the configuration information to connect to Salesforce as your data source.</p>"
         },
         "OneDriveConfiguration":{
           "shape":"OneDriveConfiguration",
-          "documentation":"<p>Provides configuration for data sources that connect to Microsoft OneDrive.</p>"
+          "documentation":"<p>Provides the configuration information to connect to Microsoft OneDrive as your data source.</p>"
         },
         "ServiceNowConfiguration":{
           "shape":"ServiceNowConfiguration",
-          "documentation":"<p>Provides configuration for data sources that connect to ServiceNow instances.</p>"
+          "documentation":"<p>Provides the configuration information to connect to ServiceNow as your data source.</p>"
         },
         "ConfluenceConfiguration":{
           "shape":"ConfluenceConfiguration",
@@ -2228,7 +2254,7 @@
         },
         "GoogleDriveConfiguration":{
           "shape":"GoogleDriveConfiguration",
-          "documentation":"<p>Provides configuration for data sources that connect to Google Drive. </p>"
+          "documentation":"<p>Provides the configuration information to connect to Google Drive as your data source. </p>"
         },
         "WebCrawlerConfiguration":{"shape":"WebCrawlerConfiguration"},
         "WorkDocsConfiguration":{
@@ -2240,7 +2266,7 @@
           "documentation":"<p>Provides the configuration information to connect to Amazon FSx as your data source.</p>"
         }
       },
-      "documentation":"<p>Configuration information for an Amazon Kendra data source.</p>"
+      "documentation":"<p>Provides the configuration information for an Amazon Kendra data source.</p>"
     },
     "DataSourceDateFieldFormat":{
       "type":"string",
@@ -2270,7 +2296,7 @@
           "documentation":"<p>The identifier of the data source group you want to add to your list of data source groups. This is for filtering search results based on the groups' access to documents in that data source.</p>"
         }
       },
-      "documentation":"<p> Data source information for user context filtering. </p>"
+      "documentation":"<p>Data source information for user context filtering.</p>"
     },
     "DataSourceGroups":{
       "type":"list",
@@ -2517,7 +2543,7 @@
           "documentation":"<p>A list of identifiers of security groups within your Amazon VPC. The security groups should enable Amazon Kendra to connect to the data source.</p>"
         }
       },
-      "documentation":"<p>Provides information for connecting to an Amazon VPC.</p>"
+      "documentation":"<p>Provides the configuration information to connect to an Amazon VPC.</p>"
     },
     "DatabaseConfiguration":{
       "type":"structure",
@@ -2533,7 +2559,7 @@
         },
         "ConnectionConfiguration":{
           "shape":"ConnectionConfiguration",
-          "documentation":"<p>The information necessary to connect to a database.</p>"
+          "documentation":"<p>Configuration information that's required to connect to a database.</p>"
         },
         "VpcConfiguration":{"shape":"DataSourceVpcConfiguration"},
         "ColumnConfiguration":{
@@ -2549,7 +2575,7 @@
           "documentation":"<p>Provides information about how Amazon Kendra uses quote marks around SQL identifiers when querying a database data source.</p>"
         }
       },
-      "documentation":"<p>Provides the information necessary to connect a database to an index. </p>"
+      "documentation":"<p>Provides the configuration information to connect to a index. </p>"
     },
     "DatabaseEngineType":{
       "type":"string",
@@ -2739,7 +2765,7 @@
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>Information that describes where the data source is located and how the data source is configured. The specific information in the description depends on the data source provider.</p>"
+          "documentation":"<p>Describes how the data source is configured. The specific information in the description depends on the data source provider.</p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -3621,7 +3647,7 @@
           "documentation":"<p>Specifies whether you are configuring a <code>User</code> or a <code>Group</code>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information of users or groups in your Amazon Web Services SSO identity source to grant access your Amazon Kendra experience.</p>"
+      "documentation":"<p>Provides the configuration information for users or groups in your Amazon Web Services SSO identity source to grant access your Amazon Kendra experience.</p>"
     },
     "EntityDisplayData":{
       "type":"structure",
@@ -3677,7 +3703,7 @@
           "documentation":"<p>The persona that defines the specific permissions of the user or group in your Amazon Web Services SSO identity source. The available personas or access roles are <code>Owner</code> and <code>Viewer</code>. For more information on these personas, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/deploying-search-experience-no-code.html#access-search-experience\">Providing access to your search page</a>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information of users or groups in your Amazon Web Services SSO identity source for access to your Amazon Kendra experience. Specific permissions are defined for each user or group once they are granted access to your Amazon Kendra experience.</p>"
+      "documentation":"<p>Provides the configuration information for users or groups in your Amazon Web Services SSO identity source for access to your Amazon Kendra experience. Specific permissions are defined for each user or group once they are granted access to your Amazon Kendra experience.</p>"
     },
     "EntityPersonaConfigurationList":{
       "type":"list",
@@ -3735,7 +3761,7 @@
           "documentation":"<p>The Amazon Web Services SSO field name that contains the identifiers of your users, such as their emails.</p>"
         }
       },
-      "documentation":"<p>Specifies the configuration information for your Amazon Kendra experience. This includes the data source IDs and/or FAQ IDs, and user or group information to grant access to your Amazon Kendra experience.</p>"
+      "documentation":"<p>Provides the configuration information for your Amazon Kendra experience. This includes the data source IDs and/or FAQ IDs, and user or group information to grant access to your Amazon Kendra experience.</p>"
     },
     "ExperienceEndpoint":{
       "type":"structure",
@@ -3749,7 +3775,7 @@
           "documentation":"<p>The endpoint of your Amazon Kendra experience.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information of the endpoint for your Amazon Kendra experience.</p>"
+      "documentation":"<p>Provides the configuration information for the endpoint for your Amazon Kendra experience.</p>"
     },
     "ExperienceEndpoints":{
       "type":"list",
@@ -4007,11 +4033,11 @@
         },
         "VpcConfiguration":{
           "shape":"DataSourceVpcConfiguration",
-          "documentation":"<p>Provides the configuration information for connecting to an Amazon Virtual Private Cloud for your Amazon FSx. Your Amazon FSx instance must reside inside your VPC.</p>"
+          "documentation":"<p>Configuration information for connecting to an Amazon Virtual Private Cloud for your Amazon FSx. Your Amazon FSx instance must reside inside your VPC.</p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the key-value pairs required to connect to your Amazon FSx file system. Windows is currently the only supported type. The secret must contain a JSON structure with the following keys:</p> <ul> <li> <p>username—The Active Directory user name, along with the Domain Name System (DNS) domain name. For example, <i>user@corp.example.com</i>. The Active Directory user account must have read and mounting access to the Amazon FSx file system for Windows.</p> </li> <li> <p>password—The password of the active directory user with read and mounting access Amazon FSx Windows file system.</p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the key-value pairs required to connect to your Amazon FSx file system. Windows is currently the only supported type. The secret must contain a JSON structure with the following keys:</p> <ul> <li> <p>username—The Active Directory user name, along with the Domain Name System (DNS) domain name. For example, <i>user@corp.example.com</i>. The Active Directory user account must have read and mounting access to the Amazon FSx file system for Windows.</p> </li> <li> <p>password—The password of the Active Directory user account with read and mounting access to the Amazon FSx Windows file system.</p> </li> </ul>"
         },
         "InclusionPatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
@@ -4023,7 +4049,7 @@
         },
         "FieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
-          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map Amazon FSx data source attributes or field names to Amazon Kendra index field names in Amazon Kendra. To create custom fields, use the <code>UpdateIndex</code> API before you map to Amazon FSx fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Amazon FSx data source field names must exist in your Amazon FSx custom metadata.</p>"
+          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map Amazon FSx data source attributes or field names to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Amazon FSx fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Amazon FSx data source field names must exist in your Amazon FSx custom metadata.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to Amazon FSx as your data source.</p>"
@@ -4150,7 +4176,7 @@
           "documentation":"<p>A list of identifiers or shared drives to exclude from the index. All files and folders stored on the shared drive are excluded.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for data sources that connect to Google Drive.</p>"
+      "documentation":"<p>Provides the configuration information to connect to Google Drive as your data source.</p>"
     },
     "GroupAttributeField":{
       "type":"string",
@@ -4360,7 +4386,7 @@
           "documentation":"<p>The current status of the index. When the status is <code>ACTIVE</code>, the index is ready to search.</p>"
         }
       },
-      "documentation":"<p>A summary of information about an index.</p>"
+      "documentation":"<p>A summary of information on the configuration of an index.</p>"
     },
     "IndexConfigurationSummaryList":{
       "type":"list",
@@ -4507,7 +4533,7 @@
           "documentation":"<p>The group attribute field.</p>"
         }
       },
-      "documentation":"<p>Configuration information for the JSON token type.</p>"
+      "documentation":"<p>Provides the configuration information for the JSON token type.</p>"
     },
     "JwtTokenTypeConfiguration":{
       "type":"structure",
@@ -4542,7 +4568,7 @@
           "documentation":"<p>The regular expression that identifies the claim.</p>"
         }
       },
-      "documentation":"<p>Configuration information for the JWT token type.</p>"
+      "documentation":"<p>Provides the configuration information for the JWT token type.</p>"
     },
     "KeyLocation":{
       "type":"string",
@@ -4841,7 +4867,7 @@
       "members":{
         "IndexConfigurationSummaryItems":{
           "shape":"IndexConfigurationSummaryList",
-          "documentation":"<p>An array of summary information for one or more indexes.</p>"
+          "documentation":"<p>An array of summary information on the configuration of one or more indexes.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5121,7 +5147,7 @@
           "documentation":"<p>A Boolean value that specifies whether local groups are disabled (<code>True</code>) or enabled (<code>False</code>). </p>"
         }
       },
-      "documentation":"<p>Provides configuration information for data sources that connect to OneDrive.</p>"
+      "documentation":"<p>Provides the configuration information to connect to OneDrive as your data source.</p>"
     },
     "OneDriveUser":{
       "type":"string",
@@ -5383,6 +5409,10 @@
         "VisitorId":{
           "shape":"VisitorId",
           "documentation":"<p>Provides an identifier for a specific user. The <code>VisitorId</code> should be a unique identifier, such as a GUID. Don't use personally identifiable information, such as the user's email address, as the <code>VisitorId</code>.</p>"
+        },
+        "SpellCorrectionConfiguration":{
+          "shape":"SpellCorrectionConfiguration",
+          "documentation":"<p>Enables suggested spell corrections for queries.</p>"
         }
       }
     },
@@ -5408,6 +5438,10 @@
         "Warnings":{
           "shape":"WarningList",
           "documentation":"<p>A list of warning codes and their messages on problems with your query.</p> <p>Amazon Kendra currently only supports one type of warning, which is a warning on invalid syntax used in the query. For examples of invalid query syntax, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/searching-example.html#searching-index-query-syntax\">Searching with advanced query syntax</a>.</p>"
+        },
+        "SpellCorrectedQueries":{
+          "shape":"SpellCorrectedQueryList",
+          "documentation":"<p>A list of information related to suggested spell corrections for a query.</p>"
         }
       }
     },
@@ -5680,7 +5714,7 @@
           "documentation":"<p>Provides the path to the S3 bucket that contains the user context filtering files for the data source. For the format of the file, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/s3-acl.html\">Access control for S3 data sources</a>.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for a data source to index documents in an Amazon S3 bucket.</p>"
+      "documentation":"<p>Provides the configuration information to connect to an Amazon S3 bucket.</p>"
     },
     "S3ObjectKey":{
       "type":"string",
@@ -5726,7 +5760,7 @@
           "documentation":"<p>Filters the documents in the feed based on status of the user. When you specify <code>ACTIVE_USERS</code> only documents from users who have an active account are indexed. When you specify <code>STANDARD_USER</code> only documents for Salesforce standard users are documented. You can specify both.</p>"
         }
       },
-      "documentation":"<p>Defines configuration for syncing a Salesforce chatter feed. The contents of the object comes from the Salesforce FeedItem table.</p>"
+      "documentation":"<p>The configuration information for syncing a Salesforce chatter feed. The contents of the object comes from the Salesforce FeedItem table.</p>"
     },
     "SalesforceChatterFeedIncludeFilterType":{
       "type":"string",
@@ -5774,7 +5808,7 @@
         },
         "StandardObjectAttachmentConfiguration":{
           "shape":"SalesforceStandardObjectAttachmentConfiguration",
-          "documentation":"<p>Provides configuration information for processing attachments to Salesforce standard objects. </p>"
+          "documentation":"<p>Configuration information for processing attachments to Salesforce standard objects. </p>"
         },
         "IncludeAttachmentFilePatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
@@ -5835,14 +5869,14 @@
         },
         "StandardKnowledgeArticleTypeConfiguration":{
           "shape":"SalesforceStandardKnowledgeArticleTypeConfiguration",
-          "documentation":"<p>Provides configuration information for standard Salesforce knowledge articles.</p>"
+          "documentation":"<p>Configuration information for standard Salesforce knowledge articles.</p>"
         },
         "CustomKnowledgeArticleTypeConfigurations":{
           "shape":"SalesforceCustomKnowledgeArticleTypeConfigurationList",
-          "documentation":"<p>Provides configuration information for custom Salesforce knowledge articles.</p>"
+          "documentation":"<p>Configuration information for custom Salesforce knowledge articles.</p>"
         }
       },
-      "documentation":"<p>Specifies configuration information for the knowledge article types that Amazon Kendra indexes. Amazon Kendra indexes standard knowledge articles and the standard fields of knowledge articles, or the custom fields of custom knowledge articles, but not both </p>"
+      "documentation":"<p>Provides the configuration information for the knowledge article types that Amazon Kendra indexes. Amazon Kendra indexes standard knowledge articles and the standard fields of knowledge articles, or the custom fields of custom knowledge articles, but not both </p>"
     },
     "SalesforceKnowledgeArticleState":{
       "type":"string",
@@ -5875,7 +5909,7 @@
           "documentation":"<p>One or more objects that map fields in the knowledge article to Amazon Kendra index fields. The index field must exist before you can map a Salesforce field to it.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for standard Salesforce knowledge articles.</p>"
+      "documentation":"<p>Configuration information for standard Salesforce knowledge articles.</p>"
     },
     "SalesforceStandardObjectAttachmentConfiguration":{
       "type":"structure",
@@ -5889,7 +5923,7 @@
           "documentation":"<p>One or more objects that map fields in attachments to Amazon Kendra index fields.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for processing attachments to Salesforce standard objects. </p>"
+      "documentation":"<p>Provides the configuration information for processing attachments to Salesforce standard objects. </p>"
     },
     "SalesforceStandardObjectConfiguration":{
       "type":"structure",
@@ -5915,7 +5949,7 @@
           "documentation":"<p>One or more objects that map fields in the standard object to Amazon Kendra index fields. The index field must exist before you can map a Salesforce field to it.</p>"
         }
       },
-      "documentation":"<p>Specifies configuration information for indexing a single standard object.</p>"
+      "documentation":"<p>Provides the configuration information for indexing a single standard object.</p>"
     },
     "SalesforceStandardObjectConfigurationList":{
       "type":"list",
@@ -6020,7 +6054,7 @@
           "documentation":"<p>You can choose one of the following modes:</p> <ul> <li> <p> <code>HOST_ONLY</code> – crawl only the website host names. For example, if the seed URL is \"abc.example.com\", then only URLs with host name \"abc.example.com\" are crawled.</p> </li> <li> <p> <code>SUBDOMAINS</code> – crawl the website host names with subdomains. For example, if the seed URL is \"abc.example.com\", then \"a.abc.example.com\" and \"b.abc.example.com\" are also crawled.</p> </li> <li> <p> <code>EVERYTHING</code> – crawl the website host names with subdomains and other domains that the webpages link to.</p> </li> </ul> <p>The default mode is set to <code>HOST_ONLY</code>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information of the seed or starting point URLs to crawl.</p> <p> <i>When selecting websites to index, you must adhere to the <a href=\"https://aws.amazon.com/aup/\">Amazon Acceptable Use Policy</a> and all other Amazon terms. Remember that you must only use Amazon Kendra Web Crawler to index your own webpages, or webpages that you have authorization to index.</i> </p>"
+      "documentation":"<p>Provides the configuration information for the seed or starting point URLs to crawl.</p> <p> <i>When selecting websites to index, you must adhere to the <a href=\"https://aws.amazon.com/aup/\">Amazon Acceptable Use Policy</a> and all other Amazon terms. Remember that you must only use Amazon Kendra Web Crawler to index your own webpages, or webpages that you have authorization to index.</i> </p>"
     },
     "SeedUrlList":{
       "type":"list",
@@ -6074,18 +6108,18 @@
         },
         "KnowledgeArticleConfiguration":{
           "shape":"ServiceNowKnowledgeArticleConfiguration",
-          "documentation":"<p>Provides configuration information for crawling knowledge articles in the ServiceNow site.</p>"
+          "documentation":"<p>Configuration information for crawling knowledge articles in the ServiceNow site.</p>"
         },
         "ServiceCatalogConfiguration":{
           "shape":"ServiceNowServiceCatalogConfiguration",
-          "documentation":"<p>Provides configuration information for crawling service catalogs in the ServiceNow site.</p>"
+          "documentation":"<p>Configuration information for crawling service catalogs in the ServiceNow site.</p>"
         },
         "AuthenticationType":{
           "shape":"ServiceNowAuthenticationType",
           "documentation":"<p>Determines the type of authentication used to connect to the ServiceNow instance. If you choose <code>HTTP_BASIC</code>, Amazon Kendra is authenticated using the user name and password provided in the Secrets Manager secret in the <code>SecretArn</code> field. When you choose <code>OAUTH2</code>, Amazon Kendra is authenticated using the OAuth token and secret provided in the Secrets Manager secret, and the user name and password are used to determine which information Amazon Kendra has access to.</p> <p>When you use <code>OAUTH2</code> authentication, you must generate a token and a client secret using the ServiceNow console. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-servicenow.html\">Using a ServiceNow data source</a>.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information required to connect to a ServiceNow data source.</p>"
+      "documentation":"<p>Provides the configuration information to connect to ServiceNow as your data source.</p>"
     },
     "ServiceNowHostUrl":{
       "type":"string",
@@ -6126,7 +6160,7 @@
           "documentation":"<p>A query that selects the knowledge articles to index. The query can return articles from multiple knowledge bases, and the knowledge bases can be public or private.</p> <p>The query string must be one generated by the ServiceNow console. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/servicenow-query.html\">Specifying documents to index with a query</a>. </p>"
         }
       },
-      "documentation":"<p>Provides configuration information for crawling knowledge articles in the ServiceNow site.</p>"
+      "documentation":"<p>Provides the configuration information for crawling knowledge articles in the ServiceNow site.</p>"
     },
     "ServiceNowKnowledgeArticleFilterQuery":{
       "type":"string",
@@ -6163,7 +6197,7 @@
           "documentation":"<p>Mapping between ServiceNow fields and Amazon Kendra index fields. You must create the index field before you map the field.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for crawling service catalog items in the ServiceNow site</p>"
+      "documentation":"<p>Provides the configuration information for crawling service catalog items in the ServiceNow site</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -6224,7 +6258,7 @@
         },
         "SslCertificateS3Path":{"shape":"S3Path"}
       },
-      "documentation":"<p>Provides configuration information for connecting to a Microsoft SharePoint data source.</p>"
+      "documentation":"<p>Provides the configuration information to connect to Microsoft SharePoint as your data source.</p>"
     },
     "SharePointUrlList":{
       "type":"list",
@@ -6261,7 +6295,7 @@
           "documentation":"<p>The list of sitemap URLs of the websites you want to crawl.</p> <p>The list can include a maximum of three sitemap URLs.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information of the sitemap URLs to crawl.</p> <p> <i>When selecting websites to index, you must adhere to the <a href=\"https://aws.amazon.com/aup/\">Amazon Acceptable Use Policy</a> and all other Amazon terms. Remember that you must only use Amazon Kendra Web Crawler to index your own webpages, or webpages that you have authorization to index.</i> </p>"
+      "documentation":"<p>Provides the configuration information for the sitemap URLs to crawl.</p> <p> <i>When selecting websites to index, you must adhere to the <a href=\"https://aws.amazon.com/aup/\">Amazon Acceptable Use Policy</a> and all other Amazon terms. Remember that you must only use Amazon Kendra Web Crawler to index your own webpages, or webpages that you have authorization to index.</i> </p>"
     },
     "SiteMapsList":{
       "type":"list",
@@ -6306,6 +6340,35 @@
       },
       "documentation":"<p>Specifies the document attribute to use to sort the response to a Amazon Kendra query. You can specify a single attribute for sorting. The attribute must have the <code>Sortable</code> flag set to <code>true</code>, otherwise Amazon Kendra returns an exception.</p> <p>You can sort attributes of the following types.</p> <ul> <li> <p>Date value</p> </li> <li> <p>Long value</p> </li> <li> <p>String value</p> </li> </ul> <p>You can't sort attributes of the following type.</p> <ul> <li> <p>String list value</p> </li> </ul>"
     },
+    "SpellCorrectedQuery":{
+      "type":"structure",
+      "members":{
+        "SuggestedQueryText":{
+          "shape":"SuggestedQueryText",
+          "documentation":"<p>The query with the suggested spell corrections.</p>"
+        },
+        "Corrections":{
+          "shape":"CorrectionList",
+          "documentation":"<p>The corrected misspelled word or words in a query.</p>"
+        }
+      },
+      "documentation":"<p>A query with suggested spell corrections. </p>"
+    },
+    "SpellCorrectedQueryList":{
+      "type":"list",
+      "member":{"shape":"SpellCorrectedQuery"}
+    },
+    "SpellCorrectionConfiguration":{
+      "type":"structure",
+      "required":["IncludeQuerySpellCheckSuggestions"],
+      "members":{
+        "IncludeQuerySpellCheckSuggestions":{
+          "shape":"Boolean",
+          "documentation":"<p> <code>TRUE</code> to suggest spell corrections for queries.</p>"
+        }
+      },
+      "documentation":"<p>Provides the configuration information for suggested query spell corrections.</p> <p>Suggested spell corrections are based on words that appear in your indexed documents and how closely a corrected word matches a misspelled word.</p> <p>This feature is designed with certain defaults or limits. For information on the current limits and how to request more support for some limits, see the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/query-spell-check.html\">Spell Checker documentation</a>.</p>"
+    },
     "SqlConfiguration":{
       "type":"structure",
       "members":{
@@ -6314,7 +6377,7 @@
           "documentation":"<p>Determines whether Amazon Kendra encloses SQL identifiers for tables and column names in double quotes (\") when making a database query.</p> <p>By default, Amazon Kendra passes SQL identifiers the way that they are entered into the data source configuration. It does not change the case of identifiers or enclose them in quotes.</p> <p>PostgreSQL internally converts uppercase characters to lower case characters in identifiers unless they are quoted. Choosing this option encloses identifiers in quotes so that PostgreSQL does not convert the character's case.</p> <p>For MySQL databases, you must enable the <code>ansi_quotes</code> option when you set this field to <code>DOUBLE_QUOTES</code>.</p>"
         }
       },
-      "documentation":"<p>Provides information that configures Amazon Kendra to use a SQL database.</p>"
+      "documentation":"<p>Provides the configuration information to use a SQL database.</p>"
     },
     "StartDataSourceSyncJobRequest":{
       "type":"structure",
@@ -6425,6 +6488,11 @@
       "type":"list",
       "member":{"shape":"SubnetId"},
       "max":6,
+      "min":1
+    },
+    "SuggestedQueryText":{
+      "type":"string",
+      "max":1000,
       "min":1
     },
     "Suggestion":{
@@ -6723,7 +6791,7 @@
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>Configuration information for an Amazon Kendra data source.</p>"
+          "documentation":"<p>Configuration information for an Amazon Kendra data source you want to update.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -6772,7 +6840,7 @@
         },
         "Configuration":{
           "shape":"ExperienceConfiguration",
-          "documentation":"<p>Provides the user configuration information. This includes the Amazon Web Services SSO field name that contains the identifiers of your users, such as their emails.</p>"
+          "documentation":"<p>Configuration information for your Amazon Kendra you want to update.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -6802,7 +6870,7 @@
         },
         "DocumentMetadataConfigurationUpdates":{
           "shape":"DocumentMetadataConfigurationList",
-          "documentation":"<p>The document metadata to update. </p>"
+          "documentation":"<p>The document metadata you want to update.</p>"
         },
         "CapacityUnits":{
           "shape":"CapacityUnitsConfiguration",
@@ -6926,11 +6994,11 @@
       "members":{
         "SeedUrlConfiguration":{
           "shape":"SeedUrlConfiguration",
-          "documentation":"<p>Provides the configuration of the seed or starting point URLs of the websites you want to crawl.</p> <p>You can choose to crawl only the website host names, or the website host names with subdomains, or the website host names with subdomains and other domains that the webpages link to.</p> <p>You can list up to 100 seed URLs.</p>"
+          "documentation":"<p>Configuration of the seed or starting point URLs of the websites you want to crawl.</p> <p>You can choose to crawl only the website host names, or the website host names with subdomains, or the website host names with subdomains and other domains that the webpages link to.</p> <p>You can list up to 100 seed URLs.</p>"
         },
         "SiteMapsConfiguration":{
           "shape":"SiteMapsConfiguration",
-          "documentation":"<p>Provides the configuration of the sitemap URLs of the websites you want to crawl.</p> <p>Only URLs belonging to the same website host names are crawled. You can list up to three sitemap URLs.</p>"
+          "documentation":"<p>Configuration of the sitemap URLs of the websites you want to crawl.</p> <p>Only URLs belonging to the same website host names are crawled. You can list up to three sitemap URLs.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information of the URLs to crawl.</p> <p>You can only crawl websites that use the secure communication protocol, Hypertext Transfer Protocol Secure (HTTPS). If you receive an error when crawling a website, it could be that the website is blocked from crawling.</p> <p> <i>When selecting websites to index, you must adhere to the <a href=\"https://aws.amazon.com/aup/\">Amazon Acceptable Use Policy</a> and all other Amazon terms. Remember that you must only use Amazon Kendra Web Crawler to index your own webpages, or webpages that you have authorization to index.</i> </p>"
@@ -7002,7 +7070,7 @@
           "documentation":"<p>The Amazon Web Services SSO field name that contains the identifiers of your users, such as their emails. This is used for <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/user-context-filter.html\">user context filtering</a> and for granting access to your Amazon Kendra experience. You must set up Amazon Web Services SSO with Amazon Kendra. You must include your users and groups in your Access Control List when you ingest documents into your index. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an Amazon Web Services SSO identity source</a>.</p>"
         }
       },
-      "documentation":"<p>Configuration information for the identifiers of your users.</p>"
+      "documentation":"<p>Provides the configuration information for the identifiers of your users.</p>"
     },
     "UserNameAttributeField":{
       "type":"string",
@@ -7022,7 +7090,7 @@
           "documentation":"<p>Information about the JSON token type configuration.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information for a token configuration.</p>"
+      "documentation":"<p>Provides the configuration information for a token.</p>"
     },
     "UserTokenConfigurationList":{
       "type":"list",
@@ -7123,11 +7191,11 @@
         },
         "ProxyConfiguration":{
           "shape":"ProxyConfiguration",
-          "documentation":"<p>Provides configuration information required to connect to your internal websites via a web proxy.</p> <p>You must provide the website host name and port number. For example, the host name of https://a.example.com/page1.html is \"a.example.com\" and the port is 443, the standard port for HTTPS.</p> <p>Web proxy credentials are optional and you can use them to connect to a web proxy server that requires basic authentication. To store web proxy credentials, you use a secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a>.</p>"
+          "documentation":"<p>Configuration information required to connect to your internal websites via a web proxy.</p> <p>You must provide the website host name and port number. For example, the host name of https://a.example.com/page1.html is \"a.example.com\" and the port is 443, the standard port for HTTPS.</p> <p>Web proxy credentials are optional and you can use them to connect to a web proxy server that requires basic authentication. To store web proxy credentials, you use a secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a>.</p>"
         },
         "AuthenticationConfiguration":{
           "shape":"AuthenticationConfiguration",
-          "documentation":"<p>Provides configuration information required to connect to websites using authentication.</p> <p>You can connect to websites using basic authentication of user name and password.</p> <p>You must provide the website host name and port number. For example, the host name of https://a.example.com/page1.html is \"a.example.com\" and the port is 443, the standard port for HTTPS. You use a secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a> to store your authentication credentials.</p>"
+          "documentation":"<p>Configuration information required to connect to websites using authentication.</p> <p>You can connect to websites using basic authentication of user name and password.</p> <p>You must provide the website host name and port number. For example, the host name of https://a.example.com/page1.html is \"a.example.com\" and the port is 443, the standard port for HTTPS. You use a secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a> to store your authentication credentials.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information required for Amazon Kendra Web Crawler.</p>"

@@ -227,7 +227,7 @@
         {"shape":"StorageVirtualMachineNotFound"},
         {"shape":"UnsupportedOperation"}
       ],
-      "documentation":"<p>Creates an Amazon FSx for NetApp ONTAP or Amazon FSx for OpenZFS storage volume.</p>"
+      "documentation":"<p>Creates an FSx for ONTAP or Amazon FSx for OpenZFS storage volume.</p>"
     },
     "CreateVolumeFromBackup":{
       "name":"CreateVolumeFromBackup",
@@ -1195,7 +1195,7 @@
         "FileSystemId":{"shape":"FileSystemId"},
         "FileSystemPath":{
           "shape":"Namespace",
-          "documentation":"<p>A path on the file system that points to a high-level directory (such as <code>/ns1/</code>) or subdirectory (such as <code>/ns1/subdir/</code>) that will be mapped 1-1 with <code>DataRepositoryPath</code>. The leading forward slash in the name is required. Two data repository associations cannot have overlapping file system paths. For example, if a data repository is associated with file system path <code>/ns1/</code>, then you cannot link another data repository with file system path <code>/ns1/ns2</code>.</p> <p>This path specifies where in your file system files will be exported from or imported to. This file system directory can be linked to only one Amazon S3 bucket, and no other S3 bucket can be linked to the directory.</p>"
+          "documentation":"<p>A path on the file system that points to a high-level directory (such as <code>/ns1/</code>) or subdirectory (such as <code>/ns1/subdir/</code>) that will be mapped 1-1 with <code>DataRepositoryPath</code>. The leading forward slash in the name is required. Two data repository associations cannot have overlapping file system paths. For example, if a data repository is associated with file system path <code>/ns1/</code>, then you cannot link another data repository with file system path <code>/ns1/ns2</code>.</p> <p>This path specifies where in your file system files will be exported from or imported to. This file system directory can be linked to only one Amazon S3 bucket, and no other S3 bucket can be linked to the directory.</p> <note> <p>If you specify only a forward slash (<code>/</code>) as the file system path, you can link only 1 data repository to the file system. You can only specify \"/\" as the file system path for the first data repository associated with a file system.</p> </note>"
         },
         "DataRepositoryPath":{
           "shape":"ArchivePath",
@@ -1347,7 +1347,7 @@
         },
         "AutoImportPolicy":{
           "shape":"AutoImportPolicyType",
-          "documentation":"<p> (Optional) Available with <code>Scratch</code> and <code>Persistent_1</code> deployment types. When you create your file system, your existing S3 objects appear as file and directory listings. Use this property to choose how Amazon FSx keeps your file and directory listings up to date as you add or modify objects in your linked S3 bucket. <code>AutoImportPolicy</code> can have the following values:</p> <ul> <li> <p> <code>NONE</code> - (Default) AutoImport is off. Amazon FSx only updates file and directory listings from the linked S3 bucket when the file system is created. FSx does not update file and directory listings for any new or changed objects after choosing this option.</p> </li> <li> <p> <code>NEW</code> - AutoImport is on. Amazon FSx automatically imports directory listings of any new objects added to the linked S3 bucket that do not currently exist in the FSx file system. </p> </li> <li> <p> <code>NEW_CHANGED</code> - AutoImport is on. Amazon FSx automatically imports file and directory listings of any new objects added to the S3 bucket and any existing objects that are changed in the S3 bucket after you choose this option.</p> </li> <li> <p> <code>NEW_CHANGED_DELETED</code> - AutoImport is on. Amazon FSx automatically imports file and directory listings of any new objects added to the S3 bucket, any existing objects that are changed in the S3 bucket, and any objects that were deleted in the S3 bucket.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/autoimport-data-repo.html\"> Automatically import updates from your S3 bucket</a>.</p> <note> <p>This parameter is not supported for file systems with the <code>Persistent_2</code> deployment type. Instead, use <code>CreateDataRepositoryAssociation\"</code> to create a data repository association to link your Lustre file system to a data repository.</p> </note>"
+          "documentation":"<p> (Optional) Available with <code>Scratch</code> and <code>Persistent_1</code> deployment types. When you create your file system, your existing S3 objects appear as file and directory listings. Use this property to choose how Amazon FSx keeps your file and directory listings up to date as you add or modify objects in your linked S3 bucket. <code>AutoImportPolicy</code> can have the following values:</p> <ul> <li> <p> <code>NONE</code> - (Default) AutoImport is off. Amazon FSx only updates file and directory listings from the linked S3 bucket when the file system is created. FSx does not update file and directory listings for any new or changed objects after choosing this option.</p> </li> <li> <p> <code>NEW</code> - AutoImport is on. Amazon FSx automatically imports directory listings of any new objects added to the linked S3 bucket that do not currently exist in the FSx file system. </p> </li> <li> <p> <code>NEW_CHANGED</code> - AutoImport is on. Amazon FSx automatically imports file and directory listings of any new objects added to the S3 bucket and any existing objects that are changed in the S3 bucket after you choose this option.</p> </li> <li> <p> <code>NEW_CHANGED_DELETED</code> - AutoImport is on. Amazon FSx automatically imports file and directory listings of any new objects added to the S3 bucket, any existing objects that are changed in the S3 bucket, and any objects that were deleted in the S3 bucket.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/older-deployment-types.html#legacy-auto-import-from-s3\"> Automatically import updates from your S3 bucket</a>.</p> <note> <p>This parameter is not supported for file systems with the <code>Persistent_2</code> deployment type. Instead, use <code>CreateDataRepositoryAssociation</code> to create a data repository association to link your Lustre file system to a data repository.</p> </note>"
         },
         "PerUnitStorageThroughput":{
           "shape":"PerUnitStorageThroughput",
@@ -1389,7 +1389,7 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>Specifies the IP address range in which the endpoints to access your file system will be created. By default, Amazon FSx selects an unused IP address range for you from the 198.19.* range.</p>"
+          "documentation":"<p>Specifies the IP address range in which the endpoints to access your file system will be created. By default, Amazon FSx selects an unused IP address range for you from the 198.19.* range.</p> <important> <p>The Endpoint IP address range you select for your file system must exist outside the VPC's CIDR range and must be at least /30 or larger.</p> </important>"
         },
         "FsxAdminPassword":{
           "shape":"AdminPassword",
@@ -1434,7 +1434,7 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "DeploymentType":{
           "shape":"OpenZFSDeploymentType",
-          "documentation":"<p>Specifies the file system deployment type. Amazon FSx for OpenZFS supports <code>SINGLE_AZ_1</code>. <code>SINGLE_AZ_1</code> is a file system configured for a single Availability Zone (AZ) of redundancy.</p>"
+          "documentation":"<p>Specifies the file system deployment type. Amazon FSx for OpenZFS supports <code>SINGLE_AZ_1</code>. <code>SINGLE_AZ_1</code> deployment type is configured for redundancy within a single Availability Zone.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
@@ -1616,23 +1616,23 @@
       "members":{
         "ParentVolumeId":{
           "shape":"VolumeId",
-          "documentation":"<p>The ID of the volume to use as the parent volume.</p>"
+          "documentation":"<p>The ID of the volume to use as the parent volume of the volume that you are creating.</p>"
         },
         "StorageCapacityReservationGiB":{
           "shape":"IntegerNoMaxFromNegativeOne",
-          "documentation":"<p>The amount of storage in gibibytes (GiB) to reserve from the parent volume. You can't reserve more storage than the parent volume has reserved. To not specify a storage capacity reservation, set this to <code>-1</code>.</p>"
+          "documentation":"<p>Specifies the amount of storage in gibibytes (GiB) to reserve from the parent volume. Setting <code>StorageCapacityReservationGiB</code> guarantees that the specified amount of storage space on the parent volume will always be available for the volume. You can't reserve more storage than the parent volume has. To <i>not</i> specify a storage capacity reservation, set this to <code>0</code> or <code>-1</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-volumes.html#volume-properties\">Volume properties</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "StorageCapacityQuotaGiB":{
           "shape":"IntegerNoMaxFromNegativeOne",
-          "documentation":"<p>The maximum amount of storage in gibibytes (GiB) that the volume can use from its parent. You can't specify a quota larger than the storage on the parent volume. To not specify a storage capacity quota, set this to <code>-1</code>. </p>"
+          "documentation":"<p>Sets the maximum storage size in gibibytes (GiB) for the volume. You can specify a quota that is larger than the storage on the parent volume. A volume quota limits the amount of storage that the volume can consume to the configured amount, but does not guarantee the space will be available on the parent volume. To guarantee quota space, you must also set <code>StorageCapacityReservationGiB</code>. To <i>not</i> specify a storage capacity quota, set this to <code>-1</code>. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-volumes.html#volume-properties\">Volume properties</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "RecordSizeKiB":{
           "shape":"IntegerRecordSizeKiB",
-          "documentation":"<p>Specifies the record size of an OpenZFS volume, in kibibytes (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The default is 128 KiB. Most workloads should use the default record size. Database workflows can benefit from a smaller record size, while streaming workflows can benefit from a larger record size. For additional guidance on when to set a custom record size, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#performance-tips-zfs\"> Tips for maximizing performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
+          "documentation":"<p>Specifies the suggested block size for a volume in a ZFS dataset, in kibibytes (KiB). Valid values are 4, 8, 16, 32, 64, 128, 256, 512, or 1024 KiB. The default is 128 KiB. We recommend using the default setting for the majority of use cases. Generally, workloads that write in fixed small or large record sizes may benefit from setting a custom record size, like database workloads (small record size) or media streaming workloads (large record size). For additional guidance on when to set a custom record size, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#record-size-performance\"> ZFS Record size</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "DataCompressionType":{
           "shape":"OpenZFSDataCompressionType",
-          "documentation":"<p>Specifies the method used to compress the data on the volume. The compression type is <code>NONE</code> by default.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume. <code>NONE</code> is the default.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. Compared to LZ4, Z-Standard provides a better compression ratio to minimize on-disk storage utilization.</p> </li> <li> <p> <code>LZ4</code> - Compresses the data in the volume using the LZ4 compression algorithm. Compared to Z-Standard, LZ4 is less compute-intensive and delivers higher write throughput speeds.</p> </li> </ul>"
+          "documentation":"<p>Specifies the method used to compress the data on the volume. The compression type is <code>NONE</code> by default.</p> <ul> <li> <p> <code>NONE</code> - Doesn't compress the data on the volume. <code>NONE</code> is the default.</p> </li> <li> <p> <code>ZSTD</code> - Compresses the data in the volume using the Zstandard (ZSTD) compression algorithm. ZSTD compression provides a higher level of data compression and higher read throughput performance than LZ4 compression.</p> </li> <li> <p> <code>LZ4</code> - Compresses the data in the volume using the LZ4 compression algorithm. LZ4 compression provides a lower level of compression and higher write throughput performance than ZSTD compression.</p> </li> </ul> <p>For more information about volume compression types and the performance of your Amazon FSx for OpenZFS file system, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#performance-tips-zfs\"> Tips for maximizing performance</a> File system and volume settings in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "CopyTagsToSnapshots":{
           "shape":"Flag",
@@ -1852,7 +1852,7 @@
         "FailureDetails":{"shape":"DataRepositoryFailureDetails"},
         "FileSystemPath":{
           "shape":"Namespace",
-          "documentation":"<p>A path on the file system that points to a high-level directory (such as <code>/ns1/</code>) or subdirectory (such as <code>/ns1/subdir/</code>) that will be mapped 1-1 with <code>DataRepositoryPath</code>. The leading forward slash in the name is required. Two data repository associations cannot have overlapping file system paths. For example, if a data repository is associated with file system path <code>/ns1/</code>, then you cannot link another data repository with file system path <code>/ns1/ns2</code>.</p> <p>This path specifies where in your file system files will be exported from or imported to. This file system directory can be linked to only one Amazon S3 bucket, and no other S3 bucket can be linked to the directory. </p>"
+          "documentation":"<p>A path on the file system that points to a high-level directory (such as <code>/ns1/</code>) or subdirectory (such as <code>/ns1/subdir/</code>) that will be mapped 1-1 with <code>DataRepositoryPath</code>. The leading forward slash in the name is required. Two data repository associations cannot have overlapping file system paths. For example, if a data repository is associated with file system path <code>/ns1/</code>, then you cannot link another data repository with file system path <code>/ns1/ns2</code>.</p> <p>This path specifies where in your file system files will be exported from or imported to. This file system directory can be linked to only one Amazon S3 bucket, and no other S3 bucket can be linked to the directory.</p> <note> <p>If you specify only a forward slash (<code>/</code>) as the file system path, you can link only 1 data repository to the file system. You can only specify \"/\" as the file system path for the first data repository associated with a file system.</p> </note>"
         },
         "DataRepositoryPath":{
           "shape":"ArchivePath",
@@ -3373,7 +3373,7 @@
       "type":"string",
       "max":4096,
       "min":1,
-      "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{3,4096}$"
+      "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{1,4096}$"
     },
     "NetBiosAlias":{
       "type":"string",
@@ -3435,7 +3435,7 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>The IP address range in which the endpoints to access your file system are created.</p>"
+          "documentation":"<p>The IP address range in which the endpoints to access your file system are created.</p> <important> <p>The Endpoint IP address range you select for your file system must exist outside the VPC's CIDR range and must be at least /30 or larger. If you do not specify this optional parameter, Amazon FSx will automatically select a CIDR block for you.</p> </important>"
         },
         "Endpoints":{
           "shape":"FileSystemEndpoints",
@@ -3626,7 +3626,7 @@
           "documentation":"<p>A list of configuration objects that contain the client and options for mounting the OpenZFS file system. </p>"
         }
       },
-      "documentation":"<p>The Network File System NFS) configurations for mounting an Amazon FSx for OpenZFS file system. </p>"
+      "documentation":"<p>The Network File System (NFS) configurations for mounting an Amazon FSx for OpenZFS file system. </p>"
     },
     "OpenZFSNfsExportOption":{
       "type":"string",
@@ -4299,7 +4299,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>No Amazon FSx for NetApp ONTAP SVMs were found based upon the supplied parameters.</p>",
+      "documentation":"<p>No FSx for ONTAP SVMs were found based upon the supplied parameters.</p>",
       "exception":true
     },
     "StorageVirtualMachineRootVolumeSecurityStyle":{

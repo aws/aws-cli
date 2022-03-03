@@ -11,7 +11,7 @@ Output::
         "ARN": "arn:aws:secretsmanager:us-west-2:123456789012:secret:MyTestSecret-a1b2c3",
         "Name": "MyTestSecret",
         "VersionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
-        "SecretString": "{\"user\":\"diegor\",\"password\":\"i29wwX!%9wFV\"}",
+        "SecretString": "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}",
         "VersionStages": [
             "AWSCURRENT"
         ],

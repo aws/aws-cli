@@ -19,6 +19,7 @@ from prompt_toolkit.application import Application
 from prompt_toolkit.completion import Completer, ThreadedCompleter
 from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
+from prompt_toolkit.output.color_depth import ColorDepth
 
 from awscli.logger import LOG_FORMAT, disable_crt_logging
 from awscli.autocomplete import parser
@@ -57,6 +58,7 @@ class PromptToolkitPrompter:
     """Handles the actual prompting in the autoprompt workflow.
 
     """
+
     def __init__(self, completion_source, driver, completer=None,
                  factory=None, app=None, cli_parser=None, output=None,
                  app_input=None):
@@ -107,9 +109,11 @@ class PromptToolkitPrompter:
         return input_buffer_container, doc_window, output_window
 
     def create_application(self):
+        colorDepth = {"black_and_white": ColorDepth.MONOCHROME, "ansi_colors": ColorDepth.ANSI_COLORS_ONLY,
+                      "256_colors": ColorDepth.DEFAULT, "true_colors": ColorDepth.TRUE_COLOR}
         self._create_buffers()
         input_buffer_container, \
-                doc_window, output_window = self._create_containers()
+            doc_window, output_window = self._create_containers()
         layout = self._factory.create_layout(
             on_input_buffer_text_changed=self.update_bottom_buffers_text,
             input_buffer_container=input_buffer_container,
@@ -119,7 +123,7 @@ class PromptToolkitPrompter:
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
                           output=self._output, erase_when_done=True,
-                          input=self._input)
+                          input=self._input, color_depth=colorDepth["true_colors"])
         self._set_app_defaults(app)
         return app
 
@@ -240,6 +244,7 @@ class PromptToolkitCompleter(Completer):
     `prompt_toolkit.Completion` objects.
 
     """
+
     def __init__(self, completion_source):
         self._completion_source = completion_source
 

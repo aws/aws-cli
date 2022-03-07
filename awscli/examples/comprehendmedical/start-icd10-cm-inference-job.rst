@@ -14,4 +14,4 @@ Output::
         "JobId": "ef7289877365fc70299089371c043b96"
     }
 
-For more information, see `Ontology linking batch analysis <https://docs.aws.amazon.com/comprehend/latest/dg/ontology-batch-api-med.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Ontology linking batch analysis <https://docs.aws.amazon.com/comprehend-medical/latest/dev/ontologies-batchapi.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

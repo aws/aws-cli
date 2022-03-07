@@ -11,4 +11,4 @@ Output::
         "JobId": "ab9887877365fe70299089371c043b96"
     }
 
-For more information, see `Batch APIs <https://docs.aws.amazon.com/comprehend/latest/dg/batch-api-med.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Batch APIs <https://docs.aws.amazon.com/comprehend-medical/latest/dev/textanalysis-batchapi.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

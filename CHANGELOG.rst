@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.69
+=======
+
+* api-change:``ecs``: Amazon ECS UpdateService API now supports additional parameters: loadBalancers, propagateTags, enableECSManagedTags, and serviceRegistries
+* api-change:``chime-sdk-meetings``: Adds support for Transcribe language identification feature to the StartMeetingTranscription API.
+* api-change:``migration-hub-refactor-spaces``: AWS Migration Hub Refactor Spaces documentation update.
+
+
 1.22.68
 =======
 

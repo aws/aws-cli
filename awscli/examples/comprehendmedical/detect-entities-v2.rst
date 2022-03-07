@@ -16,7 +16,7 @@ Output::
         "Category": "MEDICATION",
         "Type": "GENERIC_NAME",
         "Traits": []
-    },
+    }
 
 For more information, see `Detect Entities Version 2  <https://docs.aws.amazon.com/comprehend/latest/dg/extracted-med-info-V2.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
 
@@ -44,6 +44,6 @@ Output::
         "Category": "MEDICATION",
         "Type": "GENERIC_NAME",
         "Traits": []
-    },
+    }
 
-For more information, see `Detect Entities Version 2 <https://docs.aws.amazon.com/comprehend/latest/dg/extracted-med-info-V2.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Detect Entities Version 2 <https://docs.aws.amazon.com/comprehend-medical/latest/dev/textanalysis-entitiesv2.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

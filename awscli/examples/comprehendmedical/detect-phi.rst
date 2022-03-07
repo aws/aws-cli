@@ -43,7 +43,7 @@ Output::
         "ModelVersion": "0.0.0"
     }
 
-For more information, see `Detect PHI <https://docs.aws.amazon.com/comprehend/latest/dg/how-medical-phi.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Detect PHI <https://docs.aws.amazon.com/comprehend-medical/latest/dev/textanalysis-phi.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
 
 **Example 2: To detect protect health information (PHI) directly from a file path**
 

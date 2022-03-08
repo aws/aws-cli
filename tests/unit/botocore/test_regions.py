@@ -1172,3 +1172,11 @@ def _verify_expected_endpoint(service, region, fips, dualstack,
             use_fips_endpoint=fips
         )
     assert resolved['hostname'] == endpoint
+
+
+def test_additional_endpoint_data_exists_with_variants():
+    resolver = regions.EndpointResolver(_modeled_variants_template())
+    resolved = resolver.construct_endpoint(
+        'global-service', 'aws-global', use_fips_endpoint=True,
+    )
+    assert resolved['credentialScope'] == {'region': 'us-east-1'}

@@ -289,6 +289,7 @@ class EndpointResolver(BaseEndpointResolver):
                     service_name, endpoint_name
                 ))
                 raise EndpointVariantError(tags=tags, error_msg=error_msg)
+            self._merge_keys(endpoint_data, result)
         else:
             result = endpoint_data
 

@@ -230,7 +230,7 @@
           "documentation":"<p>Makes echo reduction available to clients who connect to the meeting.</p>"
         }
       },
-      "documentation":"<p>An optional category of meeting features that contains audio-specific configurations, such as operating parameters for Amazon Voice Focus.</p>"
+      "documentation":"<p>An optional category of meeting features that contains audio-specific configurations, such as operating parameters for Amazon Voice Focus. </p>"
     },
     "BadRequestException":{
       "type":"structure",
@@ -368,7 +368,7 @@
         },
         "MediaRegion":{
           "shape":"MediaRegion",
-          "documentation":"<p>The Region in which to create the meeting.</p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>"
+          "documentation":"<p>The Region in which to create the meeting.</p> <p> Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>. </p> <p>Available values in AWS GovCloud (US) Regions: <code>us-gov-east-1</code>, <code>us-gov-west-1</code>.</p>"
         },
         "MeetingHostId":{
           "shape":"ExternalUserId",
@@ -413,7 +413,7 @@
         },
         "MediaRegion":{
           "shape":"MediaRegion",
-          "documentation":"<p>The Region in which to create the meeting.</p>"
+          "documentation":"<p>The Region in which to create the meeting.</p> <p> Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>. </p> <p>Available values in AWS GovCloud (US) Regions: <code>us-gov-east-1</code>, <code>us-gov-west-1</code>.</p>"
         },
         "MeetingHostId":{
           "shape":"ExternalUserId",
@@ -530,7 +530,6 @@
     },
     "EngineTranscribeSettings":{
       "type":"structure",
-      "required":["LanguageCode"],
       "members":{
         "LanguageCode":{
           "shape":"TranscribeLanguageCode",
@@ -570,11 +569,23 @@
         },
         "PiiEntityTypes":{
           "shape":"TranscribePiiEntityTypes",
-          "documentation":"<p>Lists the PII entity types you want to identify or redact. To specify entity types, you must enable <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p>PIIEntityTypes must be comma-separated. The available values are: <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING, CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, <code>SSN</code>, and <code>ALL</code>.</p> <p> <code>PiiEntityTypes</code> is an optional parameter with a default value of <code>ALL</code>.</p>"
+          "documentation":"<p>Lists the PII entity types you want to identify or redact. To specify entity types, you must enable <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p> <code>PIIEntityTypes</code> must be comma-separated. The available values are: <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING, CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, <code>SSN</code>, and <code>ALL</code>.</p> <p> <code>PiiEntityTypes</code> is an optional parameter with a default value of <code>ALL</code>.</p>"
         },
         "LanguageModelName":{
           "shape":"TranscribeLanguageModelName",
           "documentation":"<p>The name of the language model used during transcription.</p>"
+        },
+        "IdentifyLanguage":{
+          "shape":"Boolean",
+          "documentation":"<p>Automatically identifies the language spoken in media files.</p>"
+        },
+        "LanguageOptions":{
+          "shape":"TranscribeLanguageOptions",
+          "documentation":"<p>Language codes for the languages that you want to identify. You must provide at least 2 codes.</p>"
+        },
+        "PreferredLanguage":{
+          "shape":"TranscribeLanguageCode",
+          "documentation":"<p>Language code for the preferred language.</p>"
         }
       },
       "documentation":"<p>Settings specific to the Amazon Transcribe engine.</p>"
@@ -777,7 +788,7 @@
         },
         "MediaRegion":{
           "shape":"MediaRegion",
-          "documentation":"<p>The Region in which you create the meeting. Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>.</p>"
+          "documentation":"<p>The Region in which you create the meeting. Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>.</p> <p>Available values in AWS GovCloud (US) Regions: <code>us-gov-east-1</code>, <code>us-gov-west-1</code>.</p>"
         },
         "MediaPlacement":{
           "shape":"MediaPlacement",
@@ -805,7 +816,7 @@
           "documentation":"<p>The configuration settings for the audio features available to a meeting. </p>"
         }
       },
-      "documentation":"<p>The configuration settings of the features available to a meeting.</p>"
+      "documentation":"<p>The configuration settings of the features available to a meeting.&gt;</p>"
     },
     "NotFoundException":{
       "type":"structure",
@@ -932,6 +943,12 @@
       "min":1,
       "pattern":"^[0-9a-zA-Z._-]+"
     },
+    "TranscribeLanguageOptions":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[a-zA-Z-,]+"
+    },
     "TranscribeMedicalContentIdentificationType":{
       "type":"string",
       "enum":["PHI"]
@@ -1052,5 +1069,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>The Amazon Chime SDK meetings APIs in this section allow software developers to create Amazon Chime SDK meetings, set the AWS Regions for meetings, create and manage users, and send and receive meeting notifications. For more information about the meeting APIs, see <a href=\"http://amazonaws.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_meetings\">Amazon Chime SDK meetings</a>.</p>"
+  "documentation":"<p>The Amazon Chime SDK meetings APIs in this section allow software developers to create Amazon Chime SDK meetings, set the AWS Regions for meetings, create and manage users, and send and receive meeting notifications. For more information about the meeting APIs, see <a href=\"https://docs.aws.amazon.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_Meetings.html\">Amazon Chime SDK meetings</a>.</p>"
 }

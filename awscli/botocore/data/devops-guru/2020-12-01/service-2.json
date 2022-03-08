@@ -84,6 +84,23 @@
       ],
       "documentation":"<p> Returns details about an anomaly that you specify using its ID. </p>"
     },
+    "DescribeEventSourcesConfig":{
+      "name":"DescribeEventSourcesConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/event-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeEventSourcesConfigRequest"},
+      "output":{"shape":"DescribeEventSourcesConfigResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>This operation lists details about a DevOps Guru event source that is shared with your&#x2028; account.</p>"
+    },
     "DescribeFeedback":{
       "name":"DescribeFeedback",
       "http":{
@@ -437,6 +454,23 @@
       ],
       "documentation":"<p>Starts the creation of an estimate of the monthly cost to analyze your Amazon Web Services resources.</p>"
     },
+    "UpdateEventSourcesConfig":{
+      "name":"UpdateEventSourcesConfig",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/event-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEventSourcesConfigRequest"},
+      "output":{"shape":"UpdateEventSourcesConfigResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the event source configuration.</p>"
+    },
     "UpdateResourceCollection":{
       "name":"UpdateResourceCollection",
       "http":{
@@ -543,6 +577,16 @@
         }
       }
     },
+    "AmazonCodeGuruProfilerIntegration":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"EventSourceOptInStatus",
+          "documentation":"<p>The status of the CodeGuru Profiler integration.</p>"
+        }
+      },
+      "documentation":"<p>Information about your account's integration with Amazon CodeGuru Profiler.</p>"
+    },
     "AnomalyDescription":{"type":"string"},
     "AnomalyId":{
       "type":"string",
@@ -596,6 +640,7 @@
         "HIGH"
       ]
     },
+    "AnomalySource":{"type":"string"},
     "AnomalySourceDetails":{
       "type":"structure",
       "members":{
@@ -609,6 +654,24 @@
         }
       },
       "documentation":"<p> Details about the source of the anomalous operational data that triggered the anomaly.</p>"
+    },
+    "AnomalySourceMetadata":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"AnomalySource",
+          "documentation":"<p>The source of the anomaly.</p>"
+        },
+        "SourceResourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the anomaly's resource.</p>"
+        },
+        "SourceResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The anomaly's resource type.</p>"
+        }
+      },
+      "documentation":"<p>Metadata about an anomaly. The anomaly is detected using analysis of the metric data&#x2028; over a period of time</p>"
     },
     "AnomalyStatus":{
       "type":"string",
@@ -987,6 +1050,20 @@
         }
       }
     },
+    "DescribeEventSourcesConfigRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DescribeEventSourcesConfigResponse":{
+      "type":"structure",
+      "members":{
+        "EventSources":{
+          "shape":"EventSourcesConfig",
+          "documentation":"<p>The name of the event source.</p>"
+        }
+      }
+    },
     "DescribeFeedbackRequest":{
       "type":"structure",
       "members":{
@@ -1335,6 +1412,23 @@
       "min":10,
       "pattern":"^[a-z]+[a-z0-9]*\\.amazonaws\\.com|aws\\.events$"
     },
+    "EventSourceOptInStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "EventSourcesConfig":{
+      "type":"structure",
+      "members":{
+        "AmazonCodeGuruProfiler":{
+          "shape":"AmazonCodeGuruProfilerIntegration",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p>Describes the event sources.</p>"
+    },
     "EventTimeRange":{
       "type":"structure",
       "required":[
@@ -1428,6 +1522,7 @@
         }
       }
     },
+    "InsightDescription":{"type":"string"},
     "InsightFeedback":{
       "type":"structure",
       "members":{
@@ -2211,6 +2306,14 @@
         "Limit":{
           "shape":"AnomalyLimit",
           "documentation":"<p> A threshold that was exceeded by behavior in analyzed resources. Exceeding this threshold is related to the anomalous behavior that generated this anomaly. </p>"
+        },
+        "SourceMetadata":{
+          "shape":"AnomalySourceMetadata",
+          "documentation":"<p>The metadata for the anomaly.</p>"
+        },
+        "AnomalyResources":{
+          "shape":"AnomalyResources",
+          "documentation":"<p>Information about a resource in which DevOps Guru detected anomalous behavior.</p>"
         }
       },
       "documentation":"<p>Information about an anomaly. This object is returned by <code>ListAnomalies</code>.</p>"
@@ -2252,6 +2355,14 @@
         "Limit":{
           "shape":"AnomalyLimit",
           "documentation":"<p> A threshold that was exceeded by behavior in analyzed resources. Exceeding this threshold is related to the anomalous behavior that generated this anomaly. </p>"
+        },
+        "SourceMetadata":{
+          "shape":"AnomalySourceMetadata",
+          "documentation":"<p>Returns the metadata of the source.</p>"
+        },
+        "AnomalyResources":{
+          "shape":"AnomalyResources",
+          "documentation":"<p>Information about a resource in which DevOps Guru detected anomalous behavior.</p>"
         }
       },
       "documentation":"<p>Details about a proactive anomaly. This object is returned by <code>DescribeAnomaly.</code> </p>"
@@ -2281,6 +2392,10 @@
         "SsmOpsItemId":{
           "shape":"SsmOpsItemId",
           "documentation":"<p> The ID of the Amazon Web Services System Manager OpsItem created for this insight. You must enable the creation of OpstItems insights before they are created for each insight. </p>"
+        },
+        "Description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>Describes the proactive insight.</p>"
         }
       },
       "documentation":"<p>Details about a proactive insight. This object is returned by <code>ListInsights</code>.</p>"
@@ -2506,6 +2621,10 @@
         "SsmOpsItemId":{
           "shape":"SsmOpsItemId",
           "documentation":"<p> The ID of the Amazon Web Services System Manager OpsItem created for this insight. You must enable the creation of OpstItems insights before they are created for each insight. </p>"
+        },
+        "Description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>Describes the reactive insight.</p>"
         }
       },
       "documentation":"<p> Information about a reactive insight. This object is returned by <code>ListInsights</code>. </p>"
@@ -2609,10 +2728,15 @@
         "RelatedAnomalies":{
           "shape":"RecommendationRelatedAnomalies",
           "documentation":"<p> Anomalies that are related to the problem. Use these Anomalies to learn more about what's happening and to help address the issue. </p>"
+        },
+        "Category":{
+          "shape":"RecommendationCategory",
+          "documentation":"<p>The category type of the recommendation.</p>"
         }
       },
       "documentation":"<p> Recommendation information to help you remediate detected anomalous behavior that generated an insight. </p>"
     },
+    "RecommendationCategory":{"type":"string"},
     "RecommendationDescription":{"type":"string"},
     "RecommendationLink":{"type":"string"},
     "RecommendationName":{"type":"string"},
@@ -3315,6 +3439,20 @@
         }
       },
       "documentation":"<p> Contains the names of Amazon Web Services CloudFormation stacks used to update a collection of stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks.</p>"
+    },
+    "UpdateEventSourcesConfigRequest":{
+      "type":"structure",
+      "members":{
+        "EventSources":{
+          "shape":"EventSourcesConfig",
+          "documentation":"<p>The name of the event source.</p>"
+        }
+      }
+    },
+    "UpdateEventSourcesConfigResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateResourceCollectionAction":{
       "type":"string",

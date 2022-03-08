@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.70
+=======
+
+* api-change:``eks``: Introducing a new enum for NodeGroup error code: Ec2SubnetMissingIpv6Assignment
+* api-change:``keyspaces``: Adding link to CloudTrail section in Amazon Keyspaces Developer Guide
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added support for reading timecode from AVCHD sources and now provides the ability to segment WebVTT at the same interval as the video and audio in HLS packages.
+
+
 1.22.69
 =======
 

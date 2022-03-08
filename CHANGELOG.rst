@@ -3232,6 +3232,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.70
+=======
+
+* api-change:``eks``: Introducing a new enum for NodeGroup error code: Ec2SubnetMissingIpv6Assignment
+* api-change:``keyspaces``: Adding link to CloudTrail section in Amazon Keyspaces Developer Guide
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added support for reading timecode from AVCHD sources and now provides the ability to segment WebVTT at the same interval as the video and audio in HLS packages.
+
+
+1.22.69
+=======
+
+* api-change:``ecs``: Amazon ECS UpdateService API now supports additional parameters: loadBalancers, propagateTags, enableECSManagedTags, and serviceRegistries
+* api-change:``chime-sdk-meetings``: Adds support for Transcribe language identification feature to the StartMeetingTranscription API.
+* api-change:``migration-hub-refactor-spaces``: AWS Migration Hub Refactor Spaces documentation update.
+
+
+1.22.68
+=======
+
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``synthetics``: Allow custom handler function.
+* api-change:``transfer``: Add waiters for server online and offline.
+* api-change:``connect``: This release updates the *InstanceStorageConfig APIs so they support a new ResourceType: REAL_TIME_CONTACT_ANALYSIS_SEGMENTS. Use this resource type to enable streaming for real-time contact analysis and to associate the Kinesis stream where real-time contact analysis segments will be published.
+* api-change:``macie``: Amazon Macie Classic (macie) has been discontinued and is no longer available. A new Amazon Macie (macie2) is now available with significant design improvements and additional features.
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``devops-guru``: Amazon DevOps Guru now integrates with Amazon CodeGuru Profiler. You can view CodeGuru Profiler recommendations for your AWS Lambda function in DevOps Guru. This feature is enabled by default for new customers as of 3/4/2022. Existing customers can enable this feature with UpdateEventSourcesConfig.
+
+
 1.22.67
 =======
 

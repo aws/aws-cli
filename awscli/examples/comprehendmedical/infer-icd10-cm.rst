@@ -208,4 +208,4 @@ Output::
         "ModelVersion": "0.1.0"
     }
 
-For more information, see `Infer-ICD10-CM <https://docs.aws.amazon.com/comprehend/latest/dg/ontology-linking-icd10.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Infer-ICD10-CM <https://docs.aws.amazon.com/comprehend-medical/latest/dev/ontology-icd10.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

@@ -1,10 +1,11 @@
+from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.commands import BasicCommand
 import sys
 import json
 import os
 
 sys.path.insert(0, 'D:/Repos GitKraken/aws-cli')
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.configure.writer import ConfigFileWriter
+
 
 class ConfigureExportCommand(BasicCommand):
     NAME = 'export-credentials'
@@ -13,7 +14,7 @@ class ConfigureExportCommand(BasicCommand):
 
     def __init__(self, session):
         super(ConfigureExportCommand, self).__init__(session)
-    
+
     def _run_main(self, parsed_args, parsed_globals):
         self.export_credentials(self._session)
         return 0
@@ -24,9 +25,13 @@ class ConfigureExportCommand(BasicCommand):
         """
         credentials = session.get_credentials()
         if credentials is None:
-            raise RuntimeError('No credentials available. Try running "aws configure" first.')	
+            raise RuntimeError(
+                'No credentials available. Try running "aws configure" first.')
         try:
-            with open('credentials.json', 'w') as f:
-                json.dump(credentials.get_frozen_credentials(), f)
+            credentials_data = credentials.get_frozen_credentials()
+            dump = {'aws_access_key_id': credentials_data.access_key,
+                    'aws_secret_access_key': credentials_data.secret_key, 'aws_session_token': credentials_data.token}
+            print(json.dumps(dump, indent=4))
         except:
-            raise RuntimeError('Failed while trying to export credentials. Check your permissions and try again.')
+            raise RuntimeError(
+                'Failed while trying to export credentials. Check your permissions and try again.')

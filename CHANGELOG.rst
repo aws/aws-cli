@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.71
+=======
+
+* api-change:``comprehend``: Amazon Comprehend now supports extracting the sentiment associated with entities such as brands, products and services from text documents.
+
+
 1.22.70
 =======
 

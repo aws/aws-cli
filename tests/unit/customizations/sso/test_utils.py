@@ -20,6 +20,7 @@ from botocore.session import Session
 from awscli.compat import StringIO
 from awscli.customizations.sso.utils import do_sso_login
 from awscli.customizations.sso.utils import OpenBrowserHandler
+from awscli.customizations.sso.utils import PrintOnlyHandler
 from awscli.customizations.sso.utils import open_browser_with_original_ld_path
 
 
@@ -84,7 +85,7 @@ class TestDoSSOLogin(unittest.TestCase):
         self.assert_on_pending_authorization_called()
 
 
-class TestOpenBrowserHandler(unittest.TestCase):
+class BaseHandlerTest(unittest.TestCase):
     def setUp(self):
         self.stream = StringIO()
         self.user_code = '12345'
@@ -95,16 +96,33 @@ class TestOpenBrowserHandler(unittest.TestCase):
             'verificationUri': self.verification_uri,
             'verificationUriComplete': self.verification_uri_complete,
         }
-        self.open_browser = mock.Mock(spec=webbrowser.open_new_tab)
-        self.handler = OpenBrowserHandler(
-            self.stream,
-            open_browser=self.open_browser,
-        )
 
     def assert_text_in_output(self, *args):
         output = self.stream.getvalue()
         for text in args:
             self.assertIn(text, output)
+
+
+class TestPrintOnlyHandler(BaseHandlerTest):
+    def test_prints_message(self):
+        handler = PrintOnlyHandler(self.stream)
+        handler(**self.pending_authorization)
+        self.assert_text_in_output(
+            'Browser will not be automatically opened.',
+            self.user_code,
+            self.verification_uri,
+            self.verification_uri_complete,
+        )
+
+
+class TestOpenBrowserHandler(BaseHandlerTest):
+    def setUp(self):
+        super().setUp()
+        self.open_browser = mock.Mock(spec=webbrowser.open_new_tab)
+        self.handler = OpenBrowserHandler(
+            self.stream,
+            open_browser=self.open_browser,
+        )
 
     def test_call_no_browser(self):
         handler = OpenBrowserHandler(self.stream, open_browser=False)

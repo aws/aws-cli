@@ -124,6 +124,17 @@ class TestLoginCommand(BaseSSOTest):
             expected_token=self.access_token
         )
 
+    def test_login_no_browser(self):
+        self.add_oidc_workflow_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login --no-browser')
+        self.assertIn('Browser will not be automatically opened.', stdout)
+        self.open_browser_mock.assert_not_called()
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            expected_token=self.access_token
+        )
+
     def test_login_forces_refresh(self):
         self.add_oidc_workflow_responses(self.access_token)
         self.run_cmd('sso login')

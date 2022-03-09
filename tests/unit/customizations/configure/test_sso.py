@@ -30,6 +30,7 @@ from awscli.customizations.configure.sso import PTKPrompt
 from awscli.customizations.configure.sso import ConfigureSSOCommand
 from awscli.customizations.configure.sso import StartUrlValidator
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.sso.utils import do_sso_login, PrintOnlyHandler
 from awscli.formatter import CLI_OUTPUT_FORMATS
 
 
@@ -149,6 +150,7 @@ class TestConfigureSSOCommand(unittest.TestCase):
         }
         self.mock_session = mock.Mock(spec=Session)
         self.mock_session.get_scoped_config.return_value = self.scoped_config
+        self.mock_session.emit_first_non_none_response.return_value = None
         self.mock_session.full_config = self.full_config
         self.mock_session.create_client.return_value = self.sso_client
         self.mock_session.profile = self.profile
@@ -162,26 +164,27 @@ class TestConfigureSSOCommand(unittest.TestCase):
         self.writer = mock.Mock(spec=ConfigFileWriter)
         self.prompter = mock.Mock(spec=PTKPrompt)
         self.selector = mock.Mock(spec=select_menu)
-        self.configure_sso = ConfigureSSOCommand(
-            self.mock_session,
-            prompter=self.prompter,
-            selector=self.selector,
-            config_writer=self.writer,
-            sso_token_cache=self.token_cache,
-        )
         self.region = 'us-west-2'
         self.output = 'json'
         self.sso_region = 'us-east-1'
         self.start_url = 'https://d-92671207e4.awsapps.com/start'
         self.account_id = '0123456789'
         self.role_name = 'roleA'
-        self.cached_token_key = '13f9d35043871d073ab260e020f0ffde092cb14b'
         self.expires_at = datetime.now(tzlocal()) + timedelta(hours=24)
         self.access_token = {
             'accessToken': 'access.token.string',
             'expiresAt': self.expires_at,
         }
-        self.token_cache[self.cached_token_key] = self.access_token
+        self.do_sso_login_mock = mock.Mock(spec=do_sso_login)
+        self.do_sso_login_mock.return_value = self.access_token
+        self.configure_sso = ConfigureSSOCommand(
+            self.mock_session,
+            prompter=self.prompter,
+            selector=self.selector,
+            config_writer=self.writer,
+            sso_token_cache=self.token_cache,
+            sso_login=self.do_sso_login_mock,
+        )
 
     def _add_list_accounts_response(self, accounts):
         params = {
@@ -255,6 +258,22 @@ class TestConfigureSSOCommand(unittest.TestCase):
             self.configure_sso(args=[], parsed_globals=self.global_args)
         self.sso_stub.assert_no_pending_responses()
         self.assert_config_updates()
+
+    def test_single_account_single_role_flow_no_browser(self):
+        self._add_prompt_responses()
+        self._add_simple_single_item_responses()
+        with self.sso_stub:
+            self.configure_sso(
+                args=['--no-browser'],
+                parsed_globals=self.global_args,
+            )
+        self.sso_stub.assert_no_pending_responses()
+        self.assert_config_updates()
+        _, _, login_kwargs = self.do_sso_login_mock.mock_calls[0]
+        auth_handler = login_kwargs['on_pending_authorization']
+        self.assertIsInstance(auth_handler, PrintOnlyHandler)
+        # Account / Role should be auto selected if only one is returned
+        self.assertEqual(self.selector.call_count, 0)
 
     def test_single_account_single_role_flow(self):
         self._add_prompt_responses()
@@ -330,6 +349,7 @@ class TestConfigureSSOCommand(unittest.TestCase):
             selector=self.selector,
             config_writer=self.writer,
             sso_token_cache=self.token_cache,
+            sso_login=self.do_sso_login_mock,
         )
         # If there is no profile, it will be prompted for as the last value
         self.prompter.get_value.side_effect = [
@@ -355,6 +375,7 @@ class TestConfigureSSOCommand(unittest.TestCase):
             selector=self.selector,
             config_writer=self.writer,
             sso_token_cache=self.token_cache,
+            sso_login=self.do_sso_login_mock,
         )
         self._add_prompt_responses()
         self._add_simple_single_item_responses()

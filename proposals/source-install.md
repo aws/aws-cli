@@ -3,7 +3,7 @@
 Proposal         | Metadata
 ---------------- | -------------
 **Author**       | Kyle Knapp
-**Status**       | Proposed
+**Status**       | Accepted
 **Created**      | 24-August-2021
 
 ## Abstract

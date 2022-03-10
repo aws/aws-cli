@@ -3251,6 +3251,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.72
+=======
+
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``transcribe``: Documentation fix for API `StartMedicalTranscriptionJobRequest`, now showing min sample rate as 16khz
+* api-change:``transfer``: Adding more descriptive error types for managed workflows
+
+
+1.22.71
+=======
+
+* api-change:``comprehend``: Amazon Comprehend now supports extracting the sentiment associated with entities such as brands, products and services from text documents.
+
+
 1.22.70
 =======
 

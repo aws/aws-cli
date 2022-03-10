@@ -51,7 +51,7 @@ class LoginCommand(BasicCommand):
             on_pending_authorization=on_pending_authorization,
             force_refresh=True
         )
-        success_msg = 'Successully logged into Start URL: %s\n'
+        success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % sso_config['sso_start_url'])
         return 0
 

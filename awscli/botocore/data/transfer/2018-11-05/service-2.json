@@ -696,8 +696,14 @@
           "shape":"Role",
           "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
         },
-        "PostAuthenticationLoginBanner":{"shape":"PostAuthenticationLoginBanner"},
-        "PreAuthenticationLoginBanner":{"shape":"PreAuthenticationLoginBanner"},
+        "PostAuthenticationLoginBanner":{
+          "shape":"PostAuthenticationLoginBanner",
+          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
+        },
+        "PreAuthenticationLoginBanner":{
+          "shape":"PreAuthenticationLoginBanner",
+          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system.</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
+        },
         "Protocols":{
           "shape":"Protocols",
           "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> </ul> <note> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Amazon Web Services Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </note>"
@@ -1262,8 +1268,14 @@
           "shape":"Role",
           "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
         },
-        "PostAuthenticationLoginBanner":{"shape":"PostAuthenticationLoginBanner"},
-        "PreAuthenticationLoginBanner":{"shape":"PreAuthenticationLoginBanner"},
+        "PostAuthenticationLoginBanner":{
+          "shape":"PostAuthenticationLoginBanner",
+          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
+        },
+        "PreAuthenticationLoginBanner":{
+          "shape":"PreAuthenticationLoginBanner",
+          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system.</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
+        },
         "Protocols":{
           "shape":"Protocols",
           "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> </ul>"
@@ -1454,7 +1466,7 @@
       "members":{
         "Type":{
           "shape":"ExecutionErrorType",
-          "documentation":"<p>Specifies the error type: currently, the only valid value is <code>PERMISSION_DENIED</code>, which occurs if your policy does not contain the correct permissions to complete one or more of the steps in the workflow.</p>"
+          "documentation":"<p>Specifies the error type.</p> <ul> <li> <p> <code>ALREADY_EXISTS</code>: occurs for a copy step, if the overwrite option is not selected and a file with the same name already exists in the target location.</p> </li> <li> <p> <code>BAD_REQUEST</code>: a general bad request: for example, a step that attempts to tag an EFS file returns <code>BAD_REQUEST</code>, as only S3 files can be tagged.</p> </li> <li> <p> <code>CUSTOM_STEP_FAILED</code>: occurs when the custom step provided a callback that indicates failure.</p> </li> <li> <p> <code>INTERNAL_SERVER_ERROR</code>: a catch-all error that can occur for a variety of reasons.</p> </li> <li> <p> <code>NOT_FOUND</code>: occurs when a requested entity, for example a source file for a copy step, does not exist.</p> </li> <li> <p> <code>PERMISSION_DENIED</code>: occurs if your policy does not contain the correct permissions to complete one or more of the steps in the workflow.</p> </li> <li> <p> <code>TIMEOUT</code>: occurs when the execution times out.</p> <note> <p> You can set the <code>TimeoutSeconds</code> for a custom step, anywhere from 1 second to 1800 seconds (30 minutes). </p> </note> </li> <li> <p> <code>THROTTLED</code>: occurs if you exceed the new execution refill rate of one workflow per second.</p> </li> </ul>"
         },
         "Message":{
           "shape":"ExecutionErrorMessage",
@@ -1466,7 +1478,16 @@
     "ExecutionErrorMessage":{"type":"string"},
     "ExecutionErrorType":{
       "type":"string",
-      "enum":["PERMISSION_DENIED"]
+      "enum":[
+        "PERMISSION_DENIED",
+        "CUSTOM_STEP_FAILED",
+        "THROTTLED",
+        "ALREADY_EXISTS",
+        "NOT_FOUND",
+        "BAD_REQUEST",
+        "TIMEOUT",
+        "INTERNAL_SERVER_ERROR"
+      ]
     },
     "ExecutionId":{
       "type":"string",
@@ -2797,8 +2818,14 @@
           "shape":"NullableRole",
           "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
         },
-        "PostAuthenticationLoginBanner":{"shape":"PostAuthenticationLoginBanner"},
-        "PreAuthenticationLoginBanner":{"shape":"PreAuthenticationLoginBanner"},
+        "PostAuthenticationLoginBanner":{
+          "shape":"PostAuthenticationLoginBanner",
+          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
+        },
+        "PreAuthenticationLoginBanner":{
+          "shape":"PreAuthenticationLoginBanner",
+          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system.</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
+        },
         "Protocols":{
           "shape":"Protocols",
           "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p>Secure Shell (SSH) File Transfer Protocol (SFTP): File transfer over SSH</p> </li> <li> <p>File Transfer Protocol Secure (FTPS): File transfer with TLS encryption</p> </li> <li> <p>File Transfer Protocol (FTP): Unencrypted file transfer</p> </li> </ul> <note> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Amazon Web ServicesCertificate Manager (ACM) which will be used to identify your server when clients connect to it over FTPS.</p> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </note>"

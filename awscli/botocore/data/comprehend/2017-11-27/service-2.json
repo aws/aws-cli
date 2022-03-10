@@ -432,6 +432,22 @@
       ],
       "documentation":"<p>Gets the properties associated with a sentiment detection job. Use this operation to get the status of a detection job.</p>"
     },
+    "DescribeTargetedSentimentDetectionJob":{
+      "name":"DescribeTargetedSentimentDetectionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTargetedSentimentDetectionJobRequest"},
+      "output":{"shape":"DescribeTargetedSentimentDetectionJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"JobNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the properties associated with a targeted sentiment detection job. Use this operation to get the status of the job.</p>"
+    },
     "DescribeTopicsDetectionJob":{
       "name":"DescribeTopicsDetectionJob",
       "http":{
@@ -769,6 +785,22 @@
       ],
       "documentation":"<p>Lists all tags associated with a given Amazon Comprehend resource. </p>"
     },
+    "ListTargetedSentimentDetectionJobs":{
+      "name":"ListTargetedSentimentDetectionJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTargetedSentimentDetectionJobsRequest"},
+      "output":{"shape":"ListTargetedSentimentDetectionJobsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidFilterException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets a list of targeted sentiment detection jobs that you have submitted.</p>"
+    },
     "ListTopicsDetectionJobs":{
       "name":"ListTopicsDetectionJobs",
       "http":{
@@ -921,7 +953,24 @@
         {"shape":"TooManyTagsException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts an asynchronous sentiment detection job for a collection of documents. use the operation to track the status of a job.</p>"
+      "documentation":"<p>Starts an asynchronous sentiment detection job for a collection of documents. Use the operation to track the status of a job.</p>"
+    },
+    "StartTargetedSentimentDetectionJob":{
+      "name":"StartTargetedSentimentDetectionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartTargetedSentimentDetectionJobRequest"},
+      "output":{"shape":"StartTargetedSentimentDetectionJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KmsKeyValidationException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts an asynchronous targeted sentiment detection job for a collection of documents. Use the operation to track the status of a job.</p>"
     },
     "StartTopicsDetectionJob":{
       "name":"StartTopicsDetectionJob",
@@ -1029,6 +1078,21 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Stops a sentiment detection job in progress.</p> <p>If the job state is <code>IN_PROGRESS</code> the job is marked for termination and put into the <code>STOP_REQUESTED</code> state. If the job completes before it can be stopped, it is put into the <code>COMPLETED</code> state; otherwise the job is be stopped and put into the <code>STOPPED</code> state.</p> <p>If the job is in the <code>COMPLETED</code> or <code>FAILED</code> state when you call the <code>StopDominantLanguageDetectionJob</code> operation, the operation returns a 400 Internal Request Exception. </p> <p>When a job is stopped, any documents already processed are written to the output location.</p>"
+    },
+    "StopTargetedSentimentDetectionJob":{
+      "name":"StopTargetedSentimentDetectionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopTargetedSentimentDetectionJobRequest"},
+      "output":{"shape":"StopTargetedSentimentDetectionJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"JobNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Stops a targeted sentiment detection job in progress.</p> <p>If the job state is <code>IN_PROGRESS</code> the job is marked for termination and put into the <code>STOP_REQUESTED</code> state. If the job completes before it can be stopped, it is put into the <code>COMPLETED</code> state; otherwise the job is be stopped and put into the <code>STOPPED</code> state.</p> <p>If the job is in the <code>COMPLETED</code> or <code>FAILED</code> state when you call the <code>StopDominantLanguageDetectionJob</code> operation, the operation returns a 400 Internal Request Exception. </p> <p>When a job is stopped, any documents already processed are written to the output location.</p>"
     },
     "StopTrainingDocumentClassifier":{
       "name":"StopTrainingDocumentClassifier",
@@ -2072,6 +2136,25 @@
         }
       }
     },
+    "DescribeTargetedSentimentDetectionJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.</p>"
+        }
+      }
+    },
+    "DescribeTargetedSentimentDetectionJobResponse":{
+      "type":"structure",
+      "members":{
+        "TargetedSentimentDetectionJobProperties":{
+          "shape":"TargetedSentimentDetectionJobProperties",
+          "documentation":"<p>An object that contains the properties associated with a targeted sentiment detection job.</p>"
+        }
+      }
+    },
     "DescribeTopicsDetectionJobRequest":{
       "type":"structure",
       "required":["JobId"],
@@ -2993,7 +3076,7 @@
         },
         "F1Score":{
           "shape":"Double",
-          "documentation":"<p>A measure of how accurate the recognizer results are for the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. The highest score is 1, and the worst score is 0. </p>"
+          "documentation":"<p>A measure of how accurate the recognizer results are for the test data. It is derived from the <code>Precision</code> and <code>Recall</code> values. The <code>F1Score</code> is the harmonic average of the two scores. For plain text entity recognizer models, the range is 0 to 100, where 100 is the best score. For PDF/Word entity recognizer models, the range is 0 to 1, where 1 is the best score. </p>"
         }
       },
       "documentation":"<p>Detailed information about the accuracy of an entity recognizer. </p>"
@@ -3580,7 +3663,7 @@
     "KmsKeyId":{
       "type":"string",
       "max":2048,
-      "pattern":".*"
+      "pattern":"^\\p{ASCII}+$"
     },
     "KmsKeyValidationException":{
       "type":"structure",
@@ -4050,6 +4133,36 @@
         }
       }
     },
+    "ListTargetedSentimentDetectionJobsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"TargetedSentimentDetectionJobFilter",
+          "documentation":"<p>Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in each page. The default is 100.</p>"
+        }
+      }
+    },
+    "ListTargetedSentimentDetectionJobsResponse":{
+      "type":"structure",
+      "members":{
+        "TargetedSentimentDetectionJobPropertiesList":{
+          "shape":"TargetedSentimentDetectionJobPropertiesList",
+          "documentation":"<p>A list containing the properties of each job that is returned.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
+        }
+      }
+    },
     "ListTopicsDetectionJobsRequest":{
       "type":"structure",
       "members":{
@@ -4114,14 +4227,14 @@
       "members":{
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>When you use the <code>OutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. The URI must be in the same region as the API endpoint that you are calling. The location is used as the prefix for the actual location of the output file.</p> <p>When the topic detection job is finished, the service creates an output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the ouput of the operation.</p>"
+          "documentation":"<p>When you use the <code>OutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. The URI must be in the same region as the API endpoint that you are calling. The location is used as the prefix for the actual location of the output file.</p> <p>When the topic detection job is finished, the service creates an output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the ouput of the operation.</p> <p> For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with <code>.out</code> appended at the end. </p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>KMS Key Alias: <code>\"alias/ExampleAlias\"</code> </p> </li> <li> <p>ARN of a KMS Key Alias: <code>\"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias\"</code> </p> </li> </ul>"
         }
       },
-      "documentation":"<p>Provides configuration parameters for the output of topic detection jobs.</p> <p/>"
+      "documentation":"<p>Provides configuration parameters for the output of inference jobs.</p> <p/>"
     },
     "PartOfSpeechTag":{
       "type":"structure",
@@ -4314,7 +4427,7 @@
       "members":{
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>When you use the <code>PiiOutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. </p>"
+          "documentation":"<p>When you use the <code>PiiOutputDataConfig</code> object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. </p> <p> For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with <code>.out</code> appended at the end. </p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
@@ -5005,6 +5118,65 @@
         }
       }
     },
+    "StartTargetedSentimentDetectionJobRequest":{
+      "type":"structure",
+      "required":[
+        "InputDataConfig",
+        "OutputDataConfig",
+        "DataAccessRoleArn",
+        "LanguageCode"
+      ],
+      "members":{
+        "InputDataConfig":{"shape":"InputDataConfig"},
+        "OutputDataConfig":{
+          "shape":"OutputDataConfig",
+          "documentation":"<p>Specifies where to send the output files. </p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/access-control-managing-permissions.html#auth-role-permissions\">Role-based permissions</a>.</p>"
+        },
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The identifier of the job.</p>"
+        },
+        "LanguageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestTokenString",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.</p>",
+          "idempotencyToken":true
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the KMS key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the analysis job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to be associated with the targeted sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+        }
+      }
+    },
+    "StartTargetedSentimentDetectionJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The identifier generated for the job. To get the status of a job, use this identifier with the operation.</p>"
+        },
+        "JobArn":{
+          "shape":"ComprehendArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the AWS account, Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:targeted-sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>"
+        }
+      }
+    },
     "StartTopicsDetectionJobRequest":{
       "type":"structure",
       "required":[
@@ -5207,6 +5379,29 @@
         }
       }
     },
+    "StopTargetedSentimentDetectionJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The identifier of the targeted sentiment detection job to stop.</p>"
+        }
+      }
+    },
+    "StopTargetedSentimentDetectionJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The identifier of the targeted sentiment detection job to stop.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>Either <code>STOP_REQUESTED</code> if the job is currently running, or <code>STOPPED</code> if the job was previously stopped with the <code>StopSentimentDetectionJob</code> operation.</p>"
+        }
+      }
+    },
     "StopTrainingDocumentClassifierRequest":{
       "type":"structure",
       "required":["DocumentClassifierArn"],
@@ -5349,6 +5544,81 @@
       "type":"list",
       "member":{"shape":"EventTypeString"},
       "min":1
+    },
+    "TargetedSentimentDetectionJobFilter":{
+      "type":"structure",
+      "members":{
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>Filters on the name of the job.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>Filters the list of jobs based on job status. Returns only jobs with the specified status.</p>"
+        },
+        "SubmitTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.</p>"
+        },
+        "SubmitTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.</p>"
+        }
+      },
+      "documentation":"<p>Provides information for filtering a list of dominant language detection jobs. For more information, see the operation.</p>"
+    },
+    "TargetedSentimentDetectionJobProperties":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The identifier assigned to the targeted sentiment detection job.</p>"
+        },
+        "JobArn":{
+          "shape":"ComprehendArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the AWS account, Region, and the job ID. The format of the ARN is as follows:</p> <p> <code>arn:&lt;partition&gt;:comprehend:&lt;region&gt;:&lt;account-id&gt;:targeted-sentiment-detection-job/&lt;job-id&gt;</code> </p> <p>The following is an example job ARN:</p> <p> <code>arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab</code> </p>"
+        },
+        "JobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name that you assigned to the targeted sentiment detection job.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the targeted sentiment detection job. If the status is <code>FAILED</code>, the <code>Messages</code> field shows the reason for the failure.</p>"
+        },
+        "Message":{
+          "shape":"AnyLengthString",
+          "documentation":"<p>A description of the status of a job.</p>"
+        },
+        "SubmitTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the targeted sentiment detection job was submitted for processing.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the targeted sentiment detection job ended.</p>"
+        },
+        "InputDataConfig":{"shape":"InputDataConfig"},
+        "OutputDataConfig":{"shape":"OutputDataConfig"},
+        "LanguageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language code of the input documents.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the targeted sentiment detection job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"}
+      },
+      "documentation":"<p>Provides information about a targeted sentiment detection job.</p>"
+    },
+    "TargetedSentimentDetectionJobPropertiesList":{
+      "type":"list",
+      "member":{"shape":"TargetedSentimentDetectionJobProperties"}
     },
     "TextSizeLimitExceededException":{
       "type":"structure",

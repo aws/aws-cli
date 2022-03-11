@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.4.25
+======
+
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``transfer``: Adding more descriptive error types for managed workflows
+* enhancement:``sso``: Implements `#5301 <https://github.com/aws/aws-cli/issues/5301>`__. Added support for the ``--no-browser`` flag to the ``aws sso login`` and ``aws configure sso`` commands.
+* api-change:``transcribe``: Documentation fix for API `StartMedicalTranscriptionJobRequest`, now showing min sample rate as 16khz
+* api-change:``comprehend``: Amazon Comprehend now supports extracting the sentiment associated with entities such as brands, products and services from text documents.
+
+
 2.4.24
 ======
 

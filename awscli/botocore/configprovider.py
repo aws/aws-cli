@@ -53,6 +53,8 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     'data_path': ('data_path', 'AWS_DATA_PATH', None, None),
     'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config', None),
     'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None, None),
+    # This is a session variable to make AWS CLI color configureable
+    'color_palette': ('color_palette', ['AWS_COLOR_PALETTE'], None, None),
 
     # This is the shared credentials file amongst sdks.
     'credentials_file': (None, 'AWS_SHARED_CREDENTIALS_FILE',

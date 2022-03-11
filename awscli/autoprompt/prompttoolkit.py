@@ -109,8 +109,8 @@ class PromptToolkitPrompter:
         return input_buffer_container, doc_window, output_window
 
     def create_application(self):
-        colorDepth = {"black_and_white": ColorDepth.MONOCHROME, "ansi_colors": ColorDepth.ANSI_COLORS_ONLY,
-                      "256_colors": ColorDepth.DEFAULT, "true_colors": ColorDepth.TRUE_COLOR}
+        _colorDepth = {"black_and_white": ColorDepth.MONOCHROME, "ansi_colors": ColorDepth.ANSI_COLORS_ONLY,"256_colors": ColorDepth.DEFAULT, "true_colors": ColorDepth.TRUE_COLOR}
+
         self._create_buffers()
         input_buffer_container, \
             doc_window, output_window = self._create_containers()
@@ -123,7 +123,7 @@ class PromptToolkitPrompter:
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
                           output=self._output, erase_when_done=True,
-                          input=self._input, color_depth=colorDepth["true_colors"])
+                          input=self._input, color_depth=_colorDepth["true_colors"])
         self._set_app_defaults(app)
         return app
 

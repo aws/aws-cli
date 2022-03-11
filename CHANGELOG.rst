@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.73
+=======
+
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager.
+* api-change:``outposts``: This release adds address filters for listSites
+* api-change:``connect``: This release adds support for enabling Rich Messaging when starting a new chat session via the StartChatContact API. Rich Messaging enables the following formatting options: bold, italics, hyperlinks, bulleted lists, and numbered lists.
+* api-change:``chime``: Chime VoiceConnector Logging APIs will now support MediaMetricLogs. Also CreateMeetingDialOut now returns AccessDeniedException.
+* api-change:``lambda``: Adds PrincipalOrgID support to AddPermission API. Customers can use it to manage permissions to lambda functions at AWS Organizations level.
+
+
 1.22.72
 =======
 

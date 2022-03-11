@@ -13,4 +13,4 @@ The following ``update-stack`` command adds two stack notification topics to the
 
   aws cloudformation update-stack --stack-name mystack --use-previous-template --notification-arns "arn:aws:sns:use-east-1:123456789012:mytopic1" "arn:aws:sns:us-east-1:123456789012:mytopic2"
 
-For more information, see `Updating a Stack`_ in the *AWS CloudFormation User Guide*.
+For more information, see `AWS CloudFormation stack updates <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html>`__ in the *AWS CloudFormation User Guide*.

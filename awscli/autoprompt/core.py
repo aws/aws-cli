@@ -87,9 +87,10 @@ class AutoPrompter:
     def __init__(self, completion_source, driver, prompter=None):
         self._completion_source = completion_source
         self._driver = driver
+        self._session = driver.session
         if prompter is None:
             prompter = PromptToolkitPrompter(self._completion_source,
-                                             self._driver)
+                                             self._driver,self._session)
         self._prompter = prompter
 
     def prompt_for_values(self, original_args):

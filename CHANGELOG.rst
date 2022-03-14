@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.22.74
+=======
+
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for Slack. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-slack.html
+* api-change:``config``: Add resourceType enums for AWS::ECR::PublicRepository and AWS::EC2::LaunchTemplate
+* api-change:``timestream-query``: Amazon Timestream Scheduled Queries now support Timestamp datatype in a multi-measure record.
+* api-change:``elasticache``: Doc only update for ElastiCache
+
+
 1.22.73
 =======
 

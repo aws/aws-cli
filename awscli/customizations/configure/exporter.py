@@ -4,8 +4,6 @@ import sys
 import json
 import os
 
-sys.path.insert(0, 'D:/Repos GitKraken/aws-cli')
-
 
 class ConfigureExportCommand(BasicCommand):
     NAME = 'export-credentials'

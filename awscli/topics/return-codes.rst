@@ -26,24 +26,24 @@ of a CLI command:
   other files marked for transfer were successfully transferred.
   Files that are skipped during the transfer process include:
   files that do not exist, files that are character special devices,
-  block special device, FIFO's, or sockets, and files that the user cannot
+  block special device, FIFOs, or sockets, and files that the user cannot
   read from.
 
 * ``130`` -- The process received a SIGINT (Ctrl-C).
 
 * ``252`` -- Command syntax was invalid, an unknown parameter was provided, or
-  a paramter value was incorrect and prevented the command from running.
+  a parameter value was incorrect and prevented the command from running.
 
 * ``253`` -- The system environment or configuration was invalid. While the
   command provided may be syntactically valid, missing configuration or
   credentials prevented the command from running.
 
-* ``254`` -- The command was succesfully parsed and a request was made to the
+* ``254`` -- The command was successfully parsed and a request was made to the
   specified service but the service returned an error. This will generally
   indicate incorrect API usage or other service specific issues.
 
 * ``255`` -- General catch-all error. The command may have parsed correctly but
-  an unspecified runtime error occured when running the command. Because this
+  an unspecified runtime error occurred when running the command. Because this
   is a general error code, an error may change from 255 to a more specific
   return code. A return code of 255 should not be relied on to determine a
   specific error case.

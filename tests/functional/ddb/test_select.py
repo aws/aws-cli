@@ -460,12 +460,15 @@ class TestSelect(BaseSelectTest):
             command, expected, expected_rc=0
         )
 
-    def test_select_does_not_support_yaml_stream(self):
-        cmdline = 'ddb select mytable --output yaml-stream'
-        stdout, _, _ = self.assert_params_for_cmd(
-            cmdline, expected_rc=252,
-            stderr_contains='yaml-stream output format is not supported',
-        )
+    def test_select_unsupported_output(self):
+        unsupported_output = ['json', 'table', 'text', 'yaml-stream']
+        for output in unsupported_output:
+            with self.subTest(output):
+                cmdline = f'ddb select mytable --output {output}'
+                stdout, _, _ = self.assert_params_for_cmd(
+                    cmdline, expected_rc=252,
+                    stderr_contains=f'{output} output format is not supported for ddb commands',
+                )
 
     def test_select_parsing_error_rc(self):
         cmdline = 'ddb select mytable --filter a=?!f'

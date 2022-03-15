@@ -525,6 +525,7 @@
         {"shape":"ResourceLimitExceededException"},
         {"shape":"ThrottledClientException"},
         {"shape":"UnauthorizedClientException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
@@ -3710,7 +3711,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Allows you to trigger a Lambda function at any time while a call is active, and replace the current actions with new actions returned by the invocation.</p>"
+      "documentation":"<p>Invokes the AWS Lambda function associated with the SIP media application and transaction ID in an update request. The Lambda function can then return a new set of actions.</p>"
     },
     "UpdateSipRule":{
       "name":"UpdateSipRule",
@@ -5231,7 +5232,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags assigned to the <code>AppInstanceUser</code>.</p>"
+          "documentation":"<p>Tags assigned to the <code>AppInstance</code>.</p>"
         }
       }
     },
@@ -7089,7 +7090,7 @@
         },
         "ContentIdentificationType":{
           "shape":"TranscribeContentIdentificationType",
-          "documentation":"<p>Set this field to <code>PII</code> to identify personal health information in the transcription output.</p>"
+          "documentation":"<p>Set this field to <code>PII</code> to identify personally identifiable information in the transcription output.</p>"
         },
         "ContentRedactionType":{
           "shape":"TranscribeContentRedactionType",
@@ -9189,7 +9190,11 @@
       "members":{
         "EnableSIPLogs":{
           "shape":"Boolean",
-          "documentation":"<p>When true, enables SIP message logs for sending to Amazon CloudWatch Logs.</p>"
+          "documentation":"<p>Boolean that enables SIP message logs to CloudWatch logs.</p>"
+        },
+        "EnableMediaMetricLogs":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean that enables logging of detailed media metrics for Voice Connectors to CloudWatch logs.</p>"
         }
       },
       "documentation":"<p>The logging configuration associated with an Amazon Chime Voice Connector. Specifies whether SIP message logs are enabled for sending to Amazon CloudWatch Logs.</p>"
@@ -9322,7 +9327,7 @@
         },
         "EventIngestionUrl":{
           "shape":"UriType",
-          "documentation":"<p>The event ingestion URL.</p>"
+          "documentation":"<p>The event ingestion URL to which you send client meeting events.</p>"
         }
       },
       "documentation":"<p>A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.</p>"

@@ -972,7 +972,7 @@
         {"shape":"NoAvailableOrganizationException"},
         {"shape":"OrganizationAllFeaturesNotEnabledException"}
       ],
-      "documentation":"<p>Creates and updates the configuration aggregator with the selected source accounts and regions. The source account can be individual account(s) or an organization.</p> <p> <code>accountIds</code> that are passed will be replaced with existing accounts. If you want to add additional accounts into the aggregator, call <code>DescribeAggregator</code> to get the previous accounts and then append new ones.</p> <note> <p>Config should be enabled in source accounts and regions you want to aggregate.</p> <p>If your source type is an organization, you must be signed in to the management account or a registered delegated administrator and all the features must be enabled in your organization. If the caller is a management account, Config calls <code>EnableAwsServiceAccess</code> API to enable integration between Config and Organizations. If the caller is a registered delegated administrator, Config calls <code>ListDelegatedAdministrators</code> API to verify whether the caller is a valid delegated administrator.</p> <p>To register a delegated administrator, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/set-up-aggregator-cli.html#register-a-delegated-administrator-cli\">Register a Delegated Administrator</a> in the Config developer guide. </p> </note>"
+      "documentation":"<p>Creates and updates the configuration aggregator with the selected source accounts and regions. The source account can be individual account(s) or an organization.</p> <p> <code>accountIds</code> that are passed will be replaced with existing accounts. If you want to add additional accounts into the aggregator, call <code>DescribeConfigurationAggregators</code> to get the previous accounts and then append new ones.</p> <note> <p>Config should be enabled in source accounts and regions you want to aggregate.</p> <p>If your source type is an organization, you must be signed in to the management account or a registered delegated administrator and all the features must be enabled in your organization. If the caller is a management account, Config calls <code>EnableAwsServiceAccess</code> API to enable integration between Config and Organizations. If the caller is a registered delegated administrator, Config calls <code>ListDelegatedAdministrators</code> API to verify whether the caller is a valid delegated administrator.</p> <p>To register a delegated administrator, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/set-up-aggregator-cli.html#register-a-delegated-administrator-cli\">Register a Delegated Administrator</a> in the Config developer guide. </p> </note>"
     },
     "PutConfigurationRecorder":{
       "name":"PutConfigurationRecorder",
@@ -5687,7 +5687,7 @@
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>A string containing full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can only use a YAML template with one resource type, that is, config rule and a remediation action. </p> </note>"
+          "documentation":"<p>A string containing full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can only use a YAML template with two resource types: config rule (<code>AWS::Config::ConfigRule</code>) and a remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>"
         },
         "DeliveryS3Bucket":{
           "shape":"DeliveryS3Bucket",
@@ -6595,7 +6595,9 @@
         "AWS::Kinesis::StreamConsumer",
         "AWS::CodeDeploy::Application",
         "AWS::CodeDeploy::DeploymentConfig",
-        "AWS::CodeDeploy::DeploymentGroup"
+        "AWS::CodeDeploy::DeploymentGroup",
+        "AWS::EC2::LaunchTemplate",
+        "AWS::ECR::PublicRepository"
       ]
     },
     "ResourceTypeList":{

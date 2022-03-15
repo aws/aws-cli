@@ -22,7 +22,7 @@ The following ``delete-secret`` example deletes a secret without a recovery wind
 
     aws secretsmanager delete-secret \
         --secret-id MyTestSecret \
-        ----force-delete-without-recovery
+        --force-delete-without-recovery
 
 Output::
 

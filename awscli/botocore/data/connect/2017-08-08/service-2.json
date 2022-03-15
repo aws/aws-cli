@@ -1614,7 +1614,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Starts recording the contact when the agent joins the call. StartContactRecording is a one-time action. For example, if you use StopContactRecording to stop recording an ongoing call, you can't use StartContactRecording to restart it. For scenarios where the recording has started and you want to suspend and resume it, such as when collecting sensitive information (for example, a credit card number), use SuspendContactRecording and ResumeContactRecording.</p> <p>You can use this API to override the recording behavior configured in the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-recording-behavior.html\">Set recording behavior</a> block.</p> <p>Only voice recordings are supported at this time.</p>"
+      "documentation":"<p>Starts recording the contact: </p> <ul> <li> <p>If the API is called <i>before</i> the agent joins the call, recording starts when the agent joins the call.</p> </li> <li> <p>If the API is called <i>after</i> the agent joins the call, recording starts at the time of the API call.</p> </li> </ul> <p>StartContactRecording is a one-time action. For example, if you use StopContactRecording to stop recording an ongoing call, you can't use StartContactRecording to restart it. For scenarios where the recording has started and you want to suspend and resume it, such as when collecting sensitive information (for example, a credit card number), use SuspendContactRecording and ResumeContactRecording.</p> <p>You can use this API to override the recording behavior configured in the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-recording-behavior.html\">Set recording behavior</a> block.</p> <p>Only voice recordings are supported at this time.</p>"
     },
     "StartContactStreaming":{
       "name":"StartContactStreaming",
@@ -1685,7 +1685,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Ends the specified contact.</p>"
+      "documentation":"<p>Ends the specified contact. This call does not work for the following initiation methods:</p> <ul> <li> <p>CALLBACK</p> </li> <li> <p>DISCONNECT</p> </li> <li> <p>TRANSFER</p> </li> <li> <p>QUEUE_TRANSFER</p> </li> </ul>"
     },
     "StopContactRecording":{
       "name":"StopContactRecording",
@@ -2774,7 +2774,7 @@
       "members":{
         "ContentType":{
           "shape":"ChatContentType",
-          "documentation":"<p>The type of the content. Supported types are text and plain.</p>"
+          "documentation":"<p>The type of the content. Supported types are <code>text/plain</code>.</p>"
         },
         "Content":{
           "shape":"ChatContent",
@@ -8441,6 +8441,10 @@
         "ChatDurationInMinutes":{
           "shape":"ChatDurationInMinutes",
           "documentation":"<p>The total duration of the newly started chat session. If not specified, the chat session duration defaults to 25 hour. The minumum configurable time is 60 minutes. The maximum configurable time is 10,080 minutes (7 days).</p>"
+        },
+        "SupportedMessagingContentTypes":{
+          "shape":"SupportedMessagingContentTypes",
+          "documentation":"<p>The supported chat message content types. Content types can be text/plain or both text/plain and text/markdown.</p>"
         }
       }
     },
@@ -8746,6 +8750,15 @@
       "min":1
     },
     "String":{"type":"string"},
+    "SupportedMessagingContentType":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SupportedMessagingContentTypes":{
+      "type":"list",
+      "member":{"shape":"SupportedMessagingContentType"}
+    },
     "SuspendContactRecordingRequest":{
       "type":"structure",
       "required":[

@@ -270,7 +270,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the sites for your Amazon Web Services account.</p>"
+      "documentation":"<p>Create a list of the Outpost sites for your Amazon Web Services account. Add operating address filters to your request to return a more specific list of results. Use filters to match site city, country code, or state/region of the operating address. </p> <p>If you specify multiple filters, the filters are joined with an <code>AND</code>, and the request returns only results that match all of the specified filters.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -603,6 +603,10 @@
       "min":1,
       "pattern":"^\\S[\\S ]*$"
     },
+    "CityList":{
+      "type":"list",
+      "member":{"shape":"City"}
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -637,6 +641,10 @@
       "max":2,
       "min":2,
       "pattern":"^[A-Z]{2}$"
+    },
+    "CountryCodeList":{
+      "type":"list",
+      "member":{"shape":"CountryCode"}
     },
     "CreateOrderInput":{
       "type":"structure",
@@ -1205,6 +1213,24 @@
           "shape":"MaxResults1000",
           "location":"querystring",
           "locationName":"MaxResults"
+        },
+        "OperatingAddressCountryCodeFilter":{
+          "shape":"CountryCodeList",
+          "documentation":"<p> A filter for the country code of the Outpost site. </p> <p>Filter values are case sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values.</p>",
+          "location":"querystring",
+          "locationName":"OperatingAddressCountryCodeFilter"
+        },
+        "OperatingAddressStateOrRegionFilter":{
+          "shape":"StateOrRegionList",
+          "documentation":"<p> A filter for the state/region of the Outpost site. </p> <p>Filter values are case sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values.</p>",
+          "location":"querystring",
+          "locationName":"OperatingAddressStateOrRegionFilter"
+        },
+        "OperatingAddressCityFilter":{
+          "shape":"CityList",
+          "documentation":"<p> A filter for the city of the Outpost site. </p> <p>Filter values are case sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values.</p>",
+          "location":"querystring",
+          "locationName":"OperatingAddressCityFilter"
         }
       }
     },
@@ -1648,6 +1674,10 @@
       "max":50,
       "min":1,
       "pattern":"^\\S[\\S ]*$"
+    },
+    "StateOrRegionList":{
+      "type":"list",
+      "member":{"shape":"StateOrRegion"}
     },
     "String":{
       "type":"string",

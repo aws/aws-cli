@@ -196,7 +196,7 @@ html_theme_options = {
     "bind_key_events": False,
     # Specify a base_url used to generate sitemap.xml links. If not
     # specified, then no sitemap will be built.
-    "base_url": "http://docs.aws.amazon.com/cli/latest/",
+    "base_url": "https://docs.aws.amazon.com/cli/latest/",
 }
 
 

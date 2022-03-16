@@ -155,6 +155,10 @@
         {
           "shape": "AccessDeniedException",
           "documentation": "<p>403 response</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>409 response</p>"
         }
       ],
       "documentation": "<p>This operation creates a job.</p>"
@@ -698,6 +702,48 @@
       "errors": [],
       "documentation": "<p>This operation lists the tags on the resource.</p>"
     },
+    "RevokeRevision": {
+      "name": "RevokeRevision",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/data-sets/{DataSetId}/revisions/{RevisionId}/revoke",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "RevokeRevisionRequest"
+      },
+      "output": {
+        "shape": "RevokeRevisionResponse",
+        "documentation": "<p>200 response</p>"
+      },
+      "errors": [
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>400 response</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>403 response</p>"
+        },
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response</p>"
+        },
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>429 response</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>409 response</p>"
+        }
+      ],
+      "documentation": "<p>This operation revokes subscribers' access to a revision.</p>"
+    },
     "SendApiAsset": {
       "name": "SendApiAsset",
       "http": {
@@ -1130,7 +1176,7 @@
           "documentation": "<p>The date and time that the asset was last updated, in ISO 8601 format.</p>"
         }
       },
-      "documentation": "<p>An asset in AWS Data Exchange is a piece of data (S3 object) or a means of fulfilling data (Amazon Redshift datashare or Amazon API Gateway API). The asset can be a structured data file, an image file, or some other data file that can be stored as an S3 object, an Amazon API Gateway API, or an Amazon Redshift datashare (Preview). When you create an import job for your files, API Gateway APIs, or Amazon Redshift datashares, you create an asset in AWS Data Exchange.</p>",
+      "documentation": "<p>An asset in AWS Data Exchange is a piece of data (S3 object) or a means of fulfilling data (Amazon Redshift datashare or Amazon API Gateway API). The asset can be a structured data file, an image file, or some other data file that can be stored as an S3 object, an Amazon API Gateway API, or an Amazon Redshift datashare. When you create an import job for your files, API Gateway APIs, or Amazon Redshift datashares, you create an asset in AWS Data Exchange.</p>",
       "required": [
         "AssetType",
         "CreatedAt",
@@ -1498,6 +1544,18 @@
         "UpdatedAt": {
           "shape": "Timestamp",
           "documentation": "<p>The date and time that the revision was last updated, in ISO 8601 format.</p>"
+        },
+        "RevocationComment": {
+          "shape": "__stringMin10Max512",
+          "documentation": "<p>A required comment to inform subscribers of the reason their access to the revision was revoked.</p>"
+        },
+        "Revoked": {
+          "shape": "__boolean",
+          "documentation": "<p>A status indicating that subscribers' access to the revision was revoked.</p>"
+        },
+        "RevokedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was revoked, in ISO 8601 format.</p>"
         }
       }
     },
@@ -2169,6 +2227,18 @@
         "UpdatedAt": {
           "shape": "Timestamp",
           "documentation": "<p>The date and time that the revision was last updated, in ISO 8601 format.</p>"
+        },
+        "RevocationComment": {
+          "shape": "__stringMin10Max512",
+          "documentation": "<p>A required comment to inform subscribers of the reason their access to the revision was revoked.</p>"
+        },
+        "Revoked": {
+          "shape": "__boolean",
+          "documentation": "<p>A status indicating that subscribers' access to the revision was revoked.</p>"
+        },
+        "RevokedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was revoked, in ISO 8601 format.</p>"
         }
       }
     },
@@ -3079,6 +3149,18 @@
         "UpdatedAt": {
           "shape": "Timestamp",
           "documentation": "<p>The date and time that the revision was last updated, in ISO 8601 format.</p>"
+        },
+        "RevocationComment": {
+          "shape": "__stringMin10Max512",
+          "documentation": "<p>A required comment to inform subscribers of the reason their access to the revision was revoked.</p>"
+        },
+        "Revoked": {
+          "shape": "__boolean",
+          "documentation": "<p>A status indicating that subscribers' access to the revision was revoked.</p>"
+        },
+        "RevokedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was revoked, in ISO 8601 format.</p>"
         }
       },
       "documentation": "<p>A revision is a container for one or more assets.</p>",
@@ -3102,6 +3184,82 @@
       "required": [
         "DataSetId"
       ]
+    },
+    "RevokeRevisionRequest": {
+      "type": "structure",
+      "members": {
+        "DataSetId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "DataSetId",
+          "documentation": "<p>The unique identifier for a data set.</p>"
+        },
+        "RevisionId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "RevisionId",
+          "documentation": "<p>The unique identifier for a revision.</p>"
+        },
+        "RevocationComment": {
+          "shape": "__stringMin10Max512",
+          "documentation": "<p>A required comment to inform subscribers of the reason their access to the revision was revoked.</p>"
+        }
+      },
+      "documentation": "<p>The request body for RevokeRevision.</p>",
+      "required": [
+        "RevisionId",
+        "DataSetId",
+        "RevocationComment"
+      ]
+    },
+    "RevokeRevisionResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "Arn",
+          "documentation": "<p>The ARN for the revision.</p>"
+        },
+        "Comment": {
+          "shape": "__stringMin0Max16384",
+          "documentation": "<p>An optional comment about the revision.</p>"
+        },
+        "CreatedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was created, in ISO 8601 format.</p>"
+        },
+        "DataSetId": {
+          "shape": "Id",
+          "documentation": "<p>The unique identifier for the data set associated with this revision.</p>"
+        },
+        "Finalized": {
+          "shape": "__boolean",
+          "documentation": "<p>To publish a revision to a data set in a product, the revision must first be finalized. Finalizing a revision tells AWS Data Exchange that changes to the assets in the revision are complete. After it's in this read-only state, you can publish the revision to your products.</p> <p>Finalized revisions can be published through the AWS Data Exchange console or the AWS Marketplace Catalog API, using the StartChangeSet AWS Marketplace Catalog API action. When using the API, revisions are uniquely identified by their ARN.</p>"
+        },
+        "Id": {
+          "shape": "Id",
+          "documentation": "<p>The unique identifier for the revision.</p>"
+        },
+        "SourceId": {
+          "shape": "Id",
+          "documentation": "<p>The revision ID of the owned revision corresponding to the entitled revision being viewed. This parameter is returned when a revision owner is viewing the entitled copy of its owned revision.</p>"
+        },
+        "UpdatedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was last updated, in ISO 8601 format.</p>"
+        },
+        "RevocationComment": {
+          "shape": "__stringMin10Max512",
+          "documentation": "<p>A required comment to inform subscribers of the reason their access to the revision was revoked.</p>"
+        },
+        "Revoked": {
+          "shape": "__boolean",
+          "documentation": "<p>A status indicating that subscribers' access to the revision was revoked.</p>"
+        },
+        "RevokedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was revoked, in ISO 8601 format.</p>"
+        }
+      }
     },
     "S3SnapshotAsset": {
       "type": "structure",
@@ -3586,6 +3744,18 @@
         "UpdatedAt": {
           "shape": "Timestamp",
           "documentation": "<p>The date and time that the revision was last updated, in ISO 8601 format.</p>"
+        },
+        "RevocationComment": {
+          "shape": "__stringMin10Max512",
+          "documentation": "<p>A required comment to inform subscribers of the reason their access to the revision was revoked.</p>"
+        },
+        "Revoked": {
+          "shape": "__boolean",
+          "documentation": "<p>A status indicating that subscribers' access to the revision was revoked.</p>"
+        },
+        "RevokedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time that the revision was revoked, in ISO 8601 format.</p>"
         }
       }
     },
@@ -3683,6 +3853,11 @@
       "min": 24,
       "max": 24,
       "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+    },
+    "__stringMin10Max512": {
+      "type": "string",
+      "min": 10,
+      "max": 512
     }
   },
   "documentation": "<p>AWS Data Exchange is a service that makes it easy for AWS customers to exchange data in the cloud. You can use the AWS Data Exchange APIs to create, update, manage, and access file-based data set in the AWS Cloud.</p><p>As a subscriber, you can view and access the data sets that you have an entitlement to through a subscription. You can use the APIS to download or copy your entitled data sets to Amazon S3 for use across a variety of AWS analytics and machine learning services.</p><p>As a provider, you can create and manage your data sets that you would like to publish to a product. Being able to package and provide your data sets into products requires a few steps to determine eligibility. For more information, visit the AWS Data Exchange User Guide.</p><p>A data set is a collection of data that can be changed or updated over time. Data sets can be updated using revisions, which represent a new version or incremental change to a data set.  A revision contains one or more assets. An asset in AWS Data Exchange is a piece of data that can be stored as an Amazon S3 object. The asset can be a structured data file, an image file, or some other data file. Jobs are asynchronous import or export operations used to create or copy assets.</p>"

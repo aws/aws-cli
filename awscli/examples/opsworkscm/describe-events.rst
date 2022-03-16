@@ -2,7 +2,8 @@
 
 The following ``describe-events`` example returns information about all events that are associated with the specified Chef Automate server. ::
 
-    aws opsworks-cm describe-events --server-name 'automate-06'
+    aws opsworks-cm describe-events \
+        --server-name 'automate-06'
 
 The output for each event entry returned by the command resembles the following example::
 
@@ -17,4 +18,4 @@ The output for each event entry returned by the command resembles the following 
         ]
     }
 
-For more information, see `General Troubleshooting Tips <http://docs.aws.amazon.com/opsworks/latest/userguide/troubleshoot-opscm.html#d0e4561>`_ in the *AWS OpsWorks User Guide*.
+For more information, see `General Troubleshooting Tips <https://docs.aws.amazon.com/opsworks/latest/userguide/troubleshoot-opscm.html#d0e4561>`_ in the *AWS OpsWorks User Guide*.

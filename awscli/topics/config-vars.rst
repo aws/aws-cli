@@ -541,7 +541,7 @@ To enable plugin support, create ``[plugins]`` section in your
 ``~/.aws/config`` file::
 
      [plugins]
-     cli_legacy_plugin_path = <path-to-plugins>/python3.7/site-packages
+     cli_legacy_plugin_path = <path-to-plugins>/python3.8/site-packages
      <plugin-name> = <plugin-module>
 
 

@@ -5,8 +5,8 @@ The following ``update-secret-version-stage`` example moves the AWSCURRENT stagi
     aws secretsmanager update-secret-version-stage \
         --secret-id MyTestSecret \
         --version-stage AWSCURRENT \
-        --move-to-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
-        --remove-from-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
+        --move-to-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE22222 \
+        --remove-from-version-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

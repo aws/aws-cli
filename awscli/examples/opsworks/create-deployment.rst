@@ -30,7 +30,7 @@ Output::
         "DeploymentId": "5746c781-df7f-4c87-84a7-65a119880560"
     }
 
-For more information on deployment, see `Deploying Apps <http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html>`__ in the *AWS OpsWorks User Guide*.
+For more information on deployment, see `Deploying Apps <https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html>`__ in the *AWS OpsWorks User Guide*.
 
 **Example 3: Run a Recipe**
 
@@ -46,7 +46,7 @@ Output::
         "DeploymentId": "5cbaa7b9-4e09-4e53-aa1b-314fbd106038"
     }
 
-For more information, see `Run Stack Commands <http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html>`__ in the *AWS OpsWorks User Guide*.
+For more information, see `Run Stack Commands <https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html>`__ in the *AWS OpsWorks User Guide*.
 
 **Example 4: Install Dependencies**
 
@@ -63,4 +63,4 @@ Output::
         "DeploymentId": "aef5b255-8604-4928-81b3-9b0187f962ff"
     }
 
-For more information, see `Run Stack Commands <http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html>`__ in the *AWS OpsWorks User Guide*.
+For more information, see `Run Stack Commands <https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html>`__ in the *AWS OpsWorks User Guide*.

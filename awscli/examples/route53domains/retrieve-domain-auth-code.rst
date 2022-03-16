@@ -14,4 +14,4 @@ Output::
         "AuthCode": ")o!v3dJeXampLe"
     }
 
-For more information, see `Transferring a Domain from Amazon Route 53 to Another Registrar <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-from-route-53.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Transferring a Domain from Amazon Route 53 to Another Registrar <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-from-route-53.html>`__ in the *Amazon Route 53 Developer Guide*.

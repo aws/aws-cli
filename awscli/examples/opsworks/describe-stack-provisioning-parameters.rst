@@ -29,4 +29,4 @@ Output::
         }
     }
 
-For more information, see `Run Stack Commands <http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html>`__ in the *AWS OpsWorks User Guide*.
+For more information, see `Run Stack Commands <https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html>`__ in the *AWS OpsWorks User Guide*.

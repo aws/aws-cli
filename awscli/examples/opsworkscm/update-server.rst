@@ -39,4 +39,4 @@ The output shows you information similar to the following about the updated serv
         }
     }
 
-For more information, see `UpdateServer <http://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_UpdateServer.html>`_ in the *AWS OpsWorks for Chef Automate API Reference*.
+For more information, see `UpdateServer <https://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_UpdateServer.html>`_ in the *AWS OpsWorks for Chef Automate API Reference*.

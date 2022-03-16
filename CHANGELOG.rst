@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.4.27
+======
+
+* api-change:``keyspaces``: Fixing formatting issues in CLI and SDK documentation
+* api-change:``ec2``: Adds the Cascade parameter to the DeleteIpam API. Customers can use this parameter to automatically delete their IPAM, including non-default scopes, pools, cidrs, and allocations. There mustn't be any pools provisioned in the default public scope to use this parameter.
+* api-change:``location``: New HERE style "VectorHereExplore" and "VectorHereExploreTruck".
+* enhancement:Dependency: Update ``awscrt`` version range to include 0.13.5
+* api-change:``dataexchange``: This feature enables data providers to use the RevokeRevision operation to revoke subscriber access to a given revision. Subscribers are unable to interact with assets within a revoked revision.
+* api-change:``cognito-idp``: Updated EmailConfigurationType and SmsConfigurationType to reflect that you can now choose Amazon SES and Amazon SNS resources in the same Region.
+* api-change:``rds``: Various documentation improvements
+* api-change:``robomaker``: This release deprecates ROS, Ubuntu and Gazbeo from RoboMaker Simulation Service Software Suites in favor of user-supplied containers and Relaxed Software Suites.
+* api-change:``ecs``: Documentation only update to address tickets
+
+
 2.4.26
 ======
 

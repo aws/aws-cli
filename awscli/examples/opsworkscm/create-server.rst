@@ -1,6 +1,6 @@
 **To create a server**
 
-The following ``create-server`` example creates a new Chef Automate server named ``automate-06`` in your default region. Note that defaults are used for most other settings, such as number of backups to retain, and maintenance and backup start times. Before you run a ``create-server`` command, complete prerequisites in `Getting Started with AWS OpsWorks for Chef Automate <http://docs.aws.amazon.com/opsworks/latest/userguide/gettingstarted-opscm.html>`_ in the *AWS Opsworks for Chef Automate User Guide*. ::
+The following ``create-server`` example creates a new Chef Automate server named ``automate-06`` in your default region. Note that defaults are used for most other settings, such as number of backups to retain, and maintenance and backup start times. Before you run a ``create-server`` command, complete prerequisites in `Getting Started with AWS OpsWorks for Chef Automate <https://docs.aws.amazon.com/opsworks/latest/userguide/gettingstarted-opscm.html>`__ in the *AWS Opsworks for Chef Automate User Guide*. ::
 
     aws opsworks-cm create-server \
         --engine "Chef" \
@@ -45,4 +45,4 @@ The output shows you information similar to the following about the new server::
         }
     }
 
-For more information, see `UpdateServer <http://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_UpdateServer.html>`_ in the *AWS OpsWorks for Chef Automate API Reference*.
+For more information, see `UpdateServer <https://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_UpdateServer.html>`_ in the *AWS OpsWorks for Chef Automate API Reference*.

@@ -30,4 +30,4 @@ Output::
         ]
     }
 
-For more information, see `ViewBilling <http://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ViewBilling.html>`__ in the *Amazon Route 53 API Reference*.
+For more information, see `ViewBilling <https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ViewBilling.html>`__ in the *Amazon Route 53 API Reference*.

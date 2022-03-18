@@ -158,4 +158,4 @@ Output::
         }
     }
 
-For more information, see `Create a VPC that uses an IPAM pool CIDR <http://mccgeoff.aka.corp.amazon.com/feat/ipam/build/AWSVPCDocs/AWSVPCDocs-3.0/AL2_x86_64/DEV.STD.PTHREAD/build/server-root/vpc/latest/ipam/create-vpc-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.
+For more information, see `Create a VPC that uses an IPAM pool CIDR <https://docs.aws.amazon.com/vpc/latest/ipam/create-vpc-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

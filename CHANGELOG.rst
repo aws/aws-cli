@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.77
+=======
+
+* api-change:``glue``: Added 9 new APIs for AWS Glue Interactive Sessions: ListSessions, StopSession, CreateSession, GetSession, DeleteSession, RunStatement, GetStatement, ListStatements, CancelStatement
+
+
 1.22.76
 =======
 

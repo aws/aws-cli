@@ -17,8 +17,6 @@ import logging
 import os
 
 from botocore import utils
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -105,6 +103,8 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         'auto', None),
     'retry_mode': ('retry_mode', 'AWS_RETRY_MODE', 'standard', None),
     'max_attempts': ('max_attempts', 'AWS_MAX_ATTEMPTS', 3, int),
+    'connect_timeout': ('connect_timeout', 'AWS_CONNECT_TIMEOUT', 60, int),
+    'read_timeout': ('read_timeout', 'AWS_READ_TIMEOUT', 60, int),
 }
 # A mapping for the s3 specific configuration vars. These are the configuration
 # vars that typically go in the s3 section of the config file. This mapping

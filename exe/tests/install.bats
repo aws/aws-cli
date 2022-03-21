@@ -42,7 +42,7 @@ create_exes() {
 }
 
 aws_version_output() {
-  echo "aws-cli/$1 Python/3.8.8 Darwin/17.7.0 botocore/1.12.48"
+  echo "aws-cli/$1 Python/3.9.11 Darwin/17.7.0 botocore/1.12.48"
 }
 
 run_install() {

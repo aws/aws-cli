@@ -4,6 +4,7 @@ The following ``copy-image`` example command copies the specified AMI from the `
 
     aws ec2 copy-image \
         --region us-east-1 \
+        --name ami-name \
         --source-region us-west-2 \
         --source-image-id ami-066877671789bd71b \
         --description "This is my copied image."
@@ -22,7 +23,8 @@ The following ``copy-image`` command copies the specified AMI from the ``us-west
 
     aws ec2 copy-image \
         --source-region us-west-2 \
-        --source-image-id snap-066877671789bd71b \
+        --name ami-name \
+        --source-image-id ami-066877671789bd71b \
         --encrypted \
         --kms-key-id alias/my-kms-key
 

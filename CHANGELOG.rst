@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.79
+=======
+
+* api-change:``location``: Amazon Location Service now includes a MaxResults parameter for GetDevicePositionHistory requests.
+* api-change:``ecs``: Documentation only update to address tickets
+* api-change:``polly``: Amazon Polly adds new Catalan voice - Arlet. Arlet is available as Neural voice only.
+* api-change:``ce``: Added three new APIs to support tagging and resource-level authorization on Cost Explorer resources: TagResource, UntagResource, ListTagsForResource.  Added optional parameters to CreateCostCategoryDefinition, CreateAnomalySubscription and CreateAnomalyMonitor APIs to support Tag On Create.
+* api-change:``lakeformation``: The release fixes the incorrect permissions called out in the documentation - DESCRIBE_TAG, ASSOCIATE_TAG, DELETE_TAG, ALTER_TAG. This trebuchet release fixes the corresponding SDK and documentation.
+
+
 1.22.78
 =======
 

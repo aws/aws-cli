@@ -1,9 +1,7 @@
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
-import sys
 import json
-import os
 
 
 class ConfigureExportCommand(BasicCommand):

@@ -18,4 +18,4 @@ Output::
 
 If the value of ``isAlreadyVerified`` is ``true``, as in this example, the registrant contact has already confirmed that the specified email address is reachable.
 
-For more information, see `Resending Authorization and Confirmation Emails <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-click-email-link.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Resending Authorization and Confirmation Emails <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-click-email-link.html>`__ in the *Amazon Route 53 Developer Guide*.

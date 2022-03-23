@@ -251,6 +251,24 @@
       ],
       "documentation":"<p>Cancels (stops) a task run. Machine learning task runs are asynchronous tasks that Glue runs on your behalf as part of various machine learning workflows. You can cancel a machine learning task run at any time by calling <code>CancelMLTaskRun</code> with a task run's parent transform's <code>TransformID</code> and the task run's <code>TaskRunId</code>. </p>"
     },
+    "CancelStatement":{
+      "name":"CancelStatement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelStatementRequest"},
+      "output":{"shape":"CancelStatementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Cancels the statement..</p>"
+    },
     "CheckSchemaVersionValidity":{
       "name":"CheckSchemaVersionValidity",
       "http":{
@@ -514,6 +532,26 @@
         {"shape":"ResourceNumberLimitExceededException"}
       ],
       "documentation":"<p>Creates a new security configuration. A security configuration is a set of security properties that can be used by Glue. You can use a security configuration to encrypt data at rest. For information about using security configurations in Glue, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/encryption-security-configuration.html\">Encrypting Data Written by Crawlers, Jobs, and Development Endpoints</a>.</p>"
+    },
+    "CreateSession":{
+      "name":"CreateSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSessionRequest"},
+      "output":{"shape":"CreateSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ValidationException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<p>Creates a new session.</p>"
     },
     "CreateTable":{
       "name":"CreateTable",
@@ -864,6 +902,24 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Deletes a specified security configuration.</p>"
+    },
+    "DeleteSession":{
+      "name":"DeleteSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSessionRequest"},
+      "output":{"shape":"DeleteSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"IllegalSessionStateException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes the session.</p>"
     },
     "DeleteTable":{
       "name":"DeleteTable",
@@ -1609,6 +1665,41 @@
       ],
       "documentation":"<p>Retrieves a list of all security configurations.</p>"
     },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionRequest"},
+      "output":{"shape":"GetSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Retrieves the session.</p>"
+    },
+    "GetStatement":{
+      "name":"GetStatement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetStatementRequest"},
+      "output":{"shape":"GetStatementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Retrieves the statement.</p>"
+    },
     "GetTable":{
       "name":"GetTable",
       "http":{
@@ -2012,6 +2103,40 @@
       ],
       "documentation":"<p>Returns a list of schemas with minimal details. Schemas in Deleting status will not be included in the results. Empty results will be returned if there are no schemas available.</p> <p>When the <code>RegistryId</code> is not provided, all the schemas across registries will be part of the API response.</p>"
     },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieve a session..</p>"
+    },
+    "ListStatements":{
+      "name":"ListStatements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStatementsRequest"},
+      "output":{"shape":"ListStatementsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Lists statements for the session.</p>"
+    },
     "ListTriggers":{
       "name":"ListTriggers",
       "http":{
@@ -2192,6 +2317,26 @@
         {"shape":"IllegalWorkflowStateException"}
       ],
       "documentation":"<p>Restarts selected nodes of a previous partially completed workflow run and resumes the workflow run. The selected nodes and all nodes that are downstream from the selected nodes are run.</p>"
+    },
+    "RunStatement":{
+      "name":"RunStatement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RunStatementRequest"},
+      "output":{"shape":"RunStatementResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Executes the statement.</p>"
     },
     "SearchTables":{
       "name":"SearchTables",
@@ -2411,6 +2556,24 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Sets the schedule state of the specified crawler to <code>NOT_SCHEDULED</code>, but does not stop the crawler if it is already running.</p>"
+    },
+    "StopSession":{
+      "name":"StopSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopSessionRequest"},
+      "output":{"shape":"StopSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"IllegalSessionStateException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Stops the session.</p>"
     },
     "StopTrigger":{
       "name":"StopTrigger",
@@ -2857,11 +3020,27 @@
       "exception":true
     },
     "AttemptCount":{"type":"integer"},
+    "AuditColumnNamesList":{
+      "type":"list",
+      "member":{"shape":"ColumnNameString"}
+    },
     "AuditContext":{
       "type":"structure",
       "members":{
-        "AdditionalAuditContext":{"shape":"AuditContextString"}
-      }
+        "AdditionalAuditContext":{
+          "shape":"AuditContextString",
+          "documentation":"<p>The context for the audit..</p>"
+        },
+        "RequestedColumns":{
+          "shape":"AuditColumnNamesList",
+          "documentation":"<p>The requested columns for audit.</p>"
+        },
+        "AllColumnsRequested":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>All columns request for audit.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information for audit.</p>"
     },
     "AuditContextString":{
       "type":"string",
@@ -3683,6 +3862,32 @@
           "shape":"TaskStatusType",
           "documentation":"<p>The status for this run.</p>"
         }
+      }
+    },
+    "CancelStatementRequest":{
+      "type":"structure",
+      "required":[
+        "SessionId",
+        "Id"
+      ],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The Session ID of the statement to be cancelled.</p>"
+        },
+        "Id":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The ID of the statement to be cancelled.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request to cancel the statement.</p>"
+        }
+      }
+    },
+    "CancelStatementResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "CatalogEncryptionMode":{
@@ -5528,6 +5733,86 @@
         }
       }
     },
+    "CreateSessionRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Role",
+        "Command"
+      ],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session request. </p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description of the session. </p>"
+        },
+        "Role":{
+          "shape":"OrchestrationRoleArn",
+          "documentation":"<p>The IAM Role ARN </p>"
+        },
+        "Command":{
+          "shape":"SessionCommand",
+          "documentation":"<p>The <code>SessionCommand</code> that runs the job. </p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The number of seconds before request times out. </p>"
+        },
+        "IdleTimeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The number of seconds when idle before request times out. </p>"
+        },
+        "DefaultArguments":{
+          "shape":"OrchestrationArgumentsMap",
+          "documentation":"<p>A map array of key-value pairs. Max is 75 pairs. </p>"
+        },
+        "Connections":{
+          "shape":"ConnectionsList",
+          "documentation":"<p>The number of connections to use for the session. </p>"
+        },
+        "MaxCapacity":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The number of AWS Glue data processing units (DPUs) that can be allocated when the job runs. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB memory. </p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of workers to use for the session. </p>"
+        },
+        "WorkerType":{
+          "shape":"WorkerType",
+          "documentation":"<p>The Worker Type. Can be one of G.1X, G.2X, Standard </p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the SecurityConfiguration structure to be used with the session </p>"
+        },
+        "GlueVersion":{
+          "shape":"GlueVersionString",
+          "documentation":"<p>The Glue version determines the versions of Apache Spark and Python that AWS Glue supports. The GlueVersion must be greater than 2.0. </p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The map of key value pairs (tags) belonging to the session.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request. </p>"
+        }
+      },
+      "documentation":"<p>Request to create a new session.</p>"
+    },
+    "CreateSessionResponse":{
+      "type":"structure",
+      "members":{
+        "Session":{
+          "shape":"Session",
+          "documentation":"<p>Returns the session object in the response.</p>"
+        }
+      }
+    },
     "CreateTableRequest":{
       "type":"structure",
       "required":[
@@ -6383,6 +6668,29 @@
       "members":{
       }
     },
+    "DeleteSessionRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session to be deleted.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The name of the origin of the delete session request.</p>"
+        }
+      }
+    },
+    "DeleteSessionResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>Returns the ID of the deleted session.</p>"
+        }
+      }
+    },
     "DeleteTableRequest":{
       "type":"structure",
       "required":[
@@ -6703,6 +7011,7 @@
       },
       "documentation":"<p>Defines column statistics supported for floating-point number data columns.</p>"
     },
+    "DoubleValue":{"type":"double"},
     "DynamoDBTarget":{
       "type":"structure",
       "members":{
@@ -8426,6 +8735,59 @@
         }
       }
     },
+    "GetSessionRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session. </p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request. </p>"
+        }
+      }
+    },
+    "GetSessionResponse":{
+      "type":"structure",
+      "members":{
+        "Session":{
+          "shape":"Session",
+          "documentation":"<p>The session object is returned in the response.</p>"
+        }
+      }
+    },
+    "GetStatementRequest":{
+      "type":"structure",
+      "required":[
+        "SessionId",
+        "Id"
+      ],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The Session ID of the statement.</p>"
+        },
+        "Id":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The Id of the statement.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request.</p>"
+        }
+      }
+    },
+    "GetStatementResponse":{
+      "type":"structure",
+      "members":{
+        "Statement":{
+          "shape":"Statement",
+          "documentation":"<p>Returns the statement.</p>"
+        }
+      }
+    },
     "GetTableRequest":{
       "type":"structure",
       "required":[
@@ -8925,7 +9287,7 @@
       "members":{
         "Message":{
           "shape":"MessageString",
-          "documentation":"<p>A message describing the problem.</p>"
+          "documentation":"<p>The message describing the problem.</p>"
         }
       },
       "documentation":"<p>An encryption operation failed.</p>",
@@ -8957,7 +9319,7 @@
       "type":"string",
       "max":10240,
       "min":1,
-      "pattern":"arn:aws:glue:.*"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn):glue:.*"
     },
     "GlueTable":{
       "type":"structure",
@@ -9070,6 +9432,17 @@
       "members":{
         "Message":{"shape":"MessageString"}
       },
+      "exception":true
+    },
+    "IllegalSessionStateException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>The session is in an invalid state to perform a requested operation.</p>",
       "exception":true
     },
     "IllegalWorkflowStateException":{
@@ -9959,6 +10332,69 @@
         }
       }
     },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"OrchestrationToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more result. </p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results. </p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags belonging to the session. </p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request. </p>"
+        }
+      }
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "Ids":{
+          "shape":"SessionIdList",
+          "documentation":"<p>Returns the Id of the session. </p>"
+        },
+        "Sessions":{
+          "shape":"SessionList",
+          "documentation":"<p>Returns the session object. </p>"
+        },
+        "NextToken":{
+          "shape":"OrchestrationToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more result. </p>"
+        }
+      }
+    },
+    "ListStatementsRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The Session ID of the statements.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request to list statements.</p>"
+        },
+        "NextToken":{"shape":"OrchestrationToken"}
+      }
+    },
+    "ListStatementsResponse":{
+      "type":"structure",
+      "members":{
+        "Statements":{
+          "shape":"StatementList",
+          "documentation":"<p>Returns the list of statements.</p>"
+        },
+        "NextToken":{"shape":"OrchestrationToken"}
+      }
+    },
     "ListTriggersRequest":{
       "type":"structure",
       "members":{
@@ -10101,6 +10537,7 @@
       },
       "documentation":"<p>Defines column statistics supported for integer data columns.</p>"
     },
+    "LongValue":{"type":"long"},
     "MLTransform":{
       "type":"structure",
       "members":{
@@ -10471,6 +10908,19 @@
       "documentation":"<p>The operation timed out.</p>",
       "exception":true
     },
+    "OrchestrationArgumentsMap":{
+      "type":"map",
+      "key":{"shape":"OrchestrationNameString"},
+      "value":{"shape":"OrchestrationArgumentsValue"},
+      "max":75,
+      "min":0
+    },
+    "OrchestrationArgumentsValue":{
+      "type":"string",
+      "max":4096,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
     "OrchestrationIAMRoleArn":{
       "type":"string",
       "max":1024,
@@ -10483,15 +10933,29 @@
       "min":1,
       "pattern":"[\\.\\-_A-Za-z0-9]+"
     },
+    "OrchestrationRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[^:]*:iam::[0-9]*:role/.+"
+    },
     "OrchestrationS3Location":{
       "type":"string",
       "max":8192,
       "min":1,
       "pattern":"^s3://([^/]+)/([^/]+/)*([^/]+)$"
     },
+    "OrchestrationStatementCodeString":{
+      "type":"string",
+      "max":68000
+    },
     "OrchestrationStringList":{
       "type":"list",
       "member":{"shape":"GenericString"}
+    },
+    "OrchestrationToken":{
+      "type":"string",
+      "max":400000
     },
     "Order":{
       "type":"structure",
@@ -10782,7 +11246,6 @@
     },
     "PolicyJsonString":{
       "type":"string",
-      "max":10240,
       "min":2
     },
     "Predecessor":{
@@ -11362,6 +11825,36 @@
     "RoleString":{"type":"string"},
     "RowTag":{"type":"string"},
     "RunId":{"type":"string"},
+    "RunStatementRequest":{
+      "type":"structure",
+      "required":[
+        "SessionId",
+        "Code"
+      ],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The Session Id of the statement to be run.</p>"
+        },
+        "Code":{
+          "shape":"OrchestrationStatementCodeString",
+          "documentation":"<p>The statement code to be run.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request.</p>"
+        }
+      }
+    },
+    "RunStatementResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"IntegerValue",
+          "documentation":"<p>Returns the Id of the statement that was run.</p>"
+        }
+      }
+    },
     "S3Encryption":{
       "type":"structure",
       "members":{
@@ -11700,7 +12193,10 @@
         "DELETING"
       ]
     },
-    "ScriptLocationString":{"type":"string"},
+    "ScriptLocationString":{
+      "type":"string",
+      "max":400000
+    },
     "SearchPropertyPredicates":{
       "type":"list",
       "member":{"shape":"PropertyPredicate"}
@@ -11814,6 +12310,97 @@
         }
       },
       "documentation":"<p>Information about a serialization/deserialization program (SerDe) that serves as an extractor and loader.</p>"
+    },
+    "Session":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "CreatedOn":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The time and date when the session was created.</p>"
+        },
+        "Status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The session status. </p>"
+        },
+        "ErrorMessage":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The error message displayed during the session.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description of the session.</p>"
+        },
+        "Role":{
+          "shape":"OrchestrationRoleArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the IAM role associated with the Session.</p>"
+        },
+        "Command":{
+          "shape":"SessionCommand",
+          "documentation":"<p>The command object.See SessionCommand.</p>"
+        },
+        "DefaultArguments":{
+          "shape":"OrchestrationArgumentsMap",
+          "documentation":"<p>A map array of key-value pairs. Max is 75 pairs. </p>"
+        },
+        "Connections":{
+          "shape":"ConnectionsList",
+          "documentation":"<p>The number of connections used for the session.</p>"
+        },
+        "Progress":{
+          "shape":"DoubleValue",
+          "documentation":"<p>The code execution progress of the session.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The number of AWS Glue data processing units (DPUs) that can be allocated when the job runs. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB memory. </p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the SecurityConfiguration structure to be used with the session.</p>"
+        },
+        "GlueVersion":{
+          "shape":"GlueVersionString",
+          "documentation":"<p>The Glue version determines the versions of Apache Spark and Python that AWS Glue supports. The GlueVersion must be greater than 2.0.</p>"
+        }
+      },
+      "documentation":"<p>The period in which a remote Spark runtime environment is running.</p>"
+    },
+    "SessionCommand":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>Specifies the name of the SessionCommand.Can be 'glueetl' or 'gluestreaming'.</p>"
+        },
+        "PythonVersion":{
+          "shape":"PythonVersionString",
+          "documentation":"<p>Specifies the Python version. The Python version indicates the version supported for jobs of type Spark.</p>"
+        }
+      },
+      "documentation":"<p>The <code>SessionCommand</code> that runs the job.</p>"
+    },
+    "SessionIdList":{
+      "type":"list",
+      "member":{"shape":"NameString"}
+    },
+    "SessionList":{
+      "type":"list",
+      "member":{"shape":"Session"}
+    },
+    "SessionStatus":{
+      "type":"string",
+      "enum":[
+        "PROVISIONING",
+        "READY",
+        "FAILED",
+        "TIMEOUT",
+        "STOPPING",
+        "STOPPED"
+      ]
     },
     "SkewedInfo":{
       "type":"structure",
@@ -12141,6 +12728,95 @@
       },
       "documentation":"<p>The batch condition that started the workflow run. Either the number of events in the batch size arrived, in which case the BatchSize member is non-zero, or the batch window expired, in which case the BatchWindow member is non-zero.</p>"
     },
+    "Statement":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The ID of the statement.</p>"
+        },
+        "Code":{
+          "shape":"GenericString",
+          "documentation":"<p>The execution code of the statement.</p>"
+        },
+        "State":{
+          "shape":"StatementState",
+          "documentation":"<p>The state while request is actioned.</p>"
+        },
+        "Output":{
+          "shape":"StatementOutput",
+          "documentation":"<p>The output in JSON.</p>"
+        },
+        "Progress":{
+          "shape":"DoubleValue",
+          "documentation":"<p>The code execution progress.</p>"
+        },
+        "StartedOn":{
+          "shape":"LongValue",
+          "documentation":"<p>The unix time and date that the job definition was started.</p>"
+        },
+        "CompletedOn":{
+          "shape":"LongValue",
+          "documentation":"<p>The unix time and date that the job definition was completed.</p>"
+        }
+      },
+      "documentation":"<p>The statement or request for a particular action to occur in a session.</p>"
+    },
+    "StatementList":{
+      "type":"list",
+      "member":{"shape":"Statement"}
+    },
+    "StatementOutput":{
+      "type":"structure",
+      "members":{
+        "Data":{
+          "shape":"StatementOutputData",
+          "documentation":"<p>The code execution output.</p>"
+        },
+        "ExecutionCount":{
+          "shape":"IntegerValue",
+          "documentation":"<p>The execution count of the output.</p>"
+        },
+        "Status":{
+          "shape":"StatementState",
+          "documentation":"<p>The status of the code execution output.</p>"
+        },
+        "ErrorName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the error in the output.</p>"
+        },
+        "ErrorValue":{
+          "shape":"GenericString",
+          "documentation":"<p>The error value of the output.</p>"
+        },
+        "Traceback":{
+          "shape":"OrchestrationStringList",
+          "documentation":"<p>The traceback of the output.</p>"
+        }
+      },
+      "documentation":"<p>The code execution output in JSON format.</p>"
+    },
+    "StatementOutputData":{
+      "type":"structure",
+      "members":{
+        "TextPlain":{
+          "shape":"GenericString",
+          "documentation":"<p>The code execution output in text format.</p>"
+        }
+      },
+      "documentation":"<p>The code execution output in JSON format.</p>"
+    },
+    "StatementState":{
+      "type":"string",
+      "enum":[
+        "WAITING",
+        "RUNNING",
+        "AVAILABLE",
+        "CANCELLING",
+        "CANCELLED",
+        "ERROR"
+      ]
+    },
     "StopCrawlerRequest":{
       "type":"structure",
       "required":["Name"],
@@ -12169,6 +12845,29 @@
     "StopCrawlerScheduleResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "StopSessionRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session to be stopped.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request.</p>"
+        }
+      }
+    },
+    "StopSessionResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>Returns the Id of the stopped session.</p>"
+        }
       }
     },
     "StopTriggerRequest":{

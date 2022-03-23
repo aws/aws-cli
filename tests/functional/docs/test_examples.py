@@ -54,6 +54,7 @@ EXAMPLES_DIR = os.path.join(
     'awscli', 'examples')
 
 ALLOWED_FILENAME_CHAR_REGEX = re.compile(r'([a-z0-9_\-\.]*$)')
+HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
 
 
 # Used so that docutils doesn't write errors to stdout/stderr.
@@ -79,7 +80,7 @@ def _get_example_test_cases():
 def _get_all_doc_examples():
     rst_doc_examples = []
     other_doc_examples = []
-    # Iterate over all rst doc examples0
+    # Iterate over all rst doc examples
     for root, _, filenames in os.walk(EXAMPLES_DIR):
         for filename in filenames:
             full_path = os.path.join(root, filename)
@@ -92,6 +93,16 @@ def _get_all_doc_examples():
 
 RST_DOC_EXAMPLES, OTHER_DOC_EXAMPLES = _get_all_doc_examples()
 EXAMPLE_COMMAND_TESTS = _get_example_test_cases()
+
+
+def line_num(content, loc):
+    return content[:loc].count('\n') + 1
+
+
+def extract_error_line(content, error_start, error_end):
+    error_line_begin = content.rfind('\n', 0, error_start)
+    error_line_end = content.find('\n', error_end)
+    return content[error_line_begin:error_line_end]
 
 
 @pytest.fixture(scope="module")
@@ -124,6 +135,23 @@ def test_rst_doc_examples(command_validator, example_file):
     verify_has_only_ascii_chars(example_file)
     verify_is_valid_rst(example_file)
     verify_cli_commands_valid(example_file, command_validator)
+    verify_no_http_links(example_file)
+
+
+def verify_no_http_links(filename):
+    with open(filename) as f:
+        contents = f.read()
+    match = HTTP_LINK_REGEX.search(contents)
+    if match:
+        error_line_number = line_num(contents, match.span()[0])
+        error_line = extract_error_line(
+            contents, match.span()[0], match.span()[1])
+        marker_idx = error_line.find('http://') - 1
+        marker_line = (" " * marker_idx) + '^'
+        raise AssertionError(
+            'Found http:// link in the examples file %s, line %s\n'
+            '%s\n%s' % (filename, error_line_number, error_line, marker_line)
+        )
 
 
 def verify_has_only_ascii_chars(filename):

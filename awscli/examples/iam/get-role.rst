@@ -26,4 +26,4 @@ Output::
 
 The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the ``list-role-policies`` command.
 
-For more information, see `Creating a Role <http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html>`__ in the *Using IAM* guide.
+For more information, see `Creating a Role <https://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html>`__ in the *Using IAM* guide.

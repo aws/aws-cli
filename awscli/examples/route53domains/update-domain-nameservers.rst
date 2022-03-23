@@ -17,4 +17,4 @@ Output::
 
 To confirm that the operation succeeded, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ .
 
-For more information, see `Adding or Changing Name Servers and Glue Records for a Domain <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-name-servers-glue-records.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Adding or Changing Name Servers and Glue Records for a Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-name-servers-glue-records.html>`__ in the *Amazon Route 53 Developer Guide*.

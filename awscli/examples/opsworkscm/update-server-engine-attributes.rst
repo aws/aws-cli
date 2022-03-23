@@ -40,4 +40,4 @@ The output shows you information similar to the following about the updated serv
         }
     }
 
-For more information, see `UpdateServerEngineAttributes <http://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_UpdateServerEngineAttributes.html>`_ in the *AWS OpsWorks for Chef Automate API Reference*.
+For more information, see `UpdateServerEngineAttributes <https://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_UpdateServerEngineAttributes.html>`_ in the *AWS OpsWorks for Chef Automate API Reference*.

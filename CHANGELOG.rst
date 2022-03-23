@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.4.28
+======
+
+* api-change:``ecr``: This release includes a fix in the DescribeImageScanFindings paginated output.
+* api-change:``glue``: Added 9 new APIs for AWS Glue Interactive Sessions: ListSessions, StopSession, CreateSession, GetSession, DeleteSession, RunStatement, GetStatement, ListStatements, CancelStatement
+* api-change:``quicksight``: AWS QuickSight Service Features - Expand public API support for group management.
+* enhancement:Python: Update Python interpreter version range support to 3.8 to 3.9
+* api-change:``ecs``: Documentation only update to address tickets
+* api-change:``lakeformation``: The release fixes the incorrect permissions called out in the documentation - DESCRIBE_TAG, ASSOCIATE_TAG, DELETE_TAG, ALTER_TAG. This trebuchet release fixes the corresponding SDK and documentation.
+* api-change:``ssm-incidents``: Removed incorrect validation pattern for IncidentRecordSource.invokedBy
+* api-change:``ram``: Document improvements to the RAM API operations and parameter descriptions.
+* api-change:``mediaconnect``: This release adds support for selecting a maintenance window.
+* api-change:``acm-pca``: AWS Certificate Manager (ACM) Private Certificate Authority (CA) now supports customizable certificate subject names and extensions.
+* api-change:``s3outposts``: S3 on Outposts is releasing a new API, ListSharedEndpoints, that lists all endpoints associated with S3 on Outpost, that has been shared by Resource Access Manager (RAM).
+* api-change:``ce``: Added three new APIs to support tagging and resource-level authorization on Cost Explorer resources: TagResource, UntagResource, ListTagsForResource.  Added optional parameters to CreateCostCategoryDefinition, CreateAnomalySubscription and CreateAnomalyMonitor APIs to support Tag On Create.
+* api-change:``polly``: Amazon Polly adds new Catalan voice - Arlet. Arlet is available as Neural voice only.
+* api-change:``billingconductor``: This is the initial SDK release for AWS Billing Conductor. The AWS Billing Conductor is a customizable billing service, allowing you to customize your billing data to match your desired business structure.
+* api-change:``location``: Amazon Location Service now includes a MaxResults parameter for GetDevicePositionHistory requests.
+* api-change:``amplifybackend``: Adding the ability to customize Cognito verification messages for email and SMS in CreateBackendAuth and UpdateBackendAuth. Adding deprecation documentation for ForgotPassword in CreateBackendAuth and UpdateBackendAuth
+* api-change:``chime-sdk-meetings``: Add support for media replication to link multiple WebRTC media sessions together to reach larger and global audiences. Participants connected to a replica session can be granted access to join the primary session and can switch sessions with their existing WebRTC connection
+
+
 2.4.27
 ======
 

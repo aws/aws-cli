@@ -1360,6 +1360,26 @@
         }
       }
     },
+    "AddMaintenance": {
+      "type": "structure",
+      "members": {
+        "MaintenanceDay": {
+          "shape": "MaintenanceDay",
+          "locationName": "maintenanceDay",
+          "documentation": "A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday."
+        },
+        "MaintenanceStartHour": {
+          "shape": "__string",
+          "locationName": "maintenanceStartHour",
+          "documentation": "UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00."
+        }
+      },
+      "documentation": "Create maintenance setting for a flow",
+      "required": [
+        "MaintenanceDay",
+        "MaintenanceStartHour"
+      ]
+    },
     "AddMediaStreamRequest": {
       "type": "structure",
       "members": {
@@ -1590,6 +1610,10 @@
           "shape": "__listOfVpcInterfaceRequest",
           "locationName": "vpcInterfaces",
           "documentation": "The VPC interfaces you want on the flow."
+        },
+        "Maintenance": {
+          "shape": "AddMaintenance",
+          "locationName": "maintenance"
         }
       },
       "documentation": "Creates a new flow. The request must include one source. The request optionally can include outputs (up to 50) and entitlements (up to 50).",
@@ -2031,6 +2055,10 @@
           "shape": "__listOfVpcInterface",
           "locationName": "vpcInterfaces",
           "documentation": "The VPC Interfaces for this flow."
+        },
+        "Maintenance": {
+          "shape": "Maintenance",
+          "locationName": "maintenance"
         }
       },
       "documentation": "The settings for a flow, including its source, outputs, and entitlements.",
@@ -2546,6 +2574,10 @@
           "shape": "Status",
           "locationName": "status",
           "documentation": "The current status of the flow."
+        },
+        "Maintenance": {
+          "shape": "Maintenance",
+          "locationName": "maintenance"
         }
       },
       "documentation": "Provides a summary of a flow, including its ARN, Availability Zone, and source type.",
@@ -2556,6 +2588,44 @@
         "AvailabilityZone",
         "FlowArn",
         "Name"
+      ]
+    },
+    "Maintenance": {
+      "type": "structure",
+      "members": {
+        "MaintenanceDay": {
+          "shape": "MaintenanceDay",
+          "locationName": "maintenanceDay",
+          "documentation": "A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday."
+        },
+        "MaintenanceDeadline": {
+          "shape": "__string",
+          "locationName": "maintenanceDeadline",
+          "documentation": "The Maintenance has to be performed before this deadline in ISO UTC format. Example: 2021-01-30T08:30:00Z."
+        },
+        "MaintenanceScheduledDate": {
+          "shape": "__string",
+          "locationName": "maintenanceScheduledDate",
+          "documentation": "A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30."
+        },
+        "MaintenanceStartHour": {
+          "shape": "__string",
+          "locationName": "maintenanceStartHour",
+          "documentation": "UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00."
+        }
+      },
+      "documentation": "The maintenance setting of a flow"
+    },
+    "MaintenanceDay": {
+      "type": "string",
+      "enum": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
       ]
     },
     "MaxResults": {
@@ -4067,6 +4137,10 @@
         "SourceFailoverConfig": {
           "shape": "UpdateFailoverConfig",
           "locationName": "sourceFailoverConfig"
+        },
+        "Maintenance": {
+          "shape": "UpdateMaintenance",
+          "locationName": "maintenance"
         }
       },
       "documentation": "A request to update flow.",
@@ -4194,6 +4268,27 @@
           "documentation": "The settings for the source of the flow."
         }
       }
+    },
+    "UpdateMaintenance": {
+      "type": "structure",
+      "members": {
+        "MaintenanceDay": {
+          "shape": "MaintenanceDay",
+          "locationName": "maintenanceDay",
+          "documentation": "A day of a week when the maintenance will happen. use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday."
+        },
+        "MaintenanceScheduledDate": {
+          "shape": "__string",
+          "locationName": "maintenanceScheduledDate",
+          "documentation": "A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30."
+        },
+        "MaintenanceStartHour": {
+          "shape": "__string",
+          "locationName": "maintenanceStartHour",
+          "documentation": "UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00."
+        }
+      },
+      "documentation": "Update maintenance setting for a flow"
     },
     "VpcInterface": {
       "type": "structure",

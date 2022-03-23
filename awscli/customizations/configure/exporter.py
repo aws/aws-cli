@@ -1,5 +1,6 @@
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import uni_print
 import sys
 import json
 import os
@@ -28,8 +29,10 @@ class ConfigureExportCommand(BasicCommand):
         try:
             credentials_data = credentials.get_frozen_credentials()
             dump = {'aws_access_key_id': credentials_data.access_key,
-                    'aws_secret_access_key': credentials_data.secret_key, 'aws_session_token': credentials_data.token}
-            print(json.dumps(dump, indent=4))
+                    'aws_secret_access_key': credentials_data.secret_key}
+            if credentials_data.token is not None:
+                dump['aws_session_token'] = credentials_data.token
+            uni_print(json.dumps(dump, indent=4))
         except:
             raise RuntimeError(
                 'Failed while trying to export credentials. Check your permissions and try again.')

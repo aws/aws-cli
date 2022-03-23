@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.22.80
+=======
+
+* api-change:``ssm``: Update AddTagsToResource, ListTagsForResource, and RemoveTagsFromResource APIs to reflect the support for tagging Automation resources. Includes other minor documentation updates.
+* api-change:``transfer``: Documentation updates for AWS Transfer Family to describe how to remove an associated workflow from a server.
+* api-change:``elasticache``: Doc only update for ElastiCache
+* api-change:``ebs``: Increased the maximum supported value for the Timeout parameter of the StartSnapshot API from 60 minutes to 4320 minutes.  Changed the HTTP error code for ConflictException from 503 to 409.
+* api-change:``auditmanager``: This release updates 1 API parameter, the SnsArn attribute. The character length and regex pattern for the SnsArn attribute have been updated, which enables you to deselect an SNS topic when using the UpdateSettings operation.
+* api-change:``redshift``: This release adds a new [--encrypted | --no-encrypted] field in restore-from-cluster-snapshot API. Customers can now restore an unencrypted snapshot to a cluster encrypted with AWS Managed Key or their own KMS key.
+* api-change:``gamesparks``: Released the preview of Amazon GameSparks, a fully managed AWS service that provides a multi-service backend for game developers.
+
+
 1.22.79
 =======
 

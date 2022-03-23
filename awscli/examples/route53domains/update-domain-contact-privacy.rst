@@ -17,4 +17,4 @@ Output::
 
 To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ . 
 
-For more information, see `Enabling or Disabling Privacy Protection for Contact Information for a Domain <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-privacy-protection.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Enabling or Disabling Privacy Protection for Contact Information for a Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-privacy-protection.html>`__ in the *Amazon Route 53 Developer Guide*.

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.82
+=======
+
+* api-change:``ec2``: This is release adds support for Amazon VPC Reachability Analyzer to analyze path through a Transit Gateway.
+* api-change:``ssm``: This Patch Manager release supports creating, updating, and deleting Patch Baselines for Rocky Linux OS.
+* api-change:``batch``: Bug Fix: Fixed a bug where shapes were marked as unboxed and were not serialized and sent over the wire, causing an API error from the service.
+
+
 1.22.81
 =======
 

@@ -14,7 +14,8 @@ def run(command):
     return check_call(command, shell=True)
 
 
-run('pip install -r requirements.txt')
+run('pip install --no-build-isolation -r requirements-base.txt')
+run('pip install --no-build-isolation -r requirements.txt')
 if os.path.isdir('dist') and os.listdir('dist'):
     shutil.rmtree('dist')
 run('python -m build')

@@ -691,7 +691,7 @@
         },
         "MediaSampleRateHertz":{
           "shape":"MediaSampleRateHertz",
-          "documentation":"<p>The sample rate, in Hertz, of the audio.</p>"
+          "documentation":"<p>The sample rate, in Hertz, of the input audio.</p>"
         },
         "MediaFormat":{
           "shape":"MediaFormat",
@@ -2578,7 +2578,7 @@
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The language code for the language used in the input media file.</p> <p>To transcribe speech in Modern Standard Arabic (ar-SA), your audio or video file must be encoded at a sample rate of 16,000 Hz or higher.</p>"
+          "documentation":"<p>The language code for the language used in the input media file. You must include either <code>LanguageCode</code> or <code>IdentifyLanguage</code> in your request.</p> <p>To transcribe speech in Modern Standard Arabic (ar-SA), your audio or video file must be encoded at a sample rate of 16,000 Hz or higher.</p>"
         },
         "MediaSampleRateHertz":{
           "shape":"MediaSampleRateHertz",
@@ -2626,7 +2626,7 @@
         },
         "IdentifyLanguage":{
           "shape":"Boolean",
-          "documentation":"<p>Set this field to <code>true</code> to enable automatic language identification. Automatic language identification is disabled by default. You receive a <code>BadRequestException</code> error if you enter a value for a <code>LanguageCode</code>.</p>"
+          "documentation":"<p>Set this field to <code>true</code> to enable automatic language identification. Automatic language identification is disabled by default. You receive a <code>BadRequestException</code> error if you enter a value for a <code>LanguageCode</code>.</p> <p>You must include either <code>LanguageCode</code> or <code>IdentifyLanguage</code> in your request.</p>"
         },
         "LanguageOptions":{
           "shape":"LanguageOptions",
@@ -2651,7 +2651,7 @@
       "members":{
         "TranscriptionJob":{
           "shape":"TranscriptionJob",
-          "documentation":"<p>An object containing details of the asynchronous transcription job.</p>"
+          "documentation":"<p>Provides information about your asynchronous transcription job.</p>"
         }
       }
     },
@@ -2676,29 +2676,42 @@
       "type":"list",
       "member":{"shape":"SubtitleFormat"}
     },
+    "SubtitleOutputStartIndex":{
+      "type":"integer",
+      "max":1,
+      "min":0
+    },
     "Subtitles":{
       "type":"structure",
       "members":{
         "Formats":{
           "shape":"SubtitleFormats",
-          "documentation":"<p>Specify the output format for your subtitle file.</p>"
+          "documentation":"<p>Specify the output format for your subtitle file; if you select both <code>srt</code> and <code>vtt</code> formats, two output files are generated.</p>"
+        },
+        "OutputStartIndex":{
+          "shape":"SubtitleOutputStartIndex",
+          "documentation":"<p>Defines the starting value that is assigned to the first subtitle segment.</p> <p>The default start index for Amazon Transcribe is <code>0</code>, which differs from the more widely used standard of <code>1</code>. If you're uncertain which value to use, we recommend choosing <code>1</code>, as this may improve compatibility with other services.</p>"
         }
       },
-      "documentation":"<p>Generate subtitles for your batch transcription job.</p>"
+      "documentation":"<p>Generate subtitles for your batch transcription job. Note that your subtitle files are placed in the same location as your transcription output.</p>"
     },
     "SubtitlesOutput":{
       "type":"structure",
       "members":{
         "Formats":{
           "shape":"SubtitleFormats",
-          "documentation":"<p>Specify the output format for your subtitle file; if you select both SRT and VTT formats, two output files are generated.</p>"
+          "documentation":"<p>The format of your subtitle files. If your request specified both <code>srt</code> and <code>vtt</code> formats, both formats are shown.</p>"
         },
         "SubtitleFileUris":{
           "shape":"SubtitleFileUris",
           "documentation":"<p>Contains the output location for your subtitle file. This location must be an S3 bucket.</p>"
+        },
+        "OutputStartIndex":{
+          "shape":"SubtitleOutputStartIndex",
+          "documentation":"<p>Shows the output start index value for your subtitle files. If you did not specify a value in your request, the default value of <code>0</code> is used.</p>"
         }
       },
-      "documentation":"<p>Choose the output format for your subtitle file and the S3 location where you want your file saved.</p>"
+      "documentation":"<p>The S3 location where your subtitle files are located. Note that your subtitle files are placed in the same location as your transcription output. Refer to <code>TranscriptFileUri</code> to download your files.</p>"
     },
     "Tag":{
       "type":"structure",

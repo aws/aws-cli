@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.5.0
+=====
+
+* feature:Python: Upgrade embedded Python version from Python 3.8 to Python 3.9. All standalone artifacts now run on Python 3.9.11.
+
+
 2.4.29
 ======
 

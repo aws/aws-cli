@@ -109,7 +109,6 @@ def _resolve_timeout(session, parsed_args, arg_name):
     # The CLI gets the timeout from Providers, if there is a parsed arg from
     # the command line, it has priority over the Providers
     arg_value = getattr(parsed_args, arg_name, None)
-    print(arg_value)
     if arg_value is not None:    
         arg_value = int(arg_value)
         setattr(parsed_args, arg_name, arg_value)

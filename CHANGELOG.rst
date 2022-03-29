@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.22.84
+=======
+
+* api-change:``organizations``: This release provides the new CloseAccount API that enables principals in the management account to close any member account within an organization.
+
+
 1.22.83
 =======
 

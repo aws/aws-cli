@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.22.85
+=======
+
+* api-change:``iot-data``: Update the default AWS IoT Core Data Plane endpoint from VeriSign signed to ATS signed. If you have firewalls with strict egress rules, configure the rules to grant you access to data-ats.iot.[region].amazonaws.com or data-ats.iot.[region].amazonaws.com.cn.
+* api-change:``fms``: AWS Firewall Manager now supports the configuration of third-party policies that can use either the centralized or distributed deployment models.
+* api-change:``ec2``: This release simplifies the auto-recovery configuration process enabling customers to set the recovery behavior to disabled or default
+* api-change:``fsx``: This release adds support for modifying throughput capacity for FSx for ONTAP file systems.
+* api-change:``iot``: Doc only update for IoT that fixes customer-reported issues.
+
+
 1.22.84
 =======
 

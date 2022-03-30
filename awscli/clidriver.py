@@ -182,6 +182,7 @@ class AWSCLIEntryPoint:
         driver = self._driver
         if driver is None:
             driver = create_clidriver(args)
+        driver._set_connect_timeout()
         autoprompt_driver = AutoPromptDriver(driver)
         auto_prompt_mode = autoprompt_driver.resolve_mode(args)
         if auto_prompt_mode == 'on':
@@ -218,7 +219,7 @@ class CLIDriver(object):
         self._command_table = None
         self._argument_table = None
         self.alias_loader = AliasLoader()
-        self._set_connect_timeout()
+        
 
 
     def _update_config_chain(self):

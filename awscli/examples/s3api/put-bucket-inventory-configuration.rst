@@ -9,7 +9,7 @@ The following ``put-bucket-inventory-configuration`` example sets a weekly ORC-f
 
 This command produces no output.
 
-**Example 1: To set an inventory configuration for a bucket**
+**Example 2: To set an inventory configuration for a bucket**
 
 The following ``put-bucket-inventory-configuration`` example sets a daily CSV-formatted inventory report for the bucket ``my-bucket``. ::
 

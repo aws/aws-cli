@@ -9,7 +9,7 @@
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
-# language governing permissions and limitations under the License.
+# language governing permissions and limitations under the Licenscae.
 """This module contains the inteface for controlling how configuration
 is loaded.
 """
@@ -53,6 +53,8 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     'data_path': ('data_path', 'AWS_DATA_PATH', None, None),
     'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config', None),
     'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None, None),
+    # This is a session variable to make AWS CLI shortcut keys configureable
+    'show_shortkey_help': ('show_shortkey_help', ['AWS_SHOW_SHORTKEY_HELP'], None, None),
 
     # This is the shared credentials file amongst sdks.
     'credentials_file': (None, 'AWS_SHARED_CREDENTIALS_FILE',
@@ -95,7 +97,7 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     # Note: These configurations are considered internal to botocore.
     # Do not use them until publicly documented.
     'csm_enabled': (
-            'csm_enabled', 'AWS_CSM_ENABLED', False, utils.ensure_boolean),
+        'csm_enabled', 'AWS_CSM_ENABLED', False, utils.ensure_boolean),
     'csm_host': ('csm_host', 'AWS_CSM_HOST', '127.0.0.1', None),
     'csm_port': ('csm_port', 'AWS_CSM_PORT', 31000, int),
     'csm_client_id': ('csm_client_id', 'AWS_CSM_CLIENT_ID', '', None),
@@ -141,6 +143,7 @@ DEFAULT_PROXIES_CONFIG_VARS = {
         'proxy_use_forwarding_for_https', None, None, utils.normalize_boolean),
 }
 
+
 def create_botocore_default_config_mapping(session):
     chain_builder = ConfigChainFactory(session=session)
     config_mapping = _create_config_chain_mapping(
@@ -176,6 +179,7 @@ class ConfigChainFactory(object):
     our most common pattern. This is to prevent ordering them incorrectly,
     and to make the config chain construction more readable.
     """
+
     def __init__(self, session, environ=None):
         """Initialize a ConfigChainFactory.
 
@@ -280,6 +284,7 @@ class ConfigChainFactory(object):
 
 class ConfigValueStore(object):
     """The ConfigValueStore object stores configuration values."""
+
     def __init__(self, mapping=None):
         """Initialize a ConfigValueStore.
 
@@ -375,6 +380,7 @@ class BaseProvider(object):
     A configuration provider has some method of providing a configuration
     value.
     """
+
     def provide(self):
         """Provide a config value."""
         raise NotImplementedError('provide')
@@ -386,6 +392,7 @@ class ChainProvider(BaseProvider):
     Each provider in the chain is called, the first one returning a non-None
     value is then returned.
     """
+
     def __init__(self, providers=None, conversion_func=None):
         """Initalize a ChainProvider.
 
@@ -427,6 +434,7 @@ class ChainProvider(BaseProvider):
 
 class InstanceVarProvider(BaseProvider):
     """This class loads config values from the session instance vars."""
+
     def __init__(self, instance_var, session):
         """Initialize InstanceVarProvider.
 
@@ -489,6 +497,7 @@ class ScopedConfigProvider(BaseProvider):
 
 class EnvironmentProvider(BaseProvider):
     """This class loads config values from environment variables."""
+
     def __init__(self, name, env):
         """Initialize with the keys in the dictionary to check.
 
@@ -517,6 +526,7 @@ class SectionConfigProvider(BaseProvider):
     This is useful for retrieving scoped config variables (i.e. s3) that have
     their own set of config variables and resolving logic.
     """
+
     def __init__(self, section_name, session, override_providers=None):
         self._section_name = section_name
         self._session = session
@@ -553,6 +563,7 @@ class SectionConfigProvider(BaseProvider):
 
 class ConstantProvider(BaseProvider):
     """This provider provides a constant value."""
+
     def __init__(self, value):
         self._value = value
 

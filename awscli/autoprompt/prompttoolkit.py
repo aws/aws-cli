@@ -57,7 +57,8 @@ class PromptToolkitPrompter:
     """Handles the actual prompting in the autoprompt workflow.
 
     """
-    def __init__(self, completion_source, driver, completer=None,
+
+    def __init__(self, completion_source, driver, session, completer=None,
                  factory=None, app=None, cli_parser=None, output=None,
                  app_input=None):
         self._completion_source = completion_source
@@ -78,13 +79,14 @@ class PromptToolkitPrompter:
         self.input_buffer = None
         self.doc_buffer = None
         self.output_buffer = None
-        if app is None:
-            app = self.create_application()
-        self.app = app
         self._args = []
         self._driver = driver
         self._docs_getter = DocsGetter(self._driver)
         self._output_getter = OutputGetter(self._driver)
+        self._session = session
+        if app is None:
+            app = self.create_application()
+        self.app = app
 
     def args(self, value):
         self._args = value
@@ -109,13 +111,13 @@ class PromptToolkitPrompter:
     def create_application(self):
         self._create_buffers()
         input_buffer_container, \
-                doc_window, output_window = self._create_containers()
+            doc_window, output_window = self._create_containers()
         layout = self._factory.create_layout(
             on_input_buffer_text_changed=self.update_bottom_buffers_text,
             input_buffer_container=input_buffer_container,
             doc_window=doc_window, output_window=output_window
         )
-        kb_manager = self._factory.create_key_bindings()
+        kb_manager = self._factory.create_key_bindings(session=self._session)
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
                           output=self._output, erase_when_done=True,
@@ -240,6 +242,7 @@ class PromptToolkitCompleter(Completer):
     `prompt_toolkit.Completion` objects.
 
     """
+
     def __init__(self, completion_source):
         self._completion_source = completion_source
 

@@ -35,7 +35,7 @@ from awscli.autoprompt.filters import (
 )
 
 keys = {"F1": Keys.F1, "F2": Keys.F2,
-        "F3": Keys.F3, "F4": Keys.F4, "F5": Keys.F5}
+        "F3": Keys.F3, "F4": Keys.F4, "F5": Keys.F5, "F9": Keys.F9}
 
 
 class PrompterKeyboardInterrupt(KeyboardInterrupt):
@@ -186,12 +186,13 @@ class PromptToolkitFactory:
             ])
         )
 
-    def create_key_bindings(self):
-        return PromptToolkitKeyBindings()
+    def create_key_bindings(self, session):
+        return PromptToolkitKeyBindings(session=session)
 
 
 class PromptToolkitKeyBindings:
-    def __init__(self, keybindings=None):
+    def __init__(self, keybindings=None, session=None):
+        self._session = session
         if keybindings is None:
             keybindings = KeyBindings()
         self._kb = keybindings
@@ -260,7 +261,7 @@ class PromptToolkitKeyBindings:
                 input_buffer = layout.get_buffer_by_name('input_buffer')
                 layout.focus(input_buffer)
 
-        @self._kb.add(keys["F1"])
+        @self._kb.add(keys[self._session.get_config_variable('show_shortkey_help')])
         def _(event):
             event.app.show_help = not event.app.show_help
 

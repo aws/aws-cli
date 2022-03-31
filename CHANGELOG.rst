@@ -3343,6 +3343,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.86
+=======
+
+* api-change:``databrew``: This AWS Glue Databrew release adds feature to support ORC as an input format.
+* api-change:``route53-recovery-cluster``: This release adds a new API "ListRoutingControls" to list routing control states using the highly reliable Route 53 ARC data plane endpoints.
+* api-change:``pinpoint-sms-voice-v2``: Amazon Pinpoint now offers a version 2.0 suite of SMS and voice APIs, providing increased control over sending and configuration. This release is a new SDK for sending SMS and voice messages called PinpointSMSVoiceV2.
+* api-change:``cloudcontrol``: SDK release for Cloud Control API in Amazon Web Services China (Beijing) Region, operated by Sinnet, and Amazon Web Services China (Ningxia) Region, operated by NWCD
+* api-change:``workspaces``: Added APIs that allow you to customize the logo, login message, and help links in the WorkSpaces client login page. To learn more, visit https://docs.aws.amazon.com/workspaces/latest/adminguide/customize-branding.html
+* api-change:``grafana``: This release adds tagging support to the Managed Grafana service. New APIs: TagResource, UntagResource and ListTagsForResource. Updates: add optional field tags to support tagging while calling CreateWorkspace.
+* api-change:``auditmanager``: This release adds documentation updates for Audit Manager. The updates provide data deletion guidance when a customer deregisters Audit Manager or deregisters a delegated administrator.
+
+
+1.22.85
+=======
+
+* api-change:``iot-data``: Update the default AWS IoT Core Data Plane endpoint from VeriSign signed to ATS signed. If you have firewalls with strict egress rules, configure the rules to grant you access to data-ats.iot.[region].amazonaws.com or data-ats.iot.[region].amazonaws.com.cn.
+* api-change:``fms``: AWS Firewall Manager now supports the configuration of third-party policies that can use either the centralized or distributed deployment models.
+* api-change:``ec2``: This release simplifies the auto-recovery configuration process enabling customers to set the recovery behavior to disabled or default
+* api-change:``fsx``: This release adds support for modifying throughput capacity for FSx for ONTAP file systems.
+* api-change:``iot``: Doc only update for IoT that fixes customer-reported issues.
+
+
 1.22.84
 =======
 

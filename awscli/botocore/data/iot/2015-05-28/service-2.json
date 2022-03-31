@@ -6431,17 +6431,17 @@
       "members":{
         "metricName":{
           "shape":"MetricName",
-          "documentation":"<p> The name of the custom metric. This will be used in the metric report submitted from the device/thing. Shouldn't begin with <code>aws:</code>. Cannot be updated once defined.</p>",
+          "documentation":"<p> The name of the custom metric. This will be used in the metric report submitted from the device/thing. The name can't begin with <code>aws:</code>. You can't change the name after you define it.</p>",
           "location":"uri",
           "locationName":"metricName"
         },
         "displayName":{
           "shape":"CustomMetricDisplayName",
-          "documentation":"<p> Field represents a friendly name in the console for the custom metric; it doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. Can be updated once defined.</p>"
+          "documentation":"<p> The friendly name in the console for the custom metric. This name doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. You can update the friendly name after you define it.</p>"
         },
         "metricType":{
           "shape":"CustomMetricType",
-          "documentation":"<p> The type of the custom metric. Types include <code>string-list</code>, <code>ip-address-list</code>, <code>number-list</code>, and <code>number</code>. </p>"
+          "documentation":"<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but when you submit the metrics value in the DeviceMetrics report, you must pass it as an array with a single value.</p> </important>"
         },
         "tags":{
           "shape":"TagList",
@@ -6463,7 +6463,7 @@
         },
         "metricArn":{
           "shape":"CustomMetricArn",
-          "documentation":"<p> The Amazon Resource Number (ARN) of the custom metric, e.g. <code>arn:<i>aws-partition</i>:iot:<i>region</i>:<i>accountId</i>:custommetric/<i>metricName</i> </code> </p>"
+          "documentation":"<p> The Amazon Resource Number (ARN) of the custom metric. For example, <code>arn:<i>aws-partition</i>:iot:<i>region</i>:<i>accountId</i>:custommetric/<i>metricName</i> </code> </p>"
         }
       }
     },
@@ -7250,7 +7250,7 @@
         },
         "credentialDurationSeconds":{
           "shape":"CredentialDurationSeconds",
-          "documentation":"<p>How long (in seconds) the credentials will be valid. The default value is 3,600 seconds.</p>"
+          "documentation":"<p>How long (in seconds) the credentials will be valid. The default value is 3,600 seconds.</p> <p>This value must be less than or equal to the maximum session duration of the IAM role that the role alias references.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -7609,11 +7609,11 @@
         },
         "hashAlgorithm":{
           "shape":"HashAlgorithm",
-          "documentation":"<p>The hash algorithm used to code sign the file.</p>"
+          "documentation":"<p>The hash algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>SHA256</code> or <code>SHA1</code>, so you can pass either of them based on which was used for generating the signature.</p>"
         },
         "signatureAlgorithm":{
           "shape":"SignatureAlgorithm",
-          "documentation":"<p>The signature algorithm used to code sign the file.</p>"
+          "documentation":"<p>The signature algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>ECDSA</code> or <code>RSA</code>, so you can pass either of them based on which was used for generating the signature.</p>"
         }
       },
       "documentation":"<p>Describes a custom method used to code sign a file.</p>"
@@ -8614,7 +8614,7 @@
         },
         "metricType":{
           "shape":"CustomMetricType",
-          "documentation":"<p> The type of the custom metric. Types include <code>string-list</code>, <code>ip-address-list</code>, <code>number-list</code>, and <code>number</code>. </p>"
+          "documentation":"<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but while submitting the metrics value in the DeviceMetrics report, it must be passed as an array with a single value.</p> </important>"
         },
         "displayName":{
           "shape":"CustomMetricDisplayName",
@@ -15230,7 +15230,7 @@
         },
         "setAsActive":{
           "shape":"SetAsActive",
-          "documentation":"<p>A boolean value that specifies if the CA certificate is set to active.</p>",
+          "documentation":"<p>A boolean value that specifies if the CA certificate is set to active.</p> <p>Valid values: <code>ACTIVE | INACTIVE</code> </p>",
           "location":"querystring",
           "locationName":"setAsActive"
         },
@@ -15279,14 +15279,14 @@
         },
         "setAsActive":{
           "shape":"SetAsActiveFlag",
-          "documentation":"<p>A boolean value that specifies if the certificate is set to active.</p>",
+          "documentation":"<p>A boolean value that specifies if the certificate is set to active.</p> <p>Valid values: <code>ACTIVE | INACTIVE</code> </p>",
           "deprecated":true,
           "location":"querystring",
           "locationName":"setAsActive"
         },
         "status":{
           "shape":"CertificateStatus",
-          "documentation":"<p>The status of the register certificate request.</p>"
+          "documentation":"<p>The status of the register certificate request. Valid values that you can use include <code>ACTIVE</code>, <code>INACTIVE</code>, and <code>REVOKED</code>.</p>"
         }
       },
       "documentation":"<p>The input to the RegisterCertificate operation.</p>"
@@ -18055,7 +18055,7 @@
         },
         "metricType":{
           "shape":"CustomMetricType",
-          "documentation":"<p> The type of the custom metric. Types include <code>string-list</code>, <code>ip-address-list</code>, <code>number-list</code>, and <code>number</code>. </p>"
+          "documentation":"<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but while submitting the metrics value in the DeviceMetrics report, it must be passed as an array with a single value.</p> </important>"
         },
         "displayName":{
           "shape":"CustomMetricDisplayName",
@@ -18426,7 +18426,7 @@
         },
         "credentialDurationSeconds":{
           "shape":"CredentialDurationSeconds",
-          "documentation":"<p>The number of seconds the credential will be valid.</p>"
+          "documentation":"<p>The number of seconds the credential will be valid.</p> <p>This value must be less than or equal to the maximum session duration of the IAM role that the role alias references.</p>"
         }
       }
     },

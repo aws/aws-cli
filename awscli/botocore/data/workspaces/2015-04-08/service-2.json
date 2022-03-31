@@ -202,6 +202,21 @@
       ],
       "documentation":"<p>Creates one or more WorkSpaces.</p> <p>This operation is asynchronous and returns before the WorkSpaces are created.</p>"
     },
+    "DeleteClientBranding":{
+      "name":"DeleteClientBranding",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteClientBrandingRequest"},
+      "output":{"shape":"DeleteClientBrandingResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes customized client branding. Client branding allows you to customize your WorkSpace's client login portal. You can tailor your login portal company logo, the support email address, support link, link to reset password, and a custom message for users trying to sign in.</p> <p>After you delete your customized client branding, your login portal reverts to the default client branding.</p>"
+    },
     "DeleteConnectClientAddIn":{
       "name":"DeleteConnectClientAddIn",
       "http":{
@@ -338,6 +353,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a list that describes modifications to the configuration of Bring Your Own License (BYOL) for the specified account.</p>"
+    },
+    "DescribeClientBranding":{
+      "name":"DescribeClientBranding",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeClientBrandingRequest"},
+      "output":{"shape":"DescribeClientBrandingResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the specified client branding. Client branding allows you to customize the log in page of various device types for your users. You can add your company logo, the support email address, support link, link to reset password, and a custom message for users trying to sign in.</p> <note> <p>Only device types that have branding information configured will be shown in the response.</p> </note>"
     },
     "DescribeClientProperties":{
       "name":"DescribeClientProperties",
@@ -555,6 +585,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Disassociates the specified IP access control group from the specified directory.</p>"
+    },
+    "ImportClientBranding":{
+      "name":"ImportClientBranding",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportClientBrandingRequest"},
+      "output":{"shape":"ImportClientBrandingResult"},
+      "errors":[
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Imports client branding. Client branding allows you to customize your WorkSpace's client login portal. You can tailor your login portal company logo, the support email address, support link, link to reset password, and a custom message for users trying to sign in.</p> <p>After you import client branding, the default branding experience for the specified platform type is replaced with the imported experience</p> <note> <ul> <li> <p>You must specify at least one platform type when importing client branding.</p> </li> <li> <p>You can import up to 6 MB of data with each request. If your request exceeds this limit, you can import client branding for different platform types using separate requests.</p> </li> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify only one parameter for each platform type, but not both.</p> </li> <li> <p>Imported data can take up to a minute to appear in the WorkSpaces client.</p> </li> </ul> </note>"
     },
     "ImportWorkspaceImage":{
       "name":"ImportWorkspaceImage",
@@ -1089,6 +1134,41 @@
       "member":{"shape":"WorkspaceBundle"}
     },
     "BundleOwner":{"type":"string"},
+    "ClientDeviceType":{
+      "type":"string",
+      "enum":[
+        "DeviceTypeWindows",
+        "DeviceTypeOsx",
+        "DeviceTypeAndroid",
+        "DeviceTypeIos",
+        "DeviceTypeLinux",
+        "DeviceTypeWeb"
+      ]
+    },
+    "ClientDeviceTypeList":{
+      "type":"list",
+      "member":{"shape":"ClientDeviceType"},
+      "max":6,
+      "min":1
+    },
+    "ClientEmail":{
+      "type":"string",
+      "max":64,
+      "min":6,
+      "pattern":"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"
+    },
+    "ClientLocale":{
+      "type":"string",
+      "max":5,
+      "min":5,
+      "pattern":"^[a-z]{2}_[A-Z]{2}$"
+    },
+    "ClientLoginMessage":{
+      "type":"string",
+      "max":600,
+      "min":0,
+      "pattern":"^.*$"
+    },
     "ClientProperties":{
       "type":"structure",
       "members":{
@@ -1116,6 +1196,12 @@
         }
       },
       "documentation":"<p>Information about the Amazon WorkSpaces client.</p>"
+    },
+    "ClientUrl":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^(http|https)\\://\\S+"
     },
     "Compute":{
       "type":"string",
@@ -1558,6 +1644,63 @@
         "DISABLED"
       ]
     },
+    "DefaultClientBrandingAttributes":{
+      "type":"structure",
+      "members":{
+        "LogoUrl":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The logo URL. This is the link where users can download the logo image. The only supported image format is <code>.png</code>.</p>"
+        },
+        "SupportEmail":{
+          "shape":"ClientEmail",
+          "documentation":"<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "SupportLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive.You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "ForgotPasswordLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.</p>"
+        },
+        "LoginMessage":{
+          "shape":"LoginMessage",
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+        }
+      },
+      "documentation":"<p>Returns default client branding attributes that were imported. These attributes display on the client login screen.</p> <important> <p>Client branding attributes are public facing. Ensure that you don't include sensitive information.</p> </important>"
+    },
+    "DefaultImportClientBrandingAttributes":{
+      "type":"structure",
+      "members":{
+        "Logo":{
+          "shape":"DefaultLogo",
+          "documentation":"<p>The logo. This is the link where users can download the logo image. The only image format accepted is <code>.png</code>.</p>"
+        },
+        "SupportEmail":{
+          "shape":"ClientEmail",
+          "documentation":"<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "SupportLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "ForgotPasswordLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.</p>"
+        },
+        "LoginMessage":{
+          "shape":"LoginMessage",
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+        }
+      },
+      "documentation":"<p>The default client branding attributes to be imported. These attributes display on the client login screen.</p> <important> <p>Client branding attributes are public facing. Ensure that you do not include sensitive information.</p> </important>"
+    },
+    "DefaultLogo":{
+      "type":"blob",
+      "max":1500000,
+      "min":1
+    },
     "DefaultOu":{"type":"string"},
     "DefaultWorkspaceCreationProperties":{
       "type":"structure",
@@ -1588,6 +1731,28 @@
         }
       },
       "documentation":"<p>Describes the default values that are used to create WorkSpaces. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html\">Update Directory Details for Your WorkSpaces</a>.</p>"
+    },
+    "DeleteClientBrandingRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "Platforms"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier of the WorkSpace for which you want to delete client branding.</p>"
+        },
+        "Platforms":{
+          "shape":"ClientDeviceTypeList",
+          "documentation":"<p>The device type for which you want to delete client branding.</p>"
+        }
+      }
+    },
+    "DeleteClientBrandingResult":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteConnectClientAddInRequest":{
       "type":"structure",
@@ -1744,6 +1909,45 @@
         "DedicatedTenancyManagementCidrRange":{
           "shape":"DedicatedTenancyManagementCidrRange",
           "documentation":"<p>The IP address range, specified as an IPv4 CIDR block, used for the management network interface.</p> <p>The management network interface is connected to a secure Amazon WorkSpaces management network. It is used for interactive streaming of the WorkSpace desktop to Amazon WorkSpaces clients, and to allow Amazon WorkSpaces to manage the WorkSpace.</p>"
+        }
+      }
+    },
+    "DescribeClientBrandingRequest":{
+      "type":"structure",
+      "required":["ResourceId"],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier of the WorkSpace for which you want to view client branding information.</p>"
+        }
+      }
+    },
+    "DescribeClientBrandingResult":{
+      "type":"structure",
+      "members":{
+        "DeviceTypeWindows":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information for Windows devices.</p>"
+        },
+        "DeviceTypeOsx":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information for macOS devices.</p>"
+        },
+        "DeviceTypeAndroid":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information for Android devices.</p>"
+        },
+        "DeviceTypeIos":{
+          "shape":"IosClientBrandingAttributes",
+          "documentation":"<p>The branding information for iOS devices.</p>"
+        },
+        "DeviceTypeLinux":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information for Linux devices.</p>"
+        },
+        "DeviceTypeWeb":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information for Web access.</p>"
         }
       }
     },
@@ -2281,6 +2485,69 @@
         "SHARED"
       ]
     },
+    "ImportClientBrandingRequest":{
+      "type":"structure",
+      "required":["ResourceId"],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier of the WorkSpace for which you want to import client branding.</p>"
+        },
+        "DeviceTypeWindows":{
+          "shape":"DefaultImportClientBrandingAttributes",
+          "documentation":"<p>The branding information to import for Windows devices.</p>"
+        },
+        "DeviceTypeOsx":{
+          "shape":"DefaultImportClientBrandingAttributes",
+          "documentation":"<p>The branding information to import for macOS devices.</p>"
+        },
+        "DeviceTypeAndroid":{
+          "shape":"DefaultImportClientBrandingAttributes",
+          "documentation":"<p>The branding information to import for Android devices.</p>"
+        },
+        "DeviceTypeIos":{
+          "shape":"IosImportClientBrandingAttributes",
+          "documentation":"<p>The branding information to import for iOS devices.</p>"
+        },
+        "DeviceTypeLinux":{
+          "shape":"DefaultImportClientBrandingAttributes",
+          "documentation":"<p>The branding information to import for Linux devices.</p>"
+        },
+        "DeviceTypeWeb":{
+          "shape":"DefaultImportClientBrandingAttributes",
+          "documentation":"<p>The branding information to import for web access.</p>"
+        }
+      }
+    },
+    "ImportClientBrandingResult":{
+      "type":"structure",
+      "members":{
+        "DeviceTypeWindows":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information configured for Windows devices.</p>"
+        },
+        "DeviceTypeOsx":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information configured for macOS devices.</p>"
+        },
+        "DeviceTypeAndroid":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information configured for Android devices.</p>"
+        },
+        "DeviceTypeIos":{
+          "shape":"IosClientBrandingAttributes",
+          "documentation":"<p>The branding information configured for iOS devices.</p>"
+        },
+        "DeviceTypeLinux":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information configured for Linux devices.</p>"
+        },
+        "DeviceTypeWeb":{
+          "shape":"DefaultClientBrandingAttributes",
+          "documentation":"<p>The branding information configured for web access.</p>"
+        }
+      }
+    },
     "ImportWorkspaceImageRequest":{
       "type":"structure",
       "required":[
@@ -2343,6 +2610,89 @@
       },
       "documentation":"<p>The state of the resource is not valid for this operation.</p>",
       "exception":true
+    },
+    "Ios2XLogo":{
+      "type":"blob",
+      "max":1770000,
+      "min":1
+    },
+    "Ios3XLogo":{
+      "type":"blob",
+      "max":1770000,
+      "min":1
+    },
+    "IosClientBrandingAttributes":{
+      "type":"structure",
+      "members":{
+        "LogoUrl":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The logo. This is the link where users can download the logo image. This is the standard-resolution display that has a 1:1 pixel density (or @1x), where one pixel is equal to one point.</p>"
+        },
+        "Logo2xUrl":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The @2x version of the logo. This is the higher resolution display that offers a scale factor of 2.0 (or @2x).</p> <note> <p> For more information about iOS image size and resolution, see <a href=\"https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/\">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>"
+        },
+        "Logo3xUrl":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The @3x version of the logo. This is the higher resolution display that offers a scale factor of 3.0 (or @3x).</p> <note> <p> For more information about iOS image size and resolution, see <a href=\"https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/\">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>"
+        },
+        "SupportEmail":{
+          "shape":"ClientEmail",
+          "documentation":"<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "SupportLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "ForgotPasswordLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.</p>"
+        },
+        "LoginMessage":{
+          "shape":"LoginMessage",
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+        }
+      },
+      "documentation":"<p>The client branding attributes for iOS device types. These attributes are displayed on the iOS client login screen only.</p> <important> <p>Client branding attributes are public facing. Ensure you do not include sensitive information.</p> </important>"
+    },
+    "IosImportClientBrandingAttributes":{
+      "type":"structure",
+      "members":{
+        "Logo":{
+          "shape":"IosLogo",
+          "documentation":"<p>The logo. This is the link where users can download the logo image. This is the standard-resolution display that has a 1:1 pixel density (or @1x), where one pixel is equal to one point.</p>"
+        },
+        "Logo2x":{
+          "shape":"Ios2XLogo",
+          "documentation":"<p>The @2x version of the logo. This is the higher resolution display that offers a scale factor of 2.0 (or @2x).</p> <note> <p> For more information about iOS image size and resolution, see <a href=\"https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/\">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>"
+        },
+        "Logo3x":{
+          "shape":"Ios3XLogo",
+          "documentation":"<p>The @3x version of the logo. This is the higher resolution display that offers a scale factor of 3.0 (or @3x).</p> <note> <p> For more information about iOS image size and resolution, see <a href=\"https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/\">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>"
+        },
+        "SupportEmail":{
+          "shape":"ClientEmail",
+          "documentation":"<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "SupportLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>"
+        },
+        "ForgotPasswordLink":{
+          "shape":"ClientUrl",
+          "documentation":"<p>The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.</p>"
+        },
+        "LoginMessage":{
+          "shape":"LoginMessage",
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+        }
+      },
+      "documentation":"<p>The client branding attributes to import for iOS device types. These attributes are displayed on the iOS client login screen.</p> <important> <p>Client branding attributes are public facing. Ensure you do not include sensitive information.</p> </important>"
+    },
+    "IosLogo":{
+      "type":"blob",
+      "max":447000,
+      "min":1
     },
     "IpAddress":{"type":"string"},
     "IpGroupDesc":{"type":"string"},
@@ -2414,6 +2764,11 @@
           "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>"
         }
       }
+    },
+    "LoginMessage":{
+      "type":"map",
+      "key":{"shape":"ClientLocale"},
+      "value":{"shape":"ClientLoginMessage"}
     },
     "ManagementCidrRangeConstraint":{
       "type":"string",
@@ -3869,5 +4224,5 @@
       "member":{"shape":"WorkspacesIpGroup"}
     }
   },
-  "documentation":"<fullname>Amazon WorkSpaces Service</fullname> <p>Amazon WorkSpaces enables you to provision virtual, cloud-based Microsoft Windows and Amazon Linux desktops for your users.</p>"
+  "documentation":"<fullname>Amazon WorkSpaces Service</fullname> <p>Amazon WorkSpaces enables you to provision virtual, cloud-based Microsoft Windows or Amazon Linux desktops for your users, known as <i>WorkSpaces</i>. WorkSpaces eliminates the need to procure and deploy hardware or install complex software. You can quickly add or remove users as your needs change. Users can access their virtual desktops from multiple devices or web browsers.</p> <p>This API Reference provides detailed information about the actions, data types, parameters, and errors of the WorkSpaces service. For more information about the supported Amazon Web Services Regions, endpoints, and service quotas of the Amazon WorkSpaces service, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/wsp.html\">WorkSpaces endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>You can also manage your WorkSpaces resources using the WorkSpaces console, Command Line Interface (CLI), and SDKs. For more information about administering WorkSpaces, see the <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/\">Amazon WorkSpaces Administration Guide</a>. For more information about using the Amazon WorkSpaces client application or web browser to access provisioned WorkSpaces, see the <a href=\"https://docs.aws.amazon.com/workspaces/latest/userguide/\">Amazon WorkSpaces User Guide</a>. For more information about using the CLI to manage your WorkSpaces resources, see the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/workspaces/index.html\">WorkSpaces section of the CLI Reference</a>.</p>"
 }

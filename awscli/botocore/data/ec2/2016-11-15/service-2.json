@@ -4172,6 +4172,16 @@
       "output":{"shape":"ModifyInstanceEventWindowResult"},
       "documentation":"<p>Modifies the specified event window.</p> <p>You can define either a set of time ranges or a cron expression when modifying the event window, but not both.</p> <p>To modify the targets associated with the event window, use the <a>AssociateInstanceEventWindow</a> and <a>DisassociateInstanceEventWindow</a> API.</p> <p>If Amazon Web Services has already scheduled an event, modifying an event window won't change the time of the scheduled event.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html\">Define event windows for scheduled events</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "ModifyInstanceMaintenanceOptions":{
+      "name":"ModifyInstanceMaintenanceOptions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyInstanceMaintenanceOptionsRequest"},
+      "output":{"shape":"ModifyInstanceMaintenanceOptionsResult"},
+      "documentation":"<p>Modifies the recovery behavior of your instance to disable simplified automatic recovery or set the recovery behavior to default. The default configuration will not enable simplified automatic recovery for an unsupported instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html#instance-configuration-recovery\">Simplified automatic recovery</a>.</p>"
+    },
     "ModifyInstanceMetadataOptions":{
       "name":"ModifyInstanceMetadataOptions",
       "http":{
@@ -28919,6 +28929,11 @@
           "shape":"String",
           "documentation":"<p>The IPv6 address assigned to the instance.</p>",
           "locationName":"ipv6Address"
+        },
+        "MaintenanceOptions":{
+          "shape":"InstanceMaintenanceOptions",
+          "documentation":"<p>Provides information on the recovery and maintenance options of your instance.</p>",
+          "locationName":"maintenanceOptions"
         }
       },
       "documentation":"<p>Describes an instance.</p>"
@@ -29027,6 +29042,13 @@
         "sriovNetSupport",
         "enaSupport",
         "enclaveOptions"
+      ]
+    },
+    "InstanceAutoRecoveryState":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "default"
       ]
     },
     "InstanceBlockDeviceMapping":{
@@ -29559,6 +29581,27 @@
         "shape":"Instance",
         "locationName":"item"
       }
+    },
+    "InstanceMaintenanceOptions":{
+      "type":"structure",
+      "members":{
+        "AutoRecovery":{
+          "shape":"InstanceAutoRecoveryState",
+          "documentation":"<p>Provides information on the current automatic recovery behavior of your instance.</p>",
+          "locationName":"autoRecovery"
+        }
+      },
+      "documentation":"<p>The maintenance options for the instance.</p>"
+    },
+    "InstanceMaintenanceOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "AutoRecovery":{
+          "shape":"InstanceAutoRecoveryState",
+          "documentation":"<p>Disables the automatic recovery behavior of your instance or sets it to default. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html#instance-configuration-recovery\">Simplified automatic recovery</a>.</p>"
+        }
+      },
+      "documentation":"<p>The maintenance options for the instance.</p>"
     },
     "InstanceMarketOptionsRequest":{
       "type":"structure",
@@ -32643,6 +32686,13 @@
       },
       "documentation":"<p>Describes a launch template and overrides.</p>"
     },
+    "LaunchTemplateAutoRecoveryState":{
+      "type":"string",
+      "enum":[
+        "default",
+        "disabled"
+      ]
+    },
     "LaunchTemplateBlockDeviceMapping":{
       "type":"structure",
       "members":{
@@ -33018,6 +33068,27 @@
         "shape":"LaunchTemplateId",
         "locationName":"item"
       }
+    },
+    "LaunchTemplateInstanceMaintenanceOptions":{
+      "type":"structure",
+      "members":{
+        "AutoRecovery":{
+          "shape":"LaunchTemplateAutoRecoveryState",
+          "documentation":"<p>Disables the automatic recovery behavior of your instance or sets it to default.</p>",
+          "locationName":"autoRecovery"
+        }
+      },
+      "documentation":"<p>The maintenance options of your instance.</p>"
+    },
+    "LaunchTemplateInstanceMaintenanceOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "AutoRecovery":{
+          "shape":"LaunchTemplateAutoRecoveryState",
+          "documentation":"<p>Disables the automatic recovery behavior of your instance or sets it to default. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html#instance-configuration-recovery\">Simplified automatic recovery</a>.</p>"
+        }
+      },
+      "documentation":"<p>The maintenance options of your instance.</p>"
     },
     "LaunchTemplateInstanceMarketOptions":{
       "type":"structure",
@@ -34882,7 +34953,7 @@
       "members":{
         "Return":{
           "shape":"Boolean",
-          "documentation":"<p>Is <code>true</code> if the request succeeds, and an error otherwise.</p>",
+          "documentation":"<p>If the request succeeds, the response returns <code>true</code>. If the request fails, no response is returned, and instead an error message is returned.</p>",
           "locationName":"return"
         }
       }
@@ -35311,6 +35382,39 @@
           "shape":"InstanceEventWindow",
           "documentation":"<p>Information about the event window.</p>",
           "locationName":"instanceEventWindow"
+        }
+      }
+    },
+    "ModifyInstanceMaintenanceOptionsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance.</p>"
+        },
+        "AutoRecovery":{
+          "shape":"InstanceAutoRecoveryState",
+          "documentation":"<p>Disables the automatic recovery behavior of your instance or sets it to default.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyInstanceMaintenanceOptionsResult":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the instance.</p>",
+          "locationName":"instanceId"
+        },
+        "AutoRecovery":{
+          "shape":"InstanceAutoRecoveryState",
+          "documentation":"<p>Provides information on the current automatic recovery behavior of your instance.</p>",
+          "locationName":"autoRecovery"
         }
       }
     },
@@ -35916,7 +36020,7 @@
       "members":{
         "Return":{
           "shape":"Boolean",
-          "documentation":"<p>Is <code>true</code> if the request succeeds, and an error otherwise.</p>",
+          "documentation":"<p>If the request succeeds, the response returns <code>true</code>. If the request fails, no response is returned, and instead an error message is returned.</p>",
           "locationName":"return"
         }
       },
@@ -41207,6 +41311,10 @@
         "PrivateDnsNameOptions":{
           "shape":"LaunchTemplatePrivateDnsNameOptionsRequest",
           "documentation":"<p>The options for the instance hostname. The default values are inherited from the subnet.</p>"
+        },
+        "MaintenanceOptions":{
+          "shape":"LaunchTemplateInstanceMaintenanceOptionsRequest",
+          "documentation":"<p>The maintenance options for the instance.</p>"
         }
       },
       "documentation":"<p>The information to include in the launch template.</p>"
@@ -42113,7 +42221,7 @@
       "members":{
         "Attribute":{
           "shape":"InstanceAttributeName",
-          "documentation":"<p>The attribute to reset.</p> <important> <p>You can only reset the following attributes: <code>kernel</code> | <code>ramdisk</code> | <code>sourceDestCheck</code>. To change an instance attribute, use <a>ModifyInstanceAttribute</a>.</p> </important>",
+          "documentation":"<p>The attribute to reset.</p> <important> <p>You can only reset the following attributes: <code>kernel</code> | <code>ramdisk</code> | <code>sourceDestCheck</code>.</p> </important>",
           "locationName":"attribute"
         },
         "DryRun":{
@@ -42470,6 +42578,11 @@
           "shape":"LaunchTemplatePrivateDnsNameOptions",
           "documentation":"<p>The options for the instance hostname.</p>",
           "locationName":"privateDnsNameOptions"
+        },
+        "MaintenanceOptions":{
+          "shape":"LaunchTemplateInstanceMaintenanceOptions",
+          "documentation":"<p>The maintenance options for your instance.</p>",
+          "locationName":"maintenanceOptions"
         }
       },
       "documentation":"<p>The information for a launch template. </p>"
@@ -43310,6 +43423,10 @@
         "PrivateDnsNameOptions":{
           "shape":"PrivateDnsNameOptionsRequest",
           "documentation":"<p>The options for the instance hostname. The default values are inherited from the subnet.</p>"
+        },
+        "MaintenanceOptions":{
+          "shape":"InstanceMaintenanceOptionsRequest",
+          "documentation":"<p>The maintenance and recovery options for the instance.</p>"
         }
       }
     },

@@ -319,9 +319,11 @@ class FileGenerator(object):
         else:
             lister = BucketLister(self._client)
             extra_args = self.request_parameters.get('ListObjectsV2', {})
-            for key in lister.list_objects(bucket=bucket, prefix=prefix,
-                                           page_size=self.page_size,
-                                           extra_args=extra_args):
+            objects = lister.list_objects(bucket=bucket, prefix=prefix,
+                                          page_size=self.page_size,
+                                          extra_args=extra_args)
+            for key in sorted(
+                    objects, key=lambda item: item[0].replace(os.sep, '/')):
                 source_path, response_data = key
                 if response_data['Size'] == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':

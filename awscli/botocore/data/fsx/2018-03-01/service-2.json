@@ -2809,7 +2809,7 @@
         },
         "Lifecycle":{
           "shape":"FileSystemLifecycle",
-          "documentation":"<p>The lifecycle status of the file system. The following are the possible values and what they mean:</p> <ul> <li> <p> <code>AVAILABLE</code> - The file system is in a healthy state, and is reachable and available for use.</p> </li> <li> <p> <code>CREATING</code> - Amazon FSx is creating the new file system.</p> </li> <li> <p> <code>DELETING</code> - Amazon FSx is deleting an existing file system.</p> </li> <li> <p> <code>FAILED</code> - An existing file system has experienced an unrecoverable failure. When creating a new file system, Amazon FSx was unable to create the file system.</p> </li> <li> <p> <code>MISCONFIGURED</code> - The file system is in a failed but recoverable state.</p> </li> <li> <p> <code>UPDATING</code> - The file system is undergoing a customer-initiated update.</p> </li> </ul>"
+          "documentation":"<p>The lifecycle status of the file system. The following are the possible values and what they mean:</p> <ul> <li> <p> <code>AVAILABLE</code> - The file system is in a healthy state, and is reachable and available for use.</p> </li> <li> <p> <code>CREATING</code> - Amazon FSx is creating the new file system.</p> </li> <li> <p> <code>DELETING</code> - Amazon FSx is deleting an existing file system.</p> </li> <li> <p> <code>FAILED</code> - An existing file system has experienced an unrecoverable failure. When creating a new file system, Amazon FSx was unable to create the file system.</p> </li> <li> <p> <code>MISCONFIGURED</code> - The file system is in a failed but recoverable state.</p> </li> <li> <p> <code>MISCONFIGURED_UNAVAILABLE</code> - (Amazon FSx for Windows File Server only) The file system is currently unavailable due to a change in your Active Directory configuration.</p> </li> <li> <p> <code>UPDATING</code> - The file system is undergoing a customer-initiated update.</p> </li> </ul>"
         },
         "FailureDetails":{"shape":"FileSystemFailureDetails"},
         "StorageCapacity":{
@@ -2935,7 +2935,8 @@
         "FAILED",
         "DELETING",
         "MISCONFIGURED",
-        "UPDATING"
+        "UPDATING",
+        "MISCONFIGURED_UNAVAILABLE"
       ]
     },
     "FileSystemMaintenanceOperation":{
@@ -3869,7 +3870,7 @@
         },
         "Options":{
           "shape":"RestoreOpenZFSVolumeOptions",
-          "documentation":"<p>The settings used when restoring the specified volume from snapshot. </p> <ul> <li> <p> <code>DELETE_INTERMEDIATE_SNAPSHOTS</code> - Deletes snapshots between the current state and the specified snapshot. If there are intermediate snapshots and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> <li> <p> <code>DELETE_CLONED_VOLUMES</code> - Deletes any volumes cloned from this volume. If there are any cloned volumes and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> </ul>"
+          "documentation":"<p>The settings used when restoring the specified volume from snapshot. </p> <ul> <li> <p> <code>DELETE_INTERMEDIATE_SNAPSHOTS</code> - Deletes snapshots between the current state and the specified snapshot. If there are intermediate snapshots and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> <li> <p> <code>DELETE_CLONED_VOLUMES</code> - Deletes any dependent clone volumes created from intermediate snapshots. If there are any dependent clone volumes and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> </ul>"
         }
       }
     },
@@ -4595,7 +4596,7 @@
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>Specifies the throughput of an FSx for NetApp ONTAP file system, measured in megabytes per second (MBps). Valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p>"
+          "documentation":"<p>Specifies the throughput of an FSx for NetApp ONTAP file system, measured in megabytes per second (MBps). Valid values are 128, 256, 512, 1024, or 2048 MB/s.</p>"
         }
       },
       "documentation":"<p>The configuration updates for an Amazon FSx for NetApp ONTAP file system.</p>"

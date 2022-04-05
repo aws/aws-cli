@@ -103,7 +103,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deploy a new environment. An Proton environment is created from an environment template that defines infrastructure and resources that can be shared across services.</p> <p class=\"title\"> <b>You can provision environments using the following methods:</b> </p> <ul> <li> <p>Standard provisioning: Proton makes direct calls to provision your resources.</p> </li> <li> <p>Pull request provisioning: Proton makes pull requests on your repository to provide compiled infrastructure as code (IaC) files that your IaC engine uses to provision resources.</p> </li> </ul> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> in the <i>Proton Administrator Guide.</i> </p>",
+      "documentation":"<p>Deploy a new environment. An Proton environment is created from an environment template that defines infrastructure and resources that can be shared across services.</p> <p class=\"title\"> <b>You can provision environments using the following methods:</b> </p> <ul> <li> <p>Amazon Web Services-managed provisioning: Proton makes direct calls to provision your resources.</p> </li> <li> <p>Self-managed provisioning: Proton makes pull requests on your repository to provide compiled infrastructure as code (IaC) files that your IaC engine uses to provision resources.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-works-prov-methods.html\">Provisioning methods</a> in the <i>Proton Administrator Guide</i>.</p>",
       "idempotent":true
     },
     "CreateEnvironmentAccountConnection":{
@@ -180,7 +180,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Create and register a link to a repository that can be used with pull request provisioning or template sync configurations. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-bundles.html\">Template bundles</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-sync-configs.html\">Template sync configurations</a> in the <i>Proton Administrator Guide</i>.</p>",
+      "documentation":"<p>Create and register a link to a repository that can be used with self-managed provisioning (infrastructure or pipelines) or for template sync configurations. When you create a repository link, Proton creates a <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/using-service-linked-roles.html\">service-linked role</a> for you.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-works-prov-methods.html#ag-works-prov-methods-self\">Self-managed provisioning</a>, <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-bundles.html\">Template bundles</a>, and <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-sync-configs.html\">Template sync configurations</a> in the <i>Proton Administrator Guide</i>.</p>",
       "idempotent":true
     },
     "CreateService":{
@@ -219,7 +219,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Create a service template. The administrator creates a service template to define standardized infrastructure and an optional CICD service pipeline. Developers, in turn, select the service template from Proton. If the selected service template includes a service pipeline definition, they provide a link to their source code repository. Proton then deploys and manages the infrastructure defined by the selected service template. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/managing-svc-templates.html\">Service Templates</a> in the <i>Proton Administrator Guide</i>.</p>",
+      "documentation":"<p>Create a service template. The administrator creates a service template to define standardized infrastructure and an optional CI/CD service pipeline. Developers, in turn, select the service template from Proton. If the selected service template includes a service pipeline definition, they provide a link to their source code repository. Proton then deploys and manages the infrastructure defined by the selected service template. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/managing-svc-templates.html\">Service Templates</a> in the <i>Proton Administrator Guide</i>.</p>",
       "idempotent":true
     },
     "CreateServiceTemplateVersion":{
@@ -258,7 +258,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Set up a template for automated template version creation. When a commit is pushed to your registered <a href=\"https://docs.aws.amazon.com/proton/latest/APIReference/API_Repository.html\">repository</a>, Proton checks for changes to your repository template bundles. If it detects a template bundle change, a new minor or major version of its template is created, if the version doesn’t already exist. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-sync-configs.html\">Template sync configurations</a> in the <i>Proton Administrator Guide</i>.</p>",
+      "documentation":"<p>Set up a template to create new template versions automatically. When a commit is pushed to your registered <a href=\"https://docs.aws.amazon.com/proton/latest/APIReference/API_Repository.html\">repository</a>, Proton checks for changes to your repository template bundles. If it detects a template bundle change, a new major or minor version of its template is created, if the version doesn’t already exist. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-sync-configs.html\">Template sync configurations</a> in the <i>Proton Administrator Guide</i>.</p>",
       "idempotent":true
     },
     "DeleteEnvironment":{
@@ -549,7 +549,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get the repository sync status.</p>"
+      "documentation":"<p>Get the sync status of a repository used for Proton template sync. For more information about template sync, see .</p> <note> <p>A repository sync status isn't tied to the Proton Repository resource (or any other Proton resource). Therefore, tags on an Proton Repository resource have no effect on this action. Specifically, you can't use these tags to control access to this action using Attribute-based access control (ABAC).</p> <p>For more information about ABAC, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/security_iam_service-with-iam.html#security_iam_service-with-iam-tags\">ABAC</a> in the <i>Proton Administrator Guide</i>.</p> </note>"
     },
     "GetService":{
       "name":"GetService",
@@ -583,7 +583,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get detail data for a service instance. A service instance is an instantiation of service template, which is running in a specific environment.</p>"
+      "documentation":"<p>Get detail data for a service instance. A service instance is an instantiation of service template and it runs in a specific environment.</p>"
     },
     "GetServiceTemplate":{
       "name":"GetServiceTemplate",
@@ -954,7 +954,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Notify Proton of status changes to a provisioned resource when you use pull request provisioning. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-bundles.html\">Template bundles</a>.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+      "documentation":"<p>Notify Proton of status changes to a provisioned resource when you use self-managed provisioning.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-works-prov-methods.html#ag-works-prov-methods-self\">Self-managed provisioning</a> in the <i>Proton Administrator Guide</i>.</p>"
     },
     "RejectEnvironmentAccountConnection":{
       "name":"RejectEnvironmentAccountConnection",
@@ -972,7 +972,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>In a management account, reject an environment account connection from another environment account.</p> <p>After you reject an environment account connection request, you <i>won’t</i> be able to accept or use the rejected environment account connection.</p> <p>You <i>can’t</i> reject an environment account connection that is connected to an environment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p>",
+      "documentation":"<p>In a management account, reject an environment account connection from another environment account.</p> <p>After you reject an environment account connection request, you <i>can't</i> accept or use the rejected environment account connection.</p> <p>You <i>can’t</i> reject an environment account connection that's connected to an environment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -991,7 +991,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Tag a resource. For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>",
+      "documentation":"<p>Tag a resource. A tag is a key-value pair of metadata that you associate with an Proton resource.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -1010,7 +1010,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Remove a tag from a resource. For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>",
+      "documentation":"<p>Remove a customer tag from a resource. A tag is a key-value pair of metadata associated with an Proton resource.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>",
       "idempotent":true
     },
     "UpdateAccountSettings":{
@@ -1046,7 +1046,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update an environment.</p> <p>If the environment is associated with an environment account connection, <i>don't</i> update or include the <code>protonServiceRoleArn</code> and <code>provisioningRepository</code> parameter to update or connect to an environment account connection.</p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p> <p>If the environment <i>isn't</i> associated with an environment account connection, <i>don't</i> update or include the <code>environmentAccountConnectionId</code> parameter to update or connect to an environment account connection.</p> <p>You can update either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value. You can’t update both.</p> <p>If the environment was provisioned with pull request provisioning, include the <code>provisioningRepository</code> parameter and omit the <code>protonServiceRoleArn</code> and <code>environmentAccountConnectionId</code> parameters.</p> <p>If the environment wasn't provisioned with pull request provisioning, omit the <code>provisioningRepository</code> parameter.</p> <p>There are four modes for updating an environment as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+      "documentation":"<p>Update an environment.</p> <p>If the environment is associated with an environment account connection, <i>don't</i> update or include the <code>protonServiceRoleArn</code> and <code>provisioningRepository</code> parameter to update or connect to an environment account connection.</p> <p>You can only update to a new environment account connection if that connection was created in the same environment account that the current environment account connection was created in. The account connection must also be associated with the current environment.</p> <p>If the environment <i>isn't</i> associated with an environment account connection, <i>don't</i> update or include the <code>environmentAccountConnectionId</code> parameter. You <i>can't</i> update or connect the environment to an environment account connection if it <i>isn't</i> already associated with an environment connection.</p> <p>You can update either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value. You can’t update both.</p> <p>If the environment was configured for Amazon Web Services-managed provisioning, omit the <code>provisioningRepository</code> parameter.</p> <p>If the environment was configured for self-managed provisioning, specify the <code>provisioningRepository</code> parameter and omit the <code>protonServiceRoleArn</code> and <code>environmentAccountConnectionId</code> parameters.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-works-prov-methods.html\">Provisioning methods</a> in the <i>Proton Administrator Guide</i>.</p> <p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
     },
     "UpdateEnvironmentAccountConnection":{
       "name":"UpdateEnvironmentAccountConnection",
@@ -1138,7 +1138,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update a service instance.</p> <p>There are four modes for updating a service instance as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+      "documentation":"<p>Update a service instance.</p> <p>There are four modes for updating a service instance. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
     },
     "UpdateServicePipeline":{
       "name":"UpdateServicePipeline",
@@ -1156,7 +1156,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update the service pipeline.</p> <p>There are four modes for updating a service pipeline as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+      "documentation":"<p>Update the service pipeline.</p> <p>There are four modes for updating a service pipeline. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
     },
     "UpdateServiceTemplate":{
       "name":"UpdateServiceTemplate",
@@ -1248,14 +1248,14 @@
       "members":{
         "pipelineProvisioningRepository":{
           "shape":"RepositoryBranch",
-          "documentation":"<p>The repository that you provide with pull request provisioning.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>The repository configured in the Amazon Web Services account for pipeline provisioning. Required it if you have environments configured for self-managed provisioning with services that include pipelines.</p>"
         },
         "pipelineServiceRoleArn":{
           "shape":"PipelineRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton pipeline service role.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.</p>"
         }
       },
-      "documentation":"<p>The Proton pipeline service role and repository data.</p>"
+      "documentation":"<p>The Proton pipeline service role and repository data shared across the Amazon Web Services account.</p>"
     },
     "Arn":{
       "type":"string",
@@ -1413,7 +1413,7 @@
         },
         "managementAccountId":{
           "shape":"AwsAccountId",
-          "documentation":"<p>The ID of the management account that accepts or rejects the environment account connection. You create an manage the Proton environment in this account. If the management account accepts the environment account connection, Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.</p>"
+          "documentation":"<p>The ID of the management account that accepts or rejects the environment account connection. You create and manage the Proton environment in this account. If the management account accepts the environment account connection, Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.</p>"
         },
         "roleArn":{
           "shape":"Arn",
@@ -1421,7 +1421,7 @@
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags for your environment account connection. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton resources and tagging</a> in the <i>Proton Administrator Guide</i>.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton resources and tagging</a> in the <i>Proton Administrator Guide</i>.</p>"
         }
       }
     },
@@ -1450,7 +1450,7 @@
         },
         "environmentAccountConnectionId":{
           "shape":"EnvironmentAccountConnectionId",
-          "documentation":"<p>The ID of the environment account connection that you provide if you're provisioning your environment infrastructure resources to an environment account. You must include either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value and omit the <code>provisioningRepository</code> parameter and values. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p>"
+          "documentation":"<p>The ID of the environment account connection that you provide if you're provisioning your environment infrastructure resources to an environment account. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -1458,19 +1458,19 @@
         },
         "protonServiceRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf. You must include either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value and omit the <code>provisioningRepository</code> parameter when you use standard provisioning.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>"
         },
         "provisioningRepository":{
           "shape":"RepositoryBranchInput",
-          "documentation":"<p>The repository that you provide with pull request provisioning. If you provide this parameter, you must omit the <code>environmentAccountConnectionId</code> and <code>protonServiceRoleArn</code> parameters.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>The infrastructure repository that you use to host your rendered infrastructure templates for self-managed provisioning.</p> <p>To use self-managed provisioning for the environment, specify this parameter and omit the <code>environmentAccountConnectionId</code> and <code>protonServiceRoleArn</code> parameters.</p>"
         },
         "spec":{
           "shape":"SpecContents",
-          "documentation":"<p>A link to a YAML formatted spec file that provides inputs as defined in the environment template bundle schema file. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> in the <i>Proton Administrator Guide</i>.</p>"
+          "documentation":"<p>A YAML formatted string that provides inputs as defined in the environment template bundle schema file. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-environments.html\">Environments</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Create tags for your environment. For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton environment. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         },
         "templateMajorVersion":{
           "shape":"TemplateVersionPart",
@@ -1522,7 +1522,7 @@
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Create tags for your environment template. For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton environment template. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         }
       }
     },
@@ -1554,7 +1554,7 @@
         },
         "majorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>To create a new minor version of the environment template, include a <code>major Version</code>.</p> <p>To create a new major and minor version of the environment template, <i>exclude</i> <code>major Version</code>.</p>"
+          "documentation":"<p>To create a new minor version of the environment template, include <code>major Version</code>.</p> <p>To create a new major and minor version of the environment template, exclude <code>major Version</code>.</p>"
         },
         "source":{
           "shape":"TemplateVersionSourceInput",
@@ -1562,7 +1562,7 @@
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Create tags for a new version of an environment template.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton environment template version. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
@@ -1590,7 +1590,7 @@
       "members":{
         "connectionArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of your Amazon Web Services CodeStar connection. For more information, see <a href=\"https://docs.aws.amazon.com/setting-up-for-service\">Setting up for Proton</a> in the <i>Proton Administrator Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of your Amazon Web Services CodeStar connection. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/setting-up-for-service.html\">Setting up for Proton</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "encryptionKey":{
           "shape":"Arn",
@@ -1598,11 +1598,15 @@
         },
         "name":{
           "shape":"RepositoryName",
-          "documentation":"<p>The repository name, for example <code>myrepos/myrepo</code>.</p>"
+          "documentation":"<p>The repository name (for example, <code>myrepos/myrepo</code>).</p>"
         },
         "provider":{
           "shape":"RepositoryProvider",
           "documentation":"<p>The repository provider.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton repository. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         }
       }
     },
@@ -1647,11 +1651,11 @@
         },
         "spec":{
           "shape":"SpecContents",
-          "documentation":"<p>A link to a spec file that provides inputs as defined in the service template bundle schema file. The spec file is in YAML format. Don’t include pipeline inputs in the spec if your service template <i>doesn’t</i> include a service pipeline. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-create-svc.html.html\">Create a service</a> in the <i>Proton Administrator Guide</i> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-create.html\">Create a service</a> in the <i>Proton User Guide</i>.</p>"
+          "documentation":"<p>A link to a spec file that provides inputs as defined in the service template bundle schema file. The spec file is in YAML format. <i>Don’t</i> include pipeline inputs in the spec if your service template <i>doesn’t</i> include a service pipeline. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-create-svc.html.html\">Create a service</a> in the <i>Proton Administrator Guide</i> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-create.html\">Create a service</a> in the <i>Proton User Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Create tags for your service. For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton service. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         },
         "templateMajorVersion":{
           "shape":"TemplateVersionPart",
@@ -1699,11 +1703,11 @@
         },
         "pipelineProvisioning":{
           "shape":"Provisioning",
-          "documentation":"<p>Proton includes a service pipeline for your service by default. When included, this parameter indicates that an Proton service pipeline <i>won't</i> be included for your service. Once specified, this parameter <i>can't</i> be changed. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-bundles.html\">Service template bundles</a> in the <i>Proton Administrator Guide</i>.</p>"
+          "documentation":"<p>By default, Proton provides a service pipeline for your service. When this parameter is included, it indicates that an Proton service pipeline <i>isn't</i> provided for your service. After it's included, it <i>can't</i> be changed. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-bundles.html\">Service template bundles</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Create tags for your service template. For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton service template. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         }
       }
     },
@@ -1748,7 +1752,7 @@
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Create tags for a new version of a service template.</p>"
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton service template version. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
@@ -1782,7 +1786,7 @@
         },
         "repositoryName":{
           "shape":"RepositoryName",
-          "documentation":"<p>The name of your repository, for example <code>myrepos/myrepo</code>.</p>"
+          "documentation":"<p>The name of your repository (for example, <code>myrepos/myrepo</code>).</p>"
         },
         "repositoryProvider":{
           "shape":"RepositoryProvider",
@@ -2127,7 +2131,7 @@
         },
         "provisioningRepository":{
           "shape":"RepositoryBranch",
-          "documentation":"<p>The repository that you provide with pull request provisioning.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>The infrastructure repository that you use to host your rendered infrastructure templates for self-managed provisioning.</p>"
         },
         "spec":{
           "shape":"SpecContents",
@@ -2135,11 +2139,11 @@
         },
         "templateMajorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>The ID of the major version of the environment template.</p>"
+          "documentation":"<p>The major version of the environment template.</p>"
         },
         "templateMinorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>The ID of the minor version of the environment template.</p>"
+          "documentation":"<p>The minor version of the environment template.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
@@ -2593,7 +2597,7 @@
         },
         "templateName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the version of an environment template.</p>"
+          "documentation":"<p>The name of the environment template.</p>"
         }
       },
       "documentation":"<p>A summary of the version of an environment template detail data.</p>"
@@ -2923,7 +2927,7 @@
         },
         "templateVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>The template version.</p>"
+          "documentation":"<p>The template major version.</p>"
         }
       }
     },
@@ -2974,7 +2978,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next environment account connection in the array of environment account connections, after the list of environment account connections that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment account connection in the array of environment account connections, after the list of environment account connections that was previously requested.</p>"
         },
         "requestedBy":{
           "shape":"EnvironmentAccountConnectionRequesterAccountType",
@@ -2996,7 +3000,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next environment account connection in the array of environment account connections, after the current requested list of environment account connections.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment account connection in the array of environment account connections, after the current requested list of environment account connections.</p>"
         }
       }
     },
@@ -3010,7 +3014,7 @@
         },
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next environment output in the array of environment outputs, after the list of environment outputs that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment output in the array of environment outputs, after the list of environment outputs that was previously requested.</p>"
         }
       }
     },
@@ -3020,7 +3024,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next environment output in the array of environment outputs, after the current requested list of environment outputs.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment output in the array of environment outputs, after the current requested list of environment outputs.</p>"
         },
         "outputs":{
           "shape":"OutputsList",
@@ -3038,7 +3042,7 @@
         },
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next environment provisioned resource in the array of environment provisioned resources, after the list of environment provisioned resources that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment provisioned resource in the array of environment provisioned resources, after the list of environment provisioned resources that was previously requested.</p>"
         }
       }
     },
@@ -3048,7 +3052,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next environment provisioned resource in the array of provisioned resources, after the current requested list of environment provisioned resources.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment provisioned resource in the array of provisioned resources, after the current requested list of environment provisioned resources.</p>"
         },
         "provisionedResources":{
           "shape":"ProvisionedResourceList",
@@ -3070,7 +3074,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
@@ -3084,7 +3088,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next major or minor version in the array of major or minor versions of an environment template, after the list of major or minor versions that was previously requested.</p>"
         },
         "templateVersions":{
           "shape":"EnvironmentTemplateVersionSummaryList",
@@ -3101,7 +3105,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next environment template in the array of environment templates, after the list of environment templates that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment template in the array of environment templates, after the list of environment templates that was previously requested.</p>"
         }
       }
     },
@@ -3111,7 +3115,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next environment template in the array of environment templates, after the current requested list of environment templates.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment template in the array of environment templates, after the current requested list of environment templates.</p>"
         },
         "templates":{
           "shape":"EnvironmentTemplateSummaryList",
@@ -3132,7 +3136,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next environment in the array of environments, after the list of environments that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment in the array of environments, after the list of environments that was previously requested.</p>"
         }
       }
     },
@@ -3146,7 +3150,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next environment in the array of environments, after the current requested list of environments.</p>"
+          "documentation":"<p>A token that indicates the location of the next environment in the array of environments, after the current requested list of environments.</p>"
         }
       }
     },
@@ -3159,7 +3163,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next repository in the array of repositories, after the list of repositories previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next repository in the array of repositories, after the list of repositories previously requested.</p>"
         }
       }
     },
@@ -3169,7 +3173,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next repository in the array of repositories, after the current requested list of repositories. </p>"
+          "documentation":"<p>A token that indicates the location of the next repository in the array of repositories, after the current requested list of repositories. </p>"
         },
         "repositories":{
           "shape":"RepositorySummaryList",
@@ -3187,7 +3191,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next repository sync definition in the array of repository sync definitions, after the list of repository sync definitions previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next repository sync definition in the array of repository sync definitions, after the list of repository sync definitions previously requested.</p>"
         },
         "repositoryName":{
           "shape":"RepositoryName",
@@ -3209,7 +3213,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next repository sync definition in the array of repository sync definitions, after the current requested list of repository sync definitions.</p>"
+          "documentation":"<p>A token that indicates the location of the next repository sync definition in the array of repository sync definitions, after the current requested list of repository sync definitions.</p>"
         },
         "syncDefinitions":{
           "shape":"RepositorySyncDefinitionList",
@@ -3226,7 +3230,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
         },
         "serviceInstanceName":{
           "shape":"ResourceName",
@@ -3244,7 +3248,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next output in the array of outputs, after the current requested list of outputs.</p>"
+          "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the current requested list of outputs.</p>"
         },
         "outputs":{
           "shape":"OutputsList",
@@ -3261,7 +3265,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.</p>"
         },
         "serviceInstanceName":{
           "shape":"ResourceName",
@@ -3279,7 +3283,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.</p>"
+          "documentation":"<p>A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.</p>"
         },
         "provisionedResources":{
           "shape":"ProvisionedResourceList",
@@ -3296,7 +3300,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next service in the array of service instances, after the list of service instances that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next service in the array of service instances, after the list of service instances that was previously requested.</p>"
         },
         "serviceName":{
           "shape":"ResourceName",
@@ -3310,7 +3314,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next service instance in the array of service instances, after the current requested list of service instances.</p>"
+          "documentation":"<p>A token that indicates the location of the next service instance in the array of service instances, after the current requested list of service instances.</p>"
         },
         "serviceInstances":{
           "shape":"ServiceInstanceSummaryList",
@@ -3324,7 +3328,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
         },
         "serviceName":{
           "shape":"ResourceName",
@@ -3338,7 +3342,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next output in the array of outputs, after the current requested list of outputs.</p>"
+          "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the current requested list of outputs.</p>"
         },
         "outputs":{
           "shape":"OutputsList",
@@ -3352,7 +3356,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.</p>"
         },
         "serviceName":{
           "shape":"ResourceName",
@@ -3366,7 +3370,7 @@
       "members":{
         "nextToken":{
           "shape":"EmptyNextToken",
-          "documentation":"<p>A token to indicate the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.</p>"
+          "documentation":"<p>A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.</p>"
         },
         "provisionedResources":{
           "shape":"ProvisionedResourceList",
@@ -3388,7 +3392,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of a service template, after the list of major or minor versions that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next major or minor version in the array of major or minor versions of a service template, after the list of major or minor versions that was previously requested.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
@@ -3402,7 +3406,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next major or minor version in the array of major or minor versions of a service template, after the current requested list of service major or minor versions.</p>"
+          "documentation":"<p>A token that indicates the location of the next major or minor version in the array of major or minor versions of a service template, after the current requested list of service major or minor versions.</p>"
         },
         "templateVersions":{
           "shape":"ServiceTemplateVersionSummaryList",
@@ -3419,7 +3423,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next service template in the array of service templates, after the list of service templates previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next service template in the array of service templates, after the list of service templates previously requested.</p>"
         }
       }
     },
@@ -3429,7 +3433,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next service template in the array of service templates, after the current requested list of service templates.</p>"
+          "documentation":"<p>A token that indicates the location of the next service template in the array of service templates, after the current requested list of service templates.</p>"
         },
         "templates":{
           "shape":"ServiceTemplateSummaryList",
@@ -3446,7 +3450,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next service in the array of services, after the list of services that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next service in the array of services, after the list of services that was previously requested.</p>"
         }
       }
     },
@@ -3456,7 +3460,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token to indicate the location of the next service in the array of services, after the current requested list of services.</p>"
+          "documentation":"<p>A token that indicates the location of the next service in the array of services, after the current requested list of services.</p>"
         },
         "services":{
           "shape":"ServiceSummaryList",
@@ -3474,7 +3478,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>A token to indicate the location of the next resource tag in the array of resource tags, after the list of resource tags that was previously requested.</p>"
+          "documentation":"<p>A token that indicates the location of the next resource tag in the array of resource tags, after the list of resource tags that was previously requested.</p>"
         },
         "resourceArn":{
           "shape":"Arn",
@@ -3488,11 +3492,11 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>A token to indicate the location of the next resource tag in the array of resource tags, after the current requested list of resource tags.</p>"
+          "documentation":"<p>A token that indicates the location of the next resource tag in the array of resource tags, after the current requested list of resource tags.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>An array of resource tags with detail data.</p>"
+          "documentation":"<p>A list of resource tags with detail data.</p>"
         }
       }
     },
@@ -3594,7 +3598,7 @@
         },
         "provisioningEngine":{
           "shape":"ProvisionedResourceEngine",
-          "documentation":"<p>The resource provisioning engine.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>The resource provisioning engine. At this time, <code>CLOUDFORMATION</code> can be used for Amazon Web Services-managed provisioning, and <code>TERRAFORM</code> can be used for self-managed provisioning.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-works-prov-methods.html#ag-works-prov-methods-self\">Self-managed provisioning</a> in the <i>Proton Administrator Guide</i>.</p>"
         }
       },
       "documentation":"<p>Detail data for a provisioned resource.</p>"
@@ -3704,7 +3708,7 @@
           "documentation":"<p>The repository provider.</p>"
         }
       },
-      "documentation":"<p>Detail data for a repository branch.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+      "documentation":"<p>Detail data for a repository branch.</p>"
     },
     "RepositoryBranchInput":{
       "type":"structure",
@@ -3727,7 +3731,7 @@
           "documentation":"<p>The repository provider.</p>"
         }
       },
-      "documentation":"<p>Detail input data for a repository branch.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+      "documentation":"<p>Detail input data for a repository branch.</p>"
     },
     "RepositoryId":{
       "type":"string",
@@ -4676,11 +4680,11 @@
       "members":{
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that the resource tag is applied to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton resource to apply customer tags to.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>An array of resource tags to apply to a resource.</p>"
+          "documentation":"<p>A list of customer tags to apply to the Proton resource.</p>"
         }
       }
     },
@@ -4790,11 +4794,11 @@
       "members":{
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that the tag is to be removed from.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to remove customer tags from.</p>"
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>An array of tag keys indicating the resource tags to be removed from the resource.</p>"
+          "documentation":"<p>A list of customer tag keys that indicate the customer tags to be removed from the resource.</p>"
         }
       }
     },
@@ -4808,11 +4812,11 @@
       "members":{
         "pipelineProvisioningRepository":{
           "shape":"RepositoryBranchInput",
-          "documentation":"<p>The repository that you provide with pull request provisioning.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>A repository for pipeline provisioning. Specify it if you have environments configured for self-managed provisioning with services that include pipelines.</p>"
         },
         "pipelineServiceRoleArn":{
           "shape":"PipelineRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton pipeline service role.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.</p>"
         }
       }
     },
@@ -4822,7 +4826,7 @@
       "members":{
         "accountSettings":{
           "shape":"AccountSettings",
-          "documentation":"<p>The Proton pipeline service role repository detail data that's returned by Proton.</p>"
+          "documentation":"<p>The Proton pipeline service role and repository data shared across the Amazon Web Services account.</p>"
         }
       }
     },
@@ -4839,7 +4843,7 @@
         },
         "roleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that is associated with the environment account connection to update.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that's associated with the environment account connection to update.</p>"
         }
       }
     },
@@ -4862,7 +4866,7 @@
       "members":{
         "deploymentType":{
           "shape":"DeploymentUpdateType",
-          "documentation":"<p>There are four modes for updating an environment as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+          "documentation":"<p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
         },
         "description":{
           "shape":"Description",
@@ -4882,7 +4886,7 @@
         },
         "provisioningRepository":{
           "shape":"RepositoryBranchInput",
-          "documentation":"<p>The repository that you provide with pull request provisioning.</p> <important> <p>Provisioning by pull request is currently in feature preview and is only usable with Terraform based Proton Templates. To learn more about <a href=\"https://aws.amazon.com/service-terms\">Amazon Web Services Feature Preview terms</a>, see section 2 on Beta and Previews.</p> </important>"
+          "documentation":"<p>The infrastructure repository that you use to host your rendered infrastructure templates for self-managed provisioning.</p>"
         },
         "spec":{
           "shape":"SpecContents",
@@ -5004,7 +5008,7 @@
       "members":{
         "deploymentType":{
           "shape":"DeploymentUpdateType",
-          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service instance as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service instance. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
         },
         "name":{
           "shape":"ResourceName",
@@ -5034,7 +5038,7 @@
       "members":{
         "serviceInstance":{
           "shape":"ServiceInstance",
-          "documentation":"<p>The service instance summary data returned by Proton.</p>"
+          "documentation":"<p>The service instance summary data that's returned by Proton.</p>"
         }
       }
     },
@@ -5058,7 +5062,7 @@
       "members":{
         "deploymentType":{
           "shape":"DeploymentUpdateType",
-          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service pipeline as described in the following. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
+          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service pipeline. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
         },
         "serviceName":{
           "shape":"ResourceName",
@@ -5084,7 +5088,7 @@
       "members":{
         "pipeline":{
           "shape":"ServicePipeline",
-          "documentation":"<p>The pipeline details returned by Proton.</p>"
+          "documentation":"<p>The pipeline details that are returned by Proton.</p>"
         }
       }
     },
@@ -5098,7 +5102,7 @@
         },
         "displayName":{
           "shape":"DisplayName",
-          "documentation":"<p>The name of the service template to update as displayed in the developer interface.</p>"
+          "documentation":"<p>The name of the service template to update that's displayed in the developer interface.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -5176,7 +5180,7 @@
         },
         "repositoryName":{
           "shape":"RepositoryName",
-          "documentation":"<p>The name of the repository, for example <code>myrepos/myrepo</code>.</p>"
+          "documentation":"<p>The name of the repository (for example, <code>myrepos/myrepo</code>).</p>"
         },
         "repositoryProvider":{
           "shape":"RepositoryProvider",

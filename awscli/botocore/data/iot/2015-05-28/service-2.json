@@ -2658,6 +2658,22 @@
       ],
       "documentation":"<p>Returns a list of managed job templates.</p>"
     },
+    "ListMetricValues":{
+      "name":"ListMetricValues",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metric-values"
+      },
+      "input":{"shape":"ListMetricValuesRequest"},
+      "output":{"shape":"ListMetricValuesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the values reported for an IoT Device Defender metric (device-side metric, cloud-side metric, or custom metric) by the given thing during the specified time period.</p>"
+    },
     "ListMitigationActions":{
       "name":"ListMitigationActions",
       "http":{
@@ -4338,7 +4354,7 @@
           "documentation":"<p>The list of groups to which you want to add the things that triggered the mitigation action. You can add a thing to a maximum of 10 groups, but you can't add a thing to more than one group in the same hierarchy.</p>"
         },
         "overrideDynamicGroups":{
-          "shape":"OverrideDynamicGroups",
+          "shape":"NullableBoolean",
           "documentation":"<p>Specifies if this mitigation action can move the things that triggered the mitigation action even if they are part of one or more dynamic thing groups.</p>"
         }
       },
@@ -7609,11 +7625,11 @@
         },
         "hashAlgorithm":{
           "shape":"HashAlgorithm",
-          "documentation":"<p>The hash algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>SHA256</code> or <code>SHA1</code>, so you can pass either of them based on which was used for generating the signature.</p>"
+          "documentation":"<p>The hash algorithm used to code sign the file.</p>"
         },
         "signatureAlgorithm":{
           "shape":"SignatureAlgorithm",
-          "documentation":"<p>The signature algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>ECDSA</code> or <code>RSA</code>, so you can pass either of them based on which was used for generating the signature.</p>"
+          "documentation":"<p>The signature algorithm used to code sign the file.</p>"
         }
       },
       "documentation":"<p>Describes a custom method used to code sign a file.</p>"
@@ -12862,6 +12878,78 @@
         }
       }
     },
+    "ListMetricValuesRequest":{
+      "type":"structure",
+      "required":[
+        "thingName",
+        "metricName",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "thingName":{
+          "shape":"DeviceDefenderThingName",
+          "documentation":"<p>The name of the thing for which security profile metric values are returned.</p>",
+          "location":"querystring",
+          "locationName":"thingName"
+        },
+        "metricName":{
+          "shape":"BehaviorMetric",
+          "documentation":"<p>The name of the security profile metric for which values are returned.</p>",
+          "location":"querystring",
+          "locationName":"metricName"
+        },
+        "dimensionName":{
+          "shape":"DimensionName",
+          "documentation":"<p>The dimension name.</p>",
+          "location":"querystring",
+          "locationName":"dimensionName"
+        },
+        "dimensionValueOperator":{
+          "shape":"DimensionValueOperator",
+          "documentation":"<p>The dimension value operator.</p>",
+          "location":"querystring",
+          "locationName":"dimensionValueOperator"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period for which metric values are returned.</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period for which metric values are returned.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMetricValuesResponse":{
+      "type":"structure",
+      "members":{
+        "metricDatumList":{
+          "shape":"MetricDatumList",
+          "documentation":"<p>The data the thing reports for the metric during the specified time period.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
     "ListMitigationActionsRequest":{
       "type":"structure",
       "members":{
@@ -14265,6 +14353,24 @@
     "MessageId":{
       "type":"string",
       "max":128
+    },
+    "MetricDatum":{
+      "type":"structure",
+      "members":{
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the metric value was reported.</p>"
+        },
+        "value":{
+          "shape":"MetricValue",
+          "documentation":"<p>The value reported for the metric.</p>"
+        }
+      },
+      "documentation":"<p>A metric.</p>"
+    },
+    "MetricDatumList":{
+      "type":"list",
+      "member":{"shape":"MetricDatum"}
     },
     "MetricDimension":{
       "type":"structure",
@@ -18801,7 +18907,7 @@
     "VerificationStateDescription":{
       "type":"string",
       "max":1000,
-      "pattern":"[\\p{Graph}\\x20]*"
+      "pattern":"[^\\p{Cntrl}]*"
     },
     "Version":{"type":"long"},
     "VersionConflictException":{

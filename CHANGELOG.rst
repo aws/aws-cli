@@ -3360,6 +3360,30 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.89
+=======
+
+* api-change:``s3control``: Documentation-only update for doc bug fixes for the S3 Control API docs.
+* api-change:``securityhub``: Added additional ASFF details for RdsSecurityGroup AutoScalingGroup, ElbLoadBalancer, CodeBuildProject and RedshiftCluster.
+* api-change:``datasync``: AWS DataSync now supports Amazon FSx for OpenZFS locations.
+* api-change:``fsx``: Provide customers more visibility into file system status by adding new "Misconfigured Unavailable" status for Amazon FSx for Windows File Server.
+
+
+1.22.88
+=======
+
+* api-change:``sms``: Revised product update notice for SMS console deprecation.
+* api-change:``servicecatalog``: This release adds ProvisioningArtifictOutputKeys to DescribeProvisioningParameters to reference the outputs of a Provisioned Product and deprecates ProvisioningArtifactOutputs.
+* api-change:``iot``: AWS IoT - AWS IoT Device Defender adds support to list metric datapoints collected for IoT devices through the ListMetricValues API
+* api-change:``proton``: SDK release to support tagging for AWS Proton Repository resource
+
+
+1.22.87
+=======
+
+* api-change:``connect``: This release updates these APIs: UpdateInstanceAttribute, DescribeInstanceAttribute and ListInstanceAttributes. You can use it to programmatically enable/disable multi-party conferencing using attribute type MULTI_PARTY_CONFERENCING on the specified Amazon Connect instance.
+
+
 1.22.86
 =======
 

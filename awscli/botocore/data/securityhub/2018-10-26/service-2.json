@@ -1647,9 +1647,35 @@
         "AvailabilityZones":{
           "shape":"AwsAutoScalingAutoScalingGroupAvailabilityZonesList",
           "documentation":"<p>The list of Availability Zones for the automatic scaling group.</p>"
+        },
+        "LaunchTemplate":{
+          "shape":"AwsAutoScalingAutoScalingGroupLaunchTemplateLaunchTemplateSpecification",
+          "documentation":"<p>The launch template to use.</p>"
+        },
+        "CapacityRebalance":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether capacity rebalancing is enabled. </p>"
         }
       },
       "documentation":"<p>Provides details about an auto scaling group.</p>"
+    },
+    "AwsAutoScalingAutoScalingGroupLaunchTemplateLaunchTemplateSpecification":{
+      "type":"structure",
+      "members":{
+        "LaunchTemplateId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the launch template. You must specify either <code>LaunchTemplateId</code> or <code>LaunchTemplateName</code>.</p>"
+        },
+        "LaunchTemplateName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the launch template. You must specify either <code>LaunchTemplateId</code> or <code>LaunchTemplateName</code>.</p>"
+        },
+        "Version":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Identifies the version of the launch template. You can specify a version identifier, or use the values <code>$Latest</code> or <code>$Default</code>.</p>"
+        }
+      },
+      "documentation":"<p>Details about the launch template to use.</p>"
     },
     "AwsAutoScalingAutoScalingGroupMixedInstancesPolicyDetails":{
       "type":"structure",
@@ -1700,7 +1726,7 @@
       "members":{
         "LaunchTemplateSpecification":{
           "shape":"AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateLaunchTemplateSpecification",
-          "documentation":"<p>The launch template to use.</p>"
+          "documentation":"<p>The launch template to use for a mixed instances policy.</p>"
         },
         "Overrides":{
           "shape":"AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateOverridesList",
@@ -1725,7 +1751,7 @@
           "documentation":"<p>Identifies the version of the launch template. You can specify a version identifier, or use the values <code>$Latest</code> or <code>$Default</code>.</p>"
         }
       },
-      "documentation":"<p>Details about the launch template to use.</p>"
+      "documentation":"<p>Details about the launch template to use for a mixed instances policy.</p>"
     },
     "AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateOverridesList":{
       "type":"list",
@@ -2513,6 +2539,10 @@
         "VpcConfig":{
           "shape":"AwsCodeBuildProjectVpcConfig",
           "documentation":"<p>Information about the VPC configuration that CodeBuild accesses.</p>"
+        },
+        "SecondaryArtifacts":{
+          "shape":"AwsCodeBuildProjectArtifactsList",
+          "documentation":"<p>Information about the secondary artifacts for the CodeBuild project.</p>"
         }
       },
       "documentation":"<p>Information about an CodeBuild project.</p>"
@@ -5690,6 +5720,24 @@
       },
       "documentation":"<p>Contains information about the access log configuration for the load balancer.</p>"
     },
+    "AwsElbLoadBalancerAdditionalAttribute":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the attribute.</p>"
+        },
+        "Value":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The value of the attribute.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about additional attributes for the load balancer.</p>"
+    },
+    "AwsElbLoadBalancerAdditionalAttributeList":{
+      "type":"list",
+      "member":{"shape":"AwsElbLoadBalancerAdditionalAttribute"}
+    },
     "AwsElbLoadBalancerAttributes":{
       "type":"structure",
       "members":{
@@ -5708,6 +5756,10 @@
         "CrossZoneLoadBalancing":{
           "shape":"AwsElbLoadBalancerCrossZoneLoadBalancing",
           "documentation":"<p>Cross-zone load balancing settings for the load balancer.</p> <p>If cross-zone load balancing is enabled, the load balancer routes the request traffic evenly across all instances regardless of the Availability Zones.</p>"
+        },
+        "AdditionalAttributes":{
+          "shape":"AwsElbLoadBalancerAdditionalAttributeList",
+          "documentation":"<p>Any additional attributes for a load balancer.</p>"
         }
       },
       "documentation":"<p>Contains attributes for the load balancer.</p>"
@@ -7800,6 +7852,84 @@
       "type":"list",
       "member":{"shape":"AwsRdsDbProcessorFeature"}
     },
+    "AwsRdsDbSecurityGroupDetails":{
+      "type":"structure",
+      "members":{
+        "DbSecurityGroupArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN for the DB security group.</p>"
+        },
+        "DbSecurityGroupDescription":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Provides the description of the DB security group.</p>"
+        },
+        "DbSecurityGroupName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the name of the DB security group.</p>"
+        },
+        "Ec2SecurityGroups":{
+          "shape":"AwsRdsDbSecurityGroupEc2SecurityGroups",
+          "documentation":"<p>Contains a list of EC2 security groups.</p>"
+        },
+        "IpRanges":{
+          "shape":"AwsRdsDbSecurityGroupIpRanges",
+          "documentation":"<p>Contains a list of IP ranges.</p>"
+        },
+        "OwnerId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Provides the Amazon Web Services ID of the owner of a specific DB security group.</p>"
+        },
+        "VpcId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Provides VPC ID associated with the DB security group. </p>"
+        }
+      },
+      "documentation":"<p>Provides information about an Amazon RDS DB security group.</p>"
+    },
+    "AwsRdsDbSecurityGroupEc2SecurityGroup":{
+      "type":"structure",
+      "members":{
+        "Ec2SecurityGroupId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the ID for the EC2 security group.</p>"
+        },
+        "Ec2SecurityGroupName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the name of the EC2 security group.</p>"
+        },
+        "Ec2SecurityGroupOwnerId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Provides the Amazon Web Services ID of the owner of the EC2 security group.</p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Provides the status of the EC2 security group.</p>"
+        }
+      },
+      "documentation":"<p>EC2 security group information for an RDS DB security group.</p>"
+    },
+    "AwsRdsDbSecurityGroupEc2SecurityGroups":{
+      "type":"list",
+      "member":{"shape":"AwsRdsDbSecurityGroupEc2SecurityGroup"}
+    },
+    "AwsRdsDbSecurityGroupIpRange":{
+      "type":"structure",
+      "members":{
+        "CidrIp":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the IP range.</p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the status of the IP range.</p>"
+        }
+      },
+      "documentation":"<p>IP range information for an RDS DB security group.</p>"
+    },
+    "AwsRdsDbSecurityGroupIpRanges":{
+      "type":"list",
+      "member":{"shape":"AwsRdsDbSecurityGroupIpRange"}
+    },
     "AwsRdsDbSnapshotDetails":{
       "type":"structure",
       "members":{
@@ -8364,6 +8494,10 @@
         "VpcSecurityGroups":{
           "shape":"AwsRedshiftClusterVpcSecurityGroups",
           "documentation":"<p>The list of VPC security groups that the cluster belongs to, if the cluster is in a VPC.</p>"
+        },
+        "LoggingStatus":{
+          "shape":"AwsRedshiftClusterLoggingStatus",
+          "documentation":"<p>Information about the logging status of the cluster.</p>"
         }
       },
       "documentation":"<p>Details about an Amazon Redshift cluster.</p>"
@@ -8431,6 +8565,36 @@
     "AwsRedshiftClusterIamRoles":{
       "type":"list",
       "member":{"shape":"AwsRedshiftClusterIamRole"}
+    },
+    "AwsRedshiftClusterLoggingStatus":{
+      "type":"structure",
+      "members":{
+        "BucketName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the S3 bucket where the log files are stored.</p>"
+        },
+        "LastFailureMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The message indicating that the logs failed to be delivered.</p>"
+        },
+        "LastFailureTime":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The last time when logs failed to be delivered.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
+        },
+        "LastSuccessfulDeliveryTime":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The last time that logs were delivered successfully.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
+        },
+        "LoggingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether logging is enabled.</p>"
+        },
+        "S3KeyPrefix":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Provides the prefix applied to the log file names.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the logging status of the cluster.</p>"
     },
     "AwsRedshiftClusterPendingModifiedValues":{
       "type":"structure",
@@ -12982,6 +13146,10 @@
         "AwsNetworkFirewallRuleGroup":{
           "shape":"AwsNetworkFirewallRuleGroupDetails",
           "documentation":"<p>Details about an Network Firewall rule group.</p>"
+        },
+        "AwsRdsDbSecurityGroup":{
+          "shape":"AwsRdsDbSecurityGroupDetails",
+          "documentation":"<p>Details about an Amazon RDS DB security group.</p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"

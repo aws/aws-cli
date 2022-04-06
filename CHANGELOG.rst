@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.22.90
+=======
+
+* api-change:``config``: Add resourceType enums for AWS::EMR::SecurityConfiguration and AWS::SageMaker::CodeRepository
+* api-change:``lambda``: This release adds new APIs for creating and managing Lambda Function URLs and adds a new FunctionUrlAuthType parameter to the AddPermission API. Customers can use Function URLs to create built-in HTTPS endpoints on their functions.
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for Box. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-box.html
+* api-change:``panorama``: Added Brand field to device listings.
+
+
 1.22.89
 =======
 

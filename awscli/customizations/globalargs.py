@@ -14,7 +14,6 @@ import sys
 import os
 
 from botocore.client import Config
-from botocore.endpoint import DEFAULT_TIMEOUT
 from botocore.handlers import disable_signing
 import jmespath
 
@@ -111,13 +110,10 @@ def _resolve_timeout(session, parsed_args, arg_name):
     arg_value = getattr(parsed_args, arg_name, None)
     if arg_value is not None:    
         arg_value = int(arg_value)
+        if arg_value == 0:
+            arg_value = None
         setattr(parsed_args, arg_name, arg_value)
         _update_default_client_config(session, arg_name, arg_value)
-    if arg_value == 0:
-        arg_value = None
-        setattr(parsed_args, arg_name, arg_value)
-        _update_default_client_config(session, arg_name, arg_value)
-
 
 def _update_default_client_config(session, arg_name, arg_value):
     # Update in the default client config so that the timeout will be used

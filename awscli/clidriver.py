@@ -20,6 +20,7 @@ import distro
 import botocore.session
 from botocore import xform_name
 from botocore.endpoint import DEFAULT_TIMEOUT
+from botocore.config import Config
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
@@ -62,7 +63,6 @@ from awscli.autoprompt.core import AutoPromptDriver
 from awscli.errorhandler import (
     construct_cli_error_handlers_chain, construct_entry_point_handlers_chain
 )
-from awscli.customizations.globalargs import _update_default_client_config
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
@@ -182,7 +182,8 @@ class AWSCLIEntryPoint:
         driver = self._driver
         if driver is None:
             driver = create_clidriver(args)
-        driver._set_connect_timeout()
+        # Before processing the cli args, timeouts are set
+        driver._set_connect_and_read_timeout()
         autoprompt_driver = AutoPromptDriver(driver)
         auto_prompt_mode = autoprompt_driver.resolve_mode(args)
         if auto_prompt_mode == 'on':
@@ -247,6 +248,10 @@ class CLIDriver(object):
         config_store.set_config_provider(
             'connect_timeout',
             self._construct_connect_timeout()
+        )
+        config_store.set_config_provider(
+            'read_timeout',
+            self._construct_read_timeout()
         )
 
     def _construct_cli_region_chain(self):
@@ -349,14 +354,36 @@ class CLIDriver(object):
         ]
         return ChainProvider(providers=providers)
 
-    def _set_connect_timeout(self):
+    def _construct_read_timeout(self):
+        providers = [
+            EnvironmentProvider(
+                name='AWS_READ_TIMEOUT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='read_timeout',
+                session=self.session,
+            ),
+            ConstantProvider(value=DEFAULT_TIMEOUT),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _set_connect_and_read_timeout(self):
         config_store = self.session.get_component('config_store')
-        timeout = config_store.get_config_variable("connect_timeout")
-        timeout = int(timeout)
-        if timeout == 0:
-            timeout = None
-        LOG.debug("Timeout from providers: %s", timeout, exc_info=True)
-        _update_default_client_config(self.session, "connect_timeout", timeout)
+        connect_timeout = config_store.get_config_variable("connect_timeout")
+        read_timeout = config_store.get_config_variable("read_timeout")
+        connect_timeout, read_timeout = int(connect_timeout), int(read_timeout)
+        if connect_timeout == 0:
+            connect_timeout = None
+        if read_timeout == 0:
+            read_timeout = None
+        LOG.debug("Timeouts from providers: %s", (connect_timeout, read_timeout), exc_info=True)
+        timeouts = { "connect_timeout": connect_timeout, "read_timeout": read_timeout }
+        timeouts_config = Config(**timeouts)
+        current_default_config = self.session.get_default_client_config()
+        if current_default_config is not None:
+            timeouts_config = current_default_config.merge(timeouts_config)      
+        self.session.set_default_client_config(timeouts_config)
 
     @property
     def subcommand_table(self):

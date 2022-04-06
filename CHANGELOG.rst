@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.5.3
+=====
+
+* api-change:``iot``: AWS IoT - AWS IoT Device Defender adds support to list metric datapoints collected for IoT devices through the ListMetricValues API
+* api-change:``securityhub``: Added additional ASFF details for RdsSecurityGroup AutoScalingGroup, ElbLoadBalancer, CodeBuildProject and RedshiftCluster.
+* api-change:``fsx``: Provide customers more visibility into file system status by adding new "Misconfigured Unavailable" status for Amazon FSx for Windows File Server.
+* api-change:``sms``: Revised product update notice for SMS console deprecation.
+* api-change:``connect``: This release updates these APIs: UpdateInstanceAttribute, DescribeInstanceAttribute and ListInstanceAttributes. You can use it to programmatically enable/disable multi-party conferencing using attribute type MULTI_PARTY_CONFERENCING on the specified Amazon Connect instance.
+* api-change:``proton``: SDK release to support tagging for AWS Proton Repository resource
+* api-change:``servicecatalog``: This release adds ProvisioningArtifictOutputKeys to DescribeProvisioningParameters to reference the outputs of a Provisioned Product and deprecates ProvisioningArtifactOutputs.
+* api-change:``s3control``: Documentation-only update for doc bug fixes for the S3 Control API docs.
+* api-change:``datasync``: AWS DataSync now supports Amazon FSx for OpenZFS locations.
+
+
 2.5.2
 =====
 

@@ -154,6 +154,14 @@ def no_pager_handler(session, parsed_args, **kwargs):
             'pager', ConstantProvider(value=None)
         )
 
+def _update_default_client_config(session, arg_name, arg_value):
+    # Update in the default client config so that the timeout will be used
+    # by all clients created from then on.
+    current_default_config = session.get_default_client_config()
+    new_default_config = Config(**{arg_name: arg_value})
+    if current_default_config is not None:
+        new_default_config = current_default_config.merge(new_default_config)
+    session.set_default_client_config(new_default_config)
 
 class AWSCLIEntryPoint:
     def __init__(self, driver=None):
@@ -370,20 +378,17 @@ class CLIDriver(object):
 
     def _set_connect_and_read_timeout(self):
         config_store = self.session.get_component('config_store')
-        connect_timeout = config_store.get_config_variable("connect_timeout")
-        read_timeout = config_store.get_config_variable("read_timeout")
-        connect_timeout, read_timeout = int(connect_timeout), int(read_timeout)
-        if connect_timeout == 0:
-            connect_timeout = None
-        if read_timeout == 0:
-            read_timeout = None
-        LOG.debug("Timeouts from providers: %s", (connect_timeout, read_timeout), exc_info=True)
-        timeouts = { "connect_timeout": connect_timeout, "read_timeout": read_timeout }
-        timeouts_config = Config(**timeouts)
-        current_default_config = self.session.get_default_client_config()
-        if current_default_config is not None:
-            timeouts_config = current_default_config.merge(timeouts_config)      
-        self.session.set_default_client_config(timeouts_config)
+        self._set_timeout_from_providers("connect_timeout", config_store)
+        self._set_timeout_from_providers("read_timeout", config_store)
+
+    def _set_timeout_from_providers(self, timeout_arg, config_store):
+        timeout = config_store.get_config_variable(timeout_arg)
+        timeout = int(timeout)
+        if timeout == 0:
+            timeout = None
+        LOG.debug("%s timeout from providers: %s", timeout_arg, timeout)
+        _update_default_client_config(self.session, timeout_arg, timeout)
+        
 
     @property
     def subcommand_table(self):

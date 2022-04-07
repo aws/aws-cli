@@ -240,14 +240,15 @@ def main():
         print(deprecated_python_msg, file=sys.stderr)
 
     opts = parser.parse_args()[0]
+    install_dir = os.path.abspath(opts.install_dir)
+    bin_location = os.path.abspath(opts.bin_location)
     working_dir = create_working_dir()
     try:
-        create_install_structure(working_dir, opts.install_dir)
-        pip_install_packages(opts.install_dir)
-        real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
-        if opts.bin_location and create_symlink(real_location,
-                                                opts.bin_location):
-            print("You can now run: %s --version" % opts.bin_location)
+        create_install_structure(working_dir, install_dir)
+        pip_install_packages(install_dir)
+        real_location = os.path.join(install_dir, bin_path(), 'aws')
+        if opts.bin_location and create_symlink(real_location, bin_location):
+            print("You can now run: %s --version" % bin_location)
         else:
             print("You can now run: %s --version" % real_location)
         print('\nNote: AWS CLI version 2, the latest major version '

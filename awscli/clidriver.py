@@ -228,8 +228,6 @@ class CLIDriver(object):
         self._command_table = None
         self._argument_table = None
         self.alias_loader = AliasLoader()
-        
-
 
     def _update_config_chain(self):
         config_store = self.session.get_component('config_store')

@@ -11,46 +11,66 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import re
-import time
-import logging
-import datetime
-import contextlib
-import hashlib
 import binascii
-import functools
-import weakref
-import random
-import os
-import socket
 import cgi
-import warnings
+import contextlib
+import datetime
+import functools
+import hashlib
 import io
-
-import dateutil.parser
-from dateutil.tz import tzutc
+import logging
+import os
+import random
+import re
+import socket
+import time
+import warnings
+import weakref
 
 import botocore
 import botocore.awsrequest
 import botocore.httpsession
+import dateutil.parser
 from botocore.compat import (
-        json, quote, zip_longest, urlsplit, urlunsplit,
-        six, urlparse, total_seconds, get_tzinfo_options, get_md5,
-        MD5_AVAILABLE
+    MD5_AVAILABLE,
+    get_md5,
+    get_tzinfo_options,
+    json,
+    quote,
+    six,
+    total_seconds,
+    urlparse,
+    urlsplit,
+    urlunsplit,
+    zip_longest,
+)
+from botocore.exceptions import (
+    ClientError,
+    ConfigNotFound,
+    ConnectionClosedError,
+    ConnectTimeoutError,
+    EndpointConnectionError,
+    HTTPClientError,
+    InvalidDNSNameError,
+    InvalidEndpointConfigurationError,
+    InvalidExpressionError,
+    InvalidHostLabelError,
+    InvalidIMDSEndpointError,
+    InvalidIMDSEndpointModeError,
+    InvalidRegionError,
+    MetadataRetrievalError,
+    PendingAuthorizationExpiredError,
+    ReadTimeoutError,
+    SSOTokenLoadError,
+    UnsupportedOutpostResourceError,
+    UnsupportedS3AccesspointConfigurationError,
+    UnsupportedS3ArnError,
+    UnsupportedS3ConfigurationError,
+    UnsupportedS3ControlArnError,
+    UnsupportedS3ControlConfigurationError,
 )
 from botocore.vendored.six.moves.urllib.request import getproxies, proxy_bypass
-from botocore.exceptions import (
-    InvalidExpressionError, ConfigNotFound, InvalidDNSNameError, ClientError,
-    MetadataRetrievalError, EndpointConnectionError, ReadTimeoutError,
-    ConnectionClosedError, ConnectTimeoutError, SSOTokenLoadError,
-    PendingAuthorizationExpiredError, UnsupportedS3ArnError,
-    UnsupportedS3AccesspointConfigurationError, InvalidRegionError,
-    UnsupportedOutpostResourceError,
-    UnsupportedS3ControlConfigurationError, UnsupportedS3ControlArnError,
-    InvalidHostLabelError, InvalidIMDSEndpointError,
-    InvalidIMDSEndpointModeError, HTTPClientError,
-    UnsupportedS3ConfigurationError,
-)
+from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
 
 logger = logging.getLogger(__name__)
@@ -2651,3 +2671,96 @@ def original_ld_library_path(env=None):
     finally:
         if value_to_put_back is not None:
             env['LD_LIBRARY_PATH'] = value_to_put_back
+
+
+class EventbridgeSignerSetter:
+    _DEFAULT_PARTITION = 'aws'
+    _DEFAULT_DNS_SUFFIX = 'amazonaws.com'
+
+    def __init__(
+        self,
+        endpoint_resolver,
+        region=None,
+        endpoint_url=None
+    ):
+        self._endpoint_resolver = endpoint_resolver
+        self._region = region
+        self._endpoint_url = endpoint_url
+
+    def register(self, event_emitter):
+        event_emitter.register(
+            'before-parameter-build.events.PutEvents',
+            self.check_for_global_endpoint
+        )
+        event_emitter.register(
+            'before-call.events.PutEvents',
+            self.set_endpoint_url
+        )
+
+    def set_endpoint_url(self, params, context, **kwargs):
+        if 'eventbridge_endpoint' in context:
+            endpoint = context['eventbridge_endpoint']
+            logger.debug(
+                f"Rewriting URL from {params['url']} to {endpoint}"
+            )
+            params['url'] = endpoint
+
+    def check_for_global_endpoint(self, params, context, **kwargs):
+        endpoint = params.get('EndpointId')
+        if endpoint is None:
+            return
+
+        if len(endpoint) == 0:
+            raise InvalidEndpointConfigurationError(
+                msg='EndpointId must not be a zero length string'
+            )
+
+        if not HAS_CRT:
+            raise MissingDependencyException(
+                msg="Using EndpointId requires an additional "
+                    "dependency. You will need to pip install "
+                    "botocore[crt] before proceeding."
+            )
+
+        config = context.get('client_config')
+        endpoint_variant_tags = None
+        if config is not None:
+            if config.use_fips_endpoint:
+                raise InvalidEndpointConfigurationError(
+                    msg="FIPS is not supported with EventBridge "
+                    "multi-region endpoints."
+                )
+            if config.use_dualstack_endpoint:
+                endpoint_variant_tags = ['dualstack']
+
+        if self._endpoint_url is None:
+            # Validate endpoint is a valid hostname component
+            parts = urlparse(f'https://{endpoint}')
+            if parts.hostname != endpoint:
+                raise InvalidEndpointConfigurationError(
+                    msg='EndpointId is not a valid hostname component.'
+                )
+            resolved_endpoint = self._get_global_endpoint(
+                endpoint,
+                endpoint_variant_tags=endpoint_variant_tags
+            )
+        else:
+            resolved_endpoint = self._endpoint_url
+
+        context['eventbridge_endpoint'] = resolved_endpoint
+        context['auth_type'] = 'v4a'
+
+    def _get_global_endpoint(self, endpoint, endpoint_variant_tags=None):
+        resolver = self._endpoint_resolver
+
+        partition = resolver.get_partition_for_region(self._region)
+        if partition is None:
+            partition = self._DEFAULT_PARTITION
+        dns_suffix = resolver.get_partition_dns_suffix(
+            partition,
+            endpoint_variant_tags=endpoint_variant_tags
+        )
+        if dns_suffix is None:
+            dns_suffix = self._DEFAULT_DNS_SUFFIX
+
+        return f"https://{endpoint}.endpoint.events.{dns_suffix}/"

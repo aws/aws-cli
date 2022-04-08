@@ -492,7 +492,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a device and returns a configuration archive. The configuration archive is a ZIP file that contains a provisioning certificate that is valid for 5 minutes. Transfer the configuration archive to the device with the included USB storage device within 5 minutes.</p>"
+      "documentation":"<p>Creates a device and returns a configuration archive. The configuration archive is a ZIP file that contains a provisioning certificate that is valid for 5 minutes. Name the configuration archive <code>certificates-omni_<i>device-name</i>.zip</code> and transfer it to the device within 5 minutes. Use the included USB storage device and connect it to the USB 3.0 port next to the HDMI output.</p>"
     },
     "RegisterPackageVersion":{
       "name":"RegisterPackageVersion",
@@ -695,7 +695,8 @@
         "REMOVAL_REQUESTED",
         "REMOVAL_IN_PROGRESS",
         "REMOVAL_FAILED",
-        "REMOVAL_SUCCEEDED"
+        "REMOVAL_SUCCEEDED",
+        "DEPLOYMENT_FAILED"
       ]
     },
     "ApplicationInstanceStatusDescription":{
@@ -1291,6 +1292,10 @@
           "shape":"DeviceArn",
           "documentation":"<p>The device's ARN.</p>"
         },
+        "Brand":{
+          "shape":"DeviceBrand",
+          "documentation":"<p>The device's maker.</p>"
+        },
         "CreatedTime":{
           "shape":"CreatedTime",
           "documentation":"<p>When the device was created.</p>"
@@ -1747,6 +1752,10 @@
     "Device":{
       "type":"structure",
       "members":{
+        "Brand":{
+          "shape":"DeviceBrand",
+          "documentation":"<p>The device's maker.</p>"
+        },
         "CreatedTime":{
           "shape":"CreatedTime",
           "documentation":"<p>When the device was created.</p>"
@@ -1778,6 +1787,13 @@
       "type":"string",
       "max":255,
       "min":1
+    },
+    "DeviceBrand":{
+      "type":"string",
+      "enum":[
+        "AWS_PANORAMA",
+        "LENOVO"
+      ]
     },
     "DeviceConnectionStatus":{
       "type":"string",
@@ -3328,7 +3344,8 @@
         "REMOVAL_SUCCEEDED",
         "REMOVAL_FAILED",
         "PROCESSING_DEPLOYMENT",
-        "PROCESSING_REMOVAL"
+        "PROCESSING_REMOVAL",
+        "DEPLOYMENT_FAILED"
       ]
     },
     "StorageLocation":{

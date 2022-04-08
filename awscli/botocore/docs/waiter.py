@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 from botocore import xform_name
 from botocore.compat import OrderedDict
+from botocore.docs.method import document_model_driven_method
 from botocore.docs.utils import DocumentedShape
 from botocore.utils import get_service_module_name
-from botocore.docs.method import document_model_driven_method
 
 
 class WaiterDocumenter(object):

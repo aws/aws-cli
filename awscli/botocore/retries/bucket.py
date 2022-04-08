@@ -1,6 +1,6 @@
 """This module implements token buckets used for client side throttling."""
-import time
 import threading
+import time
 
 from botocore.exceptions import CapacityNotAvailableError
 

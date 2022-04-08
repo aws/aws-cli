@@ -10,44 +10,50 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
 import functools
+import logging
 
-from botocore import waiter, xform_name
+from botocore import UNSIGNED, waiter, xform_name
 from botocore.args import ClientArgsCreator
 from botocore.auth import AUTH_TYPE_MAPS
 from botocore.awsrequest import prepare_request_dict
-from botocore.docs.docstring import ClientMethodDocstring
-from botocore.docs.docstring import PaginatorDocstring
-from botocore.exceptions import (
-    ClientError, DataNotFoundError, OperationNotPageableError,
-    UnknownSignatureVersionError, InvalidEndpointDiscoveryConfigurationError,
-)
-from botocore.hooks import first_non_none_response
-from botocore.model import ServiceModel
-from botocore.paginate import Paginator
-from botocore.utils import (
-    CachedProperty, get_service_module_name, S3RegionRedirector,
-    S3ArnParamHandler, S3EndpointSetter, ensure_boolean,
-    S3ControlArnParamHandler, S3ControlEndpointSetter,
-)
-from botocore.args import ClientArgsCreator
-from botocore import UNSIGNED
+
 # Keep this imported.  There's pre-existing code that uses
 # "from botocore.client import Config".
 from botocore.config import Config
-from botocore.history import get_global_history_recorder
 from botocore.discovery import (
-    EndpointDiscoveryHandler, EndpointDiscoveryManager,
-    block_endpoint_discovery_required_operations
+    EndpointDiscoveryHandler,
+    EndpointDiscoveryManager,
+    block_endpoint_discovery_required_operations,
 )
-from botocore.retries import standard
-from botocore.retries import adaptive
+from botocore.docs.docstring import ClientMethodDocstring, PaginatorDocstring
+from botocore.exceptions import (
+    ClientError,
+    DataNotFoundError,
+    InvalidEndpointDiscoveryConfigurationError,
+    OperationNotPageableError,
+    UnknownSignatureVersionError,
+)
+from botocore.history import get_global_history_recorder
+from botocore.hooks import first_non_none_response
 from botocore.httpchecksum import (
     apply_request_checksum,
     resolve_checksum_context,
 )
-
+from botocore.model import ServiceModel
+from botocore.paginate import Paginator
+from botocore.retries import adaptive, standard
+from botocore.utils import (
+    CachedProperty,
+    EventbridgeSignerSetter,
+    S3ArnParamHandler,
+    S3ControlArnParamHandler,
+    S3ControlEndpointSetter,
+    S3EndpointSetter,
+    S3RegionRedirector,
+    ensure_boolean,
+    get_service_module_name,
+)
 
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
@@ -90,6 +96,8 @@ class ClientCreator(object):
             verify, credentials, scoped_config, client_config, endpoint_bridge)
         service_client = cls(**client_args)
         self._register_retries(service_client)
+        self._register_eventbridge_events(
+            service_client, endpoint_bridge, endpoint_url)
         self._register_s3_events(
             service_client, endpoint_bridge, endpoint_url, client_config,
             scoped_config)
@@ -210,6 +218,17 @@ class ClientCreator(object):
         if enabled == "auto":
             return client.meta.service_model.endpoint_discovery_required
         return enabled
+
+    def _register_eventbridge_events(
+        self, client, endpoint_bridge, endpoint_url
+    ):
+        if client.meta.service_model.service_name != 'events':
+            return
+        EventbridgeSignerSetter(
+            endpoint_resolver=self._endpoint_resolver,
+            region=client.meta.region_name,
+            endpoint_url=endpoint_url
+        ).register(client.meta.events)
 
     def _register_s3_events(self, client, endpoint_bridge, endpoint_url,
                             client_config, scoped_config):

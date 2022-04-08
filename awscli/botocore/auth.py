@@ -15,15 +15,23 @@ import base64
 import calendar
 import datetime
 import functools
-from email.utils import formatdate
-from hashlib import sha256
 import hmac
 import logging
 import time
+from email.utils import formatdate
+from hashlib import sha256
 
 from botocore.compat import (
-    encodebytes, ensure_unicode, HTTPHeaders, json, parse_qs, quote,
-    six, urlsplit, urlunsplit, MD5_AVAILABLE
+    MD5_AVAILABLE,
+    HTTPHeaders,
+    encodebytes,
+    ensure_unicode,
+    json,
+    parse_qs,
+    quote,
+    six,
+    urlsplit,
+    urlunsplit,
 )
 from botocore.exceptions import NoCredentialsError
 from botocore.utils import normalize_url_path, percent_encode_sequence
@@ -635,6 +643,7 @@ class S3SigV4PostAuth(SigV4Auth):
 # this module. In the future, we should isolate those functions/classes into
 # a separate utility module to avoid any potential circular import.
 import botocore.crt.auth
+
 # Defined at the bottom instead of the top of the module because the Auth
 # classes weren't defined yet.
 AUTH_TYPE_MAPS = {

@@ -11,43 +11,45 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import time
 import datetime
+import getpass
+import json
 import logging
 import os
-import getpass
-import threading
-import json
 import subprocess
+import threading
+import time
 from collections import namedtuple
 from copy import deepcopy
 from hashlib import sha1
 
+import botocore.compat
+import botocore.configloader
+from botocore import UNSIGNED
+from botocore.compat import compat_shell_split, total_seconds
+from botocore.config import Config
+from botocore.exceptions import (
+    ConfigNotFound,
+    CredentialRetrievalError,
+    InfiniteLoopConfigError,
+    InvalidConfigError,
+    MetadataRetrievalError,
+    PartialCredentialsError,
+    RefreshWithMFAUnsupportedError,
+    UnauthorizedSSOTokenError,
+    UnknownCredentialError,
+)
+from botocore.utils import (
+    ContainerMetadataFetcher,
+    FileWebIdentityTokenLoader,
+    InstanceMetadataFetcher,
+    SSOTokenLoader,
+    original_ld_library_path,
+    parse_key_val_file,
+    resolve_imds_endpoint_mode,
+)
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
-
-import botocore.configloader
-import botocore.compat
-from botocore import UNSIGNED
-from botocore.compat import total_seconds
-from botocore.compat import compat_shell_split
-from botocore.config import Config
-from botocore.exceptions import UnknownCredentialError
-from botocore.exceptions import PartialCredentialsError
-from botocore.exceptions import ConfigNotFound
-from botocore.exceptions import InvalidConfigError
-from botocore.exceptions import InfiniteLoopConfigError
-from botocore.exceptions import RefreshWithMFAUnsupportedError
-from botocore.exceptions import MetadataRetrievalError
-from botocore.exceptions import CredentialRetrievalError
-from botocore.exceptions import UnauthorizedSSOTokenError
-from botocore.utils import InstanceMetadataFetcher, parse_key_val_file
-from botocore.utils import ContainerMetadataFetcher
-from botocore.utils import FileWebIdentityTokenLoader
-from botocore.utils import SSOTokenLoader
-from botocore.utils import original_ld_library_path
-from botocore.utils import resolve_imds_endpoint_mode
-
 
 logger = logging.getLogger(__name__)
 ReadOnlyCredentials = namedtuple('ReadOnlyCredentials',

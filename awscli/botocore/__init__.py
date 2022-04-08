@@ -12,9 +12,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import logging
 import os
 import re
-import logging
 
 __version__ = '2.0.0dev155'
 

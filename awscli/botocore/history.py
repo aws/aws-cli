@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import logging
 
-
 HISTORY_RECORDER = None
 logger = logging.getLogger(__name__)
 

@@ -1,11 +1,8 @@
-import math
 import logging
+import math
 import threading
 
-from botocore.retries import bucket
-from botocore.retries import throttling
-from botocore.retries import standard
-
+from botocore.retries import bucket, standard, throttling
 
 logger = logging.getLogger(__name__)
 

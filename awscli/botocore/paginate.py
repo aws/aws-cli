@@ -11,18 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import base64
+import json
+import logging
 from itertools import tee
 
-from botocore.compat import six
-
 import jmespath
-import json
-import base64
-import logging
+from botocore.compat import six, zip
 from botocore.exceptions import PaginationError
-from botocore.compat import zip
-from botocore.utils import set_value_from_jmespath, merge_dicts
-
+from botocore.utils import merge_dicts, set_value_from_jmespath
 
 log = logging.getLogger(__name__)
 

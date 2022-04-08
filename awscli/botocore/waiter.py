@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import jmespath
 import logging
 import time
 
-from botocore.utils import get_service_module_name
+import jmespath
 from botocore.docs.docstring import WaiterDocstring
-from .exceptions import WaiterError, ClientError, WaiterConfigError
-from . import xform_name
+from botocore.utils import get_service_module_name
 
+from . import xform_name
+from .exceptions import ClientError, WaiterConfigError, WaiterError
 
 logger = logging.getLogger(__name__)
 

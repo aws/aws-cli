@@ -123,6 +123,24 @@
       ],
       "documentation":"<p>Creates a Lambda function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>You set the package type to <code>Image</code> if the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties. </p> <p>You set the package type to <code>Zip</code> if the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Function States</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set set of signing profiles, which define the trusted publishers for this function.</p> <p>If another account or an Amazon Web Services service invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based IAM policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Functions</a>.</p>"
     },
+    "CreateFunctionUrlConfig":{
+      "name":"CreateFunctionUrlConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateFunctionUrlConfigRequest"},
+      "output":{"shape":"CreateFunctionUrlConfigResponse"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Creates a Lambda function URL with the specified configuration parameters. A function URL is a dedicated HTTP(S) endpoint that you can use to invoke your function.</p>"
+    },
     "DeleteAlias":{
       "name":"DeleteAlias",
       "http":{
@@ -242,6 +260,22 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p>Deletes the configuration for asynchronous invocation for a function, version, or alias.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
+    },
+    "DeleteFunctionUrlConfig":{
+      "name":"DeleteFunctionUrlConfig",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteFunctionUrlConfigRequest"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Deletes a Lambda function URL. When you delete a function URL, you can't recover it. Creating a new function URL results in a different URL address.</p>"
     },
     "DeleteLayerVersion":{
       "name":"DeleteLayerVersion",
@@ -423,6 +457,23 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Retrieves the configuration for asynchronous invocation for a function, version, or alias.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
+    },
+    "GetFunctionUrlConfig":{
+      "name":"GetFunctionUrlConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFunctionUrlConfigRequest"},
+      "output":{"shape":"GetFunctionUrlConfigResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns details about a Lambda function URL.</p>"
     },
     "GetLayerVersion":{
       "name":"GetLayerVersion",
@@ -632,6 +683,23 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Retrieves a list of configurations for asynchronous invocation for a function.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
+    },
+    "ListFunctionUrlConfigs":{
+      "name":"ListFunctionUrlConfigs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-10-31/functions/{FunctionName}/urls",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFunctionUrlConfigsRequest"},
+      "output":{"shape":"ListFunctionUrlConfigsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns a list of Lambda function URLs for the specified function.</p>"
     },
     "ListFunctions":{
       "name":"ListFunctions",
@@ -1043,6 +1111,24 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p>Updates the configuration for asynchronous invocation for a function, version, or alias.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>"
+    },
+    "UpdateFunctionUrlConfig":{
+      "name":"UpdateFunctionUrlConfig",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-10-31/functions/{FunctionName}/url",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFunctionUrlConfigRequest"},
+      "output":{"shape":"UpdateFunctionUrlConfigResponse"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Updates the configuration for a Lambda function URL.</p>"
     }
   },
   "shapes":{
@@ -1201,6 +1287,10 @@
         "PrincipalOrgID":{
           "shape":"PrincipalOrgID",
           "documentation":"<p>The identifier for your organization in Organizations. Use this to grant permissions to all the Amazon Web Services accounts under this organization.</p>"
+        },
+        "FunctionUrlAuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
         }
       }
     },
@@ -1273,6 +1363,17 @@
         }
       },
       "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-traffic-shifting-using-aliases.html\">traffic-shifting</a> configuration of a Lambda function alias.</p>"
+    },
+    "AllowCredentials":{"type":"boolean"},
+    "AllowMethodsList":{
+      "type":"list",
+      "member":{"shape":"Method"},
+      "max":6
+    },
+    "AllowOriginsList":{
+      "type":"list",
+      "member":{"shape":"Origin"},
+      "max":100
     },
     "AllowedPublishers":{
       "type":"structure",
@@ -1435,6 +1536,36 @@
           "documentation":"<p>The number of concurrent executions that are reserved for this function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html\">Managing Concurrency</a>.</p>"
         }
       }
+    },
+    "Cors":{
+      "type":"structure",
+      "members":{
+        "AllowCredentials":{
+          "shape":"AllowCredentials",
+          "documentation":"<p>Whether to allow cookies or other credentials in requests to your function URL. The default is <code>false</code>.</p>"
+        },
+        "AllowHeaders":{
+          "shape":"HeadersList",
+          "documentation":"<p>The HTTP headers that origins can include in requests to your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.</p>"
+        },
+        "AllowMethods":{
+          "shape":"AllowMethodsList",
+          "documentation":"<p>The HTTP methods that are allowed when calling your function URL. For example: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, or the wildcard character (<code>*</code>).</p>"
+        },
+        "AllowOrigins":{
+          "shape":"AllowOriginsList",
+          "documentation":"<p>The origins that can access your function URL. You can list any number of specific origins, separated by a comma. For example: <code>https://www.example.com</code>, <code>http://localhost:60905</code>.</p> <p>Alternatively, you can grant access to all origins using the wildcard character (<code>*</code>).</p>"
+        },
+        "ExposeHeaders":{
+          "shape":"HeadersList",
+          "documentation":"<p>The HTTP headers in your function response that you want to expose to origins that call your function URL. For example: <code>Date</code>, <code>Keep-Alive</code>, <code>X-Custom-Header</code>.</p>"
+        },
+        "MaxAge":{
+          "shape":"MaxAge",
+          "documentation":"<p>The maximum amount of time, in seconds, that web browsers can cache results of a preflight request. By default, this is set to <code>0</code>, which means that the browser doesn't cache results.</p>"
+        }
+      },
+      "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your Lambda function URL. Use CORS to grant access to your function URL from any origin. You can also use CORS to control access for specific HTTP headers and methods in requests to your function URL.</p>"
     },
     "CreateAliasRequest":{
       "type":"structure",
@@ -1676,6 +1807,66 @@
         }
       }
     },
+    "CreateFunctionUrlConfigRequest":{
+      "type":"structure",
+      "required":[
+        "FunctionName",
+        "AuthType"
+      ],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"FunctionUrlQualifier",
+          "documentation":"<p>The alias name.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        },
+        "AuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
+        },
+        "Cors":{
+          "shape":"Cors",
+          "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your function URL.</p>"
+        }
+      }
+    },
+    "CreateFunctionUrlConfigResponse":{
+      "type":"structure",
+      "required":[
+        "FunctionUrl",
+        "FunctionArn",
+        "AuthType",
+        "CreationTime"
+      ],
+      "members":{
+        "FunctionUrl":{
+          "shape":"FunctionUrl",
+          "documentation":"<p>The HTTP URL endpoint for your function.</p>"
+        },
+        "FunctionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your function.</p>"
+        },
+        "AuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
+        },
+        "Cors":{
+          "shape":"Cors",
+          "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your function URL.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL was created, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        }
+      }
+    },
     "Date":{"type":"timestamp"},
     "DeadLetterConfig":{
       "type":"structure",
@@ -1792,6 +1983,24 @@
         "Qualifier":{
           "shape":"Qualifier",
           "documentation":"<p>Specify a version to delete. You can't delete a version that's referenced by an alias.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        }
+      }
+    },
+    "DeleteFunctionUrlConfigRequest":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"FunctionUrlQualifier",
+          "documentation":"<p>The alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
         }
@@ -2449,6 +2658,65 @@
       "max":1,
       "min":0
     },
+    "FunctionUrl":{
+      "type":"string",
+      "max":100,
+      "min":40
+    },
+    "FunctionUrlAuthType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "AWS_IAM"
+      ]
+    },
+    "FunctionUrlConfig":{
+      "type":"structure",
+      "required":[
+        "FunctionUrl",
+        "FunctionArn",
+        "CreationTime",
+        "LastModifiedTime",
+        "AuthType"
+      ],
+      "members":{
+        "FunctionUrl":{
+          "shape":"FunctionUrl",
+          "documentation":"<p>The HTTP URL endpoint for your function.</p>"
+        },
+        "FunctionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your function.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL was created, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL configuration was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "Cors":{
+          "shape":"Cors",
+          "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your function URL.</p>"
+        },
+        "AuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
+        }
+      },
+      "documentation":"<p>Details about a Lambda function URL.</p>"
+    },
+    "FunctionUrlConfigList":{
+      "type":"list",
+      "member":{"shape":"FunctionUrlConfig"}
+    },
+    "FunctionUrlQualifier":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(^\\$LATEST$)|((?!^[0-9]+$)([a-zA-Z0-9-_]+))"
+    },
     "FunctionVersion":{
       "type":"string",
       "enum":["ALL"]
@@ -2651,6 +2919,60 @@
         }
       }
     },
+    "GetFunctionUrlConfigRequest":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"FunctionUrlQualifier",
+          "documentation":"<p>The alias name.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        }
+      }
+    },
+    "GetFunctionUrlConfigResponse":{
+      "type":"structure",
+      "required":[
+        "FunctionUrl",
+        "FunctionArn",
+        "AuthType",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "FunctionUrl":{
+          "shape":"FunctionUrl",
+          "documentation":"<p>The HTTP URL endpoint for your function.</p>"
+        },
+        "FunctionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your function.</p>"
+        },
+        "AuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
+        },
+        "Cors":{
+          "shape":"Cors",
+          "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your function URL.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL was created, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL configuration was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        }
+      }
+    },
     "GetLayerVersionByArnRequest":{
       "type":"structure",
       "required":["Arn"],
@@ -2844,6 +3166,16 @@
       "type":"string",
       "max":128,
       "pattern":"[^\\s]+"
+    },
+    "Header":{
+      "type":"string",
+      "max":1024,
+      "pattern":".*"
+    },
+    "HeadersList":{
+      "type":"list",
+      "member":{"shape":"Header"},
+      "max":100
     },
     "HttpStatus":{"type":"integer"},
     "ImageConfig":{
@@ -3480,6 +3812,44 @@
         }
       }
     },
+    "ListFunctionUrlConfigsRequest":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specify the pagination token that's returned by a previous request to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"MaxItems",
+          "documentation":"<p>The maximum number of function URLs to return in the response. Note that <code>ListFunctionUrlConfigs</code> returns a maximum of 50 items in each response, even if you set the number higher.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListFunctionUrlConfigsResponse":{
+      "type":"structure",
+      "required":["FunctionUrlConfigs"],
+      "members":{
+        "FunctionUrlConfigs":{
+          "shape":"FunctionUrlConfigList",
+          "documentation":"<p>A list of function URL configurations.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
     "ListFunctionsByCodeSigningConfigRequest":{
       "type":"structure",
       "required":["CodeSigningConfigArn"],
@@ -3763,7 +4133,17 @@
       "type":"string",
       "pattern":"ALL|[a-z]{2}(-gov)?-[a-z]+-\\d{1}"
     },
+    "MaxAge":{
+      "type":"integer",
+      "max":86400,
+      "min":0
+    },
     "MaxFunctionEventInvokeConfigListItems":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "MaxItems":{
       "type":"integer",
       "max":50,
       "min":1
@@ -3813,6 +4193,11 @@
       "max":10240,
       "min":128
     },
+    "Method":{
+      "type":"string",
+      "max":6,
+      "pattern":".*"
+    },
     "NameSpacedFunctionArn":{
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
@@ -3857,6 +4242,12 @@
       "type":"string",
       "max":34,
       "pattern":"o-[a-z0-9]{10,32}"
+    },
+    "Origin":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":".*"
     },
     "PackageType":{
       "type":"string",
@@ -4981,6 +5372,68 @@
         "DestinationConfig":{
           "shape":"DestinationConfig",
           "documentation":"<p>A destination for events after they have been sent to a function for processing.</p> <p class=\"title\"> <b>Destinations</b> </p> <ul> <li> <p> <b>Function</b> - The Amazon Resource Name (ARN) of a Lambda function.</p> </li> <li> <p> <b>Queue</b> - The ARN of an SQS queue.</p> </li> <li> <p> <b>Topic</b> - The ARN of an SNS topic.</p> </li> <li> <p> <b>Event Bus</b> - The ARN of an Amazon EventBridge event bus.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateFunctionUrlConfigRequest":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"FunctionUrlQualifier",
+          "documentation":"<p>The alias name.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        },
+        "AuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
+        },
+        "Cors":{
+          "shape":"Cors",
+          "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your function URL.</p>"
+        }
+      }
+    },
+    "UpdateFunctionUrlConfigResponse":{
+      "type":"structure",
+      "required":[
+        "FunctionUrl",
+        "FunctionArn",
+        "AuthType",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "FunctionUrl":{
+          "shape":"FunctionUrl",
+          "documentation":"<p>The HTTP URL endpoint for your function.</p>"
+        },
+        "FunctionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your function.</p>"
+        },
+        "AuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated <code>IAM</code> users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\"> Security and auth model for Lambda function URLs</a>.</p>"
+        },
+        "Cors":{
+          "shape":"Cors",
+          "documentation":"<p>The <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\">cross-origin resource sharing (CORS)</a> settings for your function URL.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL was created, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the function URL configuration was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
         }
       }
     },

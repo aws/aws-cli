@@ -23,14 +23,17 @@ This allows us to define an API that has minimal coupling to the event
 based API used by botocore.
 
 """
-import random
 import logging
+import random
 
-from botocore.exceptions import ConnectionError, HTTPClientError
-from botocore.exceptions import ReadTimeoutError, ConnectTimeoutError
-from botocore.retries import quota
-from botocore.retries import special
-from botocore.retries.base import BaseRetryBackoff, BaseRetryableChecker
+from botocore.exceptions import (
+    ConnectionError,
+    ConnectTimeoutError,
+    HTTPClientError,
+    ReadTimeoutError,
+)
+from botocore.retries import quota, special
+from botocore.retries.base import BaseRetryableChecker, BaseRetryBackoff
 
 DEFAULT_MAX_ATTEMPTS = 3
 logger = logging.getLogger(__name__)

@@ -18,19 +18,19 @@ the context of botocore. This involves both resolving the checksum to be used
 based on client configuration and environment, as well as application of the
 checksum to the request.
 """
-import io
 import base64
+import io
 import logging
 from binascii import crc32
 from hashlib import sha1, sha256
 
 from awscrt import checksums as crt_checksums
-
-from botocore.exceptions import AwsChunkedWrapperError
-from botocore.exceptions import FlexibleChecksumError
+from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
 from botocore.response import StreamingBody
-from botocore.utils import determine_content_length
-from botocore.utils import conditionally_calculate_md5
+from botocore.utils import (
+    conditionally_calculate_md5,
+    determine_content_length,
+)
 
 logger = logging.getLogger(__name__)
 

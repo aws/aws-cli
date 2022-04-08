@@ -11,14 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import os
 import shlex
-import copy
 import sys
 
-from botocore.compat import six
-
 import botocore.exceptions
+from botocore.compat import six
 
 
 def multi_file_load_config(*filenames):

@@ -101,15 +101,13 @@ information that doesn't quite fit in the original models, but is still needed
 for the sdk. For instance, additional operation parameters might be added here
 which don't represent the actual service api.
 """
-import os
 import logging
+import os
 
 from botocore import BOTOCORE_ROOT
-from botocore.compat import json
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, json
 from botocore.exceptions import DataNotFoundError, UnknownServiceError
 from botocore.utils import deep_merge
-
 
 logger = logging.getLogger(__name__)
 

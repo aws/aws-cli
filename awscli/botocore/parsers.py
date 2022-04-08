@@ -114,16 +114,19 @@ Each call to ``parse()`` returns a dict has this form::
     }
 
 """
-import re
 import base64
 import json
 import logging
+import re
 
-from botocore.compat import six, ETree, XMLParseError
+from botocore.compat import ETree, XMLParseError, six
 from botocore.eventstream import EventStream, NoInitialResponseError
-
-from botocore.utils import parse_timestamp, merge_dicts, \
-    is_json_value_header, lowercase_dict
+from botocore.utils import (
+    is_json_value_header,
+    lowercase_dict,
+    merge_dicts,
+    parse_timestamp,
+)
 
 LOG = logging.getLogger(__name__)
 

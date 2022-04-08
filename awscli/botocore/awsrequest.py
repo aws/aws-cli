@@ -11,24 +11,26 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import io
-import sys
-import logging
 import functools
+import io
+import logging
 import socket
-
-import urllib3.util
-from urllib3.connection import VerifiedHTTPSConnection
-from urllib3.connection import HTTPConnection
-from urllib3.connectionpool import HTTPConnectionPool
-from urllib3.connectionpool import HTTPSConnectionPool
+import sys
 
 import botocore.utils
-from botocore.compat import six
-from botocore.compat import HTTPHeaders, HTTPResponse, urlunsplit, urlsplit, \
-     urlencode, MutableMapping
+import urllib3.util
+from botocore.compat import (
+    HTTPHeaders,
+    HTTPResponse,
+    MutableMapping,
+    six,
+    urlencode,
+    urlsplit,
+    urlunsplit,
+)
 from botocore.exceptions import UnseekableStreamError
-
+from urllib3.connection import HTTPConnection, VerifiedHTTPSConnection
+from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
 
 logger = logging.getLogger(__name__)
 

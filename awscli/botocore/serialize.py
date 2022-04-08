@@ -37,21 +37,20 @@ The input to the serializers should be text (str/unicode), not bytes,
 with the exception of blob types.  Those are assumed to be binary,
 and if a str/unicode type is passed in, it will be encoded as utf-8.
 """
-import re
 import base64
 import calendar
 import datetime
+import re
 from xml.etree import ElementTree
 
-from botocore.compat import six
-
-from botocore.compat import json, formatdate
-from botocore.utils import parse_to_aware_datetime
-from botocore.utils import percent_encode
-from botocore.utils import is_json_value_header
-from botocore.utils import has_header
 from botocore import validate
-
+from botocore.compat import formatdate, json, six
+from botocore.utils import (
+    has_header,
+    is_json_value_header,
+    parse_to_aware_datetime,
+    percent_encode,
+)
 
 # From the spec, the default timestamp format if not specified is iso8601.
 DEFAULT_TIMESTAMP_FORMAT = 'iso8601'

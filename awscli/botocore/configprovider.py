@@ -18,7 +18,6 @@ import os
 
 from botocore import utils
 
-
 logger = logging.getLogger(__name__)
 
 

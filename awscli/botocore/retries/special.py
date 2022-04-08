@@ -7,8 +7,8 @@ module.  Ideally we should be able to remove this module.
 """
 import logging
 from binascii import crc32
-from botocore.retries.base import BaseRetryableChecker
 
+from botocore.retries.base import BaseRetryableChecker
 
 logger = logging.getLogger(__name__)
 

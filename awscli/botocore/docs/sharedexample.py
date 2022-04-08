@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import re
 import numbers
-from botocore.utils import parse_timestamp
-from botocore.docs.utils import escape_controls
+import re
+
 from botocore.compat import six
+from botocore.docs.utils import escape_controls
+from botocore.utils import parse_timestamp
 
 
 class SharedExampleDocumenter(object):

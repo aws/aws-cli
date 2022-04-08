@@ -15,12 +15,13 @@ import logging
 import re
 import time
 
-from botocore.compat import ensure_unicode, ensure_bytes, urlparse
+from botocore.compat import ensure_bytes, ensure_unicode, urlparse
 from botocore.exceptions import (
-    EndpointConnectionError, ReadTimeoutError,
-    ConnectionError, ConnectionClosedError,
+    ConnectionClosedError,
+    ConnectionError,
+    EndpointConnectionError,
+    ReadTimeoutError,
 )
-
 
 RETRYABLE_EXCEPTIONS = (
 	ConnectionError, ConnectionClosedError, ReadTimeoutError,

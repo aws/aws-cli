@@ -13,14 +13,13 @@ Validation Errors
 
 """
 
-from botocore.compat import six
 import decimal
 import json
 from datetime import datetime
 
-from botocore.utils import parse_to_aware_datetime
-from botocore.utils import is_json_value_header
+from botocore.compat import six
 from botocore.exceptions import ParamValidationError
+from botocore.utils import is_json_value_header, parse_to_aware_datetime
 
 
 def validate_parameters(params, shape):

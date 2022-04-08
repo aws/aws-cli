@@ -13,11 +13,12 @@
 """Abstractions to interact with service models."""
 from collections import defaultdict
 
-from botocore.utils import (CachedProperty, instance_cache,
-                            hyphenize_service_id)
 from botocore.compat import OrderedDict
-from botocore.exceptions import MissingServiceIdError
-from botocore.exceptions import UndefinedModelAttributeError
+from botocore.exceptions import (
+    MissingServiceIdError,
+    UndefinedModelAttributeError,
+)
+from botocore.utils import CachedProperty, hyphenize_service_id, instance_cache
 
 NOT_SET = object()
 

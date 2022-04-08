@@ -10,12 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import time
 import logging
+import time
 import weakref
 
 from botocore import xform_name
-from botocore.exceptions import BotoCoreError, HTTPClientError, ConnectionError
+from botocore.exceptions import BotoCoreError, ConnectionError, HTTPClientError
 from botocore.model import OperationNotFoundError
 from botocore.utils import CachedProperty
 

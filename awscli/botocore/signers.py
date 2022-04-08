@@ -10,19 +10,21 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import datetime
-import weakref
-import json
 import base64
+import datetime
+import json
+import weakref
 
 import botocore
 import botocore.auth
-from botocore.compat import six, OrderedDict
 from botocore.awsrequest import create_request_object, prepare_request_dict
-from botocore.exceptions import UnknownSignatureVersionError
-from botocore.exceptions import UnknownClientMethodError
-from botocore.exceptions import UnsupportedSignatureVersionError
-from botocore.utils import fix_s3_host, datetime2timestamp
+from botocore.compat import OrderedDict, six
+from botocore.exceptions import (
+    UnknownClientMethodError,
+    UnknownSignatureVersionError,
+    UnsupportedSignatureVersionError,
+)
+from botocore.utils import datetime2timestamp, fix_s3_host
 
 
 class RequestSigner(object):

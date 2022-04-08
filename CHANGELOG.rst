@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.5.4
+=====
+
+* api-change:``sagemaker``: Amazon Sagemaker Notebook Instances now supports G5 instance types
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for Box. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-box.html
+* api-change:``docdb``: Added support to enable/disable performance insights when creating or modifying db instances
+* api-change:``personalize``: This release provides tagging support in AWS Personalize.
+* api-change:``lambda``: This release adds new APIs for creating and managing Lambda Function URLs and adds a new FunctionUrlAuthType parameter to the AddPermission API. Customers can use Function URLs to create built-in HTTPS endpoints on their functions.
+* api-change:``apigateway``: ApiGateway CLI command get-usage now includes usagePlanId, startDate, and endDate fields in the output to match documentation.
+* api-change:``events``: Update events command to latest version
+* api-change:``panorama``: Added Brand field to device listings.
+* api-change:``pi``: Adds support for DocumentDB to the Performance Insights API.
+* api-change:``config``: Add resourceType enums for AWS::EMR::SecurityConfiguration and AWS::SageMaker::CodeRepository
+
+
 2.5.3
 =====
 

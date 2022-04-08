@@ -1,6 +1,6 @@
 **To set the address type of a load balancer**
 
-This example sets the address type of the specified load balancer to ``dualstack``. The load balancer must be an Internet-facing load balancer and its subnets must have associated IPv6 CIDR blocks.
+This example sets the address type of the specified load balancer to ``dualstack``. The load balancer subnets must have associated IPv6 CIDR blocks.
 
 Command::
 

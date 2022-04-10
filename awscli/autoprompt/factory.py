@@ -35,7 +35,7 @@ from awscli.autoprompt.filters import (
 )
 
 keys = {"F1": Keys.F1, "F2": Keys.F2,
-        "F3": Keys.F3, "F4": Keys.F4, "F5": Keys.F5, "F9": Keys.F9}
+        "F3": Keys.F3, "F4": Keys.F4, "F5": Keys.F5}
 
 
 class PrompterKeyboardInterrupt(KeyboardInterrupt):
@@ -240,7 +240,7 @@ class PromptToolkitKeyBindings:
                 buffer.switch_history_mode()
             buffer.insert_text(' ')
 
-        @self._kb.add(keys["F3"])
+        @self._kb.add(keys[self._session.get_config_variable('hide_show_docs')])
         def _(event):
             current_buffer = event.app.current_buffer
             if current_buffer.name == 'doc_buffer':
@@ -253,7 +253,7 @@ class PromptToolkitKeyBindings:
         def _(event):
             event.app.multi_column = not event.app.multi_column
 
-        @self._kb.add(keys["F5"])
+        @self._kb.add(keys[self._session.get_config_variable('hide_show_output')])
         def _(event):
             event.app.show_output = not event.app.show_output
             if event.app.current_buffer.name == 'output_buffer':
@@ -279,7 +279,7 @@ class PromptToolkitKeyBindings:
             text = f'> aws {input_buffer.document.text}'
             event.app.exit(exception=PrompterKeyboardInterrupt(text))
 
-        @self._kb.add(keys["F2"])
+        @self._kb.add(keys[self._session.get_config_variable('focus_on_next_panel')])
         def _(event):
             focus_next(event)
 

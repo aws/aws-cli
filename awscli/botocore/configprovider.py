@@ -53,7 +53,7 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     'data_path': ('data_path', 'AWS_DATA_PATH', None, None),
     'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config', None),
     'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None, None),
-    # Following 4 are the session variables to make AWS CLI shortcut keys configureable
+    # Following are the 4 session variables to make AWS CLI shortcut keys configureable
     'show_shortkey_help': ('show_shortkey_help', ['AWS_SHOW_SHORTKEY_HELP'], None, None),
     'focus_on_next_panel': ('focus_on_next_panel', ['AWS_FOCUS_ON_NEXT_PANEL'], None, None),
     'hide_show_docs': ('hide_show_docs', ['AWS_HIDE_SHOW_DOCS'], None, None),

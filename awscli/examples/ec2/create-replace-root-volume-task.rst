@@ -1,42 +1,44 @@
-**Example 1: To restore the root volume to its initial state**
+**Example 1: To restore a root volume to its initial launch state**
 
-The following ``create-replace-root-volume-task`` example restores the root volume of the specified instance to its initial state. ::
+The following ``create-replace-root-volume-task`` example restores the root volume of instance i-0123456789abcdefa to its initial launch state. ::
 
     aws ec2 create-replace-root-volume-task \
-        --instance-id i-1234567890abcdef0
+        --instance-id i-0123456789abcdefa
 
 Output::
 
     {
-        "ReplaceRootVolumeTask": {
-            "ReplaceRootVolumeTaskId": "replacevol-05efec875b94ae34d",
-            "InstanceId": "i-1234567890abcdef0
-            "TaskState": "pending",
-            "StartTime": "2021-09-16T00:19:30Z",
-            "Tags": []
+        "ReplaceRootVolumeTask": 
+        {
+            "InstanceId": "i-0123456789abcdefa", 
+                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd", 
+                "TaskState": "pending", 
+                "StartTime": "2022-03-14T15:06:38Z", 
+                "Tags": []
         }
     }
 
-For more information, see `Replace an Amazon EBS volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html#replace-root>`__ in the *Amazon Elastic Compute Cloud User Guide*.
 
-**Example 2: To restore the root volume to a specific snapshot**
+**Example 2: To restore a root volume to a specific snapshot**
 
-The following ``create-replace-root-volume-task`` example replaces the root volume of the specified instance with the specified snapshot. ::
+The following ``create-replace-root-volume-task`` example restores the root volume of instance i-0123456789abcdefa to snapshot snap-0abcdef1234567890. ::
 
     aws ec2 create-replace-root-volume-task \
-        --instance-id i-1234567890abcdef0 \
-        --snapshot-id snap-9876543210abcdef0
+        --instance-id i-0123456789abcdefa \
+        --snapshot-id  snap-0abcdef1234567890
 
 Output::
 
     {
-        "ReplaceRootVolumeTask": {
-            "ReplaceRootVolumeTaskId": "replacevol-05efec875b94ae34d",
-            "InstanceId": "i-1234567890abcdef0
-            "TaskState": "pending",
-            "StartTime": "2021-09-16T00:19:30Z",
+        "ReplaceRootVolumeTask": 
+        {
+            "InstanceId": "i-0123456789abcdefa", 
+            "ReplaceRootVolumeTaskId": "replacevol-0555566667777abcd", 
+            "TaskState": "pending", 
+            "StartTime": "2022-03-14T15:16:28Z", 
             "Tags": []
         }
     }
 
-For more information, see `Replace an Amazon EBS volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html#replace-root>`__ in the *Amazon Elastic Compute Cloud User Guide*.

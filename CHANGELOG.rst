@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.93
+=======
+
+* api-change:``apprunner``: This release adds tracing for App Runner services with X-Ray using AWS Distro for OpenTelemetry. New APIs: CreateObservabilityConfiguration, DescribeObservabilityConfiguration, ListObservabilityConfigurations, and DeleteObservabilityConfiguration. Updated APIs: CreateService and UpdateService.
+* api-change:``amplifyuibuilder``: In this release, we have added the ability to bind events to component level actions.
+* api-change:``workspaces``: Added API support that allows customers to create GPU-enabled WorkSpaces using EC2 G4dn instances.
+
+
 1.22.92
 =======
 

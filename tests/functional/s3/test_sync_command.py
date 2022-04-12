@@ -21,6 +21,69 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     prefix = 's3 sync '
 
+    def test_include_exclude(self):
+        """Test the interaction of --include and --exclude. Filters specified
+        later override ones earlier."""
+        self.parsed_responses = [
+            # ListObjectsV2
+            {"CommonPrefixes": [], "Contents": []},
+        ]
+        expected_ops = len(self.parsed_responses)
+
+        included = [
+            'included/foo',
+            'included/bar',
+            'excluded/included/foo',
+            'excluded/included/bar',
+        ]
+        excluded = [
+            'excluded/foo',
+            'excluded/bar',
+            'included/excluded/foo',
+            'included/excluded/bar',
+        ]
+        included = [path.replace('/', os.path.sep) for path in included]
+        excluded = [path.replace('/', os.path.sep) for path in excluded]
+
+        for file in included + excluded:
+            self.files.create_file(file, 'mycontent')
+            # Add a response for each potential file, even for files that
+            # should be excluded. Otherwise, if the exclusion fails to be
+            # applied, then the test will fail with a cryptic error when
+            # patch_make_request() fails to pop() a response. In that case,
+            # we'd rather have the test complete execution and then fail the
+            # assertions.
+            self.parsed_responses.append(
+                # PutObject
+                {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+            )
+
+        expected_ops += len(included)
+
+        flags = [
+            "--only-show-errors",
+            "--exclude excluded/*",
+            "--include excluded/included/*",
+            "--exclude included/excluded/*",
+        ]
+        cmdline = '%s %s %s s3://bucket/' % (
+            self.prefix, " ".join(flags), self.files.rootdir
+        )
+
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            len(self.operations_called),
+            expected_ops,
+            self.operations_called,
+        )
+
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        for op in self.operations_called[1:]:
+            self.assertEqual(op[0].name, 'PutObject')
+            path = op[1]['Key'].replace('/', os.path.sep)
+            self.assertIn(path, included)
+
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % \

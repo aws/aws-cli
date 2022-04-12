@@ -168,8 +168,8 @@ class FileGenerator(object):
         outputs.  It yields the file's source path, size, and last
         update
         """
-        join, isdir, isfile = os.path.join, os.path.isdir, os.path.isfile
-        error, listdir = os.error, os.listdir
+        join, isdir = os.path.join, os.path.isdir
+        listdir = os.listdir
         if not self.should_ignore_file(path):
             if not dir_op:
                 stats = self._safely_get_file_stats(path)

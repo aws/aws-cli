@@ -20,7 +20,6 @@ Contents of ``input.json``::
 Output::
 
     {
-        "OperationId": "17fe9f55-7e91-4097-b243-fcabbb69a4cf",
         "Service": {
             "CreatedAt": "2020-11-20T19:05:25Z",
             "UpdatedAt": "2020-11-23T12:41:37Z",

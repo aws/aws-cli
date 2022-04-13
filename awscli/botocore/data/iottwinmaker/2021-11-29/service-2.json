@@ -47,7 +47,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a component type.</p> <important> <p> TwinMaker is in public preview and is subject to change. </p> </important>",
+      "documentation":"<p>Creates a component type.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "CreateEntity":{
@@ -1005,7 +1005,7 @@
       "members":{
         "isNative":{
           "shape":"Boolean",
-          "documentation":"<p>A Boolean value that specifies whether the data connector is native to TwinMaker.</p>"
+          "documentation":"<p>A Boolean value that specifies whether the data connector is native to IoT TwinMaker.</p>"
         },
         "lambda":{
           "shape":"LambdaFunction",
@@ -1585,9 +1585,7 @@
     "GetPropertyValueHistoryRequest":{
       "type":"structure",
       "required":[
-        "endDateTime",
         "selectedProperties",
-        "startDateTime",
         "workspaceId"
       ],
       "members":{
@@ -1601,8 +1599,11 @@
         },
         "endDateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time of the latest property value to return.</p>"
+          "documentation":"<p>The date and time of the latest property value to return.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is deprecated and will throw an error in the future. Use endTime instead."
         },
+        "endTime":{"shape":"Time"},
         "entityId":{
           "shape":"EntityId",
           "documentation":"<p>The ID of the entity.</p>"
@@ -1633,8 +1634,11 @@
         },
         "startDateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time of the earliest property value to return.</p>"
+          "documentation":"<p>The date and time of the earliest property value to return.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is deprecated and will throw an error in the future. Use startTime instead."
         },
+        "startTime":{"shape":"Time"},
         "workspaceId":{
           "shape":"Id",
           "documentation":"<p>The ID of the workspace.</p>",
@@ -1960,6 +1964,10 @@
         "componentTypeId":{
           "shape":"ComponentTypeId",
           "documentation":"<p>The ID of the component type in the entities in the list.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external-Id property of a component. The external-Id property is the primary key of an external storage system.</p>"
         },
         "parentEntityId":{
           "shape":"ParentEntityId",
@@ -2347,19 +2355,20 @@
       "type":"string",
       "enum":[
         "UPDATE",
-        "DELETE"
+        "DELETE",
+        "CREATE"
       ]
     },
     "PropertyValue":{
       "type":"structure",
-      "required":[
-        "timestamp",
-        "value"
-      ],
+      "required":["value"],
       "members":{
+        "time":{"shape":"Time"},
         "timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp of a value for a time series property.</p>"
+          "documentation":"<p>The timestamp of a value for a time series property.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is deprecated and will throw an error in the future. Use time instead."
         },
         "value":{
           "shape":"DataValue",
@@ -2458,7 +2467,12 @@
       "min":20,
       "pattern":"arn:((aws)|(aws-cn)|(aws-us-gov)):iam::[0-9]{12}:role/.*"
     },
-    "S3Location":{"type":"string"},
+    "S3Location":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":".*(^arn:((aws)|(aws-cn)|(aws-us-gov)):s3:::)([a-zA-Z0-9_-]+$).*"
+    },
     "S3Url":{
       "type":"string",
       "max":256,
@@ -2632,7 +2646,16 @@
       },
       "exception":true
     },
-    "Timestamp":{"type":"timestamp"},
+    "Time":{
+      "type":"string",
+      "documentation":"<p>Timestamp represented in ISO 8601 format</p>",
+      "max":35,
+      "min":20
+    },
+    "Timestamp":{
+      "type":"timestamp",
+      "documentation":"<p>supports epoch seconds value</p>"
+    },
     "TooManyTagsException":{
       "type":"structure",
       "members":{
@@ -2899,9 +2922,7 @@
     },
     "Value":{
       "type":"string",
-      "max":256,
-      "min":1,
-      "pattern":"[a-zA-Z_\\-0-9]+"
+      "pattern":".*"
     },
     "Values":{
       "type":"list",
@@ -2944,5 +2965,5 @@
       "documentation":"<p>An object that contains information about a workspace.</p>"
     }
   },
-  "documentation":"<important> <p> TwinMaker is in public preview and is subject to change. </p> </important> <p>IoT TwinMaker is a service that enables you to build operational digital twins of physical systems. IoT TwinMaker overlays measurements and analysis from real-world sensors, cameras, and enterprise applications so you can create data visualizations to monitor your physical factory, building, or industrial plant. You can use this real-world data to monitor operations and diagnose and repair errors.</p>"
+  "documentation":"<p>IoT TwinMaker is a service that enables you to build operational digital twins of physical systems. IoT TwinMaker overlays measurements and analysis from real-world sensors, cameras, and enterprise applications so you can create data visualizations to monitor your physical factory, building, or industrial plant. You can use this real-world data to monitor operations and diagnose and repair errors.</p>"
 }

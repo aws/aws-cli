@@ -21,10 +21,7 @@ from botocore.exceptions import NoCredentialsError
 
 class DescribeCluster(Command):
     NAME = 'describe-cluster'
-    DESCRIPTION = ('Provides  cluster-level details including status, hardware'
-                   ' and software configuration, VPC settings, bootstrap'
-                   ' actions, instance groups and so on. For information about'
-                   ' the cluster steps, see <code>list-steps</code>.')
+    DESCRIPTION = helptext.DESCRIBE_CLUSTER_DESCRIPTION
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID}

@@ -21,6 +21,27 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     prefix = 's3 sync '
 
+    def test_exclude_no_traverse(self):
+        """Test that files within an excluded path are not examined during
+        directory traversal."""
+        path = os.path.join('excluded', 'foo')
+        full_path = self.files.create_file(path, 'mycontent')
+        # Use an unreadable file as a canary.
+        os.chmod(full_path, 0o000)
+
+        flags = [
+            "--only-show-errors",
+            "--exclude excluded/*",
+        ]
+        cmdline = '%s %s %s s3://bucket/' % (
+            self.prefix, " ".join(flags), self.files.rootdir
+        )
+
+        self.run_cmd(cmdline, expected_rc=0)
+        # If this is unwriteable, then windows gets an error on os.unlink()
+        # during cleanup of the test dir.
+        os.chmod(full_path, 0o600)
+
     def test_include_exclude(self):
         """Test the interaction of --include and --exclude. Filters specified
         later override ones earlier."""

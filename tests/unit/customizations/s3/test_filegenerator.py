@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import platform
 from awscli.testutils import mock, unittest, FileCreator, BaseAWSCommandParamsTest
 from awscli.testutils import skip_if_windows
 import stat
@@ -23,7 +22,7 @@ from botocore.exceptions import ClientError
 from awscli.compat import six
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat, is_special_file, is_readable
+    FileStat, is_special_file, is_readable
 from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     compare_files
@@ -106,7 +105,6 @@ class LocalFileGeneratorTest(unittest.TestCase):
                             'dest': {'path': 'bucket/text1.txt',
                                      'type': 's3'},
                             'dir_op': False, 'use_src_name': False}
-        params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_local_file)
         result_list = []
         for filename in files:
@@ -130,7 +128,6 @@ class LocalFileGeneratorTest(unittest.TestCase):
                            'dest': {'path': 'bucket/',
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_local_dir)
         result_list = []
         for filename in files:
@@ -196,7 +193,6 @@ class TestIgnoreFilesLocally(unittest.TestCase):
         self.assertFalse(filegenerator.should_ignore_file(file_path))
 
     def test_no_skip_symlink_dir(self):
-        filename = 'dir'
         path = self.files.full_path('dir/')
         os.mkdir(path)
         sym_path = self.files.full_path('symlink')
@@ -487,7 +483,6 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        params = {'region': 'us-east-1'}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         self.patch_make_request()
@@ -516,7 +511,6 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        params = {'region': 'us-east-1'}
         self.client = mock.Mock()
         self.client.head_object.side_effect = \
                 ClientError(
@@ -557,7 +551,6 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_s3_file)
 
         self.parsed_responses = [{

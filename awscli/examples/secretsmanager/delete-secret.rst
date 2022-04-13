@@ -18,7 +18,7 @@ For more information, see `Delete a secret <https://docs.aws.amazon.com/secretsm
 
 **Example 2: To delete a secret without a recovery window**
 
-The following ``delete-secret`` example deletes a secret without a recovery window. Yuo can't recover this secret. ::
+The following ``delete-secret`` example deletes a secret without a recovery window. You can't recover this secret. ::
 
     aws secretsmanager delete-secret \
         --secret-id MyTestSecret \

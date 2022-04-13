@@ -41,7 +41,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Create an App Runner automatic scaling configuration resource. App Runner requires this resource when you create App Runner services that require non-default auto scaling settings. You can share an auto scaling configuration across multiple services.</p> <p>Create multiple revisions of a configuration by calling this action multiple times using the same <code>AutoScalingConfigurationName</code>. The call returns incremental <code>AutoScalingConfigurationRevision</code> values. When you create a service, you can set it to use the latest active revision of an auto scaling configuration or a specific revision.</p> <p>Configure a higher <code>MinSize</code> to increase the spread of your App Runner service over more Availability Zones in the Amazon Web Services Region. The tradeoff is a higher minimal cost.</p> <p>Configure a lower <code>MaxSize</code> to control your cost. The tradeoff is lower responsiveness during peak demand.</p>"
+      "documentation":"<p>Create an App Runner automatic scaling configuration resource. App Runner requires this resource when you create or update App Runner services and you require non-default auto scaling settings. You can share an auto scaling configuration across multiple services.</p> <p>Create multiple revisions of a configuration by calling this action multiple times using the same <code>AutoScalingConfigurationName</code>. The call returns incremental <code>AutoScalingConfigurationRevision</code> values. When you create a service and configure an auto scaling configuration resource, the service uses the latest active revision of the auto scaling configuration by default. You can optionally configure the service to use a specific revision.</p> <p>Configure a higher <code>MinSize</code> to increase the spread of your App Runner service over more Availability Zones in the Amazon Web Services Region. The tradeoff is a higher minimal cost.</p> <p>Configure a lower <code>MaxSize</code> to control your cost. The tradeoff is lower responsiveness during peak demand.</p>"
     },
     "CreateConnection":{
       "name":"CreateConnection",
@@ -57,6 +57,21 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Create an App Runner connection resource. App Runner requires a connection resource when you create App Runner services that access private repositories from certain third-party providers. You can share a connection across multiple services.</p> <p>A connection resource is needed to access GitHub repositories. GitHub requires a user interface approval process through the App Runner console before you can use the connection.</p>"
+    },
+    "CreateObservabilityConfiguration":{
+      "name":"CreateObservabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateObservabilityConfigurationRequest"},
+      "output":{"shape":"CreateObservabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Create an App Runner observability configuration resource. App Runner requires this resource when you create or update App Runner services and you want to enable non-default observability features. You can share an observability configuration across multiple services.</p> <p>Create multiple revisions of a configuration by calling this action multiple times using the same <code>ObservabilityConfigurationName</code>. The call returns incremental <code>ObservabilityConfigurationRevision</code> values. When you create a service and configure an observability configuration resource, the service uses the latest active revision of the observability configuration by default. You can optionally configure the service to use a specific revision.</p> <p>The observability configuration resource is designed to configure multiple features (currently one feature, tracing). This action takes optional parameters that describe the configuration of these features (currently one parameter, <code>TraceConfiguration</code>). If you don't specify a feature parameter, App Runner doesn't enable the feature.</p>"
     },
     "CreateService":{
       "name":"CreateService",
@@ -117,6 +132,21 @@
         {"shape":"InternalServiceErrorException"}
       ],
       "documentation":"<p>Delete an App Runner connection. You must first ensure that there are no running App Runner services that use this connection. If there are any, the <code>DeleteConnection</code> action fails.</p>"
+    },
+    "DeleteObservabilityConfiguration":{
+      "name":"DeleteObservabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteObservabilityConfigurationRequest"},
+      "output":{"shape":"DeleteObservabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Delete an App Runner observability configuration resource. You can delete a specific revision or the latest active revision. You can't delete a configuration that's used by one or more App Runner services.</p>"
     },
     "DeleteService":{
       "name":"DeleteService",
@@ -179,6 +209,21 @@
       ],
       "documentation":"<p>Return a description of custom domain names that are associated with an App Runner service.</p>"
     },
+    "DescribeObservabilityConfiguration":{
+      "name":"DescribeObservabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeObservabilityConfigurationRequest"},
+      "output":{"shape":"DescribeObservabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Return a full description of an App Runner observability configuration resource.</p>"
+    },
     "DescribeService":{
       "name":"DescribeService",
       "http":{
@@ -237,7 +282,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Returns a list of App Runner automatic scaling configurations in your Amazon Web Services account. You can query the revisions for a specific configuration name or the revisions for all configurations in your account. You can optionally query only the latest revision of each requested name.</p>"
+      "documentation":"<p>Returns a list of active App Runner automatic scaling configurations in your Amazon Web Services account. You can query the revisions for a specific configuration name or the revisions for all active configurations in your account. You can optionally query only the latest revision of each requested name.</p> <p>To retrieve a full description of a particular configuration revision, call and provide one of the ARNs returned by <code>ListAutoScalingConfigurations</code>.</p>"
     },
     "ListConnections":{
       "name":"ListConnections",
@@ -252,6 +297,20 @@
         {"shape":"InternalServiceErrorException"}
       ],
       "documentation":"<p>Returns a list of App Runner connections that are associated with your Amazon Web Services account.</p>"
+    },
+    "ListObservabilityConfigurations":{
+      "name":"ListObservabilityConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListObservabilityConfigurationsRequest"},
+      "output":{"shape":"ListObservabilityConfigurationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<p>Returns a list of active App Runner observability configurations in your Amazon Web Services account. You can query the revisions for a specific configuration name or the revisions for all active configurations in your account. You can optionally query only the latest revision of each requested name.</p> <p>To retrieve a full description of a particular configuration revision, call and provide one of the ARNs returned by <code>ListObservabilityConfigurations</code>.</p>"
     },
     "ListOperations":{
       "name":"ListOperations",
@@ -504,7 +563,7 @@
         },
         "Latest":{
           "shape":"Boolean",
-          "documentation":"<p>It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>Name</code>. It's set to <code>false</code> otherwise.</p>"
+          "documentation":"<p>It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>AutoScalingConfigurationName</code>. It's set to <code>false</code> otherwise.</p>"
         },
         "Status":{
           "shape":"AutoScalingConfigurationStatus",
@@ -823,6 +882,34 @@
         }
       }
     },
+    "CreateObservabilityConfigurationRequest":{
+      "type":"structure",
+      "required":["ObservabilityConfigurationName"],
+      "members":{
+        "ObservabilityConfigurationName":{
+          "shape":"ObservabilityConfigurationName",
+          "documentation":"<p>A name for the observability configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>The name <code>DefaultConfiguration</code> is reserved. You can't use it to create a new observability configuration, and you can't create a revision of it.</p> <p>When you want to use your own observability configuration for your App Runner service, <i>create a configuration with a different name</i>, and then provide it when you create or update your service.</p> </note>"
+        },
+        "TraceConfiguration":{
+          "shape":"TraceConfiguration",
+          "documentation":"<p>The configuration of the tracing feature within this observability configuration. If you don't specify it, App Runner doesn't enable tracing.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of metadata items that you can associate with your observability configuration resource. A tag is a key-value pair.</p>"
+        }
+      }
+    },
+    "CreateObservabilityConfigurationResponse":{
+      "type":"structure",
+      "required":["ObservabilityConfiguration"],
+      "members":{
+        "ObservabilityConfiguration":{
+          "shape":"ObservabilityConfiguration",
+          "documentation":"<p>A description of the App Runner observability configuration that's created by this request.</p>"
+        }
+      }
+    },
     "CreateServiceRequest":{
       "type":"structure",
       "required":[
@@ -840,7 +927,7 @@
         },
         "InstanceConfiguration":{
           "shape":"InstanceConfiguration",
-          "documentation":"<p>The runtime configuration of instances (scaling units) of the App Runner service.</p>"
+          "documentation":"<p>The runtime configuration of instances (scaling units) of your service.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -856,11 +943,15 @@
         },
         "AutoScalingConfigurationArn":{
           "shape":"AppRunnerResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an App Runner automatic scaling configuration resource that you want to associate with the App Runner service. If not provided, App Runner associates the latest revision of a default auto scaling configuration.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an App Runner automatic scaling configuration resource that you want to associate with your service. If not provided, App Runner associates the latest revision of a default auto scaling configuration.</p> <p>Specify an ARN with a name and a revision number to associate that revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability/3</code> </p> <p>Specify just the name to associate the latest revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:autoscalingconfiguration/high-availability</code> </p>"
         },
         "NetworkConfiguration":{
           "shape":"NetworkConfiguration",
           "documentation":"<p>Configuration settings related to network traffic of the web application that the App Runner service runs.</p>"
+        },
+        "ObservabilityConfiguration":{
+          "shape":"ServiceObservabilityConfiguration",
+          "documentation":"<p>The observability configuration of your service.</p>"
         }
       }
     },
@@ -998,6 +1089,26 @@
         }
       }
     },
+    "DeleteObservabilityConfigurationRequest":{
+      "type":"structure",
+      "required":["ObservabilityConfigurationArn"],
+      "members":{
+        "ObservabilityConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner observability configuration that you want to delete.</p> <p>The ARN can be a full observability configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is deleted.</p>"
+        }
+      }
+    },
+    "DeleteObservabilityConfigurationResponse":{
+      "type":"structure",
+      "required":["ObservabilityConfiguration"],
+      "members":{
+        "ObservabilityConfiguration":{
+          "shape":"ObservabilityConfiguration",
+          "documentation":"<p>A description of the App Runner observability configuration that this request just deleted.</p>"
+        }
+      }
+    },
     "DeleteServiceRequest":{
       "type":"structure",
       "required":["ServiceArn"],
@@ -1111,6 +1222,26 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.</p>"
+        }
+      }
+    },
+    "DescribeObservabilityConfigurationRequest":{
+      "type":"structure",
+      "required":["ObservabilityConfigurationArn"],
+      "members":{
+        "ObservabilityConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner observability configuration that you want a description for.</p> <p>The ARN can be a full observability configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is described.</p>"
+        }
+      }
+    },
+    "DescribeObservabilityConfigurationResponse":{
+      "type":"structure",
+      "required":["ObservabilityConfiguration"],
+      "members":{
+        "ObservabilityConfiguration":{
+          "shape":"ObservabilityConfiguration",
+          "documentation":"<p>A full description of the App Runner observability configuration that you specified in this request.</p>"
         }
       }
     },
@@ -1404,11 +1535,11 @@
       "members":{
         "AutoScalingConfigurationName":{
           "shape":"AutoScalingConfigurationName",
-          "documentation":"<p>The name of the App Runner auto scaling configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all configurations.</p>"
+          "documentation":"<p>The name of the App Runner auto scaling configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all active configurations.</p>"
         },
         "LatestOnly":{
           "shape":"Boolean",
-          "documentation":"<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Keep as <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>false</code> </p>"
+          "documentation":"<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Set to <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>true</code> </p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -1462,6 +1593,41 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token that you can pass in a subsequent request to get the next result page. Returned in a paginated request.</p>"
+        }
+      }
+    },
+    "ListObservabilityConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "ObservabilityConfigurationName":{
+          "shape":"ObservabilityConfigurationName",
+          "documentation":"<p>The name of the App Runner observability configuration that you want to list. If specified, App Runner lists revisions that share this name. If not specified, App Runner returns revisions of all active configurations.</p>"
+        },
+        "LatestOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> to list only the latest revision for each requested configuration name.</p> <p>Set to <code>false</code> to list all revisions for each requested configuration name.</p> <p>Default: <code>true</code> </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>"
+        }
+      }
+    },
+    "ListObservabilityConfigurationsResponse":{
+      "type":"structure",
+      "required":["ObservabilityConfigurationSummaryList"],
+      "members":{
+        "ObservabilityConfigurationSummaryList":{
+          "shape":"ObservabilityConfigurationSummaryList",
+          "documentation":"<p>A list of summary information records for observability configurations. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.</p>"
         }
       }
     },
@@ -1602,6 +1768,79 @@
       "pattern":".*"
     },
     "NullableBoolean":{"type":"boolean"},
+    "ObservabilityConfiguration":{
+      "type":"structure",
+      "members":{
+        "ObservabilityConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this observability configuration.</p>"
+        },
+        "ObservabilityConfigurationName":{
+          "shape":"ObservabilityConfigurationName",
+          "documentation":"<p>The customer-provided observability configuration name. It can be used in multiple revisions of a configuration.</p>"
+        },
+        "TraceConfiguration":{
+          "shape":"TraceConfiguration",
+          "documentation":"<p>The configuration of the tracing feature within this observability configuration. If not specified, tracing isn't enabled.</p>"
+        },
+        "ObservabilityConfigurationRevision":{
+          "shape":"Integer",
+          "documentation":"<p>The revision of this observability configuration. It's unique among all the active configurations (<code>\"Status\": \"ACTIVE\"</code>) that share the same <code>ObservabilityConfigurationName</code>.</p>"
+        },
+        "Latest":{
+          "shape":"Boolean",
+          "documentation":"<p>It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>ObservabilityConfigurationName</code>. It's set to <code>false</code> otherwise.</p>"
+        },
+        "Status":{
+          "shape":"ObservabilityConfigurationStatus",
+          "documentation":"<p>The current state of the observability configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the observability configuration was created. It's in Unix time stamp format.</p>"
+        },
+        "DeletedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the observability configuration was deleted. It's in Unix time stamp format.</p>"
+        }
+      },
+      "documentation":"<p>Describes an App Runner observability configuration resource. Multiple revisions of a configuration have the same <code>ObservabilityConfigurationName</code> and different <code>ObservabilityConfigurationRevision</code> values.</p> <p>The resource is designed to configure multiple features (currently one feature, tracing). This type contains optional members that describe the configuration of these features (currently one member, <code>TraceConfiguration</code>). If a feature member isn't specified, the feature isn't enabled.</p>"
+    },
+    "ObservabilityConfigurationName":{
+      "type":"string",
+      "max":32,
+      "min":4,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-_]{3,31}"
+    },
+    "ObservabilityConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "ObservabilityConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "ObservabilityConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this observability configuration.</p>"
+        },
+        "ObservabilityConfigurationName":{
+          "shape":"ObservabilityConfigurationName",
+          "documentation":"<p>The customer-provided observability configuration name. It can be used in multiple revisions of a configuration.</p>"
+        },
+        "ObservabilityConfigurationRevision":{
+          "shape":"Integer",
+          "documentation":"<p>The revision of this observability configuration. It's unique among all the active configurations (<code>\"Status\": \"ACTIVE\"</code>) that share the same <code>ObservabilityConfigurationName</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about an App Runner observability configuration resource.</p> <p>This type contains limited information about an observability configuration. It includes only identification information, without configuration details. It's returned by the <a>ListObservabilityConfigurations</a> action. Complete configuration information is returned by the <a>CreateObservabilityConfiguration</a>, <a>DescribeObservabilityConfiguration</a>, and <a>DeleteObservabilityConfiguration</a> actions using the <a>ObservabilityConfiguration</a> type.</p>"
+    },
+    "ObservabilityConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"ObservabilityConfigurationSummary"}
+    },
     "OperationStatus":{
       "type":"string",
       "enum":[
@@ -1828,6 +2067,10 @@
         "NetworkConfiguration":{
           "shape":"NetworkConfiguration",
           "documentation":"<p>Configuration settings related to network traffic of the web application that this service runs.</p>"
+        },
+        "ObservabilityConfiguration":{
+          "shape":"ServiceObservabilityConfiguration",
+          "documentation":"<p>The observability configuration of this service.</p>"
         }
       },
       "documentation":"<p>Describes an App Runner service. It can describe a service in any state, including deleted services.</p> <p>This type contains the full information about a service, including configuration details. It's returned by the <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_CreateService.html\">CreateService</a>, <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_DescribeService.html\">DescribeService</a>, and <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_DeleteService.html\">DeleteService</a> actions. A subset of this information is returned by the <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_ListServices.html\">ListServices</a> action using the <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_ServiceSummary.html\">ServiceSummary</a> type.</p>"
@@ -1848,6 +2091,21 @@
       "max":40,
       "min":4,
       "pattern":"[A-Za-z0-9][A-Za-z0-9-_]{3,39}"
+    },
+    "ServiceObservabilityConfiguration":{
+      "type":"structure",
+      "required":["ObservabilityEnabled"],
+      "members":{
+        "ObservabilityEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>true</code>, an observability configuration resource is associated with the service, and an <code>ObservabilityConfigurationArn</code> is specified.</p>"
+        },
+        "ObservabilityConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the observability configuration that is associated with the service. Specified only when <code>ObservabilityEnabled</code> is <code>true</code>.</p> <p>Specify an ARN with a name and a revision number to associate that revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/xray-tracing/3</code> </p> <p>Specify just the name to associate the latest revision. For example: <code>arn:aws:apprunner:us-east-1:123456789012:observabilityconfiguration/xray-tracing</code> </p>"
+        }
+      },
+      "documentation":"<p>Describes the observability configuration of an App Runner service. These are additional observability features, like tracing, that you choose to enable. They're configured in a separate resource that you associate with your service.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -2042,6 +2300,21 @@
       "pattern":".*"
     },
     "Timestamp":{"type":"timestamp"},
+    "TraceConfiguration":{
+      "type":"structure",
+      "required":["Vendor"],
+      "members":{
+        "Vendor":{
+          "shape":"TracingVendor",
+          "documentation":"<p>The implementation provider chosen for tracing App Runner services.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of the tracing feature within an App Runner observability configuration.</p>"
+    },
+    "TracingVendor":{
+      "type":"string",
+      "enum":["AWSXRAY"]
+    },
     "UUID":{
       "type":"string",
       "max":36,
@@ -2084,7 +2357,7 @@
         },
         "InstanceConfiguration":{
           "shape":"InstanceConfiguration",
-          "documentation":"<p>The runtime configuration to apply to instances (scaling units) of the App Runner service.</p>"
+          "documentation":"<p>The runtime configuration to apply to instances (scaling units) of your service.</p>"
         },
         "AutoScalingConfigurationArn":{
           "shape":"AppRunnerResourceArn",
@@ -2097,6 +2370,10 @@
         "NetworkConfiguration":{
           "shape":"NetworkConfiguration",
           "documentation":"<p>Configuration settings related to network traffic of the web application that the App Runner service runs.</p>"
+        },
+        "ObservabilityConfiguration":{
+          "shape":"ServiceObservabilityConfiguration",
+          "documentation":"<p>The observability configuration of your service.</p>"
         }
       }
     },

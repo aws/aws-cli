@@ -101,6 +101,20 @@ class Filter(object):
         for pattern in original_patterns:
             full_patterns.append(
                 (pattern[0], os.path.join(rootdir, pattern[1])))
+            # When including paths deep in the directory tree, auto-include the
+            # parent directories. Otherwise, we may skip traversing into those
+            # parents due to an exclude.
+            if pattern[0] == 'include':
+                last_path = pattern[1]
+                while True:
+                    parent = os.path.dirname(last_path)
+                    if parent == last_path:
+                        break
+                    full_patterns.append(
+                        ('include', os.path.join(rootdir, parent)))
+
+                    last_path = parent
+
         return full_patterns
 
     def call(self, file_infos):

@@ -193,6 +193,10 @@ class PromptToolkitKeyBindings:
         if keybindings is None:
             keybindings = KeyBindings()
         self._kb = keybindings
+        self.hide_show_docs = self._session.get_config_variable('hide_show_docs')
+        self.hide_show_output = self._session.get_config_variable('hide_show_output')
+        self.show_shortkey_help = self._session.get_config_variable('show_shortkey_help')
+        self.focus_on_next_panel = self._session.get_config_variable('focus_on_next_panel')
 
         @self._kb.add(Keys.Enter, filter=input_buffer_has_focus)
         def _(event):
@@ -237,7 +241,7 @@ class PromptToolkitKeyBindings:
                 buffer.switch_history_mode()
             buffer.insert_text(' ')
 
-        @self._kb.add(self._session.get_config_variable('hide_show_docs'))
+        @self._kb.add(self.hide_show_docs if self.hide_show_docs else Keys.F3)
         def _(event):
             current_buffer = event.app.current_buffer
             if current_buffer.name == 'doc_buffer':
@@ -250,7 +254,7 @@ class PromptToolkitKeyBindings:
         def _(event):
             event.app.multi_column = not event.app.multi_column
 
-        @self._kb.add(self._session.get_config_variable('hide_show_output'))
+        @self._kb.add(self.hide_show_output if self.hide_show_output else Keys.F5)
         def _(event):
             event.app.show_output = not event.app.show_output
             if event.app.current_buffer.name == 'output_buffer':
@@ -258,7 +262,7 @@ class PromptToolkitKeyBindings:
                 input_buffer = layout.get_buffer_by_name('input_buffer')
                 layout.focus(input_buffer)
 
-        @self._kb.add(self._session.get_config_variable('show_shortkey_help'))
+        @self._kb.add(self.show_shortkey_help if self.show_shortkey_help else Keys.F1)
         def _(event):
             event.app.show_help = not event.app.show_help
 
@@ -276,7 +280,7 @@ class PromptToolkitKeyBindings:
             text = f'> aws {input_buffer.document.text}'
             event.app.exit(exception=PrompterKeyboardInterrupt(text))
 
-        @self._kb.add(self._session.get_config_variable('focus_on_next_panel'))
+        @self._kb.add(self.focus_on_next_panel if self.focus_on_next_panel else Keys.F2)
         def _(event):
             focus_next(event)
 

@@ -76,8 +76,22 @@ class ConfigFileWriter(object):
                                os.O_WRONLY | os.O_CREAT, 0o600), 'w'):
             pass
 
+    def _check_file_needs_newline(self, filename):
+        # check if the last byte is a newline
+        with open(filename, 'rb') as f:
+            # check if the file is empty
+            f.seek(0, os.SEEK_END)
+            if not f.tell():
+                return False
+            f.seek(-1, os.SEEK_END)
+            last = f.read()
+            return last != b'\n'
+
     def _write_new_section(self, section_name, new_values, config_filename):
+        needs_newline = self._check_file_needs_newline(config_filename)
         with open(config_filename, 'a') as f:
+            if needs_newline:
+                f.write('\n')
             f.write('[%s]\n' % section_name)
             contents = []
             self._insert_new_values(line_number=0,

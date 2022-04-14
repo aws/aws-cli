@@ -515,7 +515,7 @@
     },
     "AuthCode":{
       "type":"string",
-      "max":512,
+      "max":2048,
       "pattern":"\\S+"
     },
     "AuthCodeUrl":{
@@ -3140,6 +3140,51 @@
       },
       "documentation":"<p>The OAuth 2.0 credentials required for OAuth 2.0 authentication.</p>"
     },
+    "OAuth2CustomParameter":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"Key",
+          "documentation":"<p>The key of the custom parameter required for OAuth 2.0 authentication.</p>"
+        },
+        "isRequired":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the custom parameter for OAuth 2.0 authentication is required.</p>"
+        },
+        "label":{
+          "shape":"Label",
+          "documentation":"<p>The label of the custom parameter used for OAuth 2.0 authentication.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description about the custom parameter used for OAuth 2.0 authentication.</p>"
+        },
+        "isSensitiveField":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this authentication custom parameter is a sensitive field.</p>"
+        },
+        "connectorSuppliedValues":{
+          "shape":"ConnectorSuppliedValueList",
+          "documentation":"<p>Contains default values for this authentication parameter that are supplied by the connector.</p>"
+        },
+        "type":{
+          "shape":"OAuth2CustomPropType",
+          "documentation":"<p>Indicates whether custom parameter is used with TokenUrl or AuthUrl.</p>"
+        }
+      },
+      "documentation":"<p>Custom parameter required for OAuth 2.0 authentication.</p>"
+    },
+    "OAuth2CustomPropType":{
+      "type":"string",
+      "enum":[
+        "TOKEN_URL",
+        "AUTH_URL"
+      ]
+    },
+    "OAuth2CustomPropertiesList":{
+      "type":"list",
+      "member":{"shape":"OAuth2CustomParameter"}
+    },
     "OAuth2Defaults":{
       "type":"structure",
       "members":{
@@ -3158,6 +3203,10 @@
         "oauth2GrantTypesSupported":{
           "shape":"OAuth2GrantTypeSupportedList",
           "documentation":"<p>OAuth 2.0 grant types supported by the connector.</p>"
+        },
+        "oauth2CustomProperties":{
+          "shape":"OAuth2CustomPropertiesList",
+          "documentation":"<p>List of custom parameters required for OAuth 2.0 authentication.</p>"
         }
       },
       "documentation":"<p>Contains the default values required for OAuth 2.0 authentication.</p>"
@@ -3187,6 +3236,10 @@
         "oAuth2GrantType":{
           "shape":"OAuth2GrantType",
           "documentation":"<p>The OAuth 2.0 grant type used by connector for OAuth 2.0 authentication.</p>"
+        },
+        "tokenUrlCustomProperties":{
+          "shape":"TokenUrlCustomProperties",
+          "documentation":"<p>Associates your token URL with a map of properties that you define. Use this parameter to provide any additional details that the connector requires to authenticate your request.</p>"
         }
       },
       "documentation":"<p>The OAuth 2.0 properties required for OAuth 2.0 authentication.</p>"
@@ -4647,6 +4700,13 @@
       "type":"string",
       "max":256,
       "pattern":"^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+    },
+    "TokenUrlCustomProperties":{
+      "type":"map",
+      "key":{"shape":"CustomPropertyKey"},
+      "value":{"shape":"CustomPropertyValue"},
+      "max":50,
+      "min":0
     },
     "TokenUrlList":{
       "type":"list",

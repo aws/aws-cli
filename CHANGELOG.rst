@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.22.96
+=======
+
+* api-change:``appflow``: Enables users to pass custom token URL parameters for Oauth2 authentication during create connector profile
+* api-change:``appstream``: Includes updates for create and update fleet APIs to manage the session scripts locations for Elastic fleets.
+* api-change:``glue``: Auto Scaling for Glue version 3.0 and later jobs to dynamically scale compute resources. This SDK change provides customers with the auto-scaled DPU usage
+* bugfix:Configuration: Fixes `#2996 <https://github.com/aws/aws-cli/issues/2996>`__. Fixed a bug where config file updates would sometimes append new sections to the previous section without adding a newline.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``batch``: Enables configuration updates for compute environments with BEST_FIT_PROGRESSIVE and SPOT_CAPACITY_OPTIMIZED allocation strategies.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+
+
 1.22.95
 =======
 

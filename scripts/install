@@ -50,17 +50,16 @@ class PythonDeprecationWarning(Warning):
 
 
 def _build_deprecations():
-    # Example Template
-
-    # py_27_params = {
-    #    'date': 'July 15, 2021',
-    #    'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-end-'
-    #                 'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
-    #                 'aws-cli-v1/'
-    # }
+    py_36_params = {
+        'date': 'May 30, 2022',
+        'blog_link': (
+            'https://aws.amazon.com/blogs/developer/'
+            'python-support-policy-updates-for-aws-sdks-and-tools/'
+        )
+    }
 
     return {
-        # (2,7): py_27_params
+        (3, 6): py_36_params
     }
 
 
@@ -232,7 +231,7 @@ def main():
             "Deprecated Python version detected: Python {}.{}\n"
             "Starting {}, the AWS CLI will no longer support "
             "this version of Python. To continue receiving service updates, "
-            "bug fixes, and security updates please upgrade to Python 3.6 or "
+            "bug fixes, and security updates please upgrade to Python 3.7 or "
             "later. More information can be found here: {}"
         ).format(
             py_version[0], py_version[1], params['date'], params['blog_link']

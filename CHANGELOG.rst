@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.5.6
+=====
+
+* api-change:``batch``: Enables configuration updates for compute environments with BEST_FIT_PROGRESSIVE and SPOT_CAPACITY_OPTIMIZED allocation strategies.
+* bugfix:Configuration: Fixes `#2996 <https://github.com/aws/aws-cli/issues/2996>`__. Fixed a bug where config file updates would sometimes append new sections to the previous section without adding a newline.
+* api-change:``appflow``: Enables users to pass custom token URL parameters for Oauth2 authentication during create connector profile
+* api-change:``appstream``: Includes updates for create and update fleet APIs to manage the session scripts locations for Elastic fleets.
+* api-change:``fsx``: This release adds support for deploying FSx for ONTAP file systems in a single Availability Zone.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``glue``: Auto Scaling for Glue version 3.0 and later jobs to dynamically scale compute resources. This SDK change provides customers with the auto-scaled DPU usage
+
+
 2.5.5
 =====
 

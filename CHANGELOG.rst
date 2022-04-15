@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.22.97
+=======
+
+* api-change:``rds``: Removes Amazon RDS on VMware with the deletion of APIs related to Custom Availability Zones and Media installation
+* api-change:``athena``: This release adds subfields, ErrorMessage, Retryable, to the AthenaError response object in the GetQueryExecution API when a query fails.
+* api-change:``lightsail``: This release adds support to describe the synchronization status of the account-level block public access feature for your Amazon Lightsail buckets.
+
+
 1.22.96
 =======
 

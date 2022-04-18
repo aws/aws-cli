@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 from functools import partial
+import awscli.clidriver
 
 from prompt_toolkit.application import get_app
 from prompt_toolkit.filters import has_focus
@@ -196,13 +197,19 @@ class InputToolbarView(BaseToolbarView):
 
     @property
     def help_text(self):
+        driver = awscli.clidriver.create_clidriver()
+        session = driver.session
+        hide_show_docs=session.get_config_variable('hide_show_docs') if session.get_config_variable('hide_show_docs') else "F3"
+        hide_show_output=session.get_config_variable('hide_show_output') if session.get_config_variable('hide_show_output') else "F5"
+        show_shortkey_help= session.get_config_variable('show_shortkey_help') if session.get_config_variable('show_shortkey_help') else "F1"
+        focus_on_next_panel=session.get_config_variable('focus_on_next_panel') if session.get_config_variable('focus_on_next_panel') else "F2"
         return (
             f'{self.STYLE}[ENTER]</style> Autocomplete '
             f'Choice/Execute Command{self.SPACING}'
-            f'{self.STYLE}[F1]</style> Show Shortkey Help{self.SPACING}'
-            f'{self.STYLE}[F2]</style> Focus on next panel{self.SPACING}'
-            f'{self.STYLE}[F3]</style> Hide/Show Docs{self.SPACING}'
-            f'{self.STYLE}[F5]</style> Hide/Show Output'
+            f'{self.STYLE}[{show_shortkey_help.upper()}]</style> Show Shortkey Help{self.SPACING}'
+            f'{self.STYLE}[{focus_on_next_panel.upper()}]</style> Focus on next panel{self.SPACING}'
+            f'{self.STYLE}[{hide_show_docs.upper()}]</style> Hide/Show Docs{self.SPACING}'
+            f'{self.STYLE}[{hide_show_output.upper()}]</style> Hide/Show Output'
             )
 
 

@@ -547,6 +547,14 @@
         "ErrorType":{
           "shape":"ErrorType",
           "documentation":"<p>An integer value that provides specific information about an Athena query error. For the meaning of specific values, see the <a href=\"https://docs.aws.amazon.com/athena/latest/ug/error-reference.html#error-reference-error-type-reference\">Error Type Reference</a> in the <i>Amazon Athena User Guide</i>.</p>"
+        },
+        "Retryable":{
+          "shape":"Boolean",
+          "documentation":"<p>True if the query might succeed if resubmitted.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>Contains a short description of the error that occurred.</p>"
         }
       },
       "documentation":"<p>Provides information about an Athena query error. The <code>AthenaError</code> feature provides standardized error information to help you understand failed queries and take steps after a query failure occurs. <code>AthenaError</code> includes an <code>ErrorCategory</code> field that specifies whether the cause of the failed query is due to system error, user error, or other error.</p>"
@@ -1010,14 +1018,14 @@
       "members":{
         "EncryptionOption":{
           "shape":"EncryptionOption",
-          "documentation":"<p>Indicates whether Amazon S3 server-side encryption with Amazon S3-managed keys (<code>SSE-S3</code>), server-side encryption with KMS-managed keys (<code>SSE-KMS</code>), or client-side encryption with KMS-managed keys (CSE-KMS) is used.</p> <p>If a query runs in a workgroup and the workgroup overrides client-side settings, then the workgroup's setting for encryption is used. It specifies whether query results must be encrypted, for all queries that run in this workgroup. </p>"
+          "documentation":"<p>Indicates whether Amazon S3 server-side encryption with Amazon S3-managed keys (<code>SSE_S3</code>), server-side encryption with KMS-managed keys (<code>SSE_KMS</code>), or client-side encryption with KMS-managed keys (<code>CSE_KMS</code>) is used.</p> <p>If a query runs in a workgroup and the workgroup overrides client-side settings, then the workgroup's setting for encryption is used. It specifies whether query results must be encrypted, for all queries that run in this workgroup. </p>"
         },
         "KmsKey":{
           "shape":"String",
-          "documentation":"<p>For <code>SSE-KMS</code> and <code>CSE-KMS</code>, this is the KMS key ARN or ID.</p>"
+          "documentation":"<p>For <code>SSE_KMS</code> and <code>CSE_KMS</code>, this is the KMS key ARN or ID.</p>"
         }
       },
-      "documentation":"<p>If query results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE-KMS</code> or <code>CSE-KMS</code>) and key information.</p>"
+      "documentation":"<p>If query results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE_KMS</code> or <code>CSE_KMS</code>) and key information.</p>"
     },
     "EncryptionOption":{
       "type":"string",
@@ -1907,7 +1915,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>If query results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE-KMS</code> or <code>CSE-KMS</code>) and key information. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the encryption configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href=\"https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html\">Workgroup Settings Override Client-Side Settings</a>.</p>"
+          "documentation":"<p>If query results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE_KMS</code> or <code>CSE_KMS</code>) and key information. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the encryption configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href=\"https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html\">Workgroup Settings Override Client-Side Settings</a>.</p>"
         },
         "ExpectedBucketOwner":{
           "shape":"String",

@@ -1315,7 +1315,7 @@
         },
         "HealthCheckGracePeriod":{
           "shape":"HealthCheckGracePeriod",
-          "documentation":"<p>The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before checking the health status of an EC2 instance that has come into service and marking it unhealthy due to a failed health check.</p>"
+          "documentation":"<p>The duration of the health check grace period, in seconds.</p>"
         },
         "Instances":{
           "shape":"Instances",
@@ -1383,7 +1383,11 @@
         },
         "DesiredCapacityType":{
           "shape":"XmlStringMaxLen255",
-          "documentation":"<p>The unit of measurement for the value specified for desired capacity. Amazon EC2 Auto Scaling supports <code>DesiredCapacityType</code> for attribute-based instance type selection only. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-instance-type-requirements.html\">Creating an Auto Scaling group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>By default, Amazon EC2 Auto Scaling specifies <code>units</code>, which translates into number of instances.</p> <p>Valid values: <code>units</code> | <code>vcpu</code> | <code>memory-mib</code> </p>"
+          "documentation":"<p>The unit of measurement for the value specified for desired capacity. Amazon EC2 Auto Scaling supports <code>DesiredCapacityType</code> for attribute-based instance type selection only.</p>"
+        },
+        "DefaultInstanceWarmup":{
+          "shape":"DefaultInstanceWarmup",
+          "documentation":"<p>The duration of the default instance warmup, in seconds.</p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group.</p>"
@@ -1792,7 +1796,7 @@
         },
         "DefaultCooldown":{
           "shape":"Cooldown",
-          "documentation":"<p>The amount of time, in seconds, after a scaling activity completes before another scaling activity can start. The default value is <code>300</code>. This setting applies when using simple scaling policies, but not when using other scaling policies or scheduled scaling. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html\">Scaling cooldowns for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p> <i>Only needed if you use simple scaling policies.</i> </p> <p>The amount of time, in seconds, between one scaling activity ending and another one starting due to simple scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html\">Scaling cooldowns for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>Default: <code>300</code> seconds</p>"
         },
         "AvailabilityZones":{
           "shape":"AvailabilityZones",
@@ -1812,11 +1816,11 @@
         },
         "HealthCheckGracePeriod":{
           "shape":"HealthCheckGracePeriod",
-          "documentation":"<p>The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before checking the health status of an EC2 instance that has come into service and marking it unhealthy due to a failed health check. The default value is <code>0</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html#health-check-grace-period\">Health check grace period</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>Required if you are adding an <code>ELB</code> health check.</p>"
+          "documentation":"<p> <i/> </p> <p>The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before checking the health status of an EC2 instance that has come into service and marking it unhealthy due to a failed Elastic Load Balancing or custom health check. This is useful if your instances do not immediately pass these health checks after they enter the <code>InService</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html#health-check-grace-period\">Health check grace period</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>Default: <code>0</code> seconds</p>"
         },
         "PlacementGroup":{
           "shape":"XmlStringMaxLen255",
-          "documentation":"<p>The name of an existing placement group into which to launch your instances, if any. A placement group is a logical grouping of instances within a single Availability Zone. You cannot specify multiple Availability Zones and a placement group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement Groups</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>"
+          "documentation":"<p>The name of an existing placement group into which to launch your instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement groups</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p> <note> <p>A <i>cluster</i> placement group is a logical grouping of instances within a single Availability Zone. You cannot specify multiple Availability Zones and a cluster placement group. </p> </note>"
         },
         "VPCZoneIdentifier":{
           "shape":"XmlStringMaxLen2047",
@@ -1857,6 +1861,10 @@
         "DesiredCapacityType":{
           "shape":"XmlStringMaxLen255",
           "documentation":"<p>The unit of measurement for the value specified for desired capacity. Amazon EC2 Auto Scaling supports <code>DesiredCapacityType</code> for attribute-based instance type selection only. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-instance-type-requirements.html\">Creating an Auto Scaling group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>By default, Amazon EC2 Auto Scaling specifies <code>units</code>, which translates into number of instances.</p> <p>Valid values: <code>units</code> | <code>vcpu</code> | <code>memory-mib</code> </p>"
+        },
+        "DefaultInstanceWarmup":{
+          "shape":"DefaultInstanceWarmup",
+          "documentation":"<p>The amount of time, in seconds, until a newly launched instance can contribute to the Amazon CloudWatch metrics. This delay lets an instance finish initializing before Amazon EC2 Auto Scaling aggregates instance metrics, resulting in more reliable usage data. Set this value equal to the amount of time that it takes for resource consumption to become stable after an instance reaches the <code>InService</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-default-instance-warmup.html\">Set the default instance warmup for an Auto Scaling group</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <important> <p>To manage your warm-up settings at the group level, we recommend that you set the default instance warmup, <i>even if its value is set to 0 seconds</i>. This also optimizes the performance of scaling policies that scale continuously, such as target tracking and step scaling policies. </p> <p>If you need to remove a value that you previously set, include the property but specify <code>-1</code> for the value. However, we strongly recommend keeping the default instance warmup enabled by specifying a minimum value of <code>0</code>.</p> </important> <p>Default: None </p>"
         }
       }
     },
@@ -1882,11 +1890,11 @@
         },
         "ClassicLinkVPCId":{
           "shape":"XmlStringMaxLen255",
-          "documentation":"<p>The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 User Guide for Linux Instances</i> and <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-in-vpc.html#as-ClassicLink\">Linking EC2-Classic instances to a VPC</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>This parameter can only be used if you are launching EC2-Classic instances.</p>"
+          "documentation":"<p> <i>EC2-Classic retires on August 15, 2022. This parameter is not supported after that date.</i> </p> <p>The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>"
         },
         "ClassicLinkVPCSecurityGroups":{
           "shape":"ClassicLinkVPCSecurityGroups",
-          "documentation":"<p>The IDs of one or more security groups for the specified ClassicLink-enabled VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 User Guide for Linux Instances</i> and <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-in-vpc.html#as-ClassicLink\">Linking EC2-Classic instances to a VPC</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>If you specify the <code>ClassicLinkVPCId</code> parameter, you must specify this parameter.</p>"
+          "documentation":"<p> <i>EC2-Classic retires on August 15, 2022. This parameter is not supported after that date.</i> </p> <p>The IDs of one or more security groups for the specified ClassicLink-enabled VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p> <p>If you specify the <code>ClassicLinkVPCId</code> parameter, you must specify this parameter.</p>"
         },
         "UserData":{
           "shape":"XmlStringUserData",
@@ -1983,6 +1991,7 @@
       },
       "documentation":"<p>Represents a CloudWatch metric of your choosing for a target tracking scaling policy to use with Amazon EC2 Auto Scaling.</p> <p>To create your customized metric specification:</p> <ul> <li> <p>Add values for each required parameter from CloudWatch. You can use an existing metric, or a new metric that you create. To use your own metric, you must first publish the metric to CloudWatch. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html\">Publish custom metrics</a> in the <i>Amazon CloudWatch User Guide</i>.</p> </li> <li> <p>Choose a metric that changes proportionally with capacity. The value of the metric should increase or decrease in inverse proportion to the number of capacity units. That is, the value of the metric should decrease when capacity increases.</p> </li> </ul> <p>For more information about the CloudWatch terminology below, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html\">Amazon CloudWatch concepts</a>.</p> <note> <p>Each individual service provides information about the metrics, namespace, and dimensions they use. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html\">Amazon Web Services services that publish CloudWatch metrics</a> in the <i>Amazon CloudWatch User Guide</i>.</p> </note>"
     },
+    "DefaultInstanceWarmup":{"type":"integer"},
     "DeleteAutoScalingGroupType":{
       "type":"structure",
       "required":["AutoScalingGroupName"],
@@ -3250,11 +3259,11 @@
         },
         "ClassicLinkVPCId":{
           "shape":"XmlStringMaxLen255",
-          "documentation":"<p>The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 User Guide for Linux Instances</i> and <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-in-vpc.html#as-ClassicLink\">Linking EC2-Classic instances to a VPC</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p> <i>EC2-Classic retires on August 15, 2022. This parameter is not supported after that date.</i> </p> <p>The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to.</p>"
         },
         "ClassicLinkVPCSecurityGroups":{
           "shape":"ClassicLinkVPCSecurityGroups",
-          "documentation":"<p>The IDs of one or more security groups for the VPC specified in <code>ClassicLinkVPCId</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 User Guide for Linux Instances</i> and <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-in-vpc.html#as-ClassicLink\">Linking EC2-Classic instances to a VPC</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p> <i>EC2-Classic retires on August 15, 2022. This parameter is not supported after that date.</i> </p> <p>The IDs of one or more security groups for the VPC specified in <code>ClassicLinkVPCId</code>.</p>"
         },
         "UserData":{
           "shape":"XmlStringUserData",
@@ -3459,7 +3468,7 @@
         },
         "GlobalTimeout":{
           "shape":"GlobalTimeout",
-          "documentation":"<p>The maximum time, in seconds, that an instance can remain in a <code>Pending:Wait</code> or <code>Terminating:Wait</code> state. The maximum is 172800 seconds (48 hours) or 100 times <code>HeartbeatTimeout</code>, whichever is smaller.</p>"
+          "documentation":"<p>The maximum time, in seconds, that an instance can remain in a wait state. The maximum is 172800 seconds (48 hours) or 100 times <code>HeartbeatTimeout</code>, whichever is smaller.</p>"
         },
         "DefaultResult":{
           "shape":"LifecycleActionResult",
@@ -3991,7 +4000,7 @@
       "members":{
         "PredefinedMetricType":{
           "shape":"MetricType",
-          "documentation":"<p>The metric type. The following predefined metrics are available:</p> <ul> <li> <p> <code>ASGAverageCPUUtilization</code> - Average CPU utilization of the Auto Scaling group.</p> </li> <li> <p> <code>ASGAverageNetworkIn</code> - Average number of bytes received (per instance per minute) for the Auto Scaling group.</p> </li> <li> <p> <code>ASGAverageNetworkOut</code> - Average number of bytes sent out (per instance per minute) for the Auto Scaling group.</p> </li> <li> <p> <code>ALBRequestCountPerTarget</code> - Average Application Load Balancer request count (per target per minute) for your Auto Scaling group.</p> </li> </ul>"
+          "documentation":"<p>The metric type. The following predefined metrics are available:</p> <ul> <li> <p> <code>ASGAverageCPUUtilization</code> - Average CPU utilization of the Auto Scaling group.</p> </li> <li> <p> <code>ASGAverageNetworkIn</code> - Average number of bytes received on all network interfaces by the Auto Scaling group.</p> </li> <li> <p> <code>ASGAverageNetworkOut</code> - Average number of bytes sent out on all network interfaces by the Auto Scaling group.</p> </li> <li> <p> <code>ALBRequestCountPerTarget</code> - Average Application Load Balancer request count per target for your Auto Scaling group.</p> </li> </ul>"
         },
         "ResourceLabel":{
           "shape":"XmlStringMaxLen1023",
@@ -4320,7 +4329,7 @@
         },
         "Cooldown":{
           "shape":"Cooldown",
-          "documentation":"<p>The duration of the policy's cooldown period, in seconds. When a cooldown period is specified here, it overrides the default cooldown period defined for the Auto Scaling group.</p> <p>Valid only if the policy type is <code>SimpleScaling</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html\">Scaling cooldowns for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p>A cooldown period, in seconds, that applies to a specific simple scaling policy. When a cooldown period is specified here, it overrides the default cooldown.</p> <p>Valid only if the policy type is <code>SimpleScaling</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html\">Scaling cooldowns for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>Default: None</p>"
         },
         "MetricAggregationType":{
           "shape":"XmlStringMaxLen32",
@@ -4332,7 +4341,7 @@
         },
         "EstimatedInstanceWarmup":{
           "shape":"EstimatedInstanceWarmup",
-          "documentation":"<p>The estimated time, in seconds, until a newly launched instance can contribute to the CloudWatch metrics. If not provided, the default is to use the value from the default cooldown period for the Auto Scaling group.</p> <p>Valid only if the policy type is <code>TargetTrackingScaling</code> or <code>StepScaling</code>.</p>"
+          "documentation":"<p> <i>Not needed if the default instance warmup is defined for the group.</i> </p> <p>The estimated time, in seconds, until a newly launched instance can contribute to the CloudWatch metrics. This warm-up period applies to instances launched due to a specific target tracking or step scaling policy. When a warm-up period is specified here, it overrides the default instance warmup.</p> <p>Valid only if the policy type is <code>TargetTrackingScaling</code> or <code>StepScaling</code>.</p> <note> <p>The default is to use the value for the default instance warmup defined for the group. If default instance warmup is null, then <code>EstimatedInstanceWarmup</code> falls back to the value of default cooldown.</p> </note>"
         },
         "TargetTrackingConfiguration":{
           "shape":"TargetTrackingConfiguration",
@@ -4467,11 +4476,11 @@
       "members":{
         "MinHealthyPercentage":{
           "shape":"IntPercent",
-          "documentation":"<p>The amount of capacity in the Auto Scaling group that must remain healthy during an instance refresh to allow the operation to continue. The value is expressed as a percentage of the desired capacity of the Auto Scaling group (rounded up to the nearest integer). The default is <code>90</code>.</p> <p>Setting the minimum healthy percentage to 100 percent limits the rate of replacement to one instance at a time. In contrast, setting it to 0 percent has the effect of replacing all instances at the same time. </p>"
+          "documentation":"<p>The amount of capacity in the Auto Scaling group that must pass your group's health checks to allow the operation to continue. The value is expressed as a percentage of the desired capacity of the Auto Scaling group (rounded up to the nearest integer). The default is <code>90</code>.</p> <p>Setting the minimum healthy percentage to 100 percent limits the rate of replacement to one instance at a time. In contrast, setting it to 0 percent has the effect of replacing all instances at the same time. </p>"
         },
         "InstanceWarmup":{
           "shape":"RefreshInstanceWarmup",
-          "documentation":"<p>The number of seconds until a newly launched instance is configured and ready to use. During this time, Amazon EC2 Auto Scaling does not immediately move on to the next replacement. The default is to use the value for the health check grace period defined for the group.</p>"
+          "documentation":"<p> <i>Not needed if the default instance warmup is defined for the group.</i> </p> <p>The duration of the instance warmup, in seconds.</p> <note> <p>The default is to use the value for the default instance warmup defined for the group. If default instance warmup is null, then <code>InstanceWarmup</code> falls back to the value of the health check grace period.</p> </note>"
         },
         "CheckpointPercentages":{
           "shape":"CheckpointPercentages",
@@ -5118,7 +5127,7 @@
         },
         "DefaultCooldown":{
           "shape":"Cooldown",
-          "documentation":"<p>The amount of time, in seconds, after a scaling activity completes before another scaling activity can start. The default value is <code>300</code>. This setting applies when using simple scaling policies, but not when using other scaling policies or scheduled scaling. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html\">Scaling cooldowns for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p> <i>Only needed if you use simple scaling policies.</i> </p> <p>The amount of time, in seconds, between one scaling activity ending and another one starting due to simple scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html\">Scaling cooldowns for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         },
         "AvailabilityZones":{
           "shape":"AvailabilityZones",
@@ -5130,11 +5139,11 @@
         },
         "HealthCheckGracePeriod":{
           "shape":"HealthCheckGracePeriod",
-          "documentation":"<p>The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before checking the health status of an EC2 instance that has come into service and marking it unhealthy due to a failed health check. The default value is <code>0</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html#health-check-grace-period\">Health check grace period</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>Required if you are adding an <code>ELB</code> health check.</p>"
+          "documentation":"<p>The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before checking the health status of an EC2 instance that has come into service and marking it unhealthy due to a failed Elastic Load Balancing or custom health check. This is useful if your instances do not immediately pass these health checks after they enter the <code>InService</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html#health-check-grace-period\">Health check grace period</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         },
         "PlacementGroup":{
           "shape":"XmlStringMaxLen255",
-          "documentation":"<p>The name of an existing placement group into which to launch your instances, if any. A placement group is a logical grouping of instances within a single Availability Zone. You cannot specify multiple Availability Zones and a placement group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement Groups</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>"
+          "documentation":"<p>The name of an existing placement group into which to launch your instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement groups</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p> <note> <p>A <i>cluster</i> placement group is a logical grouping of instances within a single Availability Zone. You cannot specify multiple Availability Zones and a cluster placement group. </p> </note>"
         },
         "VPCZoneIdentifier":{
           "shape":"XmlStringMaxLen2047",
@@ -5167,6 +5176,10 @@
         "DesiredCapacityType":{
           "shape":"XmlStringMaxLen255",
           "documentation":"<p>The unit of measurement for the value specified for desired capacity. Amazon EC2 Auto Scaling supports <code>DesiredCapacityType</code> for attribute-based instance type selection only. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-instance-type-requirements.html\">Creating an Auto Scaling group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>By default, Amazon EC2 Auto Scaling specifies <code>units</code>, which translates into number of instances.</p> <p>Valid values: <code>units</code> | <code>vcpu</code> | <code>memory-mib</code> </p>"
+        },
+        "DefaultInstanceWarmup":{
+          "shape":"DefaultInstanceWarmup",
+          "documentation":"<p>The amount of time, in seconds, until a newly launched instance can contribute to the Amazon CloudWatch metrics. This delay lets an instance finish initializing before Amazon EC2 Auto Scaling aggregates instance metrics, resulting in more reliable usage data. Set this value equal to the amount of time that it takes for resource consumption to become stable after an instance reaches the <code>InService</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-default-instance-warmup.html\">Set the default instance warmup for an Auto Scaling group</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <important> <p>To manage your warm-up settings at the group level, we recommend that you set the default instance warmup, <i>even if its value is set to 0 seconds</i>. This also optimizes the performance of scaling policies that scale continuously, such as target tracking and step scaling policies. </p> <p>If you need to remove a value that you previously set, include the property but specify <code>-1</code> for the value. However, we strongly recommend keeping the default instance warmup enabled by specifying a minimum value of <code>0</code>.</p> </important>"
         }
       }
     },

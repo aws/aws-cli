@@ -282,7 +282,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a deployment for your Amazon Lightsail container service.</p> <p>A deployment specifies the containers that will be launched on the container service and their settings, such as the ports to open, the environment variables to apply, and the launch command to run. It also specifies the container that will serve as the public endpoint of the deployment and its settings, such as the HTTP or HTTPS port to use, and the health check configuration.</p> <p>You can deploy containers to your container service using container images from a public registry like Docker Hub, or from your local machine. For more information, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-container-images\">Creating container images for your Amazon Lightsail container services</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
+      "documentation":"<p>Creates a deployment for your Amazon Lightsail container service.</p> <p>A deployment specifies the containers that will be launched on the container service and their settings, such as the ports to open, the environment variables to apply, and the launch command to run. It also specifies the container that will serve as the public endpoint of the deployment and its settings, such as the HTTP or HTTPS port to use, and the health check configuration.</p> <p>You can deploy containers to your container service using container images from a public registry such as Amazon ECR Public, or from your local machine. For more information, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-container-images\">Creating container images for your Amazon Lightsail container services</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
     "CreateContainerServiceRegistryLogin":{
       "name":"CreateContainerServiceRegistryLogin",
@@ -1258,7 +1258,7 @@
         {"shape":"ServiceException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Returns information about one or more Amazon Lightsail buckets.</p> <p>For more information about buckets, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/buckets-in-amazon-lightsail\">Buckets in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>..</p>"
+      "documentation":"<p>Returns information about one or more Amazon Lightsail buckets. The information returned includes the synchronization status of the Amazon Simple Storage Service (Amazon S3) account-level block public access feature for your Lightsail buckets.</p> <p>For more information about buckets, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/buckets-in-amazon-lightsail\">Buckets in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
     "GetBundles":{
       "name":"GetBundles",
@@ -1542,7 +1542,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Returns the bundles that can be applied to your Amazon Lightsail content delivery network (CDN) distributions.</p> <p>A distribution bundle specifies the monthly network transfer quota and monthly cost of your dsitribution.</p>"
+      "documentation":"<p>Returns the bundles that can be applied to your Amazon Lightsail content delivery network (CDN) distributions.</p> <p>A distribution bundle specifies the monthly network transfer quota and monthly cost of your distribution.</p>"
     },
     "GetDistributionLatestCacheReset":{
       "name":"GetDistributionLatestCacheReset",
@@ -2758,7 +2758,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Updates the bundle of your Amazon Lightsail content delivery network (CDN) distribution.</p> <p>A distribution bundle specifies the monthly network transfer quota and monthly cost of your dsitribution.</p> <p>Update your distribution's bundle if your distribution is going over its monthly network transfer quota and is incurring an overage fee.</p> <p>You can update your distribution's bundle only one time within your monthly AWS billing cycle. To determine if you can update your distribution's bundle, use the <code>GetDistributions</code> action. The <code>ableToUpdateBundle</code> parameter in the result will indicate whether you can currently update your distribution's bundle.</p>"
+      "documentation":"<p>Updates the bundle of your Amazon Lightsail content delivery network (CDN) distribution.</p> <p>A distribution bundle specifies the monthly network transfer quota and monthly cost of your distribution.</p> <p>Update your distribution's bundle if your distribution is going over its monthly network transfer quota and is incurring an overage fee.</p> <p>You can update your distribution's bundle only one time within your monthly AWS billing cycle. To determine if you can update your distribution's bundle, use the <code>GetDistributions</code> action. The <code>ableToUpdateBundle</code> parameter in the result will indicate whether you can currently update your distribution's bundle.</p>"
     },
     "UpdateDomainEntry":{
       "name":"UpdateDomainEntry",
@@ -2927,6 +2927,37 @@
       "enum":[
         "public",
         "private"
+      ]
+    },
+    "AccountLevelBpaSync":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"AccountLevelBpaSyncStatus",
+          "documentation":"<p>The status of the account-level BPA synchronization.</p> <p>The following statuses are possible:</p> <ul> <li> <p> <code>InSync</code> - Account-level BPA is synchronized. The Amazon S3 account-level BPA configuration applies to your Lightsail buckets.</p> </li> <li> <p> <code>NeverSynced</code> - Synchronization has not yet happened. The Amazon S3 account-level BPA configuration does not apply to your Lightsail buckets.</p> </li> <li> <p> <code>Failed</code> - Synchronization failed. The Amazon S3 account-level BPA configuration does not apply to your Lightsail buckets.</p> </li> <li> <p> <code>Defaulted</code> - Synchronization failed and account-level BPA for your Lightsail buckets is defaulted to <i>active</i>.</p> </li> </ul> <note> <p>You might need to complete further actions if the status is <code>Failed</code> or <code>Defaulted</code>. The <code>message</code> parameter provides more information for those statuses.</p> </note>"
+        },
+        "lastSyncedAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp of when the account-level BPA configuration was last synchronized. This value is null when the account-level BPA configuration has not been synchronized.</p>"
+        },
+        "message":{
+          "shape":"BPAStatusMessage",
+          "documentation":"<p>A message that provides a reason for a <code>Failed</code> or <code>Defaulted</code> synchronization status.</p> <p>The following messages are possible:</p> <ul> <li> <p> <code>SYNC_ON_HOLD</code> - The synchronization has not yet happened. This status message occurs immediately after you create your first Lightsail bucket. This status message should change after the first synchronization happens, approximately 1 hour after the first bucket is created.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. The account-level BPA configuration for your Lightsail buckets is defaulted to <i>active</i> until the synchronization can occur. This means that all your buckets are private and not publicly accessible. For more information about how to create the required service-linked role to allow synchronization, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-using-service-linked-roles\">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING_ON_HOLD</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. Account-level BPA is not yet configured for your Lightsail buckets. Therefore, only the bucket access permissions and individual object access permissions apply to your Lightsail buckets. For more information about how to create the required service-linked role to allow synchronization, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-using-service-linked-roles\">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>Unknown</code> - The reason that synchronization failed is unknown. Contact Amazon Web Services Support for more information.</p> </li> </ul>"
+        },
+        "bpaImpactsLightsail":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean value that indicates whether account-level block public access is affecting your Lightsail buckets.</p>"
+        }
+      },
+      "documentation":"<p>Describes the synchronization status of the Amazon Simple Storage Service (Amazon S3) account-level block public access (BPA) feature for your Lightsail buckets.</p> <p>The account-level BPA feature of Amazon S3 provides centralized controls to limit public access to all Amazon S3 buckets in an account. BPA can make all Amazon S3 buckets in an Amazon Web Services account private regardless of the individual bucket and object permissions that are configured. Lightsail buckets take into account the Amazon S3 account-level BPA configuration when allowing or denying public access. To do this, Lightsail periodically fetches the account-level BPA configuration from Amazon S3. When the account-level BPA status is <code>InSync</code>, the Amazon S3 account-level BPA configuration is synchronized and it applies to your Lightsail buckets. For more information about Amazon Simple Storage Service account-level BPA and how it affects Lightsail buckets, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets\">Block public access for buckets in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
+    },
+    "AccountLevelBpaSyncStatus":{
+      "type":"string",
+      "enum":[
+        "InSync",
+        "Failed",
+        "NeverSynced",
+        "Defaulted"
       ]
     },
     "AccountSetupInProgressException":{
@@ -3331,6 +3362,15 @@
       "type":"list",
       "member":{"shape":"AvailabilityZone"}
     },
+    "BPAStatusMessage":{
+      "type":"string",
+      "enum":[
+        "DEFAULTED_FOR_SLR_MISSING",
+        "SYNC_ON_HOLD",
+        "DEFAULTED_FOR_SLR_MISSING_ON_HOLD",
+        "Unknown"
+      ]
+    },
     "Base64":{"type":"string"},
     "BehaviorEnum":{
       "type":"string",
@@ -3481,7 +3521,7 @@
         },
         "destination":{
           "shape":"BucketName",
-          "documentation":"<p>The name of the bucket where the access is saved. The destination can be a Lightsail bucket in the same account, and in the same AWS Region as the source bucket.</p> <note> <p>This parameter is required when enabling the access log for a bucket, and should be omitted when disabling the access log.</p> </note>"
+          "documentation":"<p>The name of the bucket where the access logs are saved. The destination can be a Lightsail bucket in the same account, and in the same AWS Region as the source bucket.</p> <note> <p>This parameter is required when enabling the access log for a bucket, and should be omitted when disabling the access log.</p> </note>"
         },
         "prefix":{
           "shape":"BucketAccessLogPrefix",
@@ -6721,6 +6761,10 @@
         "nextPageToken":{
           "shape":"string",
           "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetBuckets</code> request and specify the next page token using the <code>pageToken</code> parameter.</p>"
+        },
+        "accountLevelBpaSync":{
+          "shape":"AccountLevelBpaSync",
+          "documentation":"<p>An object that describes the synchronization status of the Amazon S3 account-level block public access feature for your Lightsail buckets.</p> <p>For more information about this feature and how it affects Lightsail buckets, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets\">Block public access for buckets in Amazon Lightsail</a>.</p>"
         }
       }
     },

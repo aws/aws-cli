@@ -114,9 +114,9 @@ class PromptToolkitPrompter:
         # which can be used to configure different color schemes in aws cli. You can read more
         # about it in the documentation linked below:
         # https://python-prompt-toolkit.readthedocs.io/en/master/pages/advanced_topics/styling.html?highlight=classes#color-depths
-        cliColorDepth = {"black_and_white": ColorDepth.MONOCHROME, "ansi_colors": ColorDepth.ANSI_COLORS_ONLY,"256_colors": ColorDepth.DEFAULT, "true_colors": ColorDepth.TRUE_COLOR}
-        depthLevel = self._session.get_config_variable('color_palette')
-        depthLevel = depthLevel if depthLevel else "256_colors"
+        cli_color_depth = {"black_and_white": ColorDepth.MONOCHROME, "ansi_colors": ColorDepth.ANSI_COLORS_ONLY,"256_colors": ColorDepth.DEFAULT, "true_colors": ColorDepth.TRUE_COLOR}
+        depth_level = self._session.get_config_variable('color_palette')
+        depth_level = depth_level if depth_level else "256_colors"
         self._create_buffers()
         input_buffer_container, doc_window, output_window = self._create_containers()
         layout = self._factory.create_layout(
@@ -128,7 +128,7 @@ class PromptToolkitPrompter:
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
                           output=self._output, erase_when_done=True,
-                          input=self._input, color_depth=cliColorDepth[depthLevel])
+                          input=self._input, color_depth=cli_color_depth[depth_level])
         self._set_app_defaults(app)
         return app
 

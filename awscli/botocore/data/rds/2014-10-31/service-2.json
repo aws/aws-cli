@@ -242,24 +242,6 @@
       ],
       "documentation":"<p>Copies the specified option group.</p>"
     },
-    "CreateCustomAvailabilityZone":{
-      "name":"CreateCustomAvailabilityZone",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"CreateCustomAvailabilityZoneMessage"},
-      "output":{
-        "shape":"CreateCustomAvailabilityZoneResult",
-        "resultWrapper":"CreateCustomAvailabilityZoneResult"
-      },
-      "errors":[
-        {"shape":"CustomAvailabilityZoneAlreadyExistsFault"},
-        {"shape":"CustomAvailabilityZoneQuotaExceededFault"},
-        {"shape":"KMSKeyNotAccessibleFault"}
-      ],
-      "documentation":"<p>Creates a custom Availability Zone (AZ).</p> <p>A custom AZ is an on-premises AZ that is integrated with a VMware vSphere cluster.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p>"
-    },
     "CreateCustomDBEngineVersion":{
       "name":"CreateCustomDBEngineVersion",
       "http":{
@@ -607,23 +589,6 @@
       ],
       "documentation":"<p>Creates a new option group. You can create up to 20 option groups.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
-    "DeleteCustomAvailabilityZone":{
-      "name":"DeleteCustomAvailabilityZone",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"DeleteCustomAvailabilityZoneMessage"},
-      "output":{
-        "shape":"DeleteCustomAvailabilityZoneResult",
-        "resultWrapper":"DeleteCustomAvailabilityZoneResult"
-      },
-      "errors":[
-        {"shape":"CustomAvailabilityZoneNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"}
-      ],
-      "documentation":"<p>Deletes a custom Availability Zone (AZ).</p> <p>A custom AZ is an on-premises AZ that is integrated with a VMware vSphere cluster.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p>"
-    },
     "DeleteCustomDBEngineVersion":{
       "name":"DeleteCustomDBEngineVersion",
       "http":{
@@ -872,22 +837,6 @@
       ],
       "documentation":"<p>Deletes a global database cluster. The primary and secondary clusters must already be detached or destroyed first.</p> <note> <p>This action only applies to Aurora DB clusters.</p> </note>"
     },
-    "DeleteInstallationMedia":{
-      "name":"DeleteInstallationMedia",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"DeleteInstallationMediaMessage"},
-      "output":{
-        "shape":"InstallationMedia",
-        "resultWrapper":"DeleteInstallationMediaResult"
-      },
-      "errors":[
-        {"shape":"InstallationMediaNotFoundFault"}
-      ],
-      "documentation":"<p>Deletes the installation medium for a DB engine that requires an on-premises customer provided license, such as Microsoft SQL Server.</p>"
-    },
     "DeleteOptionGroup":{
       "name":"DeleteOptionGroup",
       "http":{
@@ -948,22 +897,6 @@
         {"shape":"CertificateNotFoundFault"}
       ],
       "documentation":"<p>Lists the set of CA certificates provided by Amazon RDS for this Amazon Web Services account.</p>"
-    },
-    "DescribeCustomAvailabilityZones":{
-      "name":"DescribeCustomAvailabilityZones",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"DescribeCustomAvailabilityZonesMessage"},
-      "output":{
-        "shape":"CustomAvailabilityZoneMessage",
-        "resultWrapper":"DescribeCustomAvailabilityZonesResult"
-      },
-      "errors":[
-        {"shape":"CustomAvailabilityZoneNotFoundFault"}
-      ],
-      "documentation":"<p>Returns information about custom Availability Zones (AZs).</p> <p>A custom AZ is an on-premises AZ that is integrated with a VMware vSphere cluster.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p>"
     },
     "DescribeDBClusterBacktracks":{
       "name":"DescribeDBClusterBacktracks",
@@ -1405,22 +1338,6 @@
       ],
       "documentation":"<p>Returns information about Aurora global database clusters. This API supports pagination.</p> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action only applies to Aurora DB clusters.</p> </note>"
     },
-    "DescribeInstallationMedia":{
-      "name":"DescribeInstallationMedia",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"DescribeInstallationMediaMessage"},
-      "output":{
-        "shape":"InstallationMediaMessage",
-        "resultWrapper":"DescribeInstallationMediaResult"
-      },
-      "errors":[
-        {"shape":"InstallationMediaNotFoundFault"}
-      ],
-      "documentation":"<p>Describes the available installation media for a DB engine that requires an on-premises customer provided license, such as Microsoft SQL Server.</p>"
-    },
     "DescribeOptionGroupOptions":{
       "name":"DescribeOptionGroupOptions",
       "http":{
@@ -1595,23 +1512,6 @@
       ],
       "documentation":"<p>Initiates the failover process for an Aurora global database (<a>GlobalCluster</a>).</p> <p>A failover for an Aurora global database promotes one of secondary read-only DB clusters to be the primary DB cluster and demotes the primary DB cluster to being a secondary (read-only) DB cluster. In other words, the role of the current primary DB cluster and the selected (target) DB cluster are switched. The selected secondary DB cluster assumes full read/write capabilities for the Aurora global database.</p> <p>For more information about failing over an Amazon Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-disaster-recovery.managed-failover\">Managed planned failover for Amazon Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action applies to <a>GlobalCluster</a> (Aurora global databases) only. Use this action only on healthy Aurora global databases with running Aurora DB clusters and no Region-wide outages, to test disaster recovery scenarios or to reconfigure your Aurora global database topology.</p> </note>"
     },
-    "ImportInstallationMedia":{
-      "name":"ImportInstallationMedia",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"ImportInstallationMediaMessage"},
-      "output":{
-        "shape":"InstallationMedia",
-        "resultWrapper":"ImportInstallationMediaResult"
-      },
-      "errors":[
-        {"shape":"CustomAvailabilityZoneNotFoundFault"},
-        {"shape":"InstallationMediaAlreadyExistsFault"}
-      ],
-      "documentation":"<p>Imports the installation media for a DB engine that requires an on-premises customer provided license, such as SQL Server.</p>"
-    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1646,7 +1546,7 @@
       "errors":[
         {"shape":"CertificateNotFoundFault"}
       ],
-      "documentation":"<p>Override the system-default Secure Sockets Layer/Transport Layer Security (SSL/TLS) certificate for Amazon RDS for new DB instances temporarily, or remove the override.</p> <p>By using this operation, you can specify an RDS-approved SSL/TLS certificate for new DB instances that is different from the default certificate provided by RDS. You can also use this operation to remove the override, so that new DB instances use the default certificate provided by RDS.</p> <p>You might need to override the default certificate in the following situations:</p> <ul> <li> <p>You already migrated your applications to support the latest certificate authority (CA) certificate, but the new CA certificate is not yet the RDS default CA certificate for the specified Amazon Web Services Region.</p> </li> <li> <p>RDS has already moved to a new default CA certificate for the specified Amazon Web Services Region, but you are still in the process of supporting the new CA certificate. In this case, you temporarily need additional time to finish your application changes.</p> </li> </ul> <p>For more information about rotating your SSL/TLS certificate for RDS DB engines, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL-certificate-rotation.html\"> Rotating Your SSL/TLS Certificate</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about rotating your SSL/TLS certificate for Aurora DB engines, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL-certificate-rotation.html\"> Rotating Your SSL/TLS Certificate</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+      "documentation":"<p>Override the system-default Secure Sockets Layer/Transport Layer Security (SSL/TLS) certificate for Amazon RDS for new DB instances, or remove the override.</p> <p>By using this operation, you can specify an RDS-approved SSL/TLS certificate for new DB instances that is different from the default certificate provided by RDS. You can also use this operation to remove the override, so that new DB instances use the default certificate provided by RDS.</p> <p>You might need to override the default certificate in the following situations:</p> <ul> <li> <p>You already migrated your applications to support the latest certificate authority (CA) certificate, but the new CA certificate is not yet the RDS default CA certificate for the specified Amazon Web Services Region.</p> </li> <li> <p>RDS has already moved to a new default CA certificate for the specified Amazon Web Services Region, but you are still in the process of supporting the new CA certificate. In this case, you temporarily need additional time to finish your application changes.</p> </li> </ul> <p>For more information about rotating your SSL/TLS certificate for RDS DB engines, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL-certificate-rotation.html\"> Rotating Your SSL/TLS Certificate</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about rotating your SSL/TLS certificate for Aurora DB engines, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL-certificate-rotation.html\"> Rotating Your SSL/TLS Certificate</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
     "ModifyCurrentDBClusterCapacity":{
       "name":"ModifyCurrentDBClusterCapacity",
@@ -3333,35 +3233,6 @@
         "OptionGroup":{"shape":"OptionGroup"}
       }
     },
-    "CreateCustomAvailabilityZoneMessage":{
-      "type":"structure",
-      "required":["CustomAvailabilityZoneName"],
-      "members":{
-        "CustomAvailabilityZoneName":{
-          "shape":"String",
-          "documentation":"<p>The name of the custom Availability Zone (AZ).</p>"
-        },
-        "ExistingVpnId":{
-          "shape":"String",
-          "documentation":"<p>The ID of an existing virtual private network (VPN) between the Amazon RDS website and the VMware vSphere cluster.</p>"
-        },
-        "NewVpnTunnelName":{
-          "shape":"String",
-          "documentation":"<p>The name of a new VPN tunnel between the Amazon RDS website and the VMware vSphere cluster.</p> <p>Specify this parameter only if <code>ExistingVpnId</code> isn't specified.</p>"
-        },
-        "VpnTunnelOriginatorIP":{
-          "shape":"String",
-          "documentation":"<p>The IP address of network traffic from your on-premises data center. A custom AZ receives the network traffic.</p> <p>Specify this parameter only if <code>ExistingVpnId</code> isn't specified.</p>"
-        }
-      },
-      "documentation":"<p/>"
-    },
-    "CreateCustomAvailabilityZoneResult":{
-      "type":"structure",
-      "members":{
-        "CustomAvailabilityZone":{"shape":"CustomAvailabilityZone"}
-      }
-    },
     "CreateCustomDBEngineVersionMessage":{
       "type":"structure",
       "required":[
@@ -3736,7 +3607,7 @@
         },
         "AvailabilityZone":{
           "shape":"String",
-          "documentation":"<p>The Availability Zone (AZ) where the database will be created. For information on Amazon Web Services Regions and Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html\">Regions and Availability Zones</a>.</p> <p> <b>Amazon Aurora</b> </p> <p>Not applicable. Availability Zones are managed by the DB cluster.</p> <p>Default: A random, system-chosen Availability Zone in the endpoint's Amazon Web Services Region.</p> <p>Example: <code>us-east-1d</code> </p> <p>Constraint: The <code>AvailabilityZone</code> parameter can't be specified if the DB instance is a Multi-AZ deployment. The specified Availability Zone must be in the same Amazon Web Services Region as the current endpoint.</p> <note> <p>If you're creating a DB instance in an RDS on VMware environment, specify the identifier of the custom Availability Zone to create the DB instance in.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p> </note>"
+          "documentation":"<p>The Availability Zone (AZ) where the database will be created. For information on Amazon Web Services Regions and Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html\">Regions and Availability Zones</a>.</p> <p> <b>Amazon Aurora</b> </p> <p>Each Aurora DB cluster hosts copies of its storage in three separate Availability Zones. Specify one of these Availability Zones. Aurora automatically chooses an appropriate Availability Zone if you don't specify one.</p> <p>Default: A random, system-chosen Availability Zone in the endpoint's Amazon Web Services Region.</p> <p>Example: <code>us-east-1d</code> </p> <p>Constraint: The <code>AvailabilityZone</code> parameter can't be specified if the DB instance is a Multi-AZ deployment. The specified Availability Zone must be in the same Amazon Web Services Region as the current endpoint.</p> <note> <p>If you're creating a DB instance in an RDS on VMware environment, specify the identifier of the custom Availability Zone to create the DB instance in.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p> </note>"
         },
         "DBSubnetGroupName":{
           "shape":"String",
@@ -4389,61 +4260,6 @@
         "OptionGroup":{"shape":"OptionGroup"}
       }
     },
-    "CustomAvailabilityZone":{
-      "type":"structure",
-      "members":{
-        "CustomAvailabilityZoneId":{
-          "shape":"String",
-          "documentation":"<p>The identifier of the custom AZ.</p> <p>Amazon RDS generates a unique identifier when a custom AZ is created.</p>"
-        },
-        "CustomAvailabilityZoneName":{
-          "shape":"String",
-          "documentation":"<p>The name of the custom AZ.</p>"
-        },
-        "CustomAvailabilityZoneStatus":{
-          "shape":"String",
-          "documentation":"<p>The status of the custom AZ.</p>"
-        },
-        "VpnDetails":{
-          "shape":"VpnDetails",
-          "documentation":"<p>Information about the virtual private network (VPN) between the VMware vSphere cluster and the Amazon Web Services website.</p>"
-        }
-      },
-      "documentation":"<p>A custom Availability Zone (AZ) is an on-premises AZ that is integrated with a VMware vSphere cluster.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p>",
-      "wrapper":true
-    },
-    "CustomAvailabilityZoneAlreadyExistsFault":{
-      "type":"structure",
-      "members":{
-      },
-      "documentation":"<p> <code>CustomAvailabilityZoneName</code> is already used by an existing custom Availability Zone.</p>",
-      "error":{
-        "code":"CustomAvailabilityZoneAlreadyExists",
-        "httpStatusCode":400,
-        "senderFault":true
-      },
-      "exception":true
-    },
-    "CustomAvailabilityZoneList":{
-      "type":"list",
-      "member":{
-        "shape":"CustomAvailabilityZone",
-        "locationName":"CustomAvailabilityZone"
-      }
-    },
-    "CustomAvailabilityZoneMessage":{
-      "type":"structure",
-      "members":{
-        "Marker":{
-          "shape":"String",
-          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeCustomAvailabilityZones</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
-        },
-        "CustomAvailabilityZones":{
-          "shape":"CustomAvailabilityZoneList",
-          "documentation":"<p>The list of <a>CustomAvailabilityZone</a> objects for the Amazon Web Services account.</p>"
-        }
-      }
-    },
     "CustomAvailabilityZoneNotFoundFault":{
       "type":"structure",
       "members":{
@@ -4452,18 +4268,6 @@
       "error":{
         "code":"CustomAvailabilityZoneNotFound",
         "httpStatusCode":404,
-        "senderFault":true
-      },
-      "exception":true
-    },
-    "CustomAvailabilityZoneQuotaExceededFault":{
-      "type":"structure",
-      "members":{
-      },
-      "documentation":"<p>You have exceeded the maximum number of custom Availability Zones.</p>",
-      "error":{
-        "code":"CustomAvailabilityZoneQuotaExceeded",
-        "httpStatusCode":400,
         "senderFault":true
       },
       "exception":true
@@ -7124,22 +6928,6 @@
       },
       "exception":true
     },
-    "DeleteCustomAvailabilityZoneMessage":{
-      "type":"structure",
-      "required":["CustomAvailabilityZoneId"],
-      "members":{
-        "CustomAvailabilityZoneId":{
-          "shape":"String",
-          "documentation":"<p>The custom AZ identifier.</p>"
-        }
-      }
-    },
-    "DeleteCustomAvailabilityZoneResult":{
-      "type":"structure",
-      "members":{
-        "CustomAvailabilityZone":{"shape":"CustomAvailabilityZone"}
-      }
-    },
     "DeleteCustomDBEngineVersionMessage":{
       "type":"structure",
       "required":[
@@ -7390,16 +7178,6 @@
         "GlobalCluster":{"shape":"GlobalCluster"}
       }
     },
-    "DeleteInstallationMediaMessage":{
-      "type":"structure",
-      "required":["InstallationMediaId"],
-      "members":{
-        "InstallationMediaId":{
-          "shape":"String",
-          "documentation":"<p>The installation medium ID.</p>"
-        }
-      }
-    },
     "DeleteOptionGroupMessage":{
       "type":"structure",
       "required":["OptionGroupName"],
@@ -7465,27 +7243,6 @@
         }
       },
       "documentation":"<p/>"
-    },
-    "DescribeCustomAvailabilityZonesMessage":{
-      "type":"structure",
-      "members":{
-        "CustomAvailabilityZoneId":{
-          "shape":"String",
-          "documentation":"<p>The custom AZ identifier. If this parameter is specified, information from only the specific custom AZ is returned.</p>"
-        },
-        "Filters":{
-          "shape":"FilterList",
-          "documentation":"<p>A filter that specifies one or more custom AZs to describe.</p>"
-        },
-        "MaxRecords":{
-          "shape":"IntegerOptional",
-          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
-        },
-        "Marker":{
-          "shape":"String",
-          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeCustomAvailabilityZones</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
-        }
-      }
     },
     "DescribeDBClusterBacktracksMessage":{
       "type":"structure",
@@ -8176,7 +7933,7 @@
       "members":{
         "DBParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of the DB parameter group family.</p>"
+          "documentation":"<p>The name of the DB parameter group family.</p> <p>Valid Values:</p> <ul> <li> <p> <code>aurora5.6</code> </p> </li> <li> <p> <code>aurora-mysql5.7</code> </p> </li> <li> <p> <code>aurora-mysql8.0</code> </p> </li> <li> <p> <code>aurora-postgresql10</code> </p> </li> <li> <p> <code>aurora-postgresql11</code> </p> </li> <li> <p> <code>aurora-postgresql12</code> </p> </li> <li> <p> <code>aurora-postgresql13</code> </p> </li> <li> <p> <code>mariadb10.2</code> </p> </li> <li> <p> <code>mariadb10.3</code> </p> </li> <li> <p> <code>mariadb10.4</code> </p> </li> <li> <p> <code>mariadb10.5</code> </p> </li> <li> <p> <code>mariadb10.6</code> </p> </li> <li> <p> <code>mysql5.7</code> </p> </li> <li> <p> <code>mysql8.0</code> </p> </li> <li> <p> <code>postgres10</code> </p> </li> <li> <p> <code>postgres11</code> </p> </li> <li> <p> <code>postgres12</code> </p> </li> <li> <p> <code>postgres13</code> </p> </li> <li> <p> <code>postgres14</code> </p> </li> <li> <p> <code>sqlserver-ee-11.0</code> </p> </li> <li> <p> <code>sqlserver-ee-12.0</code> </p> </li> <li> <p> <code>sqlserver-ee-13.0</code> </p> </li> <li> <p> <code>sqlserver-ee-14.0</code> </p> </li> <li> <p> <code>sqlserver-ee-15.0</code> </p> </li> <li> <p> <code>sqlserver-ex-11.0</code> </p> </li> <li> <p> <code>sqlserver-ex-12.0</code> </p> </li> <li> <p> <code>sqlserver-ex-13.0</code> </p> </li> <li> <p> <code>sqlserver-ex-14.0</code> </p> </li> <li> <p> <code>sqlserver-ex-15.0</code> </p> </li> <li> <p> <code>sqlserver-se-11.0</code> </p> </li> <li> <p> <code>sqlserver-se-12.0</code> </p> </li> <li> <p> <code>sqlserver-se-13.0</code> </p> </li> <li> <p> <code>sqlserver-se-14.0</code> </p> </li> <li> <p> <code>sqlserver-se-15.0</code> </p> </li> <li> <p> <code>sqlserver-web-11.0</code> </p> </li> <li> <p> <code>sqlserver-web-12.0</code> </p> </li> <li> <p> <code>sqlserver-web-13.0</code> </p> </li> <li> <p> <code>sqlserver-web-14.0</code> </p> </li> <li> <p> <code>sqlserver-web-15.0</code> </p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -8320,27 +8077,6 @@
         "Marker":{
           "shape":"String",
           "documentation":"<p>An optional pagination token provided by a previous <code>DescribeGlobalClusters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
-        }
-      }
-    },
-    "DescribeInstallationMediaMessage":{
-      "type":"structure",
-      "members":{
-        "InstallationMediaId":{
-          "shape":"String",
-          "documentation":"<p>The installation medium ID.</p>"
-        },
-        "Filters":{
-          "shape":"FilterList",
-          "documentation":"<p>A filter that specifies one or more installation media to describe. Supported filters include the following:</p> <ul> <li> <p> <code>custom-availability-zone-id</code> - Accepts custom Availability Zone (AZ) identifiers. The results list includes information about only the custom AZs identified by these identifiers.</p> </li> <li> <p> <code>engine</code> - Accepts database engines. The results list includes information about only the database engines identified by these identifiers.</p> <p>For more information about the valid engines for installation media, see <a>ImportInstallationMedia</a>.</p> </li> </ul>"
-        },
-        "MaxRecords":{
-          "shape":"IntegerOptional",
-          "documentation":"<p>An optional pagination token provided by a previous DescribeInstallationMedia request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
-        },
-        "Marker":{
-          "shape":"String",
-          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
         }
       }
     },
@@ -9365,130 +9101,6 @@
       "documentation":"<p>The IAM role is missing for exporting to an Amazon S3 bucket.</p>",
       "error":{
         "code":"IamRoleNotFound",
-        "httpStatusCode":404,
-        "senderFault":true
-      },
-      "exception":true
-    },
-    "ImportInstallationMediaMessage":{
-      "type":"structure",
-      "required":[
-        "CustomAvailabilityZoneId",
-        "Engine",
-        "EngineVersion",
-        "EngineInstallationMediaPath",
-        "OSInstallationMediaPath"
-      ],
-      "members":{
-        "CustomAvailabilityZoneId":{
-          "shape":"String",
-          "documentation":"<p>The identifier of the custom Availability Zone (AZ) to import the installation media to.</p>"
-        },
-        "Engine":{
-          "shape":"String",
-          "documentation":"<p>The name of the database engine to be used for this instance.</p> <p>The list only includes supported DB engines that require an on-premises customer provided license.</p> <p>Valid Values:</p> <ul> <li> <p> <code>sqlserver-ee</code> </p> </li> <li> <p> <code>sqlserver-se</code> </p> </li> <li> <p> <code>sqlserver-ex</code> </p> </li> <li> <p> <code>sqlserver-web</code> </p> </li> </ul>"
-        },
-        "EngineVersion":{
-          "shape":"String",
-          "documentation":"<p>The version number of the database engine to use.</p> <p>For a list of valid engine versions, call <a>DescribeDBEngineVersions</a>.</p> <p>The following are the database engines and links to information about the major and minor versions. The list only includes DB engines that require an on-premises customer provided license.</p> <p> <b>Microsoft SQL Server</b> </p> <p>See <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SQLServer.html#SQLServer.Concepts.General.VersionSupport\"> Microsoft SQL Server Versions on Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p>"
-        },
-        "EngineInstallationMediaPath":{
-          "shape":"String",
-          "documentation":"<p>The path to the installation medium for the specified DB engine.</p> <p>Example: <code>SQLServerISO/en_sql_server_2016_enterprise_x64_dvd_8701793.iso</code> </p>"
-        },
-        "OSInstallationMediaPath":{
-          "shape":"String",
-          "documentation":"<p>The path to the installation medium for the operating system associated with the specified DB engine.</p> <p>Example: <code>WindowsISO/en_windows_server_2016_x64_dvd_9327751.iso</code> </p>"
-        }
-      }
-    },
-    "InstallationMedia":{
-      "type":"structure",
-      "members":{
-        "InstallationMediaId":{
-          "shape":"String",
-          "documentation":"<p>The installation medium ID.</p>"
-        },
-        "CustomAvailabilityZoneId":{
-          "shape":"String",
-          "documentation":"<p>The custom Availability Zone (AZ) that contains the installation media.</p>"
-        },
-        "Engine":{
-          "shape":"String",
-          "documentation":"<p>The DB engine.</p>"
-        },
-        "EngineVersion":{
-          "shape":"String",
-          "documentation":"<p>The engine version of the DB engine.</p>"
-        },
-        "EngineInstallationMediaPath":{
-          "shape":"String",
-          "documentation":"<p>The path to the installation medium for the DB engine.</p>"
-        },
-        "OSInstallationMediaPath":{
-          "shape":"String",
-          "documentation":"<p>The path to the installation medium for the operating system associated with the DB engine.</p>"
-        },
-        "Status":{
-          "shape":"String",
-          "documentation":"<p>The status of the installation medium.</p>"
-        },
-        "FailureCause":{
-          "shape":"InstallationMediaFailureCause",
-          "documentation":"<p>If an installation media failure occurred, the cause of the failure.</p>"
-        }
-      },
-      "documentation":"<p>Contains the installation media for a DB engine that requires an on-premises customer provided license, such as Microsoft SQL Server.</p>"
-    },
-    "InstallationMediaAlreadyExistsFault":{
-      "type":"structure",
-      "members":{
-      },
-      "documentation":"<p>The specified installation medium has already been imported.</p>",
-      "error":{
-        "code":"InstallationMediaAlreadyExists",
-        "httpStatusCode":400,
-        "senderFault":true
-      },
-      "exception":true
-    },
-    "InstallationMediaFailureCause":{
-      "type":"structure",
-      "members":{
-        "Message":{
-          "shape":"String",
-          "documentation":"<p>The reason that an installation media import failed.</p>"
-        }
-      },
-      "documentation":"<p>Contains the cause of an installation media failure. Installation media is used for a DB engine that requires an on-premises customer provided license, such as Microsoft SQL Server.</p>"
-    },
-    "InstallationMediaList":{
-      "type":"list",
-      "member":{
-        "shape":"InstallationMedia",
-        "locationName":"InstallationMedia"
-      }
-    },
-    "InstallationMediaMessage":{
-      "type":"structure",
-      "members":{
-        "Marker":{
-          "shape":"String",
-          "documentation":"<p>An optional pagination token provided by a previous <a>DescribeInstallationMedia</a> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
-        },
-        "InstallationMedia":{
-          "shape":"InstallationMediaList",
-          "documentation":"<p>The list of <a>InstallationMedia</a> objects for the Amazon Web Services account.</p>"
-        }
-      }
-    },
-    "InstallationMediaNotFoundFault":{
-      "type":"structure",
-      "members":{
-      },
-      "documentation":"<p> <code>InstallationMediaID</code> doesn't refer to an existing installation medium.</p>",
-      "error":{
-        "code":"InstallationMediaNotFound",
         "httpStatusCode":404,
         "senderFault":true
       },
@@ -13526,10 +13138,6 @@
       "type":"list",
       "member":{"shape":"String"}
     },
-    "StringSensitive":{
-      "type":"string",
-      "sensitive":true
-    },
     "Subnet":{
       "type":"structure",
       "members":{
@@ -13912,36 +13520,6 @@
         "shape":"VpcSecurityGroupMembership",
         "locationName":"VpcSecurityGroupMembership"
       }
-    },
-    "VpnDetails":{
-      "type":"structure",
-      "members":{
-        "VpnId":{
-          "shape":"String",
-          "documentation":"<p>The ID of the VPN.</p>"
-        },
-        "VpnTunnelOriginatorIP":{
-          "shape":"String",
-          "documentation":"<p>The IP address of network traffic from your on-premises data center. A custom AZ receives the network traffic.</p>"
-        },
-        "VpnGatewayIp":{
-          "shape":"String",
-          "documentation":"<p>The IP address of network traffic from Amazon Web Services to your on-premises data center.</p>"
-        },
-        "VpnPSK":{
-          "shape":"StringSensitive",
-          "documentation":"<p>The preshared key (PSK) for the VPN.</p>"
-        },
-        "VpnName":{
-          "shape":"String",
-          "documentation":"<p>The name of the VPN.</p>"
-        },
-        "VpnState":{
-          "shape":"String",
-          "documentation":"<p>The state of the VPN.</p>"
-        }
-      },
-      "documentation":"<p>Information about the virtual private network (VPN) between the VMware vSphere cluster and the Amazon Web Services website.</p> <p>For more information about RDS on VMware, see the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/RDSonVMwareUserGuide/rds-on-vmware.html\"> RDS on VMware User Guide.</a> </p>"
     },
     "WriteForwardingStatus":{
       "type":"string",

@@ -843,6 +843,38 @@
       ],
       "documentation":"<p>Get a list of <a href=\"https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html\">tags</a> attached to a resource.</p>"
     },
+    "StartRecommender":{
+      "name":"StartRecommender",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartRecommenderRequest"},
+      "output":{"shape":"StartRecommenderResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Starts a recommender that is INACTIVE. Starting a recommender does not create any new models, but resumes billing and automatic retraining for the recommender.</p>",
+      "idempotent":true
+    },
+    "StopRecommender":{
+      "name":"StopRecommender",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopRecommenderRequest"},
+      "output":{"shape":"StopRecommenderResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Stops a recommender that is ACTIVE. Stopping a recommender halts billing and automatic retraining for the recommender.</p>",
+      "idempotent":true
+    },
     "StopSolutionVersionCreation":{
       "name":"StopSolutionVersionCreation",
       "http":{
@@ -904,7 +936,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Updates a campaign by either deploying a new solution or changing the value of the campaign's <code>minProvisionedTPS</code> parameter.</p> <p>To update a campaign, the campaign status must be ACTIVE or CREATE FAILED. Check the campaign status using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> operation.</p> <note> <p>You must wait until the <code>status</code> of the updated campaign is <code>ACTIVE</code> before asking the campaign for recommendations.</p> </note> <p>For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
+      "documentation":"<p>Updates a campaign by either deploying a new solution or changing the value of the campaign's <code>minProvisionedTPS</code> parameter.</p> <p>To update a campaign, the campaign status must be ACTIVE or CREATE FAILED. Check the campaign status using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> operation.</p> <note> <p>You can still get recommendations from a campaign while an update is in progress. The campaign will use the previous solution version and campaign configuration to generate recommendations until the latest campaign update status is <code>Active</code>. </p> </note> <p>For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
       "idempotent":true
     },
     "UpdateRecommender":{
@@ -4224,9 +4256,47 @@
       "member":{"shape":"SolutionSummary"},
       "max":100
     },
+    "StartRecommenderRequest":{
+      "type":"structure",
+      "required":["recommenderArn"],
+      "members":{
+        "recommenderArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender to start.</p>"
+        }
+      }
+    },
+    "StartRecommenderResponse":{
+      "type":"structure",
+      "members":{
+        "recommenderArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender you started.</p>"
+        }
+      }
+    },
     "Status":{
       "type":"string",
       "max":256
+    },
+    "StopRecommenderRequest":{
+      "type":"structure",
+      "required":["recommenderArn"],
+      "members":{
+        "recommenderArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender to stop.</p>"
+        }
+      }
+    },
+    "StopRecommenderResponse":{
+      "type":"structure",
+      "members":{
+        "recommenderArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommender you stopped.</p>"
+        }
+      }
     },
     "StopSolutionVersionCreationRequest":{
       "type":"structure",

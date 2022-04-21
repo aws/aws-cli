@@ -3436,6 +3436,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.100
+========
+
+* api-change:``wisdom``: [``botocore``] This release updates the GetRecommendations API to include a trigger event list for classifying and grouping recommendations.
+* api-change:``elasticache``: [``botocore``] Doc only update for ElastiCache
+* api-change:``iottwinmaker``: [``botocore``] General availability (GA) for AWS IoT TwinMaker. For more information, see https://docs.aws.amazon.com/iot-twinmaker/latest/apireference/Welcome.html
+* api-change:``secretsmanager``: [``botocore``] Documentation updates for Secrets Manager
+* api-change:``mediatailor``: [``botocore``] This release introduces tiered channels and adds support for live sources. Customers using a STANDARD channel can now create programs using live sources.
+* api-change:``storagegateway``: [``botocore``] This release adds support for minimum of 5 character length virtual tape barcodes.
+* api-change:``lookoutmetrics``: [``botocore``] Added DetectMetricSetConfig API for detecting configuration required for creating metric set from provided S3 data source.
+* api-change:``iotsitewise``: [``botocore``] This release adds 3 new batch data query APIs : BatchGetAssetPropertyValue, BatchGetAssetPropertyValueHistory and BatchGetAssetPropertyAggregates
+* api-change:``glue``: [``botocore``] This release adds APIs to create, read, delete, list, and batch read of Glue custom entity types
+
+
+1.22.99
+=======
+
+* api-change:``macie2``: [``botocore``] Sensitive data findings in Amazon Macie now indicate how Macie found the sensitive data that produced a finding (originType).
+* api-change:``rds``: [``botocore``] Added a new cluster-level attribute to set the capacity range for Aurora Serverless v2 instances.
+* api-change:``mgn``: [``botocore``] Removed required annotation from input fields in Describe operations requests. Added quotaValue to ServiceQuotaExceededException
+* api-change:``connect``: [``botocore``] This release adds APIs to search, claim, release, list, update, and describe phone numbers. You can also use them to associate and disassociate contact flows to phone numbers.
+
+
 1.22.98
 =======
 

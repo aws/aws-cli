@@ -94,7 +94,7 @@
         {"shape":"InvalidGatewayRequestException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Assigns a tape to a tape pool for archiving. The tape assigned to a pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the S3 storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+      "documentation":"<p>Assigns a tape to a tape pool for archiving. The tape assigned to a pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the S3 storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p>"
     },
     "AssociateFileSystem":{
       "name":"AssociateFileSystem",
@@ -362,7 +362,7 @@
         {"shape":"InvalidGatewayRequestException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Deletes a snapshot of a volume.</p> <p>You can take snapshots of your gateway volumes on a scheduled or ad hoc basis. This API action enables you to delete a snapshot schedule for a volume. For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/backing-up-volumes.html\">Backing up your volumes</a>. In the <code>DeleteSnapshotSchedule</code> request, you identify the volume by providing its Amazon Resource Name (ARN). This operation is only supported in stored and cached volume gateway types.</p> <note> <p>To list or delete a snapshot, you must use the Amazon EC2 API. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeSnapshots.html\">DescribeSnapshots</a> in the <i>Amazon Elastic Compute Cloud API Reference</i>.</p> </note>"
+      "documentation":"<p>Deletes a snapshot of a volume.</p> <p>You can take snapshots of your gateway volumes on a scheduled or ad hoc basis. This API action enables you to delete a snapshot schedule for a volume. For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/backing-up-volumes.html\">Backing up your volumes</a>. In the <code>DeleteSnapshotSchedule</code> request, you identify the volume by providing its Amazon Resource Name (ARN). This operation is only supported for cached volume gateway types.</p> <note> <p>To list or delete a snapshot, you must use the Amazon EC2 API. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeSnapshots.html\">DescribeSnapshots</a> in the <i>Amazon Elastic Compute Cloud API Reference</i>.</p> </note>"
     },
     "DeleteTape":{
       "name":"DeleteTape",
@@ -922,7 +922,7 @@
         {"shape":"InvalidGatewayRequestException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Sends you notification through CloudWatch Events when all files written to your file share have been uploaded to Amazon S3.</p> <p>Storage Gateway can send a notification through Amazon CloudWatch Events when all files written to your file share up to that point in time have been uploaded to Amazon S3. These files include files written to the file share up to the time that you make a request for notification. When the upload is done, Storage Gateway sends you notification through an Amazon CloudWatch Event. You can configure CloudWatch Events to send the notification through event targets such as Amazon SNS or Lambda function. This operation is only supported for S3 File Gateways.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-upload-notification\">Getting file upload notification</a> in the <i>Storage Gateway User Guide</i>.</p>"
+      "documentation":"<p>Sends you notification through CloudWatch Events when all files written to your file share have been uploaded to S3. Amazon S3.</p> <p>Storage Gateway can send a notification through Amazon CloudWatch Events when all files written to your file share up to that point in time have been uploaded to Amazon S3. These files include files written to the file share up to the time that you make a request for notification. When the upload is done, Storage Gateway sends you notification through an Amazon CloudWatch Event. You can configure CloudWatch Events to send the notification through event targets such as Amazon SNS or Lambda function. This operation is only supported for S3 File Gateways.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-upload-notification\">Getting file upload notification</a> in the <i>Storage Gateway User Guide</i>.</p>"
     },
     "RefreshCache":{
       "name":"RefreshCache",
@@ -936,7 +936,7 @@
         {"shape":"InvalidGatewayRequestException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Refreshes the cached inventory of objects for the specified file share. This operation finds objects in the Amazon S3 bucket that were added, removed, or replaced since the gateway last listed the bucket's contents and cached the results. This operation does not import files into the S3 File Gateway cache storage. It only updates the cached inventory to reflect changes in the inventory of the objects in the S3 bucket. This operation is only supported in the S3 File Gateway types.</p> <p>You can subscribe to be notified through an Amazon CloudWatch event when your <code>RefreshCache</code> operation completes. For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification\">Getting notified about file operations</a> in the <i>Storage Gateway User Guide</i>. This operation is Only supported for S3 File Gateways.</p> <p>When this API is called, it only initiates the refresh operation. When the API call completes and returns a success code, it doesn't necessarily mean that the file refresh has completed. You should use the refresh-complete notification to determine that the operation has completed before you check for new files on the gateway file share. You can subscribe to be notified through a CloudWatch event when your <code>RefreshCache</code> operation completes.</p> <p>Throttle limit: This API is asynchronous, so the gateway will accept no more than two refreshes at any time. We recommend using the refresh-complete CloudWatch event notification before issuing additional requests. For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification\">Getting notified about file operations</a> in the <i>Storage Gateway User Guide</i>.</p> <p>If you invoke the RefreshCache API when two requests are already being processed, any new request will cause an <code>InvalidGatewayRequestException</code> error because too many requests were sent to the server.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification\">Getting notified about file operations</a> in the <i>Storage Gateway User Guide</i>.</p>"
+      "documentation":"<p>Refreshes the cached inventory of objects for the specified file share. This operation finds objects in the Amazon S3 bucket that were added, removed, or replaced since the gateway last listed the bucket's contents and cached the results. This operation does not import files into the S3 File Gateway cache storage. It only updates the cached inventory to reflect changes in the inventory of the objects in the S3 bucket. This operation is only supported in the S3 File Gateway types.</p> <p>You can subscribe to be notified through an Amazon CloudWatch event when your <code>RefreshCache</code> operation completes. For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification\">Getting notified about file operations</a> in the <i>Storage Gateway User Guide</i>. This operation is Only supported for S3 File Gateways.</p> <p>When this API is called, it only initiates the refresh operation. When the API call completes and returns a success code, it doesn't necessarily mean that the file refresh has completed. You should use the refresh-complete notification to determine that the operation has completed before you check for new files on the gateway file share. You can subscribe to be notified through a CloudWatch event when your <code>RefreshCache</code> operation completes.</p> <p>Throttle limit: This API is asynchronous, so the gateway will accept no more than two refreshes at any time. We recommend using the refresh-complete CloudWatch event notification before issuing additional requests. For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification\">Getting notified about file operations</a> in the <i>Storage Gateway User Guide</i>.</p> <important> <ul> <li> <p>Wait at least 60 seconds between consecutive RefreshCache API requests.</p> </li> <li> <p>RefreshCache does not evict cache entries if invoked consecutively within 60 seconds of a previous RefreshCache request.</p> </li> <li> <p>If you invoke the RefreshCache API when two requests are already being processed, any new request will cause an <code>InvalidGatewayRequestException</code> error because too many requests were sent to the server.</p> </li> </ul> </important> <note> <p>The S3 bucket name does not need to be included when entering the list of folders in the FolderList parameter.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification\">Getting notified about file operations</a> in the <i>Storage Gateway User Guide</i>.</p>"
     },
     "RemoveTagsFromResource":{
       "name":"RemoveTagsFromResource",
@@ -1447,7 +1447,7 @@
         },
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p>"
         },
         "BypassGovernanceRetention":{
           "shape":"boolean",
@@ -1600,7 +1600,7 @@
         },
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the Amazon S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the Amazon S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p>"
         },
         "TapeSizeInBytes":{
           "shape":"TapeSize",
@@ -1748,7 +1748,7 @@
         },
         "VolumeUsedInBytes":{
           "shape":"VolumeUsedInBytes",
-          "documentation":"<p>The size of the data stored on the volume in bytes. This value is calculated based on the number of blocks that are touched, instead of the actual amount of data written. This value can be useful for sequential write patterns but less accurate for random write patterns. <code>VolumeUsedInBytes</code> is different from the compressed size of the volume, which is the value that is used to calculate your bill.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> </note>"
+          "documentation":"<p>The size of the data stored on the volume in bytes. This value is calculated based on the number of blocks that are touched, instead of the actual amount of data written. This value can be useful for sequential write patterns but less accurate for random write patterns. <code>VolumeUsedInBytes</code> is different from the compressed size of the volume, which is the value that is used to calculate your bill.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> <p>If you use a delete tool that overwrites the data on your volume with random data, your usage will not be reduced. This is because the random data is not compressible. If you want to reduce the amount of billed storage on your volume, we recommend overwriting your files with zeros to compress the data to a negligible amount of actual storage.</p> </note>"
         },
         "KMSKey":{"shape":"KMSKey"},
         "TargetName":{
@@ -1961,7 +1961,7 @@
         },
         "DefaultStorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_INTELLIGENT_TIERING</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
+          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
         },
         "ObjectACL":{
           "shape":"ObjectACL",
@@ -2063,7 +2063,7 @@
         },
         "DefaultStorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_INTELLIGENT_TIERING</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
+          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
         },
         "ObjectACL":{
           "shape":"ObjectACL",
@@ -2360,7 +2360,7 @@
         },
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Deep Archive) that corresponds to the pool.</p>"
         },
         "Worm":{
           "shape":"boolean",
@@ -2423,7 +2423,7 @@
         },
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p>"
         },
         "Worm":{
           "shape":"boolean",
@@ -2897,7 +2897,7 @@
         },
         "LastSoftwareUpdate":{
           "shape":"LastSoftwareUpdate",
-          "documentation":"<p>The date on which the last software update was applied to the gateway. If the gateway has never been updated, this field does not return a value in the response.</p>"
+          "documentation":"<p>The date on which the last software update was applied to the gateway. If the gateway has never been updated, this field does not return a value in the response. This only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM</p>"
         },
         "Ec2InstanceId":{
           "shape":"Ec2InstanceId",
@@ -2917,7 +2917,7 @@
         },
         "CloudWatchLogGroupARN":{
           "shape":"CloudWatchLogGroupARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that is used to monitor events in the gateway.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that is used to monitor events in the gateway. This field only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM</p>"
         },
         "HostEnvironment":{
           "shape":"HostEnvironment",
@@ -4362,7 +4362,7 @@
         "LocationARN":{"shape":"LocationARN"},
         "DefaultStorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_INTELLIGENT_TIERING</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
+          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
         },
         "ObjectACL":{"shape":"ObjectACL"},
         "ClientList":{"shape":"FileShareClientList"},
@@ -4746,7 +4746,7 @@
         "LocationARN":{"shape":"LocationARN"},
         "DefaultStorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_INTELLIGENT_TIERING</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
+          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
         },
         "ObjectACL":{"shape":"ObjectACL"},
         "ReadOnly":{
@@ -5138,7 +5138,7 @@
         "KMSKey":{"shape":"KMSKey"},
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that contains tapes that will be archived. The tapes in this pool are archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that contains tapes that will be archived. The tapes in this pool are archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p>"
         },
         "Worm":{
           "shape":"boolean",
@@ -5159,7 +5159,7 @@
       "type":"string",
       "max":500,
       "min":50,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov):storagegateway:[a-z\\-0-9]+:[0-9]+:tape\\/[0-9A-Z]{7,16}$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):storagegateway:[a-z\\-0-9]+:[0-9]+:tape\\/[0-9A-Z]{5,16}$"
     },
     "TapeARNs":{
       "type":"list",
@@ -5204,7 +5204,7 @@
         "KMSKey":{"shape":"KMSKey"},
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that was used to archive the tape. The tapes in this pool are archived in the S3 storage class that is associated with the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that was used to archive the tape. The tapes in this pool are archived in the S3 storage class that is associated with the pool.</p>"
         },
         "Worm":{
           "shape":"boolean",
@@ -5229,7 +5229,7 @@
     "TapeBarcode":{
       "type":"string",
       "max":16,
-      "min":7,
+      "min":5,
       "pattern":"^[A-Z0-9]*$"
     },
     "TapeBarcodePrefix":{
@@ -5268,7 +5268,7 @@
         },
         "PoolId":{
           "shape":"PoolId",
-          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p> <p>Valid Values: <code>GLACIER</code> | <code>DEEP_ARCHIVE</code> </p>"
+          "documentation":"<p>The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.</p>"
         },
         "RetentionStartDate":{
           "shape":"Time",
@@ -5583,7 +5583,7 @@
         },
         "DefaultStorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_INTELLIGENT_TIERING</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
+          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
         },
         "ObjectACL":{
           "shape":"ObjectACL",
@@ -5656,7 +5656,7 @@
         },
         "DefaultStorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_INTELLIGENT_TIERING</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
+          "documentation":"<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>"
         },
         "ObjectACL":{
           "shape":"ObjectACL",

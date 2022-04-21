@@ -6,7 +6,7 @@ The following ``create-configuration`` example creates a custom MSK configuratio
         --name "CustomConfiguration" \
         --description "Topic autocreation enabled; Apache ZooKeeper timeout 2000 ms; Log rolling 604800000 ms." \
         --kafka-versions "2.2.1" \
-        --server-properties file://configuration.txt
+        --server-properties fileb://configuration.txt
 
 Contents of ``configuration.txt``::
 

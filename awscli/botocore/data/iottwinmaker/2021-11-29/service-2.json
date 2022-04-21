@@ -1603,7 +1603,10 @@
           "deprecated":true,
           "deprecatedMessage":"This field is deprecated and will throw an error in the future. Use endTime instead."
         },
-        "endTime":{"shape":"Time"},
+        "endTime":{
+          "shape":"Time",
+          "documentation":"<p>The ISO8601 DateTime of the latest property value to return.</p> <p>For more information about the ISO8601 DateTime format, see the data type <a href=\"https://docs.aws.amazon.com/roci/latest/roci-api/API_PropertyValue.html\">PropertyValue</a>.</p>"
+        },
         "entityId":{
           "shape":"EntityId",
           "documentation":"<p>The ID of the entity.</p>"
@@ -1638,7 +1641,10 @@
           "deprecated":true,
           "deprecatedMessage":"This field is deprecated and will throw an error in the future. Use startTime instead."
         },
-        "startTime":{"shape":"Time"},
+        "startTime":{
+          "shape":"Time",
+          "documentation":"<p>The ISO8601 DateTime of the earliest property value to return.</p> <p>For more information about the ISO8601 DateTime format, see the data type <a href=\"https://docs.aws.amazon.com/roci/latest/roci-api/API_PropertyValue.html\">PropertyValue</a>.</p>"
+        },
         "workspaceId":{
           "shape":"Id",
           "documentation":"<p>The ID of the workspace.</p>",
@@ -1831,7 +1837,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"[a-zA-Z][a-zA-Z_\\-0-9]*[a-zA-Z0-9]+$|^arn:((aws)|(aws-cn)|(aws-us-gov)):iottwinmaker:[a-z0-9-]+:[0-9]{12}:[\\/a-zA-Z0-9_-]+"
+      "pattern":"[a-zA-Z_0-9][a-zA-Z_\\-0-9]*[a-zA-Z0-9]+$|^arn:((aws)|(aws-cn)|(aws-us-gov)):iottwinmaker:[a-z0-9-]+:[0-9]{12}:[\\/a-zA-Z0-9_-]+"
     },
     "Integer":{
       "type":"integer",
@@ -1902,7 +1908,7 @@
           "documentation":"<p>The namespace to which the component types in the list belong.</p>"
         }
       },
-      "documentation":"<p>An object that filters items in a list of component types.</p>",
+      "documentation":"<p>An object that filters items in a list of component types.</p> <note> <p>Only one object is accepted as a valid input.</p> </note>",
       "union":true
     },
     "ListComponentTypesFilters":{
@@ -1987,7 +1993,7 @@
       "members":{
         "filters":{
           "shape":"ListEntitiesFilters",
-          "documentation":"<p>A list of objects that filter the request.</p>"
+          "documentation":"<p>A list of objects that filter the request.</p> <note> <p>Only one object is accepted as a valid input.</p> </note>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2363,7 +2369,10 @@
       "type":"structure",
       "required":["value"],
       "members":{
-        "time":{"shape":"Time"},
+        "time":{
+          "shape":"Time",
+          "documentation":"<p>ISO8601 DateTime of a value for a time series property.</p> <p>The time for when the property value was recorded in ISO 8601 format: <i>YYYY-MM-DDThh:mm:ss[.SSSSSSSSS][Z/±HH:mm]</i>.</p> <ul> <li> <p> <i>[YYYY]</i>: year</p> </li> <li> <p> <i>[MM]</i>: month</p> </li> <li> <p> <i>[DD]</i>: day</p> </li> <li> <p> <i>[hh]</i>: hour</p> </li> <li> <p> <i>[mm]</i>: minute</p> </li> <li> <p> <i>[ss]</i>: seconds</p> </li> <li> <p> <i>[.SSSSSSSSS]</i>: additional precision, where precedence is maintained. For example: [.573123] is equal to 573123000 nanoseconds.</p> </li> <li> <p> <i>Z</i>: default timezone UTC</p> </li> <li> <p> <i>± HH:mm</i>: time zone offset in Hours and Minutes.</p> </li> </ul> <p> <i>Required sub-fields</i>: YYYY-MM-DDThh:mm:ss and [Z/±HH:mm]</p>"
+        },
         "timestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of a value for a time series property.</p>",
@@ -2390,7 +2399,7 @@
           "documentation":"<p>A list of objects that specify time series property values.</p>"
         }
       },
-      "documentation":"<p>An object that specifies information about time series property values.</p>"
+      "documentation":"<p>An object that specifies information about time series property values. This object is used and consumed by the <a href=\"https://docs.aws.amazon.com/iot-twinmaker/latest/apireference/API_BatchPutPropertyValues.html\">BatchPutPropertyValues</a> action.</p>"
     },
     "PropertyValueHistory":{
       "type":"structure",

@@ -226,6 +226,23 @@
       ],
       "documentation":"<p>Describes a dataset.</p> <p>Amazon Lookout for Metrics API actions are eventually consistent. If you do a read operation on a resource immediately after creating or modifying it, use retries to allow time for the write operation to complete.</p>"
     },
+    "DetectMetricSetConfig":{
+      "name":"DetectMetricSetConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DetectMetricSetConfig"
+      },
+      "input":{"shape":"DetectMetricSetConfigRequest"},
+      "output":{"shape":"DetectMetricSetConfigResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Detects an Amazon S3 dataset's file format, interval, and offset.</p>"
+    },
     "GetAnomalyGroup":{
       "name":"GetAnomalyGroup",
       "http":{
@@ -890,6 +907,60 @@
       "max":256,
       "pattern":"arn:([a-z\\d-]+):.*:.*:.*:.+"
     },
+    "AttributeValue":{
+      "type":"structure",
+      "members":{
+        "S":{
+          "shape":"StringAttributeValue",
+          "documentation":"<p>A string.</p>"
+        },
+        "N":{
+          "shape":"NumberAttributeValue",
+          "documentation":"<p>A number.</p>"
+        },
+        "B":{
+          "shape":"BinaryAttributeValue",
+          "documentation":"<p>A binary value.</p>"
+        },
+        "SS":{
+          "shape":"StringListAttributeValue",
+          "documentation":"<p>A list of strings.</p>"
+        },
+        "NS":{
+          "shape":"NumberListAttributeValue",
+          "documentation":"<p>A list of numbers.</p>"
+        },
+        "BS":{
+          "shape":"BinaryListAttributeValue",
+          "documentation":"<p>A list of binary values.</p>"
+        }
+      },
+      "documentation":"<p>An attribute value.</p>"
+    },
+    "AutoDetectionMetricSource":{
+      "type":"structure",
+      "members":{
+        "S3SourceConfig":{
+          "shape":"AutoDetectionS3SourceConfig",
+          "documentation":"<p>The source's source config.</p>"
+        }
+      },
+      "documentation":"<p>An auto detection metric source.</p>"
+    },
+    "AutoDetectionS3SourceConfig":{
+      "type":"structure",
+      "members":{
+        "TemplatedPathList":{
+          "shape":"TemplatedPathList",
+          "documentation":"<p>The config's templated path list.</p>"
+        },
+        "HistoricalDataPathList":{
+          "shape":"HistoricalDataPathList",
+          "documentation":"<p>The config's historical data path list.</p>"
+        }
+      },
+      "documentation":"<p>An auto detection source config.</p>"
+    },
     "BackTestAnomalyDetectorRequest":{
       "type":"structure",
       "required":["AnomalyDetectorArn"],
@@ -904,6 +975,11 @@
       "type":"structure",
       "members":{
       }
+    },
+    "BinaryAttributeValue":{"type":"string"},
+    "BinaryListAttributeValue":{
+      "type":"list",
+      "member":{"shape":"BinaryAttributeValue"}
     },
     "Boolean":{"type":"boolean"},
     "CSVFileCompression":{
@@ -933,6 +1009,14 @@
       "max":63,
       "min":1,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9\\-_]*"
+    },
+    "Confidence":{
+      "type":"string",
+      "enum":[
+        "HIGH",
+        "LOW",
+        "NONE"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -1383,6 +1467,146 @@
           "documentation":"<p>Contains information about the dataset's source data.</p>"
         }
       }
+    },
+    "DetectMetricSetConfigRequest":{
+      "type":"structure",
+      "required":[
+        "AnomalyDetectorArn",
+        "AutoDetectionMetricSource"
+      ],
+      "members":{
+        "AnomalyDetectorArn":{
+          "shape":"Arn",
+          "documentation":"<p>An anomaly detector ARN.</p>"
+        },
+        "AutoDetectionMetricSource":{
+          "shape":"AutoDetectionMetricSource",
+          "documentation":"<p>A data source.</p>"
+        }
+      }
+    },
+    "DetectMetricSetConfigResponse":{
+      "type":"structure",
+      "members":{
+        "DetectedMetricSetConfig":{
+          "shape":"DetectedMetricSetConfig",
+          "documentation":"<p>The inferred dataset configuration for the datasource.</p>"
+        }
+      }
+    },
+    "DetectedCsvFormatDescriptor":{
+      "type":"structure",
+      "members":{
+        "FileCompression":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's file compression.</p>"
+        },
+        "Charset":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's charset.</p>"
+        },
+        "ContainsHeader":{
+          "shape":"DetectedField",
+          "documentation":"<p>Whether the format includes a header.</p>"
+        },
+        "Delimiter":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's delimiter.</p>"
+        },
+        "HeaderList":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's header list.</p>"
+        },
+        "QuoteSymbol":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's quote symbol.</p>"
+        }
+      },
+      "documentation":"<p>Properties of an inferred CSV format.</p>"
+    },
+    "DetectedField":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"AttributeValue",
+          "documentation":"<p>The field's value.</p>"
+        },
+        "Confidence":{
+          "shape":"Confidence",
+          "documentation":"<p>The field's confidence.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>The field's message.</p>"
+        }
+      },
+      "documentation":"<p>An inferred field.</p>"
+    },
+    "DetectedFileFormatDescriptor":{
+      "type":"structure",
+      "members":{
+        "CsvFormatDescriptor":{
+          "shape":"DetectedCsvFormatDescriptor",
+          "documentation":"<p>Details about a CSV format.</p>"
+        },
+        "JsonFormatDescriptor":{
+          "shape":"DetectedJsonFormatDescriptor",
+          "documentation":"<p>Details about a JSON format.</p>"
+        }
+      },
+      "documentation":"<p>Properties of an inferred data format.</p>"
+    },
+    "DetectedJsonFormatDescriptor":{
+      "type":"structure",
+      "members":{
+        "FileCompression":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's file compression.</p>"
+        },
+        "Charset":{
+          "shape":"DetectedField",
+          "documentation":"<p>The format's character set.</p>"
+        }
+      },
+      "documentation":"<p>A detected JSON format descriptor.</p>"
+    },
+    "DetectedMetricSetConfig":{
+      "type":"structure",
+      "members":{
+        "Offset":{
+          "shape":"DetectedField",
+          "documentation":"<p>The dataset's offset.</p>"
+        },
+        "MetricSetFrequency":{
+          "shape":"DetectedField",
+          "documentation":"<p>The dataset's interval.</p>"
+        },
+        "MetricSource":{
+          "shape":"DetectedMetricSource",
+          "documentation":"<p>The dataset's data source.</p>"
+        }
+      },
+      "documentation":"<p>An inferred dataset configuration.</p>"
+    },
+    "DetectedMetricSource":{
+      "type":"structure",
+      "members":{
+        "S3SourceConfig":{
+          "shape":"DetectedS3SourceConfig",
+          "documentation":"<p>The data source's source configuration.</p>"
+        }
+      },
+      "documentation":"<p>An inferred data source.</p>"
+    },
+    "DetectedS3SourceConfig":{
+      "type":"structure",
+      "members":{
+        "FileFormatDescriptor":{
+          "shape":"DetectedFileFormatDescriptor",
+          "documentation":"<p>The source's file format descriptor.</p>"
+        }
+      },
+      "documentation":"<p>An inferred source configuration.</p>"
     },
     "DimensionContribution":{
       "type":"structure",
@@ -2119,6 +2343,11 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "NumberAttributeValue":{"type":"string"},
+    "NumberListAttributeValue":{
+      "type":"list",
+      "member":{"shape":"NumberAttributeValue"}
+    },
     "Offset":{
       "type":"integer",
       "max":432000,
@@ -2403,6 +2632,11 @@
       "documentation":"<p>The request exceeded the service's quotas. Check the service quotas and try again.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
+    },
+    "StringAttributeValue":{"type":"string"},
+    "StringListAttributeValue":{
+      "type":"list",
+      "member":{"shape":"StringAttributeValue"}
     },
     "SubnetId":{
       "type":"string",

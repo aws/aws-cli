@@ -124,6 +124,20 @@
       ],
       "documentation":"<p>Returns a list of resource metadata for a given list of crawler names. After calling the <code>ListCrawlers</code> operation, you can call this operation to access the data to which you have been granted permissions. This operation supports all IAM permissions, including permission conditions that uses tags.</p>"
     },
+    "BatchGetCustomEntityTypes":{
+      "name":"BatchGetCustomEntityTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetCustomEntityTypesRequest"},
+      "output":{"shape":"BatchGetCustomEntityTypesResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ]
+    },
     "BatchGetDevEndpoints":{
       "name":"BatchGetDevEndpoints",
       "http":{
@@ -348,6 +362,24 @@
         {"shape":"ResourceNumberLimitExceededException"}
       ],
       "documentation":"<p>Creates a new crawler with specified targets, role, configuration, and optional schedule. At least one crawl target must be specified, in the <code>s3Targets</code> field, the <code>jdbcTargets</code> field, or the <code>DynamoDBTargets</code> field.</p>"
+    },
+    "CreateCustomEntityType":{
+      "name":"CreateCustomEntityType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCustomEntityTypeRequest"},
+      "output":{"shape":"CreateCustomEntityTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ]
     },
     "CreateDatabase":{
       "name":"CreateDatabase",
@@ -723,6 +755,22 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Removes a specified crawler from the Glue Data Catalog, unless the crawler state is <code>RUNNING</code>.</p>"
+    },
+    "DeleteCustomEntityType":{
+      "name":"DeleteCustomEntityType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCustomEntityTypeRequest"},
+      "output":{"shape":"DeleteCustomEntityTypeResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ]
     },
     "DeleteDatabase":{
       "name":"DeleteDatabase",
@@ -1196,6 +1244,22 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Retrieves metadata for all crawlers defined in the customer account.</p>"
+    },
+    "GetCustomEntityType":{
+      "name":"GetCustomEntityType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCustomEntityTypeRequest"},
+      "output":{"shape":"GetCustomEntityTypeResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ]
     },
     "GetDataCatalogEncryptionSettings":{
       "name":"GetDataCatalogEncryptionSettings",
@@ -2007,6 +2071,20 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Retrieves the names of all crawler resources in this Amazon Web Services account, or the resources with the specified tag. This operation allows you to see which resources are available in your account, and their names.</p> <p>This operation takes the optional <code>Tags</code> field, which you can use as a filter on the response so that tagged resources can be retrieved as a group. If you choose to use tags filtering, only resources with the tag are retrieved.</p>"
+    },
+    "ListCustomEntityTypes":{
+      "name":"ListCustomEntityTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCustomEntityTypesRequest"},
+      "output":{"shape":"ListCustomEntityTypesResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ]
     },
     "ListDevEndpoints":{
       "name":"ListDevEndpoints",
@@ -3323,6 +3401,20 @@
         }
       }
     },
+    "BatchGetCustomEntityTypesRequest":{
+      "type":"structure",
+      "required":["Names"],
+      "members":{
+        "Names":{"shape":"CustomEntityTypeNames"}
+      }
+    },
+    "BatchGetCustomEntityTypesResponse":{
+      "type":"structure",
+      "members":{
+        "CustomEntityTypes":{"shape":"CustomEntityTypes"},
+        "CustomEntityTypesNotFound":{"shape":"CustomEntityTypeNames"}
+      }
+    },
     "BatchGetDevEndpointsRequest":{
       "type":"structure",
       "required":["DevEndpointNames"],
@@ -4628,6 +4720,12 @@
       },
       "documentation":"<p>Specifies the connections used by a job.</p>"
     },
+    "ContextWords":{
+      "type":"list",
+      "member":{"shape":"NameString"},
+      "max":20,
+      "min":1
+    },
     "Crawl":{
       "type":"structure",
       "members":{
@@ -5090,6 +5188,24 @@
         }
       },
       "documentation":"<p>Specifies a custom CSV classifier for <code>CreateClassifier</code> to create.</p>"
+    },
+    "CreateCustomEntityTypeRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "RegexString"
+      ],
+      "members":{
+        "Name":{"shape":"NameString"},
+        "RegexString":{"shape":"NameString"},
+        "ContextWords":{"shape":"ContextWords"}
+      }
+    },
+    "CreateCustomEntityTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{"shape":"NameString"}
+      }
     },
     "CreateDatabaseRequest":{
       "type":"structure",
@@ -6062,6 +6178,28 @@
       "min":1,
       "pattern":"[^\\r\\n]"
     },
+    "CustomEntityType":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "RegexString"
+      ],
+      "members":{
+        "Name":{"shape":"NameString"},
+        "RegexString":{"shape":"NameString"},
+        "ContextWords":{"shape":"ContextWords"}
+      }
+    },
+    "CustomEntityTypeNames":{
+      "type":"list",
+      "member":{"shape":"NameString"},
+      "max":50,
+      "min":1
+    },
+    "CustomEntityTypes":{
+      "type":"list",
+      "member":{"shape":"CustomEntityType"}
+    },
     "CustomPatterns":{
       "type":"string",
       "max":16000,
@@ -6419,6 +6557,19 @@
     "DeleteCrawlerResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteCustomEntityTypeRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{"shape":"NameString"}
+      }
+    },
+    "DeleteCustomEntityTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{"shape":"NameString"}
       }
     },
     "DeleteDatabaseRequest":{
@@ -7686,6 +7837,21 @@
           "shape":"Token",
           "documentation":"<p>A continuation token, if the returned list has not reached the end of those defined in this customer account.</p>"
         }
+      }
+    },
+    "GetCustomEntityTypeRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{"shape":"NameString"}
+      }
+    },
+    "GetCustomEntityTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{"shape":"NameString"},
+        "RegexString":{"shape":"NameString"},
+        "ContextWords":{"shape":"ContextWords"}
       }
     },
     "GetDataCatalogEncryptionSettingsRequest":{
@@ -10148,6 +10314,20 @@
           "shape":"Token",
           "documentation":"<p>A continuation token, if the returned list does not contain the last metric available.</p>"
         }
+      }
+    },
+    "ListCustomEntityTypesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{"shape":"PaginationToken"},
+        "MaxResults":{"shape":"PageSize"}
+      }
+    },
+    "ListCustomEntityTypesResponse":{
+      "type":"structure",
+      "members":{
+        "CustomEntityTypes":{"shape":"CustomEntityTypes"},
+        "NextToken":{"shape":"PaginationToken"}
       }
     },
     "ListDevEndpointsRequest":{

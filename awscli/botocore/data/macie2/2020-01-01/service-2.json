@@ -3243,13 +3243,18 @@
           "locationName": "jobId",
           "documentation": "<p>The unique identifier for the classification job that produced the finding.</p>"
         },
+        "originType": {
+          "shape": "OriginType",
+          "locationName": "originType",
+          "documentation": "<p>Specifies how Amazon Macie found the sensitive data that produced the finding: SENSITIVE_DATA_DISCOVERY_JOB, for a classification job.</p>"
+        },
         "result": {
           "shape": "ClassificationResult",
           "locationName": "result",
           "documentation": "<p>The status and other details of the finding.</p>"
         }
       },
-      "documentation": "<p>Provides information about a sensitive data finding, including the classification job that produced the finding.</p>"
+      "documentation": "<p>Provides information about a sensitive data finding and the details of the finding.</p>"
     },
     "ClassificationExportConfiguration": {
       "type": "structure",
@@ -4847,7 +4852,7 @@
         "findingIds": {
           "shape": "__listOf__string",
           "locationName": "findingIds",
-          "documentation": "<p>An array of strings that lists the unique identifiers for the findings to retrieve.</p>"
+          "documentation": "<p>An array of strings that lists the unique identifiers for the findings to retrieve. You can specify as many as 50 unique identifiers in this array.</p>"
         },
         "sortCriteria": {
           "shape": "SortCriteria",
@@ -5281,7 +5286,7 @@
     },
     "JobComparator": {
       "type": "string",
-      "documentation": "<p>The operator to use in a condition. Valid values are:</p>",
+      "documentation": "<p>The operator to use in a condition. Depending on the type of condition, possible values are:</p>",
       "enum": [
         "EQ",
         "GT",
@@ -6119,6 +6124,13 @@
         "DESC"
       ]
     },
+    "OriginType": {
+      "type": "string",
+      "documentation": "<p>Specifies how Amazon Macie found the sensitive data that produced a finding. The only possible value is:</p>",
+      "enum": [
+        "SENSITIVE_DATA_DISCOVERY_JOB"
+      ]
+    },
     "Page": {
       "type": "structure",
       "members": {
@@ -6229,6 +6241,7 @@
     },
     "Ranges": {
       "type": "list",
+      "documentation": "<p>Specifies the locations of occurrences of sensitive data in a non-binary text file.</p>",
       "member": {
         "shape": "Range"
       }
@@ -6251,6 +6264,7 @@
     },
     "Records": {
       "type": "list",
+      "documentation": "<p>Specifies the locations of occurrences of sensitive data in an Apache Avro object container or a structured data file.</p>",
       "member": {
         "shape": "Record"
       }
@@ -7300,7 +7314,7 @@
           "shape": "__listOf__string",
           "location": "querystring",
           "locationName": "tagKeys",
-          "documentation": "<p>The key of the tag to remove from the resource. To remove multiple tags, append the tagKeys parameter and argument for each additional tag to remove, separated by an ampersand (&amp;).</p>"
+          "documentation": "<p>One or more tags (keys) to remove from the resource. In an HTTP request to remove multiple tags, append the tagKeys parameter and argument for each tag to remove, and separate them with an ampersand (&amp;).</p>"
         }
       },
       "required": [

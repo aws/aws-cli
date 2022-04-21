@@ -3490,7 +3490,8 @@
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
           "documentation":"<p>The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years).</p> <p>Valid for: Multi-AZ DB clusters only</p>"
-        }
+        },
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
       },
       "documentation":"<p/>"
     },
@@ -4598,7 +4599,8 @@
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
           "documentation":"<p>The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years).</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
-        }
+        },
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfigurationInfo"}
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
       "wrapper":true
@@ -9764,7 +9766,8 @@
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
           "documentation":"<p>The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years).</p> <p>Valid for: Multi-AZ DB clusters only</p>"
-        }
+        },
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
       },
       "documentation":"<p/>"
     },
@@ -11889,7 +11892,8 @@
         "DomainIAMRoleName":{
           "shape":"String",
           "documentation":"<p>Specify the name of the IAM role to be used when making API calls to the Directory Service.</p>"
-        }
+        },
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
       }
     },
     "RestoreDBClusterFromS3Result":{
@@ -12009,7 +12013,8 @@
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
           "documentation":"<p>A value that indicates whether the DB cluster is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
-        }
+        },
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
       },
       "documentation":"<p/>"
     },
@@ -12122,7 +12127,8 @@
         "Iops":{
           "shape":"IntegerOptional",
           "documentation":"<p>The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for each DB instance in the Multi-AZ DB cluster.</p> <p>For information about valid <code>Iops</code> values, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html#USER_PIOPS\">Amazon RDS Provisioned IOPS storage to improve performance</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints: Must be a multiple between .5 and 50 of the storage amount for the DB instance.</p> <p>Valid for: Multi-AZ DB clusters only</p>"
-        }
+        },
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
       },
       "documentation":"<p/>"
     },
@@ -12761,6 +12767,34 @@
         }
       },
       "documentation":"<p>Shows the scaling configuration for an Aurora DB cluster in <code>serverless</code> DB engine mode.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html\">Using Amazon Aurora Serverless v1</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "ServerlessV2ScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is 0.5.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 40, 40.5, 41, and so on. The largest value that you can use is 128.</p>"
+        }
+      },
+      "documentation":"<p>Contains the scaling configuration of an Aurora Serverless v2 DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html\">Using Amazon Aurora Serverless v2</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "ServerlessV2ScalingConfigurationInfo":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is 0.5.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 40, 40.5, 41, and so on. The largest value that you can use is 128.</p>"
+        }
+      },
+      "documentation":"<p>Shows the scaling configuration for an Aurora Serverless v2 DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html\">Using Amazon Aurora Serverless v2</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
     "SharedSnapshotQuotaExceededFault":{
       "type":"structure",

@@ -84,6 +84,57 @@
       "documentation":"<p>Disassociates a group (batch) of assets from an IoT SiteWise Monitor project.</p>",
       "endpoint":{"hostPrefix":"monitor."}
     },
+    "BatchGetAssetPropertyAggregates":{
+      "name":"BatchGetAssetPropertyAggregates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/properties/batch/aggregates"
+      },
+      "input":{"shape":"BatchGetAssetPropertyAggregatesRequest"},
+      "output":{"shape":"BatchGetAssetPropertyAggregatesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Gets aggregated values (for example, average, minimum, and maximum) for one or more asset properties. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/query-industrial-data.html#aggregates\">Querying aggregates</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"data."}
+    },
+    "BatchGetAssetPropertyValue":{
+      "name":"BatchGetAssetPropertyValue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/properties/batch/latest"
+      },
+      "input":{"shape":"BatchGetAssetPropertyValueRequest"},
+      "output":{"shape":"BatchGetAssetPropertyValueResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Gets the current value for one or more asset properties. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/query-industrial-data.html#current-values\">Querying current values</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"data."}
+    },
+    "BatchGetAssetPropertyValueHistory":{
+      "name":"BatchGetAssetPropertyValueHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/properties/batch/history"
+      },
+      "input":{"shape":"BatchGetAssetPropertyValueHistoryRequest"},
+      "output":{"shape":"BatchGetAssetPropertyValueHistoryResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Gets the historical values for one or more asset properties. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/query-industrial-data.html#historical-values\">Querying historical values</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"data."}
+    },
     "BatchPutAssetPropertyValue":{
       "name":"BatchPutAssetPropertyValue",
       "http":{
@@ -2062,6 +2113,573 @@
           "documentation":"<p>A list of associated error information, if any.</p>"
         }
       }
+    },
+    "BatchEntryCompletionStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "ERROR"
+      ]
+    },
+    "BatchGetAssetPropertyAggregatesEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyAggregatesEntry"}
+    },
+    "BatchGetAssetPropertyAggregatesEntry":{
+      "type":"structure",
+      "required":[
+        "entryId",
+        "aggregateTypes",
+        "resolution",
+        "startDate",
+        "endDate"
+      ],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "assetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset in which the asset property was created.</p>"
+        },
+        "propertyId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset property.</p>"
+        },
+        "propertyAlias":{
+          "shape":"AssetPropertyAlias",
+          "documentation":"<p>The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html\">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "aggregateTypes":{
+          "shape":"AggregateTypes",
+          "documentation":"<p>The data aggregating function.</p>"
+        },
+        "resolution":{
+          "shape":"Resolution",
+          "documentation":"<p>The time interval over which to aggregate data.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The exclusive start of the range from which to query historical data, expressed in seconds in Unix epoch time.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The inclusive end of the range from which to query historical data, expressed in seconds in Unix epoch time.</p>"
+        },
+        "qualities":{
+          "shape":"Qualities",
+          "documentation":"<p>The quality by which to filter asset data.</p>"
+        },
+        "timeOrdering":{
+          "shape":"TimeOrdering",
+          "documentation":"<p>The chronological sorting order of the requested information.</p> <p>Default: <code>ASCENDING</code> </p>"
+        }
+      },
+      "documentation":"<p>Contains information for an asset property aggregate entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html\">BatchGetAssetPropertyAggregates</a> API.</p> <p>To identify an asset property, you must specify one of the following:</p> <ul> <li> <p>The <code>assetId</code> and <code>propertyId</code> of an asset property.</p> </li> <li> <p>A <code>propertyAlias</code>, which is a data stream alias (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). To define an asset property's alias, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html\">UpdateAssetProperty</a>.</p> </li> </ul>"
+    },
+    "BatchGetAssetPropertyAggregatesErrorCode":{
+      "type":"string",
+      "enum":[
+        "ResourceNotFoundException",
+        "InvalidRequestException",
+        "AccessDeniedException"
+      ]
+    },
+    "BatchGetAssetPropertyAggregatesErrorEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyAggregatesErrorEntry"}
+    },
+    "BatchGetAssetPropertyAggregatesErrorEntry":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "entryId"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"BatchGetAssetPropertyAggregatesErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The associated error message.</p>"
+        },
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        }
+      },
+      "documentation":"<p>Contains error information for an asset property aggregate entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html\">BatchGetAssetPropertyAggregates</a> API.</p>"
+    },
+    "BatchGetAssetPropertyAggregatesErrorInfo":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorTimestamp"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"BatchGetAssetPropertyAggregatesErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the error occurred, in Unix epoch time.</p>"
+        }
+      },
+      "documentation":"<p>Contains the error code and the timestamp for an asset property aggregate entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html\">BatchGetAssetPropertyAggregates</a> API.</p>"
+    },
+    "BatchGetAssetPropertyAggregatesMaxResults":{
+      "type":"integer",
+      "min":1
+    },
+    "BatchGetAssetPropertyAggregatesRequest":{
+      "type":"structure",
+      "required":["entries"],
+      "members":{
+        "entries":{
+          "shape":"BatchGetAssetPropertyAggregatesEntries",
+          "documentation":"<p>The list of asset property aggregate entries for the batch get request. You can specify up to 16 entries per request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>"
+        },
+        "maxResults":{
+          "shape":"BatchGetAssetPropertyAggregatesMaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>"
+        }
+      }
+    },
+    "BatchGetAssetPropertyAggregatesResponse":{
+      "type":"structure",
+      "required":[
+        "errorEntries",
+        "successEntries",
+        "skippedEntries"
+      ],
+      "members":{
+        "errorEntries":{
+          "shape":"BatchGetAssetPropertyAggregatesErrorEntries",
+          "documentation":"<p>A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.</p>"
+        },
+        "successEntries":{
+          "shape":"BatchGetAssetPropertyAggregatesSuccessEntries",
+          "documentation":"<p>A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.</p>"
+        },
+        "skippedEntries":{
+          "shape":"BatchGetAssetPropertyAggregatesSkippedEntries",
+          "documentation":"<p>A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "BatchGetAssetPropertyAggregatesSkippedEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyAggregatesSkippedEntry"}
+    },
+    "BatchGetAssetPropertyAggregatesSkippedEntry":{
+      "type":"structure",
+      "required":[
+        "entryId",
+        "completionStatus"
+      ],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "completionStatus":{
+          "shape":"BatchEntryCompletionStatus",
+          "documentation":"<p>The completion status of each entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html\">BatchGetAssetPropertyAggregates</a> API.</p>"
+        },
+        "errorInfo":{
+          "shape":"BatchGetAssetPropertyAggregatesErrorInfo",
+          "documentation":"<p>The error information, such as the error code and the timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Contains information for an entry that has been processed by the previous <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html\">BatchGetAssetPropertyAggregates</a> request.</p>"
+    },
+    "BatchGetAssetPropertyAggregatesSuccessEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyAggregatesSuccessEntry"}
+    },
+    "BatchGetAssetPropertyAggregatesSuccessEntry":{
+      "type":"structure",
+      "required":[
+        "entryId",
+        "aggregatedValues"
+      ],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "aggregatedValues":{
+          "shape":"AggregatedValues",
+          "documentation":"<p>The requested aggregated asset property values (for example, average, minimum, and maximum).</p>"
+        }
+      },
+      "documentation":"<p>Contains success information for an entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html\">BatchGetAssetPropertyAggregates</a> API.</p>"
+    },
+    "BatchGetAssetPropertyValueEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueEntry"}
+    },
+    "BatchGetAssetPropertyValueEntry":{
+      "type":"structure",
+      "required":["entryId"],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "assetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset in which the asset property was created.</p>"
+        },
+        "propertyId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset property.</p>"
+        },
+        "propertyAlias":{
+          "shape":"AssetPropertyAlias",
+          "documentation":"<p>The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html\">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information for an asset property value entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValue</a> API.</p> <p>To identify an asset property, you must specify one of the following:</p> <ul> <li> <p>The <code>assetId</code> and <code>propertyId</code> of an asset property.</p> </li> <li> <p>A <code>propertyAlias</code>, which is a data stream alias (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). To define an asset property's alias, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html\">UpdateAssetProperty</a>.</p> </li> </ul>"
+    },
+    "BatchGetAssetPropertyValueErrorCode":{
+      "type":"string",
+      "enum":[
+        "ResourceNotFoundException",
+        "InvalidRequestException",
+        "AccessDeniedException"
+      ]
+    },
+    "BatchGetAssetPropertyValueErrorEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueErrorEntry"}
+    },
+    "BatchGetAssetPropertyValueErrorEntry":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "entryId"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"BatchGetAssetPropertyValueErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The associated error message.</p>"
+        },
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        }
+      },
+      "documentation":"<p>Contains error information for an asset property value entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValue</a> API.</p>"
+    },
+    "BatchGetAssetPropertyValueErrorInfo":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorTimestamp"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"BatchGetAssetPropertyValueErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the error occurred, in Unix epoch time.</p>"
+        }
+      },
+      "documentation":"<p>The error information, such as the error code and the timestamp.</p>"
+    },
+    "BatchGetAssetPropertyValueHistoryEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueHistoryEntry"}
+    },
+    "BatchGetAssetPropertyValueHistoryEntry":{
+      "type":"structure",
+      "required":["entryId"],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "assetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset in which the asset property was created.</p>"
+        },
+        "propertyId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset property.</p>"
+        },
+        "propertyAlias":{
+          "shape":"AssetPropertyAlias",
+          "documentation":"<p>The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html\">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The exclusive start of the range from which to query historical data, expressed in seconds in Unix epoch time.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The inclusive end of the range from which to query historical data, expressed in seconds in Unix epoch time.</p>"
+        },
+        "qualities":{
+          "shape":"Qualities",
+          "documentation":"<p>The quality by which to filter asset data.</p>"
+        },
+        "timeOrdering":{
+          "shape":"TimeOrdering",
+          "documentation":"<p>The chronological sorting order of the requested information.</p> <p>Default: <code>ASCENDING</code> </p>"
+        }
+      },
+      "documentation":"<p>Contains information for an asset property historical value entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValueHistory</a> API.</p> <p>To identify an asset property, you must specify one of the following:</p> <ul> <li> <p>The <code>assetId</code> and <code>propertyId</code> of an asset property.</p> </li> <li> <p>A <code>propertyAlias</code>, which is a data stream alias (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). To define an asset property's alias, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html\">UpdateAssetProperty</a>.</p> </li> </ul>"
+    },
+    "BatchGetAssetPropertyValueHistoryErrorCode":{
+      "type":"string",
+      "enum":[
+        "ResourceNotFoundException",
+        "InvalidRequestException",
+        "AccessDeniedException"
+      ]
+    },
+    "BatchGetAssetPropertyValueHistoryErrorEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueHistoryErrorEntry"}
+    },
+    "BatchGetAssetPropertyValueHistoryErrorEntry":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "entryId"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"BatchGetAssetPropertyValueHistoryErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The associated error message.</p>"
+        },
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        }
+      },
+      "documentation":"<p>A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.</p>"
+    },
+    "BatchGetAssetPropertyValueHistoryErrorInfo":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorTimestamp"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"BatchGetAssetPropertyValueHistoryErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the error occurred, in Unix epoch time.</p>"
+        }
+      },
+      "documentation":"<p>The error information, such as the error code and the timestamp.</p>"
+    },
+    "BatchGetAssetPropertyValueHistoryMaxResults":{
+      "type":"integer",
+      "min":1
+    },
+    "BatchGetAssetPropertyValueHistoryRequest":{
+      "type":"structure",
+      "required":["entries"],
+      "members":{
+        "entries":{
+          "shape":"BatchGetAssetPropertyValueHistoryEntries",
+          "documentation":"<p>The list of asset property historical value entries for the batch get request. You can specify up to 16 entries per request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>"
+        },
+        "maxResults":{
+          "shape":"BatchGetAssetPropertyValueHistoryMaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>"
+        }
+      }
+    },
+    "BatchGetAssetPropertyValueHistoryResponse":{
+      "type":"structure",
+      "required":[
+        "errorEntries",
+        "successEntries",
+        "skippedEntries"
+      ],
+      "members":{
+        "errorEntries":{
+          "shape":"BatchGetAssetPropertyValueHistoryErrorEntries",
+          "documentation":"<p>A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.</p>"
+        },
+        "successEntries":{
+          "shape":"BatchGetAssetPropertyValueHistorySuccessEntries",
+          "documentation":"<p>A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.</p>"
+        },
+        "skippedEntries":{
+          "shape":"BatchGetAssetPropertyValueHistorySkippedEntries",
+          "documentation":"<p>A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "BatchGetAssetPropertyValueHistorySkippedEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueHistorySkippedEntry"}
+    },
+    "BatchGetAssetPropertyValueHistorySkippedEntry":{
+      "type":"structure",
+      "required":[
+        "entryId",
+        "completionStatus"
+      ],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "completionStatus":{
+          "shape":"BatchEntryCompletionStatus",
+          "documentation":"<p>The completion status of each entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValueHistory.html\">BatchGetAssetPropertyValueHistory</a> API.</p>"
+        },
+        "errorInfo":{
+          "shape":"BatchGetAssetPropertyValueHistoryErrorInfo",
+          "documentation":"<p>The error information, such as the error code and the timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Contains information for an entry that has been processed by the previous <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValueHistory</a> request.</p>"
+    },
+    "BatchGetAssetPropertyValueHistorySuccessEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueHistorySuccessEntry"}
+    },
+    "BatchGetAssetPropertyValueHistorySuccessEntry":{
+      "type":"structure",
+      "required":[
+        "entryId",
+        "assetPropertyValueHistory"
+      ],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "assetPropertyValueHistory":{
+          "shape":"AssetPropertyValueHistory",
+          "documentation":"<p>The requested historical values for the specified asset property.</p>"
+        }
+      },
+      "documentation":"<p>Contains success information for an entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValueHistory</a> API.</p>"
+    },
+    "BatchGetAssetPropertyValueRequest":{
+      "type":"structure",
+      "required":["entries"],
+      "members":{
+        "entries":{
+          "shape":"BatchGetAssetPropertyValueEntries",
+          "documentation":"<p>The list of asset property value entries for the batch get request. You can specify up to 16 entries per request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>"
+        }
+      }
+    },
+    "BatchGetAssetPropertyValueResponse":{
+      "type":"structure",
+      "required":[
+        "errorEntries",
+        "successEntries",
+        "skippedEntries"
+      ],
+      "members":{
+        "errorEntries":{
+          "shape":"BatchGetAssetPropertyValueErrorEntries",
+          "documentation":"<p>A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.</p>"
+        },
+        "successEntries":{
+          "shape":"BatchGetAssetPropertyValueSuccessEntries",
+          "documentation":"<p>A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.</p>"
+        },
+        "skippedEntries":{
+          "shape":"BatchGetAssetPropertyValueSkippedEntries",
+          "documentation":"<p>A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "BatchGetAssetPropertyValueSkippedEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueSkippedEntry"}
+    },
+    "BatchGetAssetPropertyValueSkippedEntry":{
+      "type":"structure",
+      "required":[
+        "entryId",
+        "completionStatus"
+      ],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "completionStatus":{
+          "shape":"BatchEntryCompletionStatus",
+          "documentation":"<p>The completion status of each entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValue</a> request.</p>"
+        },
+        "errorInfo":{
+          "shape":"BatchGetAssetPropertyValueErrorInfo",
+          "documentation":"<p>The error information, such as the error code and the timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Contains information for an entry that has been processed by the previous <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValue</a> request.</p>"
+    },
+    "BatchGetAssetPropertyValueSuccessEntries":{
+      "type":"list",
+      "member":{"shape":"BatchGetAssetPropertyValueSuccessEntry"}
+    },
+    "BatchGetAssetPropertyValueSuccessEntry":{
+      "type":"structure",
+      "required":["entryId"],
+      "members":{
+        "entryId":{
+          "shape":"EntryId",
+          "documentation":"<p>The ID of the entry.</p>"
+        },
+        "assetPropertyValue":{"shape":"AssetPropertyValue"}
+      },
+      "documentation":"<p>Contains success information for an entry that is associated with the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html\">BatchGetAssetPropertyValue</a> API.</p>"
     },
     "BatchPutAssetPropertyError":{
       "type":"structure",
@@ -5294,10 +5912,7 @@
     "PropertyValueBooleanValue":{"type":"boolean"},
     "PropertyValueDoubleValue":{"type":"double"},
     "PropertyValueIntegerValue":{"type":"integer"},
-    "PropertyValueStringValue":{
-      "type":"string",
-      "pattern":"[^\\u0000-\\u001F\\u007F]+"
-    },
+    "PropertyValueStringValue":{"type":"string"},
     "PutAssetPropertyValueEntries":{
       "type":"list",
       "member":{"shape":"PutAssetPropertyValueEntry"}
@@ -5611,7 +6226,7 @@
     },
     "TimeInSeconds":{
       "type":"long",
-      "max":31556889864403199,
+      "max":9223372036854774,
       "min":1
     },
     "TimeOrdering":{

@@ -3436,6 +3436,15 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.22.99
+=======
+
+* api-change:``macie2``: [``botocore``] Sensitive data findings in Amazon Macie now indicate how Macie found the sensitive data that produced a finding (originType).
+* api-change:``rds``: [``botocore``] Added a new cluster-level attribute to set the capacity range for Aurora Serverless v2 instances.
+* api-change:``mgn``: [``botocore``] Removed required annotation from input fields in Describe operations requests. Added quotaValue to ServiceQuotaExceededException
+* api-change:``connect``: [``botocore``] This release adds APIs to search, claim, release, list, update, and describe phone numbers. You can also use them to associate and disassociate contact flows to phone numbers.
+
+
 1.22.98
 =======
 

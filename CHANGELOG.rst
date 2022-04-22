@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.22.101
+========
+
+* api-change:``chime-sdk-meetings``: [``botocore``] Include additional exceptions types.
+* api-change:``ec2``: [``botocore``] Adds support for waiters that automatically poll for a deleted NAT Gateway until it reaches the deleted state.
+
+
 1.22.100
 ========
 

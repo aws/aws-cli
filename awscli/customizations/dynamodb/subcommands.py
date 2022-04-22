@@ -85,19 +85,15 @@ class DDBCommand(BasicCommand):
         return response
 
     def _dump_yaml(self, operation_name, data, parsed_globals):
-        if parsed_globals.output == 'yaml-stream':
-            # TODO: In the future, we should support yaml-stream. However, it
-            #  would require a larger refactoring. Right now we always build
-            #  the full result when paginating prior to sending it to the
-            #  formatter. We need to instead pass the page iterator and
-            #  deserialize in the formatter. We cannot necessarily just
-            #  convert these to client handlers because the DDB types we
-            #  introduce do not play nicely with the pagination interfaces.
-            #  For example, botocore cannot serialize our Binary types into
-            #  a resume token when --max-items gets set.
-            raise ParamValidationError(
-                'yaml-stream output format is not supported for ddb commands'
-            )
+        # TODO: In the future, we should support yaml-stream. However, it
+        #  would require a larger refactoring. Right now we always build
+        #  the full result when paginating prior to sending it to the
+        #  formatter. We need to instead pass the page iterator and
+        #  deserialize in the formatter. We cannot necessarily just
+        #  convert these to client handlers because the DDB types we
+        #  introduce do not play nicely with the pagination interfaces.
+        #  For example, botocore cannot serialize our Binary types into
+        #  a resume token when --max-items gets set.
         formatter = YAMLFormatter(parsed_globals, DynamoYAMLDumper())
         with self._output_stream_factory.get_output_stream() as stream:
             formatter(operation_name, data, stream)
@@ -155,7 +151,8 @@ class SelectCommand(PaginatedDDBCommand):
     DESCRIPTION = (
         '``select`` searches a table or index.\n\n'
         'Under the hood, this operation will use ``query`` if '
-        '``--key-condition`` is specified, or ``scan`` otherwise.'
+        '``--key-condition`` is specified, or ``scan`` otherwise.\n\n'
+        'Only ``yaml`` output is supported for this operation.'
     )
     ARG_TABLE = [
         parameters.TABLE_NAME,
@@ -169,6 +166,7 @@ class SelectCommand(PaginatedDDBCommand):
         parameters.RETURN_CONSUMED_CAPACITY,
         parameters.NO_RETURN_CONSUMED_CAPACITY,
     ]
+    _SUPPORTED_OUTPUT_TYPES = ('yaml',)
 
     def _run_main(self, parsed_args, parsed_globals):
         super(SelectCommand, self)._run_main(parsed_args, parsed_globals)
@@ -176,6 +174,12 @@ class SelectCommand(PaginatedDDBCommand):
         return 0
 
     def _select(self, parsed_args, parsed_globals):
+        output_type = parsed_globals.output
+        if output_type is not None and output_type not in self._SUPPORTED_OUTPUT_TYPES:
+            raise ParamValidationError(
+                f'{output_type} output format is not supported for ddb commands'
+            )
+
         if parsed_args.key_condition:
             LOGGER.debug(
                 "select command using query because --key-condition was "

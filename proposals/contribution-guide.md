@@ -3,7 +3,7 @@
 Proposal         | Metadata
 ---------------- | -------------
 **Author**       | Kenneth Daily
-**Status**       | Proposed
+**Status**       | Accepted
 **Created**      | 28-March-2022
 
 ## Abstract

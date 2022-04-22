@@ -57,7 +57,7 @@ class TestListClusters(BaseAWSCommandParamsTest):
             '\naws: error: You can specify only one of the cluster state '
             'filters: --cluster-states, --active, --terminated, --failed.\n')
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
         args = '--cluster-states STARTING RUNNING --terminated'
         cmdline = self.prefix + args
@@ -65,7 +65,7 @@ class TestListClusters(BaseAWSCommandParamsTest):
             '\naws: error: You can specify only one of the cluster state '
             'filters: --cluster-states, --active, --terminated, --failed.\n')
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
 
 if __name__ == "__main__":

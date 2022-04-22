@@ -1088,7 +1088,7 @@ class TestExecutor(unittest.TestCase):
               load_type: not-supported-type
         """)
         variables = {'myvar': '{"foo": "bar"}'}
-        with self.assertRaisesRegexp(ValueError, 'not-supported-type'):
+        with self.assertRaisesRegex(ValueError, 'not-supported-type'):
             self.executor.execute(loaded['execute'], variables)
 
     def test_can_dump_json(self):
@@ -1114,7 +1114,7 @@ class TestExecutor(unittest.TestCase):
               dump_type: not-supported-type
         """)
         variables = {'myvar': {"foo": "bar"}}
-        with self.assertRaisesRegexp(ValueError, 'not-supported-type'):
+        with self.assertRaisesRegex(ValueError, 'not-supported-type'):
             self.executor.execute(loaded['execute'], variables)
 
 

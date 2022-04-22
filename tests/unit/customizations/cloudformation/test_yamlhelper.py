@@ -64,12 +64,12 @@ class TestYaml(BaseYAMLTest):
 
     def test_yaml_with_tags(self):
         output = yaml_parse(self.yaml_with_tags)
-        self.assertEquals(self.parsed_yaml_dict, output)
+        self.assertEqual(self.parsed_yaml_dict, output)
 
         # Make sure formatter and parser work well with each other
         formatted_str = yaml_dump(output)
         output_again = yaml_parse(formatted_str)
-        self.assertEquals(output, output_again)
+        self.assertEqual(output, output_again)
 
     def test_yaml_getatt(self):
         # This is an invalid syntax for !GetAtt. But make sure the code does
@@ -90,7 +90,7 @@ class TestYaml(BaseYAMLTest):
         }
 
         actual_output = yaml_parse(yaml_input)
-        self.assertEquals(actual_output, output)
+        self.assertEqual(actual_output, output)
 
     def test_parse_json_with_tabs(self):
         template = '{\n\t"foo": "bar"\n}'

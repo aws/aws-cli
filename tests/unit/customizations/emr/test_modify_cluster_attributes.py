@@ -50,7 +50,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
             '\naws: error: You cannot specify both --visible-to-all-users '
             'and --no-visible-to-all-users options together.\n')
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_temination_protected_and_no_termination_protected(self):
         args = ' --cluster-id j-ABC123456 --no-termination-protected'\
@@ -60,7 +60,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
             '\naws: error: You cannot specify both --termination-protected '
             'and --no-termination-protected options together.\n')
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_termination_protected_and_visible_to_all(self):
         args = ' --cluster-id j-ABC123456 --termination-protected'\
@@ -98,7 +98,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
             '--visible-to-all-users|--no-visible-to-all-users, '
             '--termination-protected|--no-termination-protected.\n')
         result = self.run_cmd(cmdline, 252)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
 if __name__ == "__main__":
     unittest.main()

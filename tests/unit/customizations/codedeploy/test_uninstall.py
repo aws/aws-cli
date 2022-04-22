@@ -64,18 +64,18 @@ class TestUninstall(unittest.TestCase):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
         error_msg = 'Region not specified.'
-        with self.assertRaisesRegexp(ConfigurationError, error_msg):
+        with self.assertRaisesRegex(ConfigurationError, error_msg):
             self.uninstall._run_main(self.args, self.globals)
 
     def test_uninstall_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
             self.uninstall._run_main(self.args, self.globals)
 
     def test_uninstall_throws_on_ec2_instance(self):
         self.urlopen.side_effect = None
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError, 'Amazon EC2 instances are not supported.'):
             self.uninstall._run_main(self.args, self.globals)
         self.assertIn('system', self.args)
@@ -83,7 +83,7 @@ class TestUninstall(unittest.TestCase):
 
     def test_uninstall_throws_on_non_administrator(self):
         self.geteuid.return_value = 1
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError, 'You must run this command as sudo.'):
             self.uninstall._run_main(self.args, self.globals)
 

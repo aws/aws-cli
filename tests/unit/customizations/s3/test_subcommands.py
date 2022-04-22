@@ -412,7 +412,7 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
         error_msg = '--sse-c must be specified'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_key(self):
@@ -420,7 +420,7 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
         error_msg = '--sse-c-key must be specified'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_copy_source(self):
@@ -428,7 +428,7 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
         error_msg = '--sse-c-copy-source must be specified'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_copy_source_key(self):
@@ -436,7 +436,7 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
         error_msg = '--sse-c-copy-source-key must be specified'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_wrong_path_type(self):
@@ -445,7 +445,7 @@ class CommandParametersTest(unittest.TestCase):
                   'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
         error_msg = 'only supported for copy operations'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_adds_is_move(self):

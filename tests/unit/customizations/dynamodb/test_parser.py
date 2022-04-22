@@ -830,7 +830,7 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = 'Expected type: eof'
-        with self.assertRaisesRegexp(UnexpectedTokenError, expected):
+        with self.assertRaisesRegex(UnexpectedTokenError, expected):
             self._parse(tokens)
 
     def test_missing_eof(self):

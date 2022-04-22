@@ -141,7 +141,7 @@ class ClientCreator(object):
                         config_use_fips_endpoint)
                 else:
                     client_config = config_use_fips_endpoint
-                logger.warn(
+                logger.warning(
                     'transforming region from %s to %s and setting '
                     'use_fips_endpoint to true. client should not '
                     'be configured with a fips psuedo region.' % (

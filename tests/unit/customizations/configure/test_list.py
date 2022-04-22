@@ -119,8 +119,7 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegexpMatches(
-            rendered, 'region\s+from-imds\s+imds')
+        self.assertRegex(rendered, 'region\s+from-imds\s+imds')
 
     def test_configure_from_args(self):
         parsed_globals = Namespace(profile='foo')

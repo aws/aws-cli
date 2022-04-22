@@ -44,4 +44,4 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
         exception_class = getattr(exceptions, exception_class_name)
         error_msg = "\n%s\n" % exception_class.fmt.format(**error_msg_kwargs)
         result = self.run_cmd(cmd, rc)
-        self.assertEquals(error_msg, result[1])
+        self.assertEqual(error_msg, result[1])

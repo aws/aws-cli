@@ -32,4 +32,4 @@ class TestGetLoginPasswordCommand(BaseAWSCommandParamsTest):
     def test_prints_login_password(self):
         stdout = self.run_cmd("ecr get-login-password")[0]
         self.assertIn('bar', stdout)
-        self.assertEquals(1, len(self.operations_called))
+        self.assertEqual(1, len(self.operations_called))

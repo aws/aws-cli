@@ -636,7 +636,7 @@ class TestShowCommand(unittest.TestCase):
 
         db_filename = os.path.join(self.files.rootdir, 'name.db')
         with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     RuntimeError, 'Could not locate history'):
                 self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 

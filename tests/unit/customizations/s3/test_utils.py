@@ -288,7 +288,7 @@ class TestFindBucketKey(unittest.TestCase):
 
 class TestBlockUnsupportedResources(unittest.TestCase):
     def test_object_lambda_arn_with_colon_raises_exception(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParamValidationError, 'Use s3api commands instead'):
             block_unsupported_resources(
                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
@@ -296,7 +296,7 @@ class TestBlockUnsupportedResources(unittest.TestCase):
             )
 
     def test_object_lambda_arn_with_slash_raises_exception(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParamValidationError, 'Use s3api commands instead'):
             block_unsupported_resources(
                  'arn:aws:s3-object-lambda:us-west-2:123456789012:'
@@ -304,7 +304,7 @@ class TestBlockUnsupportedResources(unittest.TestCase):
             )
 
     def test_outpost_bucket_arn_with_colon_raises_exception(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParamValidationError, 'Use s3control commands instead'):
             block_unsupported_resources(
                 'arn:aws:s3-outposts:us-west-2:123456789012:'
@@ -312,7 +312,7 @@ class TestBlockUnsupportedResources(unittest.TestCase):
             )
 
     def test_outpost_bucket_arn_with_slash_raises_exception(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParamValidationError, 'Use s3control commands instead'):
             block_unsupported_resources(
                  'arn:aws:s3-outposts:us-west-2:123456789012:'

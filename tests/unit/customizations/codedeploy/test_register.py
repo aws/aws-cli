@@ -83,20 +83,20 @@ class TestRegister(unittest.TestCase):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
         error_msg = 'Region not specified.'
-        with self.assertRaisesRegexp(ConfigurationError, error_msg):
+        with self.assertRaisesRegex(ConfigurationError, error_msg):
             self.register._run_main(self.args, self.globals)
 
     def test_register_throws_on_invalid_instance_name(self):
         self.args.instance_name = 'invalid%@^&%#&'
         error_msg = 'Instance name contains invalid characters.'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             self.register._run_main(self.args, self.globals)
 
     def test_register_throws_on_invalid_tags(self):
         self.args.tags = [
             {'Key': 'k' + str(x), 'Value': 'v' + str(x)} for x in range(11)
         ]
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParamValidationError,
                 'Instances can only have a maximum of {0} tags.'.format(
                     MAX_TAGS_PER_INSTANCE)):
@@ -105,7 +105,7 @@ class TestRegister(unittest.TestCase):
     def test_register_throws_on_invalid_iam_user_arn(self):
         self.args.iam_user_arn = 'invalid%@^&%#&'
         error_msg = 'Invalid IAM user ARN.'
-        with self.assertRaisesRegexp(ParamValidationError, error_msg):
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
             self.register._run_main(self.args, self.globals)
 
     def test_register_creates_clients(self):

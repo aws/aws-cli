@@ -377,7 +377,7 @@ class TestParamShorthand(BaseArgProcessTest):
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName=bar'
         error_msg = "Error parsing parameter '--source-configuration'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, value)
 
     def test_improper_separator(self):
@@ -387,13 +387,13 @@ class TestParamShorthand(BaseArgProcessTest):
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName:bar'
         error_msg = "Error parsing parameter '--source-configuration'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, value)
 
     def test_improper_separator_for_filters_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         error_msg = "Error parsing parameter '--filters'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ["Name:tag:Name,Values:foo"])
 
     def test_csv_syntax_escaped(self):
@@ -423,13 +423,13 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_csv_syntax_errors(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
         error_msg = "Error parsing parameter '--parameters'.*Expected"
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar'])
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=foo,bar"'])
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
-        with self.assertRaisesRegexp(ParamError, error_msg):
+        with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
 

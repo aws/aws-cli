@@ -73,7 +73,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
                              ' and --incremental.\n'
         result = self.run_cmd(cmdline, 252)
 
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     @mock.patch('awscli.customizations.emr.'
                 'emrutils.get_release_label')

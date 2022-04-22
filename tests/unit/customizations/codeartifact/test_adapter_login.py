@@ -228,7 +228,7 @@ Registered Sources:
         self.subprocess_utils.check_output.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 'nuget was not found. Please verify installation.'):
             self.test_subject.login()
@@ -386,7 +386,7 @@ Registered Sources:
         self.subprocess_utils.check_output.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 'dotnet was not found. Please verify installation.'):
             self.test_subject.login()

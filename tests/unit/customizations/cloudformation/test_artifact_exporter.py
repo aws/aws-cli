@@ -269,7 +269,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                   object_key_property="Key",
                                   version_property="VersionId")
 
-            self.assertEquals(result, config["result"])
+            self.assertEqual(result, config["result"])
 
         for url in invalid:
             with self.assertRaises(ValueError):
@@ -306,7 +306,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                             property_name,
                                             parent_dir,
                                             self.s3_uploader_mock)
-            self.assertEquals(result, expected_s3_url)
+            self.assertEqual(result, expected_s3_url)
 
             # Internally the method would convert relative paths to absolute
             # path, with respect to the parent directory
@@ -335,7 +335,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                             property_name,
                                             parent_dir,
                                             self.s3_uploader_mock)
-            self.assertEquals(result, expected_s3_url)
+            self.assertEqual(result, expected_s3_url)
 
             self.s3_uploader_mock.upload_with_dedup.assert_called_with(artifact_path)
             zip_and_upload_mock.assert_not_called()
@@ -359,7 +359,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                             property_name,
                                             parent_dir,
                                             Mock())
-            self.assertEquals(result, expected_s3_url)
+            self.assertEqual(result, expected_s3_url)
 
             absolute_artifact_path = make_abs_path(parent_dir, artifact_path)
 
@@ -383,7 +383,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                         property_name,
                                         parent_dir,
                                         self.s3_uploader_mock)
-        self.assertEquals(result, expected_s3_url)
+        self.assertEqual(result, expected_s3_url)
 
         zip_and_upload_mock.assert_called_once_with(parent_dir, mock.ANY)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
@@ -404,7 +404,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                         property_name,
                                         parent_dir,
                                         self.s3_uploader_mock)
-        self.assertEquals(result, object_s3_url)
+        self.assertEqual(result, object_s3_url)
 
         zip_and_upload_mock.assert_not_called()
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
@@ -472,7 +472,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                                             parent_dir,
                                                             self.s3_uploader_mock)
 
-        self.assertEquals(resource_dict[resource.PROPERTY_NAME], s3_url)
+        self.assertEqual(resource_dict[resource.PROPERTY_NAME], s3_url)
 
     @patch("shutil.rmtree")
     @patch("zipfile.is_zipfile")
@@ -606,7 +606,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                                             resource.PROPERTY_NAME,
                                                             parent_dir,
                                                             self.s3_uploader_mock)
-        self.assertEquals(resource_dict[resource.PROPERTY_NAME], s3_url)
+        self.assertEqual(resource_dict[resource.PROPERTY_NAME], s3_url)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_property_value_dict(self, upload_local_artifacts_mock):
@@ -627,7 +627,7 @@ class TestArtifactExporter(BaseYAMLTest):
         resource_dict[resource.PROPERTY_NAME] = {"a": "b"}
         resource.export(resource_id, resource_dict, parent_dir)
         upload_local_artifacts_mock.assert_not_called()
-        self.assertEquals(resource_dict, {"foo": {"a": "b"}})
+        self.assertEqual(resource_dict, {"foo": {"a": "b"}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_has_package_null_property_to_false(self, upload_local_artifacts_mock):
@@ -703,7 +703,7 @@ class TestArtifactExporter(BaseYAMLTest):
                                                             parent_dir,
                                                             self.s3_uploader_mock)
 
-        self.assertEquals(resource_dict[resource.PROPERTY_NAME], {
+        self.assertEqual(resource_dict[resource.PROPERTY_NAME], {
             "b": "bucket",
             "o": "key1/key2",
             "v": "SomeVersionNumber"
@@ -733,7 +733,7 @@ class TestArtifactExporter(BaseYAMLTest):
 
             stack_resource.export(resource_id, resource_dict, parent_dir)
 
-            self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
+            self.assertEqual(resource_dict[property_name], result_path_style_s3_url)
 
             TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
             template_instance_mock.export.assert_called_once_with()
@@ -748,7 +748,7 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Case 1: Path is already S3 url
         stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict[property_name], s3_url)
+        self.assertEqual(resource_dict[property_name], s3_url)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     def test_export_cloudformation_stack_no_upload_path_is_s3url(self):
@@ -781,7 +781,7 @@ class TestArtifactExporter(BaseYAMLTest):
         # Case 2: Path is empty
         resource_dict = {}
         stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict, {})
+        self.assertEqual(resource_dict, {})
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     def test_export_cloudformation_stack_no_upload_path_not_file(self):
@@ -821,7 +821,7 @@ class TestArtifactExporter(BaseYAMLTest):
 
             stack_resource.export(resource_id, resource_dict, parent_dir)
 
-            self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
+            self.assertEqual(resource_dict[property_name], result_path_style_s3_url)
 
             TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
             template_instance_mock.export.assert_called_once_with()
@@ -837,7 +837,7 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Case 1: Path is already S3 url
         stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict[property_name], s3_url)
+        self.assertEqual(resource_dict[property_name], s3_url)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     def test_export_serverless_application_no_upload_path_is_httpsurl(self):
@@ -849,7 +849,7 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Case 1: Path is already S3 url
         stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict[property_name], s3_url)
+        self.assertEqual(resource_dict[property_name], s3_url)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     def test_export_serverless_application_no_upload_path_is_empty(self):
@@ -860,7 +860,7 @@ class TestArtifactExporter(BaseYAMLTest):
         # Case 2: Path is empty
         resource_dict = {}
         stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict, {})
+        self.assertEqual(resource_dict, {})
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     def test_export_serverless_application_no_upload_path_not_file(self):
@@ -884,7 +884,7 @@ class TestArtifactExporter(BaseYAMLTest):
         location = {"ApplicationId": "id", "SemanticVersion": "1.0.1"}
         resource_dict = {property_name: location}
         stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict[property_name], location)
+        self.assertEqual(resource_dict[property_name], location)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
@@ -934,12 +934,12 @@ class TestArtifactExporter(BaseYAMLTest):
                 template_path, parent_dir, self.s3_uploader_mock,
                 metadata_to_export=metadata_to_export)
             exported_template = template_exporter.export()
-            self.assertEquals(exported_template, template_dict)
+            self.assertEqual(exported_template, template_dict)
 
             open_mock.assert_called_once_with(
                     make_abs_path(parent_dir, template_path), "r")
 
-            self.assertEquals(1, yaml_parse_mock.call_count)
+            self.assertEqual(1, yaml_parse_mock.call_count)
 
             metadata_type1_class.assert_called_once_with(self.s3_uploader_mock)
             metadata_type1_instance.export.assert_called_once_with(
@@ -1000,12 +1000,12 @@ class TestArtifactExporter(BaseYAMLTest):
                 template_path, parent_dir, self.s3_uploader_mock,
                 resources_to_export)
             exported_template = template_exporter.export()
-            self.assertEquals(exported_template, template_dict)
+            self.assertEqual(exported_template, template_dict)
 
             open_mock.assert_called_once_with(
                     make_abs_path(parent_dir, template_path), "r")
 
-            self.assertEquals(1, yaml_parse_mock.call_count)
+            self.assertEqual(1, yaml_parse_mock.call_count)
 
             resource_type1_class.assert_called_once_with(self.s3_uploader_mock)
             resource_type1_instance.export.assert_called_once_with(
@@ -1074,10 +1074,10 @@ class TestArtifactExporter(BaseYAMLTest):
                 self.assertTrue(template_dir in first_call_args)
                 self.assertTrue(template_dir in second_call_args)
                 self.assertTrue(template_dir in third_call_args)
-                self.assertEquals(include_transform_export_handler_mock.call_count, 3)
+                self.assertEqual(include_transform_export_handler_mock.call_count, 3)
                 #new s3 url is added to include location
-                self.assertEquals(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
-                self.assertEquals(exported_template["List"][1]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
+                self.assertEqual(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
+                self.assertEqual(exported_template["List"][1]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_with_relative_file_path(self, is_local_file_mock):
@@ -1090,7 +1090,7 @@ class TestArtifactExporter(BaseYAMLTest):
         handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}}, self.s3_uploader_mock, parent_dir)
         self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(abs_file_path)
         is_local_file_mock.assert_called_with(abs_file_path)
-        self.assertEquals(handler_output, {'Name': 'AWS::Include', 'Parameters': {'Location': 's3://foo'}})
+        self.assertEqual(handler_output, {'Name': 'AWS::Include', 'Parameters': {'Location': 's3://foo'}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_with_absolute_file_path(self, is_local_file_mock):
@@ -1103,14 +1103,14 @@ class TestArtifactExporter(BaseYAMLTest):
         handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": abs_file_path}}, self.s3_uploader_mock, parent_dir)
         self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(abs_file_path)
         is_local_file_mock.assert_called_with(abs_file_path)
-        self.assertEquals(handler_output, {'Name': 'AWS::Include', 'Parameters': {'Location': 's3://foo'}})
+        self.assertEqual(handler_output, {'Name': 'AWS::Include', 'Parameters': {'Location': 's3://foo'}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_with_s3_uri(self, is_local_file_mock):
 
         handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "s3://bucket/foo.yaml"}}, self.s3_uploader_mock, "parent_dir")
         # Input is returned unmodified
-        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": "s3://bucket/foo.yaml"}})
+        self.assertEqual(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": "s3://bucket/foo.yaml"}})
 
         is_local_file_mock.assert_not_called()
         self.s3_uploader_mock.assert_not_called()
@@ -1120,7 +1120,7 @@ class TestArtifactExporter(BaseYAMLTest):
 
         handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": ""}}, self.s3_uploader_mock, "parent_dir")
         # Input is returned unmodified
-        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": ""}})
+        self.assertEqual(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": ""}})
 
         is_local_file_mock.assert_not_called()
         self.s3_uploader_mock.assert_not_called()
@@ -1133,7 +1133,7 @@ class TestArtifactExporter(BaseYAMLTest):
             self.s3_uploader_mock,
             "parent_dir")
         # Input is returned unmodified
-        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub": "${S3Bucket}/file.txt"}}})
+        self.assertEqual(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub": "${S3Bucket}/file.txt"}}})
 
         is_local_file_mock.assert_not_called()
         self.s3_uploader_mock.assert_not_called()
@@ -1154,7 +1154,7 @@ class TestArtifactExporter(BaseYAMLTest):
         #ignores transform that is not aws::include
         handler_output = include_transform_export_handler({"Name": "AWS::OtherTransform", "Parameters": {"Location": "foo.yaml"}}, self.s3_uploader_mock, "parent_dir")
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
-        self.assertEquals(handler_output, {"Name": "AWS::OtherTransform", "Parameters": {"Location": "foo.yaml"}})
+        self.assertEqual(handler_output, {"Name": "AWS::OtherTransform", "Parameters": {"Location": "foo.yaml"}})
 
     def test_template_export_path_be_folder(self):
 
@@ -1190,7 +1190,7 @@ class TestArtifactExporter(BaseYAMLTest):
                 for info in zf.infolist():
                     files_in_zip.add(info.filename)
 
-                self.assertEquals(files_in_zip, expected_files)
+                self.assertEqual(files_in_zip, expected_files)
 
         finally:
             if zipfile_name:

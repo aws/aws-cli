@@ -98,18 +98,18 @@ class TestInstall(unittest.TestCase):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
         error_msg = 'Region not specified.'
-        with self.assertRaisesRegexp(ConfigurationError, error_msg):
+        with self.assertRaisesRegex(ConfigurationError, error_msg):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_ec2_instance(self):
         self.urlopen.side_effect = None
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError, 'Amazon EC2 instances are not supported.'):
             self.install._run_main(self.args, self.globals)
         self.assertIn('system', self.args)
@@ -117,14 +117,14 @@ class TestInstall(unittest.TestCase):
 
     def test_install_throws_on_non_administrator(self):
         self.geteuid.return_value = 1
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError, 'You must run this command as sudo.'):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_no_override_config(self):
         self.isfile.return_value = True
         self.args.override_config = False
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 RuntimeError,
                 'The on-premises instance configuration file already exists. '
                 'Specify --override-config to update the existing on-premises '
@@ -133,7 +133,7 @@ class TestInstall(unittest.TestCase):
 
     def test_install_throws_on_invalid_agent_installer(self):
         self.args.agent_installer = 'invalid-s3-location'
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ParamValidationError,
                 '--agent-installer must specify the Amazon S3 URL format as '
                 's3://<bucket>/<key>.'):
@@ -157,11 +157,11 @@ class TestInstall(unittest.TestCase):
         self.linux_distribution.return_value = ('Ubuntu', '', '')
         self.install._run_main(self.args, self.globals)
         self.assertIn('bucket', self.args)
-        self.assertEquals(self.bucket, self.args.bucket)
+        self.assertEqual(self.bucket, self.args.bucket)
         self.assertIn('key', self.args)
-        self.assertEquals('latest/install', self.args.key)
+        self.assertEqual('latest/install', self.args.key)
         self.assertIn('installer', self.args)
-        self.assertEquals('install', self.args.installer)
+        self.assertEqual('install', self.args.installer)
         self.makedirs.assert_called_with('/etc/codedeploy-agent/conf')
         self.copyfile.assset_called_with(
             'codedeploy.onpremises.yml',
@@ -175,11 +175,11 @@ class TestInstall(unittest.TestCase):
         self.system.return_value = 'Windows'
         self.install._run_main(self.args, self.globals)
         self.assertIn('bucket', self.args)
-        self.assertEquals(self.bucket, self.args.bucket)
+        self.assertEqual(self.bucket, self.args.bucket)
         self.assertIn('key', self.args)
-        self.assertEquals('latest/codedeploy-agent.msi', self.args.key)
+        self.assertEqual('latest/codedeploy-agent.msi', self.args.key)
         self.assertIn('installer', self.args)
-        self.assertEquals('codedeploy-agent.msi', self.args.installer)
+        self.assertEqual('codedeploy-agent.msi', self.args.installer)
         self.makedirs.assert_called_with(r'C:\ProgramData\Amazon\CodeDeploy')
         self.copyfile.assset_called_with(
             'conf.onpremises.yml',

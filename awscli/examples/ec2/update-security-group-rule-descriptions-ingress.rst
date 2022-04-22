@@ -20,7 +20,7 @@ The following ``update-security-group-rule-descriptions-ingress`` example update
 
     aws ec2 update-security-group-rule-descriptions-ingress \
         --group-id sg-02f0d35a850ba727f \
-        --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,PrefixListIds=[{PrefixListId=pl-12345678,Description="SSH access from corpnet"}]
+        --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,PrefixListIds='[{PrefixListId=pl-12345678,Description="SSH access from corpnet"}]'
 
 Output::
 

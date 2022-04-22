@@ -292,7 +292,7 @@ Example GitHub project for tracking contribution status.")
 
 The contribution process will be implemented with a publicly visible [GitHub
 project Kanban
-board](https://docs.github.com/en/issues/organizing-your-work-with-project-boards).
+board](https://docs.github.com/en/issues/trying-out-the-new-projects-experience/about-projects).
 This project board will track GitHub issues from the contribution-ready stage
 through completion by merging a pull request. Each lane of the project board
 maps to a stage of the contribution process. New and existing GitHub labels and

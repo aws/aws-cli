@@ -166,6 +166,7 @@ class SelectCommand(PaginatedDDBCommand):
         parameters.RETURN_CONSUMED_CAPACITY,
         parameters.NO_RETURN_CONSUMED_CAPACITY,
     ]
+    _SUPPORTED_OUTPUT_TYPES = ('yaml',)
 
     def _run_main(self, parsed_args, parsed_globals):
         super(SelectCommand, self)._run_main(parsed_args, parsed_globals)
@@ -174,7 +175,7 @@ class SelectCommand(PaginatedDDBCommand):
 
     def _select(self, parsed_args, parsed_globals):
         output_type = parsed_globals.output
-        if output_type is not None and output_type != 'yaml':
+        if output_type is not None and output_type not in self._SUPPORTED_OUTPUT_TYPES:
             raise ParamValidationError(
                 f'{output_type} output format is not supported for ddb commands'
             )

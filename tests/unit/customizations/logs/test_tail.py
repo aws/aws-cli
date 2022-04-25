@@ -132,6 +132,17 @@ class TestDetailedLogEventsFormatter(BaseLogEventsFormatterTest):
             colorize=False,
         )
 
+    def test_display_with_zero_microseconds(self):
+        self.log_event['timestamp'] = datetime(
+            2018, 1, 1, 0, 29, 43, 0, tz.tzutc())
+        DetailedLogEventsFormatter(
+            self.output).display_log_event(self.log_event)
+        self.assertEqual(
+            '\x1b[32m2018-01-01T00:29:43.000000+00:00\x1b[0m '
+            '\x1b[36mstream_name\x1b[0m '
+            'my message\n',
+            self.output.getvalue())
+
 
 class TestTimestampUtils(unittest.TestCase):
     def setUp(self):

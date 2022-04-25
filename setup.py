@@ -24,11 +24,11 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.24.46',
+    'botocore==1.25.0',
     'docutils>=0.10,<0.16',
     's3transfer>=0.5.0,<0.6.0',
     'PyYAML>=3.10,<5.5',
-    'colorama>=0.2.5,<0.4.4',
+    'colorama>=0.2.5,<0.4.5',
     'rsa>=3.1.2,<4.8',
 ]
 

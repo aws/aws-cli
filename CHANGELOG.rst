@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.23.0
+======
+
+* api-change:``gamelift``: [``botocore``] Documentation updates for Amazon GameLift.
+* api-change:``mq``: [``botocore``] This release adds the CRITICAL_ACTION_REQUIRED broker state and the ActionRequired API property. CRITICAL_ACTION_REQUIRED informs you when your broker is degraded. ActionRequired provides you with a code which you can use to find instructions in the Developer Guide on how to resolve the issue.
+* feature:IMDS: [``botocore``] Added resiliency mechanisms to IMDS Credential Fetcher
+* api-change:``securityhub``: [``botocore``] Security Hub now lets you opt-out of auto-enabling the defaults standards (CIS and FSBP) in accounts that are auto-enabled with Security Hub via Security Hub's integration with AWS Organizations.
+* api-change:``connect``: [``botocore``] This release adds SearchUsers API which can be used to search for users with a Connect Instance
+* api-change:``rds-data``: [``botocore``] Support to receive SQL query results in the form of a simplified JSON string. This enables developers using the new JSON string format to more easily convert it to an object using popular JSON string parsing libraries.
+
+
 1.22.101
 ========
 

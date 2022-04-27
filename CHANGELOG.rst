@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.23.2
+======
+
+* api-change:``rekognition``: [``botocore``] This release adds support to configure stream-processor resources for label detections on streaming-videos. UpateStreamProcessor API is also launched with this release, which could be used to update an existing stream-processor.
+* api-change:``cloudtrail``: [``botocore``] Increases the retention period maximum to 2557 days. Deprecates unused fields of the ListEventDataStores API response. Updates documentation.
+* api-change:``lookoutequipment``: [``botocore``] This release adds the following new features: 1) Introduces an option for automatic schema creation 2) Now allows for Ingestion of data containing most common errors and allows automatic data cleaning 3) Introduces new API ListSensorStatistics that gives further information about the ingested data
+* api-change:``iotwireless``: [``botocore``] Add list support for event configurations, allow to get and update event configurations by resource type, support LoRaWAN events; Make NetworkAnalyzerConfiguration as a resource, add List, Create, Delete API support; Add FCntStart attribute support for ABP WirelessDevice.
+* api-change:``amplify``: [``botocore``] Documentation only update to support the Amplify GitHub App feature launch
+* api-change:``chime-sdk-media-pipelines``: [``botocore``] For Amazon Chime SDK meetings, the Amazon Chime Media Pipelines SDK allows builders to capture audio, video, and content share streams. You can also capture meeting events, live transcripts, and data messages. The pipelines save the artifacts to an Amazon S3 bucket that you designate.
+* api-change:``sagemaker``: [``botocore``] Amazon SageMaker Autopilot adds support for custom validation dataset and validation ratio through the CreateAutoMLJob and DescribeAutoMLJob APIs.
+
+
 1.23.1
 ======
 

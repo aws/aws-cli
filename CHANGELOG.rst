@@ -3454,6 +3454,36 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.23.1
+======
+
+* api-change:``lightsail``: [``botocore``] This release adds support for Lightsail load balancer HTTP to HTTPS redirect and TLS policy configuration.
+* api-change:``sagemaker``: [``botocore``] SageMaker Inference Recommender now accepts customer KMS key ID for encryption of endpoints and compilation outputs created during inference recommendation.
+* api-change:``pricing``: [``botocore``] Documentation updates for Price List API
+* api-change:``glue``: [``botocore``] This release adds documentation for the APIs to create, read, delete, list, and batch read of AWS Glue custom patterns, and for Lake Formation configuration settings in the AWS Glue crawler.
+* api-change:``cloudfront``: [``botocore``] CloudFront now supports the Server-Timing header in HTTP responses sent from CloudFront. You can use this header to view metrics that help you gain insights about the behavior and performance of CloudFront. To use this header, enable it in a response headers policy.
+* api-change:``ivschat``: [``botocore``] Adds new APIs for IVS Chat, a feature for building interactive chat experiences alongside an IVS broadcast.
+* api-change:``network-firewall``: [``botocore``] AWS Network Firewall now enables customers to use a customer managed AWS KMS key for the encryption of their firewall resources.
+
+
+1.23.0
+======
+
+* api-change:``gamelift``: [``botocore``] Documentation updates for Amazon GameLift.
+* api-change:``mq``: [``botocore``] This release adds the CRITICAL_ACTION_REQUIRED broker state and the ActionRequired API property. CRITICAL_ACTION_REQUIRED informs you when your broker is degraded. ActionRequired provides you with a code which you can use to find instructions in the Developer Guide on how to resolve the issue.
+* feature:IMDS: [``botocore``] Added resiliency mechanisms to IMDS Credential Fetcher
+* api-change:``securityhub``: [``botocore``] Security Hub now lets you opt-out of auto-enabling the defaults standards (CIS and FSBP) in accounts that are auto-enabled with Security Hub via Security Hub's integration with AWS Organizations.
+* api-change:``connect``: [``botocore``] This release adds SearchUsers API which can be used to search for users with a Connect Instance
+* api-change:``rds-data``: [``botocore``] Support to receive SQL query results in the form of a simplified JSON string. This enables developers using the new JSON string format to more easily convert it to an object using popular JSON string parsing libraries.
+
+
+1.22.101
+========
+
+* api-change:``chime-sdk-meetings``: [``botocore``] Include additional exceptions types.
+* api-change:``ec2``: [``botocore``] Adds support for waiters that automatically poll for a deleted NAT Gateway until it reaches the deleted state.
+
+
 1.22.100
 ========
 

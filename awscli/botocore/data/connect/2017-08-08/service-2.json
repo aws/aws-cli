@@ -1685,6 +1685,23 @@
       ],
       "documentation":"<p>Searches for available phone numbers that you can claim to your Amazon Connect instance.</p>"
     },
+    "SearchUsers":{
+      "name":"SearchUsers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-users"
+      },
+      "input":{"shape":"SearchUsersRequest"},
+      "output":{"shape":"SearchUsersResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Searches users in an Amazon Connect instance, with optional filtering.</p>"
+    },
     "SearchVocabularies":{
       "name":"SearchVocabularies",
       "http":{
@@ -2585,6 +2602,7 @@
       },
       "documentation":"<p>Configuration of the answering machine detection.</p>"
     },
+    "ApproximateTotalCount":{"type":"long"},
     "AssociateApprovedOriginRequest":{
       "type":"structure",
       "required":[
@@ -3017,7 +3035,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>"
+          "documentation":"<p>A unique identifier for the phone number.</p>"
         },
         "PhoneNumberArn":{
           "shape":"ARN",
@@ -3030,7 +3048,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>"
+          "documentation":"<p>A unique identifier for the phone number.</p>"
         },
         "PhoneNumberArn":{
           "shape":"ARN",
@@ -3392,6 +3410,24 @@
       "type":"map",
       "key":{"shape":"ReferenceKey"},
       "value":{"shape":"Reference"}
+    },
+    "ControlPlaneTagFilter":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"TagOrConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition. </p>"
+        },
+        "AndConditions":{
+          "shape":"TagAndConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+        },
+        "TagCondition":{
+          "shape":"TagCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a tag condition. </p>"
+        }
+      },
+      "documentation":"<p>An object that can be used to specify Tag conditions inside the <code>SearchFilter</code>. This accepts an <code>OR</code> of <code>AND</code> (List of List) input where: </p> <ul> <li> <p>Top level list specifies conditions that need to be applied with <code>OR</code> operator</p> </li> <li> <p>Inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul>"
     },
     "CreateAgentStatusRequest":{
       "type":"structure",
@@ -4738,7 +4774,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>",
+          "documentation":"<p>A unique identifier for the phone number.</p>",
           "location":"uri",
           "locationName":"PhoneNumberId"
         }
@@ -4749,7 +4785,7 @@
       "members":{
         "ClaimedPhoneNumberSummary":{
           "shape":"ClaimedPhoneNumberSummary",
-          "documentation":"<p>Information about a phone number that's been claimed to your Amazon Connect instance. </p>"
+          "documentation":"<p>Information about a phone number that's been claimed to your Amazon Connect instance.</p>"
         }
       }
     },
@@ -5162,7 +5198,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>",
+          "documentation":"<p>A unique identifier for the phone number.</p>",
           "location":"uri",
           "locationName":"PhoneNumberId"
         },
@@ -5514,7 +5550,28 @@
       },
       "documentation":"<p>Contains information about a hierarchy group.</p>"
     },
+    "HierarchyGroupCondition":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value in the hierarchy group condition.</p>"
+        },
+        "HierarchyGroupMatchType":{
+          "shape":"HierarchyGroupMatchType",
+          "documentation":"<p>The type of hierarchy group match.</p>"
+        }
+      },
+      "documentation":"<p>A leaf node condition which can be used to specify a hierarchy group condition.</p>"
+    },
     "HierarchyGroupId":{"type":"string"},
+    "HierarchyGroupMatchType":{
+      "type":"string",
+      "enum":[
+        "EXACT",
+        "WITH_CHILD_GROUPS"
+      ]
+    },
     "HierarchyGroupName":{"type":"string"},
     "HierarchyGroupSummary":{
       "type":"structure",
@@ -6929,7 +6986,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>"
+          "documentation":"<p>A unique identifier for the phone number.</p>"
         },
         "PhoneNumberArn":{
           "shape":"ARN",
@@ -7590,6 +7647,11 @@
       "min":0
     },
     "NextToken":{"type":"string"},
+    "NextToken2500":{
+      "type":"string",
+      "max":2500,
+      "min":1
+    },
     "Origin":{
       "type":"string",
       "max":267
@@ -8418,7 +8480,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>",
+          "documentation":"<p>A unique identifier for the phone number.</p>",
           "location":"uri",
           "locationName":"PhoneNumberId"
         },
@@ -8741,6 +8803,46 @@
         "AvailableNumbersList":{
           "shape":"AvailableNumbersList",
           "documentation":"<p>A list of available phone numbers that you can claim for your Amazon Connect instance.</p>"
+        }
+      }
+    },
+    "SearchUsersRequest":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"UserSearchFilter",
+          "documentation":"<p>Filters to be applied to search results.</p>"
+        },
+        "SearchCriteria":{"shape":"UserSearchCriteria"}
+      }
+    },
+    "SearchUsersResponse":{
+      "type":"structure",
+      "members":{
+        "Users":{
+          "shape":"UserSearchSummaryList",
+          "documentation":"<p>Information about the users.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total number of users who matched your search query.</p>"
         }
       }
     },
@@ -9251,6 +9353,32 @@
       "min":1
     },
     "String":{"type":"string"},
+    "StringComparisonType":{
+      "type":"string",
+      "enum":[
+        "STARTS_WITH",
+        "CONTAINS",
+        "EXACT"
+      ]
+    },
+    "StringCondition":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"String",
+          "documentation":"<p>The name of the field in the string condition.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the string.</p>"
+        },
+        "ComparisonType":{
+          "shape":"StringComparisonType",
+          "documentation":"<p>The type of comparison to be made when evaluating the string condition.</p>"
+        }
+      },
+      "documentation":"<p>A leaf node condition which can be used to specify a string condition, for example, <code>username = 'abc'</code>. </p>"
+    },
     "SupportedMessagingContentType":{
       "type":"string",
       "max":100,
@@ -9287,6 +9415,24 @@
       "members":{
       }
     },
+    "TagAndConditionList":{
+      "type":"list",
+      "member":{"shape":"TagCondition"}
+    },
+    "TagCondition":{
+      "type":"structure",
+      "members":{
+        "TagKey":{
+          "shape":"String",
+          "documentation":"<p>The tag key in the tag condition.</p>"
+        },
+        "TagValue":{
+          "shape":"String",
+          "documentation":"<p>The tag value in the tag condition.</p>"
+        }
+      },
+      "documentation":"<p>A leaf node condition which can be used to specify a tag condition, for example, <code>HAVE BPO = 123</code>. </p>"
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -9305,6 +9451,10 @@
       "value":{"shape":"TagValue"},
       "max":50,
       "min":1
+    },
+    "TagOrConditionList":{
+      "type":"list",
+      "member":{"shape":"TagAndConditionList"}
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -9800,7 +9950,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>",
+          "documentation":"<p>A unique identifier for the phone number.</p>",
           "location":"uri",
           "locationName":"PhoneNumberId"
         },
@@ -9820,7 +9970,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
-          "documentation":"<p>The identifier of the phone number.</p>"
+          "documentation":"<p>A unique identifier for the phone number.</p>"
         },
         "PhoneNumberArn":{
           "shape":"ARN",
@@ -10444,6 +10594,20 @@
       },
       "documentation":"<p>Contains information about the identity of a user.</p>"
     },
+    "UserIdentityInfoLite":{
+      "type":"structure",
+      "members":{
+        "FirstName":{
+          "shape":"AgentFirstName",
+          "documentation":"<p>The user's first name.</p>"
+        },
+        "LastName":{
+          "shape":"AgentLastName",
+          "documentation":"<p>The user's last name.</p>"
+        }
+      },
+      "documentation":"<p>The user's first name and last name.</p>"
+    },
     "UserNotFoundException":{
       "type":"structure",
       "members":{
@@ -10493,6 +10657,86 @@
         }
       },
       "documentation":"<p>Contains information about the quick connect configuration settings for a user. The contact flow must be of type Transfer to Agent.</p>"
+    },
+    "UserSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"UserSearchCriteria"}
+    },
+    "UserSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"UserSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition.</p>"
+        },
+        "AndConditions":{
+          "shape":"UserSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition. </p>"
+        },
+        "StringCondition":{
+          "shape":"StringCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a string condition.</p>"
+        },
+        "HierarchyGroupCondition":{
+          "shape":"HierarchyGroupCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a hierarchy group condition.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria to be used to return users.</p>"
+    },
+    "UserSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{"shape":"ControlPlaneTagFilter"}
+      },
+      "documentation":"<p>Filters to be applied to search results.</p>"
+    },
+    "UserSearchSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user.</p>"
+        },
+        "DirectoryUserId":{
+          "shape":"DirectoryUserId",
+          "documentation":"<p>The directory identifier of the user.</p>"
+        },
+        "HierarchyGroupId":{
+          "shape":"HierarchyGroupId",
+          "documentation":"<p>The identifier of the user's hierarchy group.</p>"
+        },
+        "Id":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user's summary.</p>"
+        },
+        "IdentityInfo":{
+          "shape":"UserIdentityInfoLite",
+          "documentation":"<p>The user's first name and last name.</p>"
+        },
+        "PhoneConfig":{"shape":"UserPhoneConfig"},
+        "RoutingProfileId":{
+          "shape":"RoutingProfileId",
+          "documentation":"<p>The identifier of the user's routing profile.</p>"
+        },
+        "SecurityProfileIds":{
+          "shape":"SecurityProfileIds",
+          "documentation":"<p>The identifiers of the user's security profiles.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "Username":{
+          "shape":"AgentUsername",
+          "documentation":"<p>The name of the user.</p>"
+        }
+      },
+      "documentation":"<p>Information about the returned users.</p>"
+    },
+    "UserSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"UserSearchSummary"}
     },
     "UserSummary":{
       "type":"structure",

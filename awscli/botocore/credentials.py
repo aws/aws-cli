@@ -55,6 +55,9 @@ logger = logging.getLogger(__name__)
 ReadOnlyCredentials = namedtuple('ReadOnlyCredentials',
                                  ['access_key', 'secret_key', 'token'])
 
+_DEFAULT_MANDATORY_REFRESH_TIMEOUT = 10 * 60  # 10 min
+_DEFAULT_ADVISORY_REFRESH_TIMEOUT = 15 * 60  # 15 min
+
 
 def create_credential_resolver(session, cache=None, region_name=None):
     """Create a default credential resolver.
@@ -73,7 +76,8 @@ def create_credential_resolver(session, cache=None, region_name=None):
         'ec2_metadata_service_endpoint': session.get_config_variable(
             'ec2_metadata_service_endpoint'),
         'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
-            session)
+            session),
+        'ec2_credential_refresh_window': _DEFAULT_ADVISORY_REFRESH_TIMEOUT,
     }
 
     if cache is None:
@@ -333,10 +337,10 @@ class Credentials(object):
     """
     Holds the credentials needed to authenticate requests.
 
-    :ivar access_key: The access key part of the credentials.
-    :ivar secret_key: The secret key part of the credentials.
-    :ivar token: The security token, valid only for session credentials.
-    :ivar method: A string which identifies where the credentials
+    :param str access_key: The access key part of the credentials.
+    :param str secret_key: The secret key part of the credentials.
+    :param str token: The security token, valid only for session credentials.
+    :param str method: A string which identifies where the credentials
         were found.
     """
 
@@ -373,18 +377,20 @@ class RefreshableCredentials(Credentials):
     Holds the credentials needed to authenticate requests. In addition, it
     knows how to refresh itself.
 
-    :ivar access_key: The access key part of the credentials.
-    :ivar secret_key: The secret key part of the credentials.
-    :ivar token: The security token, valid only for session credentials.
-    :ivar method: A string which identifies where the credentials
+    :param str access_key: The access key part of the credentials.
+    :param str secret_key: The secret key part of the credentials.
+    :param str token: The security token, valid only for session credentials.
+    :param function refresh_using: Callback function to refresh the credentials.
+    :param str method: A string which identifies where the credentials
         were found.
+    :param function time_fetcher: Callback function to retrieve current time.
     """
     # The time at which we'll attempt to refresh, but not
     # block if someone else is refreshing.
-    _advisory_refresh_timeout = 15 * 60
+    _advisory_refresh_timeout = _DEFAULT_ADVISORY_REFRESH_TIMEOUT
     # The time at which all threads will block waiting for
     # refreshed credentials.
-    _mandatory_refresh_timeout = 10 * 60
+    _mandatory_refresh_timeout = _DEFAULT_MANDATORY_REFRESH_TIMEOUT
 
     def __init__(self, access_key, secret_key, token,
                  expiry_time, refresh_using, method,

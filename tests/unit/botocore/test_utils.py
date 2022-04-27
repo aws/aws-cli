@@ -17,10 +17,12 @@ import pytest
 from tests import create_session
 from tests import unittest
 from tests import RawResponse
+from tests import FreezeTime
 from dateutil.tz import tzutc, tzoffset
 import datetime
 import copy
 import mock
+import operator
 
 import botocore
 from botocore import xform_name
@@ -91,6 +93,9 @@ from botocore.model import DenormalizedStructureBuilder
 from botocore.model import ShapeResolver
 from botocore.stub import Stubber
 from botocore.config import Config
+
+DATE = datetime.datetime(2021, 12, 10, 00, 00, 00)
+DT_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 class TestEnsureBoolean(unittest.TestCase):
@@ -2697,6 +2702,144 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
         result = InstanceMetadataFetcher(
             user_agent=user_agent).retrieve_iam_role_credentials()
         self.assertEqual(result, {})
+
+    def _get_datetime(
+       self, dt=None, offset=None, offset_func=operator.add
+    ):
+        if dt is None:
+            dt = datetime.datetime.utcnow()
+        if offset is not None:
+            dt = offset_func(dt, offset)
+
+        return dt
+
+    def _get_default_creds(self, overrides=None):
+        if overrides is None:
+            overrides = {}
+
+        creds = {
+            'AccessKeyId': 'access',
+            'SecretAccessKey': 'secret',
+            'Token': 'token',
+            'Expiration': '1970-01-01T00:00:00'
+        }
+        creds.update(overrides)
+        return creds
+
+    def _convert_creds_to_imds_fetcher(self, creds):
+        return {
+            'access_key': creds['AccessKeyId'],
+            'secret_key': creds['SecretAccessKey'],
+            'token': creds['Token'],
+            'expiry_time': creds['Expiration'],
+            'role_name': self._role_name
+        }
+
+    def _add_default_imds_response(self, status_code=200, creds=''):
+        self.add_get_token_imds_response(token='token')
+        self.add_get_role_name_imds_response()
+        self.add_imds_response(
+            status_code=200,
+            body=json.dumps(creds).encode('utf-8')
+        )
+
+    def mock_randint(self, int_val=600):
+        randint_mock = mock.Mock()
+        randint_mock.return_value = int_val
+        return randint_mock
+
+    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    def test_expiry_time_extension(self):
+        current_time = self._get_datetime()
+        expiration_time = self._get_datetime(
+            dt=current_time, offset=datetime.timedelta(seconds=14*60)
+        )
+        new_expiration = self._get_datetime(
+            dt=current_time, offset=datetime.timedelta(seconds=20*60)
+        )
+
+        creds = self._get_default_creds(
+            {"Expiration": expiration_time.strftime(DT_FORMAT)}
+        )
+        expected_data = self._convert_creds_to_imds_fetcher(creds)
+        expected_data["expiry_time"] = new_expiration.strftime(DT_FORMAT)
+
+        self._add_default_imds_response(200, creds)
+
+        with mock.patch("random.randint", self.mock_randint()):
+            fetcher = InstanceMetadataFetcher()
+            result = fetcher.retrieve_iam_role_credentials()
+            assert result == expected_data
+
+    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    def test_expired_expiry_extension(self):
+        current_time = self._get_datetime()
+        expiration_time = self._get_datetime(
+            dt=current_time,
+            offset=datetime.timedelta(seconds=14*60),
+            offset_func=operator.sub
+        )
+        new_expiration = self._get_datetime(
+            dt=current_time, offset=datetime.timedelta(seconds=20*60)
+        )
+        assert current_time > expiration_time
+        assert new_expiration > current_time
+
+        creds = self._get_default_creds(
+            {"Expiration": expiration_time.strftime(DT_FORMAT)}
+        )
+        expected_data = self._convert_creds_to_imds_fetcher(creds)
+        expected_data["expiry_time"] = new_expiration.strftime(DT_FORMAT)
+
+        self._add_default_imds_response(200, creds)
+
+        with mock.patch("random.randint", self.mock_randint()):
+            fetcher = InstanceMetadataFetcher()
+            result = fetcher.retrieve_iam_role_credentials()
+            assert result == expected_data
+
+    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    def test_expiry_extension_with_config(self):
+        current_time = self._get_datetime()
+        expiration_time = self._get_datetime(
+            dt=current_time,
+            offset=datetime.timedelta(seconds=14*60),
+            offset_func=operator.sub
+        )
+        new_expiration = self._get_datetime(
+            dt=current_time, offset=datetime.timedelta(seconds=25*60)
+        )
+        assert current_time > expiration_time
+        assert new_expiration > current_time
+
+        creds = self._get_default_creds(
+            {"Expiration": expiration_time.strftime(DT_FORMAT)}
+        )
+        expected_data = self._convert_creds_to_imds_fetcher(creds)
+        expected_data["expiry_time"] = new_expiration.strftime(DT_FORMAT)
+
+        self._add_default_imds_response(200, creds)
+
+        with mock.patch("random.randint", self.mock_randint()):
+            fetcher = InstanceMetadataFetcher(
+                config={"ec2_credential_refresh_window": 15*60}
+            )
+            result = fetcher.retrieve_iam_role_credentials()
+            assert result == expected_data
+
+    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    def test_expiry_extension_with_bad_datetime(self):
+        bad_datetime = "May 20th, 2020 19:00:00"
+        creds = self._get_default_creds(
+            {"Expiration": bad_datetime}
+        )
+        self._add_default_imds_response(200, creds)
+
+        fetcher = InstanceMetadataFetcher(
+            config={"ec2_credential_refresh_window": 15*60}
+        )
+        results = fetcher.retrieve_iam_role_credentials()
+        assert results['expiry_time'] == bad_datetime
 
 
 class TestSSOTokenFetcher(unittest.TestCase):

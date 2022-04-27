@@ -322,7 +322,10 @@ class IMDSFetcher(object):
                  env=None, user_agent=None, config=None):
         self._timeout = timeout
         self._num_attempts = num_attempts
+        if config is None:
+            config = {}
         self._base_url = self._select_base_url(base_url, config)
+        self._config = config
 
         if env is None:
             env = os.environ.copy()
@@ -338,9 +341,6 @@ class IMDSFetcher(object):
         return self._base_url
 
     def _select_base_url(self, base_url, config):
-        if config is None:
-            config = {}
-
         requires_ipv6 = config.get(
             'ec2_metadata_service_endpoint_mode') == 'ipv6'
         custom_metadata_endpoint = config.get('ec2_metadata_service_endpoint')
@@ -488,13 +488,15 @@ class InstanceMetadataFetcher(IMDSFetcher):
             role_name = self._get_iam_role(token)
             credentials = self._get_credentials(role_name, token)
             if self._contains_all_credential_fields(credentials):
-                return {
+                credentials = {
                     'role_name': role_name,
                     'access_key': credentials['AccessKeyId'],
                     'secret_key': credentials['SecretAccessKey'],
                     'token': credentials['Token'],
                     'expiry_time': credentials['Expiration'],
                 }
+                self._evaluate_expiration(credentials)
+                return credentials
             else:
                 # IMDS can return a 200 response that has a JSON formatted
                 # error message (i.e. if ec2 is not trusted entity for the
@@ -560,6 +562,35 @@ class InstanceMetadataFetcher(IMDSFetcher):
                     field)
                 return False
         return True
+
+    def _evaluate_expiration(self, credentials):
+        expiration = credentials.get("expiry_time")
+        if expiration is None:
+            return
+        try:
+            expiration = datetime.datetime.strptime(
+                expiration, "%Y-%m-%dT%H:%M:%SZ"
+            )
+            refresh_interval = self._config.get(
+                "ec2_credential_refresh_window", 60 * 10
+            )
+            refresh_interval_with_jitter = refresh_interval + random.randint(120, 600)
+            current_time = datetime.datetime.utcnow()
+            refresh_offset = datetime.timedelta(seconds=refresh_interval_with_jitter)
+            extension_time = expiration - refresh_offset
+            if current_time >= extension_time:
+                new_time = current_time + refresh_offset
+                credentials["expiry_time"] = new_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+                logger.info(
+                    f"Attempting credential expiration extension due to a "
+                    f"credential service availability issue. A refresh of "
+                    f"these credentials will be attempted again within "
+                    f"the next {refresh_interval_with_jitter/60:.0f} minutes."
+                )
+        except ValueError:
+            logger.debug(
+                f"Unable to parse expiry_time in {credentials['expiry_time']}"
+            )
 
 
 def merge_dicts(dict1, dict2, append_lists=False):

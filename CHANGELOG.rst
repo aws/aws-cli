@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.6.0
+=====
+
+* bugfix:``logs``: Fix bug when `logs tail` truncates microseconds in output if they equals 0. `#5912 <https://github.com/aws/aws-cli/issues/5912>`__
+* api-change:``gamelift``: Documentation updates for Amazon GameLift.
+* feature:IMDS: Added resiliency mechanisms to IMDS Credential Fetcher
+* bugfix:ddb: fixes `#6387 <https://github.com/aws/aws-cli/issues/6387>`__
+* api-change:``securityhub``: Security Hub now lets you opt-out of auto-enabling the defaults standards (CIS and FSBP) in accounts that are auto-enabled with Security Hub via Security Hub's integration with AWS Organizations.
+* api-change:``sagemaker``: SageMaker Inference Recommender now accepts customer KMS key ID for encryption of endpoints and compilation outputs created during inference recommendation.
+* api-change:``connect``: This release adds SearchUsers API which can be used to search for users with a Connect Instance
+* api-change:``mq``: This release adds the CRITICAL_ACTION_REQUIRED broker state and the ActionRequired API property. CRITICAL_ACTION_REQUIRED informs you when your broker is degraded. ActionRequired provides you with a code which you can use to find instructions in the Developer Guide on how to resolve the issue.
+* api-change:``pricing``: Documentation updates for Price List API
+* api-change:``rds-data``: Support to receive SQL query results in the form of a simplified JSON string. This enables developers using the new JSON string format to more easily convert it to an object using popular JSON string parsing libraries.
+* api-change:``ec2``: Adds support for waiters that automatically poll for a deleted NAT Gateway until it reaches the deleted state.
+* api-change:``glue``: This release adds documentation for the APIs to create, read, delete, list, and batch read of AWS Glue custom patterns, and for Lake Formation configuration settings in the AWS Glue crawler.
+* api-change:``network-firewall``: AWS Network Firewall now enables customers to use a customer managed AWS KMS key for the encryption of their firewall resources.
+* api-change:``cloudfront``: CloudFront now supports the Server-Timing header in HTTP responses sent from CloudFront. You can use this header to view metrics that help you gain insights about the behavior and performance of CloudFront. To use this header, enable it in a response headers policy.
+* api-change:``chime-sdk-meetings``: Include additional exceptions types.
+* api-change:``ivschat``: Adds new APIs for IVS Chat, a feature for building interactive chat experiences alongside an IVS broadcast.
+* api-change:``lightsail``: This release adds support for Lightsail load balancer HTTP to HTTPS redirect and TLS policy configuration.
+
+
 2.5.8
 =====
 

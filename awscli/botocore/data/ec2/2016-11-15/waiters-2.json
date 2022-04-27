@@ -353,6 +353,24 @@
         }
       ]
     },
+    "NatGatewayDeleted": {
+      "operation": "DescribeNatGateways",
+      "delay": 15,
+      "maxAttempts": 40,
+      "acceptors": [
+        {
+          "state": "success",
+          "matcher": "pathAll",
+          "argument": "NatGateways[].State",
+          "expected": "deleted"
+        },
+        {
+          "state": "success",
+          "matcher": "error",
+          "expected": "NatGatewayNotFound"
+        }
+      ]
+    },
     "NetworkInterfaceAvailable": {
       "operation": "DescribeNetworkInterfaces",
       "delay": 20,

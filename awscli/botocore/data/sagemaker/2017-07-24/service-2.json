@@ -6516,6 +6516,10 @@
           "shape":"RecommendationJobStoppingConditions",
           "documentation":"<p>A set of conditions for stopping a recommendation job. If any of the conditions are met, the job is automatically stopped.</p>"
         },
+        "OutputConfig":{
+          "shape":"RecommendationJobOutputConfig",
+          "documentation":"<p>Provides information about the output artifacts and the KMS key to use for Amazon S3 server-side encryption.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The metadata that you apply to Amazon Web Services resources to help you categorize and organize them. Each tag consists of a key and a value, both of which you define. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in the Amazon Web Services General Reference.</p>"
@@ -22669,6 +22673,16 @@
       "max":256,
       "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:inference-recommendations-job/.*"
     },
+    "RecommendationJobCompiledOutputConfig":{
+      "type":"structure",
+      "members":{
+        "S3OutputUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>Identifies the Amazon S3 bucket where you want SageMaker to store the compiled model artifacts.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the output configuration for the compiled model.</p>"
+    },
     "RecommendationJobDescription":{
       "type":"string",
       "max":128
@@ -22696,6 +22710,10 @@
         "EndpointConfigurations":{
           "shape":"EndpointInputConfigurations",
           "documentation":"<p>Specifies the endpoint configuration to use for a job.</p>"
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint. This key will be passed to SageMaker Hosting for endpoint creation. </p> <p>The SageMaker execution role must have <code>kms:CreateGrant</code> permission in order to encrypt data on the storage volume of the endpoints created for inference recommendation. The inference recommendation job will fail asynchronously during endpoint configuration creation if the role passed does not have <code>kms:CreateGrant</code> permission.</p> <p>The <code>KmsKeyId</code> can be any of the following formats:</p> <ul> <li> <p>// KMS Key ID</p> <p> <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>// Amazon Resource Name (ARN) of a KMS Key</p> <p> <code>\"arn:aws:kms:&lt;region&gt;:&lt;account&gt;:key/&lt;key-id-12ab-34cd-56ef-1234567890ab&gt;\"</code> </p> </li> <li> <p>// KMS Key Alias</p> <p> <code>\"alias/ExampleAlias\"</code> </p> </li> <li> <p>// Amazon Resource Name (ARN) of a KMS Key Alias</p> <p> <code>\"arn:aws:kms:&lt;region&gt;:&lt;account&gt;:alias/&lt;ExampleAlias&gt;\"</code> </p> </li> </ul> <p>For more information about key identifiers, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-id\">Key identifiers (KeyID)</a> in the Amazon Web Services Key Management Service (Amazon Web Services KMS) documentation.</p>"
         }
       },
       "documentation":"<p>The input configuration of the recommendation job.</p>"
@@ -22705,6 +22723,20 @@
       "max":64,
       "min":1,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+    },
+    "RecommendationJobOutputConfig":{
+      "type":"structure",
+      "members":{
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt your output artifacts with Amazon S3 server-side encryption. The SageMaker execution role must have <code>kms:GenerateDataKey</code> permission.</p> <p>The <code>KmsKeyId</code> can be any of the following formats:</p> <ul> <li> <p>// KMS Key ID</p> <p> <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>// Amazon Resource Name (ARN) of a KMS Key</p> <p> <code>\"arn:aws:kms:&lt;region&gt;:&lt;account&gt;:key/&lt;key-id-12ab-34cd-56ef-1234567890ab&gt;\"</code> </p> </li> <li> <p>// KMS Key Alias</p> <p> <code>\"alias/ExampleAlias\"</code> </p> </li> <li> <p>// Amazon Resource Name (ARN) of a KMS Key Alias</p> <p> <code>\"arn:aws:kms:&lt;region&gt;:&lt;account&gt;:alias/&lt;ExampleAlias&gt;\"</code> </p> </li> </ul> <p>For more information about key identifiers, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-id\">Key identifiers (KeyID)</a> in the Amazon Web Services Key Management Service (Amazon Web Services KMS) documentation.</p>"
+        },
+        "CompiledOutputConfig":{
+          "shape":"RecommendationJobCompiledOutputConfig",
+          "documentation":"<p>Provides information about the output configuration for the compiled model.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the output configuration for the compiled model.</p>"
     },
     "RecommendationJobResourceLimit":{
       "type":"structure",
@@ -23584,7 +23616,7 @@
     },
     "ServerlessMaxConcurrency":{
       "type":"integer",
-      "max":50,
+      "max":200,
       "min":1
     },
     "ServerlessMemorySizeInMB":{

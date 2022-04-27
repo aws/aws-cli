@@ -646,6 +646,22 @@
     }
   },
   "shapes" : {
+    "ActionRequired" : {
+      "type" : "structure",
+      "members" : {
+        "ActionRequiredCode" : {
+          "shape" : "__string",
+          "locationName" : "actionRequiredCode",
+          "documentation" : "<p>The code you can use to resolve your broker issue when the broker is in a CRITICAL_ACTION_REQUIRED state. You can find instructions by choosing the link for your code from the list of action required codes in <a href=\"https://docs.aws.amazon.com//latest/developer-guide/troubleshooting-action-required-codes.html\">Amazon MQ action required codes</a>. Each code references a topic with detailed information, instructions, and recommendations for how to resolve the issue and prevent future occurrences.</p>"
+        },
+        "ActionRequiredInfo" : {
+          "shape" : "__string",
+          "locationName" : "actionRequiredInfo",
+          "documentation" : "<p>Information about the action required to resolve your broker issue when the broker is in a CRITICAL_ACTION_REQUIRED state.</p>"
+        }
+      },
+      "documentation" : "<p>The action required to resolve a broker issue when the broker is in a CRITICAL_ACTION_REQUIRED state.</p>"
+    },
     "AuthenticationStrategy" : {
       "type" : "string",
       "documentation" : "<p>Optional. The authentication strategy used to secure the broker. The default is SIMPLE.</p>",
@@ -802,7 +818,7 @@
     "BrokerState" : {
       "type" : "string",
       "documentation" : "<p>The broker's status.</p>",
-      "enum" : [ "CREATION_IN_PROGRESS", "CREATION_FAILED", "DELETION_IN_PROGRESS", "RUNNING", "REBOOT_IN_PROGRESS" ]
+      "enum" : [ "CREATION_IN_PROGRESS", "CREATION_FAILED", "DELETION_IN_PROGRESS", "RUNNING", "REBOOT_IN_PROGRESS", "CRITICAL_ACTION_REQUIRED" ]
     },
     "BrokerStorageType" : {
       "type" : "string",
@@ -1632,6 +1648,11 @@
     "DescribeBrokerOutput" : {
       "type" : "structure",
       "members" : {
+        "ActionsRequired" : {
+          "shape" : "__listOfActionRequired",
+          "locationName" : "actionsRequired",
+          "documentation" : "<p>A list of actions required for a broker.</p>"
+        },
         "AuthenticationStrategy" : {
           "shape" : "AuthenticationStrategy",
           "locationName" : "authenticationStrategy",
@@ -1791,6 +1812,11 @@
     "DescribeBrokerResponse" : {
       "type" : "structure",
       "members" : {
+        "ActionsRequired" : {
+          "shape" : "__listOfActionRequired",
+          "locationName" : "actionsRequired",
+          "documentation" : "<p>A list of actions required for a broker.</p>"
+        },
         "AuthenticationStrategy" : {
           "shape" : "AuthenticationStrategy",
           "locationName" : "authenticationStrategy",
@@ -3292,6 +3318,12 @@
       "type" : "integer",
       "min" : 5,
       "max" : 100
+    },
+    "__listOfActionRequired" : {
+      "type" : "list",
+      "member" : {
+        "shape" : "ActionRequired"
+      }
     },
     "__listOfAvailabilityZone" : {
       "type" : "list",

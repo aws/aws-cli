@@ -22,6 +22,7 @@
       "input":{"shape":"BatchExecuteStatementRequest"},
       "output":{"shape":"BatchExecuteStatementResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
@@ -40,6 +41,7 @@
       "input":{"shape":"BeginTransactionRequest"},
       "output":{"shape":"BeginTransactionResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
@@ -58,6 +60,7 @@
       "input":{"shape":"CommitTransactionRequest"},
       "output":{"shape":"CommitTransactionResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
@@ -77,6 +80,7 @@
       "input":{"shape":"ExecuteSqlRequest"},
       "output":{"shape":"ExecuteSqlResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"},
         {"shape":"ForbiddenException"},
@@ -96,13 +100,14 @@
       "input":{"shape":"ExecuteStatementRequest"},
       "output":{"shape":"ExecuteStatementResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableError"}
       ],
-      "documentation":"<p>Runs a SQL statement against a database.</p> <important> <p>If a call isn't part of a transaction because it doesn't include the <code>transactionID</code> parameter, changes that result from the call are committed automatically.</p> </important> <p>The response size limit is 1 MB. If the call returns more than 1 MB of response data, the call is terminated.</p>"
+      "documentation":"<p>Runs a SQL statement against a database.</p> <important> <p>If a call isn't part of a transaction because it doesn't include the <code>transactionID</code> parameter, changes that result from the call are committed automatically.</p> </important> <p>If the binary response data from the database is more than 1 MB, the call is terminated.</p>"
     },
     "RollbackTransaction":{
       "name":"RollbackTransaction",
@@ -114,6 +119,7 @@
       "input":{"shape":"RollbackTransactionRequest"},
       "output":{"shape":"RollbackTransactionResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
@@ -125,6 +131,18 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "Arn":{
       "type":"string",
       "max":100,
@@ -148,11 +166,11 @@
         },
         "doubleValues":{
           "shape":"DoubleArray",
-          "documentation":"<p>An array of integers.</p>"
+          "documentation":"<p>An array of floating-point numbers.</p>"
         },
         "longValues":{
           "shape":"LongArray",
-          "documentation":"<p>An array of floating point numbers.</p>"
+          "documentation":"<p>An array of integers.</p>"
         },
         "stringValues":{
           "shape":"StringArray",
@@ -403,7 +421,7 @@
     "DoubleArray":{
       "type":"list",
       "member":{"shape":"BoxedDouble"},
-      "documentation":"<p>An array of floating point numbers.</p> <note> <p>Some array entries can be null.</p> </note>"
+      "documentation":"<p>An array of floating-point numbers.</p> <note> <p>Some array entries can be null.</p> </note>"
     },
     "ErrorMessage":{"type":"string"},
     "ExecuteSqlRequest":{
@@ -463,6 +481,10 @@
           "shape":"DbName",
           "documentation":"<p>The name of the database.</p>"
         },
+        "formatRecordsAs":{
+          "shape":"RecordsFormatType",
+          "documentation":"<p>A value that indicates whether to format the result set as a single JSON string. This parameter only applies to <code>SELECT</code> statements and is ignored for other types of statements. Allowed values are <code>NONE</code> and <code>JSON</code>. The default value is <code>NONE</code>. The result is returned in the <code>formattedRecords</code> field.</p> <p>For usage information about the JSON format for result sets, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using the Data API</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+        },
         "includeResultMetadata":{
           "shape":"Boolean",
           "documentation":"<p>A value that indicates whether to include metadata in the results.</p>"
@@ -503,11 +525,15 @@
       "members":{
         "columnMetadata":{
           "shape":"Metadata",
-          "documentation":"<p>Metadata for the columns included in the results.</p>"
+          "documentation":"<p>Metadata for the columns included in the results. This field is blank if the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.</p>"
+        },
+        "formattedRecords":{
+          "shape":"FormattedSqlRecords",
+          "documentation":"<p>A string value that represents the result set of a <code>SELECT</code> statement in JSON format. This value is only present when the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.</p> <p>The size limit for this field is currently 10 MB. If the JSON-formatted string representing the result set requires more than 10 MB, the call returns an error.</p>"
         },
         "generatedFields":{
           "shape":"FieldList",
-          "documentation":"<p>Values for fields generated during the request.</p> <pre><code> &lt;note&gt; &lt;p&gt;The &lt;code&gt;generatedFields&lt;/code&gt; data isn't supported by Aurora PostgreSQL. To get the values of generated fields, use the &lt;code&gt;RETURNING&lt;/code&gt; clause. For more information, see &lt;a href=&quot;https://www.postgresql.org/docs/10/dml-returning.html&quot;&gt;Returning Data From Modified Rows&lt;/a&gt; in the PostgreSQL documentation.&lt;/p&gt; &lt;/note&gt; </code></pre>"
+          "documentation":"<p>Values for fields generated during a DML request.</p> <pre><code> &lt;note&gt; &lt;p&gt;The &lt;code&gt;generatedFields&lt;/code&gt; data isn't supported by Aurora PostgreSQL. To get the values of generated fields, use the &lt;code&gt;RETURNING&lt;/code&gt; clause. For more information, see &lt;a href=&quot;https://www.postgresql.org/docs/10/dml-returning.html&quot;&gt;Returning Data From Modified Rows&lt;/a&gt; in the PostgreSQL documentation.&lt;/p&gt; &lt;/note&gt; </code></pre>"
         },
         "numberOfRecordsUpdated":{
           "shape":"RecordsUpdated",
@@ -515,7 +541,7 @@
         },
         "records":{
           "shape":"SqlRecords",
-          "documentation":"<p>The records returned by the SQL statement.</p>"
+          "documentation":"<p>The records returned by the SQL statement. This field is blank if the <code>formatRecordsAs</code> parameter is set to <code>JSON</code>.</p>"
         }
       },
       "documentation":"<p>The response elements represent the output of a request to run a SQL statement against a database.</p>"
@@ -574,6 +600,7 @@
       },
       "exception":true
     },
+    "FormattedSqlRecords":{"type":"string"},
     "Id":{
       "type":"string",
       "max":192,
@@ -594,6 +621,13 @@
       "type":"list",
       "member":{"shape":"BoxedLong"},
       "documentation":"<p>An array of integers.</p> <note> <p>Some array entries can be null.</p> </note>"
+    },
+    "LongReturnType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "LONG"
+      ]
     },
     "Metadata":{
       "type":"list",
@@ -623,11 +657,18 @@
           "documentation":"<p>The values returned in the record.</p>"
         }
       },
-      "documentation":"<p>A record returned by a call.</p>"
+      "documentation":"<p>A record returned by a call.</p> <important> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </important>"
     },
     "Records":{
       "type":"list",
       "member":{"shape":"Record"}
+    },
+    "RecordsFormatType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "JSON"
+      ]
     },
     "RecordsUpdated":{"type":"long"},
     "ResultFrame":{
@@ -642,7 +683,7 @@
           "documentation":"<p>The result-set metadata in the result set.</p>"
         }
       },
-      "documentation":"<p>The result set returned by a SQL statement.</p>"
+      "documentation":"<p>The result set returned by a SQL statement.</p> <important> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </important>"
     },
     "ResultSetMetadata":{
       "type":"structure",
@@ -664,6 +705,10 @@
         "decimalReturnType":{
           "shape":"DecimalReturnType",
           "documentation":"<p>A value that indicates how a field of <code>DECIMAL</code> type is represented in the response. The value of <code>STRING</code>, the default, specifies that it is converted to a String value. The value of <code>DOUBLE_OR_LONG</code> specifies that it is converted to a Long value if its scale is 0, or to a Double value otherwise.</p> <important> <p>Conversion to Double or Long can result in roundoff errors due to precision loss. We recommend converting to String, especially when working with currency values.</p> </important>"
+        },
+        "longReturnType":{
+          "shape":"LongReturnType",
+          "documentation":"<p>A value that indicates how a field of <code>LONG</code> type is represented. Allowed values are <code>LONG</code> and <code>STRING</code>. The default is <code>LONG</code>. Specify <code>STRING</code> if the length or precision of numeric values might cause truncation or rounding errors. </p>"
         }
       },
       "documentation":"<p>Options that control how the result set is returned.</p>"
@@ -761,7 +806,7 @@
           "documentation":"<p>The result set of the SQL statement.</p>"
         }
       },
-      "documentation":"<p>The result of a SQL statement.</p> <pre><code> &lt;important&gt; &lt;p&gt;This data type is deprecated.&lt;/p&gt; &lt;/important&gt; </code></pre>"
+      "documentation":"<p>The result of a SQL statement.</p> <pre><code> &lt;important&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/important&gt; </code></pre>"
     },
     "SqlStatementResults":{
       "type":"list",
@@ -800,7 +845,7 @@
           "documentation":"<p>The attributes returned in the record.</p>"
         }
       },
-      "documentation":"<p>A structure value returned by a call.</p>"
+      "documentation":"<p>A structure value returned by a call.</p> <important> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </important>"
     },
     "TransactionStatus":{
       "type":"string",
@@ -876,9 +921,9 @@
           "documentation":"<p>A value for a column of STRUCT data type.</p>"
         }
       },
-      "documentation":"<p>Contains the value of a column.</p> <pre><code> &lt;important&gt; &lt;p&gt;This data type is deprecated.&lt;/p&gt; &lt;/important&gt; </code></pre>",
+      "documentation":"<p>Contains the value of a column.</p> <pre><code> &lt;important&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/important&gt; </code></pre>",
       "union":true
     }
   },
-  "documentation":"<p><fullname>Amazon RDS Data Service</fullname> <p>Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora Serverless DB cluster. To run these statements, you work with the Data Service API.</p> <p>For more information about the Data Service API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using the Data API for Aurora Serverless</a> in the <i>Amazon Aurora User Guide</i>.</p></p>"
+  "documentation":"<p><fullname>Amazon RDS Data Service</fullname> <p>Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora Serverless DB cluster. To run these statements, you work with the Data Service API.</p> <p>For more information about the Data Service API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using the Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>"
 }

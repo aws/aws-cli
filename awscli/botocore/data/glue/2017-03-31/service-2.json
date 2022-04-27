@@ -136,7 +136,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"}
-      ]
+      ],
+      "documentation":"<p>Retrieves the details for the custom patterns specified by a list of names.</p>"
     },
     "BatchGetDevEndpoints":{
       "name":"BatchGetDevEndpoints",
@@ -379,7 +380,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"ResourceNumberLimitExceededException"}
-      ]
+      ],
+      "documentation":"<p>Creates a custom pattern that is used to detect sensitive data across the columns and rows of your structured data.</p> <p>Each custom pattern you create specifies a regular expression and an optional list of context words. If no context words are passed only a regular expression is checked.</p>"
     },
     "CreateDatabase":{
       "name":"CreateDatabase",
@@ -770,7 +772,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"}
-      ]
+      ],
+      "documentation":"<p>Deletes a custom pattern by specifying its name.</p>"
     },
     "DeleteDatabase":{
       "name":"DeleteDatabase",
@@ -1259,7 +1262,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"}
-      ]
+      ],
+      "documentation":"<p>Retrieves the details of a custom pattern by specifying its name.</p>"
     },
     "GetDataCatalogEncryptionSettings":{
       "name":"GetDataCatalogEncryptionSettings",
@@ -2084,7 +2088,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"}
-      ]
+      ],
+      "documentation":"<p>Lists all the custom patterns that have been created.</p>"
     },
     "ListDevEndpoints":{
       "name":"ListDevEndpoints",
@@ -3405,14 +3410,23 @@
       "type":"structure",
       "required":["Names"],
       "members":{
-        "Names":{"shape":"CustomEntityTypeNames"}
+        "Names":{
+          "shape":"CustomEntityTypeNames",
+          "documentation":"<p>A list of names of the custom patterns that you want to retrieve.</p>"
+        }
       }
     },
     "BatchGetCustomEntityTypesResponse":{
       "type":"structure",
       "members":{
-        "CustomEntityTypes":{"shape":"CustomEntityTypes"},
-        "CustomEntityTypesNotFound":{"shape":"CustomEntityTypeNames"}
+        "CustomEntityTypes":{
+          "shape":"CustomEntityTypes",
+          "documentation":"<p>A list of <code>CustomEntityType</code> objects representing the custom patterns that have been created.</p>"
+        },
+        "CustomEntityTypesNotFound":{
+          "shape":"CustomEntityTypeNames",
+          "documentation":"<p>A list of the names of custom patterns that were not found.</p>"
+        }
       }
     },
     "BatchGetDevEndpointsRequest":{
@@ -4849,7 +4863,10 @@
           "shape":"CrawlerSecurityConfiguration",
           "documentation":"<p>The name of the <code>SecurityConfiguration</code> structure to be used by this crawler.</p>"
         },
-        "LakeFormationConfiguration":{"shape":"LakeFormationConfiguration"}
+        "LakeFormationConfiguration":{
+          "shape":"LakeFormationConfiguration",
+          "documentation":"<p>Specifies whether the crawler should use AWS Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
+        }
       },
       "documentation":"<p>Specifies a crawler program that examines a data source and uses classifiers to try to determine its schema. If successful, the crawler records metadata concerning the data source in the Glue Data Catalog.</p>"
     },
@@ -5196,15 +5213,27 @@
         "RegexString"
       ],
       "members":{
-        "Name":{"shape":"NameString"},
-        "RegexString":{"shape":"NameString"},
-        "ContextWords":{"shape":"ContextWords"}
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A name for the custom pattern that allows it to be retrieved or deleted later. This name must be unique per Amazon Web Services account.</p>"
+        },
+        "RegexString":{
+          "shape":"NameString",
+          "documentation":"<p>A regular expression string that is used for detecting sensitive data in a custom pattern.</p>"
+        },
+        "ContextWords":{
+          "shape":"ContextWords",
+          "documentation":"<p>A list of context words. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.</p> <p>If no context words are passed only a regular expression is checked.</p>"
+        }
       }
     },
     "CreateCustomEntityTypeResponse":{
       "type":"structure",
       "members":{
-        "Name":{"shape":"NameString"}
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the custom pattern you created.</p>"
+        }
       }
     },
     "CreateDatabaseRequest":{
@@ -6185,10 +6214,20 @@
         "RegexString"
       ],
       "members":{
-        "Name":{"shape":"NameString"},
-        "RegexString":{"shape":"NameString"},
-        "ContextWords":{"shape":"ContextWords"}
-      }
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A name for the custom pattern that allows it to be retrieved or deleted later. This name must be unique per Amazon Web Services account.</p>"
+        },
+        "RegexString":{
+          "shape":"NameString",
+          "documentation":"<p>A regular expression string that is used for detecting sensitive data in a custom pattern.</p>"
+        },
+        "ContextWords":{
+          "shape":"ContextWords",
+          "documentation":"<p>A list of context words. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.</p> <p>If no context words are passed only a regular expression is checked.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a custom pattern for detecting sensitive data across the columns and rows of your structured data.</p>"
     },
     "CustomEntityTypeNames":{
       "type":"list",
@@ -6563,13 +6602,19 @@
       "type":"structure",
       "required":["Name"],
       "members":{
-        "Name":{"shape":"NameString"}
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the custom pattern that you want to delete.</p>"
+        }
       }
     },
     "DeleteCustomEntityTypeResponse":{
       "type":"structure",
       "members":{
-        "Name":{"shape":"NameString"}
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the custom pattern you deleted.</p>"
+        }
       }
     },
     "DeleteDatabaseRequest":{
@@ -7843,15 +7888,27 @@
       "type":"structure",
       "required":["Name"],
       "members":{
-        "Name":{"shape":"NameString"}
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the custom pattern that you want to retrieve.</p>"
+        }
       }
     },
     "GetCustomEntityTypeResponse":{
       "type":"structure",
       "members":{
-        "Name":{"shape":"NameString"},
-        "RegexString":{"shape":"NameString"},
-        "ContextWords":{"shape":"ContextWords"}
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the custom pattern that you retrieved.</p>"
+        },
+        "RegexString":{
+          "shape":"NameString",
+          "documentation":"<p>A regular expression string that is used for detecting sensitive data in a custom pattern.</p>"
+        },
+        "ContextWords":{
+          "shape":"ContextWords",
+          "documentation":"<p>A list of context words if specified when you created the custom pattern. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.</p>"
+        }
       }
     },
     "GetDataCatalogEncryptionSettingsRequest":{
@@ -10170,9 +10227,16 @@
     "LakeFormationConfiguration":{
       "type":"structure",
       "members":{
-        "UseLakeFormationCredentials":{"shape":"NullableBoolean"},
-        "AccountId":{"shape":"AccountId"}
-      }
+        "UseLakeFormationCredentials":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether to use AWS Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Required for cross account crawls. For same account crawls as the target data, this can be left as null.</p>"
+        }
+      },
+      "documentation":"<p>Specifies AWS Lake Formation configuration settings for the crawler.</p>"
     },
     "Language":{
       "type":"string",
@@ -10319,15 +10383,27 @@
     "ListCustomEntityTypesRequest":{
       "type":"structure",
       "members":{
-        "NextToken":{"shape":"PaginationToken"},
-        "MaxResults":{"shape":"PageSize"}
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A paginated token to offset the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
       }
     },
     "ListCustomEntityTypesResponse":{
       "type":"structure",
       "members":{
-        "CustomEntityTypes":{"shape":"CustomEntityTypes"},
-        "NextToken":{"shape":"PaginationToken"}
+        "CustomEntityTypes":{
+          "shape":"CustomEntityTypes",
+          "documentation":"<p>A list of <code>CustomEntityType</code> objects representing custom patterns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
       }
     },
     "ListDevEndpointsRequest":{

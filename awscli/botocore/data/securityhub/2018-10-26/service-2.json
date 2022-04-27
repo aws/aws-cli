@@ -144,7 +144,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Used to enable finding aggregation. Must be called from the aggregation Region.</p> <p>For more details about cross-Region replication, see <a href=\"securityhub/latest/userguide/finding-aggregation.html\">Configuring finding aggregation</a> in the <i>Security Hub User Guide</i>. </p>"
+      "documentation":"<p>Used to enable finding aggregation. Must be called from the aggregation Region.</p> <p>For more details about cross-Region replication, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-aggregation.html\">Configuring finding aggregation</a> in the <i>Security Hub User Guide</i>. </p>"
     },
     "CreateInsight":{
       "name":"CreateInsight",
@@ -1190,6 +1190,13 @@
     "ArnList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}
+    },
+    "AutoEnableStandards":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "DEFAULT"
+      ]
     },
     "AvailabilityZone":{
       "type":"structure",
@@ -9332,11 +9339,11 @@
         },
         "ProductName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the product that generated the finding.</p> <p>Security Hub populates this attribute automatically for each finding. You cannot update it using <code>BatchImportFindings</code> or <code>BatchUpdateFindings</code>. The exception to this is when you use a custom integration.</p> <p>When you use the Security Hub console to filter findings by product name, you use this attribute.</p> <p>When you use the Security Hub API to filter findings by product name, you use the <code>aws/securityhub/ProductName</code> attribute under <code>ProductFields</code>.</p> <p>Security Hub does not synchronize those two attributes.</p>"
+          "documentation":"<p>The name of the product that generated the finding.</p> <p>Security Hub populates this attribute automatically for each finding. You cannot update this attribute with <code>BatchImportFindings</code> or <code>BatchUpdateFindings</code>. The exception to this is a custom integration.</p> <p>When you use the Security Hub console or API to filter findings by product name, you use this attribute.</p>"
         },
         "CompanyName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the company for the product that generated the finding.</p> <p>Security Hub populates this attribute automatically for each finding. You cannot be updated using <code>BatchImportFindings</code> or <code>BatchUpdateFindings</code>. The exception to this is when you use a custom integration.</p> <p>When you use the Security Hub console to filter findings by company name, you use this attribute.</p> <p>When you use the Security Hub API to filter findings by company name, you use the <code>aws/securityhub/CompanyName</code> attribute under <code>ProductFields</code>.</p> <p>Security Hub does not synchronize those two attributes.</p>"
+          "documentation":"<p>The name of the company for the product that generated the finding.</p> <p>Security Hub populates this attribute automatically for each finding. You cannot update this attribute with <code>BatchImportFindings</code> or <code>BatchUpdateFindings</code>. The exception to this is a custom integration.</p> <p>When you use the Security Hub console or API to filter findings by company name, you use this attribute.</p>"
         },
         "Region":{
           "shape":"NonEmptyString",
@@ -9570,11 +9577,11 @@
         },
         "ProductName":{
           "shape":"StringFilterList",
-          "documentation":"<p>The name of the solution (product) that generates findings.</p> <p>Note that this is a filter against the <code>aws/securityhub/ProductName</code> field in <code>ProductFields</code>. It is not a filter for the top-level <code>ProductName</code> field.</p>"
+          "documentation":"<p>The name of the solution (product) that generates findings.</p>"
         },
         "CompanyName":{
           "shape":"StringFilterList",
-          "documentation":"<p>The name of the findings provider (company) that owns the solution (product) that generates findings.</p> <p>Note that this is a filter against the <code>aws/securityhub/CompanyName</code> field in <code>ProductFields</code>. It is not a filter for the top-level <code>CompanyName</code> field.</p>"
+          "documentation":"<p>The name of the findings provider (company) that owns the solution (product) that generates findings.</p>"
         },
         "UserDefinedFields":{
           "shape":"MapFilterList",
@@ -11031,6 +11038,10 @@
         "MemberAccountLimitReached":{
           "shape":"Boolean",
           "documentation":"<p>Whether the maximum number of allowed member accounts are already associated with the Security Hub administrator account.</p>"
+        },
+        "AutoEnableStandards":{
+          "shape":"AutoEnableStandards",
+          "documentation":"<p>Whether to automatically enable Security Hub <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-enable-disable.html\">default standards</a> for new member accounts in the organization.</p> <p>The default value of this parameter is equal to <code>DEFAULT</code>.</p> <p>If equal to <code>DEFAULT</code>, then Security Hub default standards are automatically enabled for new member accounts. If equal to <code>NONE</code>, then default standards are not automatically enabled for new member accounts.</p>"
         }
       }
     },
@@ -14223,6 +14234,10 @@
         "AutoEnable":{
           "shape":"Boolean",
           "documentation":"<p>Whether to automatically enable Security Hub for new accounts in the organization.</p> <p>By default, this is <code>false</code>, and new accounts are not added automatically.</p> <p>To automatically enable Security Hub for new accounts, set this to <code>true</code>.</p>"
+        },
+        "AutoEnableStandards":{
+          "shape":"AutoEnableStandards",
+          "documentation":"<p>Whether to automatically enable Security Hub <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-enable-disable.html\">default standards</a> for new member accounts in the organization.</p> <p>By default, this parameter is equal to <code>DEFAULT</code>, and new member accounts are automatically enabled with default Security Hub standards.</p> <p>To opt out of enabling default standards for new member accounts, set this parameter equal to <code>NONE</code>.</p>"
         }
       }
     },
@@ -14417,5 +14432,5 @@
       "documentation":"<p>Used to update information about the investigation into the finding.</p>"
     }
   },
-  "documentation":"<p>Security Hub provides you with a comprehensive view of the security state of your Amazon Web Services environment and resources. It also provides you with the readiness status of your environment based on controls from supported security standards. Security Hub collects security data from Amazon Web Services accounts, services, and integrated third-party products and helps you analyze security trends in your environment to identify the highest priority security issues. For more information about Security Hub, see the <i>Security Hub<a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\">User Guide</a> </i>.</p> <p>When you use operations in the Security Hub API, the requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, execute the same command for each Region to apply the change to.</p> <p>For example, if your Region is set to <code>us-west-2</code>, when you use <code>CreateMembers</code> to add a member account to Security Hub, the association of the member account with the administrator account is created only in the <code>us-west-2</code> Region. Security Hub must be enabled for the member account in the same Region that the invitation was sent from.</p> <p>The following throttling limits apply to using Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second, <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>UpdateFindings</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second, <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
+  "documentation":"<p>Security Hub provides you with a comprehensive view of the security state of your Amazon Web Services environment and resources. It also provides you with the readiness status of your environment based on controls from supported security standards. Security Hub collects security data from Amazon Web Services accounts, services, and integrated third-party products and helps you analyze security trends in your environment to identify the highest priority security issues. For more information about Security Hub, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\"> <i>Security HubUser Guide</i> </a>.</p> <p>When you use operations in the Security Hub API, the requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, execute the same command for each Region to apply the change to.</p> <p>For example, if your Region is set to <code>us-west-2</code>, when you use <code>CreateMembers</code> to add a member account to Security Hub, the association of the member account with the administrator account is created only in the <code>us-west-2</code> Region. Security Hub must be enabled for the member account in the same Region that the invitation was sent from.</p> <p>The following throttling limits apply to using Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second, <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>UpdateFindings</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second, <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
 }

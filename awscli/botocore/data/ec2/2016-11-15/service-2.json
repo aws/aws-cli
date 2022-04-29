@@ -686,7 +686,7 @@
       },
       "input":{"shape":"CreateKeyPairRequest"},
       "output":{"shape":"KeyPair"},
-      "documentation":"<p>Creates an ED25519 or 2048-bit RSA key pair with the specified name. Amazon EC2 stores the public key and displays the private key for you to save to a file. The private key is returned as an unencrypted PEM encoded PKCS#1 private key. If a key with the specified name already exists, Amazon EC2 returns an error.</p> <p>The key pair returned to you is available only in the Amazon Web Services Region in which you create it. If you prefer, you can create your own key pair using a third-party tool and upload it to any Region using <a>ImportKeyPair</a>.</p> <p>You can have up to 5,000 key pairs per Amazon Web Services Region.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates an ED25519 or 2048-bit RSA key pair with the specified name and in the specified PEM or PPK format. Amazon EC2 stores the public key and displays the private key for you to save to a file. The private key is returned as an unencrypted PEM encoded PKCS#1 private key or an unencrypted PPK formatted private key for use with PuTTY. If a key with the specified name already exists, Amazon EC2 returns an error.</p> <p>The key pair returned to you is available only in the Amazon Web Services Region in which you create it. If you prefer, you can create your own key pair using a third-party tool and upload it to any Region using <a>ImportKeyPair</a>.</p> <p>You can have up to 5,000 key pairs per Amazon Web Services Region.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "CreateLaunchTemplate":{
       "name":"CreateLaunchTemplate",
@@ -11325,6 +11325,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to apply to the new key pair.</p>",
           "locationName":"TagSpecification"
+        },
+        "KeyFormat":{
+          "shape":"KeyFormat",
+          "documentation":"<p>The format of the key pair.</p> <p>Default: <code>pem</code> </p>"
         }
       }
     },
@@ -18081,6 +18085,10 @@
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
           "locationName":"dryRun"
+        },
+        "IncludePublicKey":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the public key material is included in the response.</p> <p>Default: <code>false</code> </p>"
         }
       }
     },
@@ -32408,6 +32416,13 @@
       ]
     },
     "KernelId":{"type":"string"},
+    "KeyFormat":{
+      "type":"string",
+      "enum":[
+        "pem",
+        "ppk"
+      ]
+    },
     "KeyNameStringList":{
       "type":"list",
       "member":{
@@ -32481,6 +32496,16 @@
           "shape":"TagList",
           "documentation":"<p>Any tags applied to the key pair.</p>",
           "locationName":"tagSet"
+        },
+        "PublicKey":{
+          "shape":"String",
+          "documentation":"<p>The public key material.</p>",
+          "locationName":"publicKey"
+        },
+        "CreateTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>If you used Amazon EC2 to create the key pair, this is the date and time when the key was created, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 date-time format</a>, in the UTC time zone.</p> <p>If you imported an existing key pair to Amazon EC2, this is the date and time the key was imported, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 date-time format</a>, in the UTC time zone.</p>",
+          "locationName":"createTime"
         }
       },
       "documentation":"<p>Describes a key pair.</p>"

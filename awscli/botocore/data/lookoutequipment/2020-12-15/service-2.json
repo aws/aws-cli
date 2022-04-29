@@ -133,7 +133,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Provides information on a specific data ingestion job such as creation time, dataset ARN, status, and so on. </p>"
+      "documentation":"<p>Provides information on a specific data ingestion job such as creation time, dataset ARN, and status.</p>"
     },
     "DescribeDataset":{
       "name":"DescribeDataset",
@@ -150,7 +150,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Provides a JSON description of the data that is in each time series dataset, including names, column names, and data types.</p>"
+      "documentation":"<p>Provides a JSON description of the data in each time series dataset, including names, column names, and data types.</p>"
     },
     "DescribeInferenceScheduler":{
       "name":"DescribeInferenceScheduler",
@@ -266,6 +266,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Generates a list of all models in the account, including model name and ARN, dataset, and status. </p>"
+    },
+    "ListSensorStatistics":{
+      "name":"ListSensorStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSensorStatisticsRequest"},
+      "output":{"shape":"ListSensorStatisticsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Lists statistics about the data collected for each of the sensors that have been successfully ingested in the particular dataset. Can also be used to retreive Sensor Statistics for a previous ingestion job. </p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -407,11 +424,33 @@
       "max":1011,
       "min":1
     },
+    "Boolean":{"type":"boolean"},
     "BoundedLengthString":{
       "type":"string",
       "max":5000,
       "min":1,
       "pattern":"[\\P{M}\\p{M}]{1,5000}"
+    },
+    "CategoricalValues":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"StatisticalIssueStatus",
+          "documentation":"<p> Indicates whether there is a potential data issue related to categorical values. </p>"
+        },
+        "NumberOfCategory":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the number of categories in the data. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information on categorical values in data. </p>"
+    },
+    "ComponentName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._\\-]{1,200}$"
     },
     "ComponentTimestampDelimiter":{
       "type":"string",
@@ -428,11 +467,28 @@
       "documentation":"<p> The request could not be completed due to a conflict with the current state of the target resource. </p>",
       "exception":true
     },
+    "CountPercent":{
+      "type":"structure",
+      "required":[
+        "Count",
+        "Percentage"
+      ],
+      "members":{
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the count of occurences of the given statistic. </p>"
+        },
+        "Percentage":{
+          "shape":"Float",
+          "documentation":"<p> Indicates the percentage of occurances of the given statistic. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information of count and percentage. </p>"
+    },
     "CreateDatasetRequest":{
       "type":"structure",
       "required":[
         "DatasetName",
-        "DatasetSchema",
         "ClientToken"
       ],
       "members":{
@@ -654,7 +710,7 @@
         },
         "IngestionInputConfiguration":{
           "shape":"IngestionInputConfiguration",
-          "documentation":"<p> Specifies information for the input data for the data inference job, including data S3 location parameters. </p>"
+          "documentation":"<p> Specifies information for the input data for the data inference job, including data Amazon S3 location parameters. </p>"
         },
         "Status":{
           "shape":"IngestionJobStatus",
@@ -672,6 +728,43 @@
         }
       },
       "documentation":"<p>The configuration is the <code>TargetSamplingRate</code>, which is the sampling rate of the data after post processing by Amazon Lookout for Equipment. For example, if you provide data that has been collected at a 1 second level and you want the system to resample the data at a 1 minute rate before training, the <code>TargetSamplingRate</code> is 1 minute.</p> <p>When providing a value for the <code>TargetSamplingRate</code>, you must attach the prefix \"PT\" to the rate you want. The value for a 1 second rate is therefore <i>PT1S</i>, the value for a 15 minute rate is <i>PT15M</i>, and the value for a 1 hour rate is <i>PT1H</i> </p>"
+    },
+    "DataQualitySummary":{
+      "type":"structure",
+      "required":[
+        "InsufficientSensorData",
+        "MissingSensorData",
+        "InvalidSensorData",
+        "UnsupportedTimestamps",
+        "DuplicateTimestamps"
+      ],
+      "members":{
+        "InsufficientSensorData":{
+          "shape":"InsufficientSensorData",
+          "documentation":"<p> Parameter that gives information about insufficient data for sensors in the dataset. This includes information about those sensors that have complete data missing and those with a short date range. </p>"
+        },
+        "MissingSensorData":{
+          "shape":"MissingSensorData",
+          "documentation":"<p> Parameter that gives information about data that is missing over all the sensors in the input data. </p>"
+        },
+        "InvalidSensorData":{
+          "shape":"InvalidSensorData",
+          "documentation":"<p> Parameter that gives information about data that is invalid over all the sensors in the input data. </p>"
+        },
+        "UnsupportedTimestamps":{
+          "shape":"UnsupportedTimestamps",
+          "documentation":"<p> Parameter that gives information about unsupported timestamps in the input data. </p>"
+        },
+        "DuplicateTimestamps":{
+          "shape":"DuplicateTimestamps",
+          "documentation":"<p> Parameter that gives information about duplicate timestamps in the input data. </p>"
+        }
+      },
+      "documentation":"<p> DataQualitySummary gives aggregated statistics over all the sensors about a completed ingestion job. It primarily gives more information about statistics over different incorrect data like MissingCompleteSensorData, MissingSensorData, UnsupportedDateFormats, InsufficientSensorData, DuplicateTimeStamps. </p>"
+    },
+    "DataSizeInBytes":{
+      "type":"long",
+      "min":0
     },
     "DataUploadFrequency":{
       "type":"string",
@@ -816,6 +909,27 @@
         "FailedReason":{
           "shape":"BoundedLengthString",
           "documentation":"<p>Specifies the reason for failure when a data ingestion job has failed. </p>"
+        },
+        "DataQualitySummary":{
+          "shape":"DataQualitySummary",
+          "documentation":"<p> Gives statistics about a completed ingestion job. These statistics primarily relate to quantifying incorrect data such as MissingCompleteSensorData, MissingSensorData, UnsupportedDateFormats, InsufficientSensorData, and DuplicateTimeStamps. </p>"
+        },
+        "IngestedFilesSummary":{"shape":"IngestedFilesSummary"},
+        "StatusDetail":{
+          "shape":"BoundedLengthString",
+          "documentation":"<p> Provides details about status of the ingestion job that is currently in progress. </p>"
+        },
+        "IngestedDataSize":{
+          "shape":"DataSizeInBytes",
+          "documentation":"<p> Indicates the size of the ingested dataset. </p>"
+        },
+        "DataStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Indicates the earliest timestamp corresponding to data that was successfully ingested during this specific ingestion job. </p>"
+        },
+        "DataEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Indicates the latest timestamp corresponding to data that was successfully ingested during this specific ingestion job. </p>"
         }
       }
     },
@@ -864,6 +978,26 @@
         "IngestionInputConfiguration":{
           "shape":"IngestionInputConfiguration",
           "documentation":"<p>Specifies the S3 location configuration for the data input for the data ingestion job. </p>"
+        },
+        "DataQualitySummary":{
+          "shape":"DataQualitySummary",
+          "documentation":"<p> Gives statistics associated with the given dataset for the latest successful associated ingestion job id. These statistics primarily relate to quantifying incorrect data such as MissingCompleteSensorData, MissingSensorData, UnsupportedDateFormats, InsufficientSensorData, and DuplicateTimeStamps. </p>"
+        },
+        "IngestedFilesSummary":{
+          "shape":"IngestedFilesSummary",
+          "documentation":"<p> IngestedFilesSummary associated with the given dataset for the latest successful associated ingestion job id. </p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role that you are using for this the data ingestion job. </p>"
+        },
+        "DataStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Indicates the earliest timestamp corresponding to data that was successfully ingested during the most recent ingestion of this particular dataset. </p>"
+        },
+        "DataEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Indicates the latest timestamp corresponding to data that was successfully ingested during the most recent ingestion of this particular dataset. </p>"
         }
       }
     },
@@ -1035,10 +1169,22 @@
         }
       }
     },
+    "DuplicateTimestamps":{
+      "type":"structure",
+      "required":["TotalNumberOfDuplicateTimestamps"],
+      "members":{
+        "TotalNumberOfDuplicateTimestamps":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the total number of duplicate timestamps. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information abount duplicate timestamps in the dataset. </p>"
+    },
     "FileNameTimestampFormat":{
       "type":"string",
       "pattern":"^EPOCH|yyyy-MM-dd-HH-mm-ss|yyyyMMddHHmmss$"
     },
+    "Float":{"type":"float"},
     "IamRoleArn":{
       "type":"string",
       "max":2048,
@@ -1100,7 +1246,7 @@
         },
         "DataOutputConfiguration":{
           "shape":"InferenceOutputConfiguration",
-          "documentation":"<p> Specifies configuration information for the output results from for the inference execution, including the output S3 location. </p>"
+          "documentation":"<p> Specifies configuration information for the output results from for the inference execution, including the output Amazon S3 location. </p>"
         },
         "CustomerResultObject":{
           "shape":"S3Object",
@@ -1122,18 +1268,18 @@
       "members":{
         "S3InputConfiguration":{
           "shape":"InferenceS3InputConfiguration",
-          "documentation":"<p> Specifies configuration information for the input data for the inference, including S3 location of input data.. </p>"
+          "documentation":"<p> Specifies configuration information for the input data for the inference, including Amazon S3 location of input data.</p>"
         },
         "InputTimeZoneOffset":{
           "shape":"TimeZoneOffset",
-          "documentation":"<p>Indicates the difference between your time zone and Greenwich Mean Time (GMT). </p>"
+          "documentation":"<p>Indicates the difference between your time zone and Coordinated Universal Time (UTC).</p>"
         },
         "InferenceInputNameConfiguration":{
           "shape":"InferenceInputNameConfiguration",
           "documentation":"<p>Specifies configuration information for the input data for the inference, including timestamp format and delimiter. </p>"
         }
       },
-      "documentation":"<p>Specifies configuration information for the input data for the inference, including S3 location of input data.. </p>"
+      "documentation":"<p>Specifies configuration information for the input data for the inference, including Amazon S3 location of input data.. </p>"
     },
     "InferenceInputNameConfiguration":{
       "type":"structure",
@@ -1259,6 +1405,28 @@
       },
       "documentation":"<p>Contains information about the specific inference scheduler, including data delay offset, model name and ARN, status, and so on. </p>"
     },
+    "IngestedFilesSummary":{
+      "type":"structure",
+      "required":[
+        "TotalNumberOfFiles",
+        "IngestedNumberOfFiles"
+      ],
+      "members":{
+        "TotalNumberOfFiles":{
+          "shape":"Integer",
+          "documentation":"<p>Indicates the total number of files that were submitted for ingestion.</p>"
+        },
+        "IngestedNumberOfFiles":{
+          "shape":"Integer",
+          "documentation":"<p>Indicates the number of files that were successfully ingested.</p>"
+        },
+        "DiscardedFiles":{
+          "shape":"ListOfDiscardedFiles",
+          "documentation":"<p>Indicates the number of files that were discarded. A file could be discarded because its format is invalid (for example, a jpg or pdf) or not readable.</p>"
+        }
+      },
+      "documentation":"<p>Gives statistics about how many files have been ingested, and which files have not been ingested, for a particular ingestion job.</p>"
+    },
     "IngestionInputConfiguration":{
       "type":"structure",
       "required":["S3InputConfiguration"],
@@ -1294,6 +1462,10 @@
         "Prefix":{
           "shape":"S3Prefix",
           "documentation":"<p>The prefix for the S3 location being used for the input data for the data ingestion. </p>"
+        },
+        "KeyPattern":{
+          "shape":"KeyPattern",
+          "documentation":"<p> Pattern for matching the Amazon S3 files which will be used for ingestion. If no KeyPattern is provided, we will use the default hierarchy file structure, which is same as KeyPattern {prefix}/{component_name}/* </p>"
         }
       },
       "documentation":"<p> Specifies S3 configuration information for the input data for the data ingestion job. </p>"
@@ -1303,6 +1475,25 @@
       "max":1000000,
       "min":1
     },
+    "InsufficientSensorData":{
+      "type":"structure",
+      "required":[
+        "MissingCompleteSensorData",
+        "SensorsWithShortDateRange"
+      ],
+      "members":{
+        "MissingCompleteSensorData":{
+          "shape":"MissingCompleteSensorData",
+          "documentation":"<p> Parameter that describes the total number of sensors that have data completely missing for it. </p>"
+        },
+        "SensorsWithShortDateRange":{
+          "shape":"SensorsWithShortDateRange",
+          "documentation":"<p> Parameter that describes the total number of sensors that have a short date range of less than 90 days of data overall. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises aggregated information on sensors having insufficient data. </p>"
+    },
+    "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
       "required":["Message"],
@@ -1312,6 +1503,29 @@
       "documentation":"<p> Processing of the request has failed because of an unknown error, exception or failure. </p>",
       "exception":true,
       "fault":true
+    },
+    "InvalidSensorData":{
+      "type":"structure",
+      "required":[
+        "AffectedSensorCount",
+        "TotalNumberOfInvalidValues"
+      ],
+      "members":{
+        "AffectedSensorCount":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the number of sensors that have at least some invalid values. </p>"
+        },
+        "TotalNumberOfInvalidValues":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the total number of invalid values across all the sensors. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises aggregated information on sensors having insufficient data. </p>"
+    },
+    "KeyPattern":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "KmsKeyArn":{
       "type":"string",
@@ -1344,6 +1558,25 @@
         }
       },
       "documentation":"<p>The location information (prefix and bucket name) for the s3 location being used for label data. </p>"
+    },
+    "LargeTimestampGaps":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"StatisticalIssueStatus",
+          "documentation":"<p> Indicates whether there is a potential data issue related to large gaps in timestamps. </p>"
+        },
+        "NumberOfLargeTimestampGaps":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the number of large timestamp gaps, if there are any. </p>"
+        },
+        "MaxTimestampGapInDays":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the size of the largest timestamp gap, in days. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information on large gaps between consecutive timestamps in data. </p>"
     },
     "ListDataIngestionJobsRequest":{
       "type":"structure",
@@ -1524,6 +1757,46 @@
         }
       }
     },
+    "ListOfDiscardedFiles":{
+      "type":"list",
+      "member":{"shape":"S3Object"},
+      "min":0
+    },
+    "ListSensorStatisticsRequest":{
+      "type":"structure",
+      "required":["DatasetName"],
+      "members":{
+        "DatasetName":{
+          "shape":"DatasetName",
+          "documentation":"<p> The name of the dataset associated with the list of Sensor Statistics. </p>"
+        },
+        "IngestionJobId":{
+          "shape":"IngestionJobId",
+          "documentation":"<p> The ingestion job id associated with the list of Sensor Statistics. To get sensor statistics for a particular ingestion job id, both dataset name and ingestion job id must be submitted as inputs. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> Specifies the maximum number of sensors for which to retrieve statistics. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> An opaque pagination token indicating where to continue the listing of sensor statistics. </p>"
+        }
+      }
+    },
+    "ListSensorStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "SensorStatisticsSummaries":{
+          "shape":"SensorStatisticsSummaries",
+          "documentation":"<p> Provides ingestion-based statistics regarding the specified sensor with respect to various validation types, such as whether data exists, the number and percentage of missing values, and the number and percentage of duplicate timestamps. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> An opaque pagination token indicating where to continue the listing of sensor statistics. </p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1547,6 +1820,35 @@
       "type":"integer",
       "max":500,
       "min":1
+    },
+    "MissingCompleteSensorData":{
+      "type":"structure",
+      "required":["AffectedSensorCount"],
+      "members":{
+        "AffectedSensorCount":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the number of sensors that have data missing completely. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information on sensors that have sensor data completely missing. </p>"
+    },
+    "MissingSensorData":{
+      "type":"structure",
+      "required":[
+        "AffectedSensorCount",
+        "TotalNumberOfMissingValues"
+      ],
+      "members":{
+        "AffectedSensorCount":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the number of sensors that have atleast some data missing. </p>"
+        },
+        "TotalNumberOfMissingValues":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the total number of missing values across all the sensors. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises aggregated information on sensors having missing data. </p>"
     },
     "ModelArn":{
       "type":"string",
@@ -1606,6 +1908,40 @@
         }
       },
       "documentation":"<p>Provides information about the specified ML model, including dataset and model names and ARNs, as well as status. </p>"
+    },
+    "MonotonicValues":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"StatisticalIssueStatus",
+          "documentation":"<p> Indicates whether there is a potential data issue related to having monotonic values. </p>"
+        },
+        "Monotonicity":{
+          "shape":"Monotonicity",
+          "documentation":"<p> Indicates the monotonicity of values. Can be INCREASING, DECREASING, or STATIC. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information on monotonic values in the data. </p>"
+    },
+    "Monotonicity":{
+      "type":"string",
+      "enum":[
+        "DECREASING",
+        "INCREASING",
+        "STATIC"
+      ]
+    },
+    "MultipleOperatingModes":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"StatisticalIssueStatus",
+          "documentation":"<p> Indicates whether there is a potential data issue related to having multiple operating modes. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information on operating modes in data. </p>"
     },
     "NameOrArn":{
       "type":"string",
@@ -1667,6 +2003,85 @@
       "max":1024,
       "min":0,
       "pattern":"(^$)|([\\P{M}\\p{M}]{1,1023}/$)"
+    },
+    "SensorName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z:#$.\\-_]{1,200}$"
+    },
+    "SensorStatisticsSummaries":{
+      "type":"list",
+      "member":{"shape":"SensorStatisticsSummary"}
+    },
+    "SensorStatisticsSummary":{
+      "type":"structure",
+      "members":{
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p> Name of the component to which the particular sensor belongs for which the statistics belong to. </p>"
+        },
+        "SensorName":{
+          "shape":"SensorName",
+          "documentation":"<p> Name of the sensor that the statistics belong to. </p>"
+        },
+        "DataExists":{
+          "shape":"Boolean",
+          "documentation":"<p> Parameter that indicates whether data exists for the sensor that the statistics belong to. </p>"
+        },
+        "MissingValues":{
+          "shape":"CountPercent",
+          "documentation":"<p> Parameter that describes the total number of, and percentage of, values that are missing for the sensor that the statistics belong to. </p>"
+        },
+        "InvalidValues":{
+          "shape":"CountPercent",
+          "documentation":"<p> Parameter that describes the total number of, and percentage of, values that are invalid for the sensor that the statistics belong to. </p>"
+        },
+        "InvalidDateEntries":{
+          "shape":"CountPercent",
+          "documentation":"<p> Parameter that describes the total number of invalid date entries associated with the sensor that the statistics belong to. </p>"
+        },
+        "DuplicateTimestamps":{
+          "shape":"CountPercent",
+          "documentation":"<p> Parameter that describes the total number of duplicate timestamp records associated with the sensor that the statistics belong to. </p>"
+        },
+        "CategoricalValues":{
+          "shape":"CategoricalValues",
+          "documentation":"<p> Parameter that describes potential risk about whether data associated with the sensor is categorical. </p>"
+        },
+        "MultipleOperatingModes":{
+          "shape":"MultipleOperatingModes",
+          "documentation":"<p> Parameter that describes potential risk about whether data associated with the sensor has more than one operating mode. </p>"
+        },
+        "LargeTimestampGaps":{
+          "shape":"LargeTimestampGaps",
+          "documentation":"<p> Parameter that describes potential risk about whether data associated with the sensor contains one or more large gaps between consecutive timestamps. </p>"
+        },
+        "MonotonicValues":{
+          "shape":"MonotonicValues",
+          "documentation":"<p> Parameter that describes potential risk about whether data associated with the sensor is mostly monotonic. </p>"
+        },
+        "DataStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Indicates the time reference to indicate the beginning of valid data associated with the sensor that the statistics belong to. </p>"
+        },
+        "DataEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Indicates the time reference to indicate the end of valid data associated with the sensor that the statistics belong to. </p>"
+        }
+      },
+      "documentation":"<p> Summary of ingestion statistics like whether data exists, number of missing values, number of invalid values and so on related to the particular sensor. </p>"
+    },
+    "SensorsWithShortDateRange":{
+      "type":"structure",
+      "required":["AffectedSensorCount"],
+      "members":{
+        "AffectedSensorCount":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the number of sensors that have less than 90 days of data. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information on sensors that have shorter date range. </p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -1752,6 +2167,13 @@
           "documentation":"<p>Indicates the status of the inference scheduler. </p>"
         }
       }
+    },
+    "StatisticalIssueStatus":{
+      "type":"string",
+      "enum":[
+        "POTENTIAL_ISSUE_DETECTED",
+        "NO_ISSUE_DETECTED"
+      ]
     },
     "StopInferenceSchedulerRequest":{
       "type":"structure",
@@ -1882,6 +2304,17 @@
       "pattern":"^(\\+|\\-)[0-9]{2}\\:[0-9]{2}$"
     },
     "Timestamp":{"type":"timestamp"},
+    "UnsupportedTimestamps":{
+      "type":"structure",
+      "required":["TotalNumberOfUnsupportedTimestamps"],
+      "members":{
+        "TotalNumberOfUnsupportedTimestamps":{
+          "shape":"Integer",
+          "documentation":"<p> Indicates the total number of unsupported timestamps across the ingested data. </p>"
+        }
+      },
+      "documentation":"<p> Entity that comprises information abount unsupported timestamps in the dataset. </p>"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[

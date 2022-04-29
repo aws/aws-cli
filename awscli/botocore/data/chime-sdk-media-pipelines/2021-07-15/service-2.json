@@ -1,0 +1,762 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2021-07-15",
+    "endpointPrefix":"media-pipelines-chime",
+    "protocol":"rest-json",
+    "serviceFullName":"Amazon Chime SDK Media Pipelines",
+    "serviceId":"Chime SDK Media Pipelines",
+    "signatureVersion":"v4",
+    "signingName":"chime",
+    "uid":"chime-sdk-media-pipelines-2021-07-15"
+  },
+  "operations":{
+    "CreateMediaCapturePipeline":{
+      "name":"CreateMediaCapturePipeline",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sdk-media-capture-pipelines",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateMediaCapturePipelineRequest"},
+      "output":{"shape":"CreateMediaCapturePipelineResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates a media capture pipeline.</p>"
+    },
+    "DeleteMediaCapturePipeline":{
+      "name":"DeleteMediaCapturePipeline",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/sdk-media-capture-pipelines/{mediaPipelineId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMediaCapturePipelineRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes the media capture pipeline.</p>"
+    },
+    "GetMediaCapturePipeline":{
+      "name":"GetMediaCapturePipeline",
+      "http":{
+        "method":"GET",
+        "requestUri":"/sdk-media-capture-pipelines/{mediaPipelineId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMediaCapturePipelineRequest"},
+      "output":{"shape":"GetMediaCapturePipelineResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Gets an existing media capture pipeline.</p>"
+    },
+    "ListMediaCapturePipelines":{
+      "name":"ListMediaCapturePipelines",
+      "http":{
+        "method":"GET",
+        "requestUri":"/sdk-media-capture-pipelines",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMediaCapturePipelinesRequest"},
+      "output":{"shape":"ListMediaCapturePipelinesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns a list of media capture pipelines.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Lists the tags applied to an Amazon Chime SDK media capture pipeline.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags?operation=tag-resource",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Applies the specified tags to the specified Amazon Chime SDK media capture pipeline.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags?operation=untag-resource",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Removes the specified tags from the specified Amazon Chime SDK media capture pipeline.</p>"
+    }
+  },
+  "shapes":{
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^arn[\\/\\:\\-\\_\\.a-zA-Z0-9]+$"
+    },
+    "Arn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^arn[\\/\\:\\-\\_\\.a-zA-Z0-9]+$",
+      "sensitive":true
+    },
+    "ArtifactsConfiguration":{
+      "type":"structure",
+      "required":[
+        "Audio",
+        "Video",
+        "Content"
+      ],
+      "members":{
+        "Audio":{
+          "shape":"AudioArtifactsConfiguration",
+          "documentation":"<p>The configuration for the audio artifacts.</p>"
+        },
+        "Video":{
+          "shape":"VideoArtifactsConfiguration",
+          "documentation":"<p>The configuration for the video artifacts.</p>"
+        },
+        "Content":{
+          "shape":"ContentArtifactsConfiguration",
+          "documentation":"<p>The configuration for the content artifacts.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the artifacts.</p>"
+    },
+    "ArtifactsState":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "AttendeeIdList":{
+      "type":"list",
+      "member":{"shape":"GuidString"},
+      "min":1
+    },
+    "AudioArtifactsConfiguration":{
+      "type":"structure",
+      "required":["MuxType"],
+      "members":{
+        "MuxType":{
+          "shape":"AudioMuxType",
+          "documentation":"<p>The MUX type of the audio artifact configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The audio artifact configuration object.</p>"
+    },
+    "AudioMuxType":{
+      "type":"string",
+      "enum":[
+        "AudioOnly",
+        "AudioWithActiveSpeakerVideo"
+      ]
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The input parameters don't match the service's restrictions.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ChimeSdkMeetingConfiguration":{
+      "type":"structure",
+      "members":{
+        "SourceConfiguration":{
+          "shape":"SourceConfiguration",
+          "documentation":"<p>The source configuration for a specified media capture pipline.</p>"
+        },
+        "ArtifactsConfiguration":{
+          "shape":"ArtifactsConfiguration",
+          "documentation":"<p>The configuration for the artifacts in an Amazon Chime SDK meeting.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object of the Amazon Chime SDK meeting for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+    },
+    "ClientRequestToken":{
+      "type":"string",
+      "max":64,
+      "min":2,
+      "pattern":"[-_a-zA-Z0-9]*",
+      "sensitive":true
+    },
+    "ContentArtifactsConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsState",
+          "documentation":"<p>Indicates whether the content artifact is enabled or disabled.</p>"
+        },
+        "MuxType":{
+          "shape":"ContentMuxType",
+          "documentation":"<p>The MUX type of the artifact configuration.</p>"
+        }
+      },
+      "documentation":"<p>The content artifact object.</p>"
+    },
+    "ContentMuxType":{
+      "type":"string",
+      "enum":["ContentOnly"]
+    },
+    "CreateMediaCapturePipelineRequest":{
+      "type":"structure",
+      "required":[
+        "SourceType",
+        "SourceArn",
+        "SinkType",
+        "SinkArn"
+      ],
+      "members":{
+        "SourceType":{
+          "shape":"MediaPipelineSourceType",
+          "documentation":"<p>Source type from which the media artifacts are captured. A Chime SDK Meeting is the only supported source.</p>"
+        },
+        "SourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the source from which the media artifacts are captured.</p>"
+        },
+        "SinkType":{
+          "shape":"MediaPipelineSinkType",
+          "documentation":"<p>Destination type to which the media artifacts are saved. You must use an S3 bucket. </p>"
+        },
+        "SinkArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the sink type.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The token assigned to the client making the pipeline request.</p>",
+          "idempotencyToken":true
+        },
+        "ChimeSdkMeetingConfiguration":{
+          "shape":"ChimeSdkMeetingConfiguration",
+          "documentation":"<p>The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The list of tags.</p>"
+        }
+      }
+    },
+    "CreateMediaCapturePipelineResponse":{
+      "type":"structure",
+      "members":{
+        "MediaCapturePipeline":{
+          "shape":"MediaCapturePipeline",
+          "documentation":"<p>A media capture pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media capture pipeline object.</p>"
+        }
+      }
+    },
+    "DeleteMediaCapturePipelineRequest":{
+      "type":"structure",
+      "required":["MediaPipelineId"],
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the media capture pipeline being deleted. </p>",
+          "location":"uri",
+          "locationName":"mediaPipelineId"
+        }
+      }
+    },
+    "ErrorCode":{
+      "type":"string",
+      "enum":[
+        "BadRequest",
+        "Forbidden",
+        "NotFound",
+        "ResourceLimitExceeded",
+        "ServiceFailure",
+        "ServiceUnavailable",
+        "Throttling"
+      ]
+    },
+    "ExternalUserIdList":{
+      "type":"list",
+      "member":{"shape":"ExternalUserIdType"},
+      "min":1
+    },
+    "ExternalUserIdType":{
+      "type":"string",
+      "max":64,
+      "min":2,
+      "sensitive":true
+    },
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The client is permanently forbidden from making the request.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
+    "GetMediaCapturePipelineRequest":{
+      "type":"structure",
+      "required":["MediaPipelineId"],
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the pipeline that you want to get.</p>",
+          "location":"uri",
+          "locationName":"mediaPipelineId"
+        }
+      }
+    },
+    "GetMediaCapturePipelineResponse":{
+      "type":"structure",
+      "members":{
+        "MediaCapturePipeline":{
+          "shape":"MediaCapturePipeline",
+          "documentation":"<p>The media capture pipeline object.</p>"
+        }
+      }
+    },
+    "GuidString":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}"
+    },
+    "Iso8601Timestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ListMediaCapturePipelinesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token used to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"ResultMax",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid Range: 1 - 99.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListMediaCapturePipelinesResponse":{
+      "type":"structure",
+      "members":{
+        "MediaCapturePipelines":{
+          "shape":"MediaCapturePipelineSummaryList",
+          "documentation":"<p>The media capture pipeline objects in the list.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token used to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The resource ARN.</p>",
+          "location":"querystring",
+          "locationName":"arn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag key-value pairs.</p>"
+        }
+      }
+    },
+    "MediaCapturePipeline":{
+      "type":"structure",
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of a media capture pipeline.</p>"
+        },
+        "MediaPipelineArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of a media capture pipeline.</p>"
+        },
+        "SourceType":{
+          "shape":"MediaPipelineSourceType",
+          "documentation":"<p>Source type from which media artifacts are saved. You must use <code>ChimeMeeting</code>.</p>"
+        },
+        "SourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the source from which the media artifacts are saved.</p>"
+        },
+        "Status":{
+          "shape":"MediaPipelineStatus",
+          "documentation":"<p>The status of the media capture pipeline.</p>"
+        },
+        "SinkType":{
+          "shape":"MediaPipelineSinkType",
+          "documentation":"<p>Destination type to which the media artifacts are saved. You must use an S3 Bucket.</p>"
+        },
+        "SinkArn":{
+          "shape":"Arn",
+          "documentation":"<p>ARN of the destination to which the media artifacts are saved.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the capture pipeline was created, in ISO 8601 format.</p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the capture pipeline was updated, in ISO 8601 format.</p>"
+        },
+        "ChimeSdkMeetingConfiguration":{
+          "shape":"ChimeSdkMeetingConfiguration",
+          "documentation":"<p>The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+        }
+      },
+      "documentation":"<p>A media capture pipeline object consisting of an ID, source type, source ARN, a sink type, a sink ARN, and a configuration object.</p>"
+    },
+    "MediaCapturePipelineSummary":{
+      "type":"structure",
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of a media capture pipeline.</p>"
+        },
+        "MediaPipelineArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of a media capture pipeline.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a media capture pipeline.</p>"
+    },
+    "MediaCapturePipelineSummaryList":{
+      "type":"list",
+      "member":{"shape":"MediaCapturePipelineSummary"}
+    },
+    "MediaPipelineSinkType":{
+      "type":"string",
+      "enum":["S3Bucket"]
+    },
+    "MediaPipelineSourceType":{
+      "type":"string",
+      "enum":["ChimeSdkMeeting"]
+    },
+    "MediaPipelineStatus":{
+      "type":"string",
+      "enum":[
+        "Initializing",
+        "InProgress",
+        "Failed",
+        "Stopping",
+        "Stopped"
+      ]
+    },
+    "NotFoundException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>One or more of the resources in the request does not exist in the system.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "ResourceLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The request exceeds the resource limit.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ResultMax":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "SelectedVideoStreams":{
+      "type":"structure",
+      "members":{
+        "AttendeeIds":{
+          "shape":"AttendeeIdList",
+          "documentation":"<p>The attendee IDs of the streams selected for a media capture pipeline. </p>"
+        },
+        "ExternalUserIds":{
+          "shape":"ExternalUserIdList",
+          "documentation":"<p>The external user IDs of the streams selected for a media capture pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The video streams to capture for a specified media capture pipeline. The total number of video streams can't exceed 25.</p>"
+    },
+    "ServiceFailureException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The service encountered an unexpected error.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The service is currently unavailable.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true
+    },
+    "SourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "SelectedVideoStreams":{
+          "shape":"SelectedVideoStreams",
+          "documentation":"<p>The selected video streams to capture for a specified media capture pipeline. The number of video streams can't exceed 25.</p>"
+        }
+      },
+      "documentation":"<p>Source configuration for a specified media capture pipeline.</p>"
+    },
+    "String":{
+      "type":"string",
+      "max":4096,
+      "pattern":".*"
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the tag.</p>"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the tag.</p>"
+        }
+      },
+      "documentation":"<p>Describes a tag applied to a resource.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The resource ARN.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tag key-value pairs.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "ThrottledClientException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The client exceeded its request rate limit.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
+    "UnauthorizedClientException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The client is not currently authorized to make the request.</p>",
+      "error":{"httpStatusCode":401},
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The resource ARN.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "VideoArtifactsConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsState",
+          "documentation":"<p>Indicates whether the video artifact is enabled or disabled.</p>"
+        },
+        "MuxType":{
+          "shape":"VideoMuxType",
+          "documentation":"<p>The MUX type of the video artifact configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The video artifact configuration object.</p>"
+    },
+    "VideoMuxType":{
+      "type":"string",
+      "enum":["VideoOnly"]
+    }
+  },
+  "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines and capture audio, video, events, and data messages from Amazon Chime SDK meetings. For more information about media pipleines, see <a href=\"https://docs.aws.amazon.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amzon Chime SDK media pipelines</a>. </p>"
+}

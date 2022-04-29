@@ -35,7 +35,7 @@
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Adds one or more tags to a trail, up to a limit of 50. Overwrites an existing tag's value when a new value is specified for an existing tag key. Tag key names must be unique for a trail; you cannot have two keys with the same name but different values. If you specify a key without a value, the tag will be created with the specified key and a value of null. You can tag a trail that applies to all Amazon Web Services Regions only from the Region in which the trail was created (also known as its home region).</p>",
+      "documentation":"<p>Adds one or more tags to a trail or event data store, up to a limit of 50. Overwrites an existing tag's value when a new value is specified for an existing tag key. Tag key names must be unique for a trail; you cannot have two keys with the same name but different values. If you specify a key without a value, the tag will be created with the specified key and a value of null. You can tag a trail or event data store that applies to all Amazon Web Services Regions only from the Region in which the trail or event data store was created (also known as its home region).</p>",
       "idempotent":true
     },
     "CancelQuery":{
@@ -387,7 +387,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Lists the tags for the trail in the current region.</p>",
+      "documentation":"<p>Lists the tags for the trail or event data store in the current region.</p>",
       "idempotent":true
     },
     "ListTrails":{
@@ -490,7 +490,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"NotOrganizationMasterAccountException"}
       ],
-      "documentation":"<p>Removes the specified tags from a trail.</p>",
+      "documentation":"<p>Removes the specified tags from a trail or event data store.</p>",
       "idempotent":true
     },
     "RestoreEventDataStore":{
@@ -654,14 +654,14 @@
       "members":{
         "ResourceId":{
           "shape":"String",
-          "documentation":"<p>Specifies the ARN of the trail to which one or more tags will be added. The format of a trail ARN is:</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p>"
+          "documentation":"<p>Specifies the ARN of the trail or event data store to which one or more tags will be added. The format of a trail ARN is:</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p>"
         },
         "TagsList":{
           "shape":"TagsList",
           "documentation":"<p>Contains a list of tags, up to a limit of 50</p>"
         }
       },
-      "documentation":"<p>Specifies the tags to add to a trail.</p>"
+      "documentation":"<p>Specifies the tags to add to a trail or event data store.</p>"
     },
     "AddTagsResponse":{
       "type":"structure",
@@ -796,7 +796,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when the specified resource is not ready for an operation. This can occur when you try to run an operation on a trail before CloudTrail has time to fully load the trail. If this exception occurs, wait a few minutes, and then try the operation again.</p>",
+      "documentation":"<p>This exception is thrown when the specified resource is not ready for an operation. This can occur when you try to run an operation on a resource before CloudTrail has time to fully load the resource. If this exception occurs, wait a few minutes, and then try the operation again.</p>",
       "exception":true
     },
     "CreateEventDataStoreRequest":{
@@ -1176,35 +1176,51 @@
         },
         "TerminationProtectionEnabled":{
           "shape":"TerminationProtectionEnabled",
-          "documentation":"<p>Indicates whether the event data store is protected from termination.</p>"
+          "documentation":"<p>This field is being deprecated. Indicates whether the event data store is protected from termination.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"TerminationProtectionEnabled is no longer returned by ListEventDataStores"
         },
         "Status":{
           "shape":"EventDataStoreStatus",
-          "documentation":"<p>The status of an event data store. Values are <code>ENABLED</code> and <code>PENDING_DELETION</code>.</p>"
+          "documentation":"<p>This field is being deprecated. The status of an event data store. Values are <code>ENABLED</code> and <code>PENDING_DELETION</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Status is no longer returned by ListEventDataStores"
         },
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
-          "documentation":"<p>The advanced event selectors that were used to select events for the data store.</p>"
+          "documentation":"<p>This field is being deprecated. The advanced event selectors that were used to select events for the data store.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"AdvancedEventSelectors is no longer returned by ListEventDataStores"
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the event data store includes events from all regions, or only from the region in which it was created.</p>"
+          "documentation":"<p>This field is being deprecated. Indicates whether the event data store includes events from all regions, or only from the region in which it was created.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"MultiRegionEnabled is no longer returned by ListEventDataStores"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates that an event data store is collecting logged events for an organization.</p>"
+          "documentation":"<p>This field is being deprecated. Indicates that an event data store is collecting logged events for an organization.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"OrganizationEnabled is no longer returned by ListEventDataStores"
         },
         "RetentionPeriod":{
           "shape":"RetentionPeriod",
-          "documentation":"<p>The retention period, in days.</p>"
+          "documentation":"<p>This field is being deprecated. The retention period, in days.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"RetentionPeriod is no longer returned by ListEventDataStores"
         },
         "CreatedTimestamp":{
           "shape":"Date",
-          "documentation":"<p>The timestamp of the event data store's creation.</p>"
+          "documentation":"<p>This field is being deprecated. The timestamp of the event data store's creation.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"CreatedTimestamp is no longer returned by ListEventDataStores"
         },
         "UpdatedTimestamp":{
           "shape":"Date",
-          "documentation":"<p>The timestamp showing when an event data store was updated, if applicable. <code>UpdatedTimestamp</code> is always either the same or newer than the time shown in <code>CreatedTimestamp</code>.</p>"
+          "documentation":"<p>This field is being deprecated. The timestamp showing when an event data store was updated, if applicable. <code>UpdatedTimestamp</code> is always either the same or newer than the time shown in <code>CreatedTimestamp</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"UpdatedTimestamp is no longer returned by ListEventDataStores"
         }
       },
       "documentation":"<p>A storage lake of event data against which you can run complex SQL-based queries. An event data store can include events that you have logged on your account from the last 90 to 2555 days (about three months to up to seven years). To select events for an event data store, use <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced\">advanced event selectors</a>.</p>"
@@ -1562,7 +1578,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The event data store against which you ran your query is inactive.</p>",
+      "documentation":"<p>The event data store is inactive.</p>",
       "exception":true
     },
     "InactiveQueryException":{
@@ -1604,7 +1620,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when the IAM user or role that is used to create the organization trail is lacking one or more required permissions for creating an organization trail in a required service. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-an-organizational-trail-prepare.html\">Prepare For Creating a Trail For Your Organization</a>.</p>",
+      "documentation":"<p>This exception is thrown when the IAM user or role that is used to create the organization resource lacks one or more required permissions for creating an organization resource in a required service.</p>",
       "exception":true
     },
     "InsufficientEncryptionPolicyException":{
@@ -1647,7 +1663,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>A date range for the query was specified that is not valid. For more information about writing a query, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-create-edit-query.html\">Create or edit a query</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>A date range for the query was specified that is not valid. Be sure that the start time is chronologically before the end time. For more information about writing a query, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-create-edit-query.html\">Create or edit a query</a> in the <i>CloudTrail User Guide</i>.</p>",
       "exception":true
     },
     "InvalidEventCategoryException":{
@@ -1929,14 +1945,14 @@
       "members":{
         "ResourceIdList":{
           "shape":"ResourceIdList",
-          "documentation":"<p>Specifies a list of trail ARNs whose tags will be listed. The list has a limit of 20 ARNs. The following is the format of a trail ARN.</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p>"
+          "documentation":"<p>Specifies a list of trail and event data store ARNs whose tags will be listed. The list has a limit of 20 ARNs.</p>"
         },
         "NextToken":{
           "shape":"String",
           "documentation":"<p>Reserved for future use.</p>"
         }
       },
-      "documentation":"<p>Specifies a list of trail tags to return.</p>"
+      "documentation":"<p>Specifies a list of tags to return.</p>"
     },
     "ListTagsResponse":{
       "type":"structure",
@@ -2083,7 +2099,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when the Amazon Web Services account making the request to create or update an organization trail is not the management account for an organization in Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-an-organizational-trail-prepare.html\">Prepare For Creating a Trail For Your Organization</a>.</p>",
+      "documentation":"<p>This exception is thrown when the Amazon Web Services account making the request to create or update an organization trail or event data store is not the management account for an organization in Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-an-organizational-trail-prepare.html\">Prepare For Creating a Trail For Your Organization</a> or <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-event-data-store.html\">Create an event data store</a>.</p>",
       "exception":true
     },
     "OperationNotPermittedException":{
@@ -2108,7 +2124,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when Organizations is not configured to support all features. All features must be enabled in Organizations to support creating an organization trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-an-organizational-trail-prepare.html\">Prepare For Creating a Trail For Your Organization</a>.</p>",
+      "documentation":"<p>This exception is thrown when Organizations is not configured to support all features. All features must be enabled in Organizations to support creating an organization trail or event data store.</p>",
       "exception":true
     },
     "OrganizationsNotInUseException":{
@@ -2337,14 +2353,14 @@
       "members":{
         "ResourceId":{
           "shape":"String",
-          "documentation":"<p>Specifies the ARN of the trail from which tags should be removed. The format of a trail ARN is:</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p>"
+          "documentation":"<p>Specifies the ARN of the trail or event data store from which tags should be removed.</p> <p> Example trail ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>Example event data store ARN format: <code>arn:aws:cloudtrail:us-east-2:12345678910:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p>"
         },
         "TagsList":{
           "shape":"TagsList",
           "documentation":"<p>Specifies a list of tags to be removed.</p>"
         }
       },
-      "documentation":"<p>Specifies the tags to remove from a trail.</p>"
+      "documentation":"<p>Specifies the tags to remove from a trail or event data store.</p>"
     },
     "RemoveTagsResponse":{
       "type":"structure",
@@ -2464,7 +2480,7 @@
     },
     "RetentionPeriod":{
       "type":"integer",
-      "max":2555,
+      "max":2557,
       "min":7
     },
     "S3BucketDoesNotExistException":{

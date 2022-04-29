@@ -236,6 +236,25 @@
       ],
       "documentation":"<p>Creates a multicast group.</p>"
     },
+    "CreateNetworkAnalyzerConfiguration":{
+      "name":"CreateNetworkAnalyzerConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-analyzer-configurations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateNetworkAnalyzerConfigurationRequest"},
+      "output":{"shape":"CreateNetworkAnalyzerConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new network analyzer configuration.</p>"
+    },
     "CreateServiceProfile":{
       "name":"CreateServiceProfile",
       "http":{
@@ -404,6 +423,25 @@
       ],
       "documentation":"<p>Deletes a multicast group if it is not in use by a fuota task.</p>"
     },
+    "DeleteNetworkAnalyzerConfiguration":{
+      "name":"DeleteNetworkAnalyzerConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/network-analyzer-configurations/{ConfigurationName}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteNetworkAnalyzerConfigurationRequest"},
+      "output":{"shape":"DeleteNetworkAnalyzerConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a network analyzer configuration.</p>"
+    },
     "DeleteQueuedMessages":{
       "name":"DeleteQueuedMessages",
       "http":{
@@ -420,7 +458,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> The operation to delete queued messages. </p>"
+      "documentation":"<p>Remove queued messages from the downlink queue.</p>"
     },
     "DeleteServiceProfile":{
       "name":"DeleteServiceProfile",
@@ -675,6 +713,21 @@
       ],
       "documentation":"<p>Gets information about a device profile.</p>"
     },
+    "GetEventConfigurationByResourceTypes":{
+      "name":"GetEventConfigurationByResourceTypes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/event-configurations-resource-types"
+      },
+      "input":{"shape":"GetEventConfigurationByResourceTypesRequest"},
+      "output":{"shape":"GetEventConfigurationByResourceTypesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get the event configuration by resource types.</p>"
+    },
     "GetFuotaTask":{
       "name":"GetFuotaTask",
       "http":{
@@ -760,7 +813,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get NetworkAnalyzer configuration.</p>"
+      "documentation":"<p>Get network analyzer configuration.</p>"
     },
     "GetPartnerAccount":{
       "name":"GetPartnerAccount",
@@ -1016,6 +1069,22 @@
       ],
       "documentation":"<p>Lists the device profiles registered to your AWS account.</p>"
     },
+    "ListEventConfigurations":{
+      "name":"ListEventConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/event-configurations"
+      },
+      "input":{"shape":"ListEventConfigurationsRequest"},
+      "output":{"shape":"ListEventConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List event configurations where at least one event topic has been enabled.</p>"
+    },
     "ListFuotaTasks":{
       "name":"ListFuotaTasks",
       "http":{
@@ -1065,6 +1134,22 @@
       ],
       "documentation":"<p>List all multicast groups associated with a fuota task.</p>"
     },
+    "ListNetworkAnalyzerConfigurations":{
+      "name":"ListNetworkAnalyzerConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/network-analyzer-configurations"
+      },
+      "input":{"shape":"ListNetworkAnalyzerConfigurationsRequest"},
+      "output":{"shape":"ListNetworkAnalyzerConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the network analyzer configurations.</p>"
+    },
     "ListPartnerAccounts":{
       "name":"ListPartnerAccounts",
       "http":{
@@ -1096,7 +1181,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>The operation to list queued messages. </p>"
+      "documentation":"<p>List queued messages in the downlink queue.</p>"
     },
     "ListServiceProfiles":{
       "name":"ListServiceProfiles",
@@ -1415,6 +1500,23 @@
       ],
       "documentation":"<p>Updates properties of a destination.</p>"
     },
+    "UpdateEventConfigurationByResourceTypes":{
+      "name":"UpdateEventConfigurationByResourceTypes",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/event-configurations-resource-types",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateEventConfigurationByResourceTypesRequest"},
+      "output":{"shape":"UpdateEventConfigurationByResourceTypesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the event configuration by resource types.</p>"
+    },
     "UpdateFuotaTask":{
       "name":"UpdateFuotaTask",
       "http":{
@@ -1488,7 +1590,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Update NetworkAnalyzer configuration.</p>"
+      "documentation":"<p>Update network analyzer configuration.</p>"
     },
     "UpdatePartnerAccount":{
       "name":"UpdatePartnerAccount",
@@ -1574,6 +1676,10 @@
         "SessionKeys":{
           "shape":"SessionKeysAbpV1_0_x",
           "documentation":"<p>Session keys for ABP v1.0.x</p>"
+        },
+        "FCntStart":{
+          "shape":"FCntStart",
+          "documentation":"<p>The FCnt init value.</p>"
         }
       },
       "documentation":"<p>ABP device object for LoRaWAN specification v1.0.x</p>"
@@ -1588,6 +1694,10 @@
         "SessionKeys":{
           "shape":"SessionKeysAbpV1_1",
           "documentation":"<p>Session keys for ABP v1.1</p>"
+        },
+        "FCntStart":{
+          "shape":"FCntStart",
+          "documentation":"<p>The FCnt init value.</p>"
         }
       },
       "documentation":"<p>ABP device object for LoRaWAN specification v1.1</p>"
@@ -1901,6 +2011,30 @@
         "Disconnected"
       ]
     },
+    "ConnectionStatusEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "LoRaWAN":{
+          "shape":"LoRaWANConnectionStatusEventNotificationConfigurations",
+          "documentation":"<p>Connection status event configuration object for enabling or disabling LoRaWAN related event topics.</p>"
+        },
+        "WirelessGatewayIdEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless gateway id connection status event topic is enabled or disabled .</p>"
+        }
+      },
+      "documentation":"<p>Connection status event configuration object for enabling or disabling topic.</p>"
+    },
+    "ConnectionStatusResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "LoRaWAN":{
+          "shape":"LoRaWANConnectionStatusResourceTypeEventConfiguration",
+          "documentation":"<p>Connection status resource type event configuration object for enabling or disabling LoRaWAN related event topics.</p>"
+        }
+      },
+      "documentation":"<p>Connection status resource type event configuration object for enabling or disabling topic.</p>"
+    },
     "Crc":{
       "type":"long",
       "max":4294967295,
@@ -2043,6 +2177,38 @@
       "members":{
         "Arn":{"shape":"MulticastGroupArn"},
         "Id":{"shape":"MulticastGroupId"}
+      }
+    },
+    "CreateNetworkAnalyzerConfigurationRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{"shape":"NetworkAnalyzerConfigurationName"},
+        "TraceContent":{"shape":"TraceContent"},
+        "WirelessDevices":{
+          "shape":"WirelessDeviceList",
+          "documentation":"<p>Wireless device resources to add to the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resource to add in the input array.</p>"
+        },
+        "WirelessGateways":{
+          "shape":"WirelessGatewayList",
+          "documentation":"<p>Wireless gateway resources to add to the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resource to add in the input array.</p>"
+        },
+        "Description":{"shape":"Description"},
+        "Tags":{"shape":"TagList"},
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateNetworkAnalyzerConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"NetworkAnalyzerConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name of the new resource.</p>"
+        },
+        "Name":{"shape":"NetworkAnalyzerConfigurationName"}
       }
     },
     "CreateServiceProfileRequest":{
@@ -2313,6 +2479,22 @@
       "members":{
       }
     },
+    "DeleteNetworkAnalyzerConfigurationRequest":{
+      "type":"structure",
+      "required":["ConfigurationName"],
+      "members":{
+        "ConfigurationName":{
+          "shape":"NetworkAnalyzerConfigurationName",
+          "location":"uri",
+          "locationName":"ConfigurationName"
+        }
+      }
+    },
+    "DeleteNetworkAnalyzerConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteQueuedMessagesRequest":{
       "type":"structure",
       "required":[
@@ -2322,19 +2504,19 @@
       "members":{
         "Id":{
           "shape":"WirelessDeviceId",
-          "documentation":"<p>Id of a given wireless device which messages will be deleted </p>",
+          "documentation":"<p>The ID of a given wireless device for which downlink messages will be deleted.</p>",
           "location":"uri",
           "locationName":"Id"
         },
         "MessageId":{
           "shape":"MessageId",
-          "documentation":"<p>if messageID==\"*\", the queue for a particular wireless deviceId will be purged, otherwise, the specific message with messageId will be deleted </p>",
+          "documentation":"<p>If message ID is <code>\"*\"</code>, it cleares the entire downlink queue for a given device, specified by the wireless device ID. Otherwise, the downlink message with the specified message ID will be deleted.</p>",
           "location":"querystring",
           "locationName":"messageId"
         },
         "WirelessDeviceType":{
           "shape":"WirelessDeviceType",
-          "documentation":"<p>The wireless device type, it is either Sidewalk or LoRaWAN. </p>",
+          "documentation":"<p>The wireless device type, which can be either Sidewalk or LoRaWAN.</p>",
           "location":"querystring",
           "locationName":"WirelessDeviceType"
         }
@@ -2530,9 +2712,23 @@
         "Sidewalk":{
           "shape":"SidewalkEventNotificationConfigurations",
           "documentation":"<p>Device registration state event configuration object for enabling or disabling Sidewalk related event topics.</p>"
+        },
+        "WirelessDeviceIdEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless device id device registration state event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Device registration state event configuration object for enabling and disabling relevant topics.</p>"
+    },
+    "DeviceRegistrationStateResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "Sidewalk":{
+          "shape":"SidewalkResourceTypeEventConfiguration",
+          "documentation":"<p>Device registration resource type state event configuration object for enabling or disabling Sidewalk related event topics.</p>"
+        }
+      },
+      "documentation":"<p>Device registration state resource type event configuration object for enabling or disabling topic.</p>"
     },
     "DeviceState":{
       "type":"string",
@@ -2734,19 +2930,19 @@
       "members":{
         "MessageId":{
           "shape":"MessageId",
-          "documentation":"<p> The messageId allocated by IoT Wireless for tracing purpose</p>"
+          "documentation":"<p> The message ID assigned by IoT Wireless to each downlink message, which helps identify the message.</p>"
         },
         "TransmitMode":{
           "shape":"TransmitMode",
-          "documentation":"<p>The transmit mode to use to send data to the wireless device. Can be: <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).</p>"
+          "documentation":"<p>The transmit mode to use for sending data to the wireless device. This can be <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).</p>"
         },
         "ReceivedAt":{
           "shape":"ISODateTimeString",
-          "documentation":"<p>The timestamp that Iot Wireless received the message.</p>"
+          "documentation":"<p>The time at which Iot Wireless received the downlink message.</p>"
         },
         "LoRaWAN":{"shape":"LoRaWANSendDataToDevice"}
       },
-      "documentation":"<p>The message in downlink queue.</p>"
+      "documentation":"<p>The message in the downlink queue.</p>"
     },
     "DownlinkQueueMessagesList":{
       "type":"list",
@@ -2778,9 +2974,62 @@
         "passthrough"
       ]
     },
+    "EventConfigurationItem":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"Identifier",
+          "documentation":"<p>Resource identifier opted in for event messaging.</p>"
+        },
+        "IdentifierType":{
+          "shape":"IdentifierType",
+          "documentation":"<p>Identifier type of the particular resource identifier for event configuration.</p>"
+        },
+        "PartnerType":{
+          "shape":"EventNotificationPartnerType",
+          "documentation":"<p>Partner type of the resource if the identifier type is PartnerAccountId.</p>"
+        },
+        "Events":{"shape":"EventNotificationItemConfigurations"}
+      },
+      "documentation":"<p>Event configuration object for a single resource.</p>"
+    },
+    "EventConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"EventConfigurationItem"}
+    },
+    "EventNotificationItemConfigurations":{
+      "type":"structure",
+      "members":{
+        "DeviceRegistrationState":{
+          "shape":"DeviceRegistrationStateEventConfiguration",
+          "documentation":"<p>Device registration state event configuration for an event configuration item.</p>"
+        },
+        "Proximity":{
+          "shape":"ProximityEventConfiguration",
+          "documentation":"<p>Proximity event configuration for an event configuration item.</p>"
+        },
+        "Join":{
+          "shape":"JoinEventConfiguration",
+          "documentation":"<p>Join event configuration for an event configuration item.</p>"
+        },
+        "ConnectionStatus":{
+          "shape":"ConnectionStatusEventConfiguration",
+          "documentation":"<p>Connection status event configuration for an event configuration item.</p>"
+        }
+      },
+      "documentation":"<p>Object of all event configurations and the status of the event topics.</p>"
+    },
     "EventNotificationPartnerType":{
       "type":"string",
       "enum":["Sidewalk"]
+    },
+    "EventNotificationResourceType":{
+      "type":"string",
+      "enum":[
+        "SidewalkAccount",
+        "WirelessDevice",
+        "WirelessGateway"
+      ]
     },
     "EventNotificationTopicStatus":{
       "type":"string",
@@ -2799,6 +3048,12 @@
         "RuleName",
         "MqttTopic"
       ]
+    },
+    "FCntStart":{
+      "type":"integer",
+      "documentation":"<p>The FCnt init value.</p>",
+      "max":65535,
+      "min":0
     },
     "FNwkSIntKey":{
       "type":"string",
@@ -2983,6 +3238,32 @@
         }
       }
     },
+    "GetEventConfigurationByResourceTypesRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetEventConfigurationByResourceTypesResponse":{
+      "type":"structure",
+      "members":{
+        "DeviceRegistrationState":{
+          "shape":"DeviceRegistrationStateResourceTypeEventConfiguration",
+          "documentation":"<p>Resource type event configuration for the device registration state event</p>"
+        },
+        "Proximity":{
+          "shape":"ProximityResourceTypeEventConfiguration",
+          "documentation":"<p>Resource type event configuration for the proximity event</p>"
+        },
+        "Join":{
+          "shape":"JoinResourceTypeEventConfiguration",
+          "documentation":"<p>Resource type event configuration for the join event</p>"
+        },
+        "ConnectionStatus":{
+          "shape":"ConnectionStatusResourceTypeEventConfiguration",
+          "documentation":"<p>Resource type event configuration for the connection status event</p>"
+        }
+      }
+    },
     "GetFuotaTaskRequest":{
       "type":"structure",
       "required":["Id"],
@@ -3078,12 +3359,18 @@
         "TraceContent":{"shape":"TraceContent"},
         "WirelessDevices":{
           "shape":"WirelessDeviceList",
-          "documentation":"<p>List of WirelessDevices in the NetworkAnalyzerConfiguration.</p>"
+          "documentation":"<p>List of wireless gateway resources that have been added to the network analyzer configuration.</p>"
         },
         "WirelessGateways":{
           "shape":"WirelessGatewayList",
-          "documentation":"<p>List of WirelessGateways in the NetworkAnalyzerConfiguration.</p>"
-        }
+          "documentation":"<p>List of wireless gateway resources that have been added to the network analyzer configuration.</p>"
+        },
+        "Description":{"shape":"Description"},
+        "Arn":{
+          "shape":"NetworkAnalyzerConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name of the new resource.</p>"
+        },
+        "Name":{"shape":"NetworkAnalyzerConfigurationName"}
       }
     },
     "GetPartnerAccountRequest":{
@@ -3157,6 +3444,14 @@
         "Proximity":{
           "shape":"ProximityEventConfiguration",
           "documentation":"<p>Event configuration for the Proximity event</p>"
+        },
+        "Join":{
+          "shape":"JoinEventConfiguration",
+          "documentation":"<p>Event configuration for the join event.</p>"
+        },
+        "ConnectionStatus":{
+          "shape":"ConnectionStatusEventConfiguration",
+          "documentation":"<p>Event configuration for the connection status event.</p>"
         }
       }
     },
@@ -3191,7 +3486,7 @@
       "members":{
         "ServiceType":{
           "shape":"WirelessGatewayServiceType",
-          "documentation":"<p>The service type for which to get endpoint information about. Can be <code>CUPS</code> for the Configuration and Update Server endpoint, or <code>LNS</code> for the LoRaWAN Network Server endpoint.</p>",
+          "documentation":"<p>The service type for which to get endpoint information about. Can be <code>CUPS</code> for the Configuration and Update Server endpoint, or <code>LNS</code> for the LoRaWAN Network Server endpoint or <code>CLAIM</code> for the global endpoint.</p>",
           "location":"querystring",
           "locationName":"serviceType"
         }
@@ -3556,7 +3851,13 @@
     },
     "IdentifierType":{
       "type":"string",
-      "enum":["PartnerAccountId"]
+      "enum":[
+        "PartnerAccountId",
+        "DevEui",
+        "GatewayEui",
+        "WirelessDeviceId",
+        "WirelessGatewayId"
+      ]
     },
     "Integer":{"type":"integer"},
     "InternalServerException":{
@@ -3590,6 +3891,30 @@
       "documentation":"<p>A pair of join EUI describing a range [BegEui, EndEui], both ends are inclusive.</p>",
       "max":2,
       "min":2
+    },
+    "JoinEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "LoRaWAN":{
+          "shape":"LoRaWANJoinEventNotificationConfigurations",
+          "documentation":"<p>Join event configuration object for enabling or disabling LoRaWAN related event topics.</p>"
+        },
+        "WirelessDeviceIdEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless device id join event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Join event configuration object for enabling or disabling topic.</p>"
+    },
+    "JoinResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "LoRaWAN":{
+          "shape":"LoRaWANJoinResourceTypeEventConfiguration",
+          "documentation":"<p>Join resource type event configuration object for enabling or disabling LoRaWAN related event topics.</p>"
+        }
+      },
+      "documentation":"<p>Join resource type event configuration object for enabling or disabling topic.</p>"
     },
     "ListDestinationsRequest":{
       "type":"structure",
@@ -3648,6 +3973,42 @@
         "DeviceProfileList":{
           "shape":"DeviceProfileList",
           "documentation":"<p>The list of device profiles.</p>"
+        }
+      }
+    },
+    "ListEventConfigurationsRequest":{
+      "type":"structure",
+      "required":["ResourceType"],
+      "members":{
+        "ResourceType":{
+          "shape":"EventNotificationResourceType",
+          "documentation":"<p>Resource type to filter event configurations.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEventConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>"
+        },
+        "EventConfigurationsList":{
+          "shape":"EventConfigurationsList",
+          "documentation":"<p>Event configurations of all events for a single resource.</p>"
         }
       }
     },
@@ -3735,6 +4096,35 @@
         "MulticastGroupList":{"shape":"MulticastGroupList"}
       }
     },
+    "ListNetworkAnalyzerConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNetworkAnalyzerConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <b>null</b> if there are no additional results.</p>"
+        },
+        "NetworkAnalyzerConfigurationList":{
+          "shape":"NetworkAnalyzerConfigurationList",
+          "documentation":"<p>The list of network analyzer configurations.</p>"
+        }
+      }
+    },
     "ListPartnerAccountsRequest":{
       "type":"structure",
       "members":{
@@ -3771,7 +4161,7 @@
       "members":{
         "Id":{
           "shape":"WirelessDeviceId",
-          "documentation":"<p>Id of a given wireless device which the downlink packets are targeted </p>",
+          "documentation":"<p>The ID of a given wireless device which the downlink message packets are being sent.</p>",
           "location":"uri",
           "locationName":"Id"
         },
@@ -3789,7 +4179,7 @@
         },
         "WirelessDeviceType":{
           "shape":"WirelessDeviceType",
-          "documentation":"<p>The wireless device type, it is either Sidewalk or LoRaWAN.</p>",
+          "documentation":"<p>The wireless device type, whic can be either Sidewalk or LoRaWAN.</p>",
           "location":"querystring",
           "locationName":"WirelessDeviceType"
         }
@@ -3804,7 +4194,7 @@
         },
         "DownlinkQueueMessagesList":{
           "shape":"DownlinkQueueMessagesList",
-          "documentation":"<p>The messages in downlink queue.</p>"
+          "documentation":"<p>The messages in the downlink queue.</p>"
         }
       }
     },
@@ -3988,6 +4378,26 @@
           "documentation":"<p>The ID of the wireless gateway.</p>"
         }
       }
+    },
+    "LoRaWANConnectionStatusEventNotificationConfigurations":{
+      "type":"structure",
+      "members":{
+        "GatewayEuiEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the gateway eui connection status event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Object for LoRaWAN connection status resource type event configuration.</p>"
+    },
+    "LoRaWANConnectionStatusResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "WirelessGatewayEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless gateway connection status event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Object for LoRaWAN connection status resource type event configuration.</p>"
     },
     "LoRaWANDevice":{
       "type":"structure",
@@ -4300,6 +4710,26 @@
       },
       "documentation":"<p>LoRaWANGetServiceProfileInfo object.</p>"
     },
+    "LoRaWANJoinEventNotificationConfigurations":{
+      "type":"structure",
+      "members":{
+        "DevEuiEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the dev eui join event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Object for LoRaWAN join resource type event configuration.</p>"
+    },
+    "LoRaWANJoinResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "WirelessDeviceEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless device join event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Object for LoRaWAN join resource type event configuration.</p>"
+    },
     "LoRaWANListDevice":{
       "type":"structure",
       "members":{
@@ -4379,6 +4809,14 @@
         "ServiceProfileId":{
           "shape":"ServiceProfileId",
           "documentation":"<p>The ID of the service profile.</p>"
+        },
+        "AbpV1_1":{
+          "shape":"UpdateAbpV1_1",
+          "documentation":"<p>ABP device object for update APIs for v1.1</p>"
+        },
+        "AbpV1_0_x":{
+          "shape":"UpdateAbpV1_0_x",
+          "documentation":"<p>ABP device object for update APIs for v1.0.x</p>"
         }
       },
       "documentation":"<p>LoRaWAN object for update functions.</p>"
@@ -4421,7 +4859,7 @@
     },
     "LogLevel":{
       "type":"string",
-      "documentation":"<p>The log level for a log message.</p>",
+      "documentation":"<p>The log level for a log message. The log levels can be disabled, or set to <code>ERROR</code> to display less verbose logs containing only error information, or to <code>INFO</code> for more detailed logs.</p>",
       "enum":[
         "INFO",
         "ERROR",
@@ -4553,12 +4991,31 @@
       "max":10,
       "min":0
     },
+    "NetworkAnalyzerConfigurationArn":{
+      "type":"string",
+      "max":1124
+    },
+    "NetworkAnalyzerConfigurationList":{
+      "type":"list",
+      "member":{"shape":"NetworkAnalyzerConfigurations"}
+    },
     "NetworkAnalyzerConfigurationName":{
       "type":"string",
-      "documentation":"<p>NetworkAnalyzer configuration name.</p>",
+      "documentation":"<p>Name of the network analyzer configuration.</p>",
       "max":1024,
       "min":1,
-      "pattern":"NetworkAnalyzerConfig_Default"
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "NetworkAnalyzerConfigurations":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"NetworkAnalyzerConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name of the new resource.</p>"
+        },
+        "Name":{"shape":"NetworkAnalyzerConfigurationName"}
+      },
+      "documentation":"<p>Network analyzer configurations.</p>"
     },
     "NextToken":{
       "type":"string",
@@ -4668,9 +5125,23 @@
         "Sidewalk":{
           "shape":"SidewalkEventNotificationConfigurations",
           "documentation":"<p>Proximity event configuration object for enabling or disabling Sidewalk related event topics.</p>"
+        },
+        "WirelessDeviceIdEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless device id proximity event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Proximity event configuration object for enabling and disabling relevant topics.</p>"
+    },
+    "ProximityResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "Sidewalk":{
+          "shape":"SidewalkResourceTypeEventConfiguration",
+          "documentation":"<p>Proximity resource type event configuration object for enabling and disabling wireless device topic.</p>"
+        }
+      },
+      "documentation":"<p>Proximity resource type event configuration object for enabling or disabling topic.</p>"
     },
     "PutResourceLogLevelRequest":{
       "type":"structure",
@@ -5066,6 +5537,16 @@
       "type":"string",
       "max":64
     },
+    "SidewalkResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "WirelessDeviceEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless device join event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Sidewalk resource type event configuration object for enabling or disabling topic.</p>"
+    },
     "SidewalkSendDataToDevice":{
       "type":"structure",
       "members":{
@@ -5326,7 +5807,7 @@
         "WirelessDeviceFrameInfo":{"shape":"WirelessDeviceFrameInfo"},
         "LogLevel":{"shape":"LogLevel"}
       },
-      "documentation":"<p>Trace Content for resources.</p>"
+      "documentation":"<p>Trace content for your wireless gateway and wireless device resources.</p>"
     },
     "TransmitMode":{
       "type":"integer",
@@ -5373,6 +5854,26 @@
       "members":{
       }
     },
+    "UpdateAbpV1_0_x":{
+      "type":"structure",
+      "members":{
+        "FCntStart":{
+          "shape":"FCntStart",
+          "documentation":"<p>The FCnt init value.</p>"
+        }
+      },
+      "documentation":"<p>ABP device object for LoRaWAN specification v1.0.x</p>"
+    },
+    "UpdateAbpV1_1":{
+      "type":"structure",
+      "members":{
+        "FCntStart":{
+          "shape":"FCntStart",
+          "documentation":"<p>The FCnt init value.</p>"
+        }
+      },
+      "documentation":"<p>ABP device object for LoRaWAN specification v1.1</p>"
+    },
     "UpdateDataSource":{
       "type":"string",
       "max":4096,
@@ -5407,6 +5908,32 @@
       }
     },
     "UpdateDestinationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateEventConfigurationByResourceTypesRequest":{
+      "type":"structure",
+      "members":{
+        "DeviceRegistrationState":{
+          "shape":"DeviceRegistrationStateResourceTypeEventConfiguration",
+          "documentation":"<p>Device registration state resource type event configuration object for enabling and disabling wireless gateway topic.</p>"
+        },
+        "Proximity":{
+          "shape":"ProximityResourceTypeEventConfiguration",
+          "documentation":"<p>Proximity resource type event configuration object for enabling and disabling wireless gateway topic.</p>"
+        },
+        "Join":{
+          "shape":"JoinResourceTypeEventConfiguration",
+          "documentation":"<p>Join resource type event configuration object for enabling and disabling wireless device topic.</p>"
+        },
+        "ConnectionStatus":{
+          "shape":"ConnectionStatusResourceTypeEventConfiguration",
+          "documentation":"<p>Connection status resource type event configuration object for enabling and disabling wireless gateway topic.</p>"
+        }
+      }
+    },
+    "UpdateEventConfigurationByResourceTypesResponse":{
       "type":"structure",
       "members":{
       }
@@ -5476,20 +6003,21 @@
         "TraceContent":{"shape":"TraceContent"},
         "WirelessDevicesToAdd":{
           "shape":"WirelessDeviceList",
-          "documentation":"<p>WirelessDevices to add into NetworkAnalyzerConfiguration.</p>"
+          "documentation":"<p>Wireless device resources to add to the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resource to add in the input array.</p>"
         },
         "WirelessDevicesToRemove":{
           "shape":"WirelessDeviceList",
-          "documentation":"<p>WirelessDevices to remove from NetworkAnalyzerConfiguration.</p>"
+          "documentation":"<p>Wireless device resources to remove from the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resources to remove in the input array.</p>"
         },
         "WirelessGatewaysToAdd":{
           "shape":"WirelessGatewayList",
-          "documentation":"<p>WirelessGateways to add into NetworkAnalyzerConfiguration.</p>"
+          "documentation":"<p>Wireless gateway resources to add to the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resource to add in the input array.</p>"
         },
         "WirelessGatewaysToRemove":{
           "shape":"WirelessGatewayList",
-          "documentation":"<p>WirelessGateways to remove from NetworkAnalyzerConfiguration.</p>"
-        }
+          "documentation":"<p>Wireless gateway resources to remove from the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resources to remove in the input array.</p>"
+        },
+        "Description":{"shape":"Description"}
       }
     },
     "UpdateNetworkAnalyzerConfigurationResponse":{
@@ -5560,6 +6088,14 @@
         "Proximity":{
           "shape":"ProximityEventConfiguration",
           "documentation":"<p>Event configuration for the Proximity event</p>"
+        },
+        "Join":{
+          "shape":"JoinEventConfiguration",
+          "documentation":"<p>Event configuration for the join event</p>"
+        },
+        "ConnectionStatus":{
+          "shape":"ConnectionStatusEventConfiguration",
+          "documentation":"<p>Event configuration for the connection status event</p>"
         }
       }
     },
@@ -5709,7 +6245,7 @@
     },
     "WirelessDeviceFrameInfo":{
       "type":"string",
-      "documentation":"<p>WirelessDevice FrameInfo for trace content.</p>",
+      "documentation":"<p>FrameInfo of your wireless device resources for the trace content. Use FrameInfo to debug the communication between your LoRaWAN end devices and the network server.</p>",
       "enum":[
         "ENABLED",
         "DISABLED"

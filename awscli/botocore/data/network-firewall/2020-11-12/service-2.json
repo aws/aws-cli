@@ -868,6 +868,10 @@
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>A complex type that contains settings for encryption of your rule group resources.</p>"
+        },
+        "SourceMetadata":{
+          "shape":"SourceMetadata",
+          "documentation":"<p>A complex type that contains metadata about the rule group that your own rule group is copied from. You can use the metadata to keep track of updates made to the originating rule group.</p>"
         }
       }
     },
@@ -1145,7 +1149,11 @@
           "shape":"RuleCapacity",
           "documentation":"<p>The maximum operating resources that this rule group can use. Rule group capacity is fixed at creation. When you update a rule group, you are limited to this capacity. When you reference a rule group from a firewall policy, Network Firewall reserves this capacity for the rule group. </p> <p>You can retrieve the capacity that would be required for a rule group before you create the rule group by calling <a>CreateRuleGroup</a> with <code>DryRun</code> set to <code>TRUE</code>. </p>"
         },
-        "StatefulRuleOptions":{"shape":"StatefulRuleOptions"}
+        "StatefulRuleOptions":{"shape":"StatefulRuleOptions"},
+        "LastModifiedTime":{
+          "shape":"LastUpdateTime",
+          "documentation":"<p>The last time that the rule group was changed.</p>"
+        }
       }
     },
     "DescribeRuleGroupRequest":{
@@ -1265,6 +1273,7 @@
     },
     "EncryptionConfiguration":{
       "type":"structure",
+      "required":["Type"],
       "members":{
         "KeyId":{
           "shape":"KeyId",
@@ -1463,6 +1472,10 @@
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>A complex type that contains the Amazon Web Services KMS encryption configuration settings for your firewall policy.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastUpdateTime",
+          "documentation":"<p>The last time that the firewall policy was changed.</p>"
         }
       },
       "documentation":"<p>The high-level properties of a firewall policy. This, along with the <a>FirewallPolicy</a>, define the policy. You can retrieve all objects for a firewall policy by calling <a>DescribeFirewallPolicy</a>. </p>"
@@ -1640,6 +1653,7 @@
       "min":1,
       "pattern":".*"
     },
+    "LastUpdateTime":{"type":"timestamp"},
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -1718,6 +1732,14 @@
         "Scope":{
           "shape":"ResourceManagedStatus",
           "documentation":"<p>The scope of the request. The default setting of <code>ACCOUNT</code> or a setting of <code>NULL</code> returns all of the rule groups in your account. A setting of <code>MANAGED</code> returns all available managed rule groups.</p>"
+        },
+        "ManagedType":{
+          "shape":"ResourceManagedType",
+          "documentation":"<p>Indicates the general category of the Amazon Web Services managed rule group.</p>"
+        },
+        "Type":{
+          "shape":"RuleGroupType",
+          "documentation":"<p>Indicates whether the rule group is stateless or stateful. If the rule group is stateless, it contains stateless rules. If it is stateful, it contains stateful rules.</p>"
         }
       }
     },
@@ -2021,6 +2043,13 @@
         "ACCOUNT"
       ]
     },
+    "ResourceManagedType":{
+      "type":"string",
+      "enum":[
+        "AWS_MANAGED_THREAT_SIGNATURES",
+        "AWS_MANAGED_DOMAIN_LISTS"
+      ]
+    },
     "ResourceName":{
       "type":"string",
       "max":128,
@@ -2153,6 +2182,18 @@
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>A complex type that contains the Amazon Web Services KMS encryption configuration settings for your rule group.</p>"
+        },
+        "SourceMetadata":{
+          "shape":"SourceMetadata",
+          "documentation":"<p>A complex type that contains metadata about the rule group that your own rule group is copied from. You can use the metadata to track the version updates made to the originating rule group.</p>"
+        },
+        "SnsTopic":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that's used to record changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/welcome.html\">Amazon Simple Notification Service Developer Guide.</a>.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastUpdateTime",
+          "documentation":"<p>The last time that the rule group was changed.</p>"
         }
       },
       "documentation":"<p>The high-level properties of a rule group. This, along with the <a>RuleGroup</a>, define the rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
@@ -2283,6 +2324,20 @@
       "max":1024,
       "min":1,
       "pattern":"^.*$"
+    },
+    "SourceMetadata":{
+      "type":"structure",
+      "members":{
+        "SourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the rule group that your own rule group is copied from.</p>"
+        },
+        "SourceUpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>The update token of the Amazon Web Services managed rule group that your own rule group is copied from. To determine the update token for the managed rule group, call <a href=\"https://docs.aws.amazon.com/network-firewall/latest/APIReference/API_DescribeRuleGroup.html#networkfirewall-DescribeRuleGroup-response-UpdateToken\">DescribeRuleGroup</a>.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about the managed rule group that your own rule group is copied from. You can use the the metadata to track version updates made to the originating rule group. You can retrieve all objects for a rule group by calling <a href=\"https://docs.aws.amazon.com/network-firewall/latest/APIReference/API_DescribeRuleGroup.html\">DescribeRuleGroup</a>.</p>"
     },
     "StatefulAction":{
       "type":"string",
@@ -2948,6 +3003,10 @@
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>A complex type that contains settings for encryption of your rule group resources.</p>"
+        },
+        "SourceMetadata":{
+          "shape":"SourceMetadata",
+          "documentation":"<p>A complex type that contains metadata about the rule group that your own rule group is copied from. You can use the metadata to keep track of updates made to the originating rule group.</p>"
         }
       }
     },

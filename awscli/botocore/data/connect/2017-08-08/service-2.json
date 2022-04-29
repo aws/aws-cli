@@ -1636,6 +1636,24 @@
       ],
       "documentation":"<p>Provides summary information about the users for the specified Amazon Connect instance.</p>"
     },
+    "PutUserStatus":{
+      "name":"PutUserStatus",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/users/{InstanceId}/{UserId}/status"
+      },
+      "input":{"shape":"PutUserStatusRequest"},
+      "output":{"shape":"PutUserStatusResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Changes the current status of a user or agent in Amazon Connect. If the agent is currently handling a contact, this sets the agent's next status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-agent-status.html\">Agent status</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-next-status.html\">Set your next status</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+    },
     "ReleasePhoneNumber":{
       "name":"ReleasePhoneNumber",
       "http":{
@@ -8143,6 +8161,37 @@
     "PromptSummaryList":{
       "type":"list",
       "member":{"shape":"PromptSummary"}
+    },
+    "PutUserStatusRequest":{
+      "type":"structure",
+      "required":[
+        "UserId",
+        "InstanceId",
+        "AgentStatusId"
+      ],
+      "members":{
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "AgentStatusId":{
+          "shape":"AgentStatusId",
+          "documentation":"<p>The identifier of the agent status.</p>"
+        }
+      }
+    },
+    "PutUserStatusResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "Queue":{
       "type":"structure",

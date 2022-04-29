@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.23.4
+======
+
+* api-change:``rds``: [``botocore``] Feature - Adds support for Internet Protocol Version 6 (IPv6) on RDS database instances.
+* api-change:``codeguru-reviewer``: [``botocore``] Amazon CodeGuru Reviewer now supports suppressing recommendations from being generated on specific files and directories.
+* api-change:``ssm``: [``botocore``] Update the StartChangeRequestExecution, adding TargetMaps to the Runbook parameter
+* api-change:``mediaconvert``: [``botocore``] AWS Elemental MediaConvert SDK nows supports creation of Dolby Vision profile 8.1, the ability to generate black frames of video, and introduces audio-only DASH and CMAF support.
+* api-change:``wafv2``: [``botocore``] You can now inspect all request headers and all cookies. You can now specify how to handle oversize body contents in your rules that inspect the body.
+
+
 1.23.3
 ======
 

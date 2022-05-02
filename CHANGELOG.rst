@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.23.5
+======
+
+* api-change:``organizations``: [``botocore``] This release adds the INVALID_PAYMENT_INSTRUMENT as a fail reason and an error message.
+* api-change:``synthetics``: [``botocore``] CloudWatch Synthetics has introduced a new feature to provide customers with an option to delete the underlying resources that Synthetics canary creates when the user chooses to delete the canary.
+* api-change:``outposts``: [``botocore``] This release adds a new API called ListAssets to the Outposts SDK, which lists the hardware assets in an Outpost.
+
+
 1.23.4
 ======
 

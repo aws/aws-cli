@@ -72,7 +72,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             response,
             {
                 "kind": "ExecCredential",
-                "apiVersion": "client.authentication.k8s.io/v1alpha1",
+                "apiVersion": "client.authentication.k8s.io/v1",
                 "spec": {},
                 "status": {
                     "expirationTimestamp": "2019-10-23T23:14:00Z",

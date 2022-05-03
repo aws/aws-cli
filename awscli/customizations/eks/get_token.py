@@ -74,7 +74,7 @@ class GetTokenCommand(BasicCommand):
 
         full_object = {
             "kind": "ExecCredential",
-            "apiVersion": "client.authentication.k8s.io/v1alpha1",
+            "apiVersion": "client.authentication.k8s.io/v1",
             "spec": {},
             "status": {
                 "expirationTimestamp": token_expiration,

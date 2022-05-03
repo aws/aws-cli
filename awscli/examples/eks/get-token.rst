@@ -10,7 +10,7 @@ Output::
 
   {
     "kind": "ExecCredential",
-    "apiVersion": "client.authentication.k8s.io/v1alpha1",
+    "apiVersion": "client.authentication.k8s.io/v1",
     "spec": {},
     "status": {
       "expirationTimestamp": "2019-08-14T18:44:27Z",

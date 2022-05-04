@@ -28,7 +28,7 @@
         {"shape":"WAFUnavailableEntityException"},
         {"shape":"WAFInvalidOperationException"}
       ],
-      "documentation":"<p>Associates a web ACL with a regional application resource, to protect the resource. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, or an AppSync GraphQL API. </p> <p>For Amazon CloudFront, don't use this call. Instead, use your CloudFront distribution configuration. To associate a web ACL, in the CloudFront call <code>UpdateDistribution</code>, set the web ACL ID to the Amazon Resource Name (ARN) of the web ACL. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>.</p>"
+      "documentation":"<p>Associates a web ACL with a regional application resource, to protect the resource. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, or an AppSync GraphQL API. </p> <p>For Amazon CloudFront, don't use this call. Instead, use your CloudFront distribution configuration. To associate a web ACL, in the CloudFront call <code>UpdateDistribution</code>, set the web ACL ID to the Amazon Resource Name (ARN) of the web ACL. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>.</p> <p>When you make changes to web ACLs or web ACL components, like rules and rule groups, WAF propagates the changes everywhere that the web ACL and its components are stored and used. Your changes are applied within seconds, but there might be a brief period of inconsistency when the changes have arrived in some places and not in others. So, for example, if you change a rule action setting, the action might be the old action in one area and the new action in another area. Or if you add an IP address to an IP set used in a blocking rule, the new address might briefly be blocked in one area while still allowed in another. This temporary inconsistency can occur when you first associate a web ACL with an Amazon Web Services resource and when you change a web ACL that is already associated with a resource. Generally, any inconsistencies of this type last only a few seconds.</p>"
     },
     "CheckCapacity":{
       "name":"CheckCapacity",
@@ -133,7 +133,8 @@
         {"shape":"WAFTagOperationException"},
         {"shape":"WAFTagOperationInternalErrorException"},
         {"shape":"WAFSubscriptionNotFoundException"},
-        {"shape":"WAFInvalidOperationException"}
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFConfigurationWarningException"}
       ],
       "documentation":"<p>Creates a <a>WebACL</a> per the specifications provided.</p> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has an action defined (allow, block, or count) for requests that match the statement of the rule. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resources can be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an Application Load Balancer, or an AppSync GraphQL API. </p>"
     },
@@ -264,7 +265,7 @@
         {"shape":"WAFTagOperationInternalErrorException"},
         {"shape":"WAFInvalidOperationException"}
       ],
-      "documentation":"<p>Deletes the specified <a>WebACL</a>.</p> <p>You can only use this if <code>ManagedByFirewallManager</code> is false in the specified <a>WebACL</a>. </p>"
+      "documentation":"<p>Deletes the specified <a>WebACL</a>. </p> <p>You can only use this if <code>ManagedByFirewallManager</code> is false in the specified <a>WebACL</a>. </p> <note> <p>Before deleting any web ACL, first disassociate it from all resources.</p> <ul> <li> <p>To retrieve a list of the resources that are associated with a web ACL, use the following calls:</p> <ul> <li> <p>For regional resources, call <a>ListResourcesForWebACL</a>.</p> </li> <li> <p>For Amazon CloudFront distributions, use the CloudFront call <code>ListDistributionsByWebACLId</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_ListDistributionsByWebACLId.html\">ListDistributionsByWebACLId</a>.</p> </li> </ul> </li> <li> <p>To disassociate a resource from a web ACL, use the following calls:</p> <ul> <li> <p>For regional resources, call <a>DisassociateWebACL</a>.</p> </li> <li> <p>For Amazon CloudFront distributions, provide an empty web ACL ID in the CloudFront call <code>UpdateDistribution</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>.</p> </li> </ul> </li> </ul> </note>"
     },
     "DescribeManagedRuleGroup":{
       "name":"DescribeManagedRuleGroup",
@@ -298,7 +299,7 @@
         {"shape":"WAFNonexistentItemException"},
         {"shape":"WAFInvalidOperationException"}
       ],
-      "documentation":"<p>Disassociates a web ACL from a regional application resource. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, or an AppSync GraphQL API. </p> <p>For Amazon CloudFront, don't use this call. Instead, use your CloudFront distribution configuration. To disassociate a web ACL, provide an empty web ACL ID in the CloudFront call <code>UpdateDistribution</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>.</p>"
+      "documentation":"<p>Disassociates the specified regional application resource from any existing web ACL association. A resource can have at most one web ACL association. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, or an AppSync GraphQL API. </p> <p>For Amazon CloudFront, don't use this call. Instead, use your CloudFront distribution configuration. To disassociate a web ACL, provide an empty web ACL ID in the CloudFront call <code>UpdateDistribution</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>.</p>"
     },
     "GenerateMobileSdkReleaseUrl":{
       "name":"GenerateMobileSdkReleaseUrl",
@@ -768,7 +769,7 @@
         {"shape":"WAFLimitsExceededException"},
         {"shape":"WAFInvalidOperationException"}
       ],
-      "documentation":"<p>Updates the specified <a>IPSet</a>. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the IP set with the ones that you provide to this call. To modify the IP set, retrieve it by calling <a>GetIPSet</a>, update the settings as needed, and then provide the complete IP set specification to this call.</p> </note>"
+      "documentation":"<p>Updates the specified <a>IPSet</a>. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the IP set with the ones that you provide to this call. To modify the IP set, retrieve it by calling <a>GetIPSet</a>, update the settings as needed, and then provide the complete IP set specification to this call.</p> </note> <p>When you make changes to web ACLs or web ACL components, like rules and rule groups, WAF propagates the changes everywhere that the web ACL and its components are stored and used. Your changes are applied within seconds, but there might be a brief period of inconsistency when the changes have arrived in some places and not in others. So, for example, if you change a rule action setting, the action might be the old action in one area and the new action in another area. Or if you add an IP address to an IP set used in a blocking rule, the new address might briefly be blocked in one area while still allowed in another. This temporary inconsistency can occur when you first associate a web ACL with an Amazon Web Services resource and when you change a web ACL that is already associated with a resource. Generally, any inconsistencies of this type last only a few seconds.</p>"
     },
     "UpdateManagedRuleSetVersionExpiryDate":{
       "name":"UpdateManagedRuleSetVersionExpiryDate",
@@ -804,7 +805,7 @@
         {"shape":"WAFLimitsExceededException"},
         {"shape":"WAFInvalidOperationException"}
       ],
-      "documentation":"<p>Updates the specified <a>RegexPatternSet</a>.</p> <note> <p>This operation completely replaces the mutable specifications that you already have for the regex pattern set with the ones that you provide to this call. To modify the regex pattern set, retrieve it by calling <a>GetRegexPatternSet</a>, update the settings as needed, and then provide the complete regex pattern set specification to this call.</p> </note>"
+      "documentation":"<p>Updates the specified <a>RegexPatternSet</a>.</p> <note> <p>This operation completely replaces the mutable specifications that you already have for the regex pattern set with the ones that you provide to this call. To modify the regex pattern set, retrieve it by calling <a>GetRegexPatternSet</a>, update the settings as needed, and then provide the complete regex pattern set specification to this call.</p> </note> <p>When you make changes to web ACLs or web ACL components, like rules and rule groups, WAF propagates the changes everywhere that the web ACL and its components are stored and used. Your changes are applied within seconds, but there might be a brief period of inconsistency when the changes have arrived in some places and not in others. So, for example, if you change a rule action setting, the action might be the old action in one area and the new action in another area. Or if you add an IP address to an IP set used in a blocking rule, the new address might briefly be blocked in one area while still allowed in another. This temporary inconsistency can occur when you first associate a web ACL with an Amazon Web Services resource and when you change a web ACL that is already associated with a resource. Generally, any inconsistencies of this type last only a few seconds.</p>"
     },
     "UpdateRuleGroup":{
       "name":"UpdateRuleGroup",
@@ -823,9 +824,10 @@
         {"shape":"WAFLimitsExceededException"},
         {"shape":"WAFUnavailableEntityException"},
         {"shape":"WAFSubscriptionNotFoundException"},
-        {"shape":"WAFInvalidOperationException"}
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFConfigurationWarningException"}
       ],
-      "documentation":"<p>Updates the specified <a>RuleGroup</a>.</p> <note> <p>This operation completely replaces the mutable specifications that you already have for the rule group with the ones that you provide to this call. To modify the rule group, retrieve it by calling <a>GetRuleGroup</a>, update the settings as needed, and then provide the complete rule group specification to this call.</p> </note> <p> A rule group defines a collection of rules to inspect and control web requests that you can use in a <a>WebACL</a>. When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the capacity. This allows others to reuse the rule group with confidence in its capacity requirements. </p>"
+      "documentation":"<p>Updates the specified <a>RuleGroup</a>.</p> <note> <p>This operation completely replaces the mutable specifications that you already have for the rule group with the ones that you provide to this call. To modify the rule group, retrieve it by calling <a>GetRuleGroup</a>, update the settings as needed, and then provide the complete rule group specification to this call.</p> </note> <p>When you make changes to web ACLs or web ACL components, like rules and rule groups, WAF propagates the changes everywhere that the web ACL and its components are stored and used. Your changes are applied within seconds, but there might be a brief period of inconsistency when the changes have arrived in some places and not in others. So, for example, if you change a rule action setting, the action might be the old action in one area and the new action in another area. Or if you add an IP address to an IP set used in a blocking rule, the new address might briefly be blocked in one area while still allowed in another. This temporary inconsistency can occur when you first associate a web ACL with an Amazon Web Services resource and when you change a web ACL that is already associated with a resource. Generally, any inconsistencies of this type last only a few seconds.</p> <p> A rule group defines a collection of rules to inspect and control web requests that you can use in a <a>WebACL</a>. When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the capacity. This allows others to reuse the rule group with confidence in its capacity requirements. </p>"
     },
     "UpdateWebACL":{
       "name":"UpdateWebACL",
@@ -846,9 +848,10 @@
         {"shape":"WAFUnavailableEntityException"},
         {"shape":"WAFSubscriptionNotFoundException"},
         {"shape":"WAFInvalidOperationException"},
-        {"shape":"WAFExpiredManagedRuleGroupVersionException"}
+        {"shape":"WAFExpiredManagedRuleGroupVersionException"},
+        {"shape":"WAFConfigurationWarningException"}
       ],
-      "documentation":"<p>Updates the specified <a>WebACL</a>.</p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. To modify the web ACL, retrieve it by calling <a>GetWebACL</a>, update the settings as needed, and then provide the complete web ACL specification to this call.</p> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has an action defined (allow, block, or count) for requests that match the statement of the rule. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resources can be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an Application Load Balancer, or an AppSync GraphQL API. </p>"
+      "documentation":"<p>Updates the specified <a>WebACL</a>. While updating a web ACL, WAF provides continous coverage to the resources that you have associated with the web ACL. </p> <p>When you make changes to web ACLs or web ACL components, like rules and rule groups, WAF propagates the changes everywhere that the web ACL and its components are stored and used. Your changes are applied within seconds, but there might be a brief period of inconsistency when the changes have arrived in some places and not in others. So, for example, if you change a rule action setting, the action might be the old action in one area and the new action in another area. Or if you add an IP address to an IP set used in a blocking rule, the new address might briefly be blocked in one area while still allowed in another. This temporary inconsistency can occur when you first associate a web ACL with an Amazon Web Services resource and when you change a web ACL that is already associated with a resource. Generally, any inconsistencies of this type last only a few seconds.</p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. To modify the web ACL, retrieve it by calling <a>GetWebACL</a>, update the settings as needed, and then provide the complete web ACL specification to this call.</p> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has an action defined (allow, block, or count) for requests that match the statement of the rule. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resources can be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an Application Load Balancer, or an AppSync GraphQL API. </p>"
     }
   },
   "shapes":{
@@ -878,13 +881,13 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>Inspect all of the elements that WAF has parsed and extracted from the web request JSON body that are within the <a>JsonBody</a> <code>MatchScope</code>. This is used with the <a>FieldToMatch</a> option <code>JsonBody</code>. </p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"All\": {}</code> </p>"
+      "documentation":"<p>Inspect all of the elements that WAF has parsed and extracted from the web request component that you've identified in your <a>FieldToMatch</a> specifications. </p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"All\": {}</code> </p>"
     },
     "AllQueryArguments":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>All query arguments of a web request. </p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"AllQueryArguments\": {}</code> </p>"
+      "documentation":"<p>Inspect all query arguments of the web request. </p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"AllQueryArguments\": {}</code> </p>"
     },
     "AllowAction":{
       "type":"structure",
@@ -942,8 +945,12 @@
     "Body":{
       "type":"structure",
       "members":{
+        "OversizeHandling":{
+          "shape":"OversizeHandling",
+          "documentation":"<p>What WAF should do if the body is larger than WAF can inspect. WAF does not support inspecting the entire contents of the body of a web request when the body exceeds 8 KB (8192 bytes). Only the first 8 KB of the request body are forwarded to WAF by the underlying host service. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the body normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over 8 KB. </p> <p>Default: <code>CONTINUE</code> </p>"
+        }
       },
-      "documentation":"<p>The body of a web request. This immediately follows the request headers.</p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"Body\": {}</code> </p>"
+      "documentation":"<p>Inspect the body of the web request. The body immediately follows the request headers.</p> <p>This is used to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p>"
     },
     "BodyParsingFallbackBehavior":{
       "type":"string",
@@ -969,7 +976,7 @@
         },
         "FieldToMatch":{
           "shape":"FieldToMatch",
-          "documentation":"<p>The part of a web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
+          "documentation":"<p>The part of the web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
         },
         "TextTransformations":{
           "shape":"TextTransformations",
@@ -977,7 +984,7 @@
         },
         "PositionalConstraint":{
           "shape":"PositionalConstraint",
-          "documentation":"<p>The area within the portion of a web request that you want WAF to search for <code>SearchString</code>. Valid values include the following:</p> <p> <b>CONTAINS</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, but the location doesn't matter.</p> <p> <b>CONTAINS_WORD</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, and <code>SearchString</code> must contain only alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, <code>SearchString</code> must be a word, which means that both of the following are true:</p> <ul> <li> <p> <code>SearchString</code> is at the beginning of the specified part of the web request or is preceded by a character other than an alphanumeric character or underscore (_). Examples include the value of a header and <code>;BadBot</code>.</p> </li> <li> <p> <code>SearchString</code> is at the end of the specified part of the web request or is followed by a character other than an alphanumeric character or underscore (_), for example, <code>BadBot;</code> and <code>-BadBot;</code>.</p> </li> </ul> <p> <b>EXACTLY</b> </p> <p>The value of the specified part of the web request must exactly match the value of <code>SearchString</code>.</p> <p> <b>STARTS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the beginning of the specified part of the web request.</p> <p> <b>ENDS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the end of the specified part of the web request.</p>"
+          "documentation":"<p>The area within the portion of the web request that you want WAF to search for <code>SearchString</code>. Valid values include the following:</p> <p> <b>CONTAINS</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, but the location doesn't matter.</p> <p> <b>CONTAINS_WORD</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, and <code>SearchString</code> must contain only alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, <code>SearchString</code> must be a word, which means that both of the following are true:</p> <ul> <li> <p> <code>SearchString</code> is at the beginning of the specified part of the web request or is preceded by a character other than an alphanumeric character or underscore (_). Examples include the value of a header and <code>;BadBot</code>.</p> </li> <li> <p> <code>SearchString</code> is at the end of the specified part of the web request or is followed by a character other than an alphanumeric character or underscore (_), for example, <code>BadBot;</code> and <code>-BadBot;</code>.</p> </li> </ul> <p> <b>EXACTLY</b> </p> <p>The value of the specified part of the web request must exactly match the value of <code>SearchString</code>.</p> <p> <b>STARTS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the beginning of the specified part of the web request.</p> <p> <b>ENDS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the end of the specified part of the web request.</p>"
         }
       },
       "documentation":"<p>A rule statement that defines a string match search for WAF to apply to web requests. The byte match statement provides the bytes to search for, the location in requests that you want WAF to search, and other settings. The bytes to search for are typically a string that corresponds with ASCII characters. In the WAF console and the developer guide, this is refered to as a string match statement.</p>"
@@ -1083,6 +1090,53 @@
     "ConsumedCapacity":{
       "type":"long",
       "min":0
+    },
+    "CookieMatchPattern":{
+      "type":"structure",
+      "members":{
+        "All":{
+          "shape":"All",
+          "documentation":"<p>Inspect all cookies. </p>"
+        },
+        "IncludedCookies":{
+          "shape":"CookieNames",
+          "documentation":"<p>Inspect only the cookies that have a key that matches one of the strings specified here. </p>"
+        },
+        "ExcludedCookies":{
+          "shape":"CookieNames",
+          "documentation":"<p>Inspect only the cookies whose keys don't match any of the strings specified here. </p>"
+        }
+      },
+      "documentation":"<p>The filter to use to identify the subset of cookies to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedCookies</code>, or <code>ExcludedCookies</code>.</p> <p>Example JSON: <code>\"CookieMatchPattern\": { \"IncludedCookies\": {\"KeyToInclude1\", \"KeyToInclude2\", \"KeyToInclude3\"} }</code> </p>"
+    },
+    "CookieNames":{
+      "type":"list",
+      "member":{"shape":"SingleCookieName"},
+      "max":199,
+      "min":1
+    },
+    "Cookies":{
+      "type":"structure",
+      "required":[
+        "MatchPattern",
+        "MatchScope",
+        "OversizeHandling"
+      ],
+      "members":{
+        "MatchPattern":{
+          "shape":"CookieMatchPattern",
+          "documentation":"<p>The filter to use to identify the subset of cookies to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedCookies</code>, or <code>ExcludedCookies</code>.</p> <p>Example JSON: <code>\"CookieMatchPattern\": { \"IncludedCookies\": {\"KeyToInclude1\", \"KeyToInclude2\", \"KeyToInclude3\"} }</code> </p>"
+        },
+        "MatchScope":{
+          "shape":"MapMatchScope",
+          "documentation":"<p>The parts of the cookies to inspect with the rule inspection criteria. If you specify <code>All</code>, WAF inspects both keys and values. </p>"
+        },
+        "OversizeHandling":{
+          "shape":"OversizeHandling",
+          "documentation":"<p>What WAF should do if the cookies of the request are larger than WAF can inspect. WAF does not support inspecting the entire contents of request cookies when they exceed 8 KB (8192 bytes) or 200 total cookies. The underlying host service forwards a maximum of 200 cookies and at most 8 KB of cookie contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the cookies normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Inspect the cookies in the web request. You can specify the parts of the cookies to inspect and you can narrow the set of cookies to inspect by including or excluding specific keys.</p> <p>This is used to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Example JSON: <code>\"Cookies\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"KEY\", \"OversizeHandling\": \"MATCH\" }</code> </p>"
     },
     "CountAction":{
       "type":"structure",
@@ -1346,7 +1400,8 @@
         "EH",
         "YE",
         "ZM",
-        "ZW"
+        "ZW",
+        "XK"
       ]
     },
     "CountryCodes":{
@@ -1968,11 +2023,11 @@
       "members":{
         "SingleHeader":{
           "shape":"SingleHeader",
-          "documentation":"<p>Inspect a single header. Provide the name of the header to inspect, for example, <code>User-Agent</code> or <code>Referer</code>. This setting isn't case sensitive.</p> <p>Example JSON: <code>\"SingleHeader\": { \"Name\": \"haystack\" }</code> </p>"
+          "documentation":"<p>Inspect a single header. Provide the name of the header to inspect, for example, <code>User-Agent</code> or <code>Referer</code>. This setting isn't case sensitive.</p> <p>Example JSON: <code>\"SingleHeader\": { \"Name\": \"haystack\" }</code> </p> <p>Alternately, you can filter and inspect all headers with the <code>Headers</code> <code>FieldToMatch</code> setting. </p>"
         },
         "SingleQueryArgument":{
           "shape":"SingleQueryArgument",
-          "documentation":"<p>Inspect a single query argument. Provide the name of the query argument to inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The name can be up to 30 characters long and isn't case sensitive. </p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Example JSON: <code>\"SingleQueryArgument\": { \"Name\": \"myArgument\" }</code> </p>"
+          "documentation":"<p>Inspect a single query argument. Provide the name of the query argument to inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The name can be up to 30 characters long and isn't case sensitive. </p> <p>Example JSON: <code>\"SingleQueryArgument\": { \"Name\": \"myArgument\" }</code> </p>"
         },
         "AllQueryArguments":{
           "shape":"AllQueryArguments",
@@ -1980,7 +2035,7 @@
         },
         "UriPath":{
           "shape":"UriPath",
-          "documentation":"<p>Inspect the request URI path. This is the part of a web request that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.</p>"
+          "documentation":"<p>Inspect the request URI path. This is the part of the web request that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.</p>"
         },
         "QueryString":{
           "shape":"QueryString",
@@ -1988,7 +2043,7 @@
         },
         "Body":{
           "shape":"Body",
-          "documentation":"<p>Inspect the request body as plain text. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>Note that only the first 8 KB (8192 bytes) of the request body are forwarded to WAF for inspection by the underlying host service. If you don't need to inspect more than 8 KB, you can guarantee that you don't allow additional bytes in by combining a statement that inspects the body of the web request, such as <a>ByteMatchStatement</a> or <a>RegexPatternSetReferenceStatement</a>, with a <a>SizeConstraintStatement</a> that enforces an 8 KB size limit on the body of the request. WAF doesn't support inspecting the entire contents of web requests whose bodies exceed the 8 KB limit.</p>"
+          "documentation":"<p>Inspect the request body as plain text. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>Only the first 8 KB (8192 bytes) of the request body are forwarded to WAF for inspection by the underlying host service. For information about how to handle oversized request bodies, see the <code>Body</code> object configuration. </p>"
         },
         "Method":{
           "shape":"Method",
@@ -1996,10 +2051,18 @@
         },
         "JsonBody":{
           "shape":"JsonBody",
-          "documentation":"<p>Inspect the request body as JSON. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>Note that only the first 8 KB (8192 bytes) of the request body are forwarded to WAF for inspection by the underlying host service. If you don't need to inspect more than 8 KB, you can guarantee that you don't allow additional bytes in by combining a statement that inspects the body of the web request, such as <a>ByteMatchStatement</a> or <a>RegexPatternSetReferenceStatement</a>, with a <a>SizeConstraintStatement</a> that enforces an 8 KB size limit on the body of the request. WAF doesn't support inspecting the entire contents of web requests whose bodies exceed the 8 KB limit.</p>"
+          "documentation":"<p>Inspect the request body as JSON. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>Only the first 8 KB (8192 bytes) of the request body are forwarded to WAF for inspection by the underlying host service. For information about how to handle oversized request bodies, see the <code>JsonBody</code> object configuration. </p>"
+        },
+        "Headers":{
+          "shape":"Headers",
+          "documentation":"<p>Inspect the request headers. You must configure scope and pattern matching filters in the <code>Headers</code> object, to define the set of headers to and the parts of the headers that WAF inspects. </p> <p>Only the first 8 KB (8192 bytes) of a request's headers and only the first 200 headers are forwarded to WAF for inspection by the underlying host service. You must configure how to handle any oversize header content in the <code>Headers</code> object. WAF applies the pattern matching filters to the headers that it receives from the underlying host service. </p>"
+        },
+        "Cookies":{
+          "shape":"Cookies",
+          "documentation":"<p>Inspect the request cookies. You must configure scope and pattern matching filters in the <code>Cookies</code> object, to define the set of cookies and the parts of the cookies that WAF inspects. </p> <p>Only the first 8 KB (8192 bytes) of a request's cookies and only the first 200 cookies are forwarded to WAF for inspection by the underlying host service. You must configure how to handle any oversize cookie content in the <code>Cookies</code> object. WAF applies the pattern matching filters to the cookies that it receives from the underlying host service. </p>"
         }
       },
-      "documentation":"<p>The part of a web request that you want WAF to inspect. Include the single <code>FieldToMatch</code> type that you want to inspect, with additional specifications as needed, according to the type. You specify a single request component in <code>FieldToMatch</code> for each rule statement that requires it. To inspect more than one component of a web request, create a separate rule statement for each component.</p> <p>JSON specification for a <code>QueryString</code> field to match: </p> <p> <code> \"FieldToMatch\": { \"QueryString\": {} }</code> </p> <p>Example JSON for a <code>Method</code> field to match specification:</p> <p> <code> \"FieldToMatch\": { \"Method\": { \"Name\": \"DELETE\" } }</code> </p>"
+      "documentation":"<p>The part of the web request that you want WAF to inspect. Include the single <code>FieldToMatch</code> type that you want to inspect, with additional specifications as needed, according to the type. You specify a single request component in <code>FieldToMatch</code> for each rule statement that requires it. To inspect more than one component of the web request, create a separate rule statement for each component.</p> <p>Example JSON for a <code>QueryString</code> field to match: </p> <p> <code> \"FieldToMatch\": { \"QueryString\": {} }</code> </p> <p>Example JSON for a <code>Method</code> field to match specification:</p> <p> <code> \"FieldToMatch\": { \"Method\": { \"Name\": \"DELETE\" } }</code> </p>"
     },
     "FieldToMatchData":{
       "type":"string",
@@ -2576,8 +2639,55 @@
       "documentation":"<p>Part of the response from <a>GetSampledRequests</a>. This is a complex type that appears as <code>Request</code> in the response syntax. <code>HTTPRequest</code> contains information about one of the web requests. </p>"
     },
     "HTTPVersion":{"type":"string"},
+    "HeaderMatchPattern":{
+      "type":"structure",
+      "members":{
+        "All":{
+          "shape":"All",
+          "documentation":"<p>Inspect all headers. </p>"
+        },
+        "IncludedHeaders":{
+          "shape":"HeaderNames",
+          "documentation":"<p>Inspect only the headers that have a key that matches one of the strings specified here. </p>"
+        },
+        "ExcludedHeaders":{
+          "shape":"HeaderNames",
+          "documentation":"<p>Inspect only the headers whose keys don't match any of the strings specified here. </p>"
+        }
+      },
+      "documentation":"<p>The filter to use to identify the subset of headers to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedHeaders</code>, or <code>ExcludedHeaders</code>.</p> <p>Example JSON: <code>\"HeaderMatchPattern\": { \"ExcludedHeaders\": {\"KeyToExclude1\", \"KeyToExclude2\"} }</code> </p>"
+    },
     "HeaderName":{"type":"string"},
+    "HeaderNames":{
+      "type":"list",
+      "member":{"shape":"FieldToMatchData"},
+      "max":199,
+      "min":1
+    },
     "HeaderValue":{"type":"string"},
+    "Headers":{
+      "type":"structure",
+      "required":[
+        "MatchPattern",
+        "MatchScope",
+        "OversizeHandling"
+      ],
+      "members":{
+        "MatchPattern":{
+          "shape":"HeaderMatchPattern",
+          "documentation":"<p>The filter to use to identify the subset of headers to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedHeaders</code>, or <code>ExcludedHeaders</code>.</p> <p>Example JSON: <code>\"HeaderMatchPattern\": { \"ExcludedHeaders\": {\"KeyToExclude1\", \"KeyToExclude2\"} }</code> </p>"
+        },
+        "MatchScope":{
+          "shape":"MapMatchScope",
+          "documentation":"<p>The parts of the headers to match with the rule inspection criteria. If you specify <code>All</code>, WAF inspects both keys and values. </p>"
+        },
+        "OversizeHandling":{
+          "shape":"OversizeHandling",
+          "documentation":"<p>What WAF should do if the headers of the request are larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Inspect the headers in the web request. You can specify the parts of the headers to inspect and you can narrow the set of headers to inspect by including or excluding specific keys.</p> <p>This is used to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Alternately, you can use the <code>SingleHeader</code> <code>FieldToMatch</code> setting to inspect the value of a single header, identified by its key. </p> <p>Example JSON: <code>\"Headers\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"KEY\", \"OversizeHandling\": \"MATCH\" }</code> </p>"
+    },
     "IPAddress":{
       "type":"string",
       "max":50,
@@ -2730,9 +2840,13 @@
         "InvalidFallbackBehavior":{
           "shape":"BodyParsingFallbackBehavior",
           "documentation":"<p>What WAF should do if it fails to completely parse the JSON body. The options are the following:</p> <ul> <li> <p> <code>EVALUATE_AS_STRING</code> - Inspect the body as plain text. WAF applies the text transformations and inspection criteria that you defined for the JSON inspection to the body text string.</p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>If you don't provide this setting, WAF parses and evaluates the content only up to the first parsing failure that it encounters. </p> <p>WAF does its best to parse the entire JSON body, but might be forced to stop for reasons such as invalid characters, duplicate keys, truncation, and any content whose root node isn't an object or an array. </p> <p>WAF parses the JSON in the following examples as two valid key, value pairs: </p> <ul> <li> <p>Missing comma: <code>{\"key1\":\"value1\"\"key2\":\"value2\"}</code> </p> </li> <li> <p>Missing colon: <code>{\"key1\":\"value1\",\"key2\"\"value2\"}</code> </p> </li> <li> <p>Extra colons: <code>{\"key1\"::\"value1\",\"key2\"\"value2\"}</code> </p> </li> </ul>"
+        },
+        "OversizeHandling":{
+          "shape":"OversizeHandling",
+          "documentation":"<p>What WAF should do if the body is larger than WAF can inspect. WAF does not support inspecting the entire contents of the body of a web request when the body exceeds 8 KB (8192 bytes). Only the first 8 KB of the request body are forwarded to WAF by the underlying host service. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the body normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over 8 KB. </p> <p>Default: <code>CONTINUE</code> </p>"
         }
       },
-      "documentation":"<p>The body of a web request, inspected as JSON. The body immediately follows the request headers. This is used in the <a>FieldToMatch</a> specification.</p> <p>Use the specifications in this object to indicate which parts of the JSON body to inspect using the rule's inspection criteria. WAF inspects only the parts of the JSON that result from the matches that you indicate. </p> <p>Example JSON: <code>\"JsonBody\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"ALL\" }</code> </p>"
+      "documentation":"<p>Inspect the body of the web request as JSON. The body immediately follows the request headers. </p> <p>This is used to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Use the specifications in this object to indicate which parts of the JSON body to inspect using the rule's inspection criteria. WAF inspects only the parts of the JSON that result from the matches that you indicate. </p> <p>Example JSON: <code>\"JsonBody\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"ALL\" }</code> </p>"
     },
     "JsonMatchPattern":{
       "type":"structure",
@@ -3476,11 +3590,19 @@
       },
       "documentation":"<p>Information for a single version of a managed rule set. </p> <note> <p>This is intended for use only by vendors of managed rule sets. Vendors are Amazon Web Services and Amazon Web Services Marketplace sellers. </p> <p>Vendors, you can use the managed rule set APIs to provide controlled rollout of your versioned managed rule group offerings for your customers. The APIs are <code>ListManagedRuleSets</code>, <code>GetManagedRuleSet</code>, <code>PutManagedRuleSetVersions</code>, and <code>UpdateManagedRuleSetVersionExpiryDate</code>.</p> </note>"
     },
+    "MapMatchScope":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "KEY",
+        "VALUE"
+      ]
+    },
     "Method":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The HTTP method of a web request. The method indicates the type of operation that the request is asking the origin to perform. </p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"Method\": {}</code> </p>"
+      "documentation":"<p>Inspect the HTTP method of the web request. The method indicates the type of operation that the request is asking the origin to perform. </p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"Method\": {}</code> </p>"
     },
     "MetricName":{
       "type":"string",
@@ -3559,6 +3681,14 @@
       },
       "documentation":"<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead exclude those rules in your rule group reference statement settings. </p> </note>"
     },
+    "OversizeHandling":{
+      "type":"string",
+      "enum":[
+        "CONTINUE",
+        "MATCH",
+        "NO_MATCH"
+      ]
+    },
     "PaginationLimit":{
       "type":"integer",
       "max":100,
@@ -3625,7 +3755,11 @@
         "ASSOCIABLE_RESOURCE",
         "LOG_DESTINATION",
         "MANAGED_RULE_GROUP_CONFIG",
-        "PAYLOAD_TYPE"
+        "PAYLOAD_TYPE",
+        "HEADER_MATCH_PATTERN",
+        "COOKIE_MATCH_PATTERN",
+        "MAP_MATCH_SCOPE",
+        "OVERSIZE_HANDLING"
       ]
     },
     "ParameterExceptionParameter":{
@@ -3768,7 +3902,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The query string of a web request. This is the part of a URL that appears after a <code>?</code> character, if any.</p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"QueryString\": {}</code> </p>"
+      "documentation":"<p>Inspect the query string of the web request. This is the part of a URL that appears after a <code>?</code> character, if any.</p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"QueryString\": {}</code> </p>"
     },
     "RateBasedStatement":{
       "type":"structure",
@@ -3851,7 +3985,7 @@
         },
         "FieldToMatch":{
           "shape":"FieldToMatch",
-          "documentation":"<p>The part of a web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
+          "documentation":"<p>The part of the web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
         },
         "TextTransformations":{
           "shape":"TextTransformations",
@@ -3900,7 +4034,7 @@
         },
         "FieldToMatch":{
           "shape":"FieldToMatch",
-          "documentation":"<p>The part of a web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
+          "documentation":"<p>The part of the web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
         },
         "TextTransformations":{
           "shape":"TextTransformations",
@@ -4262,6 +4396,12 @@
       ]
     },
     "SearchString":{"type":"blob"},
+    "SingleCookieName":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
     "SingleHeader":{
       "type":"structure",
       "required":["Name"],
@@ -4271,7 +4411,7 @@
           "documentation":"<p>The name of the query header to inspect.</p>"
         }
       },
-      "documentation":"<p>One of the headers in a web request, identified by name, for example, <code>User-Agent</code> or <code>Referer</code>. This setting isn't case sensitive.</p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Example JSON: <code>\"SingleHeader\": { \"Name\": \"haystack\" }</code> </p>"
+      "documentation":"<p>Inspect one of the headers in the web request, identified by name, for example, <code>User-Agent</code> or <code>Referer</code>. The name isn't case sensitive.</p> <p>You can filter and inspect all headers with the <code>FieldToMatch</code> setting <code>Headers</code>.</p> <p>This is used to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Example JSON: <code>\"SingleHeader\": { \"Name\": \"haystack\" }</code> </p>"
     },
     "SingleQueryArgument":{
       "type":"structure",
@@ -4282,7 +4422,7 @@
           "documentation":"<p>The name of the query argument to inspect.</p>"
         }
       },
-      "documentation":"<p>One query argument in a web request, identified by name, for example <i>UserName</i> or <i>SalesRegion</i>. The name can be up to 30 characters long and isn't case sensitive. </p> <p>Example JSON: <code>\"SingleQueryArgument\": { \"Name\": \"myArgument\" }</code> </p>"
+      "documentation":"<p>Inspect one query argument in the web request, identified by name, for example <i>UserName</i> or <i>SalesRegion</i>. The name isn't case sensitive. </p> <p>This is used to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Example JSON: <code>\"SingleQueryArgument\": { \"Name\": \"myArgument\" }</code> </p>"
     },
     "Size":{
       "type":"long",
@@ -4300,7 +4440,7 @@
       "members":{
         "FieldToMatch":{
           "shape":"FieldToMatch",
-          "documentation":"<p>The part of a web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
+          "documentation":"<p>The part of the web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
         },
         "ComparisonOperator":{
           "shape":"ComparisonOperator",
@@ -4327,7 +4467,7 @@
       "members":{
         "FieldToMatch":{
           "shape":"FieldToMatch",
-          "documentation":"<p>The part of a web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
+          "documentation":"<p>The part of the web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
         },
         "TextTransformations":{
           "shape":"TextTransformations",
@@ -4849,7 +4989,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The path component of the URI of a web request. This is the part of a web request that identifies a resource. For example, <code>/images/daily-ad.jpg</code>.</p> <p>This is used only to indicate the web request component for WAF to inspect, in the <a>FieldToMatch</a> specification. </p> <p>JSON specification: <code>\"UriPath\": {}</code> </p>"
+      "documentation":"<p>Inspect the path component of the URI of the web request. This is the part of the web request that identifies a resource. For example, <code>/images/daily-ad.jpg</code>.</p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"UriPath\": {}</code> </p>"
     },
     "UsernameField":{
       "type":"structure",
@@ -4921,7 +5061,15 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>WAF couldn’t perform the operation because your resource is being used by another resource or it’s associated with another resource. </p>",
+      "documentation":"<p>WAF couldn’t perform the operation because your resource is being used by another resource or it’s associated with another resource. </p> <p>For <code>DeleteWebACL</code>, you will only get this exception if the web ACL is still associated with a regional resource. Deleting a web ACL that is still associated with an Amazon CloudFront distribution won't get this exception. </p>",
+      "exception":true
+    },
+    "WAFConfigurationWarningException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The operation failed because you are inspecting the web request body, headers, or cookies without specifying how to handle oversize components. Rules that inspect the body must either provide an <code>OversizeHandling</code> configuration or they must be preceded by a <code>SizeConstraintStatement</code> that blocks the body content from being too large. Rules that inspect the headers or cookies must provide an <code>OversizeHandling</code> configuration. </p> <p>Provide the handling configuration and retry your operation.</p> <p>Alternately, you can suppress this warning by adding the following tag to the resource that you provide to this operation: <code>Tag</code> (key:<code>WAF:OversizeFieldsHandlingConstraintOptOut</code>, value:<code>true</code>).</p>",
       "exception":true
     },
     "WAFDuplicateItemException":{
@@ -5054,7 +5202,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>WAF couldn’t perform your tagging operation because of an internal error. Retry your request.</p>",
+      "documentation":"<p>WAF couldn’t perform your tagging operation because of an internal error. Retry ybjectNoteWebRequestComponentour request.</p>",
       "exception":true,
       "fault":true
     },
@@ -5063,7 +5211,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>WAF couldn’t retrieve the resource that you requested. Retry your request.</p>",
+      "documentation":"<p>WAF couldn’t retrieve a resource that you specified for this operation. Verify the resources that you are specifying in your request parameters and then retry the operation.</p>",
       "exception":true
     },
     "WebACL":{
@@ -5174,7 +5322,7 @@
       "members":{
         "FieldToMatch":{
           "shape":"FieldToMatch",
-          "documentation":"<p>The part of a web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
+          "documentation":"<p>The part of the web request that you want WAF to inspect. For more information, see <a>FieldToMatch</a>. </p>"
         },
         "TextTransformations":{
           "shape":"TextTransformations",

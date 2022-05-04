@@ -7158,7 +7158,7 @@
         },
         "PluginName":{
           "shape":"CommandPluginName",
-          "documentation":"<p>The name of the plugin for which you want detailed results. If the document contains only one plugin, you can omit the name and details for that plugin. If the document contains more than one plugin, you must specify the name of the plugin for which you want to view details.</p> <p>Plugin names are also referred to as <i>step names</i> in Systems Manager documents (SSM documents). For example, <code>aws:RunShellScript</code> is a plugin.</p> <p>To find the <code>PluginName</code>, check the document content and find the name of the plugin. Alternatively, use <a>ListCommandInvocations</a> with the <code>CommandId</code> and <code>Details</code> parameters. The <code>PluginName</code> is the <code>Name</code> attribute of the <code>CommandPlugin</code> object in the <code>CommandPlugins</code> list.</p>"
+          "documentation":"<p>The name of the step for which you want detailed results. If the document contains only one step, you can omit the name and details for that step. If the document contains more than one step, you must specify the name of the step for which you want to view details. Be sure to specify the name of the step, not the name of a plugin like <code>aws:RunShellScript</code>.</p> <p>To find the <code>PluginName</code>, check the document content and find the name of the step you want details for. Alternatively, use <a>ListCommandInvocations</a> with the <code>CommandId</code> and <code>Details</code> parameters. The <code>PluginName</code> is the <code>Name</code> attribute of the <code>CommandPlugin</code> object in the <code>CommandPlugins</code> list.</p>"
         }
       }
     },
@@ -14044,6 +14044,10 @@
         "Targets":{
           "shape":"Targets",
           "documentation":"<p>A key-value mapping to target resources that the runbook operation performs tasks on. Required if you specify <code>TargetParameterName</code>.</p>"
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of runbook parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>"
         },
         "MaxConcurrency":{
           "shape":"MaxConcurrency",

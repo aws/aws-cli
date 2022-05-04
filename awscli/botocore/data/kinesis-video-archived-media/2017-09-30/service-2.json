@@ -72,6 +72,22 @@
       ],
       "documentation":"<p>Retrieves an HTTP Live Streaming (HLS) URL for the stream. You can then open the URL in a browser or media player to view the stream contents.</p> <p>Both the <code>StreamName</code> and the <code>StreamARN</code> parameters are optional, but you must specify either the <code>StreamName</code> or the <code>StreamARN</code> when invoking this API operation.</p> <p>An Amazon Kinesis video stream has the following requirements for providing data through HLS:</p> <ul> <li> <p>The media must contain h.264 or h.265 encoded video and, optionally, AAC encoded audio. Specifically, the codec ID of track 1 should be <code>V_MPEG/ISO/AVC</code> (for h.264) or <code>V_MPEG/ISO/HEVC</code> (for h.265). Optionally, the codec ID of track 2 should be <code>A_AAC</code>.</p> </li> <li> <p>Data retention must be greater than 0.</p> </li> <li> <p>The video track of each fragment must contain codec private data in the Advanced Video Coding (AVC) for H.264 format or HEVC for H.265 format (<a href=\"https://www.iso.org/standard/55980.html\">MPEG-4 specification ISO/IEC 14496-15</a>). For information about adapting stream data to a given format, see <a href=\"http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/producer-reference-nal.html\">NAL Adaptation Flags</a>.</p> </li> <li> <p>The audio track (if present) of each fragment must contain codec private data in the AAC format (<a href=\"https://www.iso.org/standard/43345.html\">AAC specification ISO/IEC 13818-7</a>).</p> </li> </ul> <p>Kinesis Video Streams HLS sessions contain fragments in the fragmented MPEG-4 form (also called fMP4 or CMAF) or the MPEG-2 form (also called TS chunks, which the HLS specification also supports). For more information about HLS fragment types, see the <a href=\"https://tools.ietf.org/html/draft-pantos-http-live-streaming-23\">HLS specification</a>.</p> <p>The following procedure shows how to use HLS with Kinesis Video Streams:</p> <ol> <li> <p>Get an endpoint using <a href=\"http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_GetDataEndpoint.html\">GetDataEndpoint</a>, specifying <code>GET_HLS_STREAMING_SESSION_URL</code> for the <code>APIName</code> parameter.</p> </li> <li> <p>Retrieve the HLS URL using <code>GetHLSStreamingSessionURL</code>. Kinesis Video Streams creates an HLS streaming session to be used for accessing content in a stream using the HLS protocol. <code>GetHLSStreamingSessionURL</code> returns an authenticated URL (that includes an encrypted session token) for the session's HLS <i>master playlist</i> (the root resource needed for streaming with HLS).</p> <note> <p>Don't share or store this token where an unauthorized entity could access it. The token provides access to the content of the stream. Safeguard the token with the same measures that you would use with your AWS credentials.</p> </note> <p>The media that is made available through the playlist consists only of the requested stream, time range, and format. No other media data (such as frames outside the requested window or alternate bitrates) is made available.</p> </li> <li> <p>Provide the URL (containing the encrypted session token) for the HLS master playlist to a media player that supports the HLS protocol. Kinesis Video Streams makes the HLS media playlist, initialization fragment, and media fragments available through the master playlist URL. The initialization fragment contains the codec private data for the stream, and other data needed to set up the video or audio decoder and renderer. The media fragments contain H.264-encoded video frames or AAC-encoded audio samples.</p> </li> <li> <p>The media player receives the authenticated URL and requests stream metadata and media data normally. When the media player requests data, it calls the following actions:</p> <ul> <li> <p> <b>GetHLSMasterPlaylist:</b> Retrieves an HLS master playlist, which contains a URL for the <code>GetHLSMediaPlaylist</code> action for each track, and additional metadata for the media player, including estimated bitrate and resolution.</p> </li> <li> <p> <b>GetHLSMediaPlaylist:</b> Retrieves an HLS media playlist, which contains a URL to access the MP4 initialization fragment with the <code>GetMP4InitFragment</code> action, and URLs to access the MP4 media fragments with the <code>GetMP4MediaFragment</code> actions. The HLS media playlist also contains metadata about the stream that the player needs to play it, such as whether the <code>PlaybackMode</code> is <code>LIVE</code> or <code>ON_DEMAND</code>. The HLS media playlist is typically static for sessions with a <code>PlaybackType</code> of <code>ON_DEMAND</code>. The HLS media playlist is continually updated with new fragments for sessions with a <code>PlaybackType</code> of <code>LIVE</code>. There is a distinct HLS media playlist for the video track and the audio track (if applicable) that contains MP4 media URLs for the specific track. </p> </li> <li> <p> <b>GetMP4InitFragment:</b> Retrieves the MP4 initialization fragment. The media player typically loads the initialization fragment before loading any media fragments. This fragment contains the \"<code>fytp</code>\" and \"<code>moov</code>\" MP4 atoms, and the child atoms that are needed to initialize the media player decoder.</p> <p>The initialization fragment does not correspond to a fragment in a Kinesis video stream. It contains only the codec private data for the stream and respective track, which the media player needs to decode the media frames.</p> </li> <li> <p> <b>GetMP4MediaFragment:</b> Retrieves MP4 media fragments. These fragments contain the \"<code>moof</code>\" and \"<code>mdat</code>\" MP4 atoms and their child atoms, containing the encoded fragment's media frames and their timestamps. </p> <note> <p>After the first media fragment is made available in a streaming session, any fragments that don't contain the same codec private data cause an error to be returned when those different media fragments are loaded. Therefore, the codec private data should not change between fragments in a session. This also means that the session fails if the fragments in a stream change from having only video to having both audio and video.</p> </note> <p>Data retrieved with this action is billable. See <a href=\"https://aws.amazon.com/kinesis/video-streams/pricing/\">Pricing</a> for details.</p> </li> <li> <p> <b>GetTSFragment:</b> Retrieves MPEG TS fragments containing both initialization and media data for all tracks in the stream.</p> <note> <p>If the <code>ContainerFormat</code> is <code>MPEG_TS</code>, this API is used instead of <code>GetMP4InitFragment</code> and <code>GetMP4MediaFragment</code> to retrieve stream media.</p> </note> <p>Data retrieved with this action is billable. For more information, see <a href=\"https://aws.amazon.com/kinesis/video-streams/pricing/\">Kinesis Video Streams pricing</a>.</p> </li> </ul> </li> </ol> <p>A streaming session URL must not be shared between players. The service might throttle a session if multiple media players are sharing it. For connection limits, see <a href=\"http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/limits.html\">Kinesis Video Streams Limits</a>.</p> <p>You can monitor the amount of data that the media player consumes by monitoring the <code>GetMP4MediaFragment.OutgoingBytes</code> Amazon CloudWatch metric. For information about using CloudWatch to monitor Kinesis Video Streams, see <a href=\"http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/monitoring.html\">Monitoring Kinesis Video Streams</a>. For pricing information, see <a href=\"https://aws.amazon.com/kinesis/video-streams/pricing/\">Amazon Kinesis Video Streams Pricing</a> and <a href=\"https://aws.amazon.com/pricing/\">AWS Pricing</a>. Charges for both HLS sessions and outgoing AWS data apply.</p> <p>For more information about HLS, see <a href=\"https://developer.apple.com/streaming/\">HTTP Live Streaming</a> on the <a href=\"https://developer.apple.com\">Apple Developer site</a>.</p> <important> <p>If an error is thrown after invoking a Kinesis Video Streams archived media API, in addition to the HTTP status code and the response body, it includes the following pieces of information: </p> <ul> <li> <p> <code>x-amz-ErrorType</code> HTTP header – contains a more specific error type in addition to what the HTTP status code provides. </p> </li> <li> <p> <code>x-amz-RequestId</code> HTTP header – if you want to report an issue to AWS, the support team can better diagnose the problem if given the Request Id.</p> </li> </ul> <p>Both the HTTP status code and the ErrorType header can be utilized to make programmatic decisions about whether errors are retry-able and under what conditions, as well as provide information on what actions the client programmer might need to take in order to successfully try again.</p> <p>For more information, see the <b>Errors</b> section at the bottom of this topic, as well as <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/CommonErrors.html\">Common Errors</a>. </p> </important>"
     },
+    "GetImages":{
+      "name":"GetImages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/getImages"
+      },
+      "input":{"shape":"GetImagesInput"},
+      "output":{"shape":"GetImagesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Retrieves a list of Images corresponding to each timestamp for a given time range, sampling interval, and image format configuration.</p>"
+    },
     "GetMediaForFragmentList":{
       "name":"GetMediaForFragmentList",
       "http":{
@@ -239,6 +255,30 @@
       "type":"integer",
       "max":43200,
       "min":300
+    },
+    "Format":{
+      "type":"string",
+      "enum":[
+        "JPEG",
+        "PNG"
+      ]
+    },
+    "FormatConfig":{
+      "type":"map",
+      "key":{"shape":"FormatConfigKey"},
+      "value":{"shape":"FormatConfigValue"},
+      "max":1,
+      "min":1
+    },
+    "FormatConfigKey":{
+      "type":"string",
+      "enum":["JPEGQuality"]
+    },
+    "FormatConfigValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^[a-zA-Z_0-9]+"
     },
     "Fragment":{
       "type":"structure",
@@ -437,6 +477,84 @@
         }
       }
     },
+    "GetImagesInput":{
+      "type":"structure",
+      "required":[
+        "ImageSelectorType",
+        "StartTimestamp",
+        "EndTimestamp",
+        "SamplingInterval",
+        "Format"
+      ],
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream from which to retrieve the images. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream from which to retrieve the images. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "ImageSelectorType":{
+          "shape":"ImageSelectorType",
+          "documentation":"<p>The origin of the Server or Producer timestamps to use to generate the images.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The starting point from which the images should be generated. This <code>StartTimestamp</code> must be within an inclusive range of timestamps for an image to be returned.</p>"
+        },
+        "EndTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end timestamp for the range of images to be generated.</p>"
+        },
+        "SamplingInterval":{
+          "shape":"SamplingInterval",
+          "documentation":"<p>The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 3000 ms. If the timestamp range is less than the sampling interval, the Image from the <code>startTimestamp</code> will be returned if available. </p> <note> <p>The minimum value of 3000 ms is a soft limit. If needed, a lower sampling frequency can be requested.</p> </note>"
+        },
+        "Format":{
+          "shape":"Format",
+          "documentation":"<p>The format that will be used to encode the image.</p>"
+        },
+        "FormatConfig":{
+          "shape":"FormatConfig",
+          "documentation":"<p>The list of a key-value pair structure that contains extra parameters that can be applied when the image is generated. The <code>FormatConfig</code> key is the <code>JPEGQuality</code>, which indicates the JPEG quality key to be used to generate the image. The <code>FormatConfig</code> value accepts ints from 1 to 100. If the value is 1, the image will be generated with less quality and the best compression. If the value is 100, the image will be generated with the best quality and less compression. If no value is provided, the default value of the <code>JPEGQuality</code> key will be set to 80.</p>"
+        },
+        "WidthPixels":{
+          "shape":"WidthPixels",
+          "documentation":"<p>The width of the output image that is used in conjunction with the <code>HeightPixels</code> parameter. When both <code>WidthPixels</code> and <code>HeightPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>WidthPixels</code> parameter is provided or if only the <code>HeightPixels</code> is provided, a <code>ValidationException</code> will be thrown. If neither parameter is provided, the original image size from the stream will be returned.</p>"
+        },
+        "HeightPixels":{
+          "shape":"HeightPixels",
+          "documentation":"<p>The height of the output image that is used in conjunction with the <code>WidthPixels</code> parameter. When both <code>HeightPixels</code> and <code>WidthPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>HeightPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>WidthPixels</code> ratio. If neither parameter is provided, the original image size will be returned.</p>"
+        },
+        "MaxResults":{
+          "shape":"GetImagesMaxResults",
+          "documentation":"<p>The maximum number of images to be returned by the API. </p> <note> <p>The default limit is 100 images per API response. The additional results will be paginated. </p> </note>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that specifies where to start paginating the next set of Images. This is the <code>GetImages:NextToken</code> from a previously truncated response.</p>"
+        }
+      }
+    },
+    "GetImagesMaxResults":{
+      "type":"long",
+      "max":100,
+      "min":1
+    },
+    "GetImagesOutput":{
+      "type":"structure",
+      "members":{
+        "Images":{
+          "shape":"Images",
+          "documentation":"<p>The list of images generated from the video stream. If there is no media available for the given timestamp, the <code>NO_MEDIA</code> error will be listed in the output. If an error occurs while the image is being generated, the <code>MEDIA_ERROR</code> will be listed in the output as the cause of the missing image. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The encrypted token that was used in the request to get more images.</p>"
+        }
+      }
+    },
     "GetMediaForFragmentListInput":{
       "type":"structure",
       "required":["Fragments"],
@@ -534,6 +652,52 @@
         }
       },
       "documentation":"<p>The start and end of the timestamp range for the requested media.</p> <p>This value should not be present if <code>PlaybackType</code> is <code>LIVE</code>.</p>"
+    },
+    "HeightPixels":{
+      "type":"integer",
+      "max":2160,
+      "min":1
+    },
+    "Image":{
+      "type":"structure",
+      "members":{
+        "TimeStamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>An attribute of the <code>Image</code> object that is used to extract an image from the video stream. This field is used to manage gaps on images or to better understand the pagination window.</p>"
+        },
+        "Error":{
+          "shape":"ImageError",
+          "documentation":"<p>The error message shown when the image for the provided timestamp was not extracted due to a non-tryable error. An error will be returned if: </p> <ul> <li> <p>There is no media that exists for the specified <code>Timestamp</code>.</p> </li> </ul> <ul> <li> <p>The media for the specified time does not allow an image to be extracted. In this case the media is audio only, or the incorrect media has been ingested.</p> </li> </ul>"
+        },
+        "ImageContent":{
+          "shape":"ImageContent",
+          "documentation":"<p>An attribute of the <code>Image</code> object that is Base64 encoded.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the <code>Timestamp</code>, <code>Error</code>, and <code>ImageContent</code>.</p>"
+    },
+    "ImageContent":{
+      "type":"string",
+      "max":6291456,
+      "min":1
+    },
+    "ImageError":{
+      "type":"string",
+      "enum":[
+        "NO_MEDIA",
+        "MEDIA_ERROR"
+      ]
+    },
+    "ImageSelectorType":{
+      "type":"string",
+      "enum":[
+        "PRODUCER_TIMESTAMP",
+        "SERVER_TIMESTAMP"
+      ]
+    },
+    "Images":{
+      "type":"list",
+      "member":{"shape":"Image"}
     },
     "InvalidArgumentException":{
       "type":"structure",
@@ -658,6 +822,11 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "SamplingInterval":{
+      "type":"integer",
+      "max":20000,
+      "min":3000
+    },
     "StreamName":{
       "type":"string",
       "max":256,
@@ -691,6 +860,11 @@
       "documentation":"<p>The type of the media (for example, h.264 or h.265 video or ACC or G.711 audio) could not be determined from the codec IDs of the tracks in the first fragment for a playback session. The codec ID for track 1 should be <code>V_MPEG/ISO/AVC</code> and, optionally, the codec ID for track 2 should be <code>A_AAC</code>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "WidthPixels":{
+      "type":"integer",
+      "max":3840,
+      "min":1
     }
   },
   "documentation":"<p/>"

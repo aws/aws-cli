@@ -4357,6 +4357,25 @@
         "AUC"
       ]
     },
+    "AutoMLMetricExtendedEnum":{
+      "type":"string",
+      "enum":[
+        "Accuracy",
+        "MSE",
+        "F1",
+        "F1macro",
+        "AUC",
+        "RMSE",
+        "MAE",
+        "R2",
+        "BalancedAccuracy",
+        "Precision",
+        "PrecisionMacro",
+        "Recall",
+        "RecallMacro",
+        "LogLoss"
+      ]
+    },
     "AutoMLNameContains":{
       "type":"string",
       "max":63,
@@ -18619,6 +18638,10 @@
         "Set":{
           "shape":"MetricSetSource",
           "documentation":"<p>The dataset split from which the AutoML job produced the metric.</p>"
+        },
+        "StandardMetricName":{
+          "shape":"AutoMLMetricExtendedEnum",
+          "documentation":"<p>The name of the standard metric.</p>"
         }
       },
       "documentation":"<p>Information about the metric for a candidate produced by an AutoML job.</p>"
@@ -22626,6 +22649,11 @@
     "RSessionAppSettings":{
       "type":"structure",
       "members":{
+        "DefaultResourceSpec":{"shape":"ResourceSpec"},
+        "CustomImages":{
+          "shape":"CustomImages",
+          "documentation":"<p>A list of custom SageMaker images that are configured to run as a RSession app.</p>"
+        }
       },
       "documentation":"<p>A collection of settings that apply to an <code>RSessionGateway</code> app.</p>"
     },

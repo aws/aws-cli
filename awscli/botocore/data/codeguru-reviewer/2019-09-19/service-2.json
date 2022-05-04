@@ -441,7 +441,11 @@
         },
         "AnalysisTypes":{
           "shape":"AnalysisTypes",
-          "documentation":"<p>They types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.</p>"
+          "documentation":"<p>The types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.</p>"
+        },
+        "ConfigFileState":{
+          "shape":"ConfigFileState",
+          "documentation":"<p>The state of the <code>aws-codeguru-reviewer.yml</code> configuration file that allows the configuration of the CodeGuru Reviewer analysis. The file either exists, doesn't exist, or exists with errors at the root directory of your repository.</p>"
         }
       },
       "documentation":"<p> Information about a code review. A code review belongs to the associated repository that contains the reviewed code. </p>"
@@ -544,6 +548,14 @@
       "type":"string",
       "max":64,
       "min":6
+    },
+    "ConfigFileState":{
+      "type":"string",
+      "enum":[
+        "Present",
+        "Absent",
+        "PresentWithErrors"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -786,6 +798,7 @@
       "pattern":"[a-zA-Z0-9-]+"
     },
     "LineNumber":{"type":"integer"},
+    "LinesOfCodeCount":{"type":"long"},
     "ListCodeReviewsMaxResults":{
       "type":"integer",
       "max":100,
@@ -1023,13 +1036,16 @@
       "max":100,
       "min":1
     },
-    "MeteredLinesOfCodeCount":{"type":"long"},
     "Metrics":{
       "type":"structure",
       "members":{
         "MeteredLinesOfCodeCount":{
-          "shape":"MeteredLinesOfCodeCount",
-          "documentation":"<p> <code>MeteredLinesOfCode</code> is the number of lines of code in the repository where the code review happened. This does not include non-code lines such as comments and blank lines. </p>"
+          "shape":"LinesOfCodeCount",
+          "documentation":"<p> <code>MeteredLinesOfCodeCount</code> is the number of lines of code in the repository where the code review happened. This does not include non-code lines such as comments and blank lines. </p>"
+        },
+        "SuppressedLinesOfCodeCount":{
+          "shape":"LinesOfCodeCount",
+          "documentation":"<p> <code>SuppressedLinesOfCodeCount</code> is the number of lines of code in the repository where the code review happened that CodeGuru Reviewer did not analyze. The lines suppressed in the analysis is based on the <code>excludeFiles</code> variable in the <code>aws-codeguru-reviewer.yml</code> file. This number does not include non-code lines such as comments and blank lines. </p>"
         },
         "FindingsCount":{
           "shape":"FindingsCount",
@@ -1042,8 +1058,12 @@
       "type":"structure",
       "members":{
         "MeteredLinesOfCodeCount":{
-          "shape":"MeteredLinesOfCodeCount",
+          "shape":"LinesOfCodeCount",
           "documentation":"<p> Lines of code metered in the code review. For the initial code review pull request and all subsequent revisions, this includes all lines of code in the files added to the pull request. In subsequent revisions, for files that already existed in the pull request, this includes only the changed lines of code. In both cases, this does not include non-code lines such as comments and import statements. For example, if you submit a pull request containing 5 files, each with 500 lines of code, and in a subsequent revision you added a new file with 200 lines of code, and also modified a total of 25 lines across the initial 5 files, <code>MeteredLinesOfCodeCount</code> includes the first 5 files (5 * 500 = 2,500 lines), the new file (200 lines) and the 25 changed lines of code for a total of 2,725 lines of code. </p>"
+        },
+        "SuppressedLinesOfCodeCount":{
+          "shape":"LinesOfCodeCount",
+          "documentation":"<p>Lines of code suppressed in the code review based on the <code>excludeFiles</code> element in the <code>aws-codeguru-reviewer.yml</code> file. For full repository analyses, this number includes all lines of code in the files that are suppressed. For pull requests, this number only includes the <i>changed</i> lines of code that are suppressed. In both cases, this number does not include non-code lines such as comments and import statements. For example, if you initiate a full repository analysis on a repository containing 5 files, each file with 100 lines of code, and 2 files are listed as excluded in the <code>aws-codeguru-reviewer.yml</code> file, then <code>SuppressedLinesOfCodeCount</code> returns 200 (2 * 100) as the total number of lines of code suppressed. However, if you submit a pull request for the same repository, then <code>SuppressedLinesOfCodeCount</code> only includes the lines in the 2 files that changed. If only 1 of the 2 files changed in the pull request, then <code>SuppressedLinesOfCodeCount</code> returns 100 (1 * 100) as the total number of lines of code suppressed.</p>"
         },
         "FindingsCount":{
           "shape":"FindingsCount",

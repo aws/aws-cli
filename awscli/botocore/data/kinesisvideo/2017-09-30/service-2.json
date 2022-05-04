@@ -84,6 +84,38 @@
       ],
       "documentation":"<p>Deletes a Kinesis video stream and the data contained in the stream. </p> <p>This method marks the stream for deletion, and makes the data in the stream inaccessible immediately.</p> <p> </p> <p> To ensure that you have the latest version of the stream before deleting it, you can specify the stream version. Kinesis Video Streams assigns a version to each stream. When you update a stream, Kinesis Video Streams assigns a new version number. To get the latest stream version, use the <code>DescribeStream</code> API. </p> <p>This operation requires permission for the <code>KinesisVideo:DeleteStream</code> action.</p>"
     },
+    "DescribeImageGenerationConfiguration":{
+      "name":"DescribeImageGenerationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describeImageGenerationConfiguration"
+      },
+      "input":{"shape":"DescribeImageGenerationConfigurationInput"},
+      "output":{"shape":"DescribeImageGenerationConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets the <code>ImageGenerationConfiguration</code> for a given Kinesis video stream.</p>"
+    },
+    "DescribeNotificationConfiguration":{
+      "name":"DescribeNotificationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describeNotificationConfiguration"
+      },
+      "input":{"shape":"DescribeNotificationConfigurationInput"},
+      "output":{"shape":"DescribeNotificationConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets the <code>NotificationConfiguration</code> for a given Kinesis video stream.</p>"
+    },
     "DescribeSignalingChannel":{
       "name":"DescribeSignalingChannel",
       "http":{
@@ -226,7 +258,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"TagsPerResourceExceededLimitException"}
       ],
-      "documentation":"<p>Adds one or more tags to a signaling channel. A <i>tag</i> is a key-value pair (the value is optional) that you can define and assign to AWS resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>AWS Billing and Cost Management User Guide</i>.</p>"
+      "documentation":"<p>Adds one or more tags to a signaling channel. A <i>tag</i> is a key-value pair (the value is optional) that you can define and assign to Amazon Web Services resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Billing and Cost Management and Cost Management User Guide</i>.</p>"
     },
     "TagStream":{
       "name":"TagStream",
@@ -244,7 +276,7 @@
         {"shape":"InvalidResourceFormatException"},
         {"shape":"TagsPerResourceExceededLimitException"}
       ],
-      "documentation":"<p>Adds one or more tags to a stream. A <i>tag</i> is a key-value pair (the value is optional) that you can define and assign to AWS resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>AWS Billing and Cost Management User Guide</i>. </p> <p>You must provide either the <code>StreamName</code> or the <code>StreamARN</code>.</p> <p>This operation requires permission for the <code>KinesisVideo:TagStream</code> action.</p> <p>Kinesis video streams support up to 50 tags.</p>"
+      "documentation":"<p>Adds one or more tags to a stream. A <i>tag</i> is a key-value pair (the value is optional) that you can define and assign to Amazon Web Services resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Billing and Cost Management and Cost Management User Guide</i>. </p> <p>You must provide either the <code>StreamName</code> or the <code>StreamARN</code>.</p> <p>This operation requires permission for the <code>KinesisVideo:TagStream</code> action.</p> <p>A Kinesis video stream can support up to 50 tags.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -297,6 +329,42 @@
       ],
       "documentation":"<p> Increases or decreases the stream's data retention period by the value that you specify. To indicate whether you want to increase or decrease the data retention period, specify the <code>Operation</code> parameter in the request body. In the request, you must specify either the <code>StreamName</code> or the <code>StreamARN</code>. </p> <note> <p>The retention period that you specify replaces the current value.</p> </note> <p>This operation requires permission for the <code>KinesisVideo:UpdateDataRetention</code> action.</p> <p>Changing the data retention period affects the data in the stream as follows:</p> <ul> <li> <p>If the data retention period is increased, existing data is retained for the new retention period. For example, if the data retention period is increased from one hour to seven hours, all existing data is retained for seven hours.</p> </li> <li> <p>If the data retention period is decreased, existing data is retained for the new retention period. For example, if the data retention period is decreased from seven hours to one hour, all existing data is retained for one hour, and any data older than one hour is deleted immediately.</p> </li> </ul>"
     },
+    "UpdateImageGenerationConfiguration":{
+      "name":"UpdateImageGenerationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/updateImageGenerationConfiguration"
+      },
+      "input":{"shape":"UpdateImageGenerationConfigurationInput"},
+      "output":{"shape":"UpdateImageGenerationConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"NoDataRetentionException"}
+      ],
+      "documentation":"<p>Updates the <code>StreamInfo</code> and <code>ImageProcessingConfiguration</code> fields.</p>"
+    },
+    "UpdateNotificationConfiguration":{
+      "name":"UpdateNotificationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/updateNotificationConfiguration"
+      },
+      "input":{"shape":"UpdateNotificationConfigurationInput"},
+      "output":{"shape":"UpdateNotificationConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"NoDataRetentionException"}
+      ],
+      "documentation":"<p>Updates the notification information for a stream.</p>"
+    },
     "UpdateSignalingChannel":{
       "name":"UpdateSignalingChannel",
       "http":{
@@ -344,7 +412,8 @@
         "GET_MEDIA_FOR_FRAGMENT_LIST",
         "GET_HLS_STREAMING_SESSION_URL",
         "GET_DASH_STREAMING_SESSION_URL",
-        "GET_CLIP"
+        "GET_CLIP",
+        "GET_IMAGES"
       ]
     },
     "AccessDeniedException":{
@@ -361,7 +430,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>You have reached the maximum limit of active signaling channels for this AWS account in this region.</p>",
+      "documentation":"<p>You have reached the maximum limit of active signaling channels for this Amazon Web Services account in this region.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -448,7 +517,10 @@
     },
     "ChannelType":{
       "type":"string",
-      "enum":["SINGLE_MASTER"]
+      "enum":[
+        "SINGLE_MASTER",
+        "FULL_MESH"
+      ]
     },
     "ClientLimitExceededException":{
       "type":"structure",
@@ -463,13 +535,20 @@
       "type":"string",
       "enum":["BEGINS_WITH"]
     },
+    "ConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "CreateSignalingChannelInput":{
       "type":"structure",
       "required":["ChannelName"],
       "members":{
         "ChannelName":{
           "shape":"ChannelName",
-          "documentation":"<p>A name for the signaling channel that you are creating. It must be unique for each AWS account and AWS Region.</p>"
+          "documentation":"<p>A name for the signaling channel that you are creating. It must be unique for each Amazon Web Services account and Amazon Web Services Region.</p>"
         },
         "ChannelType":{
           "shape":"ChannelType",
@@ -512,7 +591,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ID of the AWS Key Management Service (AWS KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>aws/kinesisvideo</code>) is used.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters\">DescribeKey</a>. </p>"
+          "documentation":"<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>aws/kinesisvideo</code>) is used.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters\">DescribeKey</a>. </p>"
         },
         "DataRetentionInHours":{
           "shape":"DataRetentionInHours",
@@ -580,6 +659,50 @@
       "members":{
       }
     },
+    "DescribeImageGenerationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream from which to retrieve the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>. </p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis video stream from which to retrieve the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        }
+      }
+    },
+    "DescribeImageGenerationConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ImageGenerationConfiguration":{
+          "shape":"ImageGenerationConfiguration",
+          "documentation":"<p>The structure that contains the information required for the Kinesis video stream (KVS) images delivery. If this structure is null, the configuration will be deleted from the stream.</p>"
+        }
+      }
+    },
+    "DescribeNotificationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream from which to retrieve the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to retrieve the notification configuration. You must specify either the <code>StreamName</code> or the StreamARN.</p>"
+        }
+      }
+    },
+    "DescribeNotificationConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "NotificationConfiguration":{
+          "shape":"NotificationConfiguration",
+          "documentation":"<p>The structure that contains the information required for notifications. If the structure is null, the configuration will be deleted from the stream.</p>"
+        }
+      }
+    },
     "DescribeSignalingChannelInput":{
       "type":"structure",
       "members":{
@@ -624,6 +747,18 @@
         }
       }
     },
+    "DestinationRegion":{
+      "type":"string",
+      "max":14,
+      "min":9,
+      "pattern":"^[a-z]+(-[a-z]+)?-[a-z]+-[0-9]$"
+    },
+    "DestinationUri":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z_0-9]+:(//)?([^/]+)/?([^*]*)$"
+    },
     "DeviceName":{
       "type":"string",
       "max":128,
@@ -640,6 +775,30 @@
       "exception":true
     },
     "ErrorMessage":{"type":"string"},
+    "Format":{
+      "type":"string",
+      "enum":[
+        "JPEG",
+        "PNG"
+      ]
+    },
+    "FormatConfig":{
+      "type":"map",
+      "key":{"shape":"FormatConfigKey"},
+      "value":{"shape":"FormatConfigValue"},
+      "max":1,
+      "min":1
+    },
+    "FormatConfigKey":{
+      "type":"string",
+      "enum":["JPEGQuality"]
+    },
+    "FormatConfigValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^[a-zA-Z_0-9]+"
+    },
     "GetDataEndpointInput":{
       "type":"structure",
       "required":["APIName"],
@@ -689,6 +848,81 @@
           "documentation":"<p>A list of endpoints for the specified signaling channel.</p>"
         }
       }
+    },
+    "HeightPixels":{
+      "type":"integer",
+      "max":2160,
+      "min":1
+    },
+    "ImageGenerationConfiguration":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "ImageSelectorType",
+        "DestinationConfig",
+        "SamplingInterval",
+        "Format"
+      ],
+      "members":{
+        "Status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Indicates whether the <code>ContinuousImageGenerationConfigurations</code> API is enabled or disabled.</p>"
+        },
+        "ImageSelectorType":{
+          "shape":"ImageSelectorType",
+          "documentation":"<p>The origin of the Server or Producer timestamps to use to generate the images.</p>"
+        },
+        "DestinationConfig":{
+          "shape":"ImageGenerationDestinationConfig",
+          "documentation":"<p>The structure that contains the information required to deliver images to a customer.</p>"
+        },
+        "SamplingInterval":{
+          "shape":"SamplingInterval",
+          "documentation":"<p>The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 33 ms, because a camera that generates content at 30 FPS would create a frame every 33.3 ms. If the timestamp range is less than the sampling interval, the Image from the <code>StartTimestamp</code> will be returned if available. </p>"
+        },
+        "Format":{
+          "shape":"Format",
+          "documentation":"<p>The accepted image format.</p>"
+        },
+        "FormatConfig":{
+          "shape":"FormatConfig",
+          "documentation":"<p>The list of a key-value pair structure that contains extra parameters that can be applied when the image is generated. The <code>FormatConfig</code> key is the <code>JPEGQuality</code>, which indicates the JPEG quality key to be used to generate the image. The <code>FormatConfig</code> value accepts ints from 1 to 100. If the value is 1, the image will be generated with less quality and the best compression. If the value is 100, the image will be generated with the best quality and less compression. If no value is provided, the default value of the <code>JPEGQuality</code> key will be set to 80.</p>"
+        },
+        "WidthPixels":{
+          "shape":"WidthPixels",
+          "documentation":"<p>The width of the output image that is used in conjunction with the <code>HeightPixels</code> parameter. When both <code>WidthPixels</code> and <code>HeightPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>WidthPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>HeightPixels</code> ratio. If neither parameter is provided, the original image size will be returned.</p>"
+        },
+        "HeightPixels":{
+          "shape":"HeightPixels",
+          "documentation":"<p>The height of the output image that is used in conjunction with the <code>WidthPixels</code> parameter. When both <code>HeightPixels</code> and <code>WidthPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>HeightPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>WidthPixels</code> ratio. If neither parameter is provided, the original image size will be returned.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains the information required for the KVS images delivery. If null, the configuration will be deleted from the stream.</p>"
+    },
+    "ImageGenerationDestinationConfig":{
+      "type":"structure",
+      "required":[
+        "Uri",
+        "DestinationRegion"
+      ],
+      "members":{
+        "Uri":{
+          "shape":"DestinationUri",
+          "documentation":"<p>The Uniform Resource Idenifier (URI) that identifies where the images will be delivered.</p>"
+        },
+        "DestinationRegion":{
+          "shape":"DestinationRegion",
+          "documentation":"<p>The AWS Region of the S3 bucket where images will be delivered. This <code>DestinationRegion</code> must match the Region where the stream is located.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains the information required to deliver images to a customer.</p>"
+    },
+    "ImageSelectorType":{
+      "type":"string",
+      "enum":[
+        "SERVER_TIMESTAMP",
+        "PRODUCER_TIMESTAMP"
+      ]
     },
     "InvalidArgumentException":{
       "type":"structure",
@@ -868,6 +1102,15 @@
       "min":0,
       "pattern":"[a-zA-Z0-9+/=]*"
     },
+    "NoDataRetentionException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The Stream data retention in hours is equal to zero.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "NotAuthorizedException":{
       "type":"structure",
       "members":{
@@ -877,11 +1120,40 @@
       "error":{"httpStatusCode":401},
       "exception":true
     },
+    "NotificationConfiguration":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "DestinationConfig"
+      ],
+      "members":{
+        "Status":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>Indicates if a notification configuration is enabled or disabled.</p>"
+        },
+        "DestinationConfig":{
+          "shape":"NotificationDestinationConfig",
+          "documentation":"<p>The destination information required to deliver a notification to a customer.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains the notification information for the KVS images delivery. If this parameter is null, the configuration will be deleted from the stream.</p>"
+    },
+    "NotificationDestinationConfig":{
+      "type":"structure",
+      "required":["Uri"],
+      "members":{
+        "Uri":{
+          "shape":"DestinationUri",
+          "documentation":"<p>The Uniform Resource Idenifier (URI) that identifies where the images will be delivered.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains the information required to deliver a notification to a customer.</p>"
+    },
     "ResourceARN":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"arn:aws:kinesisvideo:[a-z0-9-]+:[0-9]+:[a-z]+/[a-zA-Z0-9_.-]+/[0-9]+"
+      "pattern":"arn:[a-z\\d-]+:kinesisvideo:[a-z0-9-]+:[0-9]+:[a-z]+/[a-zA-Z0-9_.-]+/[0-9]+"
     },
     "ResourceEndpoint":{"type":"string"},
     "ResourceEndpointList":{
@@ -907,7 +1179,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The signaling channel is currently not available for this operation.</p>",
+      "documentation":"<p>The resource is currently not available for this operation. New resources cannot be created with the same name as existing resources. Also, resources cannot be updated or deleted unless they are in an <code>ACTIVE</code> state.</p> <p>If this exception is returned, do not use it to determine whether the requested resource already exists. Instead, it is recommended you use the resource-specific describe API, for example, <code>DescribeStream</code> for video streams.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -926,6 +1198,11 @@
       "value":{"shape":"TagValue"},
       "max":50,
       "min":1
+    },
+    "SamplingInterval":{
+      "type":"integer",
+      "max":20000,
+      "min":3000
     },
     "SingleMasterChannelEndpointConfiguration":{
       "type":"structure",
@@ -946,7 +1223,7 @@
       "members":{
         "MessageTtlSeconds":{
           "shape":"MessageTtlSeconds",
-          "documentation":"<p>The period of time a signaling channel retains underlivered messages before they are discarded.</p>"
+          "documentation":"<p>The period of time a signaling channel retains undelivered messages before they are discarded.</p>"
         }
       },
       "documentation":"<p>A structure that contains the configuration for the <code>SINGLE_MASTER</code> channel type.</p>"
@@ -981,7 +1258,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ID of the AWS Key Management Service (AWS KMS) key that Kinesis Video Streams uses to encrypt data on the stream.</p>"
+          "documentation":"<p>The ID of the Key Management Service (KMS) key that Kinesis Video Streams uses to encrypt data on the stream.</p>"
         },
         "Version":{
           "shape":"Version",
@@ -1124,7 +1401,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>You have exceeded the limit of tags that you can associate with the resource. Kinesis video streams support up to 50 tags. </p>",
+      "documentation":"<p>You have exceeded the limit of tags that you can associate with the resource. A Kinesis video stream can support up to 50 tags. </p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1216,6 +1493,50 @@
       "members":{
       }
     },
+    "UpdateImageGenerationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream from which to update the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "ImageGenerationConfiguration":{
+          "shape":"ImageGenerationConfiguration",
+          "documentation":"<p>The structure that contains the information required for the KVS images delivery. If the structure is null, the configuration will be deleted from the stream.</p>"
+        }
+      }
+    },
+    "UpdateImageGenerationConfigurationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateNotificationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream from which to update the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "NotificationConfiguration":{
+          "shape":"NotificationConfiguration",
+          "documentation":"<p>The structure containing the information required for notifications. If the structure is null, the configuration will be deleted from the stream.</p>"
+        }
+      }
+    },
+    "UpdateNotificationConfigurationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateSignalingChannelInput":{
       "type":"structure",
       "required":[
@@ -1287,6 +1608,11 @@
       "documentation":"<p>The stream version that you specified is not the latest version. To get the latest version, use the <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_DescribeStream.html\">DescribeStream</a> API.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "WidthPixels":{
+      "type":"integer",
+      "max":3840,
+      "min":1
     }
   },
   "documentation":"<p/>"

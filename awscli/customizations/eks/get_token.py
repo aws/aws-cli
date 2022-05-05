@@ -28,6 +28,18 @@ AUTH_COMMAND = "GetCallerIdentity"
 AUTH_API_VERSION = "2011-06-15"
 AUTH_SIGNING_VERSION = "v4"
 
+ALPHA_API = "client.authentication.k8s.io/v1alpha1"
+BETA_API = "client.authentication.k8s.io/v1beta1"
+V1_API = "client.authentication.k8s.io/v1"
+
+FULLY_SUPPORTED_API_VERSIONS = [
+    V1_API,
+    BETA_API,
+]
+DEPRECATED_API_VERSIONS = [
+    ALPHA_API,
+]
+
 # Presigned url timeout in seconds
 URL_TIMEOUT = 60
 
@@ -41,32 +53,40 @@ CLUSTER_NAME_HEADER = 'x-k8s-aws-id'
 class GetTokenCommand(BasicCommand):
     NAME = 'get-token'
 
-    DESCRIPTION = ("Get a token for authentication with an Amazon EKS cluster. "
-                   "This can be used as an alternative to the "
-                   "aws-iam-authenticator.")
+    DESCRIPTION = (
+        "Get a token for authentication with an Amazon EKS cluster. "
+        "This can be used as an alternative to the "
+        "aws-iam-authenticator."
+    )
 
     ARG_TABLE = [
         {
             'name': 'cluster-name',
-            'help_text': ("Specify the name of the Amazon EKS cluster to create a token for."),
-            'required': True
+            'help_text': (
+                "Specify the name of the Amazon EKS cluster to create a token for."
+            ),
+            'required': True,
         },
         {
             'name': 'role-arn',
-            'help_text': ("Assume this role for credentials when signing the token."),
-            'required': False
-        }
+            'help_text': (
+                "Assume this role for credentials when signing the token."
+            ),
+            'required': False,
+        },
     ]
 
     def get_expiration_time(self):
-        token_expiration = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION_MINS)
+        token_expiration = datetime.utcnow() + timedelta(
+            minutes=TOKEN_EXPIRATION_MINS
+        )
         return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     def _run_main(self, parsed_args, parsed_globals):
         client_factory = STSClientFactory(self._session)
         sts_client = client_factory.get_sts_client(
-            region_name=parsed_globals.region,
-            role_arn=parsed_args.role_arn)
+            region_name=parsed_globals.region, role_arn=parsed_args.role_arn
+        )
         token = TokenGenerator(sts_client).get_token(parsed_args.cluster_name)
 
         # By default STS signs the url for 15 minutes so we are creating a
@@ -80,8 +100,8 @@ class GetTokenCommand(BasicCommand):
             "spec": {},
             "status": {
                 "expirationTimestamp": token_expiration,
-                "token": token
-            }
+                "token": token,
+            },
         }
 
         uni_print(json.dumps(full_object))
@@ -90,9 +110,9 @@ class GetTokenCommand(BasicCommand):
 
     def discover_api_version(self):
         """
-        Parses the KUBERNETES_EXEC_INFO environment variable and returns the API
-        version. If the environment variable is empty, malformed, or invalid,
-        return the v1alpha1 response and print an message to stderr.
+        Parses the KUBERNETES_EXEC_INFO environment variable and returns the
+        API version. If the environment variable is empty, malformed, or
+        invalid, return the v1alpha1 response and print a message to stderr.
 
         If the v1alpha1 API is specified explicitly, a message is printed to
         stderr with instructions to update.
@@ -100,70 +120,83 @@ class GetTokenCommand(BasicCommand):
         :return: The client authentication API version
         :rtype: string
         """
-        alpha_api = "client.authentication.k8s.io/v1alpha1"
-        beta_api = "client.authentication.k8s.io/v1beta1"
-        v1_api = "client.authentication.k8s.io/v1"
-        # At the time Kubernetes v1.29 is released upstream (aprox Dec 2023),
+        # At the time Kubernetes v1.29 is released upstream (approx Dec 2023),
         # "v1beta1" will be removed. At or around that time, EKS will likely
         # support v1.22 through v1.28, in which client API version "v1beta1"
         # will be supported by all EKS versions.
-        fallback_api_version = alpha_api
+        fallback_api_version = ALPHA_API
 
         error_prefixes = {
             "error": "Error parsing",
             "empty": "Empty",
         }
 
-        error_msg_tpl = ("{0} KUBERNETES_EXEC_INFO, defaulting "
-                    "to {1}. This is likely a bug in your Kubernetes "
-                    "client. Please update your Kubernetes client.")
-        unrecognized_msg = ("Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting "
-                    "to {0}. This is likely due to an outdated AWS CLI."
-                    " Please update your AWS CLI.".format(fallback_api_version))
-        deprecation_msg_tpl = ("Kubeconfig user entry is using deprecated API "
-                    "version {0}. Run 'aws eks update-kubeconfig' to update")
+        error_msg_tpl = (
+            "{0} KUBERNETES_EXEC_INFO, defaulting to {1}. This is likely a "
+            "bug in your Kubernetes client. Please update your Kubernetes "
+            "client."
+        )
+        unrecognized_msg = (
+            "Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting to "
+            f"{fallback_api_version}. This is likely due to an outdated AWS "
+            "CLI. Please update your AWS CLI."
+        )
+        deprecation_msg_tpl = (
+            "Kubeconfig user entry is using deprecated API version {0}. Run "
+            "'aws eks update-kubeconfig' to update."
+        )
 
         exec_info_raw = os.environ.get("KUBERNETES_EXEC_INFO", "")
-        if len(exec_info_raw) == 0:
-            # All kube clients should be setting this, we'll return the fallback and write an error
-            sys.stderr.write(error_msg_tpl.format(error_prefixes["empty"], fallback_api_version))
-            sys.stderr.write("\n")
-            sys.stderr.flush()
+        if not exec_info_raw:
+            # All kube clients should be setting this. Otherewise, we'll return
+            # the fallback and write an error.
+            uni_print(
+                error_msg_tpl.format(
+                    error_prefixes["empty"],
+                    fallback_api_version,
+                ),
+                sys.stderr,
+            )
+            uni_print("\n", sys.stderr)
             return fallback_api_version
         try:
             exec_info = json.loads(exec_info_raw)
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             # The environment variable was malformed
-            sys.stderr.write(error_msg_tpl.format(error_prefixes["error"], fallback_api_version))
-            sys.stderr.write("\n")
-            sys.stderr.flush()
+            uni_print(
+                error_msg_tpl.format(
+                    error_prefixes["error"],
+                    fallback_api_version,
+                ),
+                sys.stderr,
+            )
+            uni_print("\n", sys.stderr)
             return fallback_api_version
 
         api_version_raw = exec_info.get("apiVersion")
-        if api_version_raw == v1_api:
-            return v1_api
-        if api_version_raw == beta_api:
-            return beta_api
-        if api_version_raw == alpha_api:
-            sys.stderr.write(deprecation_msg_tpl.format(alpha_api))
-            sys.stderr.write("\n")
-            sys.stderr.flush()
-            return alpha_api
+        if api_version_raw in FULLY_SUPPORTED_API_VERSIONS:
+            return api_version_raw
+        elif api_version_raw in DEPRECATED_API_VERSIONS:
+            uni_print(deprecation_msg_tpl.format(ALPHA_API), sys.stderr)
+            uni_print("\n", sys.stderr)
+            return api_version_raw
+        else:
+            # write unrecognized api version message
+            uni_print(unrecognized_msg, sys.stderr)
+            uni_print("\n", sys.stderr)
+            return fallback_api_version
 
-        sys.stderr.write(unrecognized_msg)
-        sys.stderr.write("\n")
-        sys.stderr.flush()
-        return fallback_api_version
 
 class TokenGenerator(object):
     def __init__(self, sts_client):
         self._sts_client = sts_client
 
     def get_token(self, cluster_name):
-        """ Generate a presigned url token to pass to kubectl. """
+        """Generate a presigned url token to pass to kubectl."""
         url = self._get_presigned_url(cluster_name)
         token = TOKEN_PREFIX + base64.urlsafe_b64encode(
-            url.encode('utf-8')).decode('utf-8').rstrip('=')
+            url.encode('utf-8')
+        ).decode('utf-8').rstrip('=')
         return token
 
     def _get_presigned_url(self, cluster_name):
@@ -180,9 +213,7 @@ class STSClientFactory(object):
         self._session = session
 
     def get_sts_client(self, region_name=None, role_arn=None):
-        client_kwargs = {
-            'region_name': region_name
-        }
+        client_kwargs = {'region_name': region_name}
         if role_arn is not None:
             creds = self._get_role_credentials(region_name, role_arn)
             client_kwargs['aws_access_key_id'] = creds['AccessKeyId']
@@ -195,18 +226,17 @@ class STSClientFactory(object):
     def _get_role_credentials(self, region_name, role_arn):
         sts = self._session.create_client('sts', region_name)
         return sts.assume_role(
-            RoleArn=role_arn,
-            RoleSessionName='EKSGetTokenAuth'
+            RoleArn=role_arn, RoleSessionName='EKSGetTokenAuth'
         )['Credentials']
 
     def _register_cluster_name_handlers(self, sts_client):
         sts_client.meta.events.register(
             'provide-client-params.sts.GetCallerIdentity',
-            self._retrieve_cluster_name
+            self._retrieve_cluster_name,
         )
         sts_client.meta.events.register(
             'before-sign.sts.GetCallerIdentity',
-            self._inject_cluster_name_header
+            self._inject_cluster_name_header,
         )
 
     def _retrieve_cluster_name(self, params, context, **kwargs):
@@ -215,5 +245,6 @@ class STSClientFactory(object):
 
     def _inject_cluster_name_header(self, request, **kwargs):
         if 'eks_cluster' in request.context:
-            request.headers[
-                CLUSTER_NAME_HEADER] = request.context['eks_cluster']
+            request.headers[CLUSTER_NAME_HEADER] = request.context[
+                'eks_cluster'
+            ]

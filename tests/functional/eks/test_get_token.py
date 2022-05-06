@@ -73,10 +73,9 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         # api version
         kubernetes_exec_info_tpl = (
             '{{"kind":"ExecCredential",'
-            '"apiVersion":"client.authentication.k8s.io/{0}",'
+            f'"apiVersion":"client.authentication.k8s.io/{api_version}",'
             '"spec":{{"interactive":true}}}}'
         )
-        # kubernetes_exec_info_tpl = '{{"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/{}","spec":{{"interactive":true}}}}'
         self.environ['KUBERNETES_EXEC_INFO'] = kubernetes_exec_info_tpl.format(
             api_version,
         )

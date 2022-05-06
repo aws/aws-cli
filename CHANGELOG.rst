@@ -3512,6 +3512,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.23.8
+======
+
+* api-change:``ec2``: [``botocore``] Amazon EC2 I4i instances are powered by 3rd generation Intel Xeon Scalable processors and feature up to 30 TB of local AWS Nitro SSD storage
+* api-change:``kendra``: [``botocore``] AWS Kendra now supports hierarchical facets for a query. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/filtering.html
+* api-change:``iot``: [``botocore``] AWS IoT Jobs now allows you to create up to 100,000 active continuous and snapshot jobs by using concurrency control.
+* api-change:``datasync``: [``botocore``] AWS DataSync now supports a new ObjectTags Task API option that can be used to control whether Object Tags are transferred.
+
+
+1.23.7
+======
+
+* api-change:``ssm``: [``botocore``] This release adds the TargetMaps parameter in SSM State Manager API.
+* api-change:``backup``: [``botocore``] Adds support to 2 new filters about job complete time for 3 list jobs APIs in AWS Backup
+* api-change:``lightsail``: [``botocore``] Documentation updates for Lightsail
+* api-change:``iotsecuretunneling``: [``botocore``] This release introduces a new API RotateTunnelAccessToken that allow revoking the existing tokens and generate new tokens
+
+
 1.23.6
 ======
 

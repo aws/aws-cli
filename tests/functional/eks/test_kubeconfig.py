@@ -97,7 +97,7 @@ class TestKubeconfigLoader(unittest.TestCase):
         """
         old_path = os.path.abspath(get_testdata(config))
         new_path = os.path.join(self._temp_directory, config)
-        shutil.copy2(old_path, 
+        shutil.copy2(old_path,
                      new_path)
         return new_path
 
@@ -121,14 +121,14 @@ class TestKubeconfigLoader(unittest.TestCase):
         ])
         loaded_config = self._loader.load_kubeconfig(simple_path)
         self.assertEqual(loaded_config.content, content)
-        self._validator.validate_config.called_with(Kubeconfig(simple_path, 
+        self._validator.validate_config.called_with(Kubeconfig(simple_path,
                                                                content))
 
     def test_load_noexist(self):
         no_exist_path = os.path.join(self._temp_directory,
                                      "this_does_not_exist")
         loaded_config = self._loader.load_kubeconfig(no_exist_path)
-        self.assertEqual(loaded_config.content, 
+        self.assertEqual(loaded_config.content,
                          _get_new_kubeconfig_content())
         self._validator.validate_config.called_with(
             Kubeconfig(no_exist_path, _get_new_kubeconfig_content()))
@@ -136,10 +136,10 @@ class TestKubeconfigLoader(unittest.TestCase):
     def test_load_empty(self):
         empty_path = self._clone_config("valid_empty_existing")
         loaded_config = self._loader.load_kubeconfig(empty_path)
-        self.assertEqual(loaded_config.content, 
+        self.assertEqual(loaded_config.content,
                          _get_new_kubeconfig_content())
         self._validator.validate_config.called_with(
-            Kubeconfig(empty_path, 
+            Kubeconfig(empty_path,
                        _get_new_kubeconfig_content()))
 
     def test_load_directory(self):

@@ -71,13 +71,10 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     def set_kubernetes_exec_info(self, api_version):
         # Set KUBERNETES_EXEC_INFO env var with default payload and provided
         # api version
-        kubernetes_exec_info_tpl = (
-            '{{"kind":"ExecCredential",'
+        self.environ['KUBERNETES_EXEC_INFO'] = (
+            '{"kind":"ExecCredential",'
             f'"apiVersion":"client.authentication.k8s.io/{api_version}",'
-            '"spec":{{"interactive":true}}}}'
-        )
-        self.environ['KUBERNETES_EXEC_INFO'] = kubernetes_exec_info_tpl.format(
-            api_version,
+            '"spec":{"interactive":true}}'
         )
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')

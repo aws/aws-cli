@@ -40,6 +40,21 @@ DEPRECATED_API_VERSIONS = [
     ALPHA_API,
 ]
 
+ERROR_MSG_TPL = (
+    "{0} KUBERNETES_EXEC_INFO, defaulting to {1}. This is likely a "
+    "bug in your Kubernetes client. Please update your Kubernetes "
+    "client."
+)
+UNRECOGNIZED_MSG_TPL = (
+    "Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting to "
+    "{0}. This is likely due to an outdated AWS "
+    "CLI. Please update your AWS CLI."
+)
+DEPRECATION_MSG_TPL = (
+    "Kubeconfig user entry is using deprecated API version {0}. Run "
+    "'aws eks update-kubeconfig' to update."
+)
+
 # Presigned url timeout in seconds
 URL_TIMEOUT = 60
 
@@ -131,27 +146,12 @@ class GetTokenCommand(BasicCommand):
             "empty": "Empty",
         }
 
-        error_msg_tpl = (
-            "{0} KUBERNETES_EXEC_INFO, defaulting to {1}. This is likely a "
-            "bug in your Kubernetes client. Please update your Kubernetes "
-            "client."
-        )
-        unrecognized_msg = (
-            "Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting to "
-            f"{fallback_api_version}. This is likely due to an outdated AWS "
-            "CLI. Please update your AWS CLI."
-        )
-        deprecation_msg_tpl = (
-            "Kubeconfig user entry is using deprecated API version {0}. Run "
-            "'aws eks update-kubeconfig' to update."
-        )
-
         exec_info_raw = os.environ.get("KUBERNETES_EXEC_INFO", "")
         if not exec_info_raw:
             # All kube clients should be setting this. Otherewise, we'll return
             # the fallback and write an error.
             uni_print(
-                error_msg_tpl.format(
+                ERROR_MSG_TPL.format(
                     error_prefixes["empty"],
                     fallback_api_version,
                 ),
@@ -164,7 +164,7 @@ class GetTokenCommand(BasicCommand):
         except json.JSONDecodeError:
             # The environment variable was malformed
             uni_print(
-                error_msg_tpl.format(
+                ERROR_MSG_TPL.format(
                     error_prefixes["error"],
                     fallback_api_version,
                 ),
@@ -177,12 +177,14 @@ class GetTokenCommand(BasicCommand):
         if api_version_raw in FULLY_SUPPORTED_API_VERSIONS:
             return api_version_raw
         elif api_version_raw in DEPRECATED_API_VERSIONS:
-            uni_print(deprecation_msg_tpl.format(ALPHA_API), sys.stderr)
+            uni_print(DEPRECATION_MSG_TPL.format(ALPHA_API), sys.stderr)
             uni_print("\n", sys.stderr)
             return api_version_raw
         else:
-            # write unrecognized api version message
-            uni_print(unrecognized_msg, sys.stderr)
+            uni_print(
+                UNRECOGNIZED_MSG_TPL.format(fallback_api_version),
+                sys.stderr,
+            )
             uni_print("\n", sys.stderr)
             return fallback_api_version
 

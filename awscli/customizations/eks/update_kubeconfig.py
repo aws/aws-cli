@@ -31,10 +31,9 @@ LOG = logging.getLogger(__name__)
 
 DEFAULT_PATH = os.path.expanduser("~/.kube/config")
 
-# Use the endpoint for kubernetes 1.10
-# To get the most recent endpoint we will need to
-# Do a check on the cluster's version number
-API_VERSION = "client.authentication.k8s.io/v1alpha1"
+# At the time EKS no longer supports Kubernetes v1.21 (probably ~Dec 2023),
+# this can be safely changed to default to writing "v1"
+API_VERSION = "client.authentication.k8s.io/v1beta1"
 
 class UpdateKubeconfigCommand(BasicCommand):
     NAME = 'update-kubeconfig'
@@ -306,7 +305,7 @@ class EKSClient(object):
                             "--cluster-name",
                             self._cluster_name,
                         ]),
-                    ("command", "aws")
+                    ("command", "aws"),
                 ]))
             ]))
         ])

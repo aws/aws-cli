@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.23.9
+======
+
+* api-change:``rds``: [``botocore``] Various documentation improvements.
+* api-change:``redshift``: [``botocore``] Introduces new field 'LoadSampleData' in CreateCluster operation. Customers can now specify 'LoadSampleData' option during creation of a cluster, which results in loading of sample data in the cluster that is created.
+* api-change:``ec2``: [``botocore``] Add new state values for IPAMs, IPAM Scopes, and IPAM Pools.
+* api-change:``mediapackage``: [``botocore``] This release adds Dvb Dash 2014 as an available profile option for Dash Origin Endpoints.
+* api-change:``securityhub``: [``botocore``] Documentation updates for Security Hub API reference
+* enhancement:eks get-token: Add support for respecting API version found in KUBERNETES_EXEC_INFO environment variable
+* api-change:``location``: [``botocore``] Amazon Location Service now includes a MaxResults parameter for ListGeofences requests.
+* enhancement:eks update-kubeconfig: Update default API version to v1beta1
+
+
 1.23.8
 ======
 

@@ -110,7 +110,8 @@
         {"shape":"InvalidOutputLocation"},
         {"shape":"InvalidParameters"},
         {"shape":"InvalidTarget"},
-        {"shape":"InvalidSchedule"}
+        {"shape":"InvalidSchedule"},
+        {"shape":"InvalidTargetMaps"}
       ],
       "documentation":"<p>A State Manager association defines the state that you want to maintain on your managed nodes. For example, an association can specify that anti-virus software must be installed and running on your managed nodes, or that certain ports must be closed. For static targets, the association specifies a schedule for when the configuration is reapplied. For dynamic targets, such as an Amazon Web Services resource group or an Amazon Web Services autoscaling group, State Manager, a capability of Amazon Web Services Systems Manager applies the configuration when new managed nodes are added to the group. The association also specifies actions to take when applying the configuration. For example, an association for anti-virus software might run once a day. If the software isn't installed, then State Manager installs it. If the software is installed, but the service isn't running, then the association might instruct State Manager to start the service. </p>"
     },
@@ -133,7 +134,8 @@
         {"shape":"UnsupportedPlatformType"},
         {"shape":"InvalidOutputLocation"},
         {"shape":"InvalidTarget"},
-        {"shape":"InvalidSchedule"}
+        {"shape":"InvalidSchedule"},
+        {"shape":"InvalidTargetMaps"}
       ],
       "documentation":"<p>Associates the specified Amazon Web Services Systems Manager document (SSM document) with the specified managed nodes or targets.</p> <p>When you associate a document with one or more managed nodes using IDs or tags, Amazon Web Services Systems Manager Agent (SSM Agent) running on the managed node processes the document and configures the node as specified.</p> <p>If you associate a document with a managed node that already has an associated document, the system returns the AssociationAlreadyExists exception.</p>"
     },
@@ -1919,7 +1921,8 @@
         {"shape":"InvalidDocument"},
         {"shape":"InvalidTarget"},
         {"shape":"InvalidAssociationVersion"},
-        {"shape":"AssociationVersionLimitExceeded"}
+        {"shape":"AssociationVersionLimitExceeded"},
+        {"shape":"InvalidTargetMaps"}
       ],
       "documentation":"<p>Updates an association. You can update the association name and version, the document version, schedule, parameters, and Amazon Simple Storage Service (Amazon S3) output. When you call <code>UpdateAssociation</code>, the system removes all optional parameters from the request and overwrites the association with null values for those parameters. This is by design. You must specify all optional parameters in the call, even if you are not changing the parameters. This includes the <code>Name</code> parameter. Before calling this API action, we recommend that you call the <a>DescribeAssociation</a> API operation and make a note of all optional parameters required for your <code>UpdateAssociation</code> call.</p> <p>In order to call this API operation, your Identity and Access Management (IAM) user account, group, or role must be configured with permission to call the <a>DescribeAssociation</a> API operation. If you don't have permission to call <code>DescribeAssociation</code>, then you receive the following error: <code>An error occurred (AccessDeniedException) when calling the UpdateAssociation operation: User: &lt;user_arn&gt; isn't authorized to perform: ssm:DescribeAssociation on resource: &lt;resource_arn&gt;</code> </p> <important> <p>When you update an association, the association immediately runs against the specified targets. You can add the <code>ApplyOnlyAtCronInterval</code> parameter to run the association during the next schedule run.</p> </important>"
     },
@@ -2372,6 +2375,11 @@
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
           "box":true
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Describes an association of a Amazon Web Services Systems Manager document (SSM document) and a managed node.</p>"
@@ -2495,6 +2503,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
+          "box":true
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
         }
       },
@@ -2913,6 +2926,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
+          "box":true
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
         }
       },
@@ -4374,6 +4392,11 @@
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
           "box":true
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Describes the association of a Amazon Web Services Systems Manager document (SSM document) and a managed node.</p>"
@@ -4462,6 +4485,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association. For example, if you specified a cron schedule of <code>cron(0 0 ? * THU#2 *)</code>, you could specify an offset of 3 to run the association each Sunday after the second Thursday of the month. For more information about cron schedules for associations, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html\">Reference: Cron and rate expressions for Systems Manager</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>To use offsets, you must specify the <code>ApplyOnlyAtCronInterval</code> parameter. This option tells the system not to run an association immediately after you create it. </p> </note>",
+          "box":true
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
         }
       }
@@ -9119,6 +9147,14 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The target isn't valid or doesn't exist. It might not be configured for Systems Manager or you might not have permission to perform the operation.</p>",
+      "exception":true
+    },
+    "InvalidTargetMaps":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>TargetMap parameter isn't valid.</p>",
       "exception":true
     },
     "InvalidTypeNameException":{
@@ -15347,6 +15383,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association. For example, if you specified a cron schedule of <code>cron(0 0 ? * THU#2 *)</code>, you could specify an offset of 3 to run the association each Sunday after the second Thursday of the month. For more information about cron schedules for associations, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html\">Reference: Cron and rate expressions for Systems Manager</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>To use offsets, you must specify the <code>ApplyOnlyAtCronInterval</code> parameter. This option tells the system not to run an association immediately after you create it. </p> </note>",
+          "box":true
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
         }
       }

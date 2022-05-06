@@ -40,7 +40,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     def assert_url_correct(
         self,
         response,
-        expected_endpoint='sts.amazonaws.com',
+        expected_endpoint='sts.us-east-1.amazonaws.com',
         expected_signing_region='us-east-1',
         has_session_token=False,
     ):

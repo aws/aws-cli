@@ -3527,6 +3527,37 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.23.11
+=======
+
+* api-change:``eks``: Adds BOTTLEROCKET_ARM_64_NVIDIA and BOTTLEROCKET_x86_64_NVIDIA AMI types to EKS managed nodegroups
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ec2``: Added support for using NitroTPM and UEFI Secure Boot on EC2 instances.
+* api-change:``compute-optimizer``: Documentation updates for Compute Optimizer
+* api-change:``migration-hub-refactor-spaces``: AWS Migration Hub Refactor Spaces documentation only update to fix a formatting issue.
+
+
+1.23.10
+=======
+
+* api-change:``ssm-contacts``: Fixed an error in the DescribeEngagement example for AWS Incident Manager.
+* api-change:``cloudcontrol``: SDK release for Cloud Control API to include paginators for Python SDK.
+* api-change:``evidently``: Add detail message inside GetExperimentResults API response to indicate experiment result availability
+
+
+1.23.9
+======
+
+* api-change:``rds``: [``botocore``] Various documentation improvements.
+* api-change:``redshift``: [``botocore``] Introduces new field 'LoadSampleData' in CreateCluster operation. Customers can now specify 'LoadSampleData' option during creation of a cluster, which results in loading of sample data in the cluster that is created.
+* api-change:``ec2``: [``botocore``] Add new state values for IPAMs, IPAM Scopes, and IPAM Pools.
+* api-change:``mediapackage``: [``botocore``] This release adds Dvb Dash 2014 as an available profile option for Dash Origin Endpoints.
+* api-change:``securityhub``: [``botocore``] Documentation updates for Security Hub API reference
+* enhancement:eks get-token: Add support for respecting API version found in KUBERNETES_EXEC_INFO environment variable
+* api-change:``location``: [``botocore``] Amazon Location Service now includes a MaxResults parameter for ListGeofences requests.
+* enhancement:eks update-kubeconfig: Update default API version to v1beta1
+
+
 1.23.8
 ======
 

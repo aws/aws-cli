@@ -524,3 +524,12 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --auto-termination-policy IdleTimeout=100
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch ::
+
+    aws emr create-cluster \
+        --release-label emr-6.6.0 \
+        --os-release-label 2.0.20220406.1 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large

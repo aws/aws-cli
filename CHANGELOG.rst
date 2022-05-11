@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.6.4
+=====
+
+* api-change:``mediapackage``: This release adds Dvb Dash 2014 as an available profile option for Dash Origin Endpoints.
+* api-change:``evidently``: Add detail message inside GetExperimentResults API response to indicate experiment result availability
+* api-change:``securityhub``: Documentation updates for Security Hub API reference
+* api-change:``migration-hub-refactor-spaces``: AWS Migration Hub Refactor Spaces documentation only update to fix a formatting issue.
+* api-change:``ec2``: Added support for using NitroTPM and UEFI Secure Boot on EC2 instances.
+* api-change:``ssm-contacts``: Fixed an error in the DescribeEngagement example for AWS Incident Manager.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``cloudcontrol``: SDK release for Cloud Control API to include paginators for Python SDK.
+* api-change:``ec2``: Add new state values for IPAMs, IPAM Scopes, and IPAM Pools.
+* api-change:``eks``: Adds BOTTLEROCKET_ARM_64_NVIDIA and BOTTLEROCKET_x86_64_NVIDIA AMI types to EKS managed nodegroups
+* api-change:``redshift``: Introduces new field 'LoadSampleData' in CreateCluster operation. Customers can now specify 'LoadSampleData' option during creation of a cluster, which results in loading of sample data in the cluster that is created.
+* api-change:``location``: Amazon Location Service now includes a MaxResults parameter for ListGeofences requests.
+* api-change:``rds``: Various documentation improvements.
+* api-change:``compute-optimizer``: Documentation updates for Compute Optimizer
+
+
 2.6.3
 =====
 

@@ -38,6 +38,8 @@ class CreateCluster(Command):
     ARG_TABLE = [
         {'name': 'release-label',
          'help_text': helptext.RELEASE_LABEL},
+        {'name': 'os-release-label',
+         'help_text': helptext.OS_RELEASE_LABEL},
         {'name': 'ami-version',
          'help_text': helptext.AMI_VERSION},
         {'name': 'instance-groups',
@@ -202,6 +204,10 @@ class CreateCluster(Command):
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)
+
+        if parsed_args.os_release_label is not None:
+            emrutils.apply_dict(params, 'OSReleaseLabel',
+                parsed_args.os_release_label)
 
         if parsed_args.log_encryption_kms_key_id is not None:
             emrutils.apply_dict(params, 'LogEncryptionKmsKeyId',

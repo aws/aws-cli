@@ -230,7 +230,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the results of a running or completed experiment.</p>"
+      "documentation":"<p>Retrieves the results of a running or completed experiment. No results are available until there have been 100 events for each variation and at least 10 minutes have passed since the start of the experiment.</p> <p>Experiment results are available up to 63 days after the start of the experiment. They are not available after that because of CloudWatch data retention policies.</p>"
     },
     "GetFeature":{
       "name":"GetFeature",
@@ -1649,7 +1649,7 @@
         },
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the experiment ended, if it is completed.</p>"
+          "documentation":"<p>The date and time that the experiment ended, if it is completed. This must be no longer than 30 days after the experiment start time.</p>"
         },
         "experiment":{
           "shape":"ExperimentName",
@@ -1692,6 +1692,10 @@
     "GetExperimentResultsResponse":{
       "type":"structure",
       "members":{
+        "details":{
+          "shape":"String",
+          "documentation":"<p>If the experiment doesn't yet have enough events to provide valid results, this field is returned with the message <code>Not enough events to generate results</code>. If there are enough events to provide valid results, this field is not returned.</p>"
+        },
         "reports":{
           "shape":"ExperimentReportList",
           "documentation":"<p>An array of structures that include the reports that you requested.</p>"
@@ -2832,7 +2836,7 @@
       "members":{
         "analysisCompleteTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time to end the experiment.</p>"
+          "documentation":"<p>The date and time to end the experiment. This must be no more than 30 days after the experiment starts.</p>"
         },
         "experiment":{
           "shape":"ExperimentName",

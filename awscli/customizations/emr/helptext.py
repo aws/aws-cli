@@ -125,6 +125,11 @@ RELEASE_LABEL = (
     ' and later. Use <code>--ami-version</code> for earlier versions.'
     ' You cannot specify both a release label and AMI version.</p>')
 
+OS_RELEASE_LABEL = (
+    '<p>Specifies a particular Amazon Linux release for all nodes in a cluster'
+    ' launch request. If a release is not specified, EMR uses the latest validated' 
+    ' Amazon Linux release for cluster launch.</p>')
+
 CONFIGURATIONS = (
     '<p>Specifies a JSON file that contains configuration classifications,'
     ' which you can use to customize applications that Amazon EMR installs'

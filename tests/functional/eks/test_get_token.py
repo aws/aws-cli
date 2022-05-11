@@ -86,7 +86,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             response,
             {
                 "kind": "ExecCredential",
-                "apiVersion": "client.authentication.k8s.io/v1alpha1",
+                "apiVersion": "client.authentication.k8s.io/v1beta1",
                 "spec": {},
                 "status": {
                     "expirationTimestamp": "2019-10-23T23:14:00Z",
@@ -185,13 +185,13 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
         self.assertEqual(
             response["apiVersion"],
-            "client.authentication.k8s.io/v1alpha1",
+            "client.authentication.k8s.io/v1beta1",
         )
 
         self.assertEqual(
             stderr,
             (
-                "Error parsing KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1alpha1. "
+                "Error parsing KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1beta1. "
                 "This is likely a bug in your Kubernetes client. Please update your Kubernetes client.\n"
             ),
         )
@@ -203,16 +203,10 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
         self.assertEqual(
             response["apiVersion"],
-            "client.authentication.k8s.io/v1alpha1",
+            "client.authentication.k8s.io/v1beta1",
         )
 
-        self.assertEqual(
-            stderr,
-            (
-                "Empty KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1alpha1. "
-                "This is likely a bug in your Kubernetes client. Please update your Kubernetes client.\n"
-            ),
-        )
+        self.assertEqual(stderr, "",)
 
     def test_api_version_discovery_v1(self):
         self.set_kubernetes_exec_info('v1')
@@ -248,13 +242,13 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
         self.assertEqual(
             response["apiVersion"],
-            "client.authentication.k8s.io/v1alpha1",
+            "client.authentication.k8s.io/v1beta1",
         )
 
         self.assertEqual(
             stderr,
             (
-                "Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1alpha1. "
+                "Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1beta1. "
                 "This is likely due to an outdated AWS CLI. Please update your AWS CLI.\n"
             ),
         )

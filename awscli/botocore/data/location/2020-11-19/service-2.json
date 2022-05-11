@@ -87,7 +87,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Evaluates device positions against the geofence geometries from a given geofence collection.</p> <p>This operation always returns an empty response because geofences are asynchronously evaluated. The evaluation determines if the device has entered or exited a geofenced area, and then publishes one of the following events to Amazon EventBridge:</p> <ul> <li> <p> <code>ENTER</code> if Amazon Location determines that the tracked device has entered a geofenced area.</p> </li> <li> <p> <code>EXIT</code> if Amazon Location determines that the tracked device has exited a geofenced area.</p> </li> </ul> <note> <p>The last geofence that a device was observed within is tracked for 30 days after the most recent device position update.</p> </note> <note> <p>Geofence evaluation uses the given device position. It does not account for the optional <code>Accuracy</code> of a <code>DevicePositionUpdate</code>.</p> </note>",
+      "documentation":"<p>Evaluates device positions against the geofence geometries from a given geofence collection.</p> <p>This operation always returns an empty response because geofences are asynchronously evaluated. The evaluation determines if the device has entered or exited a geofenced area, and then publishes one of the following events to Amazon EventBridge:</p> <ul> <li> <p> <code>ENTER</code> if Amazon Location determines that the tracked device has entered a geofenced area.</p> </li> <li> <p> <code>EXIT</code> if Amazon Location determines that the tracked device has exited a geofenced area.</p> </li> </ul> <note> <p>The last geofence that a device was observed within is tracked for 30 days after the most recent device position update.</p> </note> <note> <p>Geofence evaluation uses the given device position. It does not account for the optional <code>Accuracy</code> of a <code>DevicePositionUpdate</code>.</p> </note> <note> <p>The <code>DeviceID</code> is used as a string to represent the device. You do not need to have a <code>Tracker</code> associated with the <code>DeviceID</code>.</p> </note>",
       "endpoint":{"hostPrefix":"geofencing."}
     },
     "BatchGetDevicePosition":{
@@ -1691,7 +1691,7 @@
         },
         "DeparturePosition":{
           "shape":"Position",
-          "documentation":"<p>The start position for the route. Defined in <a href=\"https://earth-info.nga.mil/GandG/wgs84/index.html\">WGS 84</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p>For example, <code>[-123.115, 49.285]</code> </p> </li> </ul> <note> <p>If you specify a departure that's not located on a road, Amazon Location <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html\">moves the position to the nearest road</a>. If Esri is the provider for your route calculator, specifying a route that is longer than 400 km returns a <code>400 RoutesValidationException</code> error.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>"
+          "documentation":"<p>The start position for the route. Defined in <a href=\"https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84\">World Geodetic System (WGS 84)</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p>For example, <code>[-123.115, 49.285]</code> </p> </li> </ul> <note> <p>If you specify a departure that's not located on a road, Amazon Location <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html\">moves the position to the nearest road</a>. If Esri is the provider for your route calculator, specifying a route that is longer than 400 km returns a <code>400 RoutesValidationException</code> error.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>"
         },
         "DepartureTime":{
           "shape":"Timestamp",
@@ -1699,7 +1699,7 @@
         },
         "DestinationPosition":{
           "shape":"Position",
-          "documentation":"<p>The finish position for the route. Defined in <a href=\"https://earth-info.nga.mil/GandG/wgs84/index.html\">WGS 84</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p> For example, <code>[-122.339, 47.615]</code> </p> </li> </ul> <note> <p>If you specify a destination that's not located on a road, Amazon Location <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html\">moves the position to the nearest road</a>. </p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>"
+          "documentation":"<p>The finish position for the route. Defined in <a href=\"https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84\">World Geodetic System (WGS 84)</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p> For example, <code>[-122.339, 47.615]</code> </p> </li> </ul> <note> <p>If you specify a destination that's not located on a road, Amazon Location <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html\">moves the position to the nearest road</a>. </p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>"
         },
         "DistanceUnit":{
           "shape":"DistanceUnit",
@@ -3317,11 +3317,21 @@
           "location":"uri",
           "locationName":"CollectionName"
         },
+        "MaxResults":{
+          "shape":"ListGeofencesRequestMaxResultsInteger",
+          "documentation":"<p>An optional limit for the number of geofences returned in a single call. </p> <p>Default value: <code>100</code> </p>"
+        },
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>"
         }
       }
+    },
+    "ListGeofencesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "ListGeofencesResponse":{
       "type":"structure",
@@ -3770,7 +3780,7 @@
           "documentation":"<p>The time zone in which the <code>Place</code> is located. Returned only when using Here as the selected partner.</p>"
         }
       },
-      "documentation":"<p>Contains details about addresses or points of interest that match the search criteria.</p>"
+      "documentation":"<p>Contains details about addresses or points of interest that match the search criteria.</p> <p>Not all details are included with all responses. Some details may only be returned by specific data partners.</p>"
     },
     "PlaceGeometry":{
       "type":"structure",
@@ -4073,7 +4083,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. It does not change which results are returned. If the language is not specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p>"
+          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we'll use the Greek language. You search for a location around Athens, Greece, with the <code>language</code> parameter set to <code>en</code>. The <code>city</code> in the results will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the <code>city</code> in the results will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>"
         },
         "MaxResults":{
           "shape":"PlaceIndexSearchResultLimit",
@@ -4155,14 +4165,14 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. It does not change which results are returned. If the language is not specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>Used only when the partner selected is Here.</p>"
+          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we'll use the Greek language. You search for <code>Athens, Gr</code> to get suggestions with the <code>language</code> parameter set to <code>en</code>. The results found will most likely be returned as <code>Athens, Greece</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the result found will more likely be returned as <code>Αθήνα, Ελλάδα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>"
         },
         "MaxResults":{
           "shape":"SearchPlaceIndexForSuggestionsRequestMaxResultsInteger",
           "documentation":"<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>5</code> </p>"
         },
         "Text":{
-          "shape":"SyntheticSearchPlaceIndexForSuggestionsRequestString",
+          "shape":"SearchPlaceIndexForSuggestionsRequestTextString",
           "documentation":"<p>The free-form partial text to use to generate place suggestions. For example, <code>eiffel tow</code>.</p>"
         }
       }
@@ -4172,6 +4182,12 @@
       "box":true,
       "max":15,
       "min":1
+    },
+    "SearchPlaceIndexForSuggestionsRequestTextString":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
     },
     "SearchPlaceIndexForSuggestionsResponse":{
       "type":"structure",
@@ -4222,7 +4238,7 @@
           "documentation":"<p>Contains the optional result count limit specified in the request.</p>"
         },
         "Text":{
-          "shape":"SyntheticSearchPlaceIndexForSuggestionsSummaryString",
+          "shape":"SensitiveString",
           "documentation":"<p>The free-form partial text input specified in the request.</p>"
         }
       },
@@ -4255,17 +4271,23 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. It does not change which results are returned. If the language is not specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p>"
+          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we'll use the Greek language. You search for <code>Athens, Greece</code>, with the <code>language</code> parameter set to <code>en</code>. The result found will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the result found will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>"
         },
         "MaxResults":{
           "shape":"PlaceIndexSearchResultLimit",
           "documentation":"<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>50</code> </p>"
         },
         "Text":{
-          "shape":"SyntheticSearchPlaceIndexForTextRequestString",
+          "shape":"SearchPlaceIndexForTextRequestTextString",
           "documentation":"<p>The address, name, city, or region to be used in the search in free-form text format. For example, <code>123 Any Street</code>.</p>"
         }
       }
+    },
+    "SearchPlaceIndexForTextRequestTextString":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
     },
     "SearchPlaceIndexForTextResponse":{
       "type":"structure",
@@ -4276,7 +4298,7 @@
       "members":{
         "Results":{
           "shape":"SearchForTextResultList",
-          "documentation":"<p>A list of Places matching the input text. Each result contains additional information about the specific point of interest. </p>"
+          "documentation":"<p>A list of Places matching the input text. Each result contains additional information about the specific point of interest. </p> <p>Not all response properties are included with all responses. Some properties may only be returned by specific data partners.</p>"
         },
         "Summary":{
           "shape":"SearchPlaceIndexForTextSummary",
@@ -4320,11 +4342,15 @@
           "documentation":"<p>The bounding box that fully contains all search results.</p> <note> <p>If you specified the optional <code>FilterBBox</code> parameter in the request, <code>ResultBBox</code> is contained within <code>FilterBBox</code>.</p> </note>"
         },
         "Text":{
-          "shape":"SyntheticSearchPlaceIndexForTextSummaryString",
+          "shape":"SensitiveString",
           "documentation":"<p>The search text specified in the request.</p>"
         }
       },
       "documentation":"<p>A summary of the request sent by using <code>SearchPlaceIndexForText</code>.</p>"
+    },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -4395,26 +4421,6 @@
       "member":{"shape":"Step"}
     },
     "String":{"type":"string"},
-    "SyntheticSearchPlaceIndexForSuggestionsRequestString":{
-      "type":"string",
-      "max":200,
-      "min":1,
-      "sensitive":true
-    },
-    "SyntheticSearchPlaceIndexForSuggestionsSummaryString":{
-      "type":"string",
-      "sensitive":true
-    },
-    "SyntheticSearchPlaceIndexForTextRequestString":{
-      "type":"string",
-      "max":200,
-      "min":1,
-      "sensitive":true
-    },
-    "SyntheticSearchPlaceIndexForTextSummaryString":{
-      "type":"string",
-      "sensitive":true
-    },
     "TagKey":{
       "type":"string",
       "max":128,

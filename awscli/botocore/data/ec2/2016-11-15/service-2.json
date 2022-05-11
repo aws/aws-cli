@@ -3706,6 +3706,16 @@
       "output":{"shape":"GetInstanceTypesFromInstanceRequirementsResult"},
       "documentation":"<p>Returns a list of instance types with the specified instance attributes. You can use the response to preview the instance types without launching instances. Note that the response does not consider capacity.</p> <p>When you specify multiple parameters, you get instance types that satisfy all of the specified parameters. If you specify multiple values for a parameter, you get instance types that satisfy any of the specified values.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-attribute-based-instance-type-selection.html#spotfleet-get-instance-types-from-instance-requirements\">Preview instance types with specified attributes</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html\">Attribute-based instance type selection for EC2 Fleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-attribute-based-instance-type-selection.html\">Attribute-based instance type selection for Spot Fleet</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html\">Spot placement score</a> in the <i>Amazon EC2 User Guide</i>, and <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-instance-type-requirements.html\">Creating an Auto Scaling group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
+    "GetInstanceUefiData":{
+      "name":"GetInstanceUefiData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetInstanceUefiDataRequest"},
+      "output":{"shape":"GetInstanceUefiDataResult"},
+      "documentation":"<p>A binary representation of the UEFI variable store. Only non-volatile variables are stored. This is a base64 encoded and zlib compressed binary value that must be properly encoded.</p> <p>When you use <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/register-image.html\">register-image</a> to create an AMI, you can create an exact copy of your variable store by passing the UEFI data in the <code>UefiData</code> parameter. You can modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. You can use the tool to convert the UEFI data into a human-readable format (JSON), which you can inspect and modify, and then convert back into the binary format to use with register-image.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "GetIpamAddressHistory":{
       "name":"GetIpamAddressHistory",
       "http":{
@@ -25952,6 +25962,35 @@
         }
       }
     },
+    "GetInstanceUefiDataRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance from which to retrieve the UEFI data.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetInstanceUefiDataResult":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance from which to retrieve the UEFI data.</p>",
+          "locationName":"instanceId"
+        },
+        "UefiData":{
+          "shape":"String",
+          "documentation":"<p>Base64 representation of the non-volatile UEFI variable store.</p>",
+          "locationName":"uefiData"
+        }
+      }
+    },
     "GetIpamAddressHistoryRequest":{
       "type":"structure",
       "required":[
@@ -27689,6 +27728,11 @@
           "documentation":"<p>The boot mode of the image. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html\">Boot modes</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
           "locationName":"bootMode"
         },
+        "TpmSupport":{
+          "shape":"TpmSupportValues",
+          "documentation":"<p>If the image is configured for NitroTPM support, the value is <code>v2.0</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html\">NitroTPM</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
+          "locationName":"tpmSupport"
+        },
         "DeprecationTime":{
           "shape":"String",
           "documentation":"<p>The date and time to deprecate the AMI, in UTC, in the following format: <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>Z. If you specified a value for seconds, Amazon EC2 rounds the seconds to the nearest minute.</p>",
@@ -27745,6 +27789,16 @@
           "documentation":"<p>The boot mode.</p>",
           "locationName":"bootMode"
         },
+        "TpmSupport":{
+          "shape":"AttributeValue",
+          "documentation":"<p>If the image is configured for NitroTPM support, the value is <code>v2.0</code>.</p>",
+          "locationName":"tpmSupport"
+        },
+        "UefiData":{
+          "shape":"AttributeValue",
+          "documentation":"<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
+          "locationName":"uefiData"
+        },
         "LastLaunchedTime":{
           "shape":"AttributeValue",
           "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the AMI was last used to launch an EC2 instance. When the AMI is used, there is a 24-hour delay before that usage is reported.</p> <note> <p> <code>lastLaunchedTime</code> data is available starting April 2017.</p> </note>",
@@ -27764,6 +27818,8 @@
         "blockDeviceMapping",
         "sriovNetSupport",
         "bootMode",
+        "tpmSupport",
+        "uefiData",
         "lastLaunchedTime"
       ]
     },
@@ -28946,6 +29002,11 @@
           "shape":"String",
           "documentation":"<p>The IPv6 address assigned to the instance.</p>",
           "locationName":"ipv6Address"
+        },
+        "TpmSupport":{
+          "shape":"String",
+          "documentation":"<p>If the instance is configured for NitroTPM support, the value is <code>v2.0</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html\">NitroTPM</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"tpmSupport"
         },
         "MaintenanceOptions":{
           "shape":"InstanceMaintenanceOptions",
@@ -31962,7 +32023,10 @@
         "modify-failed",
         "delete-in-progress",
         "delete-complete",
-        "delete-failed"
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
       ]
     },
     "IpamResourceCidr":{
@@ -32166,7 +32230,10 @@
         "modify-failed",
         "delete-in-progress",
         "delete-complete",
-        "delete-failed"
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
       ]
     },
     "IpamScopeType":{
@@ -32194,7 +32261,10 @@
         "modify-failed",
         "delete-in-progress",
         "delete-complete",
-        "delete-failed"
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
       ]
     },
     "Ipv4PoolCoipId":{"type":"string"},
@@ -40418,6 +40488,14 @@
         "BootMode":{
           "shape":"BootModeValues",
           "documentation":"<p>The boot mode of the AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html\">Boot modes</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "TpmSupport":{
+          "shape":"TpmSupportValues",
+          "documentation":"<p>Set to <code>v2.0</code> to enable Trusted Platform Module (TPM) support. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitrotpm.html\">NitroTPM</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "UefiData":{
+          "shape":"StringType",
+          "documentation":"<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for RegisterImage.</p>"
@@ -46374,6 +46452,11 @@
         "locationName":"item"
       }
     },
+    "StringType":{
+      "type":"string",
+      "max":64000,
+      "min":0
+    },
     "Subnet":{
       "type":"structure",
       "members":{
@@ -47170,6 +47253,10 @@
         }
       },
       "documentation":"<p>The minimum and maximum amount of total local storage, in GB.</p>"
+    },
+    "TpmSupportValues":{
+      "type":"string",
+      "enum":["v2.0"]
     },
     "TrafficDirection":{
       "type":"string",

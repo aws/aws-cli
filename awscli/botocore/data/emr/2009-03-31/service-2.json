@@ -1265,6 +1265,10 @@
         "PlacementGroups":{
           "shape":"PlacementGroupConfigList",
           "documentation":"<p>Placement group configured for an Amazon EMR cluster.</p>"
+        },
+        "OSReleaseLabel":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Linux release specified in a cluster launch RunJobFlow request. If no Amazon Linux release was specified, the default Amazon Linux release is shown in the response.</p>"
         }
       },
       "documentation":"<p>The detailed description of the cluster.</p>"
@@ -1773,6 +1777,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The pagination token. Reserved for future use. Currently set to null.</p>"
+        },
+        "AvailableOSReleases":{
+          "shape":"OSReleaseList",
+          "documentation":"<p>The list of available Amazon Linux release versions for an Amazon EMR release. Contains a Label field that is formatted as shown in <a href=\"https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-al2.html\"> <i>Amazon Linux 2 Release Notes</i> </a>. For example, <a href=\"https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html\">2.0.20220218.1</a>.</p>"
         }
       }
     },
@@ -2669,6 +2677,10 @@
         "ShrinkPolicy":{
           "shape":"ShrinkPolicy",
           "documentation":"<p>Policy for customizing shrink operations.</p>"
+        },
+        "ReconfigurationType":{
+          "shape":"ReconfigurationType",
+          "documentation":"<p>Type of reconfiguration requested. Valid values are MERGE and OVERWRITE.</p>"
         },
         "Configurations":{
           "shape":"ConfigurationList",
@@ -3868,6 +3880,20 @@
       "type":"list",
       "member":{"shape":"NotebookExecutionSummary"}
     },
+    "OSRelease":{
+      "type":"structure",
+      "members":{
+        "Label":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Linux release specified for a cluster in the RunJobFlow request. The format is as shown in <a href=\"https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html\"> <i>Amazon Linux 2 Release Notes</i> </a>. For example, 2.0.20220218.1.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Linux release specified for a cluster in the RunJobFlow request.</p>"
+    },
+    "OSReleaseList":{
+      "type":"list",
+      "member":{"shape":"OSRelease"}
+    },
     "OnDemandCapacityReservationOptions":{
       "type":"structure",
       "members":{
@@ -4086,6 +4112,13 @@
       "members":{
       }
     },
+    "ReconfigurationType":{
+      "type":"string",
+      "enum":[
+        "OVERWRITE",
+        "MERGE"
+      ]
+    },
     "ReleaseLabelFilter":{
       "type":"structure",
       "members":{
@@ -4299,7 +4332,11 @@
           "shape":"PlacementGroupConfigList",
           "documentation":"<p>The specified placement group configuration for an Amazon EMR cluster.</p>"
         },
-        "AutoTerminationPolicy":{"shape":"AutoTerminationPolicy"}
+        "AutoTerminationPolicy":{"shape":"AutoTerminationPolicy"},
+        "OSReleaseLabel":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>Specifies a particular Amazon Linux release for all nodes in a cluster launch RunJobFlow request. If a release is not specified, Amazon EMR uses the latest validated Amazon Linux release for cluster launch.</p>"
+        }
       },
       "documentation":"<p> Input to the <a>RunJobFlow</a> operation. </p>"
     },

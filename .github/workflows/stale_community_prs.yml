@@ -1,0 +1,58 @@
+name: 'Check stale community PRs.'
+on: workflow_dispatch
+      
+jobs:
+  stale-implementation-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@3cc123766321e9f15a6676375c154ccffb12a358
+        with:
+          debug-only: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-pr-label: closing-soon
+          stale-pr-message: 'This pull request is in the implementation stage. It has become stale because it has been 20 days with no activity. Please comment with an update or this will be closed in 10 days.'
+          close-pr-message: 'This pull request was closed because it has been stalled for 10 days with no activity.'
+          days-before-stale: 20
+          days-before-close: 10
+          days-before-issue-close: -1
+          days-before-issue-stale: -1
+          only-pr-labels: community,implementation,response-requested
+          exempt-pr-labels: responded
+          labels-to-remove-when-unstale: response-requested
+          labels-to-add-when-unstale: responded
+          close-pr-label: closed-for-staleness
+  stale-review-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@3cc123766321e9f15a6676375c154ccffb12a358
+        with:
+          debug-only: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-pr-label: stale
+          stale-pr-message: 'This pull request is in the review stage. It has become stale because it has been 15 days with no activity. Please comment with an update to indicate work is still ongoing.'
+          close-pr-message: 'This pull request was closed because it has been stale for 5 days with no activity.'
+          days-before-stale: 15
+          days-before-close: -1
+          days-before-pr-close: -1
+          days-before-issue-close: -1
+          days-before-issue-stale: -1
+          only-pr-labels: community,review,response-requested
+          labels-to-remove-when-unstale: response-requested
+          labels-to-add-when-unstale: responded
+          exempt-pr-labels: responded,maintainers
+          close-pr-label: DONTUSE
+      - uses: actions/stale@3cc123766321e9f15a6676375c154ccffb12a358
+        with:
+          debug-only: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-pr-label: maintainers
+          stale-pr-message: 'This pull request is in the review stage. It has become stale because it has been 20 days with no activity. The maintainers will complete this pull request.'
+          close-pr-message: 'DONTUSE'
+          days-before-stale: 5
+          days-before-pr-close: -1
+          days-before-close: -1
+          days-before-issue-close: -1
+          days-before-issue-stale: -1
+          only-pr-labels: community,review,response-requested,stale
+          close-pr-label: DONTUSE
+          ignore-updates: true

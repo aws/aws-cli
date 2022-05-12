@@ -312,7 +312,21 @@ class FileGenerator(object):
             return True
         return False
 
-    def list_objects(self, s3_path, dir_op):
+    def list_objects(self, *args, **kwargs):
+        """
+        Take unfiltered objects yielded by list_objects_raw() and return
+        only objects that pass through any filtering.
+        """
+        if self.file_filter is None:
+            # With no filter, just pass data through.
+            yield from self.list_objects_raw(*args, **kwargs)
+        else:
+            # With a filter, check each path.
+            for path, data in self.list_objects_raw(*args, **kwargs):
+                if list(self.file_filter.call([FileInfo(path)])):
+                    yield path, data
+
+    def list_objects_raw(self, s3_path, dir_op):
         """
         This function yields the appropriate object or objects under a
         common prefix depending if the operation is on objects under a

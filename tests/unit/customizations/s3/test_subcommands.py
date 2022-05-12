@@ -289,23 +289,13 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                         'sync': ['file_generator', 'comparator',
                                  'file_info_builder', 's3_handler']}
 
-        params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
+        params = {'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'is_stream': False}
         for cmd in cmds:
-            cmd_arc = CommandArchitecture(self.session, cmd,
-                                          {'region': 'us-east-1',
-                                           'endpoint_url': None,
-                                           'verify_ssl': None,
-                                           'is_stream': False})
+            cmd_arc = CommandArchitecture(self.session, cmd, params)
             cmd_arc.create_instructions()
             self.assertEqual(cmd_arc.instructions, instructions[cmd])
 
-        # Test if there is a filter.
-        cmd_arc = CommandArchitecture(self.session, 'cp', params)
-        cmd_arc.create_instructions()
-        self.assertEqual(cmd_arc.instructions, ['file_generator', 'filters',
-                                                'file_info_builder',
-                                                's3_handler'])
 
     def test_choose_sync_strategy_default(self):
         session = mock.Mock()

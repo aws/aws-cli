@@ -902,8 +902,6 @@ class CommandArchitecture(object):
         """
         if self.needs_filegenerator():
             self.instructions.append('file_generator')
-            if self.parameters.get('filters'):
-                self.instructions.append('filters')
             if self.cmd == 'sync':
                 self.instructions.append('comparator')
             self.instructions.append('file_info_builder')
@@ -1030,7 +1028,6 @@ class CommandArchitecture(object):
             command_dict = {'setup': [files, rev_files],
                             'file_generator': [file_generator,
                                                rev_generator],
-                            'filters': [file_filter, file_filter],
                             'comparator': [Comparator(**sync_strategies)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
@@ -1040,19 +1037,16 @@ class CommandArchitecture(object):
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [file_filter],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [file_filter],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [file_filter],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
 

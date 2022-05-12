@@ -104,6 +104,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.assertEqual(op[0].name, 'PutObject')
             path = op[1]['Key'].replace('/', os.path.sep)
             self.assertIn(path, included)
+            self.assertNotIn(path, excluded)
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')

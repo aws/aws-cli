@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.23.13
+=======
+
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for Jira. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-jira.html
+* api-change:``transfer``: AWS Transfer Family now accepts ECDSA keys for server host keys
+* api-change:``ssm-incidents``: Adding support for dynamic SSM Runbook parameter values. Updating validation pattern for engagements. Adding ConflictException to UpdateReplicationSet API contract.
+* api-change:``workspaces``: Increased the character limit of the login message from 600 to 850 characters.
+* api-change:``ec2``: This release introduces a target type Gateway Load Balancer Endpoint for mirrored traffic. Customers can now specify GatewayLoadBalancerEndpoint option during the creation of a traffic mirror target.
+* api-change:``iot``: Documentation update for China region ListMetricValues for IoT
+* api-change:``lightsail``: This release adds support to include inactive database bundles in the response of the GetRelationalDatabaseBundles request.
+* api-change:``outposts``: Documentation updates for AWS Outposts.
+* api-change:``ivschat``: Documentation-only updates for IVS Chat API Reference.
+* api-change:``finspace-data``: We've now deprecated CreateSnapshot permission for creating a data view, instead use CreateDataView permission.
+* api-change:``lambda``: Lambda releases NodeJs 16 managed runtime to be available in all commercial regions.
+
+
 1.23.12
 =======
 

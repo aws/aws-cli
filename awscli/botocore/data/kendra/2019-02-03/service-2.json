@@ -2338,6 +2338,10 @@
         "QuipConfiguration":{
           "shape":"QuipConfiguration",
           "documentation":"<p>Provides the configuration information to connect to Quip as your data source.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"JiraConfiguration",
+          "documentation":"<p>Provides the configuration information to connect to Jira as your data source.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information for an Amazon Kendra data source.</p>"
@@ -2601,7 +2605,8 @@
         "FSX",
         "SLACK",
         "BOX",
-        "QUIP"
+        "QUIP",
+        "JIRA"
       ]
     },
     "DataSourceVpcConfiguration":{
@@ -4621,11 +4626,108 @@
       "documentation":"<p>The input to the request is not valid.</p>",
       "exception":true
     },
+    "IssueSubEntity":{
+      "type":"string",
+      "enum":[
+        "COMMENTS",
+        "ATTACHMENTS",
+        "WORKLOGS"
+      ]
+    },
+    "IssueSubEntityFilter":{
+      "type":"list",
+      "member":{"shape":"IssueSubEntity"},
+      "max":3,
+      "min":0
+    },
+    "IssueType":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Issuer":{
       "type":"string",
       "max":65,
       "min":1,
       "pattern":"^\\P{C}*$"
+    },
+    "JiraAccountUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^https:\\/\\/[a-zA-Z0-9_\\-\\.]+(\\.atlassian\\.net\\/)$"
+    },
+    "JiraConfiguration":{
+      "type":"structure",
+      "required":[
+        "JiraAccountUrl",
+        "SecretArn"
+      ],
+      "members":{
+        "JiraAccountUrl":{
+          "shape":"JiraAccountUrl",
+          "documentation":"<p>The URL of the Jira account. For example, company.attlassian.net or https://jira.company.com. You can find your Jira account URL in the URL of your profile page for Jira desktop.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the key-value pairs required to connect to your Jira data source. The secret must contain a JSON structure with the following keys:</p> <ul> <li> <p>jira-id—The Active Directory user name, along with the Domain Name System (DNS) domain name. For example, <i>user@corp.example.com</i>.</p> </li> <li> <p>jiraCredentials—The password of the Jira account user.</p> </li> </ul>"
+        },
+        "UseChangeLog":{
+          "shape":"Boolean",
+          "documentation":"<p>Specify to use the change log option to update your index.</p>"
+        },
+        "Project":{
+          "shape":"Project",
+          "documentation":"<p>Specify which projects to crawl in your Jira data source. You can specify one or more Jira project IDs.</p>"
+        },
+        "IssueType":{
+          "shape":"IssueType",
+          "documentation":"<p>Specify which issue types to crawl in your Jira data source. You can specify one or more of these options to crawl.</p>"
+        },
+        "Status":{
+          "shape":"JiraStatus",
+          "documentation":"<p>Specify which statuses to crawl in your Jira data source. You can specify one or more of these options to crawl.</p>"
+        },
+        "IssueSubEntityFilter":{
+          "shape":"IssueSubEntityFilter",
+          "documentation":"<p>Specify whether to crawl comments, attachments, and work logs. You can specify one or more of these options.</p>"
+        },
+        "AttachmentFieldMappings":{
+          "shape":"DataSourceToIndexFieldMappingList",
+          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira attachments to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+        },
+        "CommentFieldMappings":{
+          "shape":"DataSourceToIndexFieldMappingList",
+          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira comments to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+        },
+        "IssueFieldMappings":{
+          "shape":"DataSourceToIndexFieldMappingList",
+          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira issues to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+        },
+        "ProjectFieldMappings":{
+          "shape":"DataSourceToIndexFieldMappingList",
+          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira projects to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+        },
+        "WorkLogFieldMappings":{
+          "shape":"DataSourceToIndexFieldMappingList",
+          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira work logs to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+        },
+        "InclusionPatterns":{
+          "shape":"DataSourceInclusionsExclusionsStrings",
+          "documentation":"<p>A list of regular expression patterns to include certain file paths, file names, and file types in your Jira data source. Files that match the patterns are included in the index. Files that don't match the patterns are excluded from the index. If a file matches both an inclusion pattern and an exclusion pattern, the exclusion pattern takes precedence and the file isn't included in the index.</p>"
+        },
+        "ExclusionPatterns":{
+          "shape":"DataSourceInclusionsExclusionsStrings",
+          "documentation":"<p>A list of regular expression patterns to exclude certain file paths, file names, and file types in your Jira data source. Files that match the patterns are excluded from the index. Files that don’t match the patterns are included in the index. If a file matches both an inclusion pattern and an exclusion pattern, the exclusion pattern takes precedence and the file isn't included in the index.</p>"
+        },
+        "VpcConfiguration":{
+          "shape":"DataSourceVpcConfiguration",
+          "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your Jira. Your Jira account must reside inside your VPC.</p>"
+        }
+      }
+    },
+    "JiraStatus":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "JsonTokenTypeConfiguration":{
       "type":"structure",
@@ -5401,6 +5503,10 @@
       ]
     },
     "PrivateChannelFilter":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "Project":{
       "type":"list",
       "member":{"shape":"String"}
     },

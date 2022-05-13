@@ -123,7 +123,7 @@ The following ``describe-instances`` example uses filters to scope the results t
 
 For sample of output, see Example 1.
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To filter for instances with the specified type and Availability Zone**
 
@@ -134,7 +134,7 @@ The following ``describe-instances`` example uses multiple filters to scope the 
 
 For sample of output, see Example 1.
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 4: To filter for instances with the specified type and Availability Zone using a JSON file**
 
@@ -158,7 +158,7 @@ Contents of ``filters.json``::
 
 For sample of output, see Example 1.
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 5: To filter for instances with the specified Owner tag**
 
@@ -169,7 +169,7 @@ The following ``describe-instances`` example uses tag filters to scope the resul
 
 For sample of output, see Example 1.
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 6: To filter for instances with the specified my-team tag value**
 
@@ -180,7 +180,7 @@ The following ``describe-instances`` example uses tag filters to scope the resul
 
 For sample of output, see Example 1.
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 7: To filter for instances with the specified Owner tag and my-team value**
 
@@ -191,11 +191,11 @@ The following ``describe-instances`` example uses tag filters to scope the resul
 
 For sample of output, see Example 1.
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 8: To display only instance and subnet IDs for all instances**
 
-The following ``describe-instances`` example uses the ``--query`` parameter to display only the instance and subnet IDs for all instances, in JSON format.
+The following ``describe-instances`` examples use the ``--query`` parameter to display only the instance and subnet IDs for all instances, in JSON format.
 
 Linux and macOS::
 
@@ -227,15 +227,15 @@ Output::
         ...
     ]
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 9: To filter instances of the specified type and only display their instance IDs**
 
 The following ``describe-instances`` example uses filters to scope the results to instances of the specified type and the ``--query`` parameter to display only the instance IDs. ::
 
     aws ec2 describe-instances \
-        --filters Name=instance-type,Values=t2.micro \
-        --query Reservations[*].Instances[*].[InstanceId] \
+        --filters "Name=instance-type,Values=t2.micro" \
+        --query "Reservations[*].Instances[*].[InstanceId]" \
         --output text
 
 Output::
@@ -247,11 +247,11 @@ Output::
     i-00b8ae04f9f99908e
     i-0fc71c25d2374130c
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 10: To filter instances of the specified type and only display their instance IDs, Availability Zone and the specified tag value in table format**
 
-The following ``describe-instances`` example displays the instance ID, Availability Zone, and the value of the ``Name`` tag for instances that have a tag with the name ``tag-key``, in table format.
+The following ``describe-instances`` examples display the instance ID, Availability Zone, and the value of the ``Name`` tag for instances that have a tag with the name ``tag-key``, in table format.
 
 Linux and macOS::
 
@@ -279,38 +279,38 @@ Output::
     |  us-east-2a  |  i-027552a73f021f3bd  |  test-server-2     |
     +--------------+-----------------------+--------------------+
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 11: To describe instances in a partition placement group**
 
 The following ``describe-instances`` example describes the specified instance. The output includes the placement information for the instance, which contains the placement group name and the partition number for the instance. ::
 
     aws ec2 describe-instances \
-        --instance-id i-0123a456700123456
+        --instance-id i-0123a456700123456 \
+        --query "Reservations[*].Instances[*].Placement"
 
 Output::
 
     [
-        ....
+        [
+            {
+                "AvailabilityZone": "us-east-1c",
+                "GroupName": "HDFS-Group-A",
+                "PartitionNumber": 3,
+                "Tenancy": "default"
+            }
         
-        "Placement": {
-            "AvailabilityZone": "us-east-1c",
-            "GroupName": "HDFS-Group-A",
-            "PartitionNumber": 3,
-            "Tenancy": "default"
-        }
-        
-        ....
+        ]
     ]
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.
 
 **Example 12: To filter to instances with the specified placement group and partition number**
 
 The following ``describe-instances`` example filters the results to only those instances with the specified placement group and partition number. ::
 
     aws ec2 describe-instances \
-        --filters "Name = placement-group-name, Values = HDFS-Group-A" "Name = placement-partition-number, Values = 7"
+        --filters "Name=placement-group-name,Values=HDFS-Group-A" "Name=placement-partition-number,Values=7"
 
 The following shows only the relevant information from the output. ::
 
@@ -336,4 +336,4 @@ The following shows only the relevant information from the output. ::
             }
         ],
 
-For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 Users Guide*.
+For more information, see `Describing instances in a placement group <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#describe-instance-placement>`__ in the *Amazon EC2 User Guide*.

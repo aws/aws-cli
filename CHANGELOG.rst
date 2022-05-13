@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.24.0
+======
+
+* feature:``eks get-token``: All eks get-token commands default to api version v1beta1.
+* api-change:``grafana``: This release adds APIs for creating and deleting API keys in an Amazon Managed Grafana workspace.
+* feature:Loaders: Support for loading gzip compressed model files.
+* bugfix:``eks get-token``: Correctly fallback to client.authentication.k8s.io/v1beta1 API if KUBERNETES_EXEC_INFO is undefined
+
+
 1.23.13
 =======
 

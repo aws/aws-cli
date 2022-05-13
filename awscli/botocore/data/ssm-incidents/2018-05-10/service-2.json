@@ -371,7 +371,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds a resource policy to the specified response plan.</p>"
+      "documentation":"<p>Adds a resource policy to the specified response plan. The resource policy is used to share the response plan using Resource Access Manager (RAM). For more information about cross-account sharing, see <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/xa.html\">Setting up cross-account functionality</a>.</p>"
     },
     "StartIncident":{
       "name":"StartIncident",
@@ -505,6 +505,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Add or delete Regions from your replication set.</p>"
@@ -801,7 +802,7 @@
         },
         "eventData":{
           "shape":"EventData",
-          "documentation":"<p>A short description of the event as a valid JSON string. There is no other schema imposed.</p>"
+          "documentation":"<p>A short description of the event.</p>"
         },
         "eventTime":{
           "shape":"Timestamp",
@@ -940,6 +941,29 @@
       "type":"structure",
       "members":{
       }
+    },
+    "DynamicSsmParameterValue":{
+      "type":"structure",
+      "members":{
+        "variable":{
+          "shape":"VariableType",
+          "documentation":"<p>Variable dynamic parameters. A parameter value is determined when an incident is created.</p>"
+        }
+      },
+      "documentation":"<p>The dynamic SSM parameter value.</p>",
+      "union":true
+    },
+    "DynamicSsmParameters":{
+      "type":"map",
+      "key":{"shape":"DynamicSsmParametersKeyString"},
+      "value":{"shape":"DynamicSsmParameterValue"},
+      "max":200,
+      "min":1
+    },
+    "DynamicSsmParametersKeyString":{
+      "type":"string",
+      "max":50,
+      "min":1
     },
     "EmptyChatChannel":{
       "type":"structure",
@@ -1278,7 +1302,7 @@
         },
         "invokedBy":{
           "shape":"ServicePrincipal",
-          "documentation":"<p>The principal the assumed the role specified of the <code>createdBy</code>.</p>"
+          "documentation":"<p>The service principal that assumed the role specified in <code>createdBy</code>. If no service principal assumed the role this will be left blank.</p>"
         },
         "resourceArn":{
           "shape":"Arn",
@@ -1421,7 +1445,7 @@
       "members":{
         "type":{
           "shape":"ItemType",
-          "documentation":"<p>The type of related item. Incident Manager supports the following types:</p> <ul> <li> <p> <code>ANALYSIS</code> </p> </li> <li> <p> <code>INCIDENT</code> </p> </li> <li> <p> <code>METRIC</code> </p> </li> <li> <p> <code>PARENT</code> </p> </li> <li> <p> <code>ATTACHMENT</code> </p> </li> <li> <p> <code>OTHER</code> </p> </li> </ul>"
+          "documentation":"<p>The type of related item. </p>"
         },
         "value":{
           "shape":"ItemValue",
@@ -1439,7 +1463,8 @@
         "PARENT",
         "ATTACHMENT",
         "OTHER",
-        "AUTOMATION"
+        "AUTOMATION",
+        "INVOLVED_RESOURCE"
       ]
     },
     "ItemValue":{
@@ -2062,6 +2087,10 @@
           "shape":"SsmAutomationDocumentVersionString",
           "documentation":"<p>The automation document's version to use when running.</p>"
         },
+        "dynamicParameters":{
+          "shape":"DynamicSsmParameters",
+          "documentation":"<p>The key-value pair to resolve dynamic parameter values when processing a Systems Manager Automation runbook.</p>"
+        },
         "parameters":{
           "shape":"SsmParameters",
           "documentation":"<p>The key-value pair parameters to use when running the automation document.</p>"
@@ -2090,7 +2119,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"^arn:[-\\w+=/,.@]+:ssm-contacts:[-\\w+=/,.@]*:[0-9]+:([\\w+=/,.@:-]+)*$"
+      "pattern":"^arn:aws(-cn|-us-gov)?:ssm-contacts:[a-z0-9-]*:([0-9]{12}):contact/[a-z0-9_-]+$"
     },
     "SsmParameterValues":{
       "type":"list",
@@ -2612,6 +2641,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "VariableType":{
+      "type":"string",
+      "enum":[
+        "INCIDENT_RECORD_ARN",
+        "INVOLVED_RESOURCES"
+      ]
     }
   },
   "documentation":"<p>Systems Manager Incident Manager is an incident management console designed to help users mitigate and recover from incidents affecting their Amazon Web Services-hosted applications. An incident is any unplanned interruption or reduction in quality of services. </p> <p>Incident Manager increases incident resolution by notifying responders of impact, highlighting relevant troubleshooting data, and providing collaboration tools to get services back up and running. To achieve the primary goal of reducing the time-to-resolution of critical incidents, Incident Manager automates response plans and enables responder team escalation. </p>"

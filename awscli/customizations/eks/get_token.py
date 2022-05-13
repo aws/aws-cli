@@ -126,8 +126,8 @@ class GetTokenCommand(BasicCommand):
     def discover_api_version(self):
         """
         Parses the KUBERNETES_EXEC_INFO environment variable and returns the
-        API version. If the environment variable is empty, malformed, or
-        invalid, return the v1alpha1 response and print a message to stderr.
+        API version. If the environment variable is malformed or invalid,
+        return the v1beta1 response and print a message to stderr.
 
         If the v1alpha1 API is specified explicitly, a message is printed to
         stderr with instructions to update.
@@ -139,7 +139,7 @@ class GetTokenCommand(BasicCommand):
         # "v1beta1" will be removed. At or around that time, EKS will likely
         # support v1.22 through v1.28, in which client API version "v1beta1"
         # will be supported by all EKS versions.
-        fallback_api_version = ALPHA_API
+        fallback_api_version = BETA_API
 
         error_prefixes = {
             "error": "Error parsing",
@@ -148,16 +148,12 @@ class GetTokenCommand(BasicCommand):
 
         exec_info_raw = os.environ.get("KUBERNETES_EXEC_INFO", "")
         if not exec_info_raw:
-            # All kube clients should be setting this. Otherewise, we'll return
-            # the fallback and write an error.
-            uni_print(
-                ERROR_MSG_TPL.format(
-                    error_prefixes["empty"],
-                    fallback_api_version,
-                ),
-                sys.stderr,
-            )
-            uni_print("\n", sys.stderr)
+            # All kube clients should be setting this, but client-go clients
+            # (kubectl, kubelet, etc) < 1.20 were not setting this if the API
+            # version defined in the kubeconfig was not v1alpha1.
+            #
+            # This was changed in kubernetes/kubernetes#95489 so that
+            # KUBERNETES_EXEC_INFO is always provided
             return fallback_api_version
         try:
             exec_info = json.loads(exec_info_raw)
@@ -177,7 +173,7 @@ class GetTokenCommand(BasicCommand):
         if api_version_raw in FULLY_SUPPORTED_API_VERSIONS:
             return api_version_raw
         elif api_version_raw in DEPRECATED_API_VERSIONS:
-            uni_print(DEPRECATION_MSG_TPL.format(ALPHA_API), sys.stderr)
+            uni_print(DEPRECATION_MSG_TPL.format(api_version_raw), sys.stderr)
             uni_print("\n", sys.stderr)
             return api_version_raw
         else:

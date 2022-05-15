@@ -74,7 +74,7 @@ REGISTER_LAST = object()
 # to be as long as 255 characters, and bucket names can contain any
 # combination of uppercase letters, lowercase letters, numbers, periods
 # (.), hyphens (-), and underscores (_).
-VALID_BUCKET = re.compile(r'^[a-zA-Z0-9.\-_]{1,255}$')
+VALID_BUCKET = re.compile(r'^[a-zA-Z0-9.\_-]{1,255}$')
 _ACCESSPOINT_ARN = (
     r'^arn:(aws).*:(s3|s3-object-lambda):[a-z\-0-9]*:[0-9]{12}:accesspoint[/:]'
     r'[a-zA-Z0-9\-.]{1,63}$'

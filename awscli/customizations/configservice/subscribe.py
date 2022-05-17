@@ -49,7 +49,7 @@ def add_subscribe(command_table, session, **kwargs):
 
 class SubscribeCommand(BasicCommand):
     NAME = 'subscribe'
-    DESCRIPTION = ('Subcribes user to AWS Config by creating an AWS Config '
+    DESCRIPTION = ('Subscribes user to AWS Config by creating an AWS Config '
                    'delivery channel and configuration recorder to track '
                    'AWS resource configurations. The names of the default '
                    'channel and configuration recorder will be default.')

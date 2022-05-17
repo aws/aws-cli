@@ -19,7 +19,11 @@ in a specific AWS partition.
 import logging
 import re
 
-from botocore.exceptions import EndpointVariantError, NoRegionError
+from botocore.exceptions import (
+    EndpointVariantError,
+    NoRegionError,
+    UnknownRegionError
+)
 
 LOG = logging.getLogger(__name__)
 DEFAULT_URI_TEMPLATE = '{service}.{region}.{dnsSuffix}' # noqa
@@ -195,6 +199,15 @@ class EndpointResolver(BaseEndpointResolver):
             )
             if result:
                 return result
+
+    def get_partition_for_region(self, region_name):
+        for partition in self._endpoint_data['partitions']:
+            if self._region_match(partition, region_name):
+                return partition['partition']
+        raise UnknownRegionError(
+            region_name=region_name,
+            error_msg='No partition found for provided region_name.',
+        )
 
     def _endpoint_for_partition(self, partition, service_name, region_name,
                                 use_dualstack_endpoint, use_fips_endpoint,

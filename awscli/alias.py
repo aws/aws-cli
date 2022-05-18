@@ -160,7 +160,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         :param shadow_proxy_command: A built-in command that
             potentially shadows the alias in name. If the alias
             references this command in its value, the alias should proxy
-            to this command as oppposed to proxy to itself in the command
+            to this command as opposed to proxy to itself in the command
             table
         """
         super(ServiceAliasCommand, self).__init__(alias_name, alias_value)

@@ -62,10 +62,10 @@ class FileFormat(object):
         """
         This function formats the path of local files and returns whether the
         destination will keep its own name or take the source's name along with
-        the editted path.
+        the edited path.
         Formatting Rules:
             1) If a destination file is taking on a source name, it must end
-               with the appropriate operating system seperator
+               with the appropriate operating system separator
 
         General Options:
             1) If the operation is on a directory, the destination file will

@@ -4,7 +4,7 @@ The following ``create-transit-gateway`` example creates a transit gateway. ::
 
     aws ec2 create-transit-gateway \
         --description MyTGW \
-        --options=AmazonSideAsn=64516,AutoAcceptSharedAttachments=enable,DefaultRouteTableAssociation=enable,DefaultRouteTablePropagation=enable,VpnEcmpSupport=enable,DnsSupport=enable
+        --options AmazonSideAsn=64516,AutoAcceptSharedAttachments=enable,DefaultRouteTableAssociation=enable,DefaultRouteTablePropagation=enable,VpnEcmpSupport=enable,DnsSupport=enable
 
 Output::
 

@@ -50,6 +50,26 @@
       "documentation":"<p>Creates a <i>workspace</i>. In a workspace, you can create Grafana dashboards and visualizations to analyze your metrics, logs, and traces. You don't have to build, package, or deploy any hardware to run the Grafana server.</p> <p>Don't use <code>CreateWorkspace</code> to modify an existing workspace. Instead, use <a href=\"https://docs.aws.amazon.com/grafana/latest/APIReference/API_UpdateWorkspace.html\">UpdateWorkspace</a>.</p>",
       "idempotent":true
     },
+    "CreateWorkspaceApiKey":{
+      "name":"CreateWorkspaceApiKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/apikeys",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWorkspaceApiKeyRequest"},
+      "output":{"shape":"CreateWorkspaceApiKeyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an API key for the workspace. This key can be used to authenticate requests sent to the workspace's HTTP API. See <a href=\" https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html\"> https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html</a> for available APIs and example requests.</p>"
+    },
     "DeleteWorkspace":{
       "name":"DeleteWorkspace",
       "http":{
@@ -69,6 +89,25 @@
       ],
       "documentation":"<p>Deletes an Amazon Managed Grafana workspace.</p>",
       "idempotent":true
+    },
+    "DeleteWorkspaceApiKey":{
+      "name":"DeleteWorkspaceApiKey",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/apikeys/{keyName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteWorkspaceApiKeyRequest"},
+      "output":{"shape":"DeleteWorkspaceApiKeyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an API key for a workspace.</p>"
     },
     "DescribeWorkspace":{
       "name":"DescribeWorkspace",
@@ -300,6 +339,15 @@
       "type":"list",
       "member":{"shape":"AllowedOrganization"}
     },
+    "ApiKeyName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "ApiKeyToken":{
+      "type":"string",
+      "sensitive":true
+    },
     "AssertionAttribute":{
       "type":"string",
       "max":256,
@@ -457,6 +505,63 @@
       },
       "exception":true
     },
+    "CreateWorkspaceApiKeyRequest":{
+      "type":"structure",
+      "required":[
+        "keyName",
+        "keyRole",
+        "secondsToLive",
+        "workspaceId"
+      ],
+      "members":{
+        "keyName":{
+          "shape":"ApiKeyName",
+          "documentation":"<p>Specifies the name of the key to create. Key names must be unique to the workspace.</p>"
+        },
+        "keyRole":{
+          "shape":"String",
+          "documentation":"<p>Specifies the permission level of the key.</p> <p>Valid Values: <code>VIEWER</code> | <code>EDITOR</code> | <code>ADMIN</code> </p>"
+        },
+        "secondsToLive":{
+          "shape":"CreateWorkspaceApiKeyRequestSecondsToLiveInteger",
+          "documentation":"<p>Specifies the time in seconds until the key expires. Keys can be valid for up to 30 days.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace in which to create an API key.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "CreateWorkspaceApiKeyRequestSecondsToLiveInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2592000,
+      "min":1
+    },
+    "CreateWorkspaceApiKeyResponse":{
+      "type":"structure",
+      "required":[
+        "key",
+        "keyName",
+        "workspaceId"
+      ],
+      "members":{
+        "key":{
+          "shape":"ApiKeyToken",
+          "documentation":"<p>The key token that was created. Use this value as a bearer token to authenticate HTTP requests to the workspace.</p>"
+        },
+        "keyName":{
+          "shape":"ApiKeyName",
+          "documentation":"<p>The name of the key that was created.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace that the key is valid for.</p>"
+        }
+      }
+    },
     "CreateWorkspaceRequest":{
       "type":"structure",
       "required":[
@@ -546,6 +651,44 @@
     "DataSourceTypesList":{
       "type":"list",
       "member":{"shape":"DataSourceType"}
+    },
+    "DeleteWorkspaceApiKeyRequest":{
+      "type":"structure",
+      "required":[
+        "keyName",
+        "workspaceId"
+      ],
+      "members":{
+        "keyName":{
+          "shape":"ApiKeyName",
+          "documentation":"<p>The name of the API key to delete.</p>",
+          "location":"uri",
+          "locationName":"keyName"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to delete.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DeleteWorkspaceApiKeyResponse":{
+      "type":"structure",
+      "required":[
+        "keyName",
+        "workspaceId"
+      ],
+      "members":{
+        "keyName":{
+          "shape":"ApiKeyName",
+          "documentation":"<p>The name of the API key that was deleted.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace where the key was deleted.</p>"
+        }
+      }
     },
     "DeleteWorkspaceRequest":{
       "type":"structure",
@@ -921,7 +1064,8 @@
       "type":"string",
       "enum":[
         "ADMIN",
-        "EDITOR"
+        "EDITOR",
+        "VIEWER"
       ]
     },
     "RoleValue":{

@@ -68,7 +68,7 @@ def _should_enable_cli_history(session, parsed_args):
         scoped_config = session.get_scoped_config()
     except ProfileNotFound:
         # If the profile does not exist, cli history is definitely not
-        # enabled, but don't let the error get propogated as commands down
+        # enabled, but don't let the error get propagated as commands down
         # the road may handle this such as the configure set command with
         # a --profile flag set.
         return False

@@ -52,7 +52,7 @@ class ZipFileArgumentHoister(object):
 
     Injects a top-level ZipFileArgument into the argument table which maps
     a --zip-file parameter to the underlying ``serialized_name`` ZipFile
-    shape. Repalces the old ZipFile argument with an instance of
+    shape. Replaces the old ZipFile argument with an instance of
     ReplacedZipFileArgument to prevent its usage and recommend the new
     top-level injected parameter.
     """
@@ -105,7 +105,7 @@ class ZipFileArgument(CustomArgument):
     This class injects a ZipFile argument under the specified serialized_name
     parameter. This can be used to take a top level parameter like --zip-file
     and inject it into a nested different parameter like Code so
-    --zip-file foo.zip winds up being serilized as
+    --zip-file foo.zip winds up being serialized as
     { 'Code': { 'ZipFile': <contents of foo.zip> } }.
     """
     def __init__(self, *args, **kwargs):

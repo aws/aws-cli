@@ -3566,6 +3566,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.24.2
+======
+
+* api-change:``glue``: This release adds a new optional parameter called codeGenNodeConfiguration to CRUD job APIs that allows users to manage visual jobs via APIs. The updated CreateJob and UpdateJob will create jobs that can be viewed in Glue Studio as a visual graph. GetJob can be used to get codeGenNodeConfiguration.
+* api-change:``kms``: Add HMAC best practice tip, annual rotation of AWS managed keys.
+
+
+1.24.1
+======
+
+* api-change:``cloudfront``: Introduced a new error (TooLongCSPInResponseHeadersPolicy) that is returned when the value of the Content-Security-Policy header in a response headers policy exceeds the maximum allowed length.
+* api-change:``rekognition``: Documentation updates for Amazon Rekognition.
+* api-change:``resiliencehub``: In this release, we are introducing support for Amazon Elastic Container Service, Amazon Route 53, AWS Elastic Disaster Recovery, AWS Backup in addition to the existing supported Services.  This release also supports Terraform file input from S3 and scheduling daily assessments
+* api-change:``servicecatalog``: Updated the descriptions for the ListAcceptedPortfolioShares API description and the PortfolioShareType parameters.
+* api-change:``discovery``: Add Migration Evaluator Collector details to the GetDiscoverySummary API response
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``workspaces-web``: Amazon WorkSpaces Web now supports Administrator timeout control
+
+
+1.24.0
+======
+
+* feature:``eks get-token``: All eks get-token commands default to api version v1beta1.
+* api-change:``grafana``: This release adds APIs for creating and deleting API keys in an Amazon Managed Grafana workspace.
+* feature:Loaders: Support for loading gzip compressed model files.
+* bugfix:``eks get-token``: Correctly fallback to client.authentication.k8s.io/v1beta1 API if KUBERNETES_EXEC_INFO is undefined
+
+
 1.23.13
 =======
 

@@ -79,7 +79,7 @@ class PathsArgument(CustomArgument):
     def __init__(self):
         doc = (
             'The space-separated paths to be invalidated.'
-            ' Note: --invalidation-batch and --paths are mututally exclusive.'
+            ' Note: --invalidation-batch and --paths are mutually exclusive.'
         )
         super(PathsArgument, self).__init__('paths', nargs='+', help_text=doc)
 
@@ -92,7 +92,7 @@ class PathsArgument(CustomArgument):
 
 
 class ExclusiveArgument(CustomArgument):
-    DOC = '%s This argument and --%s are mututally exclusive.'
+    DOC = '%s This argument and --%s are mutually exclusive.'
 
     def __init__(self, name, argument_table,
                  exclusive_to='distribution-config', help_text=''):

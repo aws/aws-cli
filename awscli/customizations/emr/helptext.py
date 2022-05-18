@@ -417,7 +417,7 @@ KERBEROS_ATTRIBUTES = (
      ' with a KDC in a different realm. This is the cross-realm principal password,'
      ' which must be identical across realms.</li>'
      ' <li><code>ADDomainJoinUser</code> - Required when establishing trust with an Active Directory'
-     ' domain. This is the User logon name of an AD account with sufficient privileges to join resouces to the domain.</li>'
+     ' domain. This is the User logon name of an AD account with sufficient privileges to join resources to the domain.</li>'
      ' <li><code>ADDomainJoinPassword</code> - The AD password for <code>ADDomainJoinUser</code>.</li>')
 
 # end create-cluster options help descriptions

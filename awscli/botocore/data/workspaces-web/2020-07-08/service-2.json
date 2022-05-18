@@ -125,6 +125,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
@@ -751,7 +752,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates the identity provider.</p>"
+      "documentation":"<p>Updates the identity provider. </p>"
     },
     "UpdateNetworkSettings":{
       "name":"UpdateNetworkSettings",
@@ -1007,7 +1008,8 @@
       "type":"string",
       "max":131072,
       "min":2,
-      "pattern":"\\{[\\S\\s]*\\}\\s*"
+      "pattern":"\\{[\\S\\s]*\\}\\s*",
+      "sensitive":true
     },
     "BrowserSettings":{
       "type":"structure",
@@ -1205,7 +1207,7 @@
         },
         "identityProviderDetails":{
           "shape":"IdentityProviderDetails",
-          "documentation":"<p>The identity provider details. The following list describes the provider detail keys for each identity provider type. </p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> <li> <p> <code>api_version</code> </p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>team_id</code> </p> </li> <li> <p> <code>key_id</code> </p> </li> <li> <p> <code>private_key</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>attributes_request_method</code> </p> </li> <li> <p> <code>oidc_issuer</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> <li> <p> <code>authorize_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>token_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>attributes_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>jwks_uri</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p> <code>MetadataFile</code> OR <code>MetadataURL</code> </p> </li> <li> <p> <code>IDPSignout</code> <i>optional</i> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The identity provider details. The following list describes the provider detail keys for each identity provider type. </p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> <li> <p> <code>api_version</code> </p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>team_id</code> </p> </li> <li> <p> <code>key_id</code> </p> </li> <li> <p> <code>private_key</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>attributes_request_method</code> </p> </li> <li> <p> <code>oidc_issuer</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> <li> <p> <code>authorize_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>token_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>attributes_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>jwks_uri</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p> <code>MetadataFile</code> OR <code>MetadataURL</code> </p> </li> <li> <p> <code>IDPSignout</code> (boolean) <i>optional</i> </p> </li> </ul> </li> </ul>"
         },
         "identityProviderName":{
           "shape":"IdentityProviderName",
@@ -1363,9 +1365,17 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
         },
+        "disconnectTimeoutInMinutes":{
+          "shape":"DisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that a streaming session remains active after users disconnect.</p>"
+        },
         "downloadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can download files from the streaming session to the local device.</p>"
+        },
+        "idleDisconnectTimeoutInMinutes":{
+          "shape":"IdleDisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the disconnect timeout interval begins.</p>"
         },
         "pasteAllowed":{
           "shape":"EnabledType",
@@ -1565,11 +1575,18 @@
       "members":{
       }
     },
+    "DisconnectTimeoutInMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":600,
+      "min":1
+    },
     "DisplayName":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^.+$"
+      "pattern":"^.+$",
+      "sensitive":true
     },
     "EnabledType":{
       "type":"string",
@@ -1797,7 +1814,8 @@
     "IdentityProviderDetails":{
       "type":"map",
       "key":{"shape":"StringType"},
-      "value":{"shape":"StringType"}
+      "value":{"shape":"StringType"},
+      "sensitive":true
     },
     "IdentityProviderList":{
       "type":"list",
@@ -1807,7 +1825,8 @@
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^[^_][\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}][^_]+$"
+      "pattern":"^[^_][\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}][^_]+$",
+      "sensitive":true
     },
     "IdentityProviderSummary":{
       "type":"structure",
@@ -1837,6 +1856,12 @@
         "SignInWithApple",
         "OIDC"
       ]
+    },
+    "IdleDisconnectTimeoutInMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":60,
+      "min":0
     },
     "InternalServerException":{
       "type":"structure",
@@ -2396,14 +2421,16 @@
           "documentation":"<p>The value of the tag</p>"
         }
       },
-      "documentation":"<p>The tag.</p>"
+      "documentation":"<p>The tag.</p>",
+      "sensitive":true
     },
     "TagExceptionMessage":{"type":"string"},
     "TagKey":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+      "sensitive":true
     },
     "TagKeyList":{
       "type":"list",
@@ -2450,7 +2477,8 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+      "sensitive":true
     },
     "ThrottlingException":{
       "type":"structure",
@@ -2597,7 +2625,7 @@
         },
         "identityProviderDetails":{
           "shape":"IdentityProviderDetails",
-          "documentation":"<p>The details of the identity provider.</p>"
+          "documentation":"<p>The details of the identity provider. The following list describes the provider detail keys for each identity provider type. </p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> <li> <p> <code>api_version</code> </p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>team_id</code> </p> </li> <li> <p> <code>key_id</code> </p> </li> <li> <p> <code>private_key</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p> <code>client_id</code> </p> </li> <li> <p> <code>client_secret</code> </p> </li> <li> <p> <code>attributes_request_method</code> </p> </li> <li> <p> <code>oidc_issuer</code> </p> </li> <li> <p> <code>authorize_scopes</code> </p> </li> <li> <p> <code>authorize_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>token_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>attributes_url</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> <li> <p> <code>jwks_uri</code> <i>if not available from discovery URL specified by <code>oidc_issuer</code> key</i> </p> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p> <code>MetadataFile</code> OR <code>MetadataURL</code> </p> </li> <li> <p> <code>IDPSignout</code> (boolean) <i>optional</i> </p> </li> </ul> </li> </ul>"
         },
         "identityProviderName":{
           "shape":"IdentityProviderName",
@@ -2731,9 +2759,17 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
         },
+        "disconnectTimeoutInMinutes":{
+          "shape":"DisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that a streaming session remains active after users disconnect.</p>"
+        },
         "downloadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can download files from the streaming session to the local device.</p>"
+        },
+        "idleDisconnectTimeoutInMinutes":{
+          "shape":"IdleDisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the disconnect timeout interval begins.</p>"
         },
         "pasteAllowed":{
           "shape":"EnabledType",
@@ -2777,9 +2813,17 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
         },
+        "disconnectTimeoutInMinutes":{
+          "shape":"DisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that a streaming session remains active after users disconnect.</p>"
+        },
         "downloadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can download files from the streaming session to the local device.</p>"
+        },
+        "idleDisconnectTimeoutInMinutes":{
+          "shape":"IdleDisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the disconnect timeout interval begins.</p>"
         },
         "pasteAllowed":{
           "shape":"EnabledType",
@@ -2811,9 +2855,17 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
         },
+        "disconnectTimeoutInMinutes":{
+          "shape":"DisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that a streaming session remains active after users disconnect.</p>"
+        },
         "downloadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can download files from the streaming session to the local device.</p>"
+        },
+        "idleDisconnectTimeoutInMinutes":{
+          "shape":"IdleDisconnectTimeoutInMinutes",
+          "documentation":"<p>The amount of time that users can be idle (inactive) before they are disconnected from their streaming session and the disconnect timeout interval begins.</p>"
         },
         "pasteAllowed":{
           "shape":"EnabledType",

@@ -402,7 +402,8 @@
         {"shape":"InvalidArgument"},
         {"shape":"ResponseHeadersPolicyAlreadyExists"},
         {"shape":"TooManyResponseHeadersPolicies"},
-        {"shape":"TooManyCustomHeadersInResponseHeadersPolicy"}
+        {"shape":"TooManyCustomHeadersInResponseHeadersPolicy"},
+        {"shape":"TooLongCSPInResponseHeadersPolicy"}
       ],
       "documentation":"<p>Creates a response headers policy.</p> <p>A response headers policy contains information about a set of HTTP response headers and their values. To create a response headers policy, you provide some metadata about the policy, and a set of configurations that specify the response headers.</p> <p>After you create a response headers policy, you can use its ID to attach it to one or more cache behaviors in a CloudFront distribution. When it’s attached to a cache behavior, CloudFront adds the headers in the policy to HTTP responses that it sends for requests that match the cache behavior.</p>"
     },
@@ -1686,7 +1687,8 @@
         {"shape":"NoSuchResponseHeadersPolicy"},
         {"shape":"PreconditionFailed"},
         {"shape":"ResponseHeadersPolicyAlreadyExists"},
-        {"shape":"TooManyCustomHeadersInResponseHeadersPolicy"}
+        {"shape":"TooManyCustomHeadersInResponseHeadersPolicy"},
+        {"shape":"TooLongCSPInResponseHeadersPolicy"}
       ],
       "documentation":"<p>Updates a response headers policy.</p> <p>When you update a response headers policy, the entire policy is replaced. You cannot update some policy fields independent of others. To update a response headers policy configuration:</p> <ol> <li> <p>Use <code>GetResponseHeadersPolicyConfig</code> to get the current policy’s configuration.</p> </li> <li> <p>Modify the fields in the response headers policy configuration that you want to update.</p> </li> <li> <p>Call <code>UpdateResponseHeadersPolicy</code>, providing the entire response headers policy configuration, including the fields that you modified and those that you didn’t.</p> </li> </ol>"
     },
@@ -8632,6 +8634,15 @@
         }
       },
       "documentation":"<p>Contains the result of testing a CloudFront function with <code>TestFunction</code>.</p>"
+    },
+    "TooLongCSPInResponseHeadersPolicy":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The length of the <code>Content-Security-Policy</code> header value in the response headers policy exceeds the maximum.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html\">Quotas</a> (formerly known as limits) in the <i>Amazon CloudFront Developer Guide</i>.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "TooManyCacheBehaviors":{
       "type":"structure",

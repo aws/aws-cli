@@ -3086,10 +3086,87 @@
       "type":"list",
       "member":{"shape":"Action"}
     },
+    "AdditionalOptions":{
+      "type":"map",
+      "key":{"shape":"EnclosedInStringProperty"},
+      "value":{"shape":"EnclosedInStringProperty"}
+    },
     "AdditionalPlanOptionsMap":{
       "type":"map",
       "key":{"shape":"GenericString"},
       "value":{"shape":"GenericString"}
+    },
+    "AggFunction":{
+      "type":"string",
+      "enum":[
+        "avg",
+        "countDistinct",
+        "count",
+        "first",
+        "last",
+        "kurtosis",
+        "max",
+        "min",
+        "skewness",
+        "stddev_samp",
+        "stddev_pop",
+        "sum",
+        "sumDistinct",
+        "var_samp",
+        "var_pop"
+      ]
+    },
+    "Aggregate":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Groups",
+        "Aggs"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>Specifies the fields and rows to use as inputs for the aggregate transform.</p>"
+        },
+        "Groups":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies the fields to group by.</p>"
+        },
+        "Aggs":{
+          "shape":"AggregateOperations",
+          "documentation":"<p>Specifies the aggregate functions to be performed on specified fields. </p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that groups rows by chosen fields and computes the aggregated value by specified function.</p>"
+    },
+    "AggregateOperation":{
+      "type":"structure",
+      "required":[
+        "Column",
+        "AggFunc"
+      ],
+      "members":{
+        "Column":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>Specifies the column on the data set on which the aggregation function will be applied.</p>"
+        },
+        "AggFunc":{
+          "shape":"AggFunction",
+          "documentation":"<p>Specifies the aggregation function to apply.</p> <p>Possible aggregation functions include: avg countDistinct, count, first, last, kurtosis, max, min, skewness, stddev_samp, stddev_pop, sum, sumDistinct, var_samp, var_pop</p>"
+        }
+      },
+      "documentation":"<p>Specifies the set of parameters needed to perform aggregation in the aggregate transform.</p>"
+    },
+    "AggregateOperations":{
+      "type":"list",
+      "member":{"shape":"AggregateOperation"},
+      "max":30,
+      "min":1
     },
     "AlreadyExistsException":{
       "type":"structure",
@@ -3101,6 +3178,70 @@
       },
       "documentation":"<p>A resource to be created or added already exists.</p>",
       "exception":true
+    },
+    "ApplyMapping":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Mapping"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Mapping":{
+          "shape":"Mappings",
+          "documentation":"<p>Specifies the mapping of data property keys in the data source to data property keys in the data target.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that maps data property keys in the data source to data property keys in the data target. You can rename keys, modify the data types for keys, and choose which keys to drop from the dataset.</p>"
+    },
+    "AthenaConnectorSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ConnectionName",
+        "ConnectorName",
+        "ConnectionType",
+        "SchemaName"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the connection that is associated with the connector.</p>"
+        },
+        "ConnectorName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of a connector that assists with accessing the data store in Glue Studio.</p>"
+        },
+        "ConnectionType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The type of connection, such as marketplace.athena or custom.athena, designating a connection to an Amazon Athena data store.</p>"
+        },
+        "ConnectionTable":{
+          "shape":"EnclosedInStringPropertyWithQuote",
+          "documentation":"<p>The name of the table in the data source.</p>"
+        },
+        "SchemaName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the Cloudwatch log group to read from. For example, <code>/aws-glue/jobs/output</code>.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the custom Athena source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a connector to an Amazon Athena data source.</p>"
     },
     "AttemptCount":{"type":"integer"},
     "AuditColumnNamesList":{
@@ -3161,6 +3302,34 @@
     "BackfillErrors":{
       "type":"list",
       "member":{"shape":"BackfillError"}
+    },
+    "BasicCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of your data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database that contains the table you want to use as the target. This database must already exist in the Data Catalog.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The table that defines the schema of your output data. This table must already exist in the Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses a Glue Data Catalog table.</p>"
     },
     "BatchCreatePartitionRequest":{
       "type":"structure",
@@ -3936,6 +4105,35 @@
       "max":100,
       "min":0
     },
+    "BoxedBoolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BoxedDoubleFraction":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "BoxedLong":{
+      "type":"long",
+      "box":true
+    },
+    "BoxedNonNegativeInt":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "BoxedNonNegativeLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "BoxedPositiveInt":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "CancelMLTaskRunRequest":{
       "type":"structure",
       "required":[
@@ -4055,6 +4253,124 @@
       },
       "documentation":"<p>A structure containing migration status information.</p>"
     },
+    "CatalogKafkaSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Table",
+        "Database"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "WindowSize":{
+          "shape":"BoxedPositiveInt",
+          "documentation":"<p>The amount of time to spend processing each micro batch.</p>",
+          "box":true
+        },
+        "DetectSchema":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether to automatically determine the schema from the incoming data.</p>",
+          "box":true
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "StreamingOptions":{
+          "shape":"KafkaStreamingSourceOptions",
+          "documentation":"<p>Specifies the streaming options.</p>"
+        },
+        "DataPreviewOptions":{
+          "shape":"StreamingDataPreviewOptions",
+          "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Kafka data store in the Data Catalog.</p>"
+    },
+    "CatalogKinesisSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Table",
+        "Database"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "WindowSize":{
+          "shape":"BoxedPositiveInt",
+          "documentation":"<p>The amount of time to spend processing each micro batch.</p>"
+        },
+        "DetectSchema":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether to automatically determine the schema from the incoming data.</p>",
+          "box":true
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "StreamingOptions":{
+          "shape":"KinesisStreamingSourceOptions",
+          "documentation":"<p>Additional options for the Kinesis streaming data source.</p>"
+        },
+        "DataPreviewOptions":{
+          "shape":"StreamingDataPreviewOptions",
+          "documentation":"<p>Additional options for data preview.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Kinesis data source in the Glue Data Catalog.</p>"
+    },
+    "CatalogSchemaChangePolicy":{
+      "type":"structure",
+      "members":{
+        "EnableUpdateCatalog":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether to use the specified update behavior when the crawler finds a changed schema.</p>"
+        },
+        "UpdateBehavior":{
+          "shape":"UpdateCatalogBehavior",
+          "documentation":"<p>The update behavior when the crawler finds a changed schema.</p>"
+        }
+      },
+      "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+    },
+    "CatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a data store in the Glue Data Catalog.</p>"
+    },
     "CatalogTablesList":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -4170,6 +4486,212 @@
     },
     "CodeGenArgName":{"type":"string"},
     "CodeGenArgValue":{"type":"string"},
+    "CodeGenConfigurationNode":{
+      "type":"structure",
+      "members":{
+        "AthenaConnectorSource":{
+          "shape":"AthenaConnectorSource",
+          "documentation":"<p>Specifies a connector to an Amazon Athena data source.</p>"
+        },
+        "JDBCConnectorSource":{
+          "shape":"JDBCConnectorSource",
+          "documentation":"<p>Specifies a connector to a JDBC data source.</p>"
+        },
+        "SparkConnectorSource":{
+          "shape":"SparkConnectorSource",
+          "documentation":"<p>Specifies a connector to an Apache Spark data source.</p>"
+        },
+        "CatalogSource":{
+          "shape":"CatalogSource",
+          "documentation":"<p>Specifies a data store in the Glue Data Catalog.</p>"
+        },
+        "RedshiftSource":{
+          "shape":"RedshiftSource",
+          "documentation":"<p>Specifies an Amazon Redshift data store.</p>"
+        },
+        "S3CatalogSource":{
+          "shape":"S3CatalogSource",
+          "documentation":"<p>Specifies an Amazon S3 data store in the Glue Data Catalog.</p>"
+        },
+        "S3CsvSource":{
+          "shape":"S3CsvSource",
+          "documentation":"<p>Specifies a command-separated value (CSV) data store stored in Amazon S3.</p>"
+        },
+        "S3JsonSource":{
+          "shape":"S3JsonSource",
+          "documentation":"<p>Specifies a JSON data store stored in Amazon S3.</p>"
+        },
+        "S3ParquetSource":{
+          "shape":"S3ParquetSource",
+          "documentation":"<p>Specifies an Apache Parquet data store stored in Amazon S3.</p>"
+        },
+        "RelationalCatalogSource":{"shape":"RelationalCatalogSource"},
+        "DynamoDBCatalogSource":{"shape":"DynamoDBCatalogSource"},
+        "JDBCConnectorTarget":{
+          "shape":"JDBCConnectorTarget",
+          "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
+        },
+        "SparkConnectorTarget":{
+          "shape":"SparkConnectorTarget",
+          "documentation":"<p>Specifies a target that uses an Apache Spark connector.</p>"
+        },
+        "CatalogTarget":{
+          "shape":"BasicCatalogTarget",
+          "documentation":"<p>Specifies a target that uses a Glue Data Catalog table.</p>"
+        },
+        "RedshiftTarget":{
+          "shape":"RedshiftTarget",
+          "documentation":"<p>Specifies a target that uses Amazon Redshift.</p>"
+        },
+        "S3CatalogTarget":{
+          "shape":"S3CatalogTarget",
+          "documentation":"<p>Specifies a data target that writes to Amazon S3 using the Glue Data Catalog.</p>"
+        },
+        "S3GlueParquetTarget":{
+          "shape":"S3GlueParquetTarget",
+          "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
+        },
+        "S3DirectTarget":{
+          "shape":"S3DirectTarget",
+          "documentation":"<p>Specifies a data target that writes to Amazon S3.</p>"
+        },
+        "ApplyMapping":{
+          "shape":"ApplyMapping",
+          "documentation":"<p>Specifies a transform that maps data property keys in the data source to data property keys in the data target. You can rename keys, modify the data types for keys, and choose which keys to drop from the dataset.</p>"
+        },
+        "SelectFields":{
+          "shape":"SelectFields",
+          "documentation":"<p>Specifies a transform that chooses the data property keys that you want to keep.</p>"
+        },
+        "DropFields":{
+          "shape":"DropFields",
+          "documentation":"<p>Specifies a transform that chooses the data property keys that you want to drop.</p>"
+        },
+        "RenameField":{
+          "shape":"RenameField",
+          "documentation":"<p>Specifies a transform that renames a single data property key.</p>"
+        },
+        "Spigot":{
+          "shape":"Spigot",
+          "documentation":"<p>Specifies a transform that writes samples of the data to an Amazon S3 bucket.</p>"
+        },
+        "Join":{
+          "shape":"Join",
+          "documentation":"<p>Specifies a transform that joins two datasets into one dataset using a comparison phrase on the specified data property keys. You can use inner, outer, left, right, left semi, and left anti joins.</p>"
+        },
+        "SplitFields":{
+          "shape":"SplitFields",
+          "documentation":"<p>Specifies a transform that splits data property keys into two <code>DynamicFrames</code>. The output is a collection of <code>DynamicFrames</code>: one with selected data property keys, and one with the remaining data property keys.</p>"
+        },
+        "SelectFromCollection":{
+          "shape":"SelectFromCollection",
+          "documentation":"<p>Specifies a transform that chooses one <code>DynamicFrame</code> from a collection of <code>DynamicFrames</code>. The output is the selected <code>DynamicFrame</code> </p>"
+        },
+        "FillMissingValues":{
+          "shape":"FillMissingValues",
+          "documentation":"<p>Specifies a transform that locates records in the dataset that have missing values and adds a new field with a value determined by imputation. The input data set is used to train the machine learning model that determines what the missing value should be.</p>"
+        },
+        "Filter":{
+          "shape":"Filter",
+          "documentation":"<p>Specifies a transform that splits a dataset into two, based on a filter condition.</p>"
+        },
+        "CustomCode":{
+          "shape":"CustomCode",
+          "documentation":"<p>Specifies a transform that uses custom code you provide to perform the data transformation. The output is a collection of DynamicFrames.</p>"
+        },
+        "SparkSQL":{
+          "shape":"SparkSQL",
+          "documentation":"<p>Specifies a transform where you enter a SQL query using Spark SQL syntax to transform the data. The output is a single <code>DynamicFrame</code>.</p>"
+        },
+        "DirectKinesisSource":{
+          "shape":"DirectKinesisSource",
+          "documentation":"<p>Specifies a direct Amazon Kinesis data source.</p>"
+        },
+        "DirectKafkaSource":{
+          "shape":"DirectKafkaSource",
+          "documentation":"<p>Specifies an Apache Kafka data store.</p>"
+        },
+        "CatalogKinesisSource":{
+          "shape":"CatalogKinesisSource",
+          "documentation":"<p>Specifies a Kinesis data source in the Glue Data Catalog.</p>"
+        },
+        "CatalogKafkaSource":{
+          "shape":"CatalogKafkaSource",
+          "documentation":"<p>Specifies an Apache Kafka data store in the Data Catalog.</p>"
+        },
+        "DropNullFields":{
+          "shape":"DropNullFields",
+          "documentation":"<p>Specifies a transform that removes columns from the dataset if all values in the column are 'null'. By default, Glue Studio will recognize null objects, but some values such as empty strings, strings that are \"null\", -1 integers or other placeholders such as zeros, are not automatically recognized as nulls.</p>"
+        },
+        "Merge":{
+          "shape":"Merge",
+          "documentation":"<p>Specifies a transform that merges a <code>DynamicFrame</code> with a staging <code>DynamicFrame</code> based on the specified primary keys to identify records. Duplicate records (records with the same primary keys) are not de-duplicated. </p>"
+        },
+        "Union":{
+          "shape":"Union",
+          "documentation":"<p>Specifies a transform that combines the rows from two or more datasets into a single result.</p>"
+        },
+        "PIIDetection":{
+          "shape":"PIIDetection",
+          "documentation":"<p>Specifies a transform that identifies, removes or masks PII data.</p>"
+        },
+        "Aggregate":{
+          "shape":"Aggregate",
+          "documentation":"<p>Specifies a transform that groups rows by chosen fields and computes the aggregated value by specified function.</p>"
+        },
+        "DropDuplicates":{
+          "shape":"DropDuplicates",
+          "documentation":"<p>Specifies a transform that removes rows of repeating data from a data set.</p>"
+        },
+        "GovernedCatalogTarget":{
+          "shape":"GovernedCatalogTarget",
+          "documentation":"<p>Specifies a data target that writes to a goverened catalog.</p>"
+        },
+        "GovernedCatalogSource":{
+          "shape":"GovernedCatalogSource",
+          "documentation":"<p>Specifies a data source in a goverened Data Catalog.</p>"
+        },
+        "MicrosoftSQLServerCatalogSource":{
+          "shape":"MicrosoftSQLServerCatalogSource",
+          "documentation":"<p>Specifies a Microsoft SQL server data source in the Glue Data Catalog.</p>"
+        },
+        "MySQLCatalogSource":{
+          "shape":"MySQLCatalogSource",
+          "documentation":"<p>Specifies a MySQL data source in the Glue Data Catalog.</p>"
+        },
+        "OracleSQLCatalogSource":{
+          "shape":"OracleSQLCatalogSource",
+          "documentation":"<p>Specifies an Oracle data source in the Glue Data Catalog.</p>"
+        },
+        "PostgreSQLCatalogSource":{
+          "shape":"PostgreSQLCatalogSource",
+          "documentation":"<p>Specifies a PostgresSQL data source in the Glue Data Catalog.</p>"
+        },
+        "MicrosoftSQLServerCatalogTarget":{
+          "shape":"MicrosoftSQLServerCatalogTarget",
+          "documentation":"<p>Specifies a target that uses Microsoft SQL.</p>"
+        },
+        "MySQLCatalogTarget":{
+          "shape":"MySQLCatalogTarget",
+          "documentation":"<p>Specifies a target that uses MySQL.</p>"
+        },
+        "OracleSQLCatalogTarget":{
+          "shape":"OracleSQLCatalogTarget",
+          "documentation":"<p>Specifies a target that uses Oracle SQL.</p>"
+        },
+        "PostgreSQLCatalogTarget":{
+          "shape":"PostgreSQLCatalogTarget",
+          "documentation":"<p>Specifies a target that uses Postgres SQL.</p>"
+        }
+      },
+      "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
+    },
+    "CodeGenConfigurationNodes":{
+      "type":"map",
+      "key":{"shape":"NodeId"},
+      "value":{"shape":"CodeGenConfigurationNode"},
+      "sensitive":true
+    },
     "CodeGenEdge":{
       "type":"structure",
       "required":[
@@ -4475,6 +4997,13 @@
         "FORWARD_ALL",
         "FULL",
         "FULL_ALL"
+      ]
+    },
+    "CompressionType":{
+      "type":"string",
+      "enum":[
+        "gzip",
+        "bzip2"
       ]
     },
     "ConcurrentModificationException":{
@@ -5517,6 +6046,10 @@
         "WorkerType":{
           "shape":"WorkerType",
           "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of Standard, G.1X, or G.2X.</p> <ul> <li> <p>For the <code>Standard</code> worker type, each worker provides 4 vCPU, 16 GB of memory and a 50GB disk, and 2 executors per worker.</p> </li> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPU, 16 GB of memory, 64 GB disk), and provides 1 executor per worker. We recommend this worker type for memory-intensive jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPU, 32 GB of memory, 128 GB disk), and provides 1 executor per worker. We recommend this worker type for memory-intensive jobs.</p> </li> </ul>"
+        },
+        "CodeGenConfigurationNodes":{
+          "shape":"CodeGenConfigurationNodes",
+          "documentation":"<p>The representation of a directed acyclic graph on which both the Glue Studio visual component and Glue Studio code generation is based.</p>"
         }
       }
     },
@@ -6207,6 +6740,38 @@
       "min":1,
       "pattern":"[^\\r\\n]"
     },
+    "CustomCode":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Code",
+        "ClassName"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"ManyInputs",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Code":{
+          "shape":"ExtendedString",
+          "documentation":"<p>The custom code that is used to perform the data transformation.</p>"
+        },
+        "ClassName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name defined for the custom code node class.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the custom code transform.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that uses custom code you provide to perform the data transformation. The output is a collection of DynamicFrames.</p>"
+    },
     "CustomEntityType":{
       "type":"structure",
       "required":[
@@ -6379,6 +6944,24 @@
       "member":{"shape":"Database"}
     },
     "DatabaseName":{"type":"string"},
+    "Datatype":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Label"
+      ],
+      "members":{
+        "Id":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>The datatype of the value.</p>"
+        },
+        "Label":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>A label assigned to the datatype.</p>"
+        }
+      },
+      "documentation":"<p>A structure representing the datatype of the value.</p>"
+    },
     "DateColumnStatisticsData":{
       "type":"structure",
       "required":[
@@ -7180,6 +7763,86 @@
       "max":25,
       "min":1
     },
+    "DirectKafkaSource":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "StreamingOptions":{
+          "shape":"KafkaStreamingSourceOptions",
+          "documentation":"<p>Specifies the streaming options.</p>"
+        },
+        "WindowSize":{
+          "shape":"BoxedPositiveInt",
+          "documentation":"<p>The amount of time to spend processing each micro batch.</p>",
+          "box":true
+        },
+        "DetectSchema":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether to automatically determine the schema from the incoming data.</p>",
+          "box":true
+        },
+        "DataPreviewOptions":{
+          "shape":"StreamingDataPreviewOptions",
+          "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Kafka data store.</p>"
+    },
+    "DirectKinesisSource":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "WindowSize":{
+          "shape":"BoxedPositiveInt",
+          "documentation":"<p>The amount of time to spend processing each micro batch.</p>",
+          "box":true
+        },
+        "DetectSchema":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether to automatically determine the schema from the incoming data.</p>",
+          "box":true
+        },
+        "StreamingOptions":{
+          "shape":"KinesisStreamingSourceOptions",
+          "documentation":"<p>Additional options for the Kinesis streaming data source.</p>"
+        },
+        "DataPreviewOptions":{
+          "shape":"StreamingDataPreviewOptions",
+          "documentation":"<p>Additional options for data preview.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a direct Amazon Kinesis data source.</p>"
+    },
+    "DirectSchemaChangePolicy":{
+      "type":"structure",
+      "members":{
+        "EnableUpdateCatalog":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether to use the specified update behavior when the crawler finds a changed schema.</p>"
+        },
+        "UpdateBehavior":{
+          "shape":"UpdateCatalogBehavior",
+          "documentation":"<p>The update behavior when the crawler finds a changed schema.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the table in the database that the schema change policy applies to.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the database that the schema change policy applies to.</p>"
+        }
+      },
+      "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+    },
     "Double":{"type":"double"},
     "DoubleColumnStatisticsData":{
       "type":"structure",
@@ -7208,6 +7871,100 @@
       "documentation":"<p>Defines column statistics supported for floating-point number data columns.</p>"
     },
     "DoubleValue":{"type":"double"},
+    "DropDuplicates":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Columns":{
+          "shape":"LimitedPathList",
+          "documentation":"<p>The name of the columns to be merged or removed if repeating.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that removes rows of repeating data from a data set. </p>"
+    },
+    "DropFields":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Paths":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>A JSON path to a variable in the data structure.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that chooses the data property keys that you want to drop.</p>"
+    },
+    "DropNullFields":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "NullCheckBoxList":{
+          "shape":"NullCheckBoxList",
+          "documentation":"<p>A structure that represents whether certain values are recognized as null values for removal.</p>"
+        },
+        "NullTextList":{
+          "shape":"NullValueFields",
+          "documentation":"<p>A structure that specifies a list of NullValueField structures that represent a custom null value such as zero or other value being used as a null placeholder unique to the dataset.</p> <p>The <code>DropNullFields</code> transform removes custom null values only if both the value of the null placeholder and the datatype match the data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that removes columns from the dataset if all values in the column are 'null'. By default, Glue Studio will recognize null objects, but some values such as empty strings, strings that are \"null\", -1 integers or other placeholders such as zeros, are not automatically recognized as nulls.</p>"
+    },
+    "DynamoDBCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a DynamoDB data source in the Glue Data Catalog.</p>"
+    },
     "DynamoDBTarget":{
       "type":"structure",
       "members":{
@@ -7254,6 +8011,22 @@
         "TRUE",
         "FALSE"
       ]
+    },
+    "EnclosedInStringProperties":{
+      "type":"list",
+      "member":{"shape":"EnclosedInStringProperty"}
+    },
+    "EnclosedInStringPropertiesMinOne":{
+      "type":"list",
+      "member":{"shape":"EnclosedInStringProperty"}
+    },
+    "EnclosedInStringProperty":{
+      "type":"string",
+      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF]|[^\\S\\r\\n\"'])*"
+    },
+    "EnclosedInStringPropertyWithQuote":{
+      "type":"string",
+      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF]|[^\\S\\r\\n])*"
     },
     "EncryptionAtRest":{
       "type":"structure",
@@ -7395,12 +8168,145 @@
       },
       "documentation":"<p>Specifies configuration properties for an exporting labels task run.</p>"
     },
+    "ExtendedString":{
+      "type":"string",
+      "pattern":"[\\s\\S]*"
+    },
     "FieldType":{"type":"string"},
+    "FillMissingValues":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "ImputedPath"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "ImputedPath":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A JSON path to a variable in the data structure for the dataset that is imputed.</p>"
+        },
+        "FilledPath":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A JSON path to a variable in the data structure for the dataset that is filled.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that locates records in the dataset that have missing values and adds a new field with a value determined by imputation. The input data set is used to train the machine learning model that determines what the missing value should be.</p>"
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "LogicalOperator",
+        "Filters"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "LogicalOperator":{
+          "shape":"FilterLogicalOperator",
+          "documentation":"<p>The operator used to filter rows by comparing the key value to a specified value.</p>"
+        },
+        "Filters":{
+          "shape":"FilterExpressions",
+          "documentation":"<p>Specifies a filter expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that splits a dataset into two, based on a filter condition.</p>"
+    },
+    "FilterExpression":{
+      "type":"structure",
+      "required":[
+        "Operation",
+        "Values"
+      ],
+      "members":{
+        "Operation":{
+          "shape":"FilterOperation",
+          "documentation":"<p>The type of operation to perform in the expression.</p>"
+        },
+        "Negated":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Whether the expression is to be negated.</p>"
+        },
+        "Values":{
+          "shape":"FilterValues",
+          "documentation":"<p>A list of filter values.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a filter expression.</p>"
+    },
+    "FilterExpressions":{
+      "type":"list",
+      "member":{"shape":"FilterExpression"}
+    },
+    "FilterLogicalOperator":{
+      "type":"string",
+      "enum":[
+        "AND",
+        "OR"
+      ]
+    },
+    "FilterOperation":{
+      "type":"string",
+      "enum":[
+        "EQ",
+        "LT",
+        "GT",
+        "LTE",
+        "GTE",
+        "REGEX",
+        "ISNULL"
+      ]
+    },
     "FilterString":{
       "type":"string",
       "max":2048,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "FilterValue":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Type":{
+          "shape":"FilterValueType",
+          "documentation":"<p>The type of filter value.</p>"
+        },
+        "Value":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>The value to be associated.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single entry in the list of values for a <code>FilterExpression</code>. </p>"
+    },
+    "FilterValueType":{
+      "type":"string",
+      "enum":[
+        "COLUMNEXTRACTED",
+        "CONSTANT"
+      ]
+    },
+    "FilterValues":{
+      "type":"list",
+      "member":{"shape":"FilterValue"}
     },
     "FindMatchesMetrics":{
       "type":"structure",
@@ -7487,6 +8393,10 @@
       "box":true,
       "max":1.0,
       "min":0.0
+    },
+    "GenericLimitedString":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9_-]*"
     },
     "GenericMap":{
       "type":"map",
@@ -9538,11 +10448,69 @@
       },
       "documentation":"<p>A structure for returning a resource policy.</p>"
     },
+    "GlueRecordType":{
+      "type":"string",
+      "enum":[
+        "DATE",
+        "STRING",
+        "TIMESTAMP",
+        "INT",
+        "FLOAT",
+        "LONG",
+        "BIGDECIMAL",
+        "BYTE",
+        "SHORT",
+        "DOUBLE"
+      ]
+    },
     "GlueResourceArn":{
       "type":"string",
       "max":10240,
       "min":1,
       "pattern":"arn:(aws|aws-us-gov|aws-cn):glue:.*"
+    },
+    "GlueSchema":{
+      "type":"structure",
+      "members":{
+        "Columns":{
+          "shape":"GlueStudioSchemaColumnList",
+          "documentation":"<p>Specifies the column definitions that make up a Glue schema.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a user-defined schema when a schema cannot be determined by AWS Glue.</p>"
+    },
+    "GlueSchemas":{
+      "type":"list",
+      "member":{"shape":"GlueSchema"}
+    },
+    "GlueStudioColumnNameString":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "GlueStudioPathList":{
+      "type":"list",
+      "member":{"shape":"EnclosedInStringProperties"}
+    },
+    "GlueStudioSchemaColumn":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"GlueStudioColumnNameString",
+          "documentation":"<p>The name of the column in the Glue Studio schema.</p>"
+        },
+        "Type":{
+          "shape":"ColumnTypeString",
+          "documentation":"<p>The hive type for this column in the Glue Studio schema.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a single column in a Glue schema definition.</p>"
+    },
+    "GlueStudioSchemaColumnList":{
+      "type":"list",
+      "member":{"shape":"GlueStudioSchemaColumn"}
     },
     "GlueTable":{
       "type":"structure",
@@ -9581,6 +10549,73 @@
       "max":255,
       "min":1,
       "pattern":"^\\w+\\.\\w+$"
+    },
+    "GovernedCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database table to read from.</p>"
+        },
+        "PartitionPredicate":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Partitions satisfying this predicate are deleted. Files within the retention period in these partitions are not deleted. Set to <code>\"\"</code> – empty by default.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3SourceAdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the data store in the governed Glue Data Catalog.</p>"
+    },
+    "GovernedCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Table",
+        "Database"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"CatalogSchemaChangePolicy",
+          "documentation":"<p>A policy that specifies update behavior for the governed catalog.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a data target that writes to Amazon S3 using the Glue Data Catalog.</p>"
     },
     "GrokClassifier":{
       "type":"structure",
@@ -9749,6 +10784,183 @@
       "exception":true
     },
     "IsVersionValid":{"type":"boolean"},
+    "JDBCConnectorOptions":{
+      "type":"structure",
+      "members":{
+        "FilterPredicate":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Extra condition clause to filter data from source. For example:</p> <p> <code>BillingCity='Mountain View'</code> </p> <p>When using a query instead of a table name, you should validate that the query works with the specified <code>filterPredicate</code>.</p>"
+        },
+        "PartitionColumn":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of an integer column that is used for partitioning. This option works only when it's included with <code>lowerBound</code>, <code>upperBound</code>, and <code>numPartitions</code>. This option works the same way as in the Spark SQL JDBC reader.</p>"
+        },
+        "LowerBound":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The minimum value of <code>partitionColumn</code> that is used to decide partition stride.</p>"
+        },
+        "UpperBound":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The maximum value of <code>partitionColumn</code> that is used to decide partition stride.</p>"
+        },
+        "NumPartitions":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The number of partitions. This value, along with <code>lowerBound</code> (inclusive) and <code>upperBound</code> (exclusive), form partition strides for generated <code>WHERE</code> clause expressions that are used to split the <code>partitionColumn</code>.</p>"
+        },
+        "JobBookmarkKeys":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>The name of the job bookmark keys on which to sort.</p>"
+        },
+        "JobBookmarkKeysSortOrder":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies an ascending or descending sort order.</p>"
+        },
+        "DataTypeMapping":{
+          "shape":"JDBCDataTypeMapping",
+          "documentation":"<p>Custom data type mapping that builds a mapping from a JDBC data type to an Glue data type. For example, the option <code>\"dataTypeMapping\":{\"FLOAT\":\"STRING\"}</code> maps data fields of JDBC type <code>FLOAT</code> into the Java <code>String</code> type by calling the <code>ResultSet.getString()</code> method of the driver, and uses it to build the Glue record. The <code>ResultSet</code> object is implemented by each driver, so the behavior is specific to the driver you use. Refer to the documentation for your JDBC driver to understand how the driver performs the conversions.</p>"
+        }
+      },
+      "documentation":"<p>Additional connection options for the connector.</p>"
+    },
+    "JDBCConnectorSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ConnectionName",
+        "ConnectorName",
+        "ConnectionType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the connection that is associated with the connector.</p>"
+        },
+        "ConnectorName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of a connector that assists with accessing the data store in Glue Studio.</p>"
+        },
+        "ConnectionType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The type of connection, such as marketplace.jdbc or custom.jdbc, designating a connection to a JDBC data store.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"JDBCConnectorOptions",
+          "documentation":"<p>Additional connection options for the connector.</p>"
+        },
+        "ConnectionTable":{
+          "shape":"EnclosedInStringPropertyWithQuote",
+          "documentation":"<p>The name of the table in the data source.</p>"
+        },
+        "Query":{
+          "shape":"SqlQuery",
+          "documentation":"<p>The table or SQL query to get the data from. You can specify either <code>ConnectionTable</code> or <code>query</code>, but not both.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the custom JDBC source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a connector to a JDBC data source.</p>"
+    },
+    "JDBCConnectorTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "ConnectionName",
+        "ConnectionTable",
+        "ConnectorName",
+        "ConnectionType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the connection that is associated with the connector.</p>"
+        },
+        "ConnectionTable":{
+          "shape":"EnclosedInStringPropertyWithQuote",
+          "documentation":"<p>The name of the table in the data target.</p>"
+        },
+        "ConnectorName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of a connector that will be used.</p>"
+        },
+        "ConnectionType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The type of connection, such as marketplace.jdbc or custom.jdbc, designating a connection to a JDBC data target.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Additional connection options for the connector.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the JDBC target.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
+    },
+    "JDBCDataType":{
+      "type":"string",
+      "enum":[
+        "ARRAY",
+        "BIGINT",
+        "BINARY",
+        "BIT",
+        "BLOB",
+        "BOOLEAN",
+        "CHAR",
+        "CLOB",
+        "DATALINK",
+        "DATE",
+        "DECIMAL",
+        "DISTINCT",
+        "DOUBLE",
+        "FLOAT",
+        "INTEGER",
+        "JAVA_OBJECT",
+        "LONGNVARCHAR",
+        "LONGVARBINARY",
+        "LONGVARCHAR",
+        "NCHAR",
+        "NCLOB",
+        "NULL",
+        "NUMERIC",
+        "NVARCHAR",
+        "OTHER",
+        "REAL",
+        "REF",
+        "REF_CURSOR",
+        "ROWID",
+        "SMALLINT",
+        "SQLXML",
+        "STRUCT",
+        "TIME",
+        "TIME_WITH_TIMEZONE",
+        "TIMESTAMP",
+        "TIMESTAMP_WITH_TIMEZONE",
+        "TINYINT",
+        "VARBINARY",
+        "VARCHAR"
+      ]
+    },
+    "JDBCDataTypeMapping":{
+      "type":"map",
+      "key":{"shape":"JDBCDataType"},
+      "value":{"shape":"GlueRecordType"}
+    },
     "JdbcTarget":{
       "type":"structure",
       "members":{
@@ -9855,6 +11067,10 @@
         "GlueVersion":{
           "shape":"GlueVersionString",
           "documentation":"<p>Glue version determines the versions of Apache Spark and Python that Glue supports. The Python version indicates the version supported for jobs of type Spark. </p> <p>For more information about the available Glue versions and corresponding Spark and Python versions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Glue version</a> in the developer guide.</p> <p>Jobs that are created without specifying a Glue version default to Glue 0.9.</p>"
+        },
+        "CodeGenConfigurationNodes":{
+          "shape":"CodeGenConfigurationNodes",
+          "documentation":"<p>The representation of a directed acyclic graph on which both the Glue Studio visual component and Glue Studio code generation is based.</p>"
         }
       },
       "documentation":"<p>Specifies a job definition.</p>"
@@ -10139,9 +11355,76 @@
         "GlueVersion":{
           "shape":"GlueVersionString",
           "documentation":"<p>Glue version determines the versions of Apache Spark and Python that Glue supports. The Python version indicates the version supported for jobs of type Spark. </p> <p>For more information about the available Glue versions and corresponding Spark and Python versions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Glue version</a> in the developer guide.</p>"
+        },
+        "CodeGenConfigurationNodes":{
+          "shape":"CodeGenConfigurationNodes",
+          "documentation":"<p>The representation of a directed acyclic graph on which both the Glue Studio visual component and Glue Studio code generation is based.</p>"
         }
       },
       "documentation":"<p>Specifies information used to update an existing job definition. The previous job definition is completely overwritten by this information.</p>"
+    },
+    "Join":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "JoinType",
+        "Columns"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"TwoInputs",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "JoinType":{
+          "shape":"JoinType",
+          "documentation":"<p>Specifies the type of join to be performed on the datasets.</p>"
+        },
+        "Columns":{
+          "shape":"JoinColumns",
+          "documentation":"<p>A list of the two columns to be joined.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that joins two datasets into one dataset using a comparison phrase on the specified data property keys. You can use inner, outer, left, right, left semi, and left anti joins.</p>"
+    },
+    "JoinColumn":{
+      "type":"structure",
+      "required":[
+        "From",
+        "Keys"
+      ],
+      "members":{
+        "From":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The column to be joined.</p>"
+        },
+        "Keys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>The key of the column to be joined.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a column to be joined.</p>"
+    },
+    "JoinColumns":{
+      "type":"list",
+      "member":{"shape":"JoinColumn"},
+      "max":2,
+      "min":2
+    },
+    "JoinType":{
+      "type":"string",
+      "enum":[
+        "equijoin",
+        "left",
+        "right",
+        "outer",
+        "leftsemi",
+        "leftanti"
+      ]
     },
     "JsonClassifier":{
       "type":"structure",
@@ -10175,6 +11458,72 @@
     },
     "JsonPath":{"type":"string"},
     "JsonValue":{"type":"string"},
+    "KafkaStreamingSourceOptions":{
+      "type":"structure",
+      "members":{
+        "BootstrapServers":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A list of bootstrap server URLs, for example, as <code>b-1.vpc-test-2.o4q88o.c6.kafka.us-east-1.amazonaws.com:9094</code>. This option must be specified in the API call or defined in the table metadata in the Data Catalog.</p>"
+        },
+        "SecurityProtocol":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The protocol used to communicate with brokers. The possible values are <code>\"SSL\"</code> or <code>\"PLAINTEXT\"</code>.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the connection.</p>"
+        },
+        "TopicName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The topic name as specified in Apache Kafka. You must specify at least one of <code>\"topicName\"</code>, <code>\"assign\"</code> or <code>\"subscribePattern\"</code>.</p>"
+        },
+        "Assign":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The specific <code>TopicPartitions</code> to consume. You must specify at least one of <code>\"topicName\"</code>, <code>\"assign\"</code> or <code>\"subscribePattern\"</code>.</p>"
+        },
+        "SubscribePattern":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A Java regex string that identifies the topic list to subscribe to. You must specify at least one of <code>\"topicName\"</code>, <code>\"assign\"</code> or <code>\"subscribePattern\"</code>.</p>"
+        },
+        "Classification":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>An optional classification.</p>"
+        },
+        "Delimiter":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the delimiter character.</p>"
+        },
+        "StartingOffsets":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The starting position in the Kafka topic to read data from. The possible values are <code>\"earliest\"</code> or <code>\"latest\"</code>. The default value is <code>\"latest\"</code>.</p>"
+        },
+        "EndingOffsets":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The end point when a batch query is ended. Possible values are either <code>\"latest\"</code> or a JSON string that specifies an ending offset for each <code>TopicPartition</code>.</p>"
+        },
+        "PollTimeoutMs":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The timeout in milliseconds to poll data from Kafka in Spark job executors. The default value is <code>512</code>.</p>"
+        },
+        "NumRetries":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>The number of times to retry before failing to fetch Kafka offsets. The default value is <code>3</code>.</p>"
+        },
+        "RetryIntervalMs":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The time in milliseconds to wait before retrying to fetch Kafka offsets. The default value is <code>10</code>.</p>"
+        },
+        "MaxOffsetsPerTrigger":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The rate limit on the maximum number of offsets that are processed per trigger interval. The specified total number of offsets is proportionally split across <code>topicPartitions</code> of different volumes. The default value is null, which means that the consumer reads all offsets until the known latest offset.</p>"
+        },
+        "MinPartitions":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>The desired minimum number of partitions to read from Kafka. The default value is null, which means that the number of spark partitions is equal to the number of Kafka partitions.</p>"
+        }
+      },
+      "documentation":"<p>Additional options for streaming.</p>"
+    },
     "KeyList":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -10208,6 +11557,84 @@
       "max":255,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "KinesisStreamingSourceOptions":{
+      "type":"structure",
+      "members":{
+        "EndpointUrl":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The URL of the Kinesis endpoint.</p>"
+        },
+        "StreamName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the Kinesis data stream.</p>"
+        },
+        "Classification":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>An optional classification.</p>"
+        },
+        "Delimiter":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the delimiter character.</p>"
+        },
+        "StartingPosition":{
+          "shape":"StartingPosition",
+          "documentation":"<p>The starting position in the Kinesis data stream to read data from. The possible values are <code>\"latest\"</code>, <code>\"trim_horizon\"</code>, or <code>\"earliest\"</code>. The default value is <code>\"latest\"</code>.</p>"
+        },
+        "MaxFetchTimeInMs":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The maximum time spent in the job executor to fetch a record from the Kinesis data stream per shard, specified in milliseconds (ms). The default value is <code>1000</code>.</p>"
+        },
+        "MaxFetchRecordsPerShard":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The maximum number of records to fetch per shard in the Kinesis data stream. The default value is <code>100000</code>.</p>"
+        },
+        "MaxRecordPerRead":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The maximum number of records to fetch from the Kinesis data stream in each getRecords operation. The default value is <code>10000</code>.</p>"
+        },
+        "AddIdleTimeBetweenReads":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Adds a time delay between two consecutive getRecords operations. The default value is <code>\"False\"</code>. This option is only configurable for Glue version 2.0 and above.</p>"
+        },
+        "IdleTimeBetweenReadsInMs":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The minimum time delay between two consecutive getRecords operations, specified in ms. The default value is <code>1000</code>. This option is only configurable for Glue version 2.0 and above.</p>"
+        },
+        "DescribeShardInterval":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The minimum time interval between two ListShards API calls for your script to consider resharding. The default value is <code>1s</code>.</p>"
+        },
+        "NumRetries":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>The maximum number of retries for Kinesis Data Streams API requests. The default value is <code>3</code>.</p>"
+        },
+        "RetryIntervalMs":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The cool-off time period (specified in ms) before retrying the Kinesis Data Streams API call. The default value is <code>1000</code>.</p>"
+        },
+        "MaxRetryIntervalMs":{
+          "shape":"BoxedNonNegativeLong",
+          "documentation":"<p>The maximum cool-off time period (specified in ms) between two retries of a Kinesis Data Streams API call. The default value is <code>10000</code>.</p>"
+        },
+        "AvoidEmptyBatches":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Avoids creating an empty microbatch job by checking for unread data in the Kinesis data stream before the batch is started. The default value is <code>\"False\"</code>.</p>"
+        },
+        "StreamArn":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis data stream.</p>"
+        },
+        "RoleArn":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role to assume using AWS Security Token Service (AWS STS). This role must have permissions for describe or read record operations for the Kinesis data stream. You must use this parameter when accessing a data stream in a different account. Used in conjunction with <code>\"awsSTSSessionName\"</code>.</p>"
+        },
+        "RoleSessionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>An identifier for the session assuming the role using AWS STS. You must use this parameter when accessing a data stream in a different account. Used in conjunction with <code>\"awsSTSRoleARN\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>Additional options for the Amazon Kinesis streaming data source.</p>"
     },
     "KmsKeyArn":{
       "type":"string",
@@ -10310,6 +11737,14 @@
       ]
     },
     "LatestSchemaVersionBoolean":{"type":"boolean"},
+    "LimitedPathList":{
+      "type":"list",
+      "member":{"shape":"LimitedStringList"}
+    },
+    "LimitedStringList":{
+      "type":"list",
+      "member":{"shape":"GenericLimitedString"}
+    },
     "LineageConfiguration":{
       "type":"structure",
       "members":{
@@ -10913,12 +12348,47 @@
         "SSE-KMS"
       ]
     },
+    "ManyInputs":{
+      "type":"list",
+      "member":{"shape":"NodeId"},
+      "min":1
+    },
     "MapValue":{
       "type":"map",
       "key":{"shape":"GenericString"},
       "value":{"shape":"GenericString"},
       "max":100,
       "min":0
+    },
+    "Mapping":{
+      "type":"structure",
+      "members":{
+        "ToKey":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>After the apply mapping, what the name of the column should be. Can be the same as <code>FromPath</code>.</p>"
+        },
+        "FromPath":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>The table or column to be modified.</p>"
+        },
+        "FromType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The type of the data to be modified.</p>"
+        },
+        "ToType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The data type that the data is to be modified to.</p>"
+        },
+        "Dropped":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If true, then the column is removed.</p>"
+        },
+        "Children":{
+          "shape":"Mappings",
+          "documentation":"<p>Only applicable to nested data structures. If you want to change the parent structure, but also one of its children, you can fill out this data strucutre. It is also <code>Mapping</code>, but its <code>FromPath</code> will be the parent's <code>FromPath</code> plus the <code>FromPath</code> from this structure.</p> <p>For the children part, suppose you have the structure:</p> <p> <code>{ \"FromPath\": \"OuterStructure\", \"ToKey\": \"OuterStructure\", \"ToType\": \"Struct\", \"Dropped\": false, \"Chidlren\": [{ \"FromPath\": \"inner\", \"ToKey\": \"inner\", \"ToType\": \"Double\", \"Dropped\": false, }] }</code> </p> <p>You can specify a <code>Mapping</code> that looks like:</p> <p> <code>{ \"FromPath\": \"OuterStructure\", \"ToKey\": \"OuterStructure\", \"ToType\": \"Struct\", \"Dropped\": false, \"Chidlren\": [{ \"FromPath\": \"inner\", \"ToKey\": \"inner\", \"ToType\": \"Double\", \"Dropped\": false, }] }</code> </p>"
+        }
+      },
+      "documentation":"<p>Specifies the mapping of data property keys.</p>"
     },
     "MappingEntry":{
       "type":"structure",
@@ -10954,6 +12424,16 @@
       "type":"list",
       "member":{"shape":"MappingEntry"}
     },
+    "Mappings":{
+      "type":"list",
+      "member":{"shape":"Mapping"}
+    },
+    "MaskValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[*A-Za-z0-9_-]*"
+    },
     "MatchCriteria":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -10968,6 +12448,34 @@
       "min":1
     },
     "MaxRetries":{"type":"integer"},
+    "Merge":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Source",
+        "PrimaryKeys"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"TwoInputs",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Source":{
+          "shape":"NodeId",
+          "documentation":"<p>The source <code>DynamicFrame</code> that will be merged with a staging <code>DynamicFrame</code>.</p>"
+        },
+        "PrimaryKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>The list of primary key fields to match records from the source and staging dynamic frames.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that merges a <code>DynamicFrame</code> with a staging <code>DynamicFrame</code> based on the specified primary keys to identify records. Duplicate records (records with the same primary keys) are not de-duplicated. </p>"
+    },
     "MessagePrefix":{
       "type":"string",
       "max":255,
@@ -11028,6 +12536,57 @@
       "min":1,
       "pattern":"[a-zA-Z0-9+-=._./@]+"
     },
+    "MicrosoftSQLServerCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Microsoft SQL server data source in the Glue Data Catalog.</p>"
+    },
+    "MicrosoftSQLServerCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses Microsoft SQL.</p>"
+    },
     "MillisecondsCount":{"type":"long"},
     "MongoDBTarget":{
       "type":"structure",
@@ -11050,6 +12609,57 @@
     "MongoDBTargetList":{
       "type":"list",
       "member":{"shape":"MongoDBTarget"}
+    },
+    "MySQLCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a MySQL data source in the Glue Data Catalog.</p>"
+    },
+    "MySQLCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses MySQL.</p>"
     },
     "NameString":{
       "type":"string",
@@ -11102,6 +12712,10 @@
       },
       "documentation":"<p>A node represents an Glue component (trigger, crawler, or job) on a workflow graph.</p>"
     },
+    "NodeId":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9_-]*"
+    },
     "NodeIdList":{
       "type":"list",
       "member":{"shape":"NameString"}
@@ -11109,6 +12723,10 @@
     "NodeList":{
       "type":"list",
       "member":{"shape":"Node"}
+    },
+    "NodeName":{
+      "type":"string",
+      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF]|[^\\r\\n])*"
     },
     "NodeType":{
       "type":"string",
@@ -11121,6 +12739,10 @@
     "NonNegativeDouble":{
       "type":"double",
       "min":0.0
+    },
+    "NonNegativeInt":{
+      "type":"integer",
+      "min":0
     },
     "NonNegativeInteger":{
       "type":"integer",
@@ -11145,6 +12767,48 @@
       "box":true,
       "min":1
     },
+    "NullCheckBoxList":{
+      "type":"structure",
+      "members":{
+        "IsEmpty":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies that an empty string is considered as a null value.</p>"
+        },
+        "IsNullString":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies that a value spelling out the word 'null' is considered as a null value.</p>"
+        },
+        "IsNegOne":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies that an integer value of -1 is considered as a null value.</p>"
+        }
+      },
+      "documentation":"<p>Represents whether certain values are recognized as null values for removal.</p>"
+    },
+    "NullValueField":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Datatype"
+      ],
+      "members":{
+        "Value":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The value of the null placeholder.</p>"
+        },
+        "Datatype":{
+          "shape":"Datatype",
+          "documentation":"<p>The datatype of the value.</p>"
+        }
+      },
+      "documentation":"<p>Represents a custom null value such as a zeros or other value being used as a null placeholder unique to the dataset.</p>"
+    },
+    "NullValueFields":{
+      "type":"list",
+      "member":{"shape":"NullValueField"},
+      "max":50,
+      "min":0
+    },
     "NullableBoolean":{
       "type":"boolean",
       "box":true
@@ -11157,6 +12821,12 @@
       "type":"integer",
       "box":true
     },
+    "OneInput":{
+      "type":"list",
+      "member":{"shape":"NodeId"},
+      "max":1,
+      "min":1
+    },
     "OperationTimeoutException":{
       "type":"structure",
       "members":{
@@ -11167,6 +12837,57 @@
       },
       "documentation":"<p>The operation timed out.</p>",
       "exception":true
+    },
+    "OracleSQLCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Oracle data source in the Glue Data Catalog.</p>"
+    },
+    "OracleSQLCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses Oracle SQL.</p>"
     },
     "OrchestrationArgumentsMap":{
       "type":"map",
@@ -11257,6 +12978,50 @@
       },
       "documentation":"<p>A structure containing other metadata for a schema version belonging to the same metadata key.</p>"
     },
+    "PIIDetection":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "PiiType",
+        "EntityTypesToDetect"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The node ID inputs to the transform.</p>"
+        },
+        "PiiType":{
+          "shape":"PiiType",
+          "documentation":"<p>Indicates the type of PIIDetection transform. </p>"
+        },
+        "EntityTypesToDetect":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>Indicates the types of entities the PIIDetection transform will identify as PII data. </p> <p> PII type entities include: PERSON_NAME, DATE, USA_SNN, EMAIL, USA_ITIN, USA_PASSPORT_NUMBER, PHONE_NUMBER, BANK_ACCOUNT, IP_ADDRESS, MAC_ADDRESS, USA_CPT_CODE, USA_HCPCS_CODE, USA_NATIONAL_DRUG_CODE, USA_MEDICARE_BENEFICIARY_IDENTIFIER, USA_HEALTH_INSURANCE_CLAIM_NUMBER,CREDIT_CARD,USA_NATIONAL_PROVIDER_IDENTIFIER,USA_DEA_NUMBER,USA_DRIVING_LICENSE </p>"
+        },
+        "OutputColumnName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Indicates the output column name that will contain any entity type detected in that row. </p>"
+        },
+        "SampleFraction":{
+          "shape":"BoxedDoubleFraction",
+          "documentation":"<p>Indicates the fraction of the data to sample when scanning for PII entities. </p>"
+        },
+        "ThresholdFraction":{
+          "shape":"BoxedDoubleFraction",
+          "documentation":"<p>Indicates the fraction of the data that must be met in order for a column to be identified as PII data. </p>"
+        },
+        "MaskValue":{
+          "shape":"MaskValue",
+          "documentation":"<p>Indicates the value that will replace the detected entity. </p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that identifies, removes or masks PII data.</p>"
+    },
     "PageSize":{
       "type":"integer",
       "box":true,
@@ -11272,6 +13037,16 @@
     "ParametersMapValue":{
       "type":"string",
       "max":512000
+    },
+    "ParquetCompressionType":{
+      "type":"string",
+      "enum":[
+        "snappy",
+        "lzo",
+        "gzip",
+        "uncompressed",
+        "none"
+      ]
     },
     "Partition":{
       "type":"structure",
@@ -11504,9 +13279,79 @@
       },
       "documentation":"<p>Specifies the physical requirements for a connection.</p>"
     },
+    "PiiType":{
+      "type":"string",
+      "enum":[
+        "RowAudit",
+        "RowMasking",
+        "ColumnAudit",
+        "ColumnMasking"
+      ]
+    },
     "PolicyJsonString":{
       "type":"string",
       "min":2
+    },
+    "PollingTime":{
+      "type":"long",
+      "box":true,
+      "min":10
+    },
+    "PositiveLong":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
+    "PostgreSQLCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a PostgresSQL data source in the Glue Data Catalog.</p>"
+    },
+    "PostgreSQLCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses Postgres SQL.</p>"
     },
     "Predecessor":{
       "type":"structure",
@@ -11571,6 +13416,12 @@
         "ROLE",
         "GROUP"
       ]
+    },
+    "Prob":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
     },
     "PropertyPredicate":{
       "type":"structure",
@@ -11791,6 +13642,15 @@
         }
       }
     },
+    "QuoteChar":{
+      "type":"string",
+      "enum":[
+        "quote",
+        "quillemet",
+        "single_quote",
+        "disabled"
+      ]
+    },
     "RecordsCount":{
       "type":"long",
       "box":true
@@ -11812,6 +13672,77 @@
         }
       },
       "documentation":"<p>When crawling an Amazon S3 data source after the first crawl is complete, specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html\">Incremental Crawls in Glue</a> in the developer guide.</p>"
+    },
+    "RedshiftSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Amazon Redshift data store.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database table to read from.</p>"
+        },
+        "RedshiftTmpDir":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon S3 path where temporary data can be staged when copying out of the database.</p>"
+        },
+        "TmpDirIAMRole":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The IAM role with permissions.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Amazon Redshift data store.</p>"
+    },
+    "RedshiftTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        },
+        "RedshiftTmpDir":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon S3 path where temporary data can be staged when copying out of the database.</p>"
+        },
+        "TmpDirIAMRole":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The IAM role with permissions.</p>"
+        },
+        "UpsertRedshiftOptions":{
+          "shape":"UpsertRedshiftTargetOptions",
+          "documentation":"<p>The set of options to configure an upsert operation when writing to a Redshift target.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses Amazon Redshift.</p>"
     },
     "RegisterSchemaVersionInput":{
       "type":"structure",
@@ -11902,6 +13833,29 @@
         "DELETING"
       ]
     },
+    "RelationalCatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Relational database data source in the Glue Data Catalog.</p>"
+    },
     "RemoveSchemaVersionMetadataInput":{
       "type":"structure",
       "required":["MetadataKeyValue"],
@@ -11960,6 +13914,34 @@
           "documentation":"<p>The value of the metadata key.</p>"
         }
       }
+    },
+    "RenameField":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "SourcePath",
+        "TargetPath"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "SourcePath":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A JSON path to a variable in the data structure for the source data.</p>"
+        },
+        "TargetPath":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A JSON path to a variable in the data structure for the target data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that renames a single data property key.</p>"
     },
     "ReplaceBoolean":{"type":"boolean"},
     "ResetJobBookmarkRequest":{
@@ -12115,6 +14097,223 @@
         }
       }
     },
+    "S3CatalogSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database table to read from.</p>"
+        },
+        "PartitionPredicate":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Partitions satisfying this predicate are deleted. Files within the retention period in these partitions are not deleted. Set to <code>\"\"</code> – empty by default.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3SourceAdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Amazon S3 data store in the Glue Data Catalog.</p>"
+    },
+    "S3CatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Table",
+        "Database"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"CatalogSchemaChangePolicy",
+          "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a data target that writes to Amazon S3 using the Glue Data Catalog.</p>"
+    },
+    "S3CsvSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Paths",
+        "Separator",
+        "QuoteChar"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "Paths":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A list of the Amazon S3 paths to read from.</p>"
+        },
+        "CompressionType":{
+          "shape":"CompressionType",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "Exclusions":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A string containing a JSON list of Unix-style glob patterns to exclude. For example, \"[\\\"**.pdf\\\"]\" excludes all PDF files. </p>"
+        },
+        "GroupSize":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The target group size in bytes. The default is computed based on the input data size and the size of your cluster. When there are fewer than 50,000 input files, <code>\"groupFiles\"</code> must be set to <code>\"inPartition\"</code> for this to take effect.</p>"
+        },
+        "GroupFiles":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Grouping files is turned on by default when the input contains more than 50,000 files. To turn on grouping with fewer than 50,000 files, set this parameter to \"inPartition\". To disable grouping when there are more than 50,000 files, set this parameter to <code>\"none\"</code>.</p>"
+        },
+        "Recurse":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If set to true, recursively reads files in all subdirectories under the specified paths.</p>"
+        },
+        "MaxBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>This option controls the duration in milliseconds after which the s3 listing is likely to be consistent. Files with modification timestamps falling within the last maxBand milliseconds are tracked specially when using JobBookmarks to account for Amazon S3 eventual consistency. Most users don't need to set this option. The default is 900000 milliseconds, or 15 minutes.</p>"
+        },
+        "MaxFilesInBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>This option specifies the maximum number of files to save from the last maxBand seconds. If this number is exceeded, extra files are skipped and only processed in the next job run.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3DirectSourceAdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "Separator":{
+          "shape":"Separator",
+          "documentation":"<p>Specifies the delimiter character. The default is a comma: \",\", but any other character can be specified.</p>"
+        },
+        "Escaper":{
+          "shape":"EnclosedInStringPropertyWithQuote",
+          "documentation":"<p>Specifies a character to use for escaping. This option is used only when reading CSV files. The default value is <code>none</code>. If enabled, the character which immediately follows is used as-is, except for a small set of well-known escapes (<code>\\n</code>, <code>\\r</code>, <code>\\t</code>, and <code>\\0</code>).</p>"
+        },
+        "QuoteChar":{
+          "shape":"QuoteChar",
+          "documentation":"<p>Specifies the character to use for quoting. The default is a double quote: <code>'\"'</code>. Set this to <code>-1</code> to turn off quoting entirely.</p>"
+        },
+        "Multiline":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A Boolean value that specifies whether a single record can span multiple lines. This can occur when a field contains a quoted new-line character. You must set this option to True if any record spans multiple lines. The default value is <code>False</code>, which allows for more aggressive file-splitting during parsing.</p>"
+        },
+        "WithHeader":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A Boolean value that specifies whether to treat the first line as a header. The default value is <code>False</code>.</p>"
+        },
+        "WriteHeader":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A Boolean value that specifies whether to write the header to output. The default value is <code>True</code>. </p>"
+        },
+        "SkipFirst":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A Boolean value that specifies whether to skip the first data line. The default value is <code>False</code>.</p>"
+        },
+        "OptimizePerformance":{
+          "shape":"BooleanValue",
+          "documentation":"<p>A Boolean value that specifies whether to use the advanced SIMD CSV reader along with Apache Arrow based columnar memory formats. Only available in Glue version 3.0.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 CSV source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a command-separated value (CSV) data store stored in Amazon S3.</p>"
+    },
+    "S3DirectSourceAdditionalOptions":{
+      "type":"structure",
+      "members":{
+        "BoundedSize":{
+          "shape":"BoxedLong",
+          "documentation":"<p>Sets the upper limit for the target size of the dataset in bytes that will be processed.</p>"
+        },
+        "BoundedFiles":{
+          "shape":"BoxedLong",
+          "documentation":"<p>Sets the upper limit for the target number of files that will be processed.</p>"
+        },
+        "EnableSamplePath":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Sets option to enable a sample path.</p>"
+        },
+        "SamplePath":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>If enabled, specifies the sample path.</p>"
+        }
+      },
+      "documentation":"<p>Specifies additional connection options for the Amazon S3 data store.</p>"
+    },
+    "S3DirectTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path",
+        "Format"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A single Amazon S3 path to write to.</p>"
+        },
+        "Compression":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "Format":{
+          "shape":"TargetFormat",
+          "documentation":"<p>Specifies the data output format for the target.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"DirectSchemaChangePolicy",
+          "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a data target that writes to Amazon S3.</p>"
+    },
     "S3Encryption":{
       "type":"structure",
       "members":{
@@ -12140,6 +14339,171 @@
         "SSE-KMS",
         "SSE-S3"
       ]
+    },
+    "S3GlueParquetTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A single Amazon S3 path to write to.</p>"
+        },
+        "Compression":{
+          "shape":"ParquetCompressionType",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"DirectSchemaChangePolicy",
+          "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
+    },
+    "S3JsonSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "Paths":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A list of the Amazon S3 paths to read from.</p>"
+        },
+        "CompressionType":{
+          "shape":"CompressionType",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "Exclusions":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A string containing a JSON list of Unix-style glob patterns to exclude. For example, \"[\\\"**.pdf\\\"]\" excludes all PDF files. </p>"
+        },
+        "GroupSize":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The target group size in bytes. The default is computed based on the input data size and the size of your cluster. When there are fewer than 50,000 input files, <code>\"groupFiles\"</code> must be set to <code>\"inPartition\"</code> for this to take effect.</p>"
+        },
+        "GroupFiles":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Grouping files is turned on by default when the input contains more than 50,000 files. To turn on grouping with fewer than 50,000 files, set this parameter to \"inPartition\". To disable grouping when there are more than 50,000 files, set this parameter to <code>\"none\"</code>.</p>"
+        },
+        "Recurse":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If set to true, recursively reads files in all subdirectories under the specified paths.</p>"
+        },
+        "MaxBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>This option controls the duration in milliseconds after which the s3 listing is likely to be consistent. Files with modification timestamps falling within the last maxBand milliseconds are tracked specially when using JobBookmarks to account for Amazon S3 eventual consistency. Most users don't need to set this option. The default is 900000 milliseconds, or 15 minutes.</p>"
+        },
+        "MaxFilesInBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>This option specifies the maximum number of files to save from the last maxBand seconds. If this number is exceeded, extra files are skipped and only processed in the next job run.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3DirectSourceAdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "JsonPath":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A JsonPath string defining the JSON data.</p>"
+        },
+        "Multiline":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A Boolean value that specifies whether a single record can span multiple lines. This can occur when a field contains a quoted new-line character. You must set this option to True if any record spans multiple lines. The default value is <code>False</code>, which allows for more aggressive file-splitting during parsing.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 JSON source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a JSON data store stored in Amazon S3.</p>"
+    },
+    "S3ParquetSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data store.</p>"
+        },
+        "Paths":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A list of the Amazon S3 paths to read from.</p>"
+        },
+        "CompressionType":{
+          "shape":"ParquetCompressionType",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "Exclusions":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A string containing a JSON list of Unix-style glob patterns to exclude. For example, \"[\\\"**.pdf\\\"]\" excludes all PDF files. </p>"
+        },
+        "GroupSize":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The target group size in bytes. The default is computed based on the input data size and the size of your cluster. When there are fewer than 50,000 input files, <code>\"groupFiles\"</code> must be set to <code>\"inPartition\"</code> for this to take effect.</p>"
+        },
+        "GroupFiles":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Grouping files is turned on by default when the input contains more than 50,000 files. To turn on grouping with fewer than 50,000 files, set this parameter to \"inPartition\". To disable grouping when there are more than 50,000 files, set this parameter to <code>\"none\"</code>.</p>"
+        },
+        "Recurse":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If set to true, recursively reads files in all subdirectories under the specified paths.</p>"
+        },
+        "MaxBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>This option controls the duration in milliseconds after which the s3 listing is likely to be consistent. Files with modification timestamps falling within the last maxBand milliseconds are tracked specially when using JobBookmarks to account for Amazon S3 eventual consistency. Most users don't need to set this option. The default is 900000 milliseconds, or 15 minutes.</p>"
+        },
+        "MaxFilesInBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>This option specifies the maximum number of files to save from the last maxBand seconds. If this number is exceeded, extra files are skipped and only processed in the next job run.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3DirectSourceAdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 Parquet source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Parquet data store stored in Amazon S3.</p>"
+    },
+    "S3SourceAdditionalOptions":{
+      "type":"structure",
+      "members":{
+        "BoundedSize":{
+          "shape":"BoxedLong",
+          "documentation":"<p>Sets the upper limit for the target size of the dataset in bytes that will be processed.</p>"
+        },
+        "BoundedFiles":{
+          "shape":"BoxedLong",
+          "documentation":"<p>Sets the upper limit for the target number of files that will be processed.</p>"
+        }
+      },
+      "documentation":"<p>Specifies additional connection options for the Amazon S3 data store.</p>"
     },
     "S3Target":{
       "type":"structure",
@@ -12553,6 +14917,62 @@
       },
       "documentation":"<p>Defines a non-overlapping region of a table's partitions, allowing multiple requests to be run in parallel.</p>"
     },
+    "SelectFields":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Paths":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>A JSON path to a variable in the data structure.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that chooses the data property keys that you want to keep.</p>"
+    },
+    "SelectFromCollection":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Index"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Index":{
+          "shape":"NonNegativeInt",
+          "documentation":"<p>The index for the DynamicFrame to be selected.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that chooses one <code>DynamicFrame</code> from a collection of <code>DynamicFrames</code>. The output is the selected <code>DynamicFrame</code> </p>"
+    },
+    "Separator":{
+      "type":"string",
+      "enum":[
+        "comma",
+        "ctrla",
+        "pipe",
+        "semicolon",
+        "tab"
+      ]
+    },
     "SerDeInfo":{
       "type":"structure",
       "members":{
@@ -12713,6 +15133,195 @@
         "DESCENDING",
         "ASCENDING"
       ]
+    },
+    "SparkConnectorSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ConnectionName",
+        "ConnectorName",
+        "ConnectionType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the connection that is associated with the connector.</p>"
+        },
+        "ConnectorName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of a connector that assists with accessing the data store in Glue Studio.</p>"
+        },
+        "ConnectionType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The type of connection, such as marketplace.spark or custom.spark, designating a connection to an Apache Spark data store.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Additional connection options for the connector.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies data schema for the custom spark source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a connector to an Apache Spark data source.</p>"
+    },
+    "SparkConnectorTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "ConnectionName",
+        "ConnectorName",
+        "ConnectionType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of a connection for an Apache Spark connector.</p>"
+        },
+        "ConnectorName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of an Apache Spark connector.</p>"
+        },
+        "ConnectionType":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The type of connection, such as marketplace.spark or custom.spark, designating a connection to an Apache Spark data store.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Additional connection options for the connector.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the custom spark target.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that uses an Apache Spark connector.</p>"
+    },
+    "SparkSQL":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "SqlQuery",
+        "SqlAliases"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"ManyInputs",
+          "documentation":"<p>The data inputs identified by their node names. You can associate a table name with each input node to use in the SQL query. The name you choose must meet the Spark SQL naming restrictions.</p>"
+        },
+        "SqlQuery":{
+          "shape":"SqlQuery",
+          "documentation":"<p>A SQL query that must use Spark SQL syntax and return a single data set.</p>"
+        },
+        "SqlAliases":{
+          "shape":"SqlAliases",
+          "documentation":"<p>A list of aliases. An alias allows you to specify what name to use in the SQL for a given input. For example, you have a datasource named \"MyDataSource\". If you specify <code>From</code> as MyDataSource, and <code>Alias</code> as SqlName, then in your SQL you can do:</p> <p> <code>select * from SqlName</code> </p> <p>and that gets data from MyDataSource.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the SparkSQL transform.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform where you enter a SQL query using Spark SQL syntax to transform the data. The output is a single <code>DynamicFrame</code>.</p>"
+    },
+    "Spigot":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A path in Amazon S3 where the transform will write a subset of records from the dataset to a JSON file in an Amazon S3 bucket.</p>"
+        },
+        "Topk":{
+          "shape":"Topk",
+          "documentation":"<p>Specifies a number of records to write starting from the beginning of the dataset.</p>"
+        },
+        "Prob":{
+          "shape":"Prob",
+          "documentation":"<p>The probability (a decimal value with a maximum value of 1) of picking any given record. A value of 1 indicates that each row read from the dataset should be included in the sample output.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that writes samples of the data to an Amazon S3 bucket.</p>"
+    },
+    "SplitFields":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The data inputs identified by their node names.</p>"
+        },
+        "Paths":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>A JSON path to a variable in the data structure.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that splits data property keys into two <code>DynamicFrames</code>. The output is a collection of <code>DynamicFrames</code>: one with selected data property keys, and one with the remaining data property keys.</p>"
+    },
+    "SqlAlias":{
+      "type":"structure",
+      "required":[
+        "From",
+        "Alias"
+      ],
+      "members":{
+        "From":{
+          "shape":"NodeId",
+          "documentation":"<p>A table, or a column in a table.</p>"
+        },
+        "Alias":{
+          "shape":"EnclosedInStringPropertyWithQuote",
+          "documentation":"<p>A temporary name given to a table, or a column in a table.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single entry in the list of values for <code>SqlAliases</code>. </p>"
+    },
+    "SqlAliases":{
+      "type":"list",
+      "member":{"shape":"SqlAlias"}
+    },
+    "SqlQuery":{
+      "type":"string",
+      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\s])*"
     },
     "StartBlueprintRunRequest":{
       "type":"structure",
@@ -12988,6 +15597,14 @@
       },
       "documentation":"<p>The batch condition that started the workflow run. Either the number of events in the batch size arrived, in which case the BatchSize member is non-zero, or the batch window expired, in which case the BatchWindow member is non-zero.</p>"
     },
+    "StartingPosition":{
+      "type":"string",
+      "enum":[
+        "latest",
+        "trim_horizon",
+        "earliest"
+      ]
+    },
     "Statement":{
       "type":"structure",
       "members":{
@@ -13229,6 +15846,20 @@
         }
       },
       "documentation":"<p>Describes the physical storage of table data.</p>"
+    },
+    "StreamingDataPreviewOptions":{
+      "type":"structure",
+      "members":{
+        "PollingTime":{
+          "shape":"PollingTime",
+          "documentation":"<p>The polling time in milliseconds.</p>"
+        },
+        "RecordPollingLimit":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The limit to the number of records polled.</p>"
+        }
+      },
+      "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
     },
     "StringColumnStatisticsData":{
       "type":"structure",
@@ -13536,6 +16167,16 @@
       "max":50,
       "min":0
     },
+    "TargetFormat":{
+      "type":"string",
+      "enum":[
+        "json",
+        "csv",
+        "avro",
+        "orc",
+        "parquet"
+      ]
+    },
     "TaskRun":{
       "type":"structure",
       "members":{
@@ -13690,6 +16331,12 @@
     "Timestamp":{"type":"timestamp"},
     "TimestampValue":{"type":"timestamp"},
     "Token":{"type":"string"},
+    "Topk":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":0
+    },
     "TotalSegmentsInteger":{
       "type":"integer",
       "max":10,
@@ -13941,6 +16588,12 @@
       },
       "documentation":"<p>A structure used to provide information used to update a trigger. This object updates the previous trigger definition by overwriting it completely.</p>"
     },
+    "TwoInputs":{
+      "type":"list",
+      "member":{"shape":"NodeId"},
+      "max":2,
+      "min":2
+    },
     "TypeString":{
       "type":"string",
       "max":20000,
@@ -13964,6 +16617,36 @@
     "UnfilteredPartitionList":{
       "type":"list",
       "member":{"shape":"UnfilteredPartition"}
+    },
+    "Union":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "UnionType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the transform node.</p>"
+        },
+        "Inputs":{
+          "shape":"TwoInputs",
+          "documentation":"<p>The node ID inputs to the transform.</p>"
+        },
+        "UnionType":{
+          "shape":"UnionType",
+          "documentation":"<p>Indicates the type of Union transform. </p> <p>Specify <code>ALL</code> to join all rows from data sources to the resulting DynamicFrame. The resulting union does not remove duplicate rows.</p> <p>Specify <code>DISTINCT</code> to remove duplicate rows in the resulting DynamicFrame.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a transform that combines the rows from two or more datasets into a single result.</p>"
+    },
+    "UnionType":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "DISTINCT"
+      ]
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -14023,6 +16706,13 @@
           "documentation":"<p>Returns the name of the blueprint that was updated.</p>"
         }
       }
+    },
+    "UpdateCatalogBehavior":{
+      "type":"string",
+      "enum":[
+        "UPDATE_IN_DATABASE",
+        "LOG"
+      ]
     },
     "UpdateClassifierRequest":{
       "type":"structure",
@@ -14715,6 +17405,24 @@
       "documentation":"<p>Specifies an XML classifier to be updated.</p>"
     },
     "UpdatedTimestamp":{"type":"string"},
+    "UpsertRedshiftTargetOptions":{
+      "type":"structure",
+      "members":{
+        "TableLocation":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The physical location of the Redshift table.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the connection to use to write to Redshift.</p>"
+        },
+        "UpsertKeys":{
+          "shape":"EnclosedInStringPropertiesMinOne",
+          "documentation":"<p>The keys used to determine whether to perform an update or insert.</p>"
+        }
+      },
+      "documentation":"<p>The options to configure an upsert operation when writing to a Redshift target .</p>"
+    },
     "UriString":{"type":"string"},
     "UserDefinedFunction":{
       "type":"structure",

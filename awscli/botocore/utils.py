@@ -2720,11 +2720,11 @@ class EventbridgeSignerSetter:
 
     def register(self, event_emitter):
         event_emitter.register(
-            'before-parameter-build.events.PutEvents',
+            'before-parameter-build.eventbridge.PutEvents',
             self.check_for_global_endpoint
         )
         event_emitter.register(
-            'before-call.events.PutEvents',
+            'before-call.eventbridge.PutEvents',
             self.set_endpoint_url
         )
 
@@ -2744,13 +2744,6 @@ class EventbridgeSignerSetter:
         if len(endpoint) == 0:
             raise InvalidEndpointConfigurationError(
                 msg='EndpointId must not be a zero length string'
-            )
-
-        if not HAS_CRT:
-            raise MissingDependencyException(
-                msg="Using EndpointId requires an additional "
-                    "dependency. You will need to pip install "
-                    "botocore[crt] before proceeding."
             )
 
         config = context.get('client_config')

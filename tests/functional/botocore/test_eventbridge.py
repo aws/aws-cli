@@ -4,7 +4,7 @@ import pytest
 
 from botocore.config import Config
 from botocore.exceptions import InvalidEndpointConfigurationError
-from tests import BaseSessionTest, ClientHTTPStubber, requires_crt
+from tests import BaseSessionTest, ClientHTTPStubber
 
 
 class TestClientEvents(BaseSessionTest):
@@ -81,7 +81,6 @@ class TestClientEvents(BaseSessionTest):
         assert stubber.requests[0].url == "https://events.us-east-1.amazonaws.com/"
         assert b"EndpointId" not in stubber.requests[0].body
 
-    @requires_crt()
     def test_put_event_endpoint_id(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -101,7 +100,6 @@ class TestClientEvents(BaseSessionTest):
         self._assert_multi_region_endpoint(stubber.requests[0], endpoint_id)
         self._assert_sigv4a_headers(stubber.requests[0])
 
-    @requires_crt()
     def test_put_event_endpoint_id_explicit_config(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -125,7 +123,6 @@ class TestClientEvents(BaseSessionTest):
         self._assert_multi_region_endpoint(stubber.requests[0], endpoint_id)
         self._assert_sigv4a_headers(stubber.requests[0])
 
-    @requires_crt()
     def test_put_event_bad_endpoint_id(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -137,7 +134,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(EndpointId=endpoint_id, **default_args)
         assert "EndpointId is not a valid hostname component" in str(e.value)
 
-    @requires_crt()
     def test_put_event_bad_endpoint_id_explicit_config(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -153,7 +149,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(EndpointId=endpoint_id, **default_args)
         assert "EndpointId is not a valid hostname component" in str(e.value)
 
-    @requires_crt()
     def test_put_event_empty_endpoint_id(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -165,7 +160,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(EndpointId=endpoint_id, **default_args)
         assert "EndpointId must not be a zero length string" in str(e.value)
 
-    @requires_crt()
     def test_put_event_empty_endpoint_id_explicit_config(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -192,7 +186,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(**default_args)
         assert stubber.requests[0].url == "https://events.us-east-1.api.aws/"
 
-    @requires_crt()
     def test_put_events_endpoint_id_dualstack(self):
         config = Config(use_dualstack_endpoint=True, use_fips_endpoint=False)
         client, stubber = self.create_stubbed_eventbridge_client(
@@ -226,7 +219,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(**default_args)
         assert stubber.requests[0].url == "https://events-fips.us-east-1.amazonaws.com/"
 
-    @requires_crt()
     def test_put_events_endpoint_id_fips(self):
         config = Config(use_dualstack_endpoint=False, use_fips_endpoint=True)
         client, stubber = self.create_stubbed_eventbridge_client(
@@ -252,7 +244,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(**default_args)
         assert stubber.requests[0].url == "https://events-fips.us-east-1.api.aws/"
 
-    @requires_crt()
     def test_put_events_endpoint_id_dualstack_fips(self):
         config = Config(use_dualstack_endpoint=True, use_fips_endpoint=True)
         client, stubber = self.create_stubbed_eventbridge_client(
@@ -278,7 +269,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(**default_args)
         assert stubber.requests[0].url == "https://events.us-iso-east-1.c2s.ic.gov/"
 
-    @requires_crt()
     def test_put_events_endpoint_id_gov(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True,
@@ -311,7 +301,6 @@ class TestClientEvents(BaseSessionTest):
             client.put_events(**default_args)
         assert stubber.requests[0].url == "https://example.org/"
 
-    @requires_crt()
     def test_put_events_endpoint_id_custom(self):
         client, stubber = self.create_stubbed_eventbridge_client(
             with_default_responses=True, endpoint_url="https://example.org"

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.24.4
+======
+
+* api-change:``gamesparks``: This release adds an optional DeploymentResult field in the responses of GetStageDeploymentIntegrationTests and ListStageDeploymentIntegrationTests APIs.
+* api-change:``lookoutmetrics``: In this release we added SnsFormat to SNSConfiguration to support human readable alert.
+
+
 1.24.3
 ======
 

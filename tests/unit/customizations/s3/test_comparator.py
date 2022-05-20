@@ -117,7 +117,7 @@ class ComparatorTest(unittest.TestCase):
 
         # Try when the sync strategy says to sync the file.
         self.not_at_src_sync_strategy.determine_should_sync.return_value = True
-        
+
         src_files = []
         dest_files = []
         ref_list = []

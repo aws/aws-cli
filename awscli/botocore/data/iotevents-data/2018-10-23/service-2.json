@@ -28,6 +28,23 @@
       ],
       "documentation":"<p>Acknowledges one or more alarms. The alarms change to the <code>ACKNOWLEDGED</code> state after you acknowledge them.</p>"
     },
+    "BatchDeleteDetector":{
+      "name":"BatchDeleteDetector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detectors/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteDetectorRequest"},
+      "output":{"shape":"BatchDeleteDetectorResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes one or more detectors that were created. When a detector is deleted, its state will be cleared and the detector will be removed from the list of detectors. The deleted detector will no longer appear if referenced in the <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_ListDetectors.html\">ListDetectors</a> API call.</p>"
+    },
     "BatchDisableAlarm":{
       "name":"BatchDisableAlarm",
       "http":{
@@ -394,6 +411,47 @@
       },
       "documentation":"<p>Contains error messages associated with one of the following requests:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchAcknowledgeAlarm.html\">BatchAcknowledgeAlarm</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchDisableAlarm.html\">BatchDisableAlarm</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchEnableAlarm.html\">BatchEnableAlarm</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchResetAlarm.html\">BatchResetAlarm</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchSnoozeAlarm.html\">BatchSnoozeAlarm</a> </p> </li> </ul>"
     },
+    "BatchDeleteDetectorErrorEntries":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteDetectorErrorEntry"}
+    },
+    "BatchDeleteDetectorErrorEntry":{
+      "type":"structure",
+      "members":{
+        "messageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The ID of the message that caused the error. (See the value of the <code>\"messageId\"</code> in the <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchDeleteDetector.html#iotevents-iotevents-data_BatchDeleteDetector-request-detectors\">detectors</a> object of the <code>DeleteDetectorRequest</code>.)</p>"
+        },
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A message that describes the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains error messages associated with the deletion request.</p>"
+    },
+    "BatchDeleteDetectorRequest":{
+      "type":"structure",
+      "required":["detectors"],
+      "members":{
+        "detectors":{
+          "shape":"DeleteDetectorRequests",
+          "documentation":"<p>The list of one or more detectors to be deleted.</p>"
+        }
+      }
+    },
+    "BatchDeleteDetectorResponse":{
+      "type":"structure",
+      "members":{
+        "batchDeleteDetectorErrorEntries":{
+          "shape":"BatchDeleteDetectorErrorEntries",
+          "documentation":"<p>A list of errors associated with the request, or an empty array (<code>[]</code>) if there are no errors. Each error entry contains a <code>messageId</code> that helps you identify the entry that failed.</p>"
+        }
+      }
+    },
     "BatchDisableAlarmRequest":{
       "type":"structure",
       "required":["disableActionRequests"],
@@ -602,6 +660,33 @@
         "ACKNOWLEDGE",
         "RESET"
       ]
+    },
+    "DeleteDetectorRequest":{
+      "type":"structure",
+      "required":[
+        "messageId",
+        "detectorModelName"
+      ],
+      "members":{
+        "messageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The ID to assign to the <code>DeleteDetectorRequest</code>. Each <code>\"messageId\"</code> must be unique within each batch sent.</p>"
+        },
+        "detectorModelName":{
+          "shape":"DetectorModelName",
+          "documentation":"<p>The name of the detector model that was used to create the detector instance.</p>"
+        },
+        "keyValue":{
+          "shape":"KeyValue",
+          "documentation":"<p>The value of the <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateDetectorModel.html#iotevents-CreateDetectorModel-request-key\">key</a> used to identify the detector. </p>"
+        }
+      },
+      "documentation":"<p>Information used to delete the detector model.</p>"
+    },
+    "DeleteDetectorRequests":{
+      "type":"list",
+      "member":{"shape":"DeleteDetectorRequest"},
+      "min":1
     },
     "DescribeAlarmRequest":{
       "type":"structure",

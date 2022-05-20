@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.7.2
+=====
+
+* api-change:``appmesh``: This release updates the existing Create and Update APIs for meshes and virtual nodes by adding a new IP preference field. This new IP preference field can be used to control the IP versions being used with the mesh and allows for IPv6 support within App Mesh.
+* api-change:``greengrassv2``: This release adds the new DeleteDeployment API operation that you can use to delete deployment resources. This release also adds support for discontinued AWS-provided components, so AWS can communicate when a component has any issues that you should consider before you deploy it.
+* api-change:``quicksight``: API UpdatePublicSharingSettings enables IAM admins to enable/disable account level setting for public access of dashboards. When enabled, owners/co-owners for dashboards can enable public access on their dashboards. These dashboards can only be accessed through share link or embedding.
+* api-change:``iotevents-data``: Introducing new API for deleting detectors: BatchDeleteDetector.
+* api-change:``batch``: Documentation updates for AWS Batch.
+* api-change:``gamesparks``: This release adds an optional DeploymentResult field in the responses of GetStageDeploymentIntegrationTests and ListStageDeploymentIntegrationTests APIs.
+* api-change:``transfer``: AWS Transfer Family now supports SetStat server configuration option, which provides the ability to ignore SetStat command issued by file transfer clients, enabling customers to upload files without any errors.
+* api-change:``lookoutmetrics``: In this release we added SnsFormat to SNSConfiguration to support human readable alert.
+
+
 2.7.1
 =====
 

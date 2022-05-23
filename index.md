@@ -12,7 +12,7 @@ permalink: /
 Get involved with the AWS CLI.
 {: .fs-6 .fw-300 }
 
-Welcome, and thanks for your interest in contributing to the AWS CLI! If you're interested one or more of the following, then this guide is for you!
+Welcome, and thanks for your interest in contributing to the AWS CLI! If you're interested in one or more of the following, then this guide is for you!
 
 - Learning about the AWS CLI contribution process
 - Proposing and discussing new features

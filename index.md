@@ -20,7 +20,7 @@ Welcome, and thanks for your interest in contributing to the AWS CLI! If you're 
 - Fixing documentation and examples
 - Making code changes
 
-The goal with this guide is to give contributors confidence of when making a contribution. We aim to set expectations of maintainers and contributors so we respect everyone's time and effort. We do not expect that you need to read this document from beginning to end to make a contribution. Instead, it serves as an authoritative reference when you need it.
+The goal with this guide is to give contributors confidence when making a contribution. We aim to set expectations of maintainers and contributors so we respect everyone's time and effort. We do not expect that you need to read this document from beginning to end to make a contribution. Instead, it serves as an authoritative reference when you need it.
 
 We've just begun making improvements to our contribution process. Since we haven't completed that, this guide is a work in progress.
 

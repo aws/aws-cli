@@ -57,6 +57,7 @@ PARAMFILE_DISABLED = set([
     'custom.deploy.template-file',
 
     'cloudformation.update-stack.stack-policy-during-update-url',
+    'cloudformation.register-type.schema-handler-package',
     # We will want to change the event name to ``s3`` as opposed to
     # custom in the near future along with ``s3`` to ``s3api``.
     'custom.cp.website-redirect',

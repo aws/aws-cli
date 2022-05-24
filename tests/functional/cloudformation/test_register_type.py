@@ -20,9 +20,9 @@ class TestRegisterType(BaseAWSCommandParamsTest):
     def test_schema_handler_package_during_register_url(self):
         cmdline = self.prefix
         cmdline += ' --type-name test-type-name '
-        cmdline += '--schema-handler-package s3://bucket_name/my-organization-resource_name.zip'
+        cmdline += '--schema-handler-package s3://bucket-name/my-organization-resource_name.zip'
         result = {
             'TypeName': 'test-type-name',
-            'SchemaHandlerPackage': 's3://bucket_name/my-organization-resource_name.zip'
+            'SchemaHandlerPackage': 's3://bucket-name/my-organization-resource_name.zip'
         }
         self.assert_params_for_cmd(cmdline, result)

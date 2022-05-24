@@ -497,7 +497,7 @@ class CreateCluster(Command):
             bootstrap_actions.append(ba_config)
 
         result = cluster_ba_list + bootstrap_actions
-        if len(result) > 0:
+        if result:
             cluster['BootstrapActions'] = result
 
         return cluster
@@ -519,9 +519,9 @@ class CreateCluster(Command):
             args=args)
 
     def _update_cluster_dict(self, cluster, key, value):
-        if key in cluster.keys():
+        if key in cluster:
             cluster[key] += value
-        elif value is not None and len(value) > 0:
+        elif value:
             cluster[key] = value
         return cluster
 
@@ -554,14 +554,14 @@ class CreateCluster(Command):
             if constants.HBASE not in specified_apps:
                 missing_apps.add(constants.HBASE.title())
 
-        if len(missing_apps) != 0:
+        if missing_apps:
             raise exceptions.MissingApplicationsError(
                 applications=missing_apps)
 
     def _get_missing_applications_for_steps(self, specified_apps, parsed_args):
         allowed_app_steps = set([constants.HIVE, constants.PIG,
                                  constants.IMPALA])
-        missing_apps = set([])
+        missing_apps = set()
         if parsed_args.steps is not None:
             for step in parsed_args.steps:
                 if len(missing_apps) == len(allowed_app_steps):

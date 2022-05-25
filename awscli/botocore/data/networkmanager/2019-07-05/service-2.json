@@ -67,7 +67,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates a customer gateway with a device and optionally, with a link. If you specify a link, it must be associated with the specified device. </p> <p>You can only associate customer gateways that are connected to a VPN attachment on a transit gateway. The transit gateway must be registered in your global network. When you register a transit gateway, customer gateways that are connected to the transit gateway are automatically included in the global network. To list customer gateways that are connected to a transit gateway, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeVpnConnections.html\">DescribeVpnConnections</a> EC2 API and filter by <code>transit-gateway-id</code>.</p> <p>You cannot associate a customer gateway with more than one device and link. </p>"
+      "documentation":"<p>Associates a customer gateway with a device and optionally, with a link. If you specify a link, it must be associated with the specified device. </p> <p>You can only associate customer gateways that are connected to a VPN attachment on a transit gateway or core network registered in your global network. When you register a transit gateway or core network, customer gateways that are connected to the transit gateway are automatically included in the global network. To list customer gateways that are connected to a transit gateway, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeVpnConnections.html\">DescribeVpnConnections</a> EC2 API and filter by <code>transit-gateway-id</code>.</p> <p>You cannot associate a customer gateway with more than one device and link. </p>"
     },
     "AssociateLink":{
       "name":"AssociateLink",
@@ -141,7 +141,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a core network connect peer for a specified core network connect attachment between a core network and an appliance. The peer address and transit gateway address must be the same IP address family (IPv4 or IPv6).</p>"
+      "documentation":"<p>Creates a core network Connect peer for a specified core network connect attachment between a core network and an appliance. The peer address and transit gateway address must be the same IP address family (IPv4 or IPv6).</p>"
     },
     "CreateConnection":{
       "name":"CreateConnection",
@@ -271,7 +271,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a site-to-site VPN attachment on an edge location of a core network.</p>"
+      "documentation":"<p>Creates an Amazon Web Services site-to-site VPN attachment on an edge location of a core network.</p>"
     },
     "CreateVpcAttachment":{
       "name":"CreateVpcAttachment",
@@ -415,7 +415,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an existing global network. You must first delete all global network objects (devices, links, and sites) and deregister all transit gateways.</p>"
+      "documentation":"<p>Deletes an existing global network. You must first delete all global network objects (devices, links, and sites), deregister all transit gateways, and delete any core networks.</p>"
     },
     "DeleteLink":{
       "name":"DeleteLink",
@@ -679,7 +679,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns information about a core network. By default it returns the LIVE policy.</p>"
+      "documentation":"<p>Returns information about the LIVE policy for a core network.</p>"
     },
     "GetCoreNetworkChangeSet":{
       "name":"GetCoreNetworkChangeSet",
@@ -1052,6 +1052,15 @@
       ],
       "documentation":"<p>Returns a list of owned and shared core networks.</p>"
     },
+    "ListOrganizationServiceAccessStatus":{
+      "name":"ListOrganizationServiceAccessStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/organizations/service-access"
+      },
+      "input":{"shape":"ListOrganizationServiceAccessStatusRequest"},
+      "output":{"shape":"ListOrganizationServiceAccessStatusResponse"}
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1159,6 +1168,23 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Restores a previous policy version as a new, immutable version of a core network policy. A subsequent change set is created showing the differences between the LIVE policy and restored policy.</p>"
+    },
+    "StartOrganizationServiceAccessUpdate":{
+      "name":"StartOrganizationServiceAccessUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/organizations/service-access"
+      },
+      "input":{"shape":"StartOrganizationServiceAccessUpdateRequest"},
+      "output":{"shape":"StartOrganizationServiceAccessUpdateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ]
     },
     "StartRouteAnalysis":{
       "name":"StartRouteAnalysis",
@@ -1365,7 +1391,8 @@
     "AWSAccountId":{
       "type":"string",
       "max":12,
-      "min":12
+      "min":12,
+      "pattern":"[\\s\\S]*"
     },
     "AWSLocation":{
       "type":"structure",
@@ -1411,6 +1438,27 @@
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "max":50,
+      "min":0
+    },
+    "AccountStatus":{
+      "type":"structure",
+      "members":{
+        "AccountId":{"shape":"AccountId"},
+        "SLRDeploymentStatus":{"shape":"SLRDeploymentStatus"}
+      }
+    },
+    "AccountStatusList":{
+      "type":"list",
+      "member":{"shape":"AccountStatus"}
+    },
+    "Action":{
+      "type":"string",
+      "max":50,
+      "min":0
     },
     "AssociateConnectPeerRequest":{
       "type":"structure",
@@ -1707,7 +1755,8 @@
     "ClientToken":{
       "type":"string",
       "max":256,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "ConflictException":{
       "type":"structure",
@@ -1998,7 +2047,8 @@
     "ConnectionArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "ConnectionHealth":{
       "type":"structure",
@@ -2021,7 +2071,8 @@
     "ConnectionId":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "ConnectionIdList":{
       "type":"list",
@@ -2057,7 +2108,8 @@
     "ConstrainedString":{
       "type":"string",
       "max":256,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "ConstrainedStringList":{
       "type":"list",
@@ -2108,7 +2160,8 @@
     "CoreNetworkArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "CoreNetworkChange":{
       "type":"structure",
@@ -2248,7 +2301,12 @@
         "LATEST"
       ]
     },
-    "CoreNetworkPolicyDocument":{"type":"string"},
+    "CoreNetworkPolicyDocument":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "CoreNetworkPolicyError":{
       "type":"structure",
       "required":[
@@ -2831,7 +2889,8 @@
     "CustomerGatewayArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "CustomerGatewayArnList":{
       "type":"list",
@@ -3259,12 +3318,14 @@
     "DeviceArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "DeviceId":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "DeviceIdList":{
       "type":"list",
@@ -3446,7 +3507,8 @@
     "ExternalRegionCode":{
       "type":"string",
       "max":63,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "ExternalRegionCodeList":{
       "type":"list",
@@ -4496,17 +4558,19 @@
           "documentation":"<p>The tags for the global network.</p>"
         }
       },
-      "documentation":"<p>Describes a global network. This is a single private network acting as a high-level container for your network objects, including an Amazon Web Services-manged Core Network.</p>"
+      "documentation":"<p>Describes a global network. This is a single private network acting as a high-level container for your network objects, including an Amazon Web Services-managed Core Network.</p>"
     },
     "GlobalNetworkArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "GlobalNetworkId":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "GlobalNetworkIdList":{
       "type":"list",
@@ -4528,7 +4592,8 @@
     "IPAddress":{
       "type":"string",
       "max":50,
-      "min":1
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "Integer":{"type":"integer"},
     "InternalServerException":{
@@ -4601,7 +4666,8 @@
     "LinkArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "LinkAssociation":{
       "type":"structure",
@@ -4641,7 +4707,8 @@
     "LinkId":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "LinkIdList":{
       "type":"list",
@@ -4821,6 +4888,28 @@
           "shape":"NextToken",
           "documentation":"<p>The token for the next page of results.</p>"
         }
+      }
+    },
+    "ListOrganizationServiceAccessStatusRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListOrganizationServiceAccessStatusResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationStatus":{"shape":"OrganizationStatus"},
+        "NextToken":{"shape":"NextToken"}
       }
     },
     "ListTagsForResourceRequest":{
@@ -5089,7 +5178,28 @@
     "NextToken":{
       "type":"string",
       "max":2048,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
+    "OrganizationAwsServiceAccessStatus":{
+      "type":"string",
+      "max":50,
       "min":0
+    },
+    "OrganizationId":{
+      "type":"string",
+      "max":50,
+      "min":0,
+      "pattern":"^o-([0-9a-f]{8,17})$"
+    },
+    "OrganizationStatus":{
+      "type":"structure",
+      "members":{
+        "OrganizationId":{"shape":"OrganizationId"},
+        "OrganizationAwsServiceAccessStatus":{"shape":"OrganizationAwsServiceAccessStatus"},
+        "SLRDeploymentStatus":{"shape":"SLRDeploymentStatus"},
+        "AccountStatusList":{"shape":"AccountStatusList"}
+      }
     },
     "PathComponent":{
       "type":"structure",
@@ -5198,13 +5308,23 @@
       "members":{
       }
     },
-    "ReasonContextKey":{"type":"string"},
+    "ReasonContextKey":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "ReasonContextMap":{
       "type":"map",
       "key":{"shape":"ReasonContextKey"},
       "value":{"shape":"ReasonContextValue"}
     },
-    "ReasonContextValue":{"type":"string"},
+    "ReasonContextValue":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "RegisterTransitGatewayRequest":{
       "type":"structure",
       "required":[
@@ -5275,7 +5395,8 @@
     "ResourceArn":{
       "type":"string",
       "max":1500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -5303,7 +5424,12 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
-    "ResourcePolicyDocument":{"type":"string"},
+    "ResourcePolicyDocument":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "RestoreCoreNetworkPolicyVersionRequest":{
       "type":"structure",
       "required":[
@@ -5523,7 +5649,17 @@
       "type":"list",
       "member":{"shape":"RouteType"}
     },
-    "ServerSideString":{"type":"string"},
+    "SLRDeploymentStatus":{
+      "type":"string",
+      "max":50,
+      "min":0
+    },
+    "ServerSideString":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
@@ -5598,12 +5734,14 @@
     "SiteArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "SiteId":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "SiteIdList":{
       "type":"list",
@@ -5635,6 +5773,19 @@
         }
       },
       "documentation":"<p>Creates a site-to-site VPN attachment.</p>"
+    },
+    "StartOrganizationServiceAccessUpdateRequest":{
+      "type":"structure",
+      "required":["Action"],
+      "members":{
+        "Action":{"shape":"Action"}
+      }
+    },
+    "StartOrganizationServiceAccessUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationStatus":{"shape":"OrganizationStatus"}
+      }
     },
     "StartRouteAnalysisRequest":{
       "type":"structure",
@@ -5681,7 +5832,7 @@
       "type":"string",
       "max":500,
       "min":0,
-      "pattern":"^arn:[^:]{1,63}:ec2:[^:]{0,63}:[^:]{0,63}:subnet\\/subnet-[0-9a-f]{8,17}$"
+      "pattern":"^arn:[^:]{1,63}:ec2:[^:]{0,63}:[^:]{0,63}:subnet\\/subnet-[0-9a-f]{8,17}$|^$"
     },
     "SubnetArnList":{
       "type":"list",
@@ -5701,7 +5852,12 @@
       },
       "documentation":"<p>Describes a tag.</p>"
     },
-    "TagKey":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"}
@@ -5734,7 +5890,12 @@
       "members":{
       }
     },
-    "TagValue":{"type":"string"},
+    "TagValue":{
+      "type":"string",
+      "max":10000000,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["Message"],
@@ -5754,7 +5915,8 @@
     "TransitGatewayArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "TransitGatewayArnList":{
       "type":"list",
@@ -5763,17 +5925,20 @@
     "TransitGatewayAttachmentArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "TransitGatewayAttachmentId":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "TransitGatewayConnectPeerArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "TransitGatewayConnectPeerArnList":{
       "type":"list",
@@ -5867,7 +6032,8 @@
     "TransitGatewayRouteTableArn":{
       "type":"string",
       "max":500,
-      "min":0
+      "min":0,
+      "pattern":"[\\s\\S]*"
     },
     "TunnelProtocol":{
       "type":"string",
@@ -6296,5 +6462,5 @@
       "pattern":"^arn:[^:]{1,63}:ec2:[^:]{0,63}:[^:]{0,63}:vpn-connection\\/vpn-[0-9a-f]{8,17}$"
     }
   },
-  "documentation":"<p>Transit Gateway Network Manager (Network Manager) enables you to create a global network, in which you can monitor your Amazon Web Services and on-premises networks that are built around transit gateways.</p>"
+  "documentation":"<p>Amazon Web Services enables you to centrally manage your Amazon Web Services Cloud WAN core network and your Transit Gateway network across Amazon Web Services accounts, Regions, and on-premises locations.</p>"
 }

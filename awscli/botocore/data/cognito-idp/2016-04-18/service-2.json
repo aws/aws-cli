@@ -150,7 +150,7 @@
         {"shape":"AliasExistsException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Prevents the user from signing in with the specified external (SAML or social) identity provider. If the user that you want to deactivate is a Amazon Cognito user pools native username + password user, they can't use their password to sign in. If the user to deactivate is a linked external identity provider (IdP) user, any link between that user and an existing user is removed. When the external user signs in again, and the user is no longer attached to the previously linked <code>DestinationUser</code>, the user must create a new user account. See <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminLinkProviderForUser.html\">AdminLinkProviderForUser</a>.</p> <p>This action is enabled only for admin access and requires developer credentials.</p> <p>The <code>ProviderName</code> must match the value specified when creating an IdP for the pool. </p> <p>To deactivate a native username + password user, the <code>ProviderName</code> value must be <code>Cognito</code> and the <code>ProviderAttributeName</code> must be <code>Cognito_Subject</code>. The <code>ProviderAttributeValue</code> must be the name that is used in the user pool for the user.</p> <p>The <code>ProviderAttributeName</code> must always be <code>Cognito_Subject</code> for social identity providers. The <code>ProviderAttributeValue</code> must always be the exact subject that was used when the user was originally linked as a source user.</p> <p>For de-linking a SAML identity, there are two scenarios. If the linked identity has not yet been used to sign in, the <code>ProviderAttributeName</code> and <code>ProviderAttributeValue</code> must be the same values that were used for the <code>SourceUser</code> when the identities were originally linked using <code> AdminLinkProviderForUser</code> call. (If the linking was done with <code>ProviderAttributeName</code> set to <code>Cognito_Subject</code>, the same applies here). However, if the user has already signed in, the <code>ProviderAttributeName</code> must be <code>Cognito_Subject</code> and <code>ProviderAttributeValue</code> must be the subject of the SAML assertion.</p>"
+      "documentation":"<p>Prevents the user from signing in with the specified external (SAML or social) identity provider (IdP). If the user that you want to deactivate is a Amazon Cognito user pools native username + password user, they can't use their password to sign in. If the user to deactivate is a linked external IdP user, any link between that user and an existing user is removed. When the external user signs in again, and the user is no longer attached to the previously linked <code>DestinationUser</code>, the user must create a new user account. See <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminLinkProviderForUser.html\">AdminLinkProviderForUser</a>.</p> <p>This action is enabled only for admin access and requires developer credentials.</p> <p>The <code>ProviderName</code> must match the value specified when creating an IdP for the pool. </p> <p>To deactivate a native username + password user, the <code>ProviderName</code> value must be <code>Cognito</code> and the <code>ProviderAttributeName</code> must be <code>Cognito_Subject</code>. The <code>ProviderAttributeValue</code> must be the name that is used in the user pool for the user.</p> <p>The <code>ProviderAttributeName</code> must always be <code>Cognito_Subject</code> for social IdPs. The <code>ProviderAttributeValue</code> must always be the exact subject that was used when the user was originally linked as a source user.</p> <p>For de-linking a SAML identity, there are two scenarios. If the linked identity has not yet been used to sign in, the <code>ProviderAttributeName</code> and <code>ProviderAttributeValue</code> must be the same values that were used for the <code>SourceUser</code> when the identities were originally linked using <code> AdminLinkProviderForUser</code> call. (If the linking was done with <code>ProviderAttributeName</code> set to <code>Cognito_Subject</code>, the same applies here). However, if the user has already signed in, the <code>ProviderAttributeName</code> must be <code>Cognito_Subject</code> and <code>ProviderAttributeValue</code> must be the subject of the SAML assertion.</p>"
     },
     "AdminDisableUser":{
       "name":"AdminDisableUser",
@@ -287,7 +287,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Links an existing user account in a user pool (<code>DestinationUser</code>) to an identity from an external identity provider (<code>SourceUser</code>) based on a specified attribute name and value from the external identity provider. This allows you to create a link from the existing user account to an external federated user identity that has not yet been used to sign in. You can then use the federated user identity to sign in as the existing user account. </p> <p> For example, if there is an existing user with a username and password, this API links that user to a federated user identity. When the user signs in with a federated user identity, they sign in as the existing user account.</p> <note> <p>The maximum number of federated identities linked to a user is 5.</p> </note> <important> <p>Because this API allows a user with an external federated identity to sign in as an existing user in the user pool, it is critical that it only be used with external identity providers and provider attributes that have been trusted by the application owner.</p> </important> <p>This action is administrative and requires developer credentials.</p>"
+      "documentation":"<p>Links an existing user account in a user pool (<code>DestinationUser</code>) to an identity from an external IdP (<code>SourceUser</code>) based on a specified attribute name and value from the external IdP. This allows you to create a link from the existing user account to an external federated user identity that has not yet been used to sign in. You can then use the federated user identity to sign in as the existing user account. </p> <p> For example, if there is an existing user with a username and password, this API links that user to a federated user identity. When the user signs in with a federated user identity, they sign in as the existing user account.</p> <note> <p>The maximum number of federated identities linked to a user is five.</p> </note> <important> <p>Because this API allows a user with an external federated identity to sign in as an existing user in the user pool, it is critical that it only be used with external IdPs and provider attributes that have been trusted by the application owner.</p> </important> <p>This action is administrative and requires developer credentials.</p>"
     },
     "AdminListDevices":{
       "name":"AdminListDevices",
@@ -552,7 +552,7 @@
         {"shape":"UserNotFoundException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Signs out users from all devices, as an administrator. It also invalidates all refresh tokens issued to a user. The user's current access and Id tokens remain valid until their expiry. Access and Id tokens expire one hour after they're issued.</p> <p>Calling this action requires developer credentials.</p>"
+      "documentation":"<p>Signs out a user from all devices. You must sign <code>AdminUserGlobalSignOut</code> requests with Amazon Web Services credentials. It also invalidates all refresh tokens that Amazon Cognito has issued to a user. The user's current access and ID tokens remain valid until they expire. By default, access and ID tokens expire one hour after they're issued. A user can still use a hosted UI cookie to retrieve new tokens for the duration of the cookie validity period of 1 hour.</p> <p>Calling this action requires developer credentials.</p>"
     },
     "AssociateSoftwareToken":{
       "name":"AssociateSoftwareToken",
@@ -671,7 +671,7 @@
         {"shape":"UserNotFoundException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Confirms registration of a user and handles the existing alias from a previous user.</p>",
+      "documentation":"<p>Confirms registration of a new user.</p>",
       "authtype":"none"
     },
     "CreateGroup":{
@@ -710,7 +710,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Creates an identity provider for a user pool.</p>"
+      "documentation":"<p>Creates an IdP for a user pool.</p>"
     },
     "CreateResourceServer":{
       "name":"CreateResourceServer",
@@ -838,7 +838,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Deletes an identity provider for a user pool.</p>"
+      "documentation":"<p>Deletes an IdP for a user pool.</p>"
     },
     "DeleteResourceServer":{
       "name":"DeleteResourceServer",
@@ -961,7 +961,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Gets information about a specific identity provider.</p>"
+      "documentation":"<p>Gets information about a specific IdP.</p>"
     },
     "DescribeResourceServer":{
       "name":"DescribeResourceServer",
@@ -1183,7 +1183,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Gets the specified identity provider.</p>"
+      "documentation":"<p>Gets the specified IdP.</p>"
     },
     "GetSigningCertificate":{
       "name":"GetSigningCertificate",
@@ -1264,7 +1264,7 @@
         {"shape":"UserNotConfirmedException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Gets the user attribute verification code for the specified attribute name.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
+      "documentation":"<p>Generates a user attribute verification code for the specified attribute name. Sends a message to a user with a code that they must return in a VerifyUserAttribute request.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
     },
     "GetUserPoolMfaConfig":{
@@ -1301,7 +1301,7 @@
         {"shape":"UserNotConfirmedException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Signs out users from all devices. It also invalidates all refresh tokens issued to a user. The user's current access and ID tokens remain valid until their expiry. Access and Id tokens expire one hour after they're issued.</p>"
+      "documentation":"<p>Signs out users from all devices. It also invalidates all refresh tokens that Amazon Cognito has issued to a user. The user's current access and ID tokens remain valid until their expiry. By default, access and ID tokens expire one hour after Amazon Cognito issues them. A user can still use a hosted UI cookie to retrieve new tokens for the duration of the cookie validity period of 1 hour.</p>"
     },
     "InitiateAuth":{
       "name":"InitiateAuth",
@@ -1327,7 +1327,7 @@
         {"shape":"InvalidSmsRoleAccessPolicyException"},
         {"shape":"InvalidSmsRoleTrustRelationshipException"}
       ],
-      "documentation":"<p>Initiates the authentication flow.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
+      "documentation":"<p>Initiates sign-in for a user in the Amazon Cognito user directory. You can't sign in a user with a federated IdP with <code>InitiateAuth</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation.html\"> Adding user pool sign-in through a third party</a>.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
     },
     "ListDevices":{
@@ -1349,7 +1349,7 @@
         {"shape":"UserNotConfirmedException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Lists the devices.</p>"
+      "documentation":"<p>Lists the sign-in devices that Amazon Cognito has registered to the current user.</p>"
     },
     "ListGroups":{
       "name":"ListGroups",
@@ -1383,7 +1383,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Lists information about all identity providers for a user pool.</p>"
+      "documentation":"<p>Lists information about all IdPs for a user pool.</p>"
     },
     "ListResourceServers":{
       "name":"ListResourceServers",
@@ -1846,7 +1846,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Updates identity provider information for a user pool.</p>"
+      "documentation":"<p>Updates IdP information for a user pool.</p>"
     },
     "UpdateResourceServer":{
       "name":"UpdateResourceServer",
@@ -1917,7 +1917,7 @@
         {"shape":"UserPoolTaggingException"},
         {"shape":"InvalidEmailRoleAccessPolicyException"}
       ],
-      "documentation":"<p>Updates the specified user pool with the specified attributes. You can get a list of the current user pool settings using <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html\">DescribeUserPool</a>. If you don't provide a value for an attribute, it will be set to the default value.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>"
+      "documentation":"<p>Updates the specified user pool with the specified attributes. You can get a list of the current user pool settings using <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html\">DescribeUserPool</a>. If you don't provide a value for an attribute, it will be set to the default value. </p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>"
     },
     "UpdateUserPoolClient":{
       "name":"UpdateUserPoolClient",
@@ -2000,9 +2000,10 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"AliasExistsException"}
       ],
-      "documentation":"<p>Verifies the specified user attributes in the user pool.</p>",
+      "documentation":"<p>Verifies the specified user attributes in the user pool.</p> <p> If your user pool requires verification before Amazon Cognito updates the attribute value, VerifyUserAttribute updates the affected attribute to its pending value. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UserAttributeUpdateSettingsType.html\"> UserAttributeUpdateSettingsType</a>. </p>",
       "authtype":"none"
     }
   },
@@ -2037,7 +2038,7 @@
         },
         "EventAction":{
           "shape":"AccountTakeoverEventActionType",
-          "documentation":"<p>The action to take in response to the account takeover action. Valid values are:</p> <ul> <li> <p> <code>BLOCK</code> Choosing this action will block the request.</p> </li> <li> <p> <code>MFA_IF_CONFIGURED</code> Present an MFA challenge if user has configured it, else allow the request.</p> </li> <li> <p> <code>MFA_REQUIRED</code> Present an MFA challenge if user has configured it, else block the request.</p> </li> <li> <p> <code>NO_ACTION</code> Allow the user to sign in.</p> </li> </ul>"
+          "documentation":"<p>The action to take in response to the account takeover action. Valid values are as follows:</p> <ul> <li> <p> <code>BLOCK</code> Choosing this action will block the request.</p> </li> <li> <p> <code>MFA_IF_CONFIGURED</code> Present an MFA challenge if user has configured it, else allow the request.</p> </li> <li> <p> <code>MFA_REQUIRED</code> Present an MFA challenge if user has configured it, else block the request.</p> </li> <li> <p> <code>NO_ACTION</code> Allow the user to sign in.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Account takeover action type.</p>"
@@ -2167,7 +2168,7 @@
         },
         "UnusedAccountValidityDays":{
           "shape":"AdminCreateUserUnusedAccountValidityDaysType",
-          "documentation":"<p>The user account expiration limit, in days, after which the account is no longer usable. To reset the account after that time limit, you must call <code>AdminCreateUser</code> again, specifying <code>\"RESEND\"</code> for the <code>MessageAction</code> parameter. The default value for this parameter is 7. </p> <note> <p>If you set a value for <code>TemporaryPasswordValidityDays</code> in <code>PasswordPolicy</code>, that value will be used, and <code>UnusedAccountValidityDays</code> will be no longer be an available parameter for that user pool.</p> </note>"
+          "documentation":"<p>The user account expiration limit, in days, after which a new account that hasn't signed in is no longer usable. To reset the account after that time limit, you must call <code>AdminCreateUser</code> again, specifying <code>\"RESEND\"</code> for the <code>MessageAction</code> parameter. The default value for this parameter is 7. </p> <note> <p>If you set a value for <code>TemporaryPasswordValidityDays</code> in <code>PasswordPolicy</code>, that value will be used, and <code>UnusedAccountValidityDays</code> will be no longer be an available parameter for that user pool.</p> </note>"
         },
         "InviteMessageTemplate":{
           "shape":"MessageTemplateType",
@@ -2516,7 +2517,7 @@
       "members":{
         "ChallengeName":{
           "shape":"ChallengeNameType",
-          "documentation":"<p>The name of the challenge that you're responding to with this call. This is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <ul> <li> <p> <code>MFA_SETUP</code>: If MFA is required, users who don't have at least one of the MFA methods set up are presented with an <code>MFA_SETUP</code> challenge. The user must set up at least one MFA type to continue to authenticate.</p> </li> <li> <p> <code>SELECT_MFA_TYPE</code>: Selects the MFA type. Valid MFA options are <code>SMS_MFA</code> for text SMS MFA, and <code>SOFTWARE_TOKEN_MFA</code> for time-based one-time password (TOTP) software token MFA.</p> </li> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated in your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: This is returned if you must authenticate with <code>USERNAME</code> and <code>PASSWORD</code> directly. An app client must be enabled to use this flow.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. This challenge should be passed with <code>NEW_PASSWORD</code> and any other required attributes.</p> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to set up an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>, and use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, users will need help from an administrator to add a phone number to their account and then call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>"
+          "documentation":"<p>The name of the challenge that you're responding to with this call. This is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <ul> <li> <p> <code>MFA_SETUP</code>: If MFA is required, users who don't have at least one of the MFA methods set up are presented with an <code>MFA_SETUP</code> challenge. The user must set up at least one MFA type to continue to authenticate.</p> </li> <li> <p> <code>SELECT_MFA_TYPE</code>: Selects the MFA type. Valid MFA options are <code>SMS_MFA</code> for text SMS MFA, and <code>SOFTWARE_TOKEN_MFA</code> for time-based one-time password (TOTP) software token MFA.</p> </li> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated in your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: This is returned if you must authenticate with <code>USERNAME</code> and <code>PASSWORD</code> directly. An app client must be enabled to use this flow.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. Respond to this challenge with <code>NEW_PASSWORD</code> and any required attributes that Amazon Cognito returned in the <code>requiredAttributes</code> parameter. You can also set values for attributes that aren't required by your user pool and that your app client can write. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html\">AdminRespondToAuthChallenge</a>.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>AdminRespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>AdminUpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to set up an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>, and use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, users will need help from an administrator to add a phone number to their account and then call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>"
         },
         "Session":{
           "shape":"SessionType",
@@ -2547,11 +2548,11 @@
         },
         "DestinationUser":{
           "shape":"ProviderUserIdentifierType",
-          "documentation":"<p>The existing user in the user pool that you want to assign to the external identity provider user account. This user can be a native (Username + Password) Amazon Cognito user pools user or a federated user (for example, a SAML or Facebook user). If the user doesn't exist, Amazon Cognito generates an exception. Amazon Cognito returns this user when the new user (with the linked identity provider attribute) signs in.</p> <p>For a native username + password user, the <code>ProviderAttributeValue</code> for the <code>DestinationUser</code> should be the username in the user pool. For a federated user, it should be the provider-specific <code>user_id</code>.</p> <p>The <code>ProviderAttributeName</code> of the <code>DestinationUser</code> is ignored.</p> <p>The <code>ProviderName</code> should be set to <code>Cognito</code> for users in Cognito user pools.</p> <important> <p>All attributes in the DestinationUser profile must be mutable. If you have assigned the user any immutable custom attributes, the operation won't succeed.</p> </important>"
+          "documentation":"<p>The existing user in the user pool that you want to assign to the external IdP user account. This user can be a native (Username + Password) Amazon Cognito user pools user or a federated user (for example, a SAML or Facebook user). If the user doesn't exist, Amazon Cognito generates an exception. Amazon Cognito returns this user when the new user (with the linked IdP attribute) signs in.</p> <p>For a native username + password user, the <code>ProviderAttributeValue</code> for the <code>DestinationUser</code> should be the username in the user pool. For a federated user, it should be the provider-specific <code>user_id</code>.</p> <p>The <code>ProviderAttributeName</code> of the <code>DestinationUser</code> is ignored.</p> <p>The <code>ProviderName</code> should be set to <code>Cognito</code> for users in Cognito user pools.</p> <important> <p>All attributes in the DestinationUser profile must be mutable. If you have assigned the user any immutable custom attributes, the operation won't succeed.</p> </important>"
         },
         "SourceUser":{
           "shape":"ProviderUserIdentifierType",
-          "documentation":"<p>An external identity provider account for a user who doesn't exist yet in the user pool. This user must be a federated user (for example, a SAML or Facebook user), not another native user.</p> <p>If the <code>SourceUser</code> is using a federated social identity provider, such as Facebook, Google, or Login with Amazon, you must set the <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>. For social identity providers, the <code>ProviderName</code> will be <code>Facebook</code>, <code>Google</code>, or <code>LoginWithAmazon</code>, and Amazon Cognito will automatically parse the Facebook, Google, and Login with Amazon tokens for <code>id</code>, <code>sub</code>, and <code>user_id</code>, respectively. The <code>ProviderAttributeValue</code> for the user must be the same value as the <code>id</code>, <code>sub</code>, or <code>user_id</code> value found in the social identity provider token.</p> <p/> <p>For SAML, the <code>ProviderAttributeName</code> can be any value that matches a claim in the SAML assertion. If you want to link SAML users based on the subject of the SAML assertion, you should map the subject to a claim through the SAML identity provider and submit that claim name as the <code>ProviderAttributeName</code>. If you set <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>, Amazon Cognito will automatically parse the default unique identifier found in the subject from the SAML token.</p>"
+          "documentation":"<p>An external IdP account for a user who doesn't exist yet in the user pool. This user must be a federated user (for example, a SAML or Facebook user), not another native user.</p> <p>If the <code>SourceUser</code> is using a federated social IdP, such as Facebook, Google, or Login with Amazon, you must set the <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>. For social IdPs, the <code>ProviderName</code> will be <code>Facebook</code>, <code>Google</code>, or <code>LoginWithAmazon</code>, and Amazon Cognito will automatically parse the Facebook, Google, and Login with Amazon tokens for <code>id</code>, <code>sub</code>, and <code>user_id</code>, respectively. The <code>ProviderAttributeValue</code> for the user must be the same value as the <code>id</code>, <code>sub</code>, or <code>user_id</code> value found in the social IdP token.</p> <p/> <p>For SAML, the <code>ProviderAttributeName</code> can be any value that matches a claim in the SAML assertion. If you want to link SAML users based on the subject of the SAML assertion, you should map the subject to a claim through the SAML IdP and submit that claim name as the <code>ProviderAttributeName</code>. If you set <code>ProviderAttributeName</code> to <code>Cognito_Subject</code>, Amazon Cognito will automatically parse the default unique identifier found in the subject from the SAML token.</p>"
         }
       }
     },
@@ -2748,7 +2749,7 @@
         },
         "ChallengeResponses":{
           "shape":"ChallengeResponsesType",
-          "documentation":"<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when signing in with a remembered device.</p> </note> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: <code>PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). </p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, any other required attributes, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). </p> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul> <p>The value of the <code>USERNAME</code> attribute must be the user's actual username, not an alias (such as an email address or phone number). To make this simpler, the <code>AdminInitiateAuth</code> response includes the actual username value in the <code>USERNAMEUSER_ID_FOR_SRP</code> attribute. This happens even if you specified an alias in your call to <code>AdminInitiateAuth</code>.</p>"
+          "documentation":"<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret).</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when signing in with a remembered device.</p> </note> </li> <li> <p> <code>ADMIN_NO_SRP_AUTH</code>: <code>PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). </p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). To set any required attributes that Amazon Cognito returned as <code>requiredAttributes</code> in the <code>AdminInitiateAuth</code> response, add a <code>userAttributes.<i>attributename</i> </code> parameter. This parameter can also set values for writable attributes that aren't required by your user pool.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>AdminRespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>AdminUpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul> <p>The value of the <code>USERNAME</code> attribute must be the user's actual username, not an alias (such as an email address or phone number). To make this simpler, the <code>AdminInitiateAuth</code> response includes the actual username value in the <code>USERNAMEUSER_ID_FOR_SRP</code> attribute. This happens even if you specified an alias in your call to <code>AdminInitiateAuth</code>.</p>"
         },
         "Session":{
           "shape":"SessionType",
@@ -2964,7 +2965,7 @@
         },
         "UserAttributes":{
           "shape":"AttributeListType",
-          "documentation":"<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>"
+          "documentation":"<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>If your user pool requires verification before Amazon Cognito updates an attribute value that you specify in this request, Amazon Cognito doesn’t immediately update the value of that attribute. After your user receives and responds to a verification message to verify the new value, Amazon Cognito updates the attribute value. Your user can sign in and receive messages with the original attribute value until they verify the new value.</p> <p>To update the value of an attribute that requires verification in the same API request, include the <code>email_verified</code> or <code>phone_number_verified</code> attribute, with a value of <code>true</code>. If you set the <code>email_verified</code> or <code>phone_number_verified</code> value for an <code>email</code> or <code>phone_number</code> attribute that requires verification to <code>true</code>, Amazon Cognito doesn’t send a verification message to your user.</p>"
         },
         "ClientMetadata":{
           "shape":"ClientMetadataType",
@@ -3031,7 +3032,7 @@
           "documentation":"<p>The message sent to the user when an alias exists.</p>"
         }
       },
-      "documentation":"<p>This exception is thrown when a user tries to confirm the account with an email or phone number that has already been supplied as an alias from a different account. This exception tells user that an account with this email or phone already exists.</p>",
+      "documentation":"<p>This exception is thrown when a user tries to confirm the account with an email address or phone number that has already been supplied as an alias from a different account. This exception indicates that an account with this email address or phone already exists in a user pool that you've configured to use email address or phone number as a sign-in alias.</p>",
       "exception":true
     },
     "AnalyticsConfigurationType":{
@@ -3043,7 +3044,7 @@
         },
         "ApplicationArn":{
           "shape":"ArnType",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Pinpoint project. You can use the Amazon Pinpoint project to integrate with the chosen user pool Client. Amazon Cognito publishes events to the Amazon Pinpointproject declared by the app ARN.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Pinpoint project. You can use the Amazon Pinpoint project to integrate with the chosen user pool Client. Amazon Cognito publishes events to the Amazon Pinpoint project that the app ARN declares.</p>"
         },
         "RoleArn":{
           "shape":"ArnType",
@@ -3055,10 +3056,10 @@
         },
         "UserDataShared":{
           "shape":"BooleanType",
-          "documentation":"<p>If <code>UserDataShared</code> is <code>true</code>, Amazon Cognito will include user data in the events it publishes to Amazon Pinpoint analytics.</p>"
+          "documentation":"<p>If <code>UserDataShared</code> is <code>true</code>, Amazon Cognito includes user data in the events that it publishes to Amazon Pinpoint analytics.</p>"
         }
       },
-      "documentation":"<p>The Amazon Pinpoint analytics configuration for collecting metrics for a user pool.</p> <note> <p>In Regions where Amazon Pinpointisn't available, user pools only support sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>"
+      "documentation":"<p>The Amazon Pinpoint analytics configuration necessary to collect metrics for a user pool.</p> <note> <p>In Regions where Amazon Pinpointisn't available, user pools only support sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>"
     },
     "AnalyticsMetadataType":{
       "type":"structure",
@@ -3068,7 +3069,7 @@
           "documentation":"<p>The endpoint ID.</p>"
         }
       },
-      "documentation":"<p>An Amazon Pinpoint analytics endpoint.</p> <p>An endpoint uniquely identifies a mobile device, email address, or phone number that can receive messages from Amazon Pinpoint analytics.</p> <note> <p>Amazon Cognito user pools only support sending events to Amazon Pinpoint projects in the US East (N. Virginia) us-east-1 Region, regardless of the Region where the user pool resides.</p> </note>"
+      "documentation":"<p>An Amazon Pinpoint analytics endpoint.</p> <p>An endpoint uniquely identifies a mobile device, email address, or phone number that can receive messages from Amazon Pinpoint analytics. For more information about Amazon Web Services Regions that can contain Amazon Pinpoint resources for use with Amazon Cognito user pools, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html\">Using Amazon Pinpoint analytics with Amazon Cognito user pools</a>.</p>"
     },
     "ArnType":{
       "type":"string",
@@ -3081,7 +3082,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose software token you want to generate.</p>"
         },
         "Session":{
           "shape":"SessionType",
@@ -3155,6 +3156,10 @@
       "max":2048,
       "sensitive":true
     },
+    "AttributesRequireVerificationBeforeUpdateType":{
+      "type":"list",
+      "member":{"shape":"VerifiedAttributeType"}
+    },
     "AuthEventType":{
       "type":"structure",
       "members":{
@@ -3220,7 +3225,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user who you want to authenticate.</p>"
         },
         "ExpiresIn":{
           "shape":"IntegerType",
@@ -3334,7 +3339,7 @@
         },
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose password you want to change.</p>"
         }
       },
       "documentation":"<p>Represents the request to change a user password.</p>"
@@ -3388,18 +3393,18 @@
       "members":{
         "Destination":{
           "shape":"StringType",
-          "documentation":"<p>The destination for the code delivery details.</p>"
+          "documentation":"<p>The email address or phone number destination where Amazon Cognito sent the code.</p>"
         },
         "DeliveryMedium":{
           "shape":"DeliveryMediumType",
-          "documentation":"<p>The delivery medium (email message or phone number).</p>"
+          "documentation":"<p>The method that Amazon Cognito used to send the code.</p>"
         },
         "AttributeName":{
           "shape":"AttributeNameType",
-          "documentation":"<p>The attribute name.</p>"
+          "documentation":"<p>The name of the attribute that Amazon Cognito verifies with the code.</p>"
         }
       },
-      "documentation":"<p>The code delivery details being returned from the server.</p>"
+      "documentation":"<p>The delivery details for an email or SMS message that Amazon Cognito sent for authentication or verification.</p>"
     },
     "CodeDeliveryFailureException":{
       "type":"structure",
@@ -3482,7 +3487,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose device you want to confirm.</p>"
         },
         "DeviceKey":{
           "shape":"DeviceKeyType",
@@ -3671,7 +3676,7 @@
         },
         "Precedence":{
           "shape":"PrecedenceType",
-          "documentation":"<p>A non-negative integer value that specifies the precedence of this group relative to the other groups that a user can belong to in the user pool. Zero is the highest precedence value. Groups with lower <code>Precedence</code> values take precedence over groups with higher ornull <code>Precedence</code> values. If a user belongs to two or more groups, it is the group with the lowest precedence value whose role ARN is given in the user's tokens for the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims.</p> <p>Two groups can have the same <code>Precedence</code> value. If this happens, neither group takes precedence over the other. If two groups with the same <code>Precedence</code> have the same role ARN, that role is used in the <code>cognito:preferred_role</code> claim in tokens for users in each group. If the two groups have different role ARNs, the <code>cognito:preferred_role</code> claim isn't set in users' tokens.</p> <p>The default <code>Precedence</code> value is null.</p>"
+          "documentation":"<p>A non-negative integer value that specifies the precedence of this group relative to the other groups that a user can belong to in the user pool. Zero is the highest precedence value. Groups with lower <code>Precedence</code> values take precedence over groups with higher or null <code>Precedence</code> values. If a user belongs to two or more groups, it is the group with the lowest precedence value whose role ARN is given in the user's tokens for the <code>cognito:roles</code> and <code>cognito:preferred_role</code> claims.</p> <p>Two groups can have the same <code>Precedence</code> value. If this happens, neither group takes precedence over the other. If two groups with the same <code>Precedence</code> have the same role ARN, that role is used in the <code>cognito:preferred_role</code> claim in tokens for users in each group. If the two groups have different role ARNs, the <code>cognito:preferred_role</code> claim isn't set in users' tokens.</p> <p>The default <code>Precedence</code> value is null. The maximum <code>Precedence</code> value is <code>2^31-1</code>.</p>"
         }
       }
     },
@@ -3699,23 +3704,23 @@
         },
         "ProviderName":{
           "shape":"ProviderNameTypeV1",
-          "documentation":"<p>The identity provider name.</p>"
+          "documentation":"<p>The IdP name.</p>"
         },
         "ProviderType":{
           "shape":"IdentityProviderTypeType",
-          "documentation":"<p>The identity provider type.</p>"
+          "documentation":"<p>The IdP type.</p>"
         },
         "ProviderDetails":{
           "shape":"ProviderDetailsType",
-          "documentation":"<p>The identity provider details. The following list describes the provider detail keys for each identity provider type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OpenID Connect (OIDC) providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>authorize_url <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>token_url <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>attributes_url <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>jwks_uri <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>attributes_url_add_attributes <i>a read-only property that is set automatically</i> </p> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile OR MetadataURL</p> </li> <li> <p>IDPSignout (optional)</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The IdP details. The following list describes the provider detail keys for each IdP type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OpenID Connect (OIDC) providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>The following keys are only present if Amazon Cognito didn't discover them at the <code>oidc_issuer</code> URL.</p> <ul> <li> <p>authorize_url </p> </li> <li> <p>token_url </p> </li> <li> <p>attributes_url </p> </li> <li> <p>jwks_uri </p> </li> </ul> </li> <li> <p>Amazon Cognito sets the value of the following keys automatically. They are read-only.</p> <ul> <li> <p>attributes_url_add_attributes </p> </li> </ul> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignout <i>optional</i> </p> </li> </ul> </li> </ul>"
         },
         "AttributeMapping":{
           "shape":"AttributeMappingType",
-          "documentation":"<p>A mapping of identity provider attributes to standard and custom user pool attributes.</p>"
+          "documentation":"<p>A mapping of IdP attributes to standard and custom user pool attributes.</p>"
         },
         "IdpIdentifiers":{
           "shape":"IdpIdentifiersListType",
-          "documentation":"<p>A list of identity provider identifiers.</p>"
+          "documentation":"<p>A list of IdP identifiers.</p>"
         }
       }
     },
@@ -3725,7 +3730,7 @@
       "members":{
         "IdentityProvider":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The newly created identity provider object.</p>"
+          "documentation":"<p>The newly created IdP object.</p>"
         }
       }
     },
@@ -3819,19 +3824,19 @@
         },
         "RefreshTokenValidity":{
           "shape":"RefreshTokenValidityType",
-          "documentation":"<p>The time limit, in days, after which the refresh token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "AccessTokenValidity":{
           "shape":"AccessTokenValidityType",
-          "documentation":"<p>The time limit, between 5 minutes and 1 day, after which the access token is no longer valid and can't be used. If you supply a TokenValidityUnits value, you will override the default time unit.</p>"
+          "documentation":"<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "IdTokenValidity":{
           "shape":"IdTokenValidityType",
-          "documentation":"<p>The time limit, between 5 minutes and 1 day, after which the access token is no longer valid and can't be used. If you supply a TokenValidityUnits value, you will override the default time unit.</p>"
+          "documentation":"<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "TokenValidityUnits":{
           "shape":"TokenValidityUnitsType",
-          "documentation":"<p>The units in which the validity times are represented. Default for RefreshToken is days, and default for ID and access tokens are hours.</p>"
+          "documentation":"<p>The units in which the validity times are represented. The default unit for RefreshToken is days, and default for ID and access tokens are hours.</p>"
         },
         "ReadAttributes":{
           "shape":"ClientPermissionListType",
@@ -3839,23 +3844,23 @@
         },
         "WriteAttributes":{
           "shape":"ClientPermissionListType",
-          "documentation":"<p>The user pool attributes that the app client can write to.</p> <p>If your app client allows users to sign in through an identity provider, this array must include all attributes that you have mapped to identity provider attributes. Amazon Cognito updates mapped attributes when users sign in to your application through an identity provider. If your app client does not have write access to a mapped attribute, Amazon Cognito throws an error when it tries to update the attribute. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html\">Specifying Identity Provider Attribute Mappings for Your user pool</a>.</p>"
+          "documentation":"<p>The user pool attributes that the app client can write to.</p> <p>If your app client allows users to sign in through an IdP, this array must include all attributes that you have mapped to IdP attributes. Amazon Cognito updates mapped attributes when users sign in to your application through an IdP. If your app client does not have write access to a mapped attribute, Amazon Cognito throws an error when it tries to update the attribute. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html\">Specifying IdP Attribute Mappings for Your user pool</a>.</p>"
         },
         "ExplicitAuthFlows":{
           "shape":"ExplicitAuthFlowsListType",
-          "documentation":"<p>The authentication flows that are supported by the user pool clients. Flow names without the <code>ALLOW_</code> prefix are no longer supported, in favor of new names with the <code>ALLOW_</code> prefix.</p> <note> <p>Values with <code>ALLOW_</code> prefix must be used only along with the <code>ALLOW_</code> prefix.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, Amazon Cognito receives the password in the request instead of using the Secure Remote Password (SRP) protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul>"
+          "documentation":"<p>The authentication flows that are supported by the user pool clients. Flow names without the <code>ALLOW_</code> prefix are no longer supported, in favor of new names with the <code>ALLOW_</code> prefix.</p> <note> <p>Values with <code>ALLOW_</code> prefix must be used only along with the <code>ALLOW_</code> prefix.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, Amazon Cognito receives the password in the request instead of using the Secure Remote Password (SRP) protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client activates the <code>ALLOW_USER_SRP_AUTH</code> and <code>ALLOW_CUSTOM_AUTH</code> authentication flows.</p>"
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
-          "documentation":"<p>A list of provider names for the identity providers that are supported on this client. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> and <code>LoginWithAmazon</code>.</p>"
+          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
         },
         "CallbackURLs":{
           "shape":"CallbackURLsListType",
-          "documentation":"<p>A list of allowed redirect (callback) URLs for the identity providers.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href=\"https://tools.ietf.org/html/rfc6749#section-3.1.2\">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>"
+          "documentation":"<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href=\"https://tools.ietf.org/html/rfc6749#section-3.1.2\">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>"
         },
         "LogoutURLs":{
           "shape":"LogoutURLsListType",
-          "documentation":"<p>A list of allowed logout URLs for the identity providers.</p>"
+          "documentation":"<p>A list of allowed logout URLs for the IdPs.</p>"
         },
         "DefaultRedirectURI":{
           "shape":"RedirectUrlType",
@@ -3863,11 +3868,11 @@
         },
         "AllowedOAuthFlows":{
           "shape":"OAuthFlowsType",
-          "documentation":"<p>The allowed OAuth flows.</p> <p>Set to <code>code</code> to initiate a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the token endpoint.</p> <p>Set to <code>implicit</code> to specify that the client should get the access token (and, optionally, ID token, based on scopes) directly.</p> <p>Set to <code>client_credentials</code> to specify that the client should get the access token (and, optionally, ID token, based on scopes) from the token endpoint using a combination of client and client_secret.</p>"
+          "documentation":"<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>"
         },
         "AllowedOAuthScopes":{
           "shape":"ScopeListType",
-          "documentation":"<p>The allowed OAuth scopes. Possible values provided by OAuth are: <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are: <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.</p>"
+          "documentation":"<p>The allowed OAuth scopes. Possible values provided by OAuth are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.</p>"
         },
         "AllowedOAuthFlowsUserPoolClient":{
           "shape":"BooleanType",
@@ -3979,6 +3984,10 @@
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
           "documentation":"<p>Specifies MFA configuration details.</p>"
+        },
+        "UserAttributeUpdateSettings":{
+          "shape":"UserAttributeUpdateSettingsType",
+          "documentation":"<p/>"
         },
         "DeviceConfiguration":{
           "shape":"DeviceConfigurationType",
@@ -4134,7 +4143,7 @@
         },
         "ProviderName":{
           "shape":"ProviderNameType",
-          "documentation":"<p>The identity provider name.</p>"
+          "documentation":"<p>The IdP name.</p>"
         }
       }
     },
@@ -4168,7 +4177,7 @@
         },
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token used in the request to delete user attributes.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose attributes you want to delete.</p>"
         }
       },
       "documentation":"<p>Represents the request to delete user attributes.</p>"
@@ -4236,7 +4245,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token from a request to delete a user.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose user profile you want to delete.</p>"
         }
       },
       "documentation":"<p>Represents the request to delete a user.</p>"
@@ -4265,7 +4274,7 @@
         },
         "ProviderName":{
           "shape":"ProviderNameType",
-          "documentation":"<p>The identity provider name.</p>"
+          "documentation":"<p>The IdP name.</p>"
         }
       }
     },
@@ -4275,7 +4284,7 @@
       "members":{
         "IdentityProvider":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The identity provider that was deleted.</p>"
+          "documentation":"<p>The IdP that was deleted.</p>"
         }
       }
     },
@@ -4475,7 +4484,7 @@
         },
         "Salt":{
           "shape":"StringType",
-          "documentation":"<p>The salt.</p>"
+          "documentation":"<p>The <a href=\"https://en.wikipedia.org/wiki/Salt_(cryptography)\">salt</a> </p>"
         }
       },
       "documentation":"<p>The device verifier against which it is authenticated.</p>"
@@ -4590,7 +4599,7 @@
         },
         "EmailSendingAccount":{
           "shape":"EmailSendingAccountType",
-          "documentation":"<p>Specifies whether Amazon Cognito uses its built-in functionality to send your users email messages, or uses your Amazon Simple Email Service email configuration. Specify one of the following values:</p> <dl> <dt>COGNITO_DEFAULT</dt> <dd> <p>When Amazon Cognito emails your users, it uses its built-in email functionality. When you use the default option, Amazon Cognito allows only a limited number of emails each day for your user pool. For typical production environments, the default email limit is less than the required delivery volume. To achieve a higher delivery volume, specify DEVELOPER to use your Amazon SES email configuration.</p> <p>To look up the email delivery limit for the default option, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html\">Limits in </a> in the <i> Developer Guide</i>.</p> <p>The default FROM address is <code>no-reply@verificationemail.com</code>. To customize the FROM address, provide the Amazon Resource Name (ARN) of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> <p> If EmailSendingAccount is COGNITO_DEFAULT, you can't use the following parameters:</p> <ul> <li> <p>EmailVerificationMessage</p> </li> <li> <p>EmailVerificationSubject</p> </li> <li> <p>InviteMessageTemplate.EmailMessage</p> </li> <li> <p>InviteMessageTemplate.EmailSubject</p> </li> <li> <p>VerificationMessageTemplate.EmailMessage</p> </li> <li> <p>VerificationMessageTemplate.EmailMessageByLink</p> </li> <li> <p>VerificationMessageTemplate.EmailSubject,</p> </li> <li> <p>VerificationMessageTemplate.EmailSubjectByLink</p> </li> </ul> <note> <p>DEVELOPER EmailSendingAccount is required.</p> </note> </dd> <dt>DEVELOPER</dt> <dd> <p>When Amazon Cognito emails your users, it uses your Amazon SES configuration. Amazon Cognito calls Amazon SES on your behalf to send email from your verified email address. When you use this option, the email delivery limits are the same limits that apply to your Amazon SES verified email address in your Amazon Web Services account.</p> <p>If you use this option, you must provide the ARN of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> <p>Before Amazon Cognito can email your users, it requires additional permissions to call Amazon SES on your behalf. When you update your user pool with this option, Amazon Cognito creates a <i>service-linked role</i>, which is a type of role, in your Amazon Web Services account. This role contains the permissions that allow to access Amazon SES and send email messages with your address. For more information about the service-linked role that Amazon Cognito creates, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/using-service-linked-roles.html\">Using Service-Linked Roles for Amazon Cognito</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </dd> </dl>"
+          "documentation":"<p>Specifies whether Amazon Cognito uses its built-in functionality to send your users email messages, or uses your Amazon Simple Email Service email configuration. Specify one of the following values:</p> <dl> <dt>COGNITO_DEFAULT</dt> <dd> <p>When Amazon Cognito emails your users, it uses its built-in email functionality. When you use the default option, Amazon Cognito allows only a limited number of emails each day for your user pool. For typical production environments, the default email limit is less than the required delivery volume. To achieve a higher delivery volume, specify DEVELOPER to use your Amazon SES email configuration.</p> <p>To look up the email delivery limit for the default option, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html\">Limits in </a> in the <i> Developer Guide</i>.</p> <p>The default FROM address is <code>no-reply@verificationemail.com</code>. To customize the FROM address, provide the Amazon Resource Name (ARN) of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> </dd> <dt>DEVELOPER</dt> <dd> <p>When Amazon Cognito emails your users, it uses your Amazon SES configuration. Amazon Cognito calls Amazon SES on your behalf to send email from your verified email address. When you use this option, the email delivery limits are the same limits that apply to your Amazon SES verified email address in your Amazon Web Services account.</p> <p>If you use this option, provide the ARN of an Amazon SES verified email address for the <code>SourceArn</code> parameter.</p> <p>Before Amazon Cognito can email your users, it requires additional permissions to call Amazon SES on your behalf. When you update your user pool with this option, Amazon Cognito creates a <i>service-linked role</i>, which is a type of role, in your Amazon Web Services account. This role contains the permissions that allow to access Amazon SES and send email messages with your address. For more information about the service-linked role that Amazon Cognito creates, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/using-service-linked-roles.html\">Using Service-Linked Roles for Amazon Cognito</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </dd> </dl>"
         },
         "From":{
           "shape":"StringType",
@@ -4795,7 +4804,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token for the forgotten device request.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose registered device you want to forget.</p>"
         },
         "DeviceKey":{
           "shape":"DeviceKeyType",
@@ -4829,7 +4838,7 @@
         },
         "AnalyticsMetadata":{
           "shape":"AnalyticsMetadataType",
-          "documentation":"<p>The Amazon Pinpoint analytics metadata for collecting metrics for <code>ForgotPassword</code> calls.</p>"
+          "documentation":"<p>The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>ForgotPassword</code> calls.</p>"
         },
         "ClientMetadata":{
           "shape":"ClientMetadataType",
@@ -4846,7 +4855,7 @@
           "documentation":"<p>The code delivery details returned by the server in response to the request to reset a password.</p>"
         }
       },
-      "documentation":"<p>Respresents the response from the server regarding the request to reset a password.</p>"
+      "documentation":"<p>Represents the response from the server regarding the request to reset a password.</p>"
     },
     "GenerateSecret":{"type":"boolean"},
     "GetCSVHeaderRequest":{
@@ -4884,7 +4893,7 @@
         },
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose device information you want to request.</p>"
         }
       },
       "documentation":"<p>Represents the request to get the device.</p>"
@@ -4939,7 +4948,7 @@
         },
         "IdpIdentifier":{
           "shape":"IdpIdentifierType",
-          "documentation":"<p>The identity provider ID.</p>"
+          "documentation":"<p>The IdP identifier.</p>"
         }
       }
     },
@@ -4949,7 +4958,7 @@
       "members":{
         "IdentityProvider":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The identity provider object.</p>"
+          "documentation":"<p>The IdP object.</p>"
         }
       }
     },
@@ -5007,7 +5016,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token returned by the server response to get the user attribute verification code.</p>"
+          "documentation":"<p>A non-expired access token for the user whose attribute verification code you want to generate.</p>"
         },
         "AttributeName":{
           "shape":"AttributeNameType",
@@ -5063,7 +5072,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token returned by the server response to get information about the user.</p>"
+          "documentation":"<p>A non-expired access token for the user whose information you want to query.</p>"
         }
       },
       "documentation":"<p>Represents the request to get information about the user.</p>"
@@ -5104,7 +5113,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user who you want to sign out.</p>"
         }
       },
       "documentation":"<p>Represents the request to sign out all devices.</p>"
@@ -5203,34 +5212,34 @@
         },
         "ProviderName":{
           "shape":"ProviderNameType",
-          "documentation":"<p>The identity provider name.</p>"
+          "documentation":"<p>The IdP name.</p>"
         },
         "ProviderType":{
           "shape":"IdentityProviderTypeType",
-          "documentation":"<p>The identity provider type.</p>"
+          "documentation":"<p>The IdP type.</p>"
         },
         "ProviderDetails":{
           "shape":"ProviderDetailsType",
-          "documentation":"<p>The identity provider details. The following list describes the provider detail keys for each identity provider type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>authorize_url <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>token_url <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>attributes_url <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>jwks_uri <i>if not available from discovery URL specified by oidc_issuer key</i> </p> </li> <li> <p>attributes_url_add_attributes <i>a read-only property that is set automatically</i> </p> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignOut <i>optional</i> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The IdP details. The following list describes the provider detail keys for each IdP type.</p> <ul> <li> <p>For Google and Login with Amazon:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For Facebook:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>api_version</p> </li> </ul> </li> <li> <p>For Sign in with Apple:</p> <ul> <li> <p>client_id</p> </li> <li> <p>team_id</p> </li> <li> <p>key_id</p> </li> <li> <p>private_key</p> <p> <i>You can submit a private_key when you add or update an IdP. Describe operations don't return the private key.</i> </p> </li> <li> <p>authorize_scopes</p> </li> </ul> </li> <li> <p>For OIDC providers:</p> <ul> <li> <p>client_id</p> </li> <li> <p>client_secret</p> </li> <li> <p>attributes_request_method</p> </li> <li> <p>oidc_issuer</p> </li> <li> <p>authorize_scopes</p> </li> <li> <p>The following keys are only present if Amazon Cognito didn't discover them at the <code>oidc_issuer</code> URL.</p> <ul> <li> <p>authorize_url </p> </li> <li> <p>token_url </p> </li> <li> <p>attributes_url </p> </li> <li> <p>jwks_uri </p> </li> </ul> </li> <li> <p>Amazon Cognito sets the value of the following keys automatically. They are read-only.</p> <ul> <li> <p>attributes_url_add_attributes </p> </li> </ul> </li> </ul> </li> <li> <p>For SAML providers:</p> <ul> <li> <p>MetadataFile or MetadataURL</p> </li> <li> <p>IDPSignout <i>optional</i> </p> </li> </ul> </li> </ul>"
         },
         "AttributeMapping":{
           "shape":"AttributeMappingType",
-          "documentation":"<p>A mapping of identity provider attributes to standard and custom user pool attributes.</p>"
+          "documentation":"<p>A mapping of IdP attributes to standard and custom user pool attributes.</p>"
         },
         "IdpIdentifiers":{
           "shape":"IdpIdentifiersListType",
-          "documentation":"<p>A list of identity provider identifiers.</p>"
+          "documentation":"<p>A list of IdP identifiers.</p>"
         },
         "LastModifiedDate":{
           "shape":"DateType",
-          "documentation":"<p>The date the identity provider was last modified.</p>"
+          "documentation":"<p>The date the IdP was last modified.</p>"
         },
         "CreationDate":{
           "shape":"DateType",
-          "documentation":"<p>The date the identity provider was created.</p>"
+          "documentation":"<p>The date the IdP was created.</p>"
         }
       },
-      "documentation":"<p>A container for information about an identity provider.</p>"
+      "documentation":"<p>A container for information about an IdP.</p>"
     },
     "IdentityProviderTypeType":{
       "type":"string",
@@ -5266,7 +5275,7 @@
       "members":{
         "AuthFlow":{
           "shape":"AuthFlowType",
-          "documentation":"<p>The authentication flow for this call to run. The API action will depend on this value. For example:</p> <ul> <li> <p> <code>REFRESH_TOKEN_AUTH</code> takes in a valid refresh token and returns new tokens.</p> </li> <li> <p> <code>USER_SRP_AUTH</code> takes in <code>USERNAME</code> and <code>SRP_A</code> and returns the SRP variables to be used for next challenge execution.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code> takes in <code>USERNAME</code> and <code>PASSWORD</code> and returns the next challenge or tokens.</p> </li> </ul> <p>Valid values include:</p> <ul> <li> <p> <code>USER_SRP_AUTH</code>: Authentication flow for the Secure Remote Password (SRP) protocol.</p> </li> <li> <p> <code>REFRESH_TOKEN_AUTH</code>/<code>REFRESH_TOKEN</code>: Authentication flow for refreshing the access token and ID token by supplying a valid refresh token.</p> </li> <li> <p> <code>CUSTOM_AUTH</code>: Custom authentication flow.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code>: Non-SRP authentication flow; USERNAME and PASSWORD are passed directly. If a user migration Lambda trigger is set, this flow will invoke the user migration Lambda if it doesn't find the USERNAME in the user pool. </p> </li> </ul> <p> <code>ADMIN_NO_SRP_AUTH</code> isn't a valid value.</p>"
+          "documentation":"<p>The authentication flow for this call to run. The API action will depend on this value. For example:</p> <ul> <li> <p> <code>REFRESH_TOKEN_AUTH</code> takes in a valid refresh token and returns new tokens.</p> </li> <li> <p> <code>USER_SRP_AUTH</code> takes in <code>USERNAME</code> and <code>SRP_A</code> and returns the SRP variables to be used for next challenge execution.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code> takes in <code>USERNAME</code> and <code>PASSWORD</code> and returns the next challenge or tokens.</p> </li> </ul> <p>Valid values include:</p> <ul> <li> <p> <code>USER_SRP_AUTH</code>: Authentication flow for the Secure Remote Password (SRP) protocol.</p> </li> <li> <p> <code>REFRESH_TOKEN_AUTH</code>/<code>REFRESH_TOKEN</code>: Authentication flow for refreshing the access token and ID token by supplying a valid refresh token.</p> </li> <li> <p> <code>CUSTOM_AUTH</code>: Custom authentication flow.</p> </li> <li> <p> <code>USER_PASSWORD_AUTH</code>: Non-SRP authentication flow; user name and password are passed directly. If a user migration Lambda trigger is set, this flow will invoke the user migration Lambda if it doesn't find the user name in the user pool. </p> </li> </ul> <p> <code>ADMIN_NO_SRP_AUTH</code> isn't a valid value.</p>"
         },
         "AuthParameters":{
           "shape":"AuthParametersType",
@@ -5282,7 +5291,7 @@
         },
         "AnalyticsMetadata":{
           "shape":"AnalyticsMetadataType",
-          "documentation":"<p>The Amazon Pinpoint analytics metadata for collecting metrics for <code>InitiateAuth</code> calls.</p>"
+          "documentation":"<p>The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>InitiateAuth</code> calls.</p>"
         },
         "UserContextData":{
           "shape":"UserContextDataType",
@@ -5296,7 +5305,7 @@
       "members":{
         "ChallengeName":{
           "shape":"ChallengeNameType",
-          "documentation":"<p>The name of the challenge that you're responding to with this call. This name is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <p>Valid values include the following:</p> <note> <p>All of the following challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable) in the parameters.</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated on your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. This challenge should be passed with <code>NEW_PASSWORD</code> and any other required attributes.</p> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to setup an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>. Use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, an administrator should help the user to add a phone number to their account, and then the user should call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>"
+          "documentation":"<p>The name of the challenge that you're responding to with this call. This name is returned in the <code>AdminInitiateAuth</code> response if you must pass another challenge.</p> <p>Valid values include the following:</p> <note> <p>All of the following challenges require <code>USERNAME</code> and <code>SECRET_HASH</code> (if applicable) in the parameters.</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: Next challenge is to supply an <code>SMS_MFA_CODE</code>, delivered via SMS.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: Next challenge is to supply <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, and <code>TIMESTAMP</code> after the client-side SRP calculations.</p> </li> <li> <p> <code>CUSTOM_CHALLENGE</code>: This is returned if your custom authentication flow determines that the user should pass another challenge before tokens are issued.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code>: If device tracking was activated on your user pool and the previous challenges were passed, this challenge is returned so that Amazon Cognito can start tracking this device.</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code>: Similar to <code>PASSWORD_VERIFIER</code>, but for devices only.</p> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: For users who are required to change their passwords after successful first login. </p> <p>Respond to this challenge with <code>NEW_PASSWORD</code> and any required attributes that Amazon Cognito returned in the <code>requiredAttributes</code> parameter. You can also set values for attributes that aren't required by your user pool and that your app client can write. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html\">RespondToAuthChallenge</a>.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>RespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>UpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>MFA_SETUP</code>: For users who are required to setup an MFA factor before they can sign in. The MFA types activated for the user pool will be listed in the challenge parameters <code>MFA_CAN_SETUP</code> value. </p> <p> To set up software token MFA, use the session returned here from <code>InitiateAuth</code> as an input to <code>AssociateSoftwareToken</code>. Use the session returned by <code>VerifySoftwareToken</code> as an input to <code>RespondToAuthChallenge</code> with challenge name <code>MFA_SETUP</code> to complete sign-in. To set up SMS MFA, an administrator should help the user to add a phone number to their account, and then the user should call <code>InitiateAuth</code> again to restart sign-in.</p> </li> </ul>"
         },
         "Session":{
           "shape":"SessionType",
@@ -5342,7 +5351,7 @@
       "members":{
         "message":{
           "shape":"MessageType",
-          "documentation":"<p>The message returned when Amazon Cognito hrows an invalid Lambda response exception.</p>"
+          "documentation":"<p>The message returned when Amazon Cognito throws an invalid Lambda response exception.</p>"
         }
       },
       "documentation":"<p>This exception is thrown when Amazon Cognito encounters an invalid Lambda response.</p>",
@@ -5486,7 +5495,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access tokens for the request to list devices.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose list of devices you want to view.</p>"
         },
         "Limit":{
           "shape":"QueryLimitType",
@@ -5554,7 +5563,7 @@
         },
         "MaxResults":{
           "shape":"ListProvidersLimitType",
-          "documentation":"<p>The maximum number of identity providers to return.</p>"
+          "documentation":"<p>The maximum number of IdPs to return.</p>"
         },
         "NextToken":{
           "shape":"PaginationKeyType",
@@ -5568,7 +5577,7 @@
       "members":{
         "Providers":{
           "shape":"ProvidersListType",
-          "documentation":"<p>A list of identity provider objects.</p>"
+          "documentation":"<p>A list of IdP objects.</p>"
         },
         "NextToken":{
           "shape":"PaginationKeyType",
@@ -5773,7 +5782,7 @@
         },
         "NextToken":{
           "shape":"PaginationKey",
-          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>"
+          "documentation":"<p>An identifier that you can use in a later request to return the next set of items in the list.</p>"
         }
       }
     },
@@ -5799,7 +5808,7 @@
         },
         "Filter":{
           "shape":"UserFilterType",
-          "documentation":"<p>A filter string of the form \"<i>AttributeName</i> <i>Filter-Type</i> \"<i>AttributeValue</i>\"\". Quotation marks within the filter string must be escaped using the backslash (\\) character. For example, \"<code>family_name</code> = \\\"Reddy\\\"\".</p> <ul> <li> <p> <i>AttributeName</i>: The name of the attribute to search for. You can only search for one attribute at a time.</p> </li> <li> <p> <i>Filter-Type</i>: For an exact match, use =, for example, \"<code>given_name</code> = \\\"Jon\\\"\". For a prefix (\"starts with\") match, use ^=, for example, \"<code>given_name</code> ^= \\\"Jon\\\"\". </p> </li> <li> <p> <i>AttributeValue</i>: The attribute value that must be matched for each user.</p> </li> </ul> <p>If the filter string is empty, <code>ListUsers</code> returns all users in the user pool.</p> <p>You can only search for the following standard attributes:</p> <ul> <li> <p> <code>username</code> (case-sensitive)</p> </li> <li> <p> <code>email</code> </p> </li> <li> <p> <code>phone_number</code> </p> </li> <li> <p> <code>name</code> </p> </li> <li> <p> <code>given_name</code> </p> </li> <li> <p> <code>family_name</code> </p> </li> <li> <p> <code>preferred_username</code> </p> </li> <li> <p> <code>cognito:user_status</code> (called <b>Status</b> in the Console) (case-insensitive)</p> </li> <li> <p> <code>status (called <b>Enabled</b> in the Console) (case-sensitive)</code> </p> </li> <li> <p> <code>sub</code> </p> </li> </ul> <p>Custom attributes aren't searchable.</p> <note> <p>You can also list users with a client-side filter. The server-side filter matches no more than 1 attribute. For an advanced search, use a client-side filter with the <code>--query</code> parameter of the <code>list-users</code> action in the CLI. When you use a client-side filter, ListUsers returns a paginated list of zero or more users. You can receive multiple pages in a row with zero results. Repeat the query with each pagination token that is returned until you receive a null pagination token value, and then review the combined result. </p> <p>For more information about server-side and client-side filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">FilteringCLI output</a> in the <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Command Line Interface User Guide</a>. </p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-using-listusers-api\">Searching for Users Using the ListUsers API</a> and <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-listusers-api-examples\">Examples of Using the ListUsers API</a> in the <i>Amazon Cognito Developer Guide</i>.</p>"
+          "documentation":"<p>A filter string of the form \"<i>AttributeName</i> <i>Filter-Type</i> \"<i>AttributeValue</i>\"\". Quotation marks within the filter string must be escaped using the backslash (\\) character. For example, \"<code>family_name</code> = \\\"Reddy\\\"\".</p> <ul> <li> <p> <i>AttributeName</i>: The name of the attribute to search for. You can only search for one attribute at a time.</p> </li> <li> <p> <i>Filter-Type</i>: For an exact match, use =, for example, \"<code>given_name</code> = \\\"Jon\\\"\". For a prefix (\"starts with\") match, use ^=, for example, \"<code>given_name</code> ^= \\\"Jon\\\"\". </p> </li> <li> <p> <i>AttributeValue</i>: The attribute value that must be matched for each user.</p> </li> </ul> <p>If the filter string is empty, <code>ListUsers</code> returns all users in the user pool.</p> <p>You can only search for the following standard attributes:</p> <ul> <li> <p> <code>username</code> (case-sensitive)</p> </li> <li> <p> <code>email</code> </p> </li> <li> <p> <code>phone_number</code> </p> </li> <li> <p> <code>name</code> </p> </li> <li> <p> <code>given_name</code> </p> </li> <li> <p> <code>family_name</code> </p> </li> <li> <p> <code>preferred_username</code> </p> </li> <li> <p> <code>cognito:user_status</code> (called <b>Status</b> in the Console) (case-insensitive)</p> </li> <li> <p> <code>status (called <b>Enabled</b> in the Console) (case-sensitive)</code> </p> </li> <li> <p> <code>sub</code> </p> </li> </ul> <p>Custom attributes aren't searchable.</p> <note> <p>You can also list users with a client-side filter. The server-side filter matches no more than one attribute. For an advanced search, use a client-side filter with the <code>--query</code> parameter of the <code>list-users</code> action in the CLI. When you use a client-side filter, ListUsers returns a paginated list of zero or more users. You can receive multiple pages in a row with zero results. Repeat the query with each pagination token that is returned until you receive a null pagination token value, and then review the combined result. </p> <p>For more information about server-side and client-side filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">FilteringCLI output</a> in the <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Command Line Interface User Guide</a>. </p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-using-listusers-api\">Searching for Users Using the ListUsers API</a> and <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-manage-user-accounts.html#cognito-user-pools-searching-for-users-listusers-api-examples\">Examples of Using the ListUsers API</a> in the <i>Amazon Cognito Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Represents the request to list users.</p>"
@@ -6023,7 +6032,7 @@
         },
         "TemporaryPasswordValidityDays":{
           "shape":"TemporaryPasswordValidityDaysType",
-          "documentation":"<p>The number of days a temporary password is valid in the password policy. If the user doesn't sign in during this time, an administrator must reset their password.</p> <note> <p>When you set <code>TemporaryPasswordValidityDays</code> for a user pool, you can no longer set the deprecated <code>UnusedAccountValidityDays</code> value for that user pool.</p> </note>"
+          "documentation":"<p>The number of days a temporary password is valid in the password policy. If the user doesn't sign in during this time, an administrator must reset their password.</p> <note> <p>When you set <code>TemporaryPasswordValidityDays</code> for a user pool, you can no longer set a value for the legacy <code>UnusedAccountValidityDays</code> parameter in that user pool.</p> </note>"
         }
       },
       "documentation":"<p>The password policy type.</p>"
@@ -6087,11 +6096,11 @@
       "members":{
         "ProviderName":{
           "shape":"ProviderNameType",
-          "documentation":"<p>The identity provider name.</p>"
+          "documentation":"<p>The IdP name.</p>"
         },
         "ProviderType":{
           "shape":"IdentityProviderTypeType",
-          "documentation":"<p>The identity provider type.</p>"
+          "documentation":"<p>The IdP type.</p>"
         },
         "LastModifiedDate":{
           "shape":"DateType",
@@ -6102,7 +6111,7 @@
           "documentation":"<p>The date the provider was added to the user pool.</p>"
         }
       },
-      "documentation":"<p>A container for identity provider details.</p>"
+      "documentation":"<p>A container for IdP details.</p>"
     },
     "ProviderDetailsType":{
       "type":"map",
@@ -6118,7 +6127,7 @@
     "ProviderNameTypeV1":{
       "type":"string",
       "max":32,
-      "min":1,
+      "min":3,
       "pattern":"[^_][\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}][^_]+"
     },
     "ProviderUserIdentifierType":{
@@ -6137,7 +6146,7 @@
           "documentation":"<p>The value of the provider attribute to link to, such as <code>xxxxx_account</code>.</p>"
         }
       },
-      "documentation":"<p>A container for information about an identity provider for a user pool.</p>"
+      "documentation":"<p>A container for information about an IdP for a user pool.</p>"
     },
     "ProvidersListType":{
       "type":"list",
@@ -6228,7 +6237,7 @@
         },
         "AnalyticsMetadata":{
           "shape":"AnalyticsMetadataType",
-          "documentation":"<p>The Amazon Pinpoint analytics metadata for collecting metrics for <code>ResendConfirmationCode</code> calls.</p>"
+          "documentation":"<p>The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>ResendConfirmationCode</code> calls.</p>"
         },
         "ClientMetadata":{
           "shape":"ClientMetadataType",
@@ -6351,11 +6360,11 @@
         },
         "ChallengeResponses":{
           "shape":"ChallengeResponsesType",
-          "documentation":"<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <note> <p> <code>SECRET_HASH</code> (if app client is configured with client secret) applies to all of the inputs that follow (including <code>SOFTWARE_TOKEN_MFA</code>).</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>.</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when signing in with a remembered device.</p> </note> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, any other required attributes, <code>USERNAME</code>. </p> </li> <li> <p> <code>SOFTWARE_TOKEN_MFA</code>: <code>USERNAME</code> and <code>SOFTWARE_TOKEN_MFA_CODE</code> are required attributes.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code> requires <code>USERNAME</code>, <code>DEVICE_KEY</code>, <code>SRP_A</code> (and <code>SECRET_HASH</code>).</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code> requires everything that <code>PASSWORD_VERIFIER</code> requires, plus <code>DEVICE_KEY</code>.</p> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul>"
+          "documentation":"<p>The challenge responses. These are inputs corresponding to the value of <code>ChallengeName</code>, for example:</p> <note> <p> <code>SECRET_HASH</code> (if app client is configured with client secret) applies to all of the inputs that follow (including <code>SOFTWARE_TOKEN_MFA</code>).</p> </note> <ul> <li> <p> <code>SMS_MFA</code>: <code>SMS_MFA_CODE</code>, <code>USERNAME</code>.</p> </li> <li> <p> <code>PASSWORD_VERIFIER</code>: <code>PASSWORD_CLAIM_SIGNATURE</code>, <code>PASSWORD_CLAIM_SECRET_BLOCK</code>, <code>TIMESTAMP</code>, <code>USERNAME</code>.</p> <note> <p> <code>PASSWORD_VERIFIER</code> requires <code>DEVICE_KEY</code> when you sign in with a remembered device.</p> </note> </li> <li> <p> <code>NEW_PASSWORD_REQUIRED</code>: <code>NEW_PASSWORD</code>, <code>USERNAME</code>, <code>SECRET_HASH</code> (if app client is configured with client secret). To set any required attributes that Amazon Cognito returned as <code>requiredAttributes</code> in the <code>InitiateAuth</code> response, add a <code>userAttributes.<i>attributename</i> </code> parameter. This parameter can also set values for writable attributes that aren't required by your user pool.</p> <note> <p>In a <code>NEW_PASSWORD_REQUIRED</code> challenge response, you can't modify a required attribute that already has a value. In <code>RespondToAuthChallenge</code>, set a value for any keys that Amazon Cognito returned in the <code>requiredAttributes</code> parameter, then use the <code>UpdateUserAttributes</code> API operation to modify the value of any additional attributes.</p> </note> </li> <li> <p> <code>SOFTWARE_TOKEN_MFA</code>: <code>USERNAME</code> and <code>SOFTWARE_TOKEN_MFA_CODE</code> are required attributes.</p> </li> <li> <p> <code>DEVICE_SRP_AUTH</code> requires <code>USERNAME</code>, <code>DEVICE_KEY</code>, <code>SRP_A</code> (and <code>SECRET_HASH</code>).</p> </li> <li> <p> <code>DEVICE_PASSWORD_VERIFIER</code> requires everything that <code>PASSWORD_VERIFIER</code> requires, plus <code>DEVICE_KEY</code>.</p> </li> <li> <p> <code>MFA_SETUP</code> requires <code>USERNAME</code>, plus you must use the session value returned by <code>VerifySoftwareToken</code> in the <code>Session</code> parameter.</p> </li> </ul>"
         },
         "AnalyticsMetadata":{
           "shape":"AnalyticsMetadataType",
-          "documentation":"<p>The Amazon Pinpoint analytics metadata for collecting metrics for <code>RespondToAuthChallenge</code> calls.</p>"
+          "documentation":"<p>The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>RespondToAuthChallenge</code> calls.</p>"
         },
         "UserContextData":{
           "shape":"UserContextDataType",
@@ -6520,7 +6529,7 @@
         },
         "Mutable":{
           "shape":"BooleanType",
-          "documentation":"<p>Specifies whether the value of the attribute can be changed.</p> <p>For any user pool attribute that is mapped to an identity provider attribute, you must set this parameter to <code>true</code>. Amazon Cognito updates mapped attributes when users sign in to your application through an identity provider. If an attribute is immutable, Amazon Cognito throws an error when it attempts to update the attribute. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html\">Specifying Identity Provider Attribute Mappings for Your User Pool</a>.</p>",
+          "documentation":"<p>Specifies whether the value of the attribute can be changed.</p> <p>For any user pool attribute that is mapped to an IdP attribute, you must set this parameter to <code>true</code>. Amazon Cognito updates mapped attributes when users sign in to your application through an IdP. If an attribute is immutable, Amazon Cognito throws an error when it attempts to update the attribute. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html\">Specifying Identity Provider Attribute Mappings for Your User Pool</a>.</p>",
           "box":true
         },
         "Required":{
@@ -6673,7 +6682,7 @@
         },
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token for the user.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose MFA preference you want to set.</p>"
         }
       }
     },
@@ -6730,7 +6739,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token for the set user settings request.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose user settings you want to configure.</p>"
         },
         "MFAOptions":{
           "shape":"MFAOptionListType",
@@ -6779,7 +6788,7 @@
         },
         "AnalyticsMetadata":{
           "shape":"AnalyticsMetadataType",
-          "documentation":"<p>The Amazon Pinpoint analytics metadata for collecting metrics for <code>SignUp</code> calls.</p>"
+          "documentation":"<p>The Amazon Pinpoint analytics metadata that contributes to your metrics for <code>SignUp</code> calls.</p>"
         },
         "UserContextData":{
           "shape":"UserContextDataType",
@@ -7045,7 +7054,7 @@
           "documentation":"<p>A time unit in “seconds”, “minutes”, “hours”, or “days” for the value in RefreshTokenValidity, defaulting to days.</p>"
         }
       },
-      "documentation":"<p>The data type for TokenValidityUnits that specifics the time measurements for token validity.</p>"
+      "documentation":"<p>The data type TokenValidityUnits specifies the time units you use when you set the duration of ID, access, and refresh tokens.</p>"
     },
     "TooManyFailedAttemptsException":{
       "type":"structure",
@@ -7225,7 +7234,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose device status you want to update.</p>"
         },
         "DeviceKey":{
           "shape":"DeviceKeyType",
@@ -7295,19 +7304,19 @@
         },
         "ProviderName":{
           "shape":"ProviderNameType",
-          "documentation":"<p>The identity provider name.</p>"
+          "documentation":"<p>The IdP name.</p>"
         },
         "ProviderDetails":{
           "shape":"ProviderDetailsType",
-          "documentation":"<p>The identity provider details to be updated, such as <code>MetadataURL</code> and <code>MetadataFile</code>.</p>"
+          "documentation":"<p>The IdP details to be updated, such as <code>MetadataURL</code> and <code>MetadataFile</code>.</p>"
         },
         "AttributeMapping":{
           "shape":"AttributeMappingType",
-          "documentation":"<p>The identity provider attribute mapping to be changed.</p>"
+          "documentation":"<p>The IdP attribute mapping to be changed.</p>"
         },
         "IdpIdentifiers":{
           "shape":"IdpIdentifiersListType",
-          "documentation":"<p>A list of identity provider identifiers.</p>"
+          "documentation":"<p>A list of IdP identifiers.</p>"
         }
       }
     },
@@ -7317,7 +7326,7 @@
       "members":{
         "IdentityProvider":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The identity provider object.</p>"
+          "documentation":"<p>The IdP object.</p>"
         }
       }
     },
@@ -7366,11 +7375,11 @@
       "members":{
         "UserAttributes":{
           "shape":"AttributeListType",
-          "documentation":"<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p>"
+          "documentation":"<p>An array of name-value pairs representing user attributes.</p> <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the attribute name.</p> <p>If you have set an attribute to require verification before Amazon Cognito updates its value, this request doesn’t immediately update the value of that attribute. After your user receives and responds to a verification message to verify the new value, Amazon Cognito updates the attribute value. Your user can sign in and receive messages with the original attribute value until they verify the new value.</p>"
         },
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token for the request to update user attributes.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose user attributes you want to update.</p>"
         },
         "ClientMetadata":{
           "shape":"ClientMetadataType",
@@ -7410,19 +7419,19 @@
         },
         "RefreshTokenValidity":{
           "shape":"RefreshTokenValidityType",
-          "documentation":"<p>The time limit, in days, after which the refresh token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "AccessTokenValidity":{
           "shape":"AccessTokenValidityType",
-          "documentation":"<p>The time limit after which the access token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "IdTokenValidity":{
           "shape":"IdTokenValidityType",
-          "documentation":"<p>The time limit after which the ID token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "TokenValidityUnits":{
           "shape":"TokenValidityUnitsType",
-          "documentation":"<p>The units in which the validity times are represented. Default for RefreshToken is days, and default for ID and access tokens is hours.</p>"
+          "documentation":"<p>The units in which the validity times are represented. The default unit for RefreshToken is days, and the default for ID and access tokens is hours.</p>"
         },
         "ReadAttributes":{
           "shape":"ClientPermissionListType",
@@ -7438,15 +7447,15 @@
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
-          "documentation":"<p>A list of provider names for the identity providers that are supported on this client.</p>"
+          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
         },
         "CallbackURLs":{
           "shape":"CallbackURLsListType",
-          "documentation":"<p>A list of allowed redirect (callback) URLs for the identity providers.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href=\"https://tools.ietf.org/html/rfc6749#section-3.1.2\">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as <code>myapp://example</code> are also supported.</p>"
+          "documentation":"<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href=\"https://tools.ietf.org/html/rfc6749#section-3.1.2\">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as <code>myapp://example</code> are also supported.</p>"
         },
         "LogoutURLs":{
           "shape":"LogoutURLsListType",
-          "documentation":"<p>A list of allowed logout URLs for the identity providers.</p>"
+          "documentation":"<p>A list of allowed logout URLs for the IdPs.</p>"
         },
         "DefaultRedirectURI":{
           "shape":"RedirectUrlType",
@@ -7454,11 +7463,11 @@
         },
         "AllowedOAuthFlows":{
           "shape":"OAuthFlowsType",
-          "documentation":"<p>The allowed OAuth flows.</p> <p>Set to <code>code</code> to initiate a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the token endpoint.</p> <p>Set to <code>implicit</code> to specify that the client should get the access token (and, optionally, ID token, based on scopes) directly.</p> <p>Set to <code>client_credentials</code> to specify that the client should get the access token (and, optionally, ID token, based on scopes) from the token endpoint using a combination of client and client_secret.</p>"
+          "documentation":"<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>"
         },
         "AllowedOAuthScopes":{
           "shape":"ScopeListType",
-          "documentation":"<p>The allowed OAuth scopes. Possible values provided by OAuth are: <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are: <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.</p>"
+          "documentation":"<p>The allowed OAuth scopes. Possible values provided by OAuth are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.</p>"
         },
         "AllowedOAuthFlowsUserPoolClient":{
           "shape":"BooleanType",
@@ -7466,7 +7475,7 @@
         },
         "AnalyticsConfiguration":{
           "shape":"AnalyticsConfigurationType",
-          "documentation":"<p>The Amazon Pinpoint analytics configuration for collecting metrics for this user pool.</p> <note> <p>In Amazon Web Services Regions where Amazon Pinpoint isn't available, user pools only support sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>"
+          "documentation":"<p>The Amazon Pinpoint analytics configuration necessary to collect metrics for this user pool.</p> <note> <p>In Amazon Web Services Regions where Amazon Pinpoint isn't available, user pools only support sending events to Amazon Pinpoint projects in us-east-1. In Regions where Amazon Pinpoint is available, user pools support sending events to Amazon Pinpoint projects within that same Region.</p> </note>"
         },
         "PreventUserExistenceErrors":{
           "shape":"PreventUserExistenceErrorTypes",
@@ -7562,9 +7571,13 @@
           "shape":"SmsVerificationMessageType",
           "documentation":"<p>The contents of the SMS authentication message.</p>"
         },
+        "UserAttributeUpdateSettings":{
+          "shape":"UserAttributeUpdateSettingsType",
+          "documentation":"<p/>"
+        },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
-          "documentation":"<p>Can be one of the following values:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren't required and can't be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify ON when you're initially creating a user pool. You can use the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html\">SetUserPoolMfaConfig</a> API operation to turn MFA \"ON\" for existing user pools. </p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>"
+          "documentation":"<p>Possible values include:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren't required and can't be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify ON when you're initially creating a user pool. You can use the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html\">SetUserPoolMfaConfig</a> API operation to turn MFA \"ON\" for existing user pools. </p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>"
         },
         "DeviceConfiguration":{
           "shape":"DeviceConfigurationType",
@@ -7603,6 +7616,16 @@
       },
       "documentation":"<p>Represents the response from the server when you make a request to update the user pool.</p>"
     },
+    "UserAttributeUpdateSettingsType":{
+      "type":"structure",
+      "members":{
+        "AttributesRequireVerificationBeforeUpdate":{
+          "shape":"AttributesRequireVerificationBeforeUpdateType",
+          "documentation":"<p>Requires that your user verifies their email address, phone number, or both before Amazon Cognito updates the value of that attribute. When you update a user attribute that has this option activated, Amazon Cognito sends a verification message to the new phone number or email address. Amazon Cognito doesn’t change the value of the attribute until your user responds to the verification message and confirms the new value.</p> <p>You can verify an updated email address or phone number with a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifyUserAttribute.html\">VerifyUserAttribute</a> API request. You can also call the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserAttributes.html\">UpdateUserAttributes</a> or <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html\">AdminUpdateUserAttributes</a> API and set <code>email_verified</code> or <code>phone_number_verified</code> to true.</p> <p>When <code>AttributesRequireVerificationBeforeUpdate</code> is false, your user pool doesn't require that your users verify attribute changes before Amazon Cognito updates them. In a user pool where <code>AttributesRequireVerificationBeforeUpdate</code> is false, API operations that change attribute values can immediately update a user’s <code>email</code> or <code>phone_number</code> attribute.</p>"
+        }
+      },
+      "documentation":"<p>The settings for updates to user attributes.</p>"
+    },
     "UserContextDataType":{
       "type":"structure",
       "members":{
@@ -7611,7 +7634,7 @@
           "documentation":"<p>Contextual data, such as the user's device fingerprint, IP address, or location, used for evaluating the risk of an unexpected event by Amazon Cognito advanced security.</p>"
         }
       },
-      "documentation":"<p>Contextual data, such as the user's device fingerprint, IP address, or location, used for evaluating the risk of an unexpected event by Amazon Cognito advanced security.</p>"
+      "documentation":"<p>Information that your app generates about a user's <code>AdminInitiateAuth</code> or <code>AdminRespondToAuthChallenge</code> session. Amazon Cognito advanced security features calculate risk levels for user sessions based on this context data.</p>"
     },
     "UserFilterType":{
       "type":"string",
@@ -7824,19 +7847,19 @@
         },
         "RefreshTokenValidity":{
           "shape":"RefreshTokenValidityType",
-          "documentation":"<p>The time limit, in days, after which the refresh token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The refresh token time limit. After this limit expires, your user can't use their refresh token. To specify the time unit for <code>RefreshTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>RefreshTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>days</code>, your user can refresh their session and retrieve new access and ID tokens for 10 days.</p> <p>The default time unit for <code>RefreshTokenValidity</code> in an API request is days. You can't set <code>RefreshTokenValidity</code> to 0. If you do, Amazon Cognito overrides the value with the default value of 30 days. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "AccessTokenValidity":{
           "shape":"AccessTokenValidityType",
-          "documentation":"<p>The time limit, specified by tokenValidityUnits, defaulting to hours, after which the access token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The access token time limit. After this limit expires, your user can't use their access token. To specify the time unit for <code>AccessTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>AccessTokenValidity</code> to <code>10</code> and <code>TokenValidityUnits</code> to <code>hours</code>, your user can authorize access with their access token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "IdTokenValidity":{
           "shape":"IdTokenValidityType",
-          "documentation":"<p>The time limit specified by tokenValidityUnits, defaulting to hours, after which the refresh token is no longer valid and can't be used.</p>"
+          "documentation":"<p>The ID token time limit. After this limit expires, your user can't use their ID token. To specify the time unit for <code>IdTokenValidity</code> as <code>seconds</code>, <code>minutes</code>, <code>hours</code>, or <code>days</code>, set a <code>TokenValidityUnits</code> value in your API request.</p> <p>For example, when you set <code>IdTokenValidity</code> as <code>10</code> and <code>TokenValidityUnits</code> as <code>hours</code>, your user can authenticate their session with their ID token for 10 hours.</p> <p>The default time unit for <code>AccessTokenValidity</code> in an API request is hours. <i>Valid range</i> is displayed below in seconds.</p>"
         },
         "TokenValidityUnits":{
           "shape":"TokenValidityUnitsType",
-          "documentation":"<p>The time units used to specify the token validity times of their respective token.</p>"
+          "documentation":"<p>The time units used to specify the token validity times of each token type: ID, access, and refresh.</p>"
         },
         "ReadAttributes":{
           "shape":"ClientPermissionListType",
@@ -7852,15 +7875,15 @@
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
-          "documentation":"<p>A list of provider names for the identity providers that are supported on this client.</p>"
+          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
         },
         "CallbackURLs":{
           "shape":"CallbackURLsListType",
-          "documentation":"<p>A list of allowed redirect (callback) URLs for the identity providers.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href=\"https://tools.ietf.org/html/rfc6749#section-3.1.2\">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>"
+          "documentation":"<p>A list of allowed redirect (callback) URLs for the IdPs.</p> <p>A redirect URI must:</p> <ul> <li> <p>Be an absolute URI.</p> </li> <li> <p>Be registered with the authorization server.</p> </li> <li> <p>Not include a fragment component.</p> </li> </ul> <p>See <a href=\"https://tools.ietf.org/html/rfc6749#section-3.1.2\">OAuth 2.0 - Redirection Endpoint</a>.</p> <p>Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing purposes only.</p> <p>App callback URLs such as myapp://example are also supported.</p>"
         },
         "LogoutURLs":{
           "shape":"LogoutURLsListType",
-          "documentation":"<p>A list of allowed logout URLs for the identity providers.</p>"
+          "documentation":"<p>A list of allowed logout URLs for the IdPs.</p>"
         },
         "DefaultRedirectURI":{
           "shape":"RedirectUrlType",
@@ -7868,11 +7891,11 @@
         },
         "AllowedOAuthFlows":{
           "shape":"OAuthFlowsType",
-          "documentation":"<p>The allowed OAuth flows.</p> <p>Set to <code>code</code> to initiate a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the token endpoint.</p> <p>Set to <code>implicit</code> to specify that the client should get the access token (and, optionally, ID token, based on scopes) directly.</p> <p>Set to <code>client_credentials</code> to specify that the client should get the access token (and, optionally, ID token, based on scopes) from the token endpoint using a combination of client and client_secret.</p>"
+          "documentation":"<p>The allowed OAuth flows.</p> <dl> <dt>code</dt> <dd> <p>Use a code grant flow, which provides an authorization code as the response. This code can be exchanged for access tokens with the <code>/oauth2/token</code> endpoint.</p> </dd> <dt>implicit</dt> <dd> <p>Issue the access token (and, optionally, ID token, based on scopes) directly to your user.</p> </dd> <dt>client_credentials</dt> <dd> <p>Issue the access token from the <code>/oauth2/token</code> endpoint directly to a non-person user using a combination of the client ID and client secret.</p> </dd> </dl>"
         },
         "AllowedOAuthScopes":{
           "shape":"ScopeListType",
-          "documentation":"<p>The allowed OAuth scopes. Possible values provided by OAuth are: <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values provided by Amazon Web Services are: <code>aws.cognito.signin.user.admin</code>. Custom scopes created in Resource Servers are also supported.</p>"
+          "documentation":"<p>The OAuth scopes that your app client supports. Possible values that OAuth provides are <code>phone</code>, <code>email</code>, <code>openid</code>, and <code>profile</code>. Possible values that Amazon Web Services provides are <code>aws.cognito.signin.user.admin</code>. Amazon Cognito also supports custom scopes that you create in Resource Servers.</p>"
         },
         "AllowedOAuthFlowsUserPoolClient":{
           "shape":"BooleanType",
@@ -7885,7 +7908,7 @@
         },
         "PreventUserExistenceErrors":{
           "shape":"PreventUserExistenceErrorTypes",
-          "documentation":"<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the old behavior of Cognito where user existence related errors aren't prevented.</p> </li> </ul>"
+          "documentation":"<p>Errors and responses that you want Amazon Cognito APIs to return during authentication, account confirmation, and password recovery when the user doesn't exist in the user pool. When set to <code>ENABLED</code> and the user doesn't exist, authentication returns an error indicating either the username or password was incorrect. Account confirmation and password recovery return a response indicating a code was sent to a simulated destination. When set to <code>LEGACY</code>, those APIs return a <code>UserNotFoundException</code> exception if the user doesn't exist in the user pool.</p> <p>Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> - This prevents user existence-related errors.</p> </li> <li> <p> <code>LEGACY</code> - This represents the old behavior of Amazon Cognito where user existence related errors aren't prevented.</p> </li> </ul>"
         },
         "EnableTokenRevocation":{
           "shape":"WrappedBooleanType",
@@ -8042,6 +8065,10 @@
           "shape":"SmsVerificationMessageType",
           "documentation":"<p>The contents of the SMS authentication message.</p>"
         },
+        "UserAttributeUpdateSettings":{
+          "shape":"UserAttributeUpdateSettingsType",
+          "documentation":"<p/>"
+        },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
           "documentation":"<p>Can be one of the following values:</p> <ul> <li> <p> <code>OFF</code> - MFA tokens aren't required and can't be specified during user registration.</p> </li> <li> <p> <code>ON</code> - MFA tokens are required for all user registrations. You can only specify required when you're initially creating a user pool.</p> </li> <li> <p> <code>OPTIONAL</code> - Users have the option when registering to create an MFA token.</p> </li> </ul>"
@@ -8142,14 +8169,14 @@
         },
         "UserStatus":{
           "shape":"UserStatusType",
-          "documentation":"<p>The user status. This can be one of the following:</p> <ul> <li> <p>UNCONFIRMED - User has been created but not confirmed.</p> </li> <li> <p>CONFIRMED - User has been confirmed.</p> </li> <li> <p>ARCHIVED - User is no longer active.</p> </li> <li> <p>UNKNOWN - User status isn't known.</p> </li> <li> <p>RESET_REQUIRED - User is confirmed, but the user must request a code and reset their password before they can sign in.</p> </li> <li> <p>FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in using a temporary password, but on first sign-in, the user must change their password to a new value before doing anything else. </p> </li> </ul>"
+          "documentation":"<p>The user status. This can be one of the following:</p> <ul> <li> <p>UNCONFIRMED - User has been created but not confirmed.</p> </li> <li> <p>CONFIRMED - User has been confirmed.</p> </li> <li> <p>EXTERNAL_PROVIDER - User signed in with a third-party IdP.</p> </li> <li> <p>ARCHIVED - User is no longer active.</p> </li> <li> <p>UNKNOWN - User status isn't known.</p> </li> <li> <p>RESET_REQUIRED - User is confirmed, but the user must request a code and reset their password before they can sign in.</p> </li> <li> <p>FORCE_CHANGE_PASSWORD - The user is confirmed and the user can sign in using a temporary password, but on first sign-in, the user must change their password to a new value before doing anything else. </p> </li> </ul>"
         },
         "MFAOptions":{
           "shape":"MFAOptionListType",
           "documentation":"<p>The MFA options for the user.</p>"
         }
       },
-      "documentation":"<p>The user type.</p>"
+      "documentation":"<p>A user profile in a Amazon Cognito user pool.</p>"
     },
     "UsernameAttributeType":{
       "type":"string",
@@ -8168,7 +8195,7 @@
       "members":{
         "CaseSensitive":{
           "shape":"WrappedBooleanType",
-          "documentation":"<p>Specifies whether username case sensitivity will be applied for all users in the user pool through Amazon Cognito APIs.</p> <p>Valid values include:</p> <dl> <dt>True</dt> <dd> <p>Enables case sensitivity for all username input. When this option is set to <code>True</code>, users must sign in using the exact capitalization of their given username, such as “UserName”. This is the default value.</p> </dd> <dt>False</dt> <dd> <p>Enables case insensitivity for all username input. For example, when this option is set to <code>False</code>, users can sign in using either \"username\" or \"Username\". This option also enables both <code>preferred_username</code> and <code>email</code> alias to be case insensitive, in addition to the <code>username</code> attribute.</p> </dd> </dl>"
+          "documentation":"<p>Specifies whether user name case sensitivity will be applied for all users in the user pool through Amazon Cognito APIs.</p> <p>Valid values include:</p> <dl> <dt>True</dt> <dd> <p>Enables case sensitivity for all username input. When this option is set to <code>True</code>, users must sign in using the exact capitalization of their given username, such as “UserName”. This is the default value.</p> </dd> <dt>False</dt> <dd> <p>Enables case insensitivity for all username input. For example, when this option is set to <code>False</code>, users can sign in using either \"username\" or \"Username\". This option also enables both <code>preferred_username</code> and <code>email</code> alias to be case insensitive, in addition to the <code>username</code> attribute.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>The username configuration type. </p>"
@@ -8200,23 +8227,23 @@
       "members":{
         "SmsMessage":{
           "shape":"SmsVerificationMessageType",
-          "documentation":"<p>The SMS message template.</p>"
+          "documentation":"<p>The template for SMS messages that Amazon Cognito sends to your users.</p>"
         },
         "EmailMessage":{
           "shape":"EmailVerificationMessageType",
-          "documentation":"<p>The email message template. EmailMessage is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is DEVELOPER. </p>"
+          "documentation":"<p>The template for email messages that Amazon Cognito sends to your users. You can set an <code>EmailMessage</code> template only if the value of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.</p>"
         },
         "EmailSubject":{
           "shape":"EmailVerificationSubjectType",
-          "documentation":"<p>The subject line for the email message template. EmailSubject is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is DEVELOPER. </p>"
+          "documentation":"<p>The subject line for the email message template. You can set an <code>EmailSubject</code> template only if the value of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.</p>"
         },
         "EmailMessageByLink":{
           "shape":"EmailVerificationMessageByLinkType",
-          "documentation":"<p>The email message template for sending a confirmation link to the user. EmailMessageByLink is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is DEVELOPER.</p>"
+          "documentation":"<p>The email message template for sending a confirmation link to the user. You can set an <code>EmailMessageByLink</code> template only if the value of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.</p>"
         },
         "EmailSubjectByLink":{
           "shape":"EmailVerificationSubjectByLinkType",
-          "documentation":"<p>The subject line for the email message template for sending a confirmation link to the user. EmailSubjectByLink is allowed only <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is DEVELOPER.</p>"
+          "documentation":"<p>The subject line for the email message template for sending a confirmation link to the user. You can set an <code>EmailSubjectByLink</code> template only if the value of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\"> EmailSendingAccount</a> is <code>DEVELOPER</code>. When your <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is <code>DEVELOPER</code>, your user pool sends email messages with your own Amazon SES configuration.</p>"
         },
         "DefaultEmailOption":{
           "shape":"DefaultEmailOptionType",
@@ -8242,7 +8269,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose software token you want to verify.</p>"
         },
         "Session":{
           "shape":"SessionType",
@@ -8288,7 +8315,7 @@
       "members":{
         "AccessToken":{
           "shape":"TokenModelType",
-          "documentation":"<p>The access token of the request to verify user attributes.</p>"
+          "documentation":"<p>A valid access token that Amazon Cognito issued to the user whose user attributes you want to verify.</p>"
         },
         "AttributeName":{
           "shape":"AttributeNameType",

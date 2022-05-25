@@ -13,7 +13,10 @@ This command can upload local artifacts referenced in the following places:
 
     - ``BodyS3Location`` property for the ``AWS::ApiGateway::RestApi`` resource
     - ``Code`` property for the ``AWS::Lambda::Function`` resource
+    - ``Content`` property for the ``AWS::Lambda::LayerVersion`` resource
     - ``CodeUri`` property for the ``AWS::Serverless::Function`` resource
+    - ``ContentUri`` property for the ``AWS::Serverless::LayerVersion`` resource
+    - ``Location`` property for the ``AWS::Serverless::Application`` resource
     - ``DefinitionS3Location`` property for the ``AWS::AppSync::GraphQLSchema`` resource
     - ``RequestMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
     - ``ResponseMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource

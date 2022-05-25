@@ -382,7 +382,6 @@ class CLIDriver(object):
         return commands
 
     def _add_aliases(self, command_table, parser):
-        parser = self.create_parser(command_table)
         injector = AliasCommandInjector(
             self.session, self.alias_loader)
         injector.inject_aliases(command_table, parser)

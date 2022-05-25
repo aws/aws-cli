@@ -157,33 +157,37 @@ def pip_install_packages(install_dir):
         )
         raise MultipleBundlesError(message % PACKAGES_DIR)
     cli_tarball = cli_tarball[0]
-    pip_script = os.path.join(install_dir, bin_path(), 'pip')
+    python = os.path.join(install_dir, bin_path(), 'python')
 
     setup_requires_dir = os.path.join(PACKAGES_DIR, 'setup')
     with cd(setup_requires_dir):
-        _install_setup_deps(pip_script, '.')
+        _install_setup_deps(python, '.')
 
     with cd(PACKAGES_DIR):
-        run('%s install %s --find-links file://%s %s' % (
-                pip_script, INSTALL_ARGS, PACKAGES_DIR, cli_tarball))
+        run(
+            f'{python} -m pip install {INSTALL_ARGS} '
+            f'--find-links file://{PACKAGES_DIR} {cli_tarball}'
+        )
 
 
-def _install_setup_deps(pip_script, setup_package_dir):
+def _install_setup_deps(python, setup_package_dir):
     # Some packages declare `setup_requires`, which is a list of dependencies
     # to be used at setup time. These need to be installed before anything
     # else, and pip doesn't manage them.  We have to manage this ourselves
     # so for now we're explicitly installing the one setup_requires package
     # we need.  This comes from python-dateutils.
     setuptools_scm_tarball = _get_package_tarball(
-        setup_package_dir, 'setuptools_scm')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, setuptools_scm_tarball))
-    wheel_tarball = _get_package_tarball(
-        setup_package_dir, 'wheel')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, wheel_tarball))
+        setup_package_dir, 'setuptools_scm'
+    )
+    run(
+        f'{python} -m pip install --no-binary :all: --no-cache-dir --no-index '
+        f'--find-links file://{setup_package_dir} {setuptools_scm_tarball}'
+    )
+    wheel_tarball = _get_package_tarball(setup_package_dir, 'wheel')
+    run(
+        f'{python} -m pip install --no-binary :all: --no-cache-dir --no-index '
+        f'--find-links file://{setup_package_dir} {wheel_tarball}'
+    )
 
 
 def create_symlink(real_location, symlink_name):

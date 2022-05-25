@@ -28,7 +28,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an Amazon Forecast predictor.</p> <p>Amazon Forecast creates predictors with AutoPredictor, which involves applying the optimal combination of algorithms to each time series in your datasets. You can use <a>CreateAutoPredictor</a> to create new predictors or upgrade/retrain existing predictors.</p> <p> <b>Creating new predictors</b> </p> <p>The following parameters are required when creating a new predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>DatasetGroupArn</code> - The ARN of the dataset group used to train the predictor.</p> </li> <li> <p> <code>ForecastFrequency</code> - The granularity of your forecasts (hourly, daily, weekly, etc).</p> </li> <li> <p> <code>ForecastHorizon</code> - The number of time steps being forecasted.</p> </li> </ul> <p>When creating a new predictor, do not specify a value for <code>ReferencePredictorArn</code>.</p> <p> <b>Upgrading and retraining predictors</b> </p> <p>The following parameters are required when retraining or upgrading a predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>ReferencePredictorArn</code> - The ARN of the predictor to retrain or upgrade.</p> </li> </ul> <p>When upgrading or retraining a predictor, only specify values for the <code>ReferencePredictorArn</code> and <code>PredictorName</code>. </p>"
+      "documentation":"<p>Creates an Amazon Forecast predictor.</p> <p>Amazon Forecast creates predictors with AutoPredictor, which involves applying the optimal combination of algorithms to each time series in your datasets. You can use <a>CreateAutoPredictor</a> to create new predictors or upgrade/retrain existing predictors.</p> <p> <b>Creating new predictors</b> </p> <p>The following parameters are required when creating a new predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>DatasetGroupArn</code> - The ARN of the dataset group used to train the predictor.</p> </li> <li> <p> <code>ForecastFrequency</code> - The granularity of your forecasts (hourly, daily, weekly, etc).</p> </li> <li> <p> <code>ForecastHorizon</code> - The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.</p> </li> </ul> <p>When creating a new predictor, do not specify a value for <code>ReferencePredictorArn</code>.</p> <p> <b>Upgrading and retraining predictors</b> </p> <p>The following parameters are required when retraining or upgrading a predictor:</p> <ul> <li> <p> <code>PredictorName</code> - A unique name for the predictor.</p> </li> <li> <p> <code>ReferencePredictorArn</code> - The ARN of the predictor to retrain or upgrade.</p> </li> </ul> <p>When upgrading or retraining a predictor, only specify values for the <code>ReferencePredictorArn</code> and <code>PredictorName</code>. </p>"
     },
     "CreateDataset":{
       "name":"CreateDataset",
@@ -43,7 +43,7 @@
         {"shape":"ResourceAlreadyExistsException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an Amazon Forecast dataset. The information about the dataset that you provide helps Forecast understand how to consume the data for model training. This includes the following:</p> <ul> <li> <p> <i> <code>DataFrequency</code> </i> - How frequently your historical time-series data is collected.</p> </li> <li> <p> <i> <code>Domain</code> </i> and <i> <code>DatasetType</code> </i> - Each dataset has an associated dataset domain and a type within the domain. Amazon Forecast provides a list of predefined domains and types within each domain. For each unique dataset domain and type within the domain, Amazon Forecast requires your data to include a minimum set of predefined fields.</p> </li> <li> <p> <i> <code>Schema</code> </i> - A schema specifies the fields in the dataset, including the field name and data type.</p> </li> </ul> <p>After creating a dataset, you import your training data into it and add the dataset to a dataset group. You use the dataset group to create a predictor. For more information, see <a>howitworks-datasets-groups</a>.</p> <p>To get a list of all your datasets, use the <a>ListDatasets</a> operation.</p> <p>For example Forecast datasets, see the <a href=\"https://github.com/aws-samples/amazon-forecast-samples\">Amazon Forecast Sample GitHub repository</a>.</p> <note> <p>The <code>Status</code> of a dataset must be <code>ACTIVE</code> before you can import training data. Use the <a>DescribeDataset</a> operation to get the status.</p> </note>"
+      "documentation":"<p>Creates an Amazon Forecast dataset. The information about the dataset that you provide helps Forecast understand how to consume the data for model training. This includes the following:</p> <ul> <li> <p> <i> <code>DataFrequency</code> </i> - How frequently your historical time-series data is collected.</p> </li> <li> <p> <i> <code>Domain</code> </i> and <i> <code>DatasetType</code> </i> - Each dataset has an associated dataset domain and a type within the domain. Amazon Forecast provides a list of predefined domains and types within each domain. For each unique dataset domain and type within the domain, Amazon Forecast requires your data to include a minimum set of predefined fields.</p> </li> <li> <p> <i> <code>Schema</code> </i> - A schema specifies the fields in the dataset, including the field name and data type.</p> </li> </ul> <p>After creating a dataset, you import your training data into it and add the dataset to a dataset group. You use the dataset group to create a predictor. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html\">Importing datasets</a>.</p> <p>To get a list of all your datasets, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasets.html\">ListDatasets</a> operation.</p> <p>For example Forecast datasets, see the <a href=\"https://github.com/aws-samples/amazon-forecast-samples\">Amazon Forecast Sample GitHub repository</a>.</p> <note> <p>The <code>Status</code> of a dataset must be <code>ACTIVE</code> before you can import training data. Use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDataset.html\">DescribeDataset</a> operation to get the status.</p> </note>"
     },
     "CreateDatasetGroup":{
       "name":"CreateDatasetGroup",
@@ -60,7 +60,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates a dataset group, which holds a collection of related datasets. You can add datasets to the dataset group when you create the dataset group, or later by using the <a>UpdateDatasetGroup</a> operation.</p> <p>After creating a dataset group and adding datasets, you use the dataset group when you create a predictor. For more information, see <a>howitworks-datasets-groups</a>.</p> <p>To get a list of all your datasets groups, use the <a>ListDatasetGroups</a> operation.</p> <note> <p>The <code>Status</code> of a dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor. To get the status, use the <a>DescribeDatasetGroup</a> operation.</p> </note>"
+      "documentation":"<p>Creates a dataset group, which holds a collection of related datasets. You can add datasets to the dataset group when you create the dataset group, or later by using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html\">UpdateDatasetGroup</a> operation.</p> <p>After creating a dataset group and adding datasets, you use the dataset group when you create a predictor. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html\">Dataset groups</a>.</p> <p>To get a list of all your datasets groups, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasetGroups.html\">ListDatasetGroups</a> operation.</p> <note> <p>The <code>Status</code> of a dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor. To get the status, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> operation.</p> </note>"
     },
     "CreateDatasetImportJob":{
       "name":"CreateDatasetImportJob",
@@ -77,7 +77,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Imports your training data to an Amazon Forecast dataset. You provide the location of your training data in an Amazon Simple Storage Service (Amazon S3) bucket and the Amazon Resource Name (ARN) of the dataset that you want to import the data to.</p> <p>You must specify a <a>DataSource</a> object that includes an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data, as Amazon Forecast makes a copy of your data and processes it in an internal AWS system. For more information, see <a>aws-forecast-iam-roles</a>.</p> <p>The training data must be in CSV format. The delimiter must be a comma (,).</p> <p>You can specify the path to a specific CSV file, the S3 bucket, or to a folder in the S3 bucket. For the latter two cases, Amazon Forecast imports all files up to the limit of 10,000 files.</p> <p>Because dataset imports are not aggregated, your most recent dataset import is the one that is used when training a predictor or generating a forecast. Make sure that your most recent dataset import contains all of the data you want to model off of, and not just the new data collected since the previous import.</p> <p>To get a list of all your dataset import jobs, filtered by specified criteria, use the <a>ListDatasetImportJobs</a> operation.</p>"
+      "documentation":"<p>Imports your training data to an Amazon Forecast dataset. You provide the location of your training data in an Amazon Simple Storage Service (Amazon S3) bucket and the Amazon Resource Name (ARN) of the dataset that you want to import the data to.</p> <p>You must specify a <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DataSource.html\">DataSource</a> object that includes an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data, as Amazon Forecast makes a copy of your data and processes it in an internal AWS system. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/aws-forecast-iam-roles.html\">Set up permissions</a>.</p> <p>The training data must be in CSV format. The delimiter must be a comma (,).</p> <p>You can specify the path to a specific CSV file, the S3 bucket, or to a folder in the S3 bucket. For the latter two cases, Amazon Forecast imports all files up to the limit of 10,000 files.</p> <p>Because dataset imports are not aggregated, your most recent dataset import is the one that is used when training a predictor or generating a forecast. Make sure that your most recent dataset import contains all of the data you want to model off of, and not just the new data collected since the previous import.</p> <p>To get a list of all your dataset import jobs, filtered by specified criteria, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasetImportJobs.html\">ListDatasetImportJobs</a> operation.</p>"
     },
     "CreateExplainability":{
       "name":"CreateExplainability",
@@ -147,6 +147,23 @@
       ],
       "documentation":"<p>Exports a forecast created by the <a>CreateForecast</a> operation to your Amazon Simple Storage Service (Amazon S3) bucket. The forecast file name will match the following conventions:</p> <p>&lt;ForecastExportJobName&gt;_&lt;ExportTimestamp&gt;_&lt;PartNumber&gt;</p> <p>where the &lt;ExportTimestamp&gt; component is in Java SimpleDateFormat (yyyy-MM-ddTHH-mm-ssZ).</p> <p>You must specify a <a>DataDestination</a> object that includes an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the Amazon S3 bucket. For more information, see <a>aws-forecast-iam-roles</a>.</p> <p>For more information, see <a>howitworks-forecast</a>.</p> <p>To get a list of all your forecast export jobs, use the <a>ListForecastExportJobs</a> operation.</p> <note> <p>The <code>Status</code> of the forecast export job must be <code>ACTIVE</code> before you can access the forecast in your Amazon S3 bucket. To get the status, use the <a>DescribeForecastExportJob</a> operation.</p> </note>"
     },
+    "CreateMonitor":{
+      "name":"CreateMonitor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMonitorRequest"},
+      "output":{"shape":"CreateMonitorResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates a predictor monitor resource for an existing auto predictor. Predictor monitoring allows you to see how your predictor's performance changes over time. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html\">Predictor Monitoring</a>. </p>"
+    },
     "CreatePredictor":{
       "name":"CreatePredictor",
       "http":{
@@ -193,7 +210,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes an Amazon Forecast dataset that was created using the <a>CreateDataset</a> operation. You can only delete datasets that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status use the <a>DescribeDataset</a> operation.</p> <note> <p>Forecast does not automatically update any dataset groups that contain the deleted dataset. In order to update the dataset group, use the operation, omitting the deleted dataset's ARN.</p> </note>",
+      "documentation":"<p>Deletes an Amazon Forecast dataset that was created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html\">CreateDataset</a> operation. You can only delete datasets that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDataset.html\">DescribeDataset</a> operation.</p> <note> <p>Forecast does not automatically update any dataset groups that contain the deleted dataset. In order to update the dataset group, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html\">UpdateDatasetGroup</a> operation, omitting the deleted dataset's ARN.</p> </note>",
       "idempotent":true
     },
     "DeleteDatasetGroup":{
@@ -208,7 +225,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes a dataset group created using the <a>CreateDatasetGroup</a> operation. You can only delete dataset groups that have a status of <code>ACTIVE</code>, <code>CREATE_FAILED</code>, or <code>UPDATE_FAILED</code>. To get the status, use the <a>DescribeDatasetGroup</a> operation.</p> <p>This operation deletes only the dataset group, not the datasets in the group.</p>",
+      "documentation":"<p>Deletes a dataset group created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a> operation. You can only delete dataset groups that have a status of <code>ACTIVE</code>, <code>CREATE_FAILED</code>, or <code>UPDATE_FAILED</code>. To get the status, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> operation.</p> <p>This operation deletes only the dataset group, not the datasets in the group.</p>",
       "idempotent":true
     },
     "DeleteDatasetImportJob":{
@@ -223,7 +240,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes a dataset import job created using the <a>CreateDatasetImportJob</a> operation. You can delete only dataset import jobs that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status, use the <a>DescribeDatasetImportJob</a> operation.</p>",
+      "documentation":"<p>Deletes a dataset import job created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation. You can delete only dataset import jobs that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status, use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a> operation.</p>",
       "idempotent":true
     },
     "DeleteExplainability":{
@@ -284,6 +301,21 @@
         {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>Deletes a forecast export job created using the <a>CreateForecastExportJob</a> operation. You can delete only export jobs that have a status of <code>ACTIVE</code> or <code>CREATE_FAILED</code>. To get the status, use the <a>DescribeForecastExportJob</a> operation.</p>",
+      "idempotent":true
+    },
+    "DeleteMonitor":{
+      "name":"DeleteMonitor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMonitorRequest"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Deletes a monitor resource. You can only delete a monitor resource with a status of <code>ACTIVE</code>, <code>ACTIVE_STOPPED</code>, <code>CREATE_FAILED</code>, or <code>CREATE_STOPPED</code>.</p>",
       "idempotent":true
     },
     "DeletePredictor":{
@@ -358,7 +390,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes an Amazon Forecast dataset created using the <a>CreateDataset</a> operation.</p> <p>In addition to listing the parameters specified in the <code>CreateDataset</code> request, this operation includes the following dataset properties:</p> <ul> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>",
+      "documentation":"<p>Describes an Amazon Forecast dataset created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html\">CreateDataset</a> operation.</p> <p>In addition to listing the parameters specified in the <code>CreateDataset</code> request, this operation includes the following dataset properties:</p> <ul> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>",
       "idempotent":true
     },
     "DescribeDatasetGroup":{
@@ -373,7 +405,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes a dataset group created using the <a>CreateDatasetGroup</a> operation.</p> <p>In addition to listing the parameters provided in the <code>CreateDatasetGroup</code> request, this operation includes the following properties:</p> <ul> <li> <p> <code>DatasetArns</code> - The datasets belonging to the group.</p> </li> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>",
+      "documentation":"<p>Describes a dataset group created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a> operation.</p> <p>In addition to listing the parameters provided in the <code>CreateDatasetGroup</code> request, this operation includes the following properties:</p> <ul> <li> <p> <code>DatasetArns</code> - The datasets belonging to the group.</p> </li> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>",
       "idempotent":true
     },
     "DescribeDatasetImportJob":{
@@ -388,7 +420,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes a dataset import job created using the <a>CreateDatasetImportJob</a> operation.</p> <p>In addition to listing the parameters provided in the <code>CreateDatasetImportJob</code> request, this operation includes the following properties:</p> <ul> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>DataSize</code> </p> </li> <li> <p> <code>FieldStatistics</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Message</code> - If an error occurred, information about the error.</p> </li> </ul>",
+      "documentation":"<p>Describes a dataset import job created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation.</p> <p>In addition to listing the parameters provided in the <code>CreateDatasetImportJob</code> request, this operation includes the following properties:</p> <ul> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>DataSize</code> </p> </li> <li> <p> <code>FieldStatistics</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Message</code> - If an error occurred, information about the error.</p> </li> </ul>",
       "idempotent":true
     },
     "DescribeExplainability":{
@@ -451,6 +483,21 @@
       "documentation":"<p>Describes a forecast export job created using the <a>CreateForecastExportJob</a> operation.</p> <p>In addition to listing the properties provided by the user in the <code>CreateForecastExportJob</code> request, this operation lists the following properties:</p> <ul> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Message</code> - If an error occurred, information about the error.</p> </li> </ul>",
       "idempotent":true
     },
+    "DescribeMonitor":{
+      "name":"DescribeMonitor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMonitorRequest"},
+      "output":{"shape":"DescribeMonitorResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes a monitor resource. In addition to listing the properties provided in the <a>CreateMonitor</a> request, this operation lists the following properties:</p> <ul> <li> <p> <code>Baseline</code> </p> </li> <li> <p> <code>CreationTime</code> </p> </li> <li> <p> <code>LastEvaluationTime</code> </p> </li> <li> <p> <code>LastEvaluationState</code> </p> </li> <li> <p> <code>LastModificationTime</code> </p> </li> <li> <p> <code>Message</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>",
+      "idempotent":true
+    },
     "DescribePredictor":{
       "name":"DescribePredictor",
       "http":{
@@ -508,7 +555,7 @@
       "errors":[
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Returns a list of dataset groups created using the <a>CreateDatasetGroup</a> operation. For each dataset group, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). You can retrieve the complete set of properties by using the dataset group ARN with the <a>DescribeDatasetGroup</a> operation.</p>",
+      "documentation":"<p>Returns a list of dataset groups created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a> operation. For each dataset group, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). You can retrieve the complete set of properties by using the dataset group ARN with the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> operation.</p>",
       "idempotent":true
     },
     "ListDatasetImportJobs":{
@@ -523,7 +570,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Returns a list of dataset import jobs created using the <a>CreateDatasetImportJob</a> operation. For each import job, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). You can retrieve the complete set of properties by using the ARN with the <a>DescribeDatasetImportJob</a> operation. You can filter the list by providing an array of <a>Filter</a> objects.</p>",
+      "documentation":"<p>Returns a list of dataset import jobs created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation. For each import job, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). You can retrieve the complete set of properties by using the ARN with the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a> operation. You can filter the list by providing an array of <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_Filter.html\">Filter</a> objects.</p>",
       "idempotent":true
     },
     "ListDatasets":{
@@ -537,7 +584,7 @@
       "errors":[
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Returns a list of datasets created using the <a>CreateDataset</a> operation. For each dataset, a summary of its properties, including its Amazon Resource Name (ARN), is returned. To retrieve the complete set of properties, use the ARN with the <a>DescribeDataset</a> operation.</p>",
+      "documentation":"<p>Returns a list of datasets created using the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html\">CreateDataset</a> operation. For each dataset, a summary of its properties, including its Amazon Resource Name (ARN), is returned. To retrieve the complete set of properties, use the ARN with the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDataset.html\">DescribeDataset</a> operation.</p>",
       "idempotent":true
     },
     "ListExplainabilities":{
@@ -600,6 +647,37 @@
       "documentation":"<p>Returns a list of forecasts created using the <a>CreateForecast</a> operation. For each forecast, this operation returns a summary of its properties, including its Amazon Resource Name (ARN). To retrieve the complete set of properties, specify the ARN with the <a>DescribeForecast</a> operation. You can filter the list using an array of <a>Filter</a> objects.</p>",
       "idempotent":true
     },
+    "ListMonitorEvaluations":{
+      "name":"ListMonitorEvaluations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMonitorEvaluationsRequest"},
+      "output":{"shape":"ListMonitorEvaluationsResponse"},
+      "errors":[
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the monitoring evaluation results and predictor events collected by the monitor resource during different windows of time.</p> <p>For information about monitoring see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>. For more information about retrieving monitoring results see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>.</p>",
+      "idempotent":true
+    },
+    "ListMonitors":{
+      "name":"ListMonitors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMonitorsRequest"},
+      "output":{"shape":"ListMonitorsResponse"},
+      "errors":[
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Returns a list of monitors created with the <a>CreateMonitor</a> operation and <a>CreateAutoPredictor</a> operation. For each monitor resource, this operation returns of a summary of its properties, including its Amazon Resource Name (ARN). You can retrieve a complete set of properties of a monitor resource by specify the monitor's ARN in the <a>DescribeMonitor</a> operation.</p>",
+      "idempotent":true
+    },
     "ListPredictorBacktestExportJobs":{
       "name":"ListPredictorBacktestExportJobs",
       "http":{
@@ -643,6 +721,22 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Lists the tags for an Amazon Forecast resource.</p>"
+    },
+    "ResumeResource":{
+      "name":"ResumeResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ResumeResourceRequest"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Resumes a stopped monitor resource.</p>",
+      "idempotent":true
     },
     "StopResource":{
       "name":"StopResource",
@@ -701,7 +795,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Replaces the datasets in a dataset group with the specified datasets.</p> <note> <p>The <code>Status</code> of the dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor. Use the <a>DescribeDatasetGroup</a> operation to get the status.</p> </note>",
+      "documentation":"<p>Replaces the datasets in a dataset group with the specified datasets.</p> <note> <p>The <code>Status</code> of the dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor. Use the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> operation to get the status.</p> </note>",
       "idempotent":true
     }
   },
@@ -716,7 +810,7 @@
         },
         "Configuration":{
           "shape":"Configuration",
-          "documentation":"<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, do not specify a value for <code>Configuration</code>.</p> <p> <b>Holidays</b> </p> <p>To enable Holidays, set <code>CountryCode</code> to one of the following two-letter country codes:</p> <ul> <li> <p>\"AL\" - ALBANIA</p> </li> <li> <p>\"AR\" - ARGENTINA</p> </li> <li> <p>\"AT\" - AUSTRIA</p> </li> <li> <p>\"AU\" - AUSTRALIA</p> </li> <li> <p>\"BA\" - BOSNIA HERZEGOVINA</p> </li> <li> <p>\"BE\" - BELGIUM</p> </li> <li> <p>\"BG\" - BULGARIA</p> </li> <li> <p>\"BO\" - BOLIVIA</p> </li> <li> <p>\"BR\" - BRAZIL</p> </li> <li> <p>\"BY\" - BELARUS</p> </li> <li> <p>\"CA\" - CANADA</p> </li> <li> <p>\"CL\" - CHILE</p> </li> <li> <p>\"CO\" - COLOMBIA</p> </li> <li> <p>\"CR\" - COSTA RICA</p> </li> <li> <p>\"HR\" - CROATIA</p> </li> <li> <p>\"CZ\" - CZECH REPUBLIC</p> </li> <li> <p>\"DK\" - DENMARK</p> </li> <li> <p>\"EC\" - ECUADOR</p> </li> <li> <p>\"EE\" - ESTONIA</p> </li> <li> <p>\"ET\" - ETHIOPIA</p> </li> <li> <p>\"FI\" - FINLAND</p> </li> <li> <p>\"FR\" - FRANCE</p> </li> <li> <p>\"DE\" - GERMANY</p> </li> <li> <p>\"GR\" - GREECE</p> </li> <li> <p>\"HU\" - HUNGARY</p> </li> <li> <p>\"IS\" - ICELAND</p> </li> <li> <p>\"IN\" - INDIA</p> </li> <li> <p>\"IE\" - IRELAND</p> </li> <li> <p>\"IT\" - ITALY</p> </li> <li> <p>\"JP\" - JAPAN</p> </li> <li> <p>\"KZ\" - KAZAKHSTAN</p> </li> <li> <p>\"KR\" - KOREA</p> </li> <li> <p>\"LV\" - LATVIA</p> </li> <li> <p>\"LI\" - LIECHTENSTEIN</p> </li> <li> <p>\"LT\" - LITHUANIA</p> </li> <li> <p>\"LU\" - LUXEMBOURG</p> </li> <li> <p>\"MK\" - MACEDONIA</p> </li> <li> <p>\"MT\" - MALTA</p> </li> <li> <p>\"MX\" - MEXICO</p> </li> <li> <p>\"MD\" - MOLDOVA</p> </li> <li> <p>\"ME\" - MONTENEGRO</p> </li> <li> <p>\"NL\" - NETHERLANDS</p> </li> <li> <p>\"NZ\" - NEW ZEALAND</p> </li> <li> <p>\"NI\" - NICARAGUA</p> </li> <li> <p>\"NG\" - NIGERIA</p> </li> <li> <p>\"NO\" - NORWAY</p> </li> <li> <p>\"PA\" - PANAMA</p> </li> <li> <p>\"PY\" - PARAGUAY</p> </li> <li> <p>\"PE\" - PERU</p> </li> <li> <p>\"PL\" - POLAND</p> </li> <li> <p>\"PT\" - PORTUGAL</p> </li> <li> <p>\"RO\" - ROMANIA</p> </li> <li> <p>\"RU\" - RUSSIA</p> </li> <li> <p>\"RS\" - SERBIA</p> </li> <li> <p>\"SK\" - SLOVAKIA</p> </li> <li> <p>\"SI\" - SLOVENIA</p> </li> <li> <p>\"ZA\" - SOUTH AFRICA</p> </li> <li> <p>\"ES\" - SPAIN</p> </li> <li> <p>\"SE\" - SWEDEN</p> </li> <li> <p>\"CH\" - SWITZERLAND</p> </li> <li> <p>\"UA\" - UKRAINE</p> </li> <li> <p>\"AE\" - UNITED ARAB EMIRATES</p> </li> <li> <p>\"US\" - UNITED STATES</p> </li> <li> <p>\"UK\" - UNITED KINGDOM</p> </li> <li> <p>\"UY\" - URUGUAY</p> </li> <li> <p>\"VE\" - VENEZUELA</p> </li> </ul>"
+          "documentation":"<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, do not specify a value for <code>Configuration</code>.</p> <p> <b>Holidays</b> </p> <p> <b>Holidays</b> </p> <p>To enable Holidays, set <code>CountryCode</code> to one of the following two-letter country codes:</p> <ul> <li> <p>\"AL\" - ALBANIA</p> </li> <li> <p>\"AR\" - ARGENTINA</p> </li> <li> <p>\"AT\" - AUSTRIA</p> </li> <li> <p>\"AU\" - AUSTRALIA</p> </li> <li> <p>\"BA\" - BOSNIA HERZEGOVINA</p> </li> <li> <p>\"BE\" - BELGIUM</p> </li> <li> <p>\"BG\" - BULGARIA</p> </li> <li> <p>\"BO\" - BOLIVIA</p> </li> <li> <p>\"BR\" - BRAZIL</p> </li> <li> <p>\"BY\" - BELARUS</p> </li> <li> <p>\"CA\" - CANADA</p> </li> <li> <p>\"CL\" - CHILE</p> </li> <li> <p>\"CO\" - COLOMBIA</p> </li> <li> <p>\"CR\" - COSTA RICA</p> </li> <li> <p>\"HR\" - CROATIA</p> </li> <li> <p>\"CZ\" - CZECH REPUBLIC</p> </li> <li> <p>\"DK\" - DENMARK</p> </li> <li> <p>\"EC\" - ECUADOR</p> </li> <li> <p>\"EE\" - ESTONIA</p> </li> <li> <p>\"ET\" - ETHIOPIA</p> </li> <li> <p>\"FI\" - FINLAND</p> </li> <li> <p>\"FR\" - FRANCE</p> </li> <li> <p>\"DE\" - GERMANY</p> </li> <li> <p>\"GR\" - GREECE</p> </li> <li> <p>\"HU\" - HUNGARY</p> </li> <li> <p>\"IS\" - ICELAND</p> </li> <li> <p>\"IN\" - INDIA</p> </li> <li> <p>\"IE\" - IRELAND</p> </li> <li> <p>\"IT\" - ITALY</p> </li> <li> <p>\"JP\" - JAPAN</p> </li> <li> <p>\"KZ\" - KAZAKHSTAN</p> </li> <li> <p>\"KR\" - KOREA</p> </li> <li> <p>\"LV\" - LATVIA</p> </li> <li> <p>\"LI\" - LIECHTENSTEIN</p> </li> <li> <p>\"LT\" - LITHUANIA</p> </li> <li> <p>\"LU\" - LUXEMBOURG</p> </li> <li> <p>\"MK\" - MACEDONIA</p> </li> <li> <p>\"MT\" - MALTA</p> </li> <li> <p>\"MX\" - MEXICO</p> </li> <li> <p>\"MD\" - MOLDOVA</p> </li> <li> <p>\"ME\" - MONTENEGRO</p> </li> <li> <p>\"NL\" - NETHERLANDS</p> </li> <li> <p>\"NZ\" - NEW ZEALAND</p> </li> <li> <p>\"NI\" - NICARAGUA</p> </li> <li> <p>\"NG\" - NIGERIA</p> </li> <li> <p>\"NO\" - NORWAY</p> </li> <li> <p>\"PA\" - PANAMA</p> </li> <li> <p>\"PY\" - PARAGUAY</p> </li> <li> <p>\"PE\" - PERU</p> </li> <li> <p>\"PL\" - POLAND</p> </li> <li> <p>\"PT\" - PORTUGAL</p> </li> <li> <p>\"RO\" - ROMANIA</p> </li> <li> <p>\"RU\" - RUSSIA</p> </li> <li> <p>\"RS\" - SERBIA</p> </li> <li> <p>\"SK\" - SLOVAKIA</p> </li> <li> <p>\"SI\" - SLOVENIA</p> </li> <li> <p>\"ZA\" - SOUTH AFRICA</p> </li> <li> <p>\"ES\" - SPAIN</p> </li> <li> <p>\"SE\" - SWEDEN</p> </li> <li> <p>\"CH\" - SWITZERLAND</p> </li> <li> <p>\"UA\" - UKRAINE</p> </li> <li> <p>\"AE\" - UNITED ARAB EMIRATES</p> </li> <li> <p>\"US\" - UNITED STATES</p> </li> <li> <p>\"UK\" - UNITED KINGDOM</p> </li> <li> <p>\"UY\" - URUGUAY</p> </li> <li> <p>\"VE\" - VENEZUELA</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes an additional dataset. This object is part of the <a>DataConfig</a> object. Forecast supports the Weather Index and Holidays additional datasets.</p> <p> <b>Weather Index</b> </p> <p>The Amazon Forecast Weather Index is a built-in dataset that incorporates historical and projected weather information into your model. The Weather Index supplements your datasets with over two years of historical weather data and up to 14 days of projected weather data. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/weather.html\">Amazon Forecast Weather Index</a>.</p> <p> <b>Holidays</b> </p> <p>Holidays is a built-in dataset that incorporates national holiday information into your model. It provides native support for the holiday calendars of 66 countries. To view the holiday calendars, refer to the <a href=\"http://jollyday.sourceforge.net/data.html\">Jollyday</a> library. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/holidays.html\">Holidays Featurization</a>.</p>"
@@ -776,6 +870,34 @@
         "LatencyOptimized",
         "AccuracyOptimized"
       ]
+    },
+    "Baseline":{
+      "type":"structure",
+      "members":{
+        "PredictorBaseline":{
+          "shape":"PredictorBaseline",
+          "documentation":"<p>The initial <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/metrics.html\">accuracy metrics</a> for the predictor you are monitoring. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.</p>"
+        }
+      },
+      "documentation":"<p>Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.</p>"
+    },
+    "BaselineMetric":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p>The value for the metric.</p>"
+        }
+      },
+      "documentation":"<p>An individual metric that you can use for comparison as you evaluate your monitoring results.</p>"
+    },
+    "BaselineMetrics":{
+      "type":"list",
+      "member":{"shape":"BaselineMetric"}
     },
     "Boolean":{"type":"boolean"},
     "CategoricalParameterRange":{
@@ -850,7 +972,7 @@
         },
         "ForecastHorizon":{
           "shape":"Integer",
-          "documentation":"<p>The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.</p>"
+          "documentation":"<p>The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.</p> <p>The maximum forecast horizon is the lesser of 500 time-steps or 1/4 of the TARGET_TIME_SERIES dataset length. If you are retraining an existing AutoPredictor, then the maximum forecast horizon is the lesser of 500 time-steps or 1/3 of the TARGET_TIME_SERIES dataset length.</p> <p>If you are upgrading to an AutoPredictor or retraining an existing AutoPredictor, you cannot update the forecast horizon parameter. You can meet this requirement by providing longer time-series in the dataset.</p>"
         },
         "ForecastTypes":{
           "shape":"ForecastTypes",
@@ -884,6 +1006,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Optional metadata to help you categorize and organize your predictors. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>"
+        },
+        "MonitorConfig":{
+          "shape":"MonitorConfig",
+          "documentation":"<p>The configuration details for predictor monitoring. Provide a name for the monitor resource to enable predictor monitoring.</p> <p>Predictor monitoring allows you to see how your predictor's performance changes over time. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html\">Predictor Monitoring</a>.</p>"
         }
       }
     },
@@ -909,7 +1035,7 @@
         },
         "Domain":{
           "shape":"Domain",
-          "documentation":"<p>The domain associated with the dataset group. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a>CreateDataset</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in training data that you import to a dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires that <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields are present in your data. For more information, see <a>howitworks-datasets-groups</a>.</p>"
+          "documentation":"<p>The domain associated with the dataset group. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html\">CreateDataset</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in training data that you import to a dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires that <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields are present in your data. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html\">Dataset groups</a>.</p>"
         },
         "DatasetArns":{
           "shape":"ArnList",
@@ -948,7 +1074,7 @@
         },
         "DataSource":{
           "shape":"DataSource",
-          "documentation":"<p>The location of the training data to import and an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket.</p> <p>If encryption is used, <code>DataSource</code> must include an AWS Key Management Service (KMS) key and the IAM role must allow Amazon Forecast permission to access the key. The KMS key and IAM role must match those specified in the <code>EncryptionConfig</code> parameter of the <a>CreateDataset</a> operation.</p>"
+          "documentation":"<p>The location of the training data to import and an AWS Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket.</p> <p>If encryption is used, <code>DataSource</code> must include an AWS Key Management Service (KMS) key and the IAM role must allow Amazon Forecast permission to access the key. The KMS key and IAM role must match those specified in the <code>EncryptionConfig</code> parameter of the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html\">CreateDataset</a> operation.</p>"
         },
         "TimestampFormat":{
           "shape":"TimestampFormat",
@@ -996,7 +1122,7 @@
         },
         "Domain":{
           "shape":"Domain",
-          "documentation":"<p>The domain associated with the dataset. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a>CreateDatasetGroup</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in the training data that you import to the dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields to be present in your data. For more information, see <a>howitworks-datasets-groups</a>.</p>"
+          "documentation":"<p>The domain associated with the dataset. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in the training data that you import to the dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields to be present in your data. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html\">Importing datasets</a>.</p>"
         },
         "DatasetType":{
           "shape":"DatasetType",
@@ -1008,7 +1134,7 @@
         },
         "Schema":{
           "shape":"Schema",
-          "documentation":"<p>The schema for the dataset. The schema attributes and their order must match the fields in your data. The dataset <code>Domain</code> and <code>DatasetType</code> that you choose determine the minimum required fields in your training data. For information about the required fields for a specific dataset domain and type, see <a>howitworks-domains-ds-types</a>.</p>"
+          "documentation":"<p>The schema for the dataset. The schema attributes and their order must match the fields in your data. The dataset <code>Domain</code> and <code>DatasetType</code> that you choose determine the minimum required fields in your training data. For information about the required fields for a specific dataset domain and type, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/howitworks-domains-ds-types.html\">Dataset Domains and Dataset Types</a>.</p>"
         },
         "EncryptionConfig":{
           "shape":"EncryptionConfig",
@@ -1085,7 +1211,7 @@
         "Schema":{"shape":"Schema"},
         "EnableVisualization":{
           "shape":"Boolean",
-          "documentation":"<p>Create an Expainability visualization that is viewable within the AWS console.</p>"
+          "documentation":"<p>Create an Explainability visualization that is viewable within the AWS console.</p>"
         },
         "StartDateTime":{
           "shape":"LocalDateTime",
@@ -1162,7 +1288,7 @@
         },
         "ForecastTypes":{
           "shape":"ForecastTypes",
-          "documentation":"<p>The quantiles at which probabilistic forecasts are generated. <b>You can currently specify up to 5 quantiles per forecast</b>. Accepted values include <code>0.01 to 0.99</code> (increments of .01 only) and <code>mean</code>. The mean forecast is different from the median (0.50) when the distribution is not symmetric (for example, Beta and Negative Binomial). The default value is <code>[\"0.1\", \"0.5\", \"0.9\"]</code>.</p>"
+          "documentation":"<p>The quantiles at which probabilistic forecasts are generated. <b>You can currently specify up to 5 quantiles per forecast</b>. Accepted values include <code>0.01 to 0.99</code> (increments of .01 only) and <code>mean</code>. The mean forecast is different from the median (0.50) when the distribution is not symmetric (for example, Beta and Negative Binomial). </p> <p>The default quantiles are the quantiles you specified during predictor creation. If you didn't specify quantiles, the default values are <code>[\"0.1\", \"0.5\", \"0.9\"]</code>. </p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1176,6 +1302,36 @@
         "ForecastArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the forecast.</p>"
+        }
+      }
+    },
+    "CreateMonitorRequest":{
+      "type":"structure",
+      "required":[
+        "MonitorName",
+        "ResourceArn"
+      ],
+      "members":{
+        "MonitorName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the monitor resource.</p>"
+        },
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the predictor to monitor.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html\">tags</a> to apply to the monitor resource.</p>"
+        }
+      }
+    },
+    "CreateMonitorResponse":{
+      "type":"structure",
+      "members":{
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource.</p>"
         }
       }
     },
@@ -1349,10 +1505,10 @@
         },
         "LastModificationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When the dataset group was created or last updated from a call to the <a>UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>ListDatasetGroups</code> call.</p>"
+          "documentation":"<p>When the dataset group was created or last updated from a call to the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html\">UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>ListDatasetGroups</code> call.</p>"
         }
       },
-      "documentation":"<p>Provides a summary of the dataset group properties used in the <a>ListDatasetGroups</a> operation. To get the complete set of properties, call the <a>DescribeDatasetGroup</a> operation, and provide the <code>DatasetGroupArn</code>.</p>"
+      "documentation":"<p>Provides a summary of the dataset group properties used in the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasetGroups.html\">ListDatasetGroups</a> operation. To get the complete set of properties, call the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> operation, and provide the <code>DatasetGroupArn</code>.</p>"
     },
     "DatasetGroups":{
       "type":"list",
@@ -1390,7 +1546,7 @@
           "documentation":"<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Provides a summary of the dataset import job properties used in the <a>ListDatasetImportJobs</a> operation. To get the complete set of properties, call the <a>DescribeDatasetImportJob</a> operation, and provide the <code>DatasetImportJobArn</code>.</p>"
+      "documentation":"<p>Provides a summary of the dataset import job properties used in the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasetImportJobs.html\">ListDatasetImportJobs</a> operation. To get the complete set of properties, call the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a> operation, and provide the <code>DatasetImportJobArn</code>.</p>"
     },
     "DatasetImportJobs":{
       "type":"list",
@@ -1421,10 +1577,10 @@
         },
         "LastModificationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>ListDatasets</code> call. After a <a>CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.</p>"
+          "documentation":"<p>When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>ListDatasets</code> call. After a <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.</p>"
         }
       },
-      "documentation":"<p>Provides a summary of the dataset properties used in the <a>ListDatasets</a> operation. To get the complete set of properties, call the <a>DescribeDataset</a> operation, and provide the <code>DatasetArn</code>.</p>"
+      "documentation":"<p>Provides a summary of the dataset properties used in the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasets.html\">ListDatasets</a> operation. To get the complete set of properties, call the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDataset.html\">DescribeDataset</a> operation, and provide the <code>DatasetArn</code>.</p>"
     },
     "DatasetType":{
       "type":"string",
@@ -1505,6 +1661,16 @@
         "ForecastArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the forecast to delete.</p>"
+        }
+      }
+    },
+    "DeleteMonitorRequest":{
+      "type":"structure",
+      "required":["MonitorArn"],
+      "members":{
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource to delete.</p>"
         }
       }
     },
@@ -1615,6 +1781,10 @@
         "ExplainabilityInfo":{
           "shape":"ExplainabilityInfo",
           "documentation":"<p>Provides the status and ARN of the Predictor Explainability.</p>"
+        },
+        "MonitorInfo":{
+          "shape":"MonitorInfo",
+          "documentation":"<p>A object with the Amazon Resource Name (ARN) and status of the monitor resource.</p>"
         }
       }
     },
@@ -1649,7 +1819,7 @@
         },
         "Status":{
           "shape":"Status",
-          "documentation":"<p>The status of the dataset group. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply when you call the <a>UpdateDatasetGroup</a> operation.</p> <note> <p>The <code>Status</code> of the dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor.</p> </note>"
+          "documentation":"<p>The status of the dataset group. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply when you call the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html\">UpdateDatasetGroup</a> operation.</p> <note> <p>The <code>Status</code> of the dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor.</p> </note>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -1657,7 +1827,7 @@
         },
         "LastModificationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When the dataset group was created or last updated from a call to the <a>UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>DescribeDatasetGroup</code> call.</p>"
+          "documentation":"<p>When the dataset group was created or last updated from a call to the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html\">UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>DescribeDatasetGroup</code> call.</p>"
         }
       }
     },
@@ -1779,7 +1949,7 @@
         },
         "Status":{
           "shape":"Status",
-          "documentation":"<p>The status of the dataset. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply while data is imported to the dataset from a call to the <a>CreateDatasetImportJob</a> operation and reflect the status of the dataset import job. For example, when the import job status is <code>CREATE_IN_PROGRESS</code>, the status of the dataset is <code>UPDATE_IN_PROGRESS</code>.</p> <note> <p>The <code>Status</code> of the dataset must be <code>ACTIVE</code> before you can import training data.</p> </note>"
+          "documentation":"<p>The status of the dataset. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply while data is imported to the dataset from a call to the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation and reflect the status of the dataset import job. For example, when the import job status is <code>CREATE_IN_PROGRESS</code>, the status of the dataset is <code>UPDATE_IN_PROGRESS</code>.</p> <note> <p>The <code>Status</code> of the dataset must be <code>ACTIVE</code> before you can import training data.</p> </note>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -1787,7 +1957,7 @@
         },
         "LastModificationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>DescribeDataset</code> call. After a <a>CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.</p>"
+          "documentation":"<p>When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>DescribeDataset</code> call. After a <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.</p>"
         }
       }
     },
@@ -2002,6 +2172,65 @@
         }
       }
     },
+    "DescribeMonitorRequest":{
+      "type":"structure",
+      "required":["MonitorArn"],
+      "members":{
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource to describe.</p>"
+        }
+      }
+    },
+    "DescribeMonitorResponse":{
+      "type":"structure",
+      "members":{
+        "MonitorName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the monitor.</p>"
+        },
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource described.</p>"
+        },
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the auto predictor being monitored.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the monitor resource.</p>"
+        },
+        "LastEvaluationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the latest evaluation completed by the monitor.</p>"
+        },
+        "LastEvaluationState":{
+          "shape":"EvaluationState",
+          "documentation":"<p>The state of the monitor's latest evaluation.</p>"
+        },
+        "Baseline":{
+          "shape":"Baseline",
+          "documentation":"<p>Metrics you can use as a baseline for comparison purposes. Use these values you interpret monitoring results for an auto predictor.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>An error message, if any, for the monitor.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the monitor resource was created.</p>"
+        },
+        "LastModificationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the latest modification to the monitor.</p>"
+        },
+        "EstimatedEvaluationTimeRemainingInMinutes":{
+          "shape":"Long",
+          "documentation":"<p>The estimated number of minutes remaining before the monitor resource finishes its current evaluation.</p>"
+        }
+      }
+    },
     "DescribePredictorBacktestExportJobRequest":{
       "type":"structure",
       "required":["PredictorBacktestExportJobArn"],
@@ -2157,6 +2386,10 @@
         }
       }
     },
+    "Detail":{
+      "type":"string",
+      "max":256
+    },
     "Domain":{
       "type":"string",
       "enum":[
@@ -2246,6 +2479,10 @@
         }
       },
       "documentation":"<p>The results of evaluating an algorithm. Returned as part of the <a>GetAccuracyMetrics</a> response.</p>"
+    },
+    "EvaluationState":{
+      "type":"string",
+      "max":256
     },
     "EvaluationType":{
       "type":"string",
@@ -2908,6 +3145,71 @@
         }
       }
     },
+    "ListMonitorEvaluationsRequest":{
+      "type":"structure",
+      "required":["MonitorArn"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of monitoring results to return.</p>"
+        },
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource to get results from.</p>"
+        },
+        "Filters":{
+          "shape":"Filters",
+          "documentation":"<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. The only valid value is <code>EvaluationState</code>.</p> </li> <li> <p> <code>Value</code> - The value to match. Valid values are only <code>SUCCESS</code> or <code>FAILURE</code>.</p> </li> </ul> <p>For example, to list only successful monitor evaluations, you would specify:</p> <p> <code>\"Filters\": [ { \"Condition\": \"IS\", \"Key\": \"EvaluationState\", \"Value\": \"SUCCESS\" } ]</code> </p>"
+        }
+      }
+    },
+    "ListMonitorEvaluationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.</p>"
+        },
+        "PredictorMonitorEvaluations":{
+          "shape":"PredictorMonitorEvaluations",
+          "documentation":"<p>The monitoring results and predictor events collected by the monitor resource during different windows of time.</p> <p>For information about monitoring see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>. For more information about retrieving monitoring results see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>.</p>"
+        }
+      }
+    },
+    "ListMonitorsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of monitors to include in the response.</p>"
+        },
+        "Filters":{
+          "shape":"Filters",
+          "documentation":"<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. The only valid value is <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all monitors who's status is ACTIVE, you would specify:</p> <p> <code>\"Filters\": [ { \"Condition\": \"IS\", \"Key\": \"Status\", \"Value\": \"ACTIVE\" } ]</code> </p>"
+        }
+      }
+    },
+    "ListMonitorsResponse":{
+      "type":"structure",
+      "members":{
+        "Monitors":{
+          "shape":"Monitors",
+          "documentation":"<p>An array of objects that summarize each monitor's properties.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.</p>"
+        }
+      }
+    },
     "ListPredictorBacktestExportJobsRequest":{
       "type":"structure",
       "members":{
@@ -2999,6 +3301,28 @@
       "min":1
     },
     "Message":{"type":"string"},
+    "MetricName":{
+      "type":"string",
+      "max":256
+    },
+    "MetricResult":{
+      "type":"structure",
+      "members":{
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "MetricValue":{
+          "shape":"Double",
+          "documentation":"<p>The value for the metric.</p>"
+        }
+      },
+      "documentation":"<p>An individual metric Forecast calculated when monitoring predictor usage. You can compare the value for this metric to the metric's value in the <a>Baseline</a> to see how your predictor's performance is changing.</p> <p>For more information about metrics generated by Forecast see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/metrics.html\">Evaluating Predictor Accuracy</a> </p>"
+    },
+    "MetricResults":{
+      "type":"list",
+      "member":{"shape":"MetricResult"}
+    },
     "Metrics":{
       "type":"structure",
       "members":{
@@ -3022,6 +3346,83 @@
         }
       },
       "documentation":"<p>Provides metrics that are used to evaluate the performance of a predictor. This object is part of the <a>WindowSummary</a> object.</p>"
+    },
+    "MonitorConfig":{
+      "type":"structure",
+      "required":["MonitorName"],
+      "members":{
+        "MonitorName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the monitor resource.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for the predictor monitor.</p>"
+    },
+    "MonitorDataSource":{
+      "type":"structure",
+      "members":{
+        "DatasetImportJobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset import job used to import the data that initiated the monitor evaluation.</p>"
+        },
+        "ForecastArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the forecast the monitor used during the evaluation.</p>"
+        },
+        "PredictorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the predictor resource you are monitoring.</p>"
+        }
+      },
+      "documentation":"<p>The source of the data the monitor used during the evaluation.</p>"
+    },
+    "MonitorInfo":{
+      "type":"structure",
+      "members":{
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the monitor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ACTIVE_STOPPING</code>, <code>ACTIVE_STOPPED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides information about the monitor resource.</p>"
+    },
+    "MonitorSummary":{
+      "type":"structure",
+      "members":{
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource.</p>"
+        },
+        "MonitorName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the monitor resource.</p>"
+        },
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the predictor being monitored.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the monitor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ACTIVE_STOPPING</code>, <code>ACTIVE_STOPPED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the monitor resource was created.</p>"
+        },
+        "LastModificationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time the monitor resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>STOPPED</code> - When the resource stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the monitor creation finished or failed.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides a summary of the monitor properties used in the <a>ListMonitors</a> operation. To get a complete set of properties, call the <a>DescribeMonitor</a> operation, and provide the listed <code>MonitorArn</code>.</p>"
+    },
+    "Monitors":{
+      "type":"list",
+      "member":{"shape":"MonitorSummary"}
     },
     "Name":{
       "type":"string",
@@ -3108,9 +3509,33 @@
       "type":"list",
       "member":{"shape":"PredictorBacktestExportJobSummary"}
     },
+    "PredictorBaseline":{
+      "type":"structure",
+      "members":{
+        "BaselineMetrics":{
+          "shape":"BaselineMetrics",
+          "documentation":"<p>The initial <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/metrics.html\">accuracy metrics</a> for the predictor. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.</p>"
+        }
+      },
+      "documentation":"<p>Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.</p>"
+    },
     "PredictorEvaluationResults":{
       "type":"list",
       "member":{"shape":"EvaluationResult"}
+    },
+    "PredictorEvent":{
+      "type":"structure",
+      "members":{
+        "Detail":{
+          "shape":"Detail",
+          "documentation":"<p>The type of event. For example, <code>Retrain</code>. A retraining event denotes the timepoint when a predictor was retrained. Any monitor results from before the <code>Datetime</code> are from the previous predictor. Any new metrics are for the newly retrained predictor.</p>"
+        },
+        "Datetime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the event occurred.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about a predictor event, such as a retraining.</p>"
     },
     "PredictorExecution":{
       "type":"structure",
@@ -3141,6 +3566,54 @@
       "member":{"shape":"PredictorExecution"},
       "max":5,
       "min":1
+    },
+    "PredictorMonitorEvaluation":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{"shape":"Arn"},
+        "MonitorArn":{"shape":"Arn"},
+        "EvaluationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates when the monitor evaluation was started. </p>"
+        },
+        "EvaluationState":{
+          "shape":"EvaluationState",
+          "documentation":"<p>The status of the monitor evaluation. The state can be <code>SUCCESS</code> or <code>FAILURE</code>.</p>"
+        },
+        "WindowStartDatetime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates the start of the window that is used for monitor evaluation.</p>"
+        },
+        "WindowEndDatetime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp that indicates the end of the window that is used for monitor evaluation.</p>"
+        },
+        "PredictorEvent":{
+          "shape":"PredictorEvent",
+          "documentation":"<p>Provides details about a predictor event, such as a retraining.</p>"
+        },
+        "MonitorDataSource":{
+          "shape":"MonitorDataSource",
+          "documentation":"<p>The source of the data the monitor resource used during the evaluation.</p>"
+        },
+        "MetricResults":{
+          "shape":"MetricResults",
+          "documentation":"<p>A list of metrics Forecast calculated when monitoring a predictor. You can compare the value for each metric in the list to the metric's value in the <a>Baseline</a> to see how your predictor's performance is changing.</p>"
+        },
+        "NumItemsEvaluated":{
+          "shape":"Long",
+          "documentation":"<p>The number of items considered during the evaluation.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>Information about any errors that may have occurred during the monitor evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Describes the results of a monitor evaluation.</p>"
+    },
+    "PredictorMonitorEvaluations":{
+      "type":"list",
+      "member":{"shape":"PredictorMonitorEvaluation"}
     },
     "PredictorSummary":{
       "type":"structure",
@@ -3226,6 +3699,16 @@
       "documentation":"<p>We can't find a resource with that Amazon Resource Name (ARN). Check the ARN and try again.</p>",
       "exception":true
     },
+    "ResumeResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource to resume.</p>"
+        }
+      }
+    },
     "S3Config":{
       "type":"structure",
       "required":[
@@ -3282,10 +3765,10 @@
         },
         "AttributeType":{
           "shape":"AttributeType",
-          "documentation":"<p>The data type of the field.</p>"
+          "documentation":"<p>The data type of the field.</p> <p>For a related time series dataset, other than date, item_id, and forecast dimensions attributes, all attributes should be of numerical type (integer/float).</p>"
         }
       },
-      "documentation":"<p>An attribute of a schema, which defines a dataset field. A schema attribute is required for every field in a dataset. The <a>Schema</a> object contains an array of <code>SchemaAttribute</code> objects.</p>"
+      "documentation":"<p>An attribute of a schema, which defines a dataset field. A schema attribute is required for every field in a dataset. The <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_Schema.html\">Schema</a> object contains an array of <code>SchemaAttribute</code> objects.</p>"
     },
     "SchemaAttributes":{
       "type":"list",
@@ -3352,7 +3835,7 @@
           "documentation":"<p>The number of NAN (not a number) values in the field. <code>CountNanLong</code> is used instead of <code>CountNan</code> if the value is greater than 2,147,483,647.</p>"
         }
       },
-      "documentation":"<p>Provides statistics for each data field imported into to an Amazon Forecast dataset with the <a>CreateDatasetImportJob</a> operation.</p>"
+      "documentation":"<p>Provides statistics for each data field imported into to an Amazon Forecast dataset with the <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> operation.</p>"
     },
     "Status":{
       "type":"string",

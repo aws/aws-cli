@@ -40,9 +40,6 @@ def validate_and_build_instance_fleets(parsed_instance_fleets):
             instance_fleet_config['TargetSpotCapacity'] = instance_fleet['TargetSpotCapacity']
 
         if 'InstanceTypeConfigs' in keys:
-            if 'TargetSpotCapacity' in keys:
-                for instance_type_config in instance_fleet['InstanceTypeConfigs']:
-                    instance_type_config_keys = instance_type_config.keys()
             instance_fleet_config['InstanceTypeConfigs'] = instance_fleet['InstanceTypeConfigs']
 
         if 'LaunchSpecifications' in keys:

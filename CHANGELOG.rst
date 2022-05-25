@@ -3595,6 +3595,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.24.7
+======
+
+* api-change:``ec2``: Stop Protection feature enables customers to protect their instances from accidental stop actions.
+* api-change:``cognito-idp``: Amazon Cognito now supports requiring attribute verification (ex. email and phone number) before update.
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added support for rules that constrain Automatic-ABR rendition selection when generating ABR package ladders.
+* api-change:``networkmanager``: This release adds Multi Account API support for a TGW Global Network, to enable and disable AWSServiceAccess with AwsOrganizations for Network Manager service and dependency CloudFormation StackSets service.
+* api-change:``ivschat``: Doc-only update. For MessageReviewHandler structure, added timeout period in the description of the fallbackResult field
+
+
+1.24.6
+======
+
+* api-change:``forecast``: New APIs for Monitor that help you understand how your predictors perform over time.
+* api-change:``elasticache``: Added support for encryption in transit for Memcached clusters. Customers can now launch Memcached cluster with encryption in transit enabled when using Memcached version 1.6.12 or later.
+* api-change:``personalize``: Adding modelMetrics as part of DescribeRecommender API response for Personalize.
+
+
+1.24.5
+======
+
+* api-change:``comprehend``: Comprehend releases 14 new entity types for DetectPiiEntities and ContainsPiiEntities APIs.
+* api-change:``logs``: Doc-only update to publish the new valid values for log retention
+* enhancement:dependency: Bump upper bound of docutils to <0.17
+
+
 1.24.4
 ======
 

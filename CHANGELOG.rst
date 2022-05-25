@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.7.3
+=====
+
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added support for rules that constrain Automatic-ABR rendition selection when generating ABR package ladders.
+* api-change:``elasticache``: Added support for encryption in transit for Memcached clusters. Customers can now launch Memcached cluster with encryption in transit enabled when using Memcached version 1.6.12 or later.
+* api-change:``logs``: Doc-only update to publish the new valid values for log retention
+* api-change:``comprehend``: Comprehend releases 14 new entity types for DetectPiiEntities and ContainsPiiEntities APIs.
+* api-change:``networkmanager``: This release adds Multi Account API support for a TGW Global Network, to enable and disable AWSServiceAccess with AwsOrganizations for Network Manager service and dependency CloudFormation StackSets service.
+* api-change:``ec2``: Stop Protection feature enables customers to protect their instances from accidental stop actions.
+* api-change:``ivschat``: Doc-only update. For MessageReviewHandler structure, added timeout period in the description of the fallbackResult field
+* api-change:``forecast``: New APIs for Monitor that help you understand how your predictors perform over time.
+* api-change:``cognito-idp``: Amazon Cognito now supports requiring attribute verification (ex. email and phone number) before update.
+* api-change:``personalize``: Adding modelMetrics as part of DescribeRecommender API response for Personalize.
+
+
 2.7.2
 =====
 

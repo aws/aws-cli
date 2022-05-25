@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.24.8
+======
+
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``sagemaker``: Amazon SageMaker Autopilot adds support for manually selecting features from the input dataset using the CreateAutoMLJob API.
+* api-change:``apprunner``: Documentation-only update added for CodeConfiguration.
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``fsx``: This release adds root squash support to FSx for Lustre to restrict root level access from clients by mapping root users to a less-privileged user/group with limited permissions.
+* api-change:``lookoutmetrics``: Adding AthenaSourceConfig for MetricSet APIs to support Athena as a data source.
+* api-change:``voice-id``: VoiceID will now automatically expire Speakers if they haven't been accessed for Enrollment, Re-enrollment or Successful Auth for three years. The Speaker APIs now return a "LastAccessedAt" time for Speakers, and the EvaluateSession API returns "SPEAKER_EXPIRED" Auth Decision for EXPIRED Speakers.
+* api-change:``cloudformation``: Add a new parameter statusReason to DescribeStackSetOperation output for additional details
+
+
 1.24.7
 ======
 

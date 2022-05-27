@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.24.10
+=======
+
+* api-change:``appflow``: Adding the following features/changes: Parquet output that preserves typing from the source connector, Failed executions threshold before deactivation for scheduled flows, increasing max size of access and refresh token from 2048 to 4096
+* api-change:``sagemaker``: Amazon SageMaker Notebook Instances now allows configuration of Instance Metadata Service version and Amazon SageMaker Studio now supports G5 instance types.
+* api-change:``datasync``: AWS DataSync now supports TLS encryption in transit, file system policies and access points for EFS locations.
+* api-change:``emr-serverless``: This release adds support for Amazon EMR Serverless, a serverless runtime environment that simplifies running analytics applications using the latest open source frameworks such as Apache Spark and Apache Hive.
+
+
 1.24.9
 ======
 

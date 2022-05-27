@@ -39,7 +39,7 @@ exists, then a usage error will be printed.
 
 """
 import os
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 
 
 WIZARD_SPEC_DIR = os.path.join(
@@ -56,6 +56,8 @@ class WizardLoader(object):
         if spec_dir is None:
             spec_dir = WIZARD_SPEC_DIR
         self._spec_dir = spec_dir
+
+        self._yaml = YAML(typ='rt')
 
     def list_commands_with_wizards(self):
         """Returns a list of commands with at least one wizard.
@@ -90,7 +92,7 @@ class WizardLoader(object):
                                                             wizard_name))
 
     def _load_yaml(self, contents):
-        data = yaml.load(contents, Loader=yaml.RoundTripLoader)
+        data = self._yaml.load(contents)
         return data
 
     def wizard_exists(self, command_name, wizard_name):

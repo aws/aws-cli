@@ -196,7 +196,7 @@ class TestYAMLStream(BaseAWSCommandParamsTest):
     def assert_yaml_response_equal(self, response, expected):
         with self.assertRaises(ValueError):
             json.loads(response)
-        loaded = yaml.safe_load(response)
+        loaded = self.yaml.load(response)
         self.assertEqual(loaded, expected)
 
     def test_yaml_stream_single_response(self):

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -21,7 +21,7 @@ class BaseSelectTest(BaseAWSCommandParamsTest):
     def assert_yaml_response_equal(self, response, expected):
         with self.assertRaises(ValueError):
             json.loads(response)
-        loaded = yaml.safe_load(response)
+        loaded = self.yaml.load(response)
         self.assertEqual(loaded, expected)
 
 

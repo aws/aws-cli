@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.wizard.factory import create_wizard_app
 
@@ -29,7 +29,8 @@ def create_default_wizard_dev_runner(session):
 
 class WizardLoader(object):
     def load(self, contents):
-        data = yaml.load(contents, Loader=yaml.RoundTripLoader)
+        yaml = YAML(typ="rt")
+        data = yaml.load(contents)
         return data
 
 

@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 
 from botocore.session import Session
 from botocore.paginate import Paginator
@@ -25,7 +25,8 @@ from awscli.testutils import unittest, mock, temporary_file
 
 
 def load_wizard(yaml_str):
-    data = yaml.load(yaml_str, Loader=yaml.RoundTripLoader)
+    yaml = YAML(typ="rt")
+    data = yaml.load(yaml_str)
     return data
 
 

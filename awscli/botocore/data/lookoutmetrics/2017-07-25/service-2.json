@@ -907,6 +907,69 @@
       "max":256,
       "pattern":"arn:([a-z\\d-]+):.*:.*:.*:.+"
     },
+    "AthenaDataCatalog":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "AthenaDatabaseName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_]+"
+    },
+    "AthenaS3ResultsPath":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^s3://[a-z0-9].+$"
+    },
+    "AthenaSourceConfig":{
+      "type":"structure",
+      "members":{
+        "RoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>An IAM role that gives Amazon Lookout for Metrics permission to access the data.</p>"
+        },
+        "DatabaseName":{
+          "shape":"AthenaDatabaseName",
+          "documentation":"<p>The database's name.</p>"
+        },
+        "DataCatalog":{
+          "shape":"AthenaDataCatalog",
+          "documentation":"<p>The database's data catalog.</p>"
+        },
+        "TableName":{
+          "shape":"AthenaTableName",
+          "documentation":"<p>The database's table name.</p>"
+        },
+        "WorkGroupName":{
+          "shape":"AthenaWorkGroupName",
+          "documentation":"<p>The database's work group name.</p>"
+        },
+        "S3ResultsPath":{
+          "shape":"AthenaS3ResultsPath",
+          "documentation":"<p>The database's results path.</p>"
+        },
+        "BackTestConfiguration":{
+          "shape":"BackTestConfiguration",
+          "documentation":"<p>Settings for backtest mode.</p>"
+        }
+      },
+      "documentation":"<p>Details about an Amazon Athena datasource.</p>"
+    },
+    "AthenaTableName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_]+"
+    },
+    "AthenaWorkGroupName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]{1,128}"
+    },
     "AttributeValue":{
       "type":"structure",
       "members":{
@@ -975,6 +1038,17 @@
       "type":"structure",
       "members":{
       }
+    },
+    "BackTestConfiguration":{
+      "type":"structure",
+      "required":["RunBackTestMode"],
+      "members":{
+        "RunBackTestMode":{
+          "shape":"Boolean",
+          "documentation":"<p>Run a backtest instead of monitoring new data.</p>"
+        }
+      },
+      "documentation":"<p>Settings for backtest mode.</p>"
     },
     "BinaryAttributeValue":{"type":"string"},
     "BinaryListAttributeValue":{
@@ -2309,22 +2383,26 @@
         "S3SourceConfig":{"shape":"S3SourceConfig"},
         "AppFlowConfig":{
           "shape":"AppFlowConfig",
-          "documentation":"<p>An object containing information about the AppFlow configuration.</p>"
+          "documentation":"<p>Details about an AppFlow datasource.</p>"
         },
         "CloudWatchConfig":{
           "shape":"CloudWatchConfig",
-          "documentation":"<p>An object containing information about the Amazon CloudWatch monitoring configuration.</p>"
+          "documentation":"<p>Details about an Amazon CloudWatch monitoring datasource.</p>"
         },
         "RDSSourceConfig":{
           "shape":"RDSSourceConfig",
-          "documentation":"<p>An object containing information about the Amazon Relational Database Service (RDS) configuration.</p>"
+          "documentation":"<p>Details about an Amazon Relational Database Service (RDS) datasource.</p>"
         },
         "RedshiftSourceConfig":{
           "shape":"RedshiftSourceConfig",
-          "documentation":"<p>An object containing information about the Amazon Redshift database configuration.</p>"
+          "documentation":"<p>Details about an Amazon Redshift database datasource.</p>"
+        },
+        "AthenaSourceConfig":{
+          "shape":"AthenaSourceConfig",
+          "documentation":"<p>Details about an Amazon Athena datasource.</p>"
         }
       },
-      "documentation":"<p>Contains information about source data used to generate a metric.</p>"
+      "documentation":"<p>Contains information about source data used to generate metrics.</p>"
     },
     "MetricValue":{"type":"double"},
     "MetricValueList":{
@@ -2554,7 +2632,7 @@
         },
         "SnsFormat":{
           "shape":"SnsFormat",
-          "documentation":"<p>The text format for alerts.</p>"
+          "documentation":"<p>The format of the SNS topic.</p>"
         }
       },
       "documentation":"<p>Contains information about the SNS topic to which you want to send your alerts and the IAM role that has access to that topic.</p>"

@@ -609,7 +609,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Starts a transform job. A transform job uses a trained model to get inferences on a dataset and saves these results to an Amazon S3 location that you specify.</p> <p>To perform batch transformations, you create a transform job and use the data that you have readily available.</p> <p>In the request body, you provide the following:</p> <ul> <li> <p> <code>TransformJobName</code> - Identifies the transform job. The name must be unique within an Amazon Web Services Region in an Amazon Web Services account.</p> </li> <li> <p> <code>ModelName</code> - Identifies the model to use. <code>ModelName</code> must be the name of an existing Amazon SageMaker model in the same Amazon Web Services Region and Amazon Web Services account. For information on creating a model, see <a>CreateModel</a>.</p> </li> <li> <p> <code>TransformInput</code> - Describes the dataset to be transformed and the Amazon S3 location where it is stored.</p> </li> <li> <p> <code>TransformOutput</code> - Identifies the Amazon S3 location where you want Amazon SageMaker to save the results from the transform job.</p> </li> <li> <p> <code>TransformResources</code> - Identifies the ML compute instances for the transform job.</p> </li> </ul> <p>For more information about how batch transformation works, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html\">Batch Transform</a>.</p>"
+      "documentation":"<p>Starts a transform job. A transform job uses a trained model to get inferences on a dataset and saves these results to an Amazon S3 location that you specify.</p> <p>To perform batch transformations, you create a transform job and use the data that you have readily available.</p> <p>In the request body, you provide the following:</p> <ul> <li> <p> <code>TransformJobName</code> - Identifies the transform job. The name must be unique within an Amazon Web Services Region in an Amazon Web Services account.</p> </li> <li> <p> <code>ModelName</code> - Identifies the model to use. <code>ModelName</code> must be the name of an existing Amazon SageMaker model in the same Amazon Web Services Region and Amazon Web Services account. For information on creating a model, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModel.html\">CreateModel</a>.</p> </li> <li> <p> <code>TransformInput</code> - Describes the dataset to be transformed and the Amazon S3 location where it is stored.</p> </li> <li> <p> <code>TransformOutput</code> - Identifies the Amazon S3 location where you want Amazon SageMaker to save the results from the transform job.</p> </li> <li> <p> <code>TransformResources</code> - Identifies the ML compute instances for the transform job.</p> </li> </ul> <p>For more information about how batch transformation works, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html\">Batch Transform</a>.</p>"
     },
     "CreateTrial":{
       "name":"CreateTrial",
@@ -4054,6 +4054,16 @@
       },
       "documentation":"<p>Information about a candidate produced by an AutoML training job, including its status, steps, and other properties.</p>"
     },
+    "AutoMLCandidateGenerationConfig":{
+      "type":"structure",
+      "members":{
+        "FeatureSpecificationS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>A URL to the Amazon S3 data source containing selected features from the input data source to run an Autopilot job (optional). This file should be in json format as shown below: </p> <p> <code>{ \"FeatureAttributeNames\":[\"col1\", \"col2\", ...] }</code>.</p> <p>The key name <code>FeatureAttributeNames</code> is fixed. The values listed in <code>[\"col1\", \"col2\", ...]</code> is case sensitive and should be a list of strings containing unique values that are a subset of the column names in the input data. The list of columns provided must not include the target column.</p>"
+        }
+      },
+      "documentation":"<p>Stores the config information for how a candidate is generated (optional).</p>"
+    },
     "AutoMLCandidateStep":{
       "type":"structure",
       "required":[
@@ -4106,7 +4116,7 @@
         },
         "ChannelType":{
           "shape":"AutoMLChannelType",
-          "documentation":"<p>The channel type (optional) is an enum string. The default value is <code>training</code>. Channels for training and validation must share the same <code>ContentType</code> and <code>TargetAttributeName</code>.</p>"
+          "documentation":"<p>The channel type (optional) is an <code>enum</code> string. The default value is <code>training</code>. Channels for training and validation must share the same <code>ContentType</code> and <code>TargetAttributeName</code>. For information on specifying training and validation channel types, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-datasets-problem-types.html#autopilot-data-sources-training-or-validation\"> <code>How to specify training and validation datasets</code> </a>.</p>"
         }
       },
       "documentation":"<p>A channel is a named input source that training algorithms can consume. The validation dataset size is limited to less than 2 GB. The training dataset size must be less than 100 GB. For more information, see .</p> <note> <p>A validation dataset must contain the same headers as the training dataset.</p> </note> <p/>"
@@ -4161,7 +4171,7 @@
       "members":{
         "ValidationFraction":{
           "shape":"ValidationFraction",
-          "documentation":"<p>The validation fraction (optional) is a float that specifies the portion of the training dataset to be used for validation. The default value is 0.2, and values can range from 0 to 1. We recommend setting this value to be less than 0.5.</p>"
+          "documentation":"<p>The validation fraction (optional) is a float that specifies the portion of the training dataset to be used for validation. The default value is 0.2, and values must be greater than 0 and less than 1. We recommend setting this value to be less than 0.5.</p>"
         }
       },
       "documentation":"<p>This structure specifies how to split the data into train and test datasets. The validation and training datasets must contain the same headers. The validation dataset must be less than 2 GB in size.</p>"
@@ -4173,7 +4183,7 @@
     "AutoMLInputDataConfig":{
       "type":"list",
       "member":{"shape":"AutoMLChannel"},
-      "max":20,
+      "max":2,
       "min":1
     },
     "AutoMLJobArn":{
@@ -4228,6 +4238,10 @@
         "DataSplitConfig":{
           "shape":"AutoMLDataSplitConfig",
           "documentation":"<p>The configuration for splitting the input training dataset.</p> <p>Type: AutoMLDataSplitConfig</p>"
+        },
+        "CandidateGenerationConfig":{
+          "shape":"AutoMLCandidateGenerationConfig",
+          "documentation":"<p>The configuration for generating a candidate for an AutoML job (optional). </p>"
         }
       },
       "documentation":"<p>A collection of settings used for an AutoML job.</p>"
@@ -4788,14 +4802,14 @@
       "members":{
         "CsvContentTypes":{
           "shape":"CsvContentTypes",
-          "documentation":"<p/>"
+          "documentation":"<p>The list of all content type headers that SageMaker will treat as CSV and capture accordingly.</p>"
         },
         "JsonContentTypes":{
           "shape":"JsonContentTypes",
-          "documentation":"<p/>"
+          "documentation":"<p>The list of all content type headers that SageMaker will treat as JSON and capture accordingly.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>Configuration specifying how to treat different headers. If no headers are specified SageMaker will by default base64 encode when capturing the data.</p>"
     },
     "CaptureMode":{
       "type":"string",
@@ -4810,10 +4824,10 @@
       "members":{
         "CaptureMode":{
           "shape":"CaptureMode",
-          "documentation":"<p/>"
+          "documentation":"<p>Specify the boundary of data to capture.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>Specifies data Model Monitor will capture.</p>"
     },
     "CaptureOptionList":{
       "type":"list",
@@ -5801,7 +5815,7 @@
         },
         "InputDataConfig":{
           "shape":"AutoMLInputDataConfig",
-          "documentation":"<p>An array of channel objects that describes the input data and its location. Each channel is a named input source. Similar to <code>InputDataConfig</code> supported by . Format(s) supported: CSV. Minimum of 500 rows.</p>"
+          "documentation":"<p>An array of channel objects that describes the input data and its location. Each channel is a named input source. Similar to <code>InputDataConfig</code> supported by . Format(s) supported: CSV, Parquet. A minimum of 500 rows is required for the training dataset. There is not a minimum number of rows required for the validation dataset.</p>"
         },
         "OutputDataConfig":{
           "shape":"AutoMLOutputDataConfig",
@@ -5809,7 +5823,7 @@
         },
         "ProblemType":{
           "shape":"ProblemType",
-          "documentation":"<p>Defines the type of supervised learning available for the candidates. Options include: <code>BinaryClassification</code>, <code>MulticlassClassification</code>, and <code>Regression</code>. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-problem-types.html\"> Amazon SageMaker Autopilot problem types and algorithm support</a>.</p>"
+          "documentation":"<p>Defines the type of supervised learning available for the candidates. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-problem-types.html\"> Amazon SageMaker Autopilot problem types and algorithm support</a>.</p>"
         },
         "AutoMLJobObjective":{
           "shape":"AutoMLJobObjective",
@@ -5817,7 +5831,7 @@
         },
         "AutoMLJobConfig":{
           "shape":"AutoMLJobConfig",
-          "documentation":"<p>Contains <code>CompletionCriteria</code> and <code>SecurityConfig</code> settings for the AutoML job.</p>"
+          "documentation":"<p>A collection of settings used to configure an AutoML job.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
@@ -6893,7 +6907,7 @@
         },
         "Task":{
           "shape":"String",
-          "documentation":"<p>The machine learning task your model package accomplishes. Common machine learning tasks include object detection and image classification.</p>"
+          "documentation":"<p>The machine learning task your model package accomplishes. Common machine learning tasks include object detection and image classification. The following tasks are supported by Inference Recommender: <code>\"IMAGE_CLASSIFICATION\"</code> | <code>\"OBJECT_DETECTION\"</code> | <code>\"TEXT_GENERATION\"</code> |<code>\"IMAGE_SEGMENTATION\"</code> | <code>\"FILL_MASK\"</code> | <code>\"CLASSIFICATION\"</code> | <code>\"REGRESSION\"</code> | <code>\"OTHER\"</code>.</p> <p>Specify \"OTHER\" if none of the tasks listed fit your use case.</p>"
         },
         "SamplePayloadUrl":{
           "shape":"S3Uri",
@@ -7807,30 +7821,30 @@
       "members":{
         "EnableCapture":{
           "shape":"EnableCapture",
-          "documentation":"<p/>"
+          "documentation":"<p>Whether data capture should be enabled or disabled (defaults to enabled).</p>"
         },
         "InitialSamplingPercentage":{
           "shape":"SamplingPercentage",
-          "documentation":"<p/>"
+          "documentation":"<p>The percentage of requests SageMaker will capture. A lower value is recommended for Endpoints with high traffic.</p>"
         },
         "DestinationS3Uri":{
           "shape":"DestinationS3Uri",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon S3 location used to capture the data.</p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint.</p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul>"
         },
         "CaptureOptions":{
           "shape":"CaptureOptionList",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies data Model Monitor will capture. You can configure whether to collect only input, only output, or both</p>"
         },
         "CaptureContentTypeHeader":{
           "shape":"CaptureContentTypeHeader",
-          "documentation":"<p/>"
+          "documentation":"<p>Configuration specifying how to treat different headers. If no headers are specified SageMaker will by default base64 encode when capturing the data.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>Configuration to control how SageMaker captures inference data.</p>"
     },
     "DataCaptureConfigSummary":{
       "type":"structure",
@@ -7844,26 +7858,26 @@
       "members":{
         "EnableCapture":{
           "shape":"EnableCapture",
-          "documentation":"<p/>"
+          "documentation":"<p>Whether data capture is enabled or disabled.</p>"
         },
         "CaptureStatus":{
           "shape":"CaptureStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>Whether data capture is currently functional.</p>"
         },
         "CurrentSamplingPercentage":{
           "shape":"SamplingPercentage",
-          "documentation":"<p/>"
+          "documentation":"<p>The percentage of requests being captured by your Endpoint.</p>"
         },
         "DestinationS3Uri":{
           "shape":"DestinationS3Uri",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon S3 location being used to capture the data.</p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p/>"
+          "documentation":"<p>The KMS key being used to encrypt the data in Amazon S3.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The currently active data capture configuration used by your Endpoint.</p>"
     },
     "DataCatalogConfig":{
       "type":"structure",
@@ -18641,7 +18655,7 @@
         },
         "StandardMetricName":{
           "shape":"AutoMLMetricExtendedEnum",
-          "documentation":"<p>The name of the standard metric.</p>"
+          "documentation":"<p>The name of the standard metric. </p> <note> <p>For definitions of the standard metrics, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-metrics\"> <code>Autopilot candidate metrics</code> </a>.</p> </note>"
         }
       },
       "documentation":"<p>Information about the metric for a candidate produced by an AutoML job.</p>"
@@ -25351,7 +25365,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt the model artifacts at rest using Amazon S3 server-side encryption. The <code>KmsKeyId</code> can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul> <p>If you don't provide a KMS key ID, Amazon SageMaker uses the default KMS key for Amazon S3 for your role's account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html\">KMS-Managed Encryption Keys</a> in the <i>Amazon Simple Storage Service Developer Guide.</i> </p> <p>The KMS key policy must grant permission to the IAM role that you specify in your <a>CreateModel</a> request. For more information, see <a href=\"http://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\">Using Key Policies in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p>"
+          "documentation":"<p>The Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt the model artifacts at rest using Amazon S3 server-side encryption. The <code>KmsKeyId</code> can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul> <p>If you don't provide a KMS key ID, Amazon SageMaker uses the default KMS key for Amazon S3 for your role's account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html\">KMS-Managed Encryption Keys</a> in the <i>Amazon Simple Storage Service Developer Guide.</i> </p> <p>The KMS key policy must grant permission to the IAM role that you specify in your <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModel.html\">CreateModel</a> request. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\">Using Key Policies in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Describes the results of a transform job.</p>"

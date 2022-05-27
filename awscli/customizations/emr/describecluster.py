@@ -42,14 +42,6 @@ class DescribeCluster(Command):
             if describe_cluster.get('InstanceCollectionType') == constants.INSTANCE_FLEET_TYPE:
                 is_fleet_based_cluster = True
 
-            if 'Ec2InstanceAttributes' in describe_cluster:
-                ec2_instance_attr_keys = \
-                    describe_cluster['Ec2InstanceAttributes'].keys()
-                ec2_instance_attr = \
-                    describe_cluster['Ec2InstanceAttributes']
-        else:
-            ec2_instance_attr_keys = {}
-
         if is_fleet_based_cluster:
             list_instance_fleets_result = self._call(
                 self._session, 'list_instance_fleets', parameters,

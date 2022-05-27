@@ -38,7 +38,7 @@ class CLIDocumentEventHandler(object):
 
     def _build_arg_table_groups(self, help_command):
         arg_groups = {}
-        for name, arg in help_command.arg_table.items():
+        for arg in help_command.arg_table.values():
             if arg.group_name is not None:
                 arg_groups.setdefault(arg.group_name, []).append(arg)
         return arg_groups

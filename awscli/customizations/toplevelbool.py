@@ -58,7 +58,7 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
         'operation-args-parsed.ec2.*',
         partial(validate_boolean_mutex_groups,
                 boolean_pairs=boolean_pairs))
-    for key, value in list(argument_table.items()):
+    for value in list(argument_table.values()):
         if hasattr(value, 'argument_model'):
             arg_model = value.argument_model
             if _qualifies_for_simplification(arg_model):

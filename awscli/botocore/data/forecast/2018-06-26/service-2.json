@@ -660,7 +660,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of the monitoring evaluation results and predictor events collected by the monitor resource during different windows of time.</p> <p>For information about monitoring see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>. For more information about retrieving monitoring results see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>.</p>",
+      "documentation":"<p>Returns a list of the monitoring evaluation results and predictor events collected by the monitor resource during different windows of time.</p> <p>For information about monitoring see <a>predictor-monitoring</a>. For more information about retrieving monitoring results see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html\">Viewing Monitoring Results</a>.</p>",
       "idempotent":true
     },
     "ListMonitors":{
@@ -1010,6 +1010,10 @@
         "MonitorConfig":{
           "shape":"MonitorConfig",
           "documentation":"<p>The configuration details for predictor monitoring. Provide a name for the monitor resource to enable predictor monitoring.</p> <p>Predictor monitoring allows you to see how your predictor's performance changes over time. For more information, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html\">Predictor Monitoring</a>.</p>"
+        },
+        "TimeAlignmentBoundary":{
+          "shape":"TimeAlignmentBoundary",
+          "documentation":"<p>The time boundary Forecast uses to align and aggregate any data that doesn't align with your forecast frequency. Provide the unit of time and the time boundary as a key value pair. For more information on specifying a time boundary, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary\">Specifying a Time Boundary</a>. If you don't provide a time boundary, Forecast uses a set of <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries\">Default Time Boundaries</a>.</p>"
         }
       }
     },
@@ -1594,6 +1598,23 @@
       "type":"list",
       "member":{"shape":"DatasetSummary"}
     },
+    "DayOfMonth":{
+      "type":"integer",
+      "max":28,
+      "min":1
+    },
+    "DayOfWeek":{
+      "type":"string",
+      "enum":[
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    },
     "DeleteDatasetGroupRequest":{
       "type":"structure",
       "required":["DatasetGroupArn"],
@@ -1785,6 +1806,10 @@
         "MonitorInfo":{
           "shape":"MonitorInfo",
           "documentation":"<p>A object with the Amazon Resource Name (ARN) and status of the monitor resource.</p>"
+        },
+        "TimeAlignmentBoundary":{
+          "shape":"TimeAlignmentBoundary",
+          "documentation":"<p>The time boundary Forecast uses when aggregating data.</p>"
         }
       }
     },
@@ -2855,6 +2880,11 @@
         }
       }
     },
+    "Hour":{
+      "type":"integer",
+      "max":23,
+      "min":0
+    },
     "HyperParameterTuningJobConfig":{
       "type":"structure",
       "members":{
@@ -3424,6 +3454,23 @@
       "type":"list",
       "member":{"shape":"MonitorSummary"}
     },
+    "Month":{
+      "type":"string",
+      "enum":[
+        "JANUARY",
+        "FEBRUARY",
+        "MARCH",
+        "APRIL",
+        "MAY",
+        "JUNE",
+        "JULY",
+        "AUGUST",
+        "SEPTEMBER",
+        "OCTOBER",
+        "NOVEMBER",
+        "DECEMBER"
+      ]
+    },
     "Name":{
       "type":"string",
       "max":63,
@@ -3570,8 +3617,14 @@
     "PredictorMonitorEvaluation":{
       "type":"structure",
       "members":{
-        "ResourceArn":{"shape":"Arn"},
-        "MonitorArn":{"shape":"Arn"},
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to monitor.</p>"
+        },
+        "MonitorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitor resource.</p>"
+        },
         "EvaluationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp that indicates when the monitor evaluation was started. </p>"
@@ -3975,6 +4028,28 @@
     "TestWindows":{
       "type":"list",
       "member":{"shape":"WindowSummary"}
+    },
+    "TimeAlignmentBoundary":{
+      "type":"structure",
+      "members":{
+        "Month":{
+          "shape":"Month",
+          "documentation":"<p>The month to use for time alignment during aggregation. The month must be in uppercase.</p>"
+        },
+        "DayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month to use for time alignment during aggregation.</p>"
+        },
+        "DayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of week to use for time alignment during aggregation. The day must be in uppercase.</p>"
+        },
+        "Hour":{
+          "shape":"Hour",
+          "documentation":"<p>The hour of day to use for time alignment during aggregation.</p>"
+        }
+      },
+      "documentation":"<p>The time boundary Forecast uses to align and aggregate your data to match your forecast frequency. Provide the unit of time and the time boundary as a key value pair. If you don't provide a time boundary, Forecast uses a set of <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries\">Default Time Boundaries</a>. </p> <p>For more information about aggregation, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html\">Data Aggregation for Different Forecast Frequencies</a>. For more information setting a custom time boundary, see <a href=\"https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary\">Specifying a Time Boundary</a>. </p>"
     },
     "TimePointGranularity":{
       "type":"string",

@@ -20,6 +20,8 @@ This command can upload local artifacts referenced in the following places:
     - ``DefinitionS3Location`` property for the ``AWS::AppSync::GraphQLSchema`` resource
     - ``RequestMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
     - ``ResponseMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
+    - ``RequestMappingTemplateS3Location`` property for the ``AWS::AppSync::FunctionConfiguration`` resource
+    - ``ResponseMappingTemplateS3Location`` property for the ``AWS::AppSync::FunctionConfiguration`` resource
     - ``DefinitionUri`` property for the ``AWS::Serverless::Api`` resource
     - ``Location`` parameter for the ``AWS::Include`` transform
     - ``SourceBundle`` property for the ``AWS::ElasticBeanstalk::ApplicationVersion`` resource

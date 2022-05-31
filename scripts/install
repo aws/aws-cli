@@ -20,13 +20,13 @@ PACKAGES_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'packages')
 INSTALL_DIR = os.path.expanduser(os.path.join(
     '~', '.local', 'lib', 'aws'))
-GTE_PY37 = sys.version_info[:2] >= (3, 7)
 UNSUPPORTED_PYTHON = (
     (2,6),
     (2,7),
     (3,3),
     (3,4),
     (3,5),
+    (3,6),
 )
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
@@ -59,7 +59,8 @@ def _build_deprecations():
     }
 
     return {
-        (3, 6): py_36_params
+        # Example for future deprecations
+        # (3, 6): py_36_params
     }
 
 
@@ -112,24 +113,6 @@ def _create_virtualenv_internal(location, working_dir):
     # There's a bug with sys.executable on external virtualenv
     # that causes installation failures.
     run('%s -m venv %s' % (sys.executable, location))
-
-
-def _create_virtualenv_external(location, working_dir):
-    # working_dir is used (generally somewhere in /tmp) so that we
-    # don't modify the install/packages directories.
-    with cd(PACKAGES_DIR):
-        venv = _get_venv_package_tarball('.')
-        compressed = tarfile.open(venv)
-        compressed.extractall(path=working_dir)
-        compressed.close()
-    with cd(working_dir):
-        # We know that virtualenv is the only dir in this directory
-        # so we can listdir()[0] it.
-        with cd(os.listdir('.')[0]):
-            run(('%s virtualenv.py --no-download '
-                 '--python %s %s') % (sys.executable,
-                                      sys.executable,
-                                      location))
 
 
 def _get_package_tarball(package_dir, package_prefix):
@@ -224,7 +207,7 @@ def main():
     if py_version in UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
             "Unsupported Python version detected: Python {}.{}\n"
-            "To continue using this installer you must use Python 3.6 "
+            "To continue using this installer you must use Python 3.7 "
             "or later.\n"
             "For more information see the following blog post: "
             "https://aws.amazon.com/blogs/developer/announcing-end-"
@@ -267,10 +250,7 @@ def main():
         shutil.rmtree(working_dir)
 
 
-if GTE_PY37:
-    create_virtualenv = _create_virtualenv_internal
-else:
-    create_virtualenv = _create_virtualenv_external
+create_virtualenv = _create_virtualenv_internal
 
 
 if __name__ == '__main__':

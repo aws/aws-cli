@@ -497,6 +497,15 @@ class GlueJobCommandScriptLocationResource(Resource):
     PROPERTY_NAME = "Command.ScriptLocation"
 
 
+class CloudFormationStacksetResource(CloudFormationStackResource):
+    """
+    Represents CloudFormation::Stackset Resource that can refer to a
+    stack template via TemplateURL property.
+    """
+
+    RESOURCE_TYPE = "AWS::CloudFormation::StackSet"
+    PROPERTY_NAME = "TemplateURL"
+
 RESOURCES_EXPORT_LIST = [
     ServerlessFunctionResource,
     ServerlessApiResource,
@@ -509,6 +518,7 @@ RESOURCES_EXPORT_LIST = [
     LambdaFunctionResource,
     ElasticBeanstalkApplicationVersion,
     CloudFormationStackResource,
+    CloudFormationStacksetResource,
     ServerlessApplicationResource,
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,

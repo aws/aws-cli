@@ -27,7 +27,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     AppSyncFunctionConfigurationRequestTemplateResource, \
     AppSyncFunctionConfigurationResponseTemplateResource, \
     GlueJobCommandScriptLocationResource, \
-    StepFunctionsStateMachineDefinitionResource
+    StepFunctionsStateMachineDefinitionResource, \
+    CloudFormationStacksetResource
 
 
 VALID_CASES = [
@@ -730,6 +731,37 @@ class TestArtifactExporter(unittest.TestCase):
             stack_resource.export(resource_id, resource_dict, parent_dir)
 
             self.assertEqual(resource_dict[property_name], result_path_style_s3_url)
+
+            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
+            template_instance_mock.export.assert_called_once_with()
+            self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
+            self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.Template")
+    def test_export_cloudformation_stackset(self, TemplateMock):
+        stackset_resource = CloudFormationStacksetResource(self.s3_uploader_mock)
+
+        resource_id = "id"
+        property_name = stackset_resource.PROPERTY_NAME
+        exported_template_dict = {"foo": "bar"}
+        result_s3_url = "s3://hello/world"
+        result_path_style_s3_url = "http://s3.amazonws.com/hello/world"
+
+        template_instance_mock = mock.Mock()
+        TemplateMock.return_value = template_instance_mock
+        template_instance_mock.export.return_value = exported_template_dict
+
+        self.s3_uploader_mock.upload_with_dedup.return_value = result_s3_url
+        self.s3_uploader_mock.to_path_style_s3_url.return_value = result_path_style_s3_url
+
+        with tempfile.NamedTemporaryFile() as handle:
+            template_path = handle.name
+            resource_dict = {property_name: template_path}
+            parent_dir = tempfile.gettempdir()
+
+            stackset_resource.export(resource_id, resource_dict, parent_dir)
+
+            self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
 
             TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
             template_instance_mock.export.assert_called_once_with()

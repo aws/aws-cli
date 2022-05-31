@@ -165,8 +165,9 @@ def pip_install_packages(install_dir):
 
     with cd(PACKAGES_DIR):
         run(
-            f'{python} -m pip install {INSTALL_ARGS} '
-            f'--find-links file://{PACKAGES_DIR} {cli_tarball}'
+            '{} -m pip install {} --find-links file://{} {}'.format(
+                python, INSTALL_ARGS, PACKAGES_DIR, cli_tarball
+            )
         )
 
 
@@ -180,13 +181,17 @@ def _install_setup_deps(python, setup_package_dir):
         setup_package_dir, 'setuptools_scm'
     )
     run(
-        f'{python} -m pip install --no-binary :all: --no-cache-dir --no-index '
-        f'--find-links file://{setup_package_dir} {setuptools_scm_tarball}'
+        (
+            '{} -m pip install --no-binary :all: --no-cache-dir --no-index '
+            '--find-links file://{} {}'
+        ).format(python, setup_package_dir, setuptools_scm_tarball)
     )
     wheel_tarball = _get_package_tarball(setup_package_dir, 'wheel')
     run(
-        f'{python} -m pip install --no-binary :all: --no-cache-dir --no-index '
-        f'--find-links file://{setup_package_dir} {wheel_tarball}'
+        (
+            '{} -m pip install --no-binary :all: --no-cache-dir --no-index '
+            '--find-links file://{} {}'
+        ).format(python, setup_package_dir, wheel_tarball)
     )
 
 

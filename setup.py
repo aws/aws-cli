@@ -24,9 +24,9 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.26.10',
+    'botocore==1.27.0',
     'docutils>=0.10,<0.17',
-    's3transfer>=0.5.0,<0.6.0',
+    's3transfer>=0.6.0,<0.7.0',
     'PyYAML>=3.10,<5.5',
     'colorama>=0.2.5,<0.4.5',
     'rsa>=3.1.2,<4.8',
@@ -51,7 +51,7 @@ setup_options = dict(
     install_requires=install_requires,
     extras_require={},
     license="Apache License 2.0",
-    python_requires=">= 3.6",
+    python_requires=">= 3.7",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -60,7 +60,6 @@ setup_options = dict(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',

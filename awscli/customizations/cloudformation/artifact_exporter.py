@@ -427,6 +427,15 @@ class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
     PACKAGE_NULL_PROPERTY = False
 
 
+class ServerlessStateMachineDefinitionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Serverless::StateMachine"
+    PROPERTY_NAME = "DefinitionUri"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "Version"
+    PACKAGE_NULL_PROPERTY = False
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
@@ -498,6 +507,20 @@ class GlueJobCommandScriptLocationResource(Resource):
     PROPERTY_NAME = "Command.ScriptLocation"
 
 
+class CodeCommitRepositoryS3Resource(ResourceWithS3UrlDict):
+    """
+    Represents CodeCommit::Repository resource.
+    """
+    RESOURCE_TYPE = "AWS::CodeCommit::Repository"
+    PROPERTY_NAME = "Code.S3"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "ObjectVersion"
+    # Don't package the directory if S3 is omitted.
+    PACKAGE_NULL_PROPERTY = False
+    FORCE_ZIP = True
+
+
 RESOURCES_EXPORT_LIST = [
     ServerlessFunctionResource,
     ServerlessApiResource,
@@ -514,7 +537,9 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
-    StepFunctionsStateMachineDefinitionResource
+    StepFunctionsStateMachineDefinitionResource,
+    ServerlessStateMachineDefinitionResource,
+    CodeCommitRepositoryS3Resource
 ]
 
 METADATA_EXPORT_LIST = [

@@ -3288,11 +3288,11 @@
       "members":{
         "TrainingImage":{
           "shape":"AlgorithmImage",
-          "documentation":"<p>The registry path of the Docker image that contains the training algorithm. For information about docker registry paths for built-in algorithms, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-algo-docker-registry-paths.html\">Algorithms Provided by Amazon SageMaker: Common Parameters</a>. SageMaker supports both <code>registry/repository[:tag]</code> and <code>registry/repository[@digest]</code> image path formats. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html\">Using Your Own Algorithms with Amazon SageMaker</a>.</p>"
+          "documentation":"<p>The registry path of the Docker image that contains the training algorithm. For information about docker registry paths for SageMaker built-in algorithms, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-algo-docker-registry-paths.html\">Docker Registry Paths and Example Code</a> in the <i>Amazon SageMaker developer guide</i>. SageMaker supports both <code>registry/repository[:tag]</code> and <code>registry/repository[@digest]</code> image path formats. For more information about using your custom training container, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html\">Using Your Own Algorithms with Amazon SageMaker</a>.</p> <note> <p>You must specify either the algorithm name to the <code>AlgorithmName</code> parameter or the image URI of the algorithm container to the <code>TrainingImage</code> parameter.</p> <p>For more information, see the note in the <code>AlgorithmName</code> parameter description.</p> </note>"
         },
         "AlgorithmName":{
           "shape":"ArnOrName",
-          "documentation":"<p>The name of the algorithm resource to use for the training job. This must be an algorithm resource that you created or subscribe to on Amazon Web Services Marketplace. If you specify a value for this parameter, you can't specify a value for <code>TrainingImage</code>.</p>"
+          "documentation":"<p>The name of the algorithm resource to use for the training job. This must be an algorithm resource that you created or subscribe to on Amazon Web Services Marketplace.</p> <note> <p>You must specify either the algorithm name to the <code>AlgorithmName</code> parameter or the image URI of the algorithm container to the <code>TrainingImage</code> parameter.</p> <p>Note that the <code>AlgorithmName</code> parameter is mutually exclusive with the <code>TrainingImage</code> parameter. If you specify a value for the <code>AlgorithmName</code> parameter, you can't specify a value for <code>TrainingImage</code>, and vice versa.</p> <p>If you specify values for both parameters, the training job might break; if you don't specify any value for both parameters, the training job might raise a <code>null</code> error.</p> </note>"
         },
         "TrainingInputMode":{"shape":"TrainingInputMode"},
         "MetricDefinitions":{
@@ -3583,7 +3583,15 @@
         "ml.r5.8xlarge",
         "ml.r5.12xlarge",
         "ml.r5.16xlarge",
-        "ml.r5.24xlarge"
+        "ml.r5.24xlarge",
+        "ml.g5.xlarge",
+        "ml.g5.2xlarge",
+        "ml.g5.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.g5.16xlarge",
+        "ml.g5.12xlarge",
+        "ml.g5.24xlarge",
+        "ml.g5.48xlarge"
       ]
     },
     "AppList":{
@@ -7081,6 +7089,10 @@
         "PlatformIdentifier":{
           "shape":"PlatformIdentifier",
           "documentation":"<p>The platform identifier of the notebook instance runtime environment.</p>"
+        },
+        "InstanceMetadataServiceConfiguration":{
+          "shape":"InstanceMetadataServiceConfiguration",
+          "documentation":"<p>Information on the IMDS configuration of the notebook instance</p>"
         }
       }
     },
@@ -11049,6 +11061,10 @@
         "PlatformIdentifier":{
           "shape":"PlatformIdentifier",
           "documentation":"<p>The platform identifier of the notebook instance runtime environment.</p>"
+        },
+        "InstanceMetadataServiceConfiguration":{
+          "shape":"InstanceMetadataServiceConfiguration",
+          "documentation":"<p>Information on the IMDS configuration of the notebook instance</p>"
         }
       }
     },
@@ -14868,6 +14884,17 @@
       "type":"list",
       "member":{"shape":"TrainingInputMode"},
       "min":1
+    },
+    "InstanceMetadataServiceConfiguration":{
+      "type":"structure",
+      "required":["MinimumInstanceMetadataServiceVersion"],
+      "members":{
+        "MinimumInstanceMetadataServiceVersion":{
+          "shape":"MinimumInstanceMetadataServiceVersion",
+          "documentation":"<p>Indicates the minimum IMDS version that the notebook instance supports. When passed as part of <code>CreateNotebookInstance</code>, if no value is selected, then it defaults to IMDSv1. This means that both IMDSv1 and IMDSv2 are supported. If passed as part of <code>UpdateNotebookInstance</code>, there is no default.</p>"
+        }
+      },
+      "documentation":"<p>Information on the IMDS configuration of the notebook instance</p>"
     },
     "InstanceType":{
       "type":"string",
@@ -18727,6 +18754,11 @@
       },
       "documentation":"<p/>"
     },
+    "MinimumInstanceMetadataServiceVersion":{
+      "type":"string",
+      "max":1,
+      "pattern":"1|2"
+    },
     "ModelApprovalStatus":{
       "type":"string",
       "enum":[
@@ -21405,7 +21437,7 @@
     "PlatformIdentifier":{
       "type":"string",
       "max":15,
-      "pattern":"^(notebook-al1-v1|notebook-al2-v1)$"
+      "pattern":"^(notebook-al1-v1|notebook-al2-v1|notebook-al2-v2)$"
     },
     "PolicyString":{
       "type":"string",
@@ -26390,6 +26422,10 @@
         "RootAccess":{
           "shape":"RootAccess",
           "documentation":"<p>Whether root access is enabled or disabled for users of the notebook instance. The default value is <code>Enabled</code>.</p> <note> <p>If you set this to <code>Disabled</code>, users don't have root access on the notebook instance, but lifecycle configuration scripts still run with root permissions.</p> </note>"
+        },
+        "InstanceMetadataServiceConfiguration":{
+          "shape":"InstanceMetadataServiceConfiguration",
+          "documentation":"<p>Information on the IMDS configuration of the notebook instance</p>"
         }
       }
     },

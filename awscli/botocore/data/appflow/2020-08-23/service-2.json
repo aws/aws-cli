@@ -27,7 +27,7 @@
         {"shape":"ConnectorAuthenticationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Creates a new connector profile associated with your Amazon Web Services account. There is a soft quota of 100 connector profiles per Amazon Web Services account. If you need more connector profiles than this quota allows, you can submit a request to the Amazon AppFlow team through the Amazon AppFlow support channel. </p>"
+      "documentation":"<p> Creates a new connector profile associated with your Amazon Web Services account. There is a soft quota of 100 connector profiles per Amazon Web Services account. If you need more connector profiles than this quota allows, you can submit a request to the Amazon AppFlow team through the Amazon AppFlow support channel. In each connector profile that you create, you can provide the credentials and properties for only one connector.</p>"
     },
     "CreateFlow":{
       "name":"CreateFlow",
@@ -108,7 +108,7 @@
         {"shape":"ConnectorServerException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Provides details regarding the entity used with the connector, with a description of the data model for each entity. </p>"
+      "documentation":"<p> Provides details regarding the entity used with the connector, with a description of the data model for each field in that entity. </p>"
     },
     "DescribeConnectorProfiles":{
       "name":"DescribeConnectorProfiles",
@@ -385,7 +385,7 @@
     },
     "AccessToken":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "pattern":"\\S+",
       "sensitive":true
     },
@@ -2610,6 +2610,11 @@
       "max":2048,
       "pattern":"[\\w!@#\\-.?,\\s]*"
     },
+    "FlowErrorDeactivationThreshold":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
     "FlowExecutionList":{
       "type":"list",
       "member":{"shape":"ExecutionRecord"}
@@ -2862,6 +2867,7 @@
       "error":{"httpStatusCode":500},
       "exception":true
     },
+    "JavaBoolean":{"type":"boolean"},
     "KMSArn":{
       "type":"string",
       "max":2048,
@@ -3598,7 +3604,7 @@
     },
     "RefreshToken":{
       "type":"string",
-      "max":1024,
+      "max":2048,
       "pattern":"\\S+"
     },
     "Region":{
@@ -3734,7 +3740,11 @@
           "shape":"PrefixConfig",
           "documentation":"<p> Determines the prefix that Amazon AppFlow applies to the folder name in the Amazon S3 bucket. You can name folders according to the flow frequency and date. </p>"
         },
-        "aggregationConfig":{"shape":"AggregationConfig"}
+        "aggregationConfig":{"shape":"AggregationConfig"},
+        "preserveSourceDataTyping":{
+          "shape":"JavaBoolean",
+          "documentation":"<p>If your file output format is Parquet, use this parameter to set whether Amazon AppFlow preserves the data types in your source data when it writes the output to Amazon S3. </p> <ul> <li> <p> <code>true</code>: Amazon AppFlow preserves the data types when it writes to Amazon S3. For example, an integer or <code>1</code> in your source data is still an integer in your output.</p> </li> <li> <p> <code>false</code>: Amazon AppFlow converts all of the source data into strings when it writes to Amazon S3. For example, an integer of <code>1</code> in your source data becomes the string <code>\"1\"</code> in the output.</p> </li> </ul>"
+        }
       },
       "documentation":"<p> The configuration that determines how Amazon AppFlow should format the flow output data when Amazon S3 is used as the destination. </p>"
     },
@@ -4018,15 +4028,15 @@
         },
         "scheduleStartTime":{
           "shape":"Date",
-          "documentation":"<p> Specifies the scheduled start time for a schedule-triggered flow. </p>"
+          "documentation":"<p>The time at which the scheduled flow starts. The time is formatted as a timestamp that follows the ISO 8601 standard, such as <code>2022-04-26T13:00:00-07:00</code>.</p>"
         },
         "scheduleEndTime":{
           "shape":"Date",
-          "documentation":"<p> Specifies the scheduled end time for a schedule-triggered flow. </p>"
+          "documentation":"<p>The time at which the scheduled flow ends. The time is formatted as a timestamp that follows the ISO 8601 standard, such as <code>2022-04-27T13:00:00-07:00</code>.</p>"
         },
         "timezone":{
           "shape":"Timezone",
-          "documentation":"<p> Specifies the time zone used when referring to the date and time of a scheduled-triggered flow, such as <code>America/New_York</code>. </p>"
+          "documentation":"<p>Specifies the time zone used when referring to the dates and times of a scheduled flow, such as <code>America/New_York</code>. This time zone is only a descriptive label. It doesn't affect how Amazon AppFlow interprets the timestamps that you specify to schedule the flow.</p> <p>If you want to schedule a flow by using times in a particular time zone, indicate the time zone as a UTC offset in your timestamps. For example, the UTC offsets for the <code>America/New_York</code> timezone are <code>-04:00</code> EDT and <code>-05:00 EST</code>.</p>"
         },
         "scheduleOffset":{
           "shape":"ScheduleOffset",
@@ -4036,6 +4046,11 @@
         "firstExecutionFrom":{
           "shape":"Date",
           "documentation":"<p> Specifies the date range for the records to import from the connector in the first flow run. </p>"
+        },
+        "flowErrorDeactivationThreshold":{
+          "shape":"FlowErrorDeactivationThreshold",
+          "documentation":"<p>Defines how many times a scheduled flow fails consecutively before Amazon AppFlow deactivates it.</p>",
+          "box":true
         }
       },
       "documentation":"<p> Specifies the configuration details of a schedule-triggered flow as defined by the user. Currently, these settings only apply to the <code>Scheduled</code> trigger type. </p>"

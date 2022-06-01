@@ -54,7 +54,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for an Amazon EFS file system.</p>"
+      "documentation":"<p>Creates an endpoint for an Amazon EFS file system that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html\">Creating a location for Amazon EFS</a>.</p>"
     },
     "CreateLocationFsxLustre":{
       "name":"CreateLocationFsxLustre",
@@ -250,7 +250,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata, such as the path information about an Amazon EFS location.</p>"
+      "documentation":"<p>Returns metadata about your DataSync location for an Amazon EFS file system.</p>"
     },
     "DescribeLocationFsxLustre":{
       "name":"DescribeLocationFsxLustre",
@@ -726,19 +726,31 @@
       "members":{
         "Subdirectory":{
           "shape":"EfsSubdirectory",
-          "documentation":"<p>A subdirectory in the location’s path. This subdirectory in the EFS file system is used to read data from the EFS source location or write data to the EFS destination. By default, DataSync uses the root directory.</p> <note> <p> <code>Subdirectory</code> must be specified with forward slashes. For example, <code>/path/to/folder</code>.</p> </note>"
+          "documentation":"<p>Specifies a mount path for your Amazon EFS file system. This is where DataSync reads or writes data (depending on if this is a source or destination location). By default, DataSync uses the root directory, but you can also include subdirectories.</p> <note> <p>You must specify a value with forward slashes (for example, <code>/path/to/folder</code>).</p> </note>"
         },
         "EfsFilesystemArn":{
           "shape":"EfsFilesystemArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon EFS file system.</p>"
+          "documentation":"<p>Specifies the ARN for the Amazon EFS file system.</p>"
         },
         "Ec2Config":{
           "shape":"Ec2Config",
-          "documentation":"<p>The subnet and security group that the Amazon EFS file system uses. The security group that you provide needs to be able to communicate with the security group on the mount target in the subnet specified.</p> <p>The exact relationship between security group M (of the mount target) and security group S (which you provide for DataSync to use at this stage) is as follows: </p> <ul> <li> <p> Security group M (which you associate with the mount target) must allow inbound access for the Transmission Control Protocol (TCP) on the NFS port (2049) from security group S. You can enable inbound connections either by IP address (CIDR range) or security group. </p> </li> <li> <p>Security group S (provided to DataSync to access EFS) should have a rule that enables outbound connections to the NFS port on one of the file system’s mount targets. You can enable outbound connections either by IP address (CIDR range) or security group.</p> <p>For information about security groups and mount targets, see Security Groups for Amazon EC2 Instances and Mount Targets in the <i>Amazon EFS User Guide.</i> </p> </li> </ul>"
+          "documentation":"<p>Specifies the subnet and security groups DataSync uses to access your Amazon EFS file system.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents a tag that you want to add to the resource. The value can be an empty string. This value helps you manage, filter, and search for your resources. We recommend that you create a name tag for your location.</p>"
+          "documentation":"<p>Specifies the key-value pair that represents a tag that you want to add to the resource. The value can be an empty string. This value helps you manage, filter, and search for your resources. We recommend that you create a name tag for your location.</p>"
+        },
+        "AccessPointArn":{
+          "shape":"EfsAccessPointArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the access point that DataSync uses to access the Amazon EFS file system.</p>"
+        },
+        "FileSystemAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>Specifies an Identity and Access Management (IAM) role that DataSync assumes when mounting the Amazon EFS file system.</p>"
+        },
+        "InTransitEncryption":{
+          "shape":"EfsInTransitEncryption",
+          "documentation":"<p>Specifies whether you want DataSync to use TLS encryption when transferring data to or from your Amazon EFS file system.</p> <p>If you specify an access point using <code>AccessPointArn</code> or an IAM role using <code>FileSystemAccessRoleArn</code>, you must set this parameter to <code>TLS1_2</code>.</p>"
         }
       },
       "documentation":"<p>CreateLocationEfsRequest</p>"
@@ -748,7 +760,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EFS file system location that is created.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EFS file system location that you create.</p>"
         }
       },
       "documentation":"<p>CreateLocationEfs</p>"
@@ -1294,7 +1306,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the EFS location to describe.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EFS file system location that you want information about.</p>"
         }
       },
       "documentation":"<p>DescribeLocationEfsRequest</p>"
@@ -1304,16 +1316,28 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the EFS location that was described.</p>"
+          "documentation":"<p>The ARN of the Amazon EFS file system location.</p>"
         },
         "LocationUri":{
           "shape":"LocationUri",
-          "documentation":"<p>The URL of the EFS location that was described.</p>"
+          "documentation":"<p>The URL of the Amazon EFS file system location.</p>"
         },
         "Ec2Config":{"shape":"Ec2Config"},
         "CreationTime":{
           "shape":"Time",
-          "documentation":"<p>The time that the EFS location was created.</p>"
+          "documentation":"<p>The time that the location was created.</p>"
+        },
+        "AccessPointArn":{
+          "shape":"EfsAccessPointArn",
+          "documentation":"<p>The ARN of the access point that DataSync uses to access the Amazon EFS file system.</p>"
+        },
+        "FileSystemAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Identity and Access Management (IAM) role that DataSync assumes when mounting the Amazon EFS file system.</p>"
+        },
+        "InTransitEncryption":{
+          "shape":"EfsInTransitEncryption",
+          "documentation":"<p>Whether DataSync uses TLS encryption when transferring data to or from your Amazon EFS file system.</p>"
         }
       },
       "documentation":"<p>DescribeLocationEfsResponse</p>"
@@ -1808,14 +1832,14 @@
       "members":{
         "SubnetArn":{
           "shape":"Ec2SubnetArn",
-          "documentation":"<p>The ARN of the subnet that DataSync uses to access the target EFS file system.</p>"
+          "documentation":"<p>Specifies the ARN of a subnet where DataSync creates the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> for managing traffic during your transfer.</p> <p>The subnet must be located:</p> <ul> <li> <p>In the same virtual private cloud (VPC) as the Amazon EFS file system.</p> </li> <li> <p>In the same Availability Zone as at least one mount target for the Amazon EFS file system.</p> </li> </ul> <note> <p>You don't need to specify a subnet that includes a file system mount target.</p> </note>"
         },
         "SecurityGroupArns":{
           "shape":"Ec2SecurityGroupArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are configured for the Amazon EC2 resource.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Names (ARNs) of the security groups associated with an Amazon EFS file system's mount target.</p>"
         }
       },
-      "documentation":"<p>The subnet that DataSync uses to access target EFS file system. The subnet must have at least one mount target for that file system. The security group that you provide needs to be able to communicate with the security group on the mount target in the subnet specified. </p>"
+      "documentation":"<p>The subnet and security groups that DataSync uses to access your Amazon EFS file system.</p>"
     },
     "Ec2SecurityGroupArn":{
       "type":"string",
@@ -1833,10 +1857,22 @@
       "max":128,
       "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:subnet/.*$"
     },
+    "EfsAccessPointArn":{
+      "type":"string",
+      "max":128,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]+:[0-9]{12}:access-point/fsap-[0-9a-f]{8,40}$"
+    },
     "EfsFilesystemArn":{
       "type":"string",
       "max":128,
       "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$"
+    },
+    "EfsInTransitEncryption":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "TLS1_2"
+      ]
     },
     "EfsSubdirectory":{
       "type":"string",

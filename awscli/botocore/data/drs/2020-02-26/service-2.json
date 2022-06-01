@@ -13,6 +13,26 @@
     "uid":"drs-2020-02-26"
   },
   "operations":{
+    "CreateExtendedSourceServer":{
+      "name":"CreateExtendedSourceServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateExtendedSourceServer",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateExtendedSourceServerRequest"},
+      "output":{"shape":"CreateExtendedSourceServerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Create an extended source server in the target Account based on the source server in staging account.</p>"
+    },
     "CreateReplicationConfigurationTemplate":{
       "name":"CreateReplicationConfigurationTemplate",
       "http":{
@@ -293,6 +313,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Gets a ReplicationConfiguration, filtered by Source Server ID.</p>"
@@ -313,6 +334,42 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Initialize Elastic Disaster Recovery.</p>"
+    },
+    "ListExtensibleSourceServers":{
+      "name":"ListExtensibleSourceServers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListExtensibleSourceServers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExtensibleSourceServersRequest"},
+      "output":{"shape":"ListExtensibleSourceServersResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Returns a list of source servers on a staging account that are extensible, which means that: a. The source server is not already extended into this Account. b. The source server on the Account we’re reading from is not an extension of another source server. </p>"
+    },
+    "ListStagingAccounts":{
+      "name":"ListStagingAccounts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/ListStagingAccounts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListStagingAccountsRequest"},
+      "output":{"shape":"ListStagingAccountsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Returns an array of staging accounts for existing extended source servers.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -548,12 +605,40 @@
         "code":{"shape":"LargeBoundedString"},
         "message":{"shape":"LargeBoundedString"}
       },
-      "documentation":"<p>TYou do not have sufficient access to perform this action.</p>",
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
       },
       "exception":true
+    },
+    "Account":{
+      "type":"structure",
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID of AWS account.</p>"
+        }
+      },
+      "documentation":"<p>AWS account.</p>"
+    },
+    "AccountID":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12,}"
+    },
+    "AccountIDs":{
+      "type":"list",
+      "member":{"shape":"AccountID"},
+      "max":200,
+      "min":0
+    },
+    "Accounts":{
+      "type":"list",
+      "member":{"shape":"Account"},
+      "max":50,
+      "min":0
     },
     "Boolean":{
       "type":"boolean",
@@ -599,11 +684,65 @@
       },
       "exception":true
     },
+    "ConversionMap":{
+      "type":"map",
+      "key":{"shape":"ebsSnapshot"},
+      "value":{"shape":"ebsSnapshot"}
+    },
+    "ConversionProperties":{
+      "type":"structure",
+      "members":{
+        "dataTimestamp":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>The timestamp of when the snapshot being converted was taken</p>"
+        },
+        "forceUefi":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the volume being converted uses UEFI or not</p>"
+        },
+        "rootVolumeName":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>The root volume name of a conversion job</p>"
+        },
+        "volumeToConversionMap":{
+          "shape":"VolumeToConversionMap",
+          "documentation":"<p>A mapping between the volumes being converted and the converted snapshot ids</p>"
+        },
+        "volumeToVolumeSize":{
+          "shape":"VolumeToSizeMap",
+          "documentation":"<p>A mapping between the volumes and their sizes</p>"
+        }
+      },
+      "documentation":"<p>Properties of a conversion job</p>"
+    },
     "Cpus":{
       "type":"list",
       "member":{"shape":"CPU"},
       "max":256,
       "min":0
+    },
+    "CreateExtendedSourceServerRequest":{
+      "type":"structure",
+      "required":["sourceServerArn"],
+      "members":{
+        "sourceServerArn":{
+          "shape":"SourceServerARN",
+          "documentation":"<p>This defines the ARN of the source server in staging Account based on which you want to create an extended source server.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of tags associated with the extended source server.</p>"
+        }
+      }
+    },
+    "CreateExtendedSourceServerResponse":{
+      "type":"structure",
+      "members":{
+        "sourceServer":{
+          "shape":"SourceServer",
+          "documentation":"<p>Created extended source server.</p>"
+        }
+      }
     },
     "CreateReplicationConfigurationTemplateRequest":{
       "type":"structure",
@@ -940,7 +1079,6 @@
     },
     "DescribeJobsRequest":{
       "type":"structure",
-      "required":["filters"],
       "members":{
         "filters":{
           "shape":"DescribeJobsRequestFilters",
@@ -999,7 +1137,6 @@
     },
     "DescribeRecoveryInstancesRequest":{
       "type":"structure",
-      "required":["filters"],
       "members":{
         "filters":{
           "shape":"DescribeRecoveryInstancesRequestFilters",
@@ -1097,7 +1234,6 @@
     },
     "DescribeReplicationConfigurationTemplatesRequest":{
       "type":"structure",
-      "required":["replicationConfigurationTemplateIDs"],
       "members":{
         "maxResults":{
           "shape":"StrictlyPositiveInteger",
@@ -1128,7 +1264,6 @@
     },
     "DescribeSourceServersRequest":{
       "type":"structure",
-      "required":["filters"],
       "members":{
         "filters":{
           "shape":"DescribeSourceServersRequestFilters",
@@ -1154,6 +1289,10 @@
         "sourceServerIDs":{
           "shape":"DescribeSourceServersRequestFiltersIDs",
           "documentation":"<p>An array of Source Servers IDs that should be returned. An empty array means all Source Servers.</p>"
+        },
+        "stagingAccountIDs":{
+          "shape":"AccountIDs",
+          "documentation":"<p>An array of staging account IDs that extended source servers belong to. An empty array means all source servers will be shown.</p>"
         }
       },
       "documentation":"<p>A set of filters by which to return Source Servers.</p>"
@@ -1249,6 +1388,14 @@
       "max":19,
       "min":10,
       "pattern":"^vol-([0-9a-fA-F]{8}|[0-9a-fA-F]{17})$"
+    },
+    "ExtensionStatus":{
+      "type":"string",
+      "enum":[
+        "EXTENDED",
+        "EXTENSION_ERROR",
+        "NOT_EXTENDED"
+      ]
     },
     "FailbackReplicationError":{
       "type":"string",
@@ -1375,7 +1522,8 @@
         "START_DRILL",
         "FAILBACK",
         "DIAGNOSTIC",
-        "TERMINATE_RECOVERY_INSTANCES"
+        "TERMINATE_RECOVERY_INSTANCES",
+        "TARGET_ACCOUNT"
       ]
     },
     "InternalServerException":{
@@ -1487,6 +1635,10 @@
     "JobLogEventData":{
       "type":"structure",
       "members":{
+        "conversionProperties":{
+          "shape":"ConversionProperties",
+          "documentation":"<p>Properties of a conversion job</p>"
+        },
         "conversionServerID":{
           "shape":"EC2InstanceID",
           "documentation":"<p>The ID of a conversion server.</p>"
@@ -1522,7 +1674,8 @@
       "type":"string",
       "enum":[
         "LAUNCH",
-        "TERMINATE"
+        "TERMINATE",
+        "CREATE_CONVERTED_SNAPSHOT"
       ]
     },
     "JobsList":{
@@ -1668,6 +1821,73 @@
       },
       "documentation":"<p>An object containing information regarding the initiation of the last launch of a Source Server.</p>"
     },
+    "ListExtensibleSourceServersRequest":{
+      "type":"structure",
+      "required":["stagingAccountID"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultsReplicatingSourceServers",
+          "documentation":"<p>The maximum number of extensible source servers to retrieve.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next extensible source server to retrieve.</p>"
+        },
+        "stagingAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>The Id of the staging Account to retrieve extensible source servers from.</p>"
+        }
+      }
+    },
+    "ListExtensibleSourceServersResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"StagingSourceServersList",
+          "documentation":"<p>A list of source servers on a staging Account that are extensible.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next extensible source server to retrieve.</p>"
+        }
+      }
+    },
+    "ListStagingAccountsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListStagingAccountsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of staging Accounts to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next staging Account to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListStagingAccountsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListStagingAccountsResponse":{
+      "type":"structure",
+      "members":{
+        "accounts":{
+          "shape":"Accounts",
+          "documentation":"<p>An array of staging AWS Accounts.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next staging Account to retrieve.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -1688,6 +1908,11 @@
           "documentation":"<p>The tags of the requested resource.</p>"
         }
       }
+    },
+    "MaxResultsReplicatingSourceServers":{
+      "type":"integer",
+      "max":300,
+      "min":1
     },
     "NetworkInterface":{
       "type":"structure",
@@ -2531,11 +2756,21 @@
           "shape":"SourceServerID",
           "documentation":"<p>The ID of the Source Server.</p>"
         },
+        "stagingArea":{
+          "shape":"StagingArea",
+          "documentation":"<p>The staging area of the source server.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags associated with the Source Server.</p>"
         }
       }
+    },
+    "SourceServerARN":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:(?:[0-9a-zA-Z_-]+:){3}([0-9]{12,}):source-server/(s-[0-9a-zA-Z]{17})$"
     },
     "SourceServerID":{
       "type":"string",
@@ -2550,6 +2785,50 @@
     "SourceServersList":{
       "type":"list",
       "member":{"shape":"SourceServer"}
+    },
+    "StagingArea":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Shows an error message that occurred when DRS tried to access the staging source server. In this case StagingArea$status will have value EXTENSION_ERROR</p>"
+        },
+        "stagingAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID of the account to which source server belongs. If this source server is extended - shows Account ID of staging source server.</p>"
+        },
+        "stagingSourceServerArn":{
+          "shape":"ARN",
+          "documentation":"<p>Arn of the staging source server if this source server is extended</p>"
+        },
+        "status":{
+          "shape":"ExtensionStatus",
+          "documentation":"<p>Status of Source server extension. Possible values: (a) NOT_EXTENDED - This is a source server that is replicating in the current account. (b) EXTENDED - Source server is extended from a staging source server. In this case, the value of stagingSourceServerArn is pointing to the Arn of the source server in the staging account. (c) EXTENSION_ERROR - Some issue occurred when accessing staging source server. In this case, errorMessage field will contain an error message that explains what happened.</p>"
+        }
+      },
+      "documentation":"<p>Staging information related to source server.</p>"
+    },
+    "StagingSourceServer":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"SourceServerARN",
+          "documentation":"<p>The ARN of the source server.</p>"
+        },
+        "hostname":{
+          "shape":"BoundedString",
+          "documentation":"<p>Hostname of staging source server.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of tags associated with the staging source server.</p>"
+        }
+      },
+      "documentation":"<p>Source server in staging account that extended source server connected to.</p>"
+    },
+    "StagingSourceServersList":{
+      "type":"list",
+      "member":{"shape":"StagingSourceServer"}
     },
     "StartFailbackLaunchRequest":{
       "type":"structure",
@@ -3014,6 +3293,16 @@
         "fieldValidationFailed",
         "other"
       ]
+    },
+    "VolumeToConversionMap":{
+      "type":"map",
+      "key":{"shape":"LargeBoundedString"},
+      "value":{"shape":"ConversionMap"}
+    },
+    "VolumeToSizeMap":{
+      "type":"map",
+      "key":{"shape":"LargeBoundedString"},
+      "value":{"shape":"PositiveInteger"}
     },
     "ebsSnapshot":{
       "type":"string",

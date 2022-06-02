@@ -1,0 +1,43 @@
+permissions:
+  contents: read
+  pages: write
+  # Required per the following GH issue:
+  # https://github.com/actions/deploy-pages/issues/9#issuecomment-1009157118
+  # More details at:
+  # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#adding-permissions-settings
+  id-token: write
+
+name: Sphinx build
+
+on:
+  push:
+    branches:
+    - gh-pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        cache: pip
+    - name: Install dependencies
+      run: make install
+    - name: Build docs
+      run: make html
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v0.1.0
+      with:
+        path: _build/html
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 'Deploy to GitHub Pages'
+        id: deployment
+        uses: actions/deploy-pages@v1.0.4        

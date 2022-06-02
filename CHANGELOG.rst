@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.25.2
+======
+
+* api-change:``connect``: This release adds the following features: 1) New APIs to manage (create, list, update) task template resources, 2) Updates to startTaskContact API to support task templates, and 3) new TransferContact API to programmatically transfer in-progress tasks via a contact flow.
+* api-change:``proton``: Add new "Components" API to enable users to Create, Delete and Update AWS Proton components.
+* api-change:``codeartifact``: Documentation updates for CodeArtifact
+* api-change:``application-insights``: Provide Account Level onboarding support through CFN/CLI
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for GitHub. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-github.html
+* api-change:``voice-id``: Added a new attribute ServerSideEncryptionUpdateDetails to Domain and DomainSummary.
+
+
 1.25.1
 ======
 

@@ -288,8 +288,17 @@ class EKSClient(object):
         Return a user entry generated using
         the previously obtained description.
         """
+        cluster_description = self._get_cluster_description()
+        region = cluster_description.get("arn").split(":")[3]
+        outpost_config = cluster_description.get("outpostConfig")
 
-        region = self._get_cluster_description().get("arn").split(":")[3]
+        if outpost_config is None:
+            cluster_identification_parameter = "--cluster-name"
+            cluster_identification_value = self._cluster_name
+        else:
+            # If cluster contains outpostConfig, use id for identification
+            cluster_identification_parameter = "--cluster-id"
+            cluster_identification_value = cluster_description.get("id")
 
         generated_user = OrderedDict([
             ("name", self._get_cluster_description().get("arn", "")),
@@ -302,8 +311,8 @@ class EKSClient(object):
                             region,
                             "eks",
                             "get-token",
-                            "--cluster-name",
-                            self._cluster_name,
+                            cluster_identification_parameter,
+                            cluster_identification_value,
                         ]),
                     ("command", "aws"),
                 ]))

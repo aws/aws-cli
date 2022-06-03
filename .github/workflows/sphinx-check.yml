@@ -1,0 +1,22 @@
+name: Sphinx check
+
+on:
+  pull_request:
+    branches:
+    - gh-pages
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        cache: pip
+    - name: Install dependencies
+      run: make install
+    - name: Run checks
+      run: make check
+    - name: Run link check
+      run: make linkcheck

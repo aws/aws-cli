@@ -36,6 +36,7 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 	@echo "  check      to run a check for frequent markup errors"
+	@echo "  prcheck    to run all checks before committing changes"
 
 clean:
 	-rm -rf $(BUILDDIR)/*
@@ -119,3 +120,5 @@ htmlview: html
 check:
 	# Ignore the tools dir and check that the default role is not used.
 	$(SPHINXLINT) -i tools --enable default-role
+
+prcheck: check linkcheck

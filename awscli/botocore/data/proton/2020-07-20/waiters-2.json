@@ -1,6 +1,39 @@
 {
   "version" : 2,
   "waiters" : {
+    "ComponentDeleted" : {
+      "description" : "Wait until a Component is deleted. Use this after invoking DeleteComponent",
+      "delay" : 5,
+      "maxAttempts" : 999,
+      "operation" : "GetComponent",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "component.deploymentStatus",
+        "state" : "failure",
+        "expected" : "DELETE_FAILED"
+      } ]
+    },
+    "ComponentDeployed" : {
+      "description" : "Wait until a Component is deployed. Use this after invoking CreateComponent or UpdateComponent",
+      "delay" : 5,
+      "maxAttempts" : 999,
+      "operation" : "GetComponent",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "component.deploymentStatus",
+        "state" : "success",
+        "expected" : "SUCCEEDED"
+      }, {
+        "matcher" : "path",
+        "argument" : "component.deploymentStatus",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    },
     "EnvironmentDeployed" : {
       "description" : "Wait until an Environment is deployed. Use this after invoking CreateEnvironment or UpdateEnvironment",
       "delay" : 5,

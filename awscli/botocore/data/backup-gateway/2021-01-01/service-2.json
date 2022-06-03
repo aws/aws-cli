@@ -91,6 +91,21 @@
       ],
       "documentation":"<p>Disassociates a backup gateway from the specified server. After the disassociation process finishes, the gateway can no longer access the virtual machines on the server.</p>"
     },
+    "GetGateway":{
+      "name":"GetGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGatewayInput"},
+      "output":{"shape":"GetGatewayOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the gateway.</p>"
+    },
     "ImportHypervisorConfiguration":{
       "name":"ImportHypervisorConfiguration",
       "http":{
@@ -240,6 +255,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates a gateway's name. Specify which gateway to update using the Amazon Resource Name (ARN) of the gateway in your request.</p>"
+    },
+    "UpdateGatewaySoftwareNow":{
+      "name":"UpdateGatewaySoftwareNow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGatewaySoftwareNowInput"},
+      "output":{"shape":"UpdateGatewaySoftwareNowOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the gateway virtual machine (VM) software. The request immediately triggers the software update.</p> <note> <p>When you make this request, you get a <code>200 OK</code> success response immediately. However, it might take some time for the update to complete.</p> </note>"
     },
     "UpdateHypervisor":{
       "name":"UpdateHypervisor",
@@ -453,6 +483,40 @@
       "min":50,
       "pattern":"^arn:(aws|aws-cn|aws-us-gov):backup-gateway(:[a-zA-Z-0-9]+){3}\\/[a-zA-Z-0-9]+$"
     },
+    "GatewayDetails":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway. Use the <code>ListGateways</code> operation to return a list of gateways for your account and Amazon Web Services Region.</p>"
+        },
+        "GatewayDisplayName":{
+          "shape":"Name",
+          "documentation":"<p>The display name of the gateway.</p>"
+        },
+        "GatewayType":{
+          "shape":"GatewayType",
+          "documentation":"<p>The type of the gateway type.</p>"
+        },
+        "HypervisorId":{
+          "shape":"HypervisorId",
+          "documentation":"<p>The hypervisor ID of the gateway.</p>"
+        },
+        "LastSeenTime":{
+          "shape":"Time",
+          "documentation":"<p>Details showing the last time Backup gateway communicated with the cloud, in Unix format and UTC time.</p>"
+        },
+        "NextUpdateAvailabilityTime":{
+          "shape":"Time",
+          "documentation":"<p>Details showing the next update availability time of the gateway.</p>"
+        },
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>The DNS name for the virtual private cloud (VPC) endpoint the gateway uses to connect to the cloud for backup gateway.</p>"
+        }
+      },
+      "documentation":"<p>The details of gateway.</p>"
+    },
     "GatewayType":{
       "type":"string",
       "enum":["BACKUP_VM"]
@@ -460,6 +524,25 @@
     "Gateways":{
       "type":"list",
       "member":{"shape":"Gateway"}
+    },
+    "GetGatewayInput":{
+      "type":"structure",
+      "required":["GatewayArn"],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        }
+      }
+    },
+    "GetGatewayOutput":{
+      "type":"structure",
+      "members":{
+        "Gateway":{
+          "shape":"GatewayDetails",
+          "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the gateway.</p>"
+        }
+      }
     },
     "Host":{
       "type":"string",
@@ -791,7 +874,7 @@
         },
         "Value":{
           "shape":"TagValue",
-          "documentation":"<p>The key part of a value's key-value pair.</p>"
+          "documentation":"<p>The value part of a tag's key-value pair.</p>"
         }
       },
       "documentation":"<p>A key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters, numbers, spaces, and the following characters: + - = . _ : /.</p>"
@@ -922,6 +1005,25 @@
         }
       }
     },
+    "UpdateGatewaySoftwareNowInput":{
+      "type":"structure",
+      "required":["GatewayArn"],
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway to be updated.</p>"
+        }
+      }
+    },
+    "UpdateGatewaySoftwareNowOutput":{
+      "type":"structure",
+      "members":{
+        "GatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway you updated.</p>"
+        }
+      }
+    },
     "UpdateHypervisorInput":{
       "type":"structure",
       "required":["HypervisorArn"],
@@ -933,6 +1035,10 @@
         "HypervisorArn":{
           "shape":"ServerArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor to update.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The updated name for the hypervisor</p>"
         },
         "Password":{
           "shape":"Password",
@@ -997,7 +1103,7 @@
         },
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the virtual machine.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the virtual machine. For example, <code>arn:aws:backup-gateway:us-west-1:0000000000000:vm/vm-0000ABCDEFGIJKL</code>.</p>"
         }
       },
       "documentation":"<p>A virtual machine that is on a hypervisor.</p>"
@@ -1005,6 +1111,11 @@
     "VirtualMachines":{
       "type":"list",
       "member":{"shape":"VirtualMachine"}
+    },
+    "VpcEndpoint":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "string":{"type":"string"}
   },

@@ -396,6 +396,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates a security profile.</p>"
     },
+    "CreateTaskTemplate":{
+      "name":"CreateTaskTemplate",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/instance/{InstanceId}/task/template"
+      },
+      "input":{"shape":"CreateTaskTemplateRequest"},
+      "output":{"shape":"CreateTaskTemplateResponse"},
+      "errors":[
+        {"shape":"PropertyValidationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates a new task template in the specified Amazon Connect instance.</p>"
+    },
     "CreateUseCase":{
       "name":"CreateUseCase",
       "http":{
@@ -583,6 +601,23 @@
         {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Deletes a security profile.</p>"
+    },
+    "DeleteTaskTemplate":{
+      "name":"DeleteTaskTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/instance/{InstanceId}/task/template/{TaskTemplateId}"
+      },
+      "input":{"shape":"DeleteTaskTemplateRequest"},
+      "output":{"shape":"DeleteTaskTemplateResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes the task template.</p>"
     },
     "DeleteUseCase":{
       "name":"DeleteUseCase",
@@ -1149,6 +1184,23 @@
       ],
       "documentation":"<p>Gets historical metric data from the specified Amazon Connect instance.</p> <p>For a description of each historical metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "GetTaskTemplate":{
+      "name":"GetTaskTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/instance/{InstanceId}/task/template/{TaskTemplateId}"
+      },
+      "input":{"shape":"GetTaskTemplateRequest"},
+      "output":{"shape":"GetTaskTemplateResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Gets details about a specific task template in the specified Amazon Connect instance.</p>"
+    },
     "ListAgentStatuses":{
       "name":"ListAgentStatuses",
       "http":{
@@ -1586,6 +1638,23 @@
       ],
       "documentation":"<p>Lists the tags for the specified resource.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Amazon Connect Identity-Based Policy Examples</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "ListTaskTemplates":{
+      "name":"ListTaskTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/instance/{InstanceId}/task/template"
+      },
+      "input":{"shape":"ListTaskTemplatesRequest"},
+      "output":{"shape":"ListTaskTemplatesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists task templates for the specified Amazon Connect instance.</p>"
+    },
     "ListUseCases":{
       "name":"ListUseCases",
       "http":{
@@ -1900,7 +1969,26 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds the specified tags to the specified resource.</p> <p>The supported resource types are users, routing profiles, queues, quick connects, contact flows, agent status, hours of operation, and phone number.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Amazon Connect Identity-Based Policy Examples</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Adds the specified tags to the specified resource.</p> <p>The supported resource types are users, routing profiles, queues, quick connects, contact flows, agent status, hours of operation, phone number, security profiles, and task templates.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Amazon Connect Identity-Based Policy Examples</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+    },
+    "TransferContact":{
+      "name":"TransferContact",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/transfer"
+      },
+      "input":{"shape":"TransferContactRequest"},
+      "output":{"shape":"TransferContactResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"IdempotencyException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Transfers contacts from one agent or queue to another agent or queue at any point after a contact is created. You can transfer a contact to another queue by providing the contact flow which orchestrates the contact to the destination queue. This gives you more control over contact handling and helps you adhere to the service level agreement (SLA) guaranteed to your customers.</p> <p>Note the following requirements:</p> <ul> <li> <p>Transfer is supported for only <code>TASK</code> contacts.</p> </li> <li> <p>Do not use both <code>QueueId</code> and <code>UserId</code> in the same call.</p> </li> <li> <p>The following contact flow types are supported: Inbound contact flow, Transfer to agent flow, and Transfer to queue flow.</p> </li> <li> <p>The <code>TransferContact</code> API can be called only on active contacts.</p> </li> <li> <p>A contact cannot be transferred more than 11 times.</p> </li> </ul>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -2336,6 +2424,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates a security profile.</p>"
+    },
+    "UpdateTaskTemplate":{
+      "name":"UpdateTaskTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/instance/{InstanceId}/task/template/{TaskTemplateId}"
+      },
+      "input":{"shape":"UpdateTaskTemplateRequest"},
+      "output":{"shape":"UpdateTaskTemplateResponse"},
+      "errors":[
+        {"shape":"PropertyValidationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates details about a specific task template in the specified Amazon Connect instance. This operation does not support partial updates. Instead it does a full update of template content.</p>"
     },
     "UpdateUserHierarchy":{
       "name":"UpdateUserHierarchy",
@@ -2876,14 +2982,14 @@
         },
         "Value":{
           "shape":"ReferenceValue",
-          "documentation":"<p>Contains the location path of the attachment reference.</p>"
+          "documentation":"<p>The location path of the attachment reference.</p>"
         },
         "Status":{
           "shape":"ReferenceStatus",
-          "documentation":"<p>Status of an attachment reference type.</p>"
+          "documentation":"<p>Status of the attachment reference type.</p>"
         }
       },
-      "documentation":"<p>Information about the attachment reference if the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
     },
     "Attribute":{
       "type":"structure",
@@ -3949,6 +4055,72 @@
         }
       }
     },
+    "CreateTaskTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "Fields"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"TaskTemplateName",
+          "documentation":"<p>The name of the task template.</p>"
+        },
+        "Description":{
+          "shape":"TaskTemplateDescription",
+          "documentation":"<p>The description of the task template.</p>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "Constraints":{
+          "shape":"TaskTemplateConstraints",
+          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+        },
+        "Defaults":{
+          "shape":"TaskTemplateDefaults",
+          "documentation":"<p>The default values for fields when a task is created by referencing this template.</p>"
+        },
+        "Status":{
+          "shape":"TaskTemplateStatus",
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created. </p>"
+        },
+        "Fields":{
+          "shape":"TaskTemplateFields",
+          "documentation":"<p>Fields that are part of the template.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTaskTemplateResponse":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn"
+      ],
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>The identifier of the task template resource.</p>"
+        },
+        "Arn":{
+          "shape":"TaskTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the task template resource.</p>"
+        }
+      }
+    },
     "CreateUseCaseRequest":{
       "type":"structure",
       "required":[
@@ -4255,6 +4427,20 @@
       "type":"list",
       "member":{"shape":"CurrentMetric"}
     },
+    "DateReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the date reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>A valid date.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>DATE</code>. Otherwise, null.</p>"
+    },
     "DefaultVocabulary":{
       "type":"structure",
       "required":[
@@ -4433,6 +4619,32 @@
           "location":"uri",
           "locationName":"SecurityProfileId"
         }
+      }
+    },
+    "DeleteTaskTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TaskTemplateId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TaskTemplateId":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template.</p>",
+          "location":"uri",
+          "locationName":"TaskTemplateId"
+        }
+      }
+    },
+    "DeleteTaskTemplateResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteUseCaseRequest":{
@@ -5316,6 +5528,20 @@
       "exception":true
     },
     "Email":{"type":"string"},
+    "EmailReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the email reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>A valid email address.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.</p>"
+    },
     "EncryptionConfig":{
       "type":"structure",
       "required":[
@@ -5523,6 +5749,95 @@
         "MetricResults":{
           "shape":"HistoricalMetricResults",
           "documentation":"<p>Information about the historical metrics.</p> <p>If no grouping is specified, a summary of metric data is returned.</p>"
+        }
+      }
+    },
+    "GetTaskTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TaskTemplateId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TaskTemplateId":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template.</p>",
+          "location":"uri",
+          "locationName":"TaskTemplateId"
+        },
+        "SnapshotVersion":{
+          "shape":"SnapshotVersion",
+          "documentation":"<p>The system generated version of a task template that is associated with a task, when the task is created.</p>",
+          "location":"querystring",
+          "locationName":"snapshotVersion"
+        }
+      }
+    },
+    "GetTaskTemplateResponse":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "Name"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "Id":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template.</p>"
+        },
+        "Arn":{
+          "shape":"TaskTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN).</p>"
+        },
+        "Name":{
+          "shape":"TaskTemplateName",
+          "documentation":"<p>The name of the task template.</p>"
+        },
+        "Description":{
+          "shape":"TaskTemplateDescription",
+          "documentation":"<p>The description of the task template.</p>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "Constraints":{
+          "shape":"TaskTemplateConstraints",
+          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+        },
+        "Defaults":{
+          "shape":"TaskTemplateDefaults",
+          "documentation":"<p>The default values for fields when a task is created by referencing this template.</p>"
+        },
+        "Fields":{
+          "shape":"TaskTemplateFields",
+          "documentation":"<p>Fields that are part of the template.</p>"
+        },
+        "Status":{
+          "shape":"TaskTemplateStatus",
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the task template was last modified.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the task template was created.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
         }
       }
     },
@@ -6254,6 +6569,20 @@
       "documentation":"<p>The request is not valid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "InvisibleFieldInfo":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateFieldIdentifier",
+          "documentation":"<p>Identifier of the invisible field.</p>"
+        }
+      },
+      "documentation":"<p>A field that is invisible to an agent.</p>"
+    },
+    "InvisibleTaskTemplateFields":{
+      "type":"list",
+      "member":{"shape":"InvisibleFieldInfo"}
     },
     "KeyId":{
       "type":"string",
@@ -7477,6 +7806,56 @@
         }
       }
     },
+    "ListTaskTemplatesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p> <important> <p>It is not expected that you set this because the value returned in the previous response is always null.</p> </important>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p> <important> <p>It is not expected that you set this.</p> </important>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "Status":{
+          "shape":"TaskTemplateStatus",
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "Name":{
+          "shape":"TaskTemplateName",
+          "documentation":"<p>The name of the task template.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        }
+      }
+    },
+    "ListTaskTemplatesResponse":{
+      "type":"structure",
+      "members":{
+        "TaskTemplates":{
+          "shape":"TaskTemplateList",
+          "documentation":"<p>Provides details about a list of task templates belonging to an instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as a null in the response.</p> </important>"
+        }
+      }
+    },
     "ListUseCasesRequest":{
       "type":"structure",
       "required":[
@@ -7669,6 +8048,20 @@
       "type":"string",
       "max":2500,
       "min":1
+    },
+    "NumberReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the number reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>A valid number.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.</p>"
     },
     "Origin":{
       "type":"string",
@@ -8162,6 +8555,55 @@
       "type":"list",
       "member":{"shape":"PromptSummary"}
     },
+    "PropertyValidationException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"Message"},
+        "PropertyList":{"shape":"PropertyValidationExceptionPropertyList"}
+      },
+      "documentation":"<p/>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "PropertyValidationExceptionProperty":{
+      "type":"structure",
+      "required":[
+        "PropertyPath",
+        "Reason",
+        "Message"
+      ],
+      "members":{
+        "PropertyPath":{
+          "shape":"String",
+          "documentation":"<p>The full property path.</p>"
+        },
+        "Reason":{
+          "shape":"PropertyValidationExceptionReason",
+          "documentation":"<p>Why the property is not valid.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>A message describing why the property is not valid.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about why a property is not valid.</p>"
+    },
+    "PropertyValidationExceptionPropertyList":{
+      "type":"list",
+      "member":{"shape":"PropertyValidationExceptionProperty"}
+    },
+    "PropertyValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "INVALID_FORMAT",
+        "UNIQUE_CONSTRAINT_VIOLATED",
+        "REFERENCED_RESOURCE_NOT_FOUND",
+        "RESOURCE_NAME_ALREADY_EXISTS",
+        "REQUIRED_PROPERTY_MISSING",
+        "NOT_SUPPORTED"
+      ]
+    },
     "PutUserStatusRequest":{
       "type":"structure",
       "required":[
@@ -8457,6 +8899,20 @@
       "max":50,
       "min":1
     },
+    "ReadOnlyFieldInfo":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateFieldIdentifier",
+          "documentation":"<p>Identifier of the read-only field.</p>"
+        }
+      },
+      "documentation":"<p>Indicates a field that is read-only to an agent.</p>"
+    },
+    "ReadOnlyTaskTemplateFields":{
+      "type":"list",
+      "member":{"shape":"ReadOnlyFieldInfo"}
+    },
     "Reference":{
       "type":"structure",
       "required":[
@@ -8470,10 +8926,10 @@
         },
         "Type":{
           "shape":"ReferenceType",
-          "documentation":"<p>The type of the reference. Only <code>URL</code> type can be added or updated on a contact.</p>"
+          "documentation":"<p>The type of the reference.</p>"
         }
       },
-      "documentation":"<p>A link that an agent selects to complete a given task. You can have up to 4,096 UTF-8 bytes across all references for a contact.</p>"
+      "documentation":"<p>Well-formed data on a contact, used by agents to complete a contact request. You can have up to 4,096 UTF-8 bytes across all references for a contact.</p>"
     },
     "ReferenceKey":{
       "type":"string",
@@ -8492,11 +8948,27 @@
       "members":{
         "Url":{
           "shape":"UrlReference",
-          "documentation":"<p>Information about the URL reference if the <code>referenceType</code> is <code>URL</code>. Otherwise, null.</p>"
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>URL</code>. Otherwise, null.</p>"
         },
         "Attachment":{
           "shape":"AttachmentReference",
-          "documentation":"<p>Information about the attachment reference if the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
+        },
+        "String":{
+          "shape":"StringReference",
+          "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.</p>"
+        },
+        "Number":{
+          "shape":"NumberReference",
+          "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.</p>"
+        },
+        "Date":{
+          "shape":"DateReference",
+          "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>DATE</code>. Otherwise, null.</p>"
+        },
+        "Email":{
+          "shape":"EmailReference",
+          "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a reference. <code>ReferenceSummary</code> contains only one non null field between the URL and attachment based on the reference type.</p>",
@@ -8510,13 +8982,17 @@
       "type":"string",
       "enum":[
         "URL",
-        "ATTACHMENT"
+        "ATTACHMENT",
+        "NUMBER",
+        "STRING",
+        "DATE",
+        "EMAIL"
       ]
     },
     "ReferenceTypes":{
       "type":"list",
       "member":{"shape":"ReferenceType"},
-      "max":2
+      "max":6
     },
     "ReferenceValue":{
       "type":"string",
@@ -8541,6 +9017,20 @@
           "locationName":"clientToken"
         }
       }
+    },
+    "RequiredFieldInfo":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateFieldIdentifier",
+          "documentation":"<p>The unique identifier for the field.</p>"
+        }
+      },
+      "documentation":"<p>Information about a required field.</p>"
+    },
+    "RequiredTaskTemplateFields":{
+      "type":"list",
+      "member":{"shape":"RequiredFieldInfo"}
     },
     "ResourceConflictException":{
       "type":"structure",
@@ -9044,6 +9534,11 @@
       "error":{"httpStatusCode":402},
       "exception":true
     },
+    "SingleSelectOptions":{
+      "type":"list",
+      "member":{"shape":"TaskTemplateSingleSelectOption"}
+    },
+    "SnapshotVersion":{"type":"string"},
     "SourceApplicationName":{
       "type":"string",
       "max":100,
@@ -9251,7 +9746,6 @@
       "type":"structure",
       "required":[
         "InstanceId",
-        "ContactFlowId",
         "Name"
       ],
       "members":{
@@ -9291,6 +9785,14 @@
         "ScheduledTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp, in Unix Epoch seconds format, at which to start running the inbound contact flow. The scheduled time cannot be in the past. It must be within up to 6 days in future. </p>"
+        },
+        "TaskTemplateId":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template.</p>"
+        },
+        "QuickConnectId":{
+          "shape":"QuickConnectId",
+          "documentation":"<p>The identifier for the quick connect.</p>"
         }
       }
     },
@@ -9428,6 +9930,20 @@
       },
       "documentation":"<p>A leaf node condition which can be used to specify a string condition, for example, <code>username = 'abc'</code>. </p>"
     },
+    "StringReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the string reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>A valid string.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.</p>"
+    },
     "SupportedMessagingContentType":{
       "type":"string",
       "max":100,
@@ -9528,6 +10044,191 @@
       "type":"string",
       "max":256
     },
+    "TaskTemplateArn":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "TaskTemplateConstraints":{
+      "type":"structure",
+      "members":{
+        "RequiredFields":{
+          "shape":"RequiredTaskTemplateFields",
+          "documentation":"<p>Lists the fields that are required to be filled by agents.</p>"
+        },
+        "ReadOnlyFields":{
+          "shape":"ReadOnlyTaskTemplateFields",
+          "documentation":"<p>Lists the fields that are read-only to agents, and cannot be edited.</p>"
+        },
+        "InvisibleFields":{
+          "shape":"InvisibleTaskTemplateFields",
+          "documentation":"<p>Lists the fields that are invisible to agents.</p>"
+        }
+      },
+      "documentation":"<p>Describes constraints that apply to the template fields.</p>"
+    },
+    "TaskTemplateDefaultFieldValue":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateFieldIdentifier",
+          "documentation":"<p>Identifier of a field. </p>"
+        },
+        "DefaultValue":{
+          "shape":"TaskTemplateFieldValue",
+          "documentation":"<p>Default value for the field.</p>"
+        }
+      },
+      "documentation":"<p>Describes a default field and its corresponding value.</p>"
+    },
+    "TaskTemplateDefaultFieldValueList":{
+      "type":"list",
+      "member":{"shape":"TaskTemplateDefaultFieldValue"}
+    },
+    "TaskTemplateDefaults":{
+      "type":"structure",
+      "members":{
+        "DefaultFieldValues":{
+          "shape":"TaskTemplateDefaultFieldValueList",
+          "documentation":"<p>Default value for the field.</p>"
+        }
+      },
+      "documentation":"<p>Describes default values for fields on a template.</p>"
+    },
+    "TaskTemplateDescription":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "TaskTemplateField":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateFieldIdentifier",
+          "documentation":"<p>The unique identifier for the field.</p>"
+        },
+        "Description":{
+          "shape":"TaskTemplateFieldDescription",
+          "documentation":"<p>The description of the field.</p>"
+        },
+        "Type":{
+          "shape":"TaskTemplateFieldType",
+          "documentation":"<p>Indicates the type of field.</p>"
+        },
+        "SingleSelectOptions":{
+          "shape":"SingleSelectOptions",
+          "documentation":"<p>A list of options for a single select field.</p>"
+        }
+      },
+      "documentation":"<p>Describes a single task template field.</p>"
+    },
+    "TaskTemplateFieldDescription":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "TaskTemplateFieldIdentifier":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"TaskTemplateFieldName",
+          "documentation":"<p>The name of the task template field.</p>"
+        }
+      },
+      "documentation":"<p>The identifier of the task template field.</p>"
+    },
+    "TaskTemplateFieldName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "TaskTemplateFieldType":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "DESCRIPTION",
+        "SCHEDULED_TIME",
+        "QUICK_CONNECT",
+        "URL",
+        "NUMBER",
+        "TEXT",
+        "TEXT_AREA",
+        "DATE_TIME",
+        "BOOLEAN",
+        "SINGLE_SELECT",
+        "EMAIL"
+      ]
+    },
+    "TaskTemplateFieldValue":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "TaskTemplateFields":{
+      "type":"list",
+      "member":{"shape":"TaskTemplateField"}
+    },
+    "TaskTemplateId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "TaskTemplateList":{
+      "type":"list",
+      "member":{"shape":"TaskTemplateMetadata"}
+    },
+    "TaskTemplateMetadata":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template.</p>"
+        },
+        "Arn":{
+          "shape":"TaskTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task template.</p>"
+        },
+        "Name":{
+          "shape":"TaskTemplateName",
+          "documentation":"<p>The name of the task template.</p>"
+        },
+        "Description":{
+          "shape":"TaskTemplateDescription",
+          "documentation":"<p>The description of the task template.</p>"
+        },
+        "Status":{
+          "shape":"TaskTemplateStatus",
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the task template was last modified.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the task template was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about the task template.</p>"
+    },
+    "TaskTemplateName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "TaskTemplateSingleSelectOption":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "TaskTemplateStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
     "Threshold":{
       "type":"structure",
       "members":{
@@ -9561,6 +10262,54 @@
         "GENERAL",
         "CAMPAIGN"
       ]
+    },
+    "TransferContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId",
+        "ContactFlowId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect </p>"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier for the queue.</p>"
+        },
+        "UserId":{
+          "shape":"AgentResourceId",
+          "documentation":"<p>The identifier for the user.</p>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the contact flow.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "TransferContactResponse":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect </p>"
+        },
+        "ContactArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact.</p>"
+        }
+      }
     },
     "URI":{
       "type":"string",
@@ -9856,7 +10605,7 @@
         },
         "References":{
           "shape":"ContactReferences",
-          "documentation":"<p>A formatted URL that is shown to an agent in the Contact Control Panel (CCP).</p>"
+          "documentation":"<p>Well-formed data on contact, shown to agents on Contact Control Panel (CCP).</p>"
         }
       }
     },
@@ -10353,6 +11102,108 @@
           "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
+        }
+      }
+    },
+    "UpdateTaskTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "TaskTemplateId",
+        "InstanceId"
+      ],
+      "members":{
+        "TaskTemplateId":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template.</p>",
+          "location":"uri",
+          "locationName":"TaskTemplateId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"TaskTemplateName",
+          "documentation":"<p>The name of the task template.</p>"
+        },
+        "Description":{
+          "shape":"TaskTemplateDescription",
+          "documentation":"<p>The description of the task template.</p>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "Constraints":{
+          "shape":"TaskTemplateConstraints",
+          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+        },
+        "Defaults":{
+          "shape":"TaskTemplateDefaults",
+          "documentation":"<p>The default values for fields when a task is created by referencing this template.</p>"
+        },
+        "Status":{
+          "shape":"TaskTemplateStatus",
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>"
+        },
+        "Fields":{
+          "shape":"TaskTemplateFields",
+          "documentation":"<p>Fields that are part of the template.</p>"
+        }
+      }
+    },
+    "UpdateTaskTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "Id":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>The identifier of the task template resource.</p>"
+        },
+        "Arn":{
+          "shape":"TaskTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the task template resource.</p>"
+        },
+        "Name":{
+          "shape":"TaskTemplateName",
+          "documentation":"<p>The name of the task template.</p>"
+        },
+        "Description":{
+          "shape":"TaskTemplateDescription",
+          "documentation":"<p>The description of the task template.</p>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "Constraints":{
+          "shape":"TaskTemplateConstraints",
+          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+        },
+        "Defaults":{
+          "shape":"TaskTemplateDefaults",
+          "documentation":"<p>The default values for fields when a task is created by referencing this template.</p>"
+        },
+        "Fields":{
+          "shape":"TaskTemplateFields",
+          "documentation":"<p>Fields that are part of the template.</p>"
+        },
+        "Status":{
+          "shape":"TaskTemplateStatus",
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the task template was last modified.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the task template was created.</p>"
         }
       }
     },

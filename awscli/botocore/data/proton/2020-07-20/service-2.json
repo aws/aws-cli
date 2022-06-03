@@ -32,6 +32,24 @@
       "documentation":"<p>In a management account, an environment account connection request is accepted. When the environment account connection request is accepted, Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p>",
       "idempotent":true
     },
+    "CancelComponentDeployment":{
+      "name":"CancelComponentDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelComponentDeploymentInput"},
+      "output":{"shape":"CancelComponentDeploymentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attempts to cancel a component deployment (for a component that is in the <code>IN_PROGRESS</code> deployment status).</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
     "CancelEnvironmentDeployment":{
       "name":"CancelEnvironmentDeployment",
       "http":{
@@ -85,6 +103,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Attempts to cancel a service pipeline deployment on an <a>UpdateServicePipeline</a> action, if the deployment is <code>IN_PROGRESS</code>. For more information, see <i>Update a service pipeline</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-svc-pipeline-update.html\">Proton Administrator guide</a> or the <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ug-svc-pipeline-update.html\">Proton User guide</a>.</p> <p>The following list includes potential cancellation scenarios.</p> <ul> <li> <p>If the cancellation attempt succeeds, the resulting deployment state is <code>CANCELLED</code>.</p> </li> <li> <p>If the cancellation attempt fails, the resulting deployment state is <code>FAILED</code>.</p> </li> <li> <p>If the current <a>UpdateServicePipeline</a> action succeeds before the cancellation attempt starts, the resulting deployment state is <code>SUCCEEDED</code> and the cancellation attempt has no effect.</p> </li> </ul>"
+    },
+    "CreateComponent":{
+      "name":"CreateComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateComponentInput"},
+      "output":{"shape":"CreateComponentOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create an Proton component. A component is an infrastructure extension for a service instance.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>",
+      "idempotent":true
     },
     "CreateEnvironment":{
       "name":"CreateEnvironment",
@@ -261,6 +299,25 @@
       "documentation":"<p>Set up a template to create new template versions automatically. When a commit is pushed to your registered <a href=\"https://docs.aws.amazon.com/proton/latest/APIReference/API_Repository.html\">repository</a>, Proton checks for changes to your repository template bundles. If it detects a template bundle change, a new major or minor version of its template is created, if the version doesn’t already exist. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-template-sync-configs.html\">Template sync configurations</a> in the <i>Proton Administrator Guide</i>.</p>",
       "idempotent":true
     },
+    "DeleteComponent":{
+      "name":"DeleteComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteComponentInput"},
+      "output":{"shape":"DeleteComponentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete an Proton component resource.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>",
+      "idempotent":true
+    },
     "DeleteEnvironment":{
       "name":"DeleteEnvironment",
       "http":{
@@ -372,7 +429,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Delete a service.</p>",
+      "documentation":"<p>Delete a service, with its instances and pipeline.</p> <note> <p>You can't delete a service if it has any service instances that have components attached to them.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p> </note>",
       "idempotent":true
     },
     "DeleteServiceTemplate":{
@@ -449,6 +506,23 @@
       ],
       "documentation":"<p>Get detail data for the Proton pipeline service role.</p>"
     },
+    "GetComponent":{
+      "name":"GetComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetComponentInput"},
+      "output":{"shape":"GetComponentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detailed data for a component.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
     "GetEnvironment":{
       "name":"GetEnvironment",
       "http":{
@@ -464,7 +538,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get detail data for an environment.</p>"
+      "documentation":"<p>Get detailed data for an environment.</p>"
     },
     "GetEnvironmentAccountConnection":{
       "name":"GetEnvironmentAccountConnection",
@@ -481,7 +555,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>In an environment account, view the detail data for an environment account connection.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p>"
+      "documentation":"<p>In an environment account, get the detailed data for an environment account connection.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton Administrator guide</i>.</p>"
     },
     "GetEnvironmentTemplate":{
       "name":"GetEnvironmentTemplate",
@@ -498,7 +572,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get detail data for an environment template.</p>"
+      "documentation":"<p>Get detailed data for an environment template.</p>"
     },
     "GetEnvironmentTemplateVersion":{
       "name":"GetEnvironmentTemplateVersion",
@@ -515,7 +589,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>View detail data for a major or minor version of an environment template.</p>"
+      "documentation":"<p>Get detailed data for a major or minor version of an environment template.</p>"
     },
     "GetRepository":{
       "name":"GetRepository",
@@ -566,7 +640,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get detail data for a service.</p>"
+      "documentation":"<p>Get detailed data for a service.</p>"
     },
     "GetServiceInstance":{
       "name":"GetServiceInstance",
@@ -583,7 +657,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get detail data for a service instance. A service instance is an instantiation of service template and it runs in a specific environment.</p>"
+      "documentation":"<p>Get detailed data for a service instance. A service instance is an instantiation of service template and it runs in a specific environment.</p>"
     },
     "GetServiceTemplate":{
       "name":"GetServiceTemplate",
@@ -600,7 +674,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get detail data for a service template.</p>"
+      "documentation":"<p>Get detailed data for a service template.</p>"
     },
     "GetServiceTemplateVersion":{
       "name":"GetServiceTemplateVersion",
@@ -617,7 +691,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>View detail data for a major or minor version of a service template.</p>"
+      "documentation":"<p>Get detailed data for a major or minor version of a service template.</p>"
     },
     "GetTemplateSyncConfig":{
       "name":"GetTemplateSyncConfig",
@@ -652,6 +726,56 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Get the status of a template sync.</p>"
+    },
+    "ListComponentOutputs":{
+      "name":"ListComponentOutputs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListComponentOutputsInput"},
+      "output":{"shape":"ListComponentOutputsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get a list of component Infrastructure as Code (IaC) outputs.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
+    "ListComponentProvisionedResources":{
+      "name":"ListComponentProvisionedResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListComponentProvisionedResourcesInput"},
+      "output":{"shape":"ListComponentProvisionedResourcesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List provisioned resources for a component with details.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
+    "ListComponents":{
+      "name":"ListComponents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListComponentsInput"},
+      "output":{"shape":"ListComponentsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List components with summary data. You can filter the result list by environment, service, or a single service instance.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
     },
     "ListEnvironmentAccountConnections":{
       "name":"ListEnvironmentAccountConnections",
@@ -801,7 +925,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>View a list service instance infrastructure as code outputs with detail data.</p>"
+      "documentation":"<p>Get a list service of instance Infrastructure as Code (IaC) outputs.</p>"
     },
     "ListServiceInstanceProvisionedResources":{
       "name":"ListServiceInstanceProvisionedResources",
@@ -835,7 +959,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>List service instances with summaries of detail data.</p>"
+      "documentation":"<p>List service instances with summary data.</p>"
     },
     "ListServicePipelineOutputs":{
       "name":"ListServicePipelineOutputs",
@@ -852,7 +976,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>View a list service pipeline infrastructure as code outputs with detail.</p>"
+      "documentation":"<p>Get a list of service pipeline Infrastructure as Code (IaC) outputs.</p>"
     },
     "ListServicePipelineProvisionedResources":{
       "name":"ListServicePipelineProvisionedResources",
@@ -1030,6 +1154,25 @@
       ],
       "documentation":"<p>Update the Proton service pipeline role or repository settings.</p>"
     },
+    "UpdateComponent":{
+      "name":"UpdateComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateComponentInput"},
+      "output":{"shape":"UpdateComponentOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a component.</p> <p>There are a few modes for updating a component. The <code>deploymentType</code> field defines the mode.</p> <note> <p>You can't update a component while its deployment status, or the deployment status of a service instance attached to it, is <code>IN_PROGRESS</code>.</p> </note> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
     "UpdateEnvironment":{
       "name":"UpdateEnvironment",
       "http":{
@@ -1120,7 +1263,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Edit a service description or use a spec to add and delete service instances.</p> <note> <p>Existing service instances and the service pipeline <i>can't</i> be edited using this API. They can only be deleted.</p> </note> <p>Use the <code>description</code> parameter to modify the description.</p> <p>Edit the <code>spec</code> parameter to add or delete instances.</p>"
+      "documentation":"<p>Edit a service description or use a spec to add and delete service instances.</p> <note> <p>Existing service instances and the service pipeline <i>can't</i> be edited using this API. They can only be deleted.</p> </note> <p>Use the <code>description</code> parameter to modify the description.</p> <p>Edit the <code>spec</code> parameter to add or delete instances.</p> <note> <p>You can't delete a service instance (remove it from the spec) if it has an attached component.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p> </note>"
     },
     "UpdateServiceInstance":{
       "name":"UpdateServiceInstance",
@@ -1138,7 +1281,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update a service instance.</p> <p>There are four modes for updating a service instance. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
+      "documentation":"<p>Update a service instance.</p> <p>There are a few modes for updating a service instance. The <code>deploymentType</code> field defines the mode.</p> <note> <p>You can't update a service instance while its deployment status, or the deployment status of a component attached to it, is <code>IN_PROGRESS</code>.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p> </note>"
     },
     "UpdateServicePipeline":{
       "name":"UpdateServicePipeline",
@@ -1266,6 +1409,26 @@
       "type":"string",
       "pattern":"^\\d{12}$"
     },
+    "CancelComponentDeploymentInput":{
+      "type":"structure",
+      "required":["componentName"],
+      "members":{
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component with the deployment to cancel.</p>"
+        }
+      }
+    },
+    "CancelComponentDeploymentOutput":{
+      "type":"structure",
+      "required":["component"],
+      "members":{
+        "component":{
+          "shape":"Component",
+          "documentation":"<p>The detailed data of the component with the deployment that is being canceled.</p>"
+        }
+      }
+    },
     "CancelEnvironmentDeploymentInput":{
       "type":"structure",
       "required":["environmentName"],
@@ -1385,6 +1548,142 @@
       "type":"list",
       "member":{"shape":"CompatibleEnvironmentTemplate"}
     },
+    "Component":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "environmentName",
+        "lastModifiedAt",
+        "name"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the component.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the component was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The component deployment status.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The message associated with the component deployment status.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the component.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Proton environment that this component is associated with.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the component was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the component was last deployed successfully.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the component was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.</p>"
+        },
+        "serviceSpec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that the component uses to access service inputs. Provided when a component is attached to a service instance.</p>"
+        }
+      },
+      "documentation":"<p>Detailed data of an Proton component resource.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
+    "ComponentArn":{"type":"string"},
+    "ComponentDeploymentUpdateType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "CURRENT_VERSION"
+      ]
+    },
+    "ComponentSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "environmentName",
+        "lastModifiedAt",
+        "name"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the component.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the component was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The component deployment status.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The message associated with the component deployment status.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Proton environment that this component is associated with.</p>"
+        },
+        "lastDeploymentAttemptedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a deployment of the component was last attempted.</p>"
+        },
+        "lastDeploymentSucceededAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the component was last deployed successfully.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the component was last modified.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.</p>"
+        }
+      },
+      "documentation":"<p>Summary data of an Proton component resource.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+    },
+    "ComponentSummaryList":{
+      "type":"list",
+      "member":{"shape":"ComponentSummary"}
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -1393,6 +1692,62 @@
       },
       "documentation":"<p>The request <i>couldn't</i> be made due to a conflicting operation or resource.</p>",
       "exception":true
+    },
+    "CreateComponentInput":{
+      "type":"structure",
+      "required":[
+        "manifest",
+        "name",
+        "templateFile"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>An optional customer-provided description of the component.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Proton environment that you want to associate this component with. You must specify this when you don't specify <code>serviceInstanceName</code> and <code>serviceName</code>.</p>"
+        },
+        "manifest":{
+          "shape":"TemplateManifestContents",
+          "documentation":"<p>A path to a manifest file that lists the Infrastructure as Code (IaC) file, template language, and rendering engine for infrastructure that a custom component provisions.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The customer-provided name of the component.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance that you want to attach this component to. If you don't specify this, the component isn't attached to any service instance. Specify both <code>serviceInstanceName</code> and <code>serviceName</code> or neither of them.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated with. If you don't specify this, the component isn't attached to any service instance. Specify both <code>serviceInstanceName</code> and <code>serviceName</code> or neither of them.</p>"
+        },
+        "serviceSpec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that you want the component to use to access service inputs. Set this only when you attach the component to a service instance.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton component. A tag is a key-value pair.</p> <p>For more information, see <i>Proton resources and tagging</i> in the <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/resources.html\">Proton Administrator Guide</a> or <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton User Guide</a>.</p>"
+        },
+        "templateFile":{
+          "shape":"TemplateFileContents",
+          "documentation":"<p>A path to the Infrastructure as Code (IaC) file describing infrastructure that a custom component provisions.</p> <note> <p>Components support a single IaC file, even if you use Terraform as your template language.</p> </note>"
+        }
+      }
+    },
+    "CreateComponentOutput":{
+      "type":"structure",
+      "required":["component"],
+      "members":{
+        "component":{
+          "shape":"Component",
+          "documentation":"<p>The detailed data of the created component.</p>"
+        }
+      }
     },
     "CreateEnvironmentAccountConnectionInput":{
       "type":"structure",
@@ -1406,6 +1761,10 @@
           "shape":"ClientToken",
           "documentation":"<p>When included, if two identical requests are made with the same client token, Proton returns the environment account connection that the first request created.</p>",
           "idempotencyToken":true
+        },
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in this account.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "environmentName":{
           "shape":"ResourceName",
@@ -1444,6 +1803,10 @@
         "templateName"
       ],
       "members":{
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with this environment.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>A description of the environment that's being created and deployed.</p>"
@@ -1736,7 +2099,7 @@
         },
         "compatibleEnvironmentTemplates":{
           "shape":"CompatibleEnvironmentTemplateInputList",
-          "documentation":"<p>An array of compatible environment template objects for the new version of a service template.</p>"
+          "documentation":"<p>An array of environment template objects that are compatible with the new service template version. A service instance based on this service template version can run in environments based on compatible templates.</p>"
         },
         "description":{
           "shape":"Description",
@@ -1749,6 +2112,10 @@
         "source":{
           "shape":"TemplateVersionSourceInput",
           "documentation":"<p>An object that includes the template bundle S3 bucket path and name for the new version of a service template.</p>"
+        },
+        "supportedComponentSources":{
+          "shape":"ServiceTemplateSupportedComponentSourceInputList",
+          "documentation":"<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -1815,6 +2182,25 @@
         }
       }
     },
+    "DeleteComponentInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component to delete.</p>"
+        }
+      }
+    },
+    "DeleteComponentOutput":{
+      "type":"structure",
+      "members":{
+        "component":{
+          "shape":"Component",
+          "documentation":"<p>The detailed data of the component being deleted.</p>"
+        }
+      }
+    },
     "DeleteEnvironmentAccountConnectionInput":{
       "type":"structure",
       "required":["id"],
@@ -1830,7 +2216,7 @@
       "members":{
         "environmentAccountConnection":{
           "shape":"EnvironmentAccountConnection",
-          "documentation":"<p>The environment account connection detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the environment account connection being deleted.</p>"
         }
       }
     },
@@ -1849,7 +2235,7 @@
       "members":{
         "environment":{
           "shape":"Environment",
-          "documentation":"<p>The environment detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the environment being deleted.</p>"
         }
       }
     },
@@ -1868,7 +2254,7 @@
       "members":{
         "environmentTemplate":{
           "shape":"EnvironmentTemplate",
-          "documentation":"<p>The environment template detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the environment template being deleted.</p>"
         }
       }
     },
@@ -1899,7 +2285,7 @@
       "members":{
         "environmentTemplateVersion":{
           "shape":"EnvironmentTemplateVersion",
-          "documentation":"<p>The environment template version detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the environment template version being deleted.</p>"
         }
       }
     },
@@ -1944,7 +2330,7 @@
       "members":{
         "service":{
           "shape":"Service",
-          "documentation":"<p>The service detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the service being deleted.</p>"
         }
       }
     },
@@ -1963,7 +2349,7 @@
       "members":{
         "serviceTemplate":{
           "shape":"ServiceTemplate",
-          "documentation":"<p>The service template detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the service template being deleted.</p>"
         }
       }
     },
@@ -1994,7 +2380,7 @@
       "members":{
         "serviceTemplateVersion":{
           "shape":"ServiceTemplateVersion",
-          "documentation":"<p>The service template version detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the service template version being deleted.</p>"
         }
       }
     },
@@ -2085,6 +2471,10 @@
           "shape":"EnvironmentArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the environment.</p>"
         },
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the environment was created.</p>"
@@ -2150,7 +2540,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the environment template.</p>"
         }
       },
-      "documentation":"<p>The environment detail data. An Proton environment is a set resources shared across an Proton service.</p>"
+      "documentation":"<p>Detailed data of an Proton environment resource. An Proton environment is a set of resources shared across Proton services.</p>"
     },
     "EnvironmentAccountConnection":{
       "type":"structure",
@@ -2169,6 +2559,10 @@
         "arn":{
           "shape":"EnvironmentAccountConnectionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the environment account connection.</p>"
+        },
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "environmentAccountId":{
           "shape":"AwsAccountId",
@@ -2203,7 +2597,7 @@
           "documentation":"<p>The status of the environment account connection.</p>"
         }
       },
-      "documentation":"<p>The environment account connection detail data.</p>"
+      "documentation":"<p>Detailed data of an Proton environment account connection resource.</p>"
     },
     "EnvironmentAccountConnectionArn":{"type":"string"},
     "EnvironmentAccountConnectionId":{
@@ -2247,6 +2641,10 @@
           "shape":"EnvironmentAccountConnectionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the environment account connection.</p>"
         },
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+        },
         "environmentAccountId":{
           "shape":"AwsAccountId",
           "documentation":"<p>The ID of the environment account that's connected to the environment account connection.</p>"
@@ -2280,7 +2678,7 @@
           "documentation":"<p>The status of the environment account connection.</p>"
         }
       },
-      "documentation":"<p>A summary of the environment account connection detail data.</p>"
+      "documentation":"<p>Summary data of an Proton environment account connection resource.</p>"
     },
     "EnvironmentAccountConnectionSummaryList":{
       "type":"list",
@@ -2304,6 +2702,10 @@
         "arn":{
           "shape":"EnvironmentArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the environment.</p>"
+        },
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -2362,7 +2764,7 @@
           "documentation":"<p>The name of the environment template.</p>"
         }
       },
-      "documentation":"<p>A summary of the environment detail data.</p>"
+      "documentation":"<p>Summary data of an Proton environment resource. An Proton environment is a set of resources shared across Proton services.</p>"
     },
     "EnvironmentSummaryList":{
       "type":"list",
@@ -2630,13 +3032,32 @@
         }
       }
     },
+    "GetComponentInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component that you want to get the detailed data for.</p>"
+        }
+      }
+    },
+    "GetComponentOutput":{
+      "type":"structure",
+      "members":{
+        "component":{
+          "shape":"Component",
+          "documentation":"<p>The detailed data of the requested component.</p>"
+        }
+      }
+    },
     "GetEnvironmentAccountConnectionInput":{
       "type":"structure",
       "required":["id"],
       "members":{
         "id":{
           "shape":"EnvironmentAccountConnectionId",
-          "documentation":"<p>The ID of the environment account connection.</p>"
+          "documentation":"<p>The ID of the environment account connection that you want to get the detailed data for.</p>"
         }
       }
     },
@@ -2646,7 +3067,7 @@
       "members":{
         "environmentAccountConnection":{
           "shape":"EnvironmentAccountConnection",
-          "documentation":"<p>The environment account connection detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested environment account connection.</p>"
         }
       }
     },
@@ -2656,7 +3077,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the environment that you want to get the detail data for.</p>"
+          "documentation":"<p>The name of the environment that you want to get the detailed data for.</p>"
         }
       }
     },
@@ -2666,7 +3087,7 @@
       "members":{
         "environment":{
           "shape":"Environment",
-          "documentation":"<p>The environment detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested environment.</p>"
         }
       }
     },
@@ -2676,7 +3097,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the environment template that you want to get the detail data for.</p>"
+          "documentation":"<p>The name of the environment template that you want to get the detailed data for.</p>"
         }
       }
     },
@@ -2686,7 +3107,7 @@
       "members":{
         "environmentTemplate":{
           "shape":"EnvironmentTemplate",
-          "documentation":"<p>The environment template detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested environment template.</p>"
         }
       }
     },
@@ -2700,15 +3121,15 @@
       "members":{
         "majorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>To view environment template major version detail data, include <code>major Version</code>.</p>"
+          "documentation":"<p>To get environment template major version detail data, include <code>major Version</code>.</p>"
         },
         "minorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>To view environment template minor version detail data, include <code>minorVersion</code>.</p>"
+          "documentation":"<p>To get environment template minor version detail data, include <code>minorVersion</code>.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the environment template.</p>"
+          "documentation":"<p>The name of the environment template a version of which you want to get detailed data for..</p>"
         }
       }
     },
@@ -2718,7 +3139,7 @@
       "members":{
         "environmentTemplateVersion":{
           "shape":"EnvironmentTemplateVersion",
-          "documentation":"<p>The environment template version detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested environment template version.</p>"
         }
       }
     },
@@ -2791,7 +3212,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the service that you want to get the detail data for.</p>"
+          "documentation":"<p>The name of the service that you want to get the detailed data for.</p>"
         }
       }
     },
@@ -2804,7 +3225,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of a service instance that you want to get the detail data for.</p>"
+          "documentation":"<p>The name of a service instance that you want to get the detailed data for.</p>"
         },
         "serviceName":{
           "shape":"ResourceName",
@@ -2818,7 +3239,7 @@
       "members":{
         "serviceInstance":{
           "shape":"ServiceInstance",
-          "documentation":"<p>The service instance detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested service instance.</p>"
         }
       }
     },
@@ -2827,7 +3248,7 @@
       "members":{
         "service":{
           "shape":"Service",
-          "documentation":"<p>The service detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested service.</p>"
         }
       }
     },
@@ -2837,7 +3258,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the service template that you want to get detail data for.</p>"
+          "documentation":"<p>The name of the service template that you want to get detailed data for.</p>"
         }
       }
     },
@@ -2847,7 +3268,7 @@
       "members":{
         "serviceTemplate":{
           "shape":"ServiceTemplate",
-          "documentation":"<p>The service template detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested service template.</p>"
         }
       }
     },
@@ -2861,15 +3282,15 @@
       "members":{
         "majorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>To view service template major version detail data, include <code>major Version</code>.</p>"
+          "documentation":"<p>To get service template major version detail data, include <code>major Version</code>.</p>"
         },
         "minorVersion":{
           "shape":"TemplateVersionPart",
-          "documentation":"<p>To view service template minor version detail data, include <code>minorVersion</code>.</p>"
+          "documentation":"<p>To get service template minor version detail data, include <code>minorVersion</code>.</p>"
         },
         "templateName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the service template.</p>"
+          "documentation":"<p>The name of the service template a version of which you want to get detailed data for.</p>"
         }
       }
     },
@@ -2879,7 +3300,7 @@
       "members":{
         "serviceTemplateVersion":{
           "shape":"ServiceTemplateVersion",
-          "documentation":"<p>The service template version detail data that's returned by Proton.</p>"
+          "documentation":"<p>The detailed data of the requested service template version.</p>"
         }
       }
     },
@@ -2963,6 +3384,101 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "ListComponentOutputsInput":{
+      "type":"structure",
+      "required":["componentName"],
+      "members":{
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component whose outputs you want.</p>"
+        },
+        "nextToken":{
+          "shape":"EmptyNextToken",
+          "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
+        }
+      }
+    },
+    "ListComponentOutputsOutput":{
+      "type":"structure",
+      "required":["outputs"],
+      "members":{
+        "nextToken":{
+          "shape":"EmptyNextToken",
+          "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
+        },
+        "outputs":{
+          "shape":"OutputsList",
+          "documentation":"<p>An array of component Infrastructure as Code (IaC) outputs.</p>"
+        }
+      }
+    },
+    "ListComponentProvisionedResourcesInput":{
+      "type":"structure",
+      "required":["componentName"],
+      "members":{
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component whose provisioned resources you want.</p>"
+        },
+        "nextToken":{
+          "shape":"EmptyNextToken",
+          "documentation":"<p>A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the list of provisioned resources that was previously requested.</p>"
+        }
+      }
+    },
+    "ListComponentProvisionedResourcesOutput":{
+      "type":"structure",
+      "required":["provisionedResources"],
+      "members":{
+        "nextToken":{
+          "shape":"EmptyNextToken",
+          "documentation":"<p>A token that indicates the location of the next provisioned resource in the array of provisioned resources, after the current requested list of provisioned resources.</p>"
+        },
+        "provisionedResources":{
+          "shape":"ProvisionedResourceList",
+          "documentation":"<p>An array of provisioned resources for a component.</p>"
+        }
+      }
+    },
+    "ListComponentsInput":{
+      "type":"structure",
+      "members":{
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of an environment for result list filtering. Proton returns components associated with the environment or attached to service instances running in it.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of components to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates the location of the next component in the array of components, after the list of components that was previously requested.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a service instance for result list filtering. Proton returns the component attached to the service instance, if any.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a service for result list filtering. Proton returns components attached to service instances of the service.</p>"
+        }
+      }
+    },
+    "ListComponentsOutput":{
+      "type":"structure",
+      "required":["components"],
+      "members":{
+        "components":{
+          "shape":"ComponentSummaryList",
+          "documentation":"<p>An array of components with summary data.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates the location of the next component in the array of components, after the current requested list of components.</p>"
+        }
+      }
     },
     "ListEnvironmentAccountConnectionsInput":{
       "type":"structure",
@@ -3234,11 +3750,11 @@
         },
         "serviceInstanceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The service instance name.</p>"
+          "documentation":"<p>The name of the service instance whose outputs you want.</p>"
         },
         "serviceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated to.</p>"
         }
       }
     },
@@ -3252,7 +3768,7 @@
         },
         "outputs":{
           "shape":"OutputsList",
-          "documentation":"<p>An array of service instance infrastructure as code outputs.</p>"
+          "documentation":"<p>An array of service instance Infrastructure as Code (IaC) outputs.</p>"
         }
       }
     },
@@ -3269,11 +3785,11 @@
         },
         "serviceInstanceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The service instance name.</p>"
+          "documentation":"<p>The name of the service instance whose provisioned resources you want.</p>"
         },
         "serviceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated to.</p>"
         }
       }
     },
@@ -3318,7 +3834,7 @@
         },
         "serviceInstances":{
           "shape":"ServiceInstanceSummaryList",
-          "documentation":"<p>An array of service instances with summaries of detail data.</p>"
+          "documentation":"<p>An array of service instances with summary data.</p>"
         }
       }
     },
@@ -3332,7 +3848,7 @@
         },
         "serviceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>The name of the service whose pipeline's outputs you want.</p>"
         }
       }
     },
@@ -3346,7 +3862,7 @@
         },
         "outputs":{
           "shape":"OutputsList",
-          "documentation":"<p>An array of outputs.</p>"
+          "documentation":"<p>An array of service pipeline Infrastructure as Code (IaC) outputs.</p>"
         }
       }
     },
@@ -3360,7 +3876,7 @@
         },
         "serviceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>The name of the service whose pipeline's provisioned resources you want.</p>"
         }
       }
     },
@@ -3534,7 +4050,7 @@
           "documentation":"<p>The status of your provisioned resource.</p>"
         },
         "statusMessage":{
-          "shape":"SyntheticNotifyResourceDeploymentStatusChangeInputString",
+          "shape":"NotifyResourceDeploymentStatusChangeInputStatusMessageString",
           "documentation":"<p>The deployment status message for your provisioned resource.</p>"
         }
       }
@@ -3544,6 +4060,12 @@
       "member":{"shape":"Output"},
       "max":50,
       "min":0
+    },
+    "NotifyResourceDeploymentStatusChangeInputStatusMessageString":{
+      "type":"string",
+      "max":5000,
+      "min":0,
+      "sensitive":true
     },
     "NotifyResourceDeploymentStatusChangeOutput":{
       "type":"structure",
@@ -3679,7 +4201,7 @@
           "documentation":"<p>The repository provider.</p>"
         }
       },
-      "documentation":"<p>Detail date for a repository that has been registered with Proton.</p>"
+      "documentation":"<p>Detailed data of a repository that has been registered with Proton.</p>"
     },
     "RepositoryArn":{"type":"string"},
     "RepositoryBranch":{
@@ -3773,7 +4295,7 @@
           "documentation":"<p>The repository provider.</p>"
         }
       },
-      "documentation":"<p>A summary of detail data for a registered repository.</p>"
+      "documentation":"<p>Summary data of a repository that has been registered with Proton.</p>"
     },
     "RepositorySummaryList":{
       "type":"list",
@@ -3889,6 +4411,12 @@
       "max":100,
       "min":1,
       "pattern":"^[0-9A-Za-z]+[0-9A-Za-z_\\-]*$"
+    },
+    "ResourceNameOrEmpty":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"(^$)|^[0-9A-Za-z]+[0-9A-Za-z_\\-]*$"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -4070,7 +4598,7 @@
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p>A description of a service.</p>"
+          "documentation":"<p>A description of the service.</p>"
         },
         "lastModifiedAt":{
           "shape":"Timestamp",
@@ -4109,7 +4637,7 @@
           "documentation":"<p>The name of the service template.</p>"
         }
       },
-      "documentation":"<p>The service detail data.</p>"
+      "documentation":"<p>Detailed data of an Proton service resource.</p>"
     },
     "ServiceArn":{"type":"string"},
     "ServiceInstance":{
@@ -4142,7 +4670,7 @@
         },
         "deploymentStatusMessage":{
           "shape":"StatusMessage",
-          "documentation":"<p>A service instance deployment status message.</p>"
+          "documentation":"<p>The message associated with the service instance deployment status.</p>"
         },
         "environmentName":{
           "shape":"ResourceName",
@@ -4181,7 +4709,7 @@
           "documentation":"<p>The name of the service template that was used to create the service instance.</p>"
         }
       },
-      "documentation":"<p>The service instance detail data.</p>"
+      "documentation":"<p>Detailed data of an Proton service instance resource.</p>"
     },
     "ServiceInstanceArn":{"type":"string"},
     "ServiceInstanceSummary":{
@@ -4249,7 +4777,7 @@
           "documentation":"<p>The name of the service template.</p>"
         }
       },
-      "documentation":"<p>A summary of the service instance detail data.</p>"
+      "documentation":"<p>Summary data of an Proton service instance resource.</p>"
     },
     "ServiceInstanceSummaryList":{
       "type":"list",
@@ -4309,7 +4837,7 @@
           "documentation":"<p>The name of the service template that was used to create the service pipeline.</p>"
         }
       },
-      "documentation":"<p>The service pipeline detail data.</p>"
+      "documentation":"<p>Detailed data of an Proton service instance pipeline resource.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -4383,7 +4911,7 @@
           "documentation":"<p>The name of the service template.</p>"
         }
       },
-      "documentation":"<p>A summary of the service detail data.</p>"
+      "documentation":"<p>Summary data of an Proton service resource.</p>"
     },
     "ServiceSummaryList":{
       "type":"list",
@@ -4435,7 +4963,7 @@
           "documentation":"<p>The recommended version of the service template.</p>"
         }
       },
-      "documentation":"<p>The service template detail data.</p>"
+      "documentation":"<p>Detailed data of an Proton service template resource.</p>"
     },
     "ServiceTemplateArn":{"type":"string"},
     "ServiceTemplateSummary":{
@@ -4480,11 +5008,19 @@
           "documentation":"<p>The recommended version of the service template.</p>"
         }
       },
-      "documentation":"<p>The service template summary data.</p>"
+      "documentation":"<p>Summary data of an Proton service template resource.</p>"
     },
     "ServiceTemplateSummaryList":{
       "type":"list",
       "member":{"shape":"ServiceTemplateSummary"}
+    },
+    "ServiceTemplateSupportedComponentSourceInputList":{
+      "type":"list",
+      "member":{"shape":"ServiceTemplateSupportedComponentSourceType"}
+    },
+    "ServiceTemplateSupportedComponentSourceType":{
+      "type":"string",
+      "enum":["DIRECTLY_DEFINED"]
     },
     "ServiceTemplateVersion":{
       "type":"structure",
@@ -4543,12 +5079,16 @@
           "shape":"StatusMessage",
           "documentation":"<p>A service template version status message.</p>"
         },
+        "supportedComponentSources":{
+          "shape":"ServiceTemplateSupportedComponentSourceInputList",
+          "documentation":"<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+        },
         "templateName":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the version of a service template.</p>"
         }
       },
-      "documentation":"<p>The version of a service template detail data.</p>"
+      "documentation":"<p>Detailed data of an Proton service template version resource.</p>"
     },
     "ServiceTemplateVersionArn":{"type":"string"},
     "ServiceTemplateVersionSummary":{
@@ -4604,7 +5144,7 @@
           "documentation":"<p>The name of the service template.</p>"
         }
       },
-      "documentation":"<p>A summary of the service template version detail data.</p>"
+      "documentation":"<p>Summary data of an Proton service template version resource.</p>"
     },
     "ServiceTemplateVersionSummaryList":{
       "type":"list",
@@ -4629,12 +5169,6 @@
     "SyncType":{
       "type":"string",
       "enum":["TEMPLATE_SYNC"]
-    },
-    "SyntheticNotifyResourceDeploymentStatusChangeInputString":{
-      "type":"string",
-      "max":5000,
-      "min":0,
-      "sensitive":true
     },
     "Tag":{
       "type":"structure",
@@ -4697,6 +5231,18 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TemplateFileContents":{
+      "type":"string",
+      "max":51200,
+      "min":1,
+      "sensitive":true
+    },
+    "TemplateManifestContents":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
     },
     "TemplateSchema":{
       "type":"string",
@@ -4830,13 +5376,61 @@
         }
       }
     },
-    "UpdateEnvironmentAccountConnectionInput":{
+    "UpdateComponentInput":{
       "type":"structure",
       "required":[
-        "id",
-        "roleArn"
+        "deploymentType",
+        "name"
       ],
       "members":{
+        "deploymentType":{
+          "shape":"ComponentDeploymentUpdateType",
+          "documentation":"<p>The deployment type. It defines the mode for updating a component, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated. You can only specify <code>description</code> in this mode.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the component is deployed and updated with the new <code>serviceSpec</code>, <code>templateSource</code>, and/or <code>type</code> that you provide. Only requested parameters are updated.</p> </dd> </dl>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>An optional customer-provided description of the component.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component to update.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceNameOrEmpty",
+          "documentation":"<p>The name of the service instance that you want to attach this component to. Don't specify to keep the component's current service instance attachment. Specify an empty string to detach the component from the service instance it's attached to. Specify non-empty values for both <code>serviceInstanceName</code> and <code>serviceName</code> or for neither of them.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceNameOrEmpty",
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated with. Don't specify to keep the component's current service instance attachment. Specify an empty string to detach the component from the service instance it's attached to. Specify non-empty values for both <code>serviceInstanceName</code> and <code>serviceName</code> or for neither of them.</p>"
+        },
+        "serviceSpec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that you want the component to use to access service inputs. Set this only when the component is attached to a service instance.</p>"
+        },
+        "templateFile":{
+          "shape":"TemplateFileContents",
+          "documentation":"<p>A path to the Infrastructure as Code (IaC) file describing infrastructure that a custom component provisions.</p> <note> <p>Components support a single IaC file, even if you use Terraform as your template language.</p> </note>"
+        }
+      }
+    },
+    "UpdateComponentOutput":{
+      "type":"structure",
+      "required":["component"],
+      "members":{
+        "component":{
+          "shape":"Component",
+          "documentation":"<p>The detailed data of the updated component.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentAccountConnectionInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>The environment account connection must have a <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in the account.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+        },
         "id":{
           "shape":"EnvironmentAccountConnectionId",
           "documentation":"<p>The ID of the environment account connection to update.</p>"
@@ -4864,6 +5458,10 @@
         "name"
       ],
       "members":{
+        "componentRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in this environment. It determines the scope of infrastructure that a component can provision.</p> <p>The environment must have a <code>componentRoleArn</code> to allow directly defined components to be associated with the environment.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
+        },
         "deploymentType":{
           "shape":"DeploymentUpdateType",
           "documentation":"<p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that is higher than the major version in use and a minor version (optional).</p> </dd> </dl>"
@@ -5008,7 +5606,7 @@
       "members":{
         "deploymentType":{
           "shape":"DeploymentUpdateType",
-          "documentation":"<p>The deployment type.</p> <p>There are four modes for updating a service instance. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
+          "documentation":"<p>The deployment type. It defines the mode for updating a service instance, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this deployment type.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
         },
         "name":{
           "shape":"ResourceName",
@@ -5130,7 +5728,7 @@
       "members":{
         "compatibleEnvironmentTemplates":{
           "shape":"CompatibleEnvironmentTemplateInputList",
-          "documentation":"<p>An array of compatible environment names for a service template major or minor version to update.</p>"
+          "documentation":"<p>An array of environment template objects that are compatible with this service template version. A service instance based on this service template version can run in environments based on compatible templates.</p>"
         },
         "description":{
           "shape":"Description",
@@ -5147,6 +5745,10 @@
         "status":{
           "shape":"TemplateVersionStatus",
           "documentation":"<p>The status of the service template minor version to update.</p>"
+        },
+        "supportedComponentSources":{
+          "shape":"ServiceTemplateSupportedComponentSourceInputList",
+          "documentation":"<p>An array of supported component sources. Components with supported sources can be attached to service instances based on this service template version.</p> <note> <p>A change to <code>supportedComponentSources</code> doesn't impact existing component attachments to instances based on this template version. A change only affects later associations.</p> </note> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/adminguide/ag-components.html\">Proton components</a> in the <i>Proton Administrator Guide</i>.</p>"
         },
         "templateName":{
           "shape":"ResourceName",

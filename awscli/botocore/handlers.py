@@ -596,7 +596,7 @@ def fix_route53_ids(params, model, **kwargs):
         return
 
     members = [name for (name, shape) in input_shape.members.items()
-               if shape.name in ['ResourceId', 'DelegationSetId']]
+               if shape.name in ['ResourceId', 'DelegationSetId', 'ChangeId']]
 
     for name in members:
         if name in params:

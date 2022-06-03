@@ -67,7 +67,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Creates a domain. CodeArtifact <i>domains</i> make it easier to manage multiple repositories across an organization. You can use a domain to apply permissions across many repositories owned by different AWS accounts. An asset is stored only once in a domain, even if it's in multiple repositories. </p> <p>Although you can have multiple domains, we recommend a single production domain that contains all published artifacts so that your development teams can find and share packages. You can use a second pre-production domain to test changes to the production domain configuration. </p>"
+      "documentation":"<p> Creates a domain. CodeArtifact <i>domains</i> make it easier to manage multiple repositories across an organization. You can use a domain to apply permissions across many repositories owned by different Amazon Web Services accounts. An asset is stored only once in a domain, even if it's in multiple repositories. </p> <p>Although you can have multiple domains, we recommend a single production domain that contains all published artifacts so that your development teams can find and share packages. You can use a second pre-production domain to test changes to the production domain configuration. </p>"
     },
     "CreateRepository":{
       "name":"CreateRepository",
@@ -175,7 +175,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Deletes the resource policy that is set on a repository. After a resource policy is deleted, the permissions allowed and denied by the deleted policy are removed. The effect of deleting a resource policy might not be immediate. </p> <important> <p> Use <code>DeleteRepositoryPermissionsPolicy</code> with caution. After a policy is deleted, AWS users, roles, and accounts lose permissions to perform the repository actions granted by the deleted policy. </p> </important>"
+      "documentation":"<p> Deletes the resource policy that is set on a repository. After a resource policy is deleted, the permissions allowed and denied by the deleted policy are removed. The effect of deleting a resource policy might not be immediate. </p> <important> <p> Use <code>DeleteRepositoryPermissionsPolicy</code> with caution. After a policy is deleted, Amazon Web Services users, roles, and accounts lose permissions to perform the repository actions granted by the deleted policy. </p> </important>"
     },
     "DescribeDomain":{
       "name":"DescribeDomain",
@@ -281,7 +281,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Generates a temporary authorization token for accessing repositories in the domain. This API requires the <code>codeartifact:GetAuthorizationToken</code> and <code>sts:GetServiceBearerToken</code> permissions. For more information about authorization tokens, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/tokens-authentication.html\">AWS CodeArtifact authentication and tokens</a>. </p> <note> <p>CodeArtifact authorization tokens are valid for a period of 12 hours when created with the <code>login</code> command. You can call <code>login</code> periodically to refresh the token. When you create an authorization token with the <code>GetAuthorizationToken</code> API, you can set a custom authorization period, up to a maximum of 12 hours, with the <code>durationSeconds</code> parameter.</p> <p>The authorization period begins after <code>login</code> or <code>GetAuthorizationToken</code> is called. If <code>login</code> or <code>GetAuthorizationToken</code> is called while assuming a role, the token lifetime is independent of the maximum session duration of the role. For example, if you call <code>sts assume-role</code> and specify a session duration of 15 minutes, then generate a CodeArtifact authorization token, the token will be valid for the full authorization period even though this is longer than the 15-minute session duration.</p> <p>See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html\">Using IAM Roles</a> for more information on controlling session duration. </p> </note>"
+      "documentation":"<p> Generates a temporary authorization token for accessing repositories in the domain. This API requires the <code>codeartifact:GetAuthorizationToken</code> and <code>sts:GetServiceBearerToken</code> permissions. For more information about authorization tokens, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/tokens-authentication.html\">CodeArtifact authentication and tokens</a>. </p> <note> <p>CodeArtifact authorization tokens are valid for a period of 12 hours when created with the <code>login</code> command. You can call <code>login</code> periodically to refresh the token. When you create an authorization token with the <code>GetAuthorizationToken</code> API, you can set a custom authorization period, up to a maximum of 12 hours, with the <code>durationSeconds</code> parameter.</p> <p>The authorization period begins after <code>login</code> or <code>GetAuthorizationToken</code> is called. If <code>login</code> or <code>GetAuthorizationToken</code> is called while assuming a role, the token lifetime is independent of the maximum session duration of the role. For example, if you call <code>sts assume-role</code> and specify a session duration of 15 minutes, then generate a CodeArtifact authorization token, the token will be valid for the full authorization period even though this is longer than the 15-minute session duration.</p> <p>See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html\">Using IAM Roles</a> for more information on controlling session duration. </p> </note>"
     },
     "GetDomainPermissionsPolicy":{
       "name":"GetDomainPermissionsPolicy",
@@ -298,7 +298,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Returns the resource policy attached to the specified domain. </p> <note> <p> The policy is a resource-based policy, not an identity-based policy. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_identity-vs-resource.html\">Identity-based policies and resource-based policies </a> in the <i>AWS Identity and Access Management User Guide</i>. </p> </note>"
+      "documentation":"<p> Returns the resource policy attached to the specified domain. </p> <note> <p> The policy is a resource-based policy, not an identity-based policy. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_identity-vs-resource.html\">Identity-based policies and resource-based policies </a> in the <i>IAM User Guide</i>. </p> </note>"
     },
     "GetPackageVersionAsset":{
       "name":"GetPackageVersionAsset",
@@ -333,7 +333,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Gets the readme file or descriptive text for a package version. For packages that do not contain a readme file, CodeArtifact extracts a description from a metadata file. For example, from the <code>&lt;description&gt;</code> element in the <code>pom.xml</code> file of a Maven package. </p> <p> The returned text might contain formatting. For example, it might contain formatting for Markdown or reStructuredText. </p>"
+      "documentation":"<p> Gets the readme file or descriptive text for a package version. </p> <p> The returned text might contain formatting. For example, it might contain formatting for Markdown or reStructuredText. </p>"
     },
     "GetRepositoryEndpoint":{
       "name":"GetRepositoryEndpoint",
@@ -350,7 +350,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Returns the endpoint of a repository for a specific package format. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>"
+      "documentation":"<p> Returns the endpoint of a repository for a specific package format. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>maven</code> </p> </li> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>nuget</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> </ul>"
     },
     "GetRepositoryPermissionsPolicy":{
       "name":"GetRepositoryPermissionsPolicy",
@@ -383,7 +383,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Returns a list of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html\">DomainSummary</a> objects for all domains owned by the AWS account that makes this call. Each returned <code>DomainSummary</code> object contains information about a domain. </p>"
+      "documentation":"<p> Returns a list of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html\">DomainSummary</a> objects for all domains owned by the Amazon Web Services account that makes this call. Each returned <code>DomainSummary</code> object contains information about a domain. </p>"
     },
     "ListPackageVersionAssets":{
       "name":"ListPackageVersionAssets",
@@ -467,7 +467,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Returns a list of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_RepositorySummary.html\">RepositorySummary</a> objects. Each <code>RepositorySummary</code> contains information about a repository in the specified AWS account and that matches the input parameters. </p>"
+      "documentation":"<p> Returns a list of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_RepositorySummary.html\">RepositorySummary</a> objects. Each <code>RepositorySummary</code> contains information about a repository in the specified Amazon Web Services account and that matches the input parameters. </p>"
     },
     "ListRepositoriesInDomain":{
       "name":"ListRepositoriesInDomain",
@@ -500,7 +500,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Gets information about AWS tags for a specified Amazon Resource Name (ARN) in AWS CodeArtifact.</p>"
+      "documentation":"<p>Gets information about Amazon Web Services tags for a specified Amazon Resource Name (ARN) in CodeArtifact.</p>"
     },
     "PutDomainPermissionsPolicy":{
       "name":"PutDomainPermissionsPolicy",
@@ -555,7 +555,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Adds or updates tags for a resource in AWS CodeArtifact.</p>"
+      "documentation":"<p>Adds or updates tags for a resource in CodeArtifact.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -571,7 +571,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Removes tags from a resource in AWS CodeArtifact.</p>"
+      "documentation":"<p>Removes tags from a resource in CodeArtifact.</p>"
     },
     "UpdatePackageVersionsStatus":{
       "name":"UpdatePackageVersionsStatus",
@@ -589,7 +589,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Updates the status of one or more versions of a package. </p>"
+      "documentation":"<p> Updates the status of one or more versions of a package. Using <code>UpdatePackageVersionsStatus</code>, you can update the status of package versions to <code>Archived</code>, <code>Published</code>, or <code>Unlisted</code>. To set the status of a package version to <code>Disposed</code>, use <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DisposePackageVersions.html\">DisposePackageVersions</a>. </p>"
     },
     "UpdateRepository":{
       "name":"UpdateRepository",
@@ -688,7 +688,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -700,7 +700,7 @@
         },
         "externalConnection":{
           "shape":"ExternalConnectionName",
-          "documentation":"<p> The name of the external connection to add to the repository. The following values are supported: </p> <ul> <li> <p> <code>public:npmjs</code> - for the npm public repository. </p> </li> <li> <p> <code>public:pypi</code> - for the Python Package Index. </p> </li> <li> <p> <code>public:maven-central</code> - for Maven Central. </p> </li> <li> <p> <code>public:maven-googleandroid</code> - for the Google Android repository. </p> </li> <li> <p> <code>public:maven-gradleplugins</code> - for the Gradle plugins repository. </p> </li> <li> <p> <code>public:maven-commonsware</code> - for the CommonsWare Android repository. </p> </li> </ul>",
+          "documentation":"<p> The name of the external connection to add to the repository. The following values are supported: </p> <ul> <li> <p> <code>public:npmjs</code> - for the npm public repository. </p> </li> <li> <p> <code>public:nuget-org</code> - for the NuGet Gallery. </p> </li> <li> <p> <code>public:pypi</code> - for the Python Package Index. </p> </li> <li> <p> <code>public:maven-central</code> - for Maven Central. </p> </li> <li> <p> <code>public:maven-googleandroid</code> - for the Google Android repository. </p> </li> <li> <p> <code>public:maven-gradleplugins</code> - for the Gradle plugins repository. </p> </li> <li> <p> <code>public:maven-commonsware</code> - for the CommonsWare Android repository. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"external-connection"
         }
@@ -732,7 +732,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of AWS resource. </p>"
+          "documentation":"<p> The type of Amazon Web Services resource. </p>"
         }
       },
       "documentation":"<p> The operation did not succeed because prerequisites are not met. </p>",
@@ -757,7 +757,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -775,7 +775,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package that is copied. The valid package types are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>",
+          "documentation":"<p> The format of the package that is copied. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -828,13 +828,13 @@
       "members":{
         "domain":{
           "shape":"DomainName",
-          "documentation":"<p> The name of the domain to create. All domain names in an AWS Region that are in the same AWS account must be unique. The domain name is used as the prefix in DNS hostnames. Do not use sensitive information in a domain name because it is publicly discoverable. </p>",
+          "documentation":"<p> The name of the domain to create. All domain names in an Amazon Web Services Region that are in the same Amazon Web Services account must be unique. The domain name is used as the prefix in DNS hostnames. Do not use sensitive information in a domain name because it is publicly discoverable. </p>",
           "location":"querystring",
           "locationName":"domain"
         },
         "encryptionKey":{
           "shape":"Arn",
-          "documentation":"<p> The encryption key for the domain. This is used to encrypt content stored in a domain. An encryption key can be a key ID, a key Amazon Resource Name (ARN), a key alias, or a key alias ARN. To specify an <code>encryptionKey</code>, your IAM role must have <code>kms:DescribeKey</code> and <code>kms:CreateGrant</code> permissions on the encryption key that is used. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestSyntax\">DescribeKey</a> in the <i>AWS Key Management Service API Reference</i> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">AWS KMS API Permissions Reference</a> in the <i>AWS Key Management Service Developer Guide</i>. </p> <important> <p> CodeArtifact supports only symmetric CMKs. Do not associate an asymmetric CMK with your domain. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html\">Using symmetric and asymmetric keys</a> in the <i>AWS Key Management Service Developer Guide</i>. </p> </important>"
+          "documentation":"<p> The encryption key for the domain. This is used to encrypt content stored in a domain. An encryption key can be a key ID, a key Amazon Resource Name (ARN), a key alias, or a key alias ARN. To specify an <code>encryptionKey</code>, your IAM role must have <code>kms:DescribeKey</code> and <code>kms:CreateGrant</code> permissions on the encryption key that is used. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestSyntax\">DescribeKey</a> in the <i>Key Management Service API Reference</i> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">Key Management Service API Permissions Reference</a> in the <i>Key Management Service Developer Guide</i>. </p> <important> <p> CodeArtifact supports only symmetric CMKs. Do not associate an asymmetric CMK with your domain. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html\">Using symmetric and asymmetric keys</a> in the <i>Key Management Service Developer Guide</i>. </p> </important>"
         },
         "tags":{
           "shape":"TagList",
@@ -866,7 +866,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -882,7 +882,7 @@
         },
         "upstreams":{
           "shape":"UpstreamRepositoryList",
-          "documentation":"<p> A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when AWS CodeArtifact looks for a requested package version. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html\">Working with upstream repositories</a>. </p>"
+          "documentation":"<p> A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html\">Working with upstream repositories</a>. </p>"
         },
         "tags":{
           "shape":"TagList",
@@ -911,7 +911,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -944,7 +944,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         }
@@ -977,7 +977,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -989,7 +989,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package versions to delete. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> The format of the package versions to delete. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -1011,7 +1011,7 @@
         },
         "expectedStatus":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> The expected status of the package version to delete. Valid values are: </p> <ul> <li> <p> <code>Published</code> </p> </li> <li> <p> <code>Unfinished</code> </p> </li> <li> <p> <code>Unlisted</code> </p> </li> <li> <p> <code>Archived</code> </p> </li> <li> <p> <code>Disposed</code> </p> </li> </ul>"
+          "documentation":"<p> The expected status of the package version to delete. </p>"
         }
       }
     },
@@ -1020,7 +1020,7 @@
       "members":{
         "successfulVersions":{
           "shape":"SuccessfulPackageVersionInfoMap",
-          "documentation":"<p> A list of the package versions that were successfully deleted. </p>"
+          "documentation":"<p> A list of the package versions that were successfully deleted. The status of every successful version will be <code>Deleted</code>. </p>"
         },
         "failedVersions":{
           "shape":"PackageVersionErrorMap",
@@ -1043,7 +1043,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1085,7 +1085,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1118,7 +1118,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         }
@@ -1148,7 +1148,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1160,7 +1160,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of the requested package version. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> A format that specifies the type of the requested package version. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -1209,7 +1209,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1251,7 +1251,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1296,7 +1296,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1308,7 +1308,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of package versions you want to dispose. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> A format that specifies the type of package versions you want to dispose. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -1334,7 +1334,7 @@
         },
         "expectedStatus":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> The expected status of the package version to dispose. Valid values are: </p> <ul> <li> <p> <code>Published</code> </p> </li> <li> <p> <code>Unfinished</code> </p> </li> <li> <p> <code>Unlisted</code> </p> </li> <li> <p> <code>Archived</code> </p> </li> <li> <p> <code>Disposed</code> </p> </li> </ul>"
+          "documentation":"<p> The expected status of the package version to dispose. </p>"
         }
       }
     },
@@ -1360,7 +1360,7 @@
         },
         "owner":{
           "shape":"AccountId",
-          "documentation":"<p> The AWS account ID that owns the domain. </p>"
+          "documentation":"<p> The Amazon Web Services account ID that owns the domain. </p>"
         },
         "arn":{
           "shape":"Arn",
@@ -1368,7 +1368,7 @@
         },
         "status":{
           "shape":"DomainStatus",
-          "documentation":"<p> The current status of a domain. The valid values are </p> <ul> <li> <p> <code>Active</code> </p> </li> <li> <p> <code>Deleted</code> </p> </li> </ul>"
+          "documentation":"<p> The current status of a domain. </p>"
         },
         "createdTime":{
           "shape":"Timestamp",
@@ -1376,7 +1376,7 @@
         },
         "encryptionKey":{
           "shape":"Arn",
-          "documentation":"<p> The ARN of an AWS Key Management Service (AWS KMS) key associated with a domain. </p>"
+          "documentation":"<p> The ARN of an Key Management Service (KMS) key associated with a domain. </p>"
         },
         "repositoryCount":{
           "shape":"Integer",
@@ -1415,7 +1415,7 @@
         },
         "owner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>"
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>"
         },
         "arn":{
           "shape":"Arn",
@@ -1423,7 +1423,7 @@
         },
         "status":{
           "shape":"DomainStatus",
-          "documentation":"<p> A string that contains the status of the domain. The valid values are: </p> <ul> <li> <p> <code>Active</code> </p> </li> <li> <p> <code>Deleted</code> </p> </li> </ul>"
+          "documentation":"<p> A string that contains the status of the domain. </p>"
         },
         "createdTime":{
           "shape":"Timestamp",
@@ -1461,7 +1461,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1498,7 +1498,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         }
@@ -1532,7 +1532,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1544,7 +1544,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of the package version with the requested asset file. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> A format that specifies the type of the package version with the requested asset file. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -1626,7 +1626,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1638,7 +1638,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of the package version with the requested readme file. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> A format that specifies the type of the package version with the requested readme file. </p> <note> <p>Although <code>maven</code> is listed as a valid value, CodeArtifact does not support displaying readme files for Maven packages.</p> </note>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -1667,7 +1667,7 @@
       "members":{
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package with the requested readme file. Valid format types are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>"
+          "documentation":"<p> The format of the package with the requested readme file. </p>"
         },
         "namespace":{
           "shape":"PackageNamespace",
@@ -1707,7 +1707,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain that contains the repository. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain that contains the repository. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1719,7 +1719,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> Returns which endpoint of a repository to return. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> Returns which endpoint of a repository to return. A repository has one endpoint for each package format. </p>",
           "location":"querystring",
           "locationName":"format"
         }
@@ -1749,7 +1749,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1792,7 +1792,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p> The operation did not succeed because of an error that occurred inside AWS CodeArtifact. </p>",
+      "documentation":"<p> The operation did not succeed because of an error that occurred inside CodeArtifact. </p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -1869,7 +1869,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1881,7 +1881,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package that contains the returned package version assets. The valid package types are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>",
+          "documentation":"<p> The format of the package that contains the returned package version assets. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -1968,7 +1968,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -1980,7 +1980,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package with the requested dependencies. The valid package types are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>",
+          "documentation":"<p> The format of the package with the requested dependencies. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -2015,7 +2015,7 @@
       "members":{
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of the package that contains the returned dependencies. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>"
+          "documentation":"<p> A format that specifies the type of the package that contains the returned dependencies. </p>"
         },
         "namespace":{
           "shape":"PackageNamespace",
@@ -2065,7 +2065,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -2077,7 +2077,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the returned packages. The valid package types are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>",
+          "documentation":"<p> The format of the returned packages. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -2095,7 +2095,7 @@
         },
         "status":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> A string that specifies the status of the package versions to include in the returned list. It can be one of the following: </p> <ul> <li> <p> <code>Published</code> </p> </li> <li> <p> <code>Unfinished</code> </p> </li> <li> <p> <code>Unlisted</code> </p> </li> <li> <p> <code>Archived</code> </p> </li> <li> <p> <code>Disposed</code> </p> </li> </ul>",
+          "documentation":"<p> A string that specifies the status of the package versions to include in the returned list. </p>",
           "location":"querystring",
           "locationName":"status"
         },
@@ -2128,7 +2128,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format of the package. Valid package format values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>"
+          "documentation":"<p> A format of the package. </p>"
         },
         "namespace":{
           "shape":"PackageNamespace",
@@ -2168,7 +2168,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -2180,7 +2180,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the packages. The valid package types are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>",
+          "documentation":"<p> The format of the packages. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -2240,13 +2240,13 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
         "administratorAccount":{
           "shape":"AccountId",
-          "documentation":"<p> Filter the list of repositories to only include those that are managed by the AWS account ID. </p>",
+          "documentation":"<p> Filter the list of repositories to only include those that are managed by the Amazon Web Services account ID. </p>",
           "location":"querystring",
           "locationName":"administrator-account"
         },
@@ -2399,7 +2399,7 @@
       "members":{
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package. Valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>"
+          "documentation":"<p> The format of the package. </p>"
         },
         "namespace":{
           "shape":"PackageNamespace",
@@ -2427,7 +2427,7 @@
       "members":{
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package version. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>"
+          "documentation":"<p> The format of the package version. </p>"
         },
         "namespace":{
           "shape":"PackageNamespace",
@@ -2471,7 +2471,7 @@
         },
         "status":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> A string that contains the status of the package version. It can be one of the following: </p> <ul> <li> <p> <code>Published</code> </p> </li> <li> <p> <code>Unfinished</code> </p> </li> <li> <p> <code>Unlisted</code> </p> </li> <li> <p> <code>Archived</code> </p> </li> <li> <p> <code>Disposed</code> </p> </li> </ul>"
+          "documentation":"<p> A string that contains the status of the package version. </p>"
         }
       },
       "documentation":"<p> Details about a package version. </p>"
@@ -2554,7 +2554,7 @@
         },
         "status":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> A string that contains the status of the package version. It can be one of the following: </p> <ul> <li> <p> <code>Published</code> </p> </li> <li> <p> <code>Unfinished</code> </p> </li> <li> <p> <code>Unlisted</code> </p> </li> <li> <p> <code>Archived</code> </p> </li> <li> <p> <code>Disposed</code> </p> </li> </ul>"
+          "documentation":"<p> A string that contains the status of the package version. It can be one of the following: </p>"
         }
       },
       "documentation":"<p> Details about a package version, including its status, version, and revision. The <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_ListPackageVersions.html\">ListPackageVersions</a> operation returns a list of <code>PackageVersionSummary</code> objects. </p>"
@@ -2593,7 +2593,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>"
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>"
         },
         "policyRevision":{
           "shape":"PolicyRevision",
@@ -2630,7 +2630,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -2668,7 +2668,7 @@
         },
         "administratorAccount":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that manages the repository. </p>"
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that manages the repository. </p>"
         },
         "domainName":{
           "shape":"DomainName",
@@ -2676,7 +2676,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain that contains the repository. It does not include dashes or spaces. </p>"
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain that contains the repository. It does not include dashes or spaces. </p>"
         },
         "arn":{
           "shape":"Arn",
@@ -2688,14 +2688,14 @@
         },
         "upstreams":{
           "shape":"UpstreamRepositoryInfoList",
-          "documentation":"<p> A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when AWS CodeArtifact looks for a requested package version. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html\">Working with upstream repositories</a>. </p>"
+          "documentation":"<p> A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html\">Working with upstream repositories</a>. </p>"
         },
         "externalConnections":{
           "shape":"RepositoryExternalConnectionInfoList",
           "documentation":"<p> An array of external connections associated with the repository. </p>"
         }
       },
-      "documentation":"<p> The details of a repository stored in AWS CodeArtifact. A CodeArtifact repository contains a set of package versions, each of which maps to a set of assets. Repositories are polyglot—a single repository can contain packages of any supported type. Each repository exposes endpoints for fetching and publishing packages using tools like the <code>npm</code> CLI, the Maven CLI (<code>mvn</code>), and <code>pip</code>. You can create up to 100 repositories per AWS account. </p>"
+      "documentation":"<p> The details of a repository stored in CodeArtifact. A CodeArtifact repository contains a set of package versions, each of which maps to a set of assets. Repositories are polyglot—a single repository can contain packages of any supported type. Each repository exposes endpoints for fetching and publishing packages using tools like the <code>npm</code> CLI, the Maven CLI (<code>mvn</code>), and <code>pip</code>. You can create up to 100 repositories per Amazon Web Services account. </p>"
     },
     "RepositoryExternalConnectionInfo":{
       "type":"structure",
@@ -2706,7 +2706,7 @@
         },
         "packageFormat":{
           "shape":"PackageFormat",
-          "documentation":"<p> The package format associated with a repository's external connection. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> </ul>"
+          "documentation":"<p> The package format associated with a repository's external connection. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> <li> <p> <code>nuget</code>: A NuGet package. </p> </li> </ul>"
         },
         "status":{
           "shape":"ExternalConnectionStatus",
@@ -2734,7 +2734,7 @@
         },
         "administratorAccount":{
           "shape":"AccountId",
-          "documentation":"<p> The AWS account ID that manages the repository. </p>"
+          "documentation":"<p> The Amazon Web Services account ID that manages the repository. </p>"
         },
         "domainName":{
           "shape":"DomainName",
@@ -2742,7 +2742,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>"
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>"
         },
         "arn":{
           "shape":"Arn",
@@ -2770,7 +2770,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of AWS resource. </p>"
+          "documentation":"<p> The type of Amazon Web Services resource. </p>"
         }
       },
       "documentation":"<p> The operation did not succeed because the resource requested is not found in the service. </p>",
@@ -2793,7 +2793,7 @@
           "documentation":"<p> The resource policy formatted in JSON. </p>"
         }
       },
-      "documentation":"<p> An AWS CodeArtifact resource policy that contains a resource ARN, document details, and a revision. </p>"
+      "documentation":"<p> An CodeArtifact resource policy that contains a resource ARN, document details, and a revision. </p>"
     },
     "ResourceType":{
       "type":"string",
@@ -2817,7 +2817,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of AWS resource. </p>"
+          "documentation":"<p> The type of Amazon Web Services resource. </p>"
         }
       },
       "documentation":"<p> The operation did not succeed because it would have exceeded a service limit for your account. </p>",
@@ -2839,7 +2839,7 @@
         },
         "status":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> The status of a package version. Valid statuses are: </p> <ul> <li> <p> <code>Published</code> </p> </li> <li> <p> <code>Unfinished</code> </p> </li> <li> <p> <code>Unlisted</code> </p> </li> <li> <p> <code>Archived</code> </p> </li> <li> <p> <code>Disposed</code> </p> </li> </ul>"
+          "documentation":"<p> The status of a package version. </p>"
         }
       },
       "documentation":"<p> Contains the revision and status of a package version. </p>"
@@ -2865,7 +2865,7 @@
           "documentation":"<p>The tag value.</p>"
         }
       },
-      "documentation":"<p>A tag is a key-value pair that can be used to manage, search for, or filter resources in AWS CodeArtifact.</p>"
+      "documentation":"<p>A tag is a key-value pair that can be used to manage, search for, or filter resources in CodeArtifact.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -2973,7 +2973,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -2985,7 +2985,7 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of the package with the statuses to update. The valid values are: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul>",
+          "documentation":"<p> A format that specifies the type of the package with the statuses to update. </p>",
           "location":"querystring",
           "locationName":"format"
         },
@@ -3047,7 +3047,7 @@
         },
         "domainOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The 12-digit account number of the AWS account that owns the domain. It does not include dashes or spaces. </p>",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
           "location":"querystring",
           "locationName":"domain-owner"
         },
@@ -3063,7 +3063,7 @@
         },
         "upstreams":{
           "shape":"UpstreamRepositoryList",
-          "documentation":"<p> A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when AWS CodeArtifact looks for a requested package version. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html\">Working with upstream repositories</a>. </p>"
+          "documentation":"<p> A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html\">Working with upstream repositories</a>. </p>"
         }
       }
     },
@@ -3130,5 +3130,5 @@
       ]
     }
   },
-  "documentation":"<p> AWS CodeArtifact is a fully managed artifact repository compatible with language-native package managers and build tools such as npm, Apache Maven, and pip. You can use CodeArtifact to share packages with development teams and pull packages. Packages can be pulled from both public and CodeArtifact repositories. You can also create an upstream relationship between a CodeArtifact repository and another repository, which effectively merges their contents from the point of view of a package manager client. </p> <p> <b>AWS CodeArtifact Components</b> </p> <p>Use the information in this guide to help you work with the following CodeArtifact components:</p> <ul> <li> <p> <b>Repository</b>: A CodeArtifact repository contains a set of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/welcome.html#welcome-concepts-package-version\">package versions</a>, each of which maps to a set of assets, or files. Repositories are polyglot, so a single repository can contain packages of any supported type. Each repository exposes endpoints for fetching and publishing packages using tools like the <b> <code>npm</code> </b> CLI, the Maven CLI (<b> <code>mvn</code> </b>), and <b> <code>pip</code> </b>.</p> </li> <li> <p> <b>Domain</b>: Repositories are aggregated into a higher-level entity known as a <i>domain</i>. All package assets and metadata are stored in the domain, but are consumed through repositories. A given package asset, such as a Maven JAR file, is stored once per domain, no matter how many repositories it's present in. All of the assets and metadata in a domain are encrypted with the same customer master key (CMK) stored in AWS Key Management Service (AWS KMS).</p> <p>Each repository is a member of a single domain and can't be moved to a different domain.</p> <p>The domain allows organizational policy to be applied across multiple repositories, such as which accounts can access repositories in the domain, and which public repositories can be used as sources of packages.</p> <p>Although an organization can have multiple domains, we recommend a single production domain that contains all published artifacts so that teams can find and share packages across their organization.</p> </li> <li> <p> <b>Package</b>: A <i>package</i> is a bundle of software and the metadata required to resolve dependencies and install the software. CodeArtifact supports <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-npm.html\">npm</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-python.html\">PyPI</a>, and <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-maven\">Maven</a> package formats.</p> <p>In CodeArtifact, a package consists of:</p> <ul> <li> <p>A <i>name</i> (for example, <code>webpack</code> is the name of a popular npm package)</p> </li> <li> <p>An optional namespace (for example, <code>@types</code> in <code>@types/node</code>)</p> </li> <li> <p>A set of versions (for example, <code>1.0.0</code>, <code>1.0.1</code>, <code>1.0.2</code>, etc.)</p> </li> <li> <p> Package-level metadata (for example, npm tags)</p> </li> </ul> </li> <li> <p> <b>Package version</b>: A version of a package, such as <code>@types/node 12.6.9</code>. The version number format and semantics vary for different package formats. For example, npm package versions must conform to the <a href=\"https://semver.org/\">Semantic Versioning specification</a>. In CodeArtifact, a package version consists of the version identifier, metadata at the package version level, and a set of assets.</p> </li> <li> <p> <b>Upstream repository</b>: One repository is <i>upstream</i> of another when the package versions in it can be accessed from the repository endpoint of the downstream repository, effectively merging the contents of the two repositories from the point of view of a client. CodeArtifact allows creating an upstream relationship between two repositories.</p> </li> <li> <p> <b>Asset</b>: An individual file stored in CodeArtifact associated with a package version, such as an npm <code>.tgz</code> file or Maven POM and JAR files.</p> </li> </ul> <p>CodeArtifact supports these operations:</p> <ul> <li> <p> <code>AssociateExternalConnection</code>: Adds an existing external connection to a repository. </p> </li> <li> <p> <code>CopyPackageVersions</code>: Copies package versions from one repository to another repository in the same domain.</p> </li> <li> <p> <code>CreateDomain</code>: Creates a domain</p> </li> <li> <p> <code>CreateRepository</code>: Creates a CodeArtifact repository in a domain. </p> </li> <li> <p> <code>DeleteDomain</code>: Deletes a domain. You cannot delete a domain that contains repositories. </p> </li> <li> <p> <code>DeleteDomainPermissionsPolicy</code>: Deletes the resource policy that is set on a domain.</p> </li> <li> <p> <code>DeletePackageVersions</code>: Deletes versions of a package. After a package has been deleted, it can be republished, but its assets and metadata cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DeleteRepository</code>: Deletes a repository. </p> </li> <li> <p> <code>DeleteRepositoryPermissionsPolicy</code>: Deletes the resource policy that is set on a repository.</p> </li> <li> <p> <code>DescribeDomain</code>: Returns a <code>DomainDescription</code> object that contains information about the requested domain.</p> </li> <li> <p> <code>DescribePackageVersion</code>: Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html\">PackageVersionDescription</a> object that contains details about a package version. </p> </li> <li> <p> <code>DescribeRepository</code>: Returns a <code>RepositoryDescription</code> object that contains detailed information about the requested repository. </p> </li> <li> <p> <code>DisposePackageVersions</code>: Disposes versions of a package. A package version with the status <code>Disposed</code> cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DisassociateExternalConnection</code>: Removes an existing external connection from a repository. </p> </li> <li> <p> <code>GetAuthorizationToken</code>: Generates a temporary authorization token for accessing repositories in the domain. The token expires the authorization period has passed. The default authorization period is 12 hours and can be customized to any length with a maximum of 12 hours.</p> </li> <li> <p> <code>GetDomainPermissionsPolicy</code>: Returns the policy of a resource that is attached to the specified domain. </p> </li> <li> <p> <code>GetPackageVersionAsset</code>: Returns the contents of an asset that is in a package version. </p> </li> <li> <p> <code>GetPackageVersionReadme</code>: Gets the readme file or descriptive text for a package version.</p> </li> <li> <p> <code>GetRepositoryEndpoint</code>: Returns the endpoint of a repository for a specific package format. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> <li> <p> <code>maven</code> </p> </li> </ul> </li> <li> <p> <code>GetRepositoryPermissionsPolicy</code>: Returns the resource policy that is set on a repository. </p> </li> <li> <p> <code>ListDomains</code>: Returns a list of <code>DomainSummary</code> objects. Each returned <code>DomainSummary</code> object contains information about a domain.</p> </li> <li> <p> <code>ListPackages</code>: Lists the packages in a repository.</p> </li> <li> <p> <code>ListPackageVersionAssets</code>: Lists the assets for a given package version.</p> </li> <li> <p> <code>ListPackageVersionDependencies</code>: Returns a list of the direct dependencies for a package version. </p> </li> <li> <p> <code>ListPackageVersions</code>: Returns a list of package versions for a specified package in a repository.</p> </li> <li> <p> <code>ListRepositories</code>: Returns a list of repositories owned by the AWS account that called this method.</p> </li> <li> <p> <code>ListRepositoriesInDomain</code>: Returns a list of the repositories in a domain.</p> </li> <li> <p> <code>PutDomainPermissionsPolicy</code>: Attaches a resource policy to a domain.</p> </li> <li> <p> <code>PutRepositoryPermissionsPolicy</code>: Sets the resource policy on a repository that specifies permissions to access it. </p> </li> <li> <p> <code>UpdatePackageVersionsStatus</code>: Updates the status of one or more versions of a package.</p> </li> <li> <p> <code>UpdateRepository</code>: Updates the properties of a repository.</p> </li> </ul>"
+  "documentation":"<p> CodeArtifact is a fully managed artifact repository compatible with language-native package managers and build tools such as npm, Apache Maven, pip, and dotnet. You can use CodeArtifact to share packages with development teams and pull packages. Packages can be pulled from both public and CodeArtifact repositories. You can also create an upstream relationship between a CodeArtifact repository and another repository, which effectively merges their contents from the point of view of a package manager client. </p> <p> <b>CodeArtifact Components</b> </p> <p>Use the information in this guide to help you work with the following CodeArtifact components:</p> <ul> <li> <p> <b>Repository</b>: A CodeArtifact repository contains a set of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/welcome.html#welcome-concepts-package-version\">package versions</a>, each of which maps to a set of assets, or files. Repositories are polyglot, so a single repository can contain packages of any supported type. Each repository exposes endpoints for fetching and publishing packages using tools like the <b> <code>npm</code> </b> CLI, the Maven CLI (<b> <code>mvn</code> </b>), Python CLIs (<b> <code>pip</code> </b> and <code>twine</code>), and NuGet CLIs (<code>nuget</code> and <code>dotnet</code>).</p> </li> <li> <p> <b>Domain</b>: Repositories are aggregated into a higher-level entity known as a <i>domain</i>. All package assets and metadata are stored in the domain, but are consumed through repositories. A given package asset, such as a Maven JAR file, is stored once per domain, no matter how many repositories it's present in. All of the assets and metadata in a domain are encrypted with the same customer master key (CMK) stored in Key Management Service (KMS).</p> <p>Each repository is a member of a single domain and can't be moved to a different domain.</p> <p>The domain allows organizational policy to be applied across multiple repositories, such as which accounts can access repositories in the domain, and which public repositories can be used as sources of packages.</p> <p>Although an organization can have multiple domains, we recommend a single production domain that contains all published artifacts so that teams can find and share packages across their organization.</p> </li> <li> <p> <b>Package</b>: A <i>package</i> is a bundle of software and the metadata required to resolve dependencies and install the software. CodeArtifact supports <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-npm.html\">npm</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-python.html\">PyPI</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-maven\">Maven</a>, and <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-nuget\">NuGet</a> package formats.</p> <p>In CodeArtifact, a package consists of:</p> <ul> <li> <p>A <i>name</i> (for example, <code>webpack</code> is the name of a popular npm package)</p> </li> <li> <p>An optional namespace (for example, <code>@types</code> in <code>@types/node</code>)</p> </li> <li> <p>A set of versions (for example, <code>1.0.0</code>, <code>1.0.1</code>, <code>1.0.2</code>, etc.)</p> </li> <li> <p> Package-level metadata (for example, npm tags)</p> </li> </ul> </li> <li> <p> <b>Package version</b>: A version of a package, such as <code>@types/node 12.6.9</code>. The version number format and semantics vary for different package formats. For example, npm package versions must conform to the <a href=\"https://semver.org/\">Semantic Versioning specification</a>. In CodeArtifact, a package version consists of the version identifier, metadata at the package version level, and a set of assets.</p> </li> <li> <p> <b>Upstream repository</b>: One repository is <i>upstream</i> of another when the package versions in it can be accessed from the repository endpoint of the downstream repository, effectively merging the contents of the two repositories from the point of view of a client. CodeArtifact allows creating an upstream relationship between two repositories.</p> </li> <li> <p> <b>Asset</b>: An individual file stored in CodeArtifact associated with a package version, such as an npm <code>.tgz</code> file or Maven POM and JAR files.</p> </li> </ul> <p>CodeArtifact supports these operations:</p> <ul> <li> <p> <code>AssociateExternalConnection</code>: Adds an existing external connection to a repository. </p> </li> <li> <p> <code>CopyPackageVersions</code>: Copies package versions from one repository to another repository in the same domain.</p> </li> <li> <p> <code>CreateDomain</code>: Creates a domain</p> </li> <li> <p> <code>CreateRepository</code>: Creates a CodeArtifact repository in a domain. </p> </li> <li> <p> <code>DeleteDomain</code>: Deletes a domain. You cannot delete a domain that contains repositories. </p> </li> <li> <p> <code>DeleteDomainPermissionsPolicy</code>: Deletes the resource policy that is set on a domain.</p> </li> <li> <p> <code>DeletePackageVersions</code>: Deletes versions of a package. After a package has been deleted, it can be republished, but its assets and metadata cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DeleteRepository</code>: Deletes a repository. </p> </li> <li> <p> <code>DeleteRepositoryPermissionsPolicy</code>: Deletes the resource policy that is set on a repository.</p> </li> <li> <p> <code>DescribeDomain</code>: Returns a <code>DomainDescription</code> object that contains information about the requested domain.</p> </li> <li> <p> <code>DescribePackageVersion</code>: Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html\">PackageVersionDescription</a> object that contains details about a package version. </p> </li> <li> <p> <code>DescribeRepository</code>: Returns a <code>RepositoryDescription</code> object that contains detailed information about the requested repository. </p> </li> <li> <p> <code>DisposePackageVersions</code>: Disposes versions of a package. A package version with the status <code>Disposed</code> cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DisassociateExternalConnection</code>: Removes an existing external connection from a repository. </p> </li> <li> <p> <code>GetAuthorizationToken</code>: Generates a temporary authorization token for accessing repositories in the domain. The token expires the authorization period has passed. The default authorization period is 12 hours and can be customized to any length with a maximum of 12 hours.</p> </li> <li> <p> <code>GetDomainPermissionsPolicy</code>: Returns the policy of a resource that is attached to the specified domain. </p> </li> <li> <p> <code>GetPackageVersionAsset</code>: Returns the contents of an asset that is in a package version. </p> </li> <li> <p> <code>GetPackageVersionReadme</code>: Gets the readme file or descriptive text for a package version.</p> </li> <li> <p> <code>GetRepositoryEndpoint</code>: Returns the endpoint of a repository for a specific package format. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>maven</code> </p> </li> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>nuget</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> </ul> </li> <li> <p> <code>GetRepositoryPermissionsPolicy</code>: Returns the resource policy that is set on a repository. </p> </li> <li> <p> <code>ListDomains</code>: Returns a list of <code>DomainSummary</code> objects. Each returned <code>DomainSummary</code> object contains information about a domain.</p> </li> <li> <p> <code>ListPackages</code>: Lists the packages in a repository.</p> </li> <li> <p> <code>ListPackageVersionAssets</code>: Lists the assets for a given package version.</p> </li> <li> <p> <code>ListPackageVersionDependencies</code>: Returns a list of the direct dependencies for a package version. </p> </li> <li> <p> <code>ListPackageVersions</code>: Returns a list of package versions for a specified package in a repository.</p> </li> <li> <p> <code>ListRepositories</code>: Returns a list of repositories owned by the Amazon Web Services account that called this method.</p> </li> <li> <p> <code>ListRepositoriesInDomain</code>: Returns a list of the repositories in a domain.</p> </li> <li> <p> <code>PutDomainPermissionsPolicy</code>: Attaches a resource policy to a domain.</p> </li> <li> <p> <code>PutRepositoryPermissionsPolicy</code>: Sets the resource policy on a repository that specifies permissions to access it. </p> </li> <li> <p> <code>UpdatePackageVersionsStatus</code>: Updates the status of one or more versions of a package.</p> </li> <li> <p> <code>UpdateRepository</code>: Updates the properties of a repository.</p> </li> </ul>"
 }

@@ -507,8 +507,14 @@
           "shape":"Remarks",
           "documentation":"<p>The issues on the user side that block Application Insights from successfully monitoring an application. Example remarks include:</p> <ul> <li> <p>“Configuring application, detected 1 Errors, 3 Warnings”</p> </li> <li> <p>“Configuring application, detected 1 Unconfigured Components”</p> </li> </ul>"
         },
-        "AutoConfigEnabled":{"shape":"AutoConfigEnabled"},
-        "DiscoveryType":{"shape":"DiscoveryType"}
+        "AutoConfigEnabled":{
+          "shape":"AutoConfigEnabled",
+          "documentation":"<p> Indicates whether auto-configuration is turned on for this application. </p>"
+        },
+        "DiscoveryType":{
+          "shape":"DiscoveryType",
+          "documentation":"<p> The method used by Application Insights to onboard your resources. </p>"
+        }
       },
       "documentation":"<p>Describes the status of the application.</p>"
     },
@@ -633,8 +639,18 @@
           "shape":"TagList",
           "documentation":"<p>List of tags to add to the application. tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.</p>"
         },
-        "AutoConfigEnabled":{"shape":"AutoConfigEnabled"},
-        "AutoCreate":{"shape":"AutoCreate"}
+        "AutoConfigEnabled":{
+          "shape":"AutoConfigEnabled",
+          "documentation":"<p> Indicates whether Application Insights automatically configures unmonitored resources in the resource group. </p>"
+        },
+        "AutoCreate":{
+          "shape":"AutoCreate",
+          "documentation":"<p> Configures all of the resources in the resource group by applying the recommended configurations. </p>"
+        },
+        "GroupingType":{
+          "shape":"GroupingType",
+          "documentation":"<p>Application Insights can create applications based on a resource group or on an account. To create an account-based application using all of the resources in the account, set this parameter to <code>ACCOUNT_BASED</code>. </p>"
+        }
       }
     },
     "CreateApplicationResponse":{
@@ -825,7 +841,7 @@
         },
         "Tier":{
           "shape":"Tier",
-          "documentation":"<p>The tier of the application component. Supported tiers include <code>DOT_NET_CORE</code>, <code>DOT_NET_WORKER</code>, <code>DOT_NET_WEB</code>, <code>SQL_SERVER</code>, and <code>DEFAULT</code>.</p>"
+          "documentation":"<p>The tier of the application component.</p>"
         }
       }
     },
@@ -1028,6 +1044,10 @@
         "USEFUL",
         "NOT_USEFUL"
       ]
+    },
+    "GroupingType":{
+      "type":"string",
+      "enum":["ACCOUNT_BASED"]
     },
     "HealthEventArn":{"type":"string"},
     "HealthEventDescription":{"type":"string"},
@@ -1242,7 +1262,10 @@
           "shape":"PaginationToken",
           "documentation":"<p>The token to request the next page of results.</p>"
         },
-        "ComponentName":{"shape":"ComponentName"}
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p> The name of the component. </p>"
+        }
       }
     },
     "ListProblemsResponse":{
@@ -1256,7 +1279,10 @@
           "shape":"PaginationToken",
           "documentation":"<p>The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. </p>"
         },
-        "ResourceGroupName":{"shape":"ResourceGroupName"}
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p> The name of the resource group. </p>"
+        }
       }
     },
     "ListTagsForResourceRequest":{
@@ -1606,8 +1632,14 @@
           "shape":"Feedback",
           "documentation":"<p>Feedback provided by the user about the problem.</p>"
         },
-        "RecurringCount":{"shape":"RecurringCount"},
-        "LastRecurrenceTime":{"shape":"LastRecurrenceTime"}
+        "RecurringCount":{
+          "shape":"RecurringCount",
+          "documentation":"<p> The number of times that the same problem reoccurred after the first time it was resolved. </p>"
+        },
+        "LastRecurrenceTime":{
+          "shape":"LastRecurrenceTime",
+          "documentation":"<p> The last time that the problem reoccurred after its last resolution. </p>"
+        }
       },
       "documentation":"<p>Describes a problem that is detected by correlating observations.</p>"
     },
@@ -1678,6 +1710,7 @@
     "SeverityLevel":{
       "type":"string",
       "enum":[
+        "Informative",
         "Low",
         "Medium",
         "High"
@@ -1856,7 +1889,10 @@
           "shape":"RemoveSNSTopic",
           "documentation":"<p> Disassociates the SNS topic from the opsItem created for detected problems.</p>"
         },
-        "AutoConfigEnabled":{"shape":"AutoConfigEnabled"}
+        "AutoConfigEnabled":{
+          "shape":"AutoConfigEnabled",
+          "documentation":"<p> Turns auto-configuration on or off. </p>"
+        }
       }
     },
     "UpdateApplicationResponse":{
@@ -1889,13 +1925,16 @@
         },
         "Tier":{
           "shape":"Tier",
-          "documentation":"<p>The tier of the application component. Supported tiers include <code>DOT_NET_WORKER</code>, <code>DOT_NET_WEB</code>, <code>DOT_NET_CORE</code>, <code>SQL_SERVER</code>, and <code>DEFAULT</code>.</p>"
+          "documentation":"<p>The tier of the application component.</p>"
         },
         "ComponentConfiguration":{
           "shape":"ComponentConfiguration",
           "documentation":"<p>The configuration settings of the component. The value is the escaped JSON of the configuration. For more information about the JSON format, see <a href=\"https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/working-with-json.html\">Working with JSON</a>. You can send a request to <code>DescribeComponentConfigurationRecommendation</code> to see the recommended configuration for a component. For the complete format of the component configuration file, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/component-config.html\">Component Configuration</a>.</p>"
         },
-        "AutoConfigEnabled":{"shape":"AutoConfigEnabled"}
+        "AutoConfigEnabled":{
+          "shape":"AutoConfigEnabled",
+          "documentation":"<p> Automatically configures the component by applying the recommended configurations. </p>"
+        }
       }
     },
     "UpdateComponentConfigurationResponse":{

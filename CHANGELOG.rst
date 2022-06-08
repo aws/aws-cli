@@ -3657,6 +3657,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.4
+======
+
+* api-change:``auditmanager``: This release introduces 2 updates to the Audit Manager API. The roleType and roleArn attributes are now required when you use the CreateAssessment or UpdateAssessment operation. We also added a throttling exception to the RegisterAccount API operation.
+* api-change:``ce``: Added two new APIs to support cost allocation tags operations: ListCostAllocationTags, UpdateCostAllocationTagsStatus.
+
+
+1.25.3
+======
+
+* api-change:``chime-sdk-messaging``: This release adds support for searching channels by members via the SearchChannels API, removes required restrictions for Name and Mode in UpdateChannel API and enhances CreateChannel API by exposing member and moderator list as well as channel id as optional parameters.
+* api-change:``connect``: This release adds a new API, GetCurrentUserData, which returns real-time details about users' current activity.
+
+
 1.25.2
 ======
 

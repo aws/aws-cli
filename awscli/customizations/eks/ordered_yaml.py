@@ -10,40 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import ruamel.yaml as yaml
+import ruamel.yaml
 from botocore.compat import OrderedDict
 
-
-class SafeOrderedLoader(yaml.SafeLoader):
-    """ Safely load a yaml file into an OrderedDict."""
-
-
-class SafeOrderedDumper(yaml.SafeDumper):
-    """ Safely dump an OrderedDict as yaml."""
-
+from awscli.utils import dump_yaml_to_str
 
 def _ordered_constructor(loader, node):
-        loader.flatten_mapping(node)
-        return OrderedDict(loader.construct_pairs(node))
-
-
-SafeOrderedLoader.add_constructor(
-                    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                    _ordered_constructor)
-
+    loader.flatten_mapping(node)
+    return OrderedDict(loader.construct_pairs(node))
 
 def _ordered_representer(dumper, data):
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            data.items())
-
-
-SafeOrderedDumper.add_representer(OrderedDict, _ordered_representer)
-
+    return dumper.represent_mapping(
+        ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        data.items())
 
 def ordered_yaml_load(stream):
     """ Load an OrderedDict object from a yaml stream."""
-    return yaml.load(stream, SafeOrderedLoader)
+    yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+    yaml.Constructor.add_constructor(
+        ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        _ordered_constructor)
+
+    return yaml.load(stream)
 
 
 def ordered_yaml_dump(to_dump, stream=None):
@@ -57,5 +45,11 @@ def ordered_yaml_dump(to_dump, stream=None):
     If not given or if None, only return the value
     :type stream: file
     """
-    return yaml.dump(to_dump, stream,
-                     SafeOrderedDumper, default_flow_style=False)
+    yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+    yaml.default_flow_style = False
+    yaml.Representer.add_representer(OrderedDict, _ordered_representer)
+
+    if stream is None:
+        return dump_yaml_to_str(yaml, to_dump)
+
+    yaml.dump(to_dump, stream)

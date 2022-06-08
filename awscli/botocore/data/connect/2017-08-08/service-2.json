@@ -1149,6 +1149,23 @@
       ],
       "documentation":"<p>Gets the real-time metric data from the specified Amazon Connect instance.</p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html\">Real-time Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "GetCurrentUserData":{
+      "name":"GetCurrentUserData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metrics/userdata/{InstanceId}"
+      },
+      "input":{"shape":"GetCurrentUserDataRequest"},
+      "output":{"shape":"GetCurrentUserDataResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the real-time active user data from the specified Amazon Connect instance. </p>"
+    },
     "GetFederationToken":{
       "name":"GetFederationToken",
       "http":{
@@ -2573,6 +2590,41 @@
       "type":"integer",
       "min":0
     },
+    "AgentContactReference":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
+        },
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel of the contact.</p>"
+        },
+        "InitiationMethod":{
+          "shape":"ContactInitiationMethod",
+          "documentation":"<p>How the contact was initiated.</p>"
+        },
+        "AgentContactState":{
+          "shape":"ContactState",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html\">state of the contact</a>.</p>"
+        },
+        "StateStartTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The epoch timestamp when the contact state started.</p>"
+        },
+        "ConnectedToAgentTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the contact was connected to an agent.</p>"
+        },
+        "Queue":{"shape":"QueueReference"}
+      },
+      "documentation":"<p>Information about the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Contact.html\">contact</a> associated to the user.</p>"
+    },
+    "AgentContactReferenceList":{
+      "type":"list",
+      "member":{"shape":"AgentContactReference"}
+    },
     "AgentFirstName":{
       "type":"string",
       "max":100,
@@ -2655,6 +2707,20 @@
       "type":"integer",
       "max":50,
       "min":1
+    },
+    "AgentStatusReference":{
+      "type":"structure",
+      "members":{
+        "StatusStartTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start timestamp of the agent's status.</p>"
+        },
+        "StatusArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent's status.</p>"
+        }
+      },
+      "documentation":"<p>Information about the agent's status.</p>"
     },
     "AgentStatusState":{
       "type":"string",
@@ -3070,6 +3136,11 @@
         "TASK"
       ]
     },
+    "ChannelToCountMap":{
+      "type":"map",
+      "key":{"shape":"Channel"},
+      "value":{"shape":"IntegerCount"}
+    },
     "Channels":{
       "type":"list",
       "member":{"shape":"Channel"},
@@ -3288,6 +3359,16 @@
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
+    },
+    "ContactFilter":{
+      "type":"structure",
+      "members":{
+        "ContactStates":{
+          "shape":"ContactStates",
+          "documentation":"<p>A list of up to 9 <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html\">contact states</a>.</p>"
+        }
+      },
+      "documentation":"<p>Filters user data based on the contact information that is associated to the users. It contains a list of <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html\">contact states</a>.</p>"
     },
     "ContactFlow":{
       "type":"structure",
@@ -3534,6 +3615,25 @@
       "type":"map",
       "key":{"shape":"ReferenceKey"},
       "value":{"shape":"Reference"}
+    },
+    "ContactState":{
+      "type":"string",
+      "enum":[
+        "INCOMING",
+        "PENDING",
+        "CONNECTING",
+        "CONNECTED",
+        "CONNECTED_ONHOLD",
+        "MISSED",
+        "ERROR",
+        "ENDED",
+        "REJECTED"
+      ]
+    },
+    "ContactStates":{
+      "type":"list",
+      "member":{"shape":"ContactState"},
+      "max":9
     },
     "ControlPlaneTagFilter":{
       "type":"structure",
@@ -5671,6 +5771,47 @@
         }
       }
     },
+    "GetCurrentUserDataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Filters"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Filters":{
+          "shape":"UserDataFilters",
+          "documentation":"<p>Filters up to 100 <code>Queues</code>, or up to 9 <code>ContactStates</code>. The user data is retrieved only for those users who are associated with the queues and have contacts that are in the specified <code>ContactState</code>. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        }
+      }
+    },
+    "GetCurrentUserDataResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "UserDataList":{
+          "shape":"UserDataList",
+          "documentation":"<p>A list of the user data that is returned.</p>"
+        }
+      }
+    },
     "GetFederationTokenRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -5928,6 +6069,20 @@
       "type":"list",
       "member":{"shape":"HierarchyGroupSummary"}
     },
+    "HierarchyGroupSummaryReference":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"HierarchyGroupId",
+          "documentation":"<p>The unique identifier for the hierarchy group.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the hierarchy group. </p>"
+        }
+      },
+      "documentation":"<p>Information about the hierarchy group.</p>"
+    },
     "HierarchyLevel":{
       "type":"structure",
       "members":{
@@ -5984,6 +6139,32 @@
         }
       },
       "documentation":"<p>Contains information about the levels of a hierarchy group.</p>"
+    },
+    "HierarchyPathReference":{
+      "type":"structure",
+      "members":{
+        "LevelOne":{
+          "shape":"HierarchyGroupSummaryReference",
+          "documentation":"<p>Information about level one.</p>"
+        },
+        "LevelTwo":{
+          "shape":"HierarchyGroupSummaryReference",
+          "documentation":"<p>Information about level two.</p>"
+        },
+        "LevelThree":{
+          "shape":"HierarchyGroupSummaryReference",
+          "documentation":"<p>Information about level three.</p>"
+        },
+        "LevelFour":{
+          "shape":"HierarchyGroupSummaryReference",
+          "documentation":"<p>Information about level four.</p>"
+        },
+        "LevelFive":{
+          "shape":"HierarchyGroupSummaryReference",
+          "documentation":"<p>Information about level five.</p>"
+        }
+      },
+      "documentation":"<p>Information about the levels in the hierarchy group.</p>"
     },
     "HierarchyStructure":{
       "type":"structure",
@@ -6455,6 +6636,10 @@
     "InstanceSummaryList":{
       "type":"list",
       "member":{"shape":"InstanceSummary"}
+    },
+    "IntegerCount":{
+      "type":"integer",
+      "min":0
     },
     "IntegrationAssociationId":{
       "type":"string",
@@ -9253,6 +9438,20 @@
       "type":"list",
       "member":{"shape":"RoutingProfileQueueReference"}
     },
+    "RoutingProfileReference":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"RoutingProfileId",
+          "documentation":"<p>The identifier of the routing profile.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the routing profile.</p>"
+        }
+      },
+      "documentation":"<p>Information about the routing profile assigned to the user.</p>"
+    },
     "RoutingProfileSummary":{
       "type":"structure",
       "members":{
@@ -10277,7 +10476,7 @@
         },
         "ContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect </p>"
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
         },
         "QueueId":{
           "shape":"QueueId",
@@ -10303,7 +10502,7 @@
       "members":{
         "ContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect </p>"
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
         },
         "ContactArn":{
           "shape":"ARN",
@@ -11475,6 +11674,62 @@
       },
       "documentation":"<p>Contains information about a user account for a Amazon Connect instance.</p>"
     },
+    "UserData":{
+      "type":"structure",
+      "members":{
+        "User":{
+          "shape":"UserReference",
+          "documentation":"<p>Information about the user for the data that is returned. It contains resourceId and ARN of the user. </p>"
+        },
+        "RoutingProfile":{
+          "shape":"RoutingProfileReference",
+          "documentation":"<p>Information about the routing profile that is assigned to the user.</p>"
+        },
+        "HierarchyPath":{
+          "shape":"HierarchyPathReference",
+          "documentation":"<p>Contains information about the levels of a hierarchy group assigned to a user.</p>"
+        },
+        "Status":{
+          "shape":"AgentStatusReference",
+          "documentation":"<p>The status of the agent that they manually set in their Contact Control Panel (CCP), or that the supervisor manually changes in the real-time metrics report.</p>"
+        },
+        "AvailableSlotsByChannel":{
+          "shape":"ChannelToCountMap",
+          "documentation":"<p>A map of available slots by channel. The key is a channel name. The value is an integer: the available number of slots. </p>"
+        },
+        "MaxSlotsByChannel":{
+          "shape":"ChannelToCountMap",
+          "documentation":"<p>A map of maximum slots by channel. The key is a channel name. The value is an integer: the maximum number of slots. This is calculated from <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_MediaConcurrency.html\">MediaConcurrency</a> of the RoutingProfile assigned to the agent. </p>"
+        },
+        "ActiveSlotsByChannel":{
+          "shape":"ChannelToCountMap",
+          "documentation":"<p> A map of active slots by channel. The key is a channel name. The value is an integer: the number of active slots. </p>"
+        },
+        "Contacts":{
+          "shape":"AgentContactReferenceList",
+          "documentation":"<p>A list of contact reference information.</p>"
+        }
+      },
+      "documentation":"<p>Data for a user.</p>"
+    },
+    "UserDataFilters":{
+      "type":"structure",
+      "members":{
+        "Queues":{
+          "shape":"Queues",
+          "documentation":"<p>Contains information about a queue resource for which metrics are returned.</p>"
+        },
+        "ContactFilter":{
+          "shape":"ContactFilter",
+          "documentation":"<p>A filter for the user data based on the contact information that is associated to the user. It contains a list of contact states. </p>"
+        }
+      },
+      "documentation":"<p>A filter for the user data.</p>"
+    },
+    "UserDataList":{
+      "type":"list",
+      "member":{"shape":"UserData"}
+    },
     "UserId":{"type":"string"},
     "UserIdentityInfo":{
       "type":"structure",
@@ -11557,6 +11812,20 @@
         }
       },
       "documentation":"<p>Contains information about the quick connect configuration settings for a user. The contact flow must be of type Transfer to Agent.</p>"
+    },
+    "UserReference":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier for the user.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the user.</p>"
+        }
+      },
+      "documentation":"<p>Information about the user.</p>"
     },
     "UserSearchConditionList":{
       "type":"list",

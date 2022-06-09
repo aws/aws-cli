@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.25.6
+======
+
+* api-change:``chime-sdk-meetings``: Adds support for live transcription in AWS GovCloud (US) Regions.
+
+
 1.25.5
 ======
 

@@ -1510,6 +1510,23 @@
       ],
       "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log on to an Amazon Redshift database. The action returns the database user name prefixed with <code>IAM:</code> if <code>AutoCreate</code> is <code>False</code> or <code>IAMA:</code> if <code>AutoCreate</code> is <code>True</code>. You can optionally specify one or more database user groups that the user will join at log on. By default, the temporary credentials expire in 900 seconds. You can optionally specify a duration between 900 seconds (15 minutes) and 3600 seconds (60 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/generating-user-credentials.html\">Using IAM Authentication to Generate Database User Credentials</a> in the Amazon Redshift Cluster Management Guide.</p> <p>The Identity and Access Management (IAM) user or role that runs GetClusterCredentials must have an IAM policy attached that allows access to all necessary actions and resources. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html#redshift-policy-resources.getclustercredentials-resources\">Resource Policies for GetClusterCredentials</a> in the Amazon Redshift Cluster Management Guide.</p> <p>If the <code>DbGroups</code> parameter is specified, the IAM policy must allow the <code>redshift:JoinGroup</code> action with access to the listed <code>dbgroups</code>. </p> <p>In addition, if the <code>AutoCreate</code> parameter is set to <code>True</code>, then the policy must include the <code>redshift:CreateClusterUser</code> permission.</p> <p>If the <code>DbName</code> parameter is specified, the IAM policy must allow access to the resource <code>dbname</code> for the specified database name. </p>"
     },
+    "GetClusterCredentialsWithIAM":{
+      "name":"GetClusterCredentialsWithIAM",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetClusterCredentialsWithIAMMessage"},
+      "output":{
+        "shape":"ClusterExtendedCredentials",
+        "resultWrapper":"GetClusterCredentialsWithIAMResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to an Amazon Redshift database. The database user is mapped 1:1 to the source Identity and Access Management (IAM) identity. For more information about IAM identities, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html\">IAM Identities (users, user groups, and roles)</a> in the Amazon Web Services Identity and Access Management User Guide.</p> <p>The Identity and Access Management (IAM) identity that runs this operation must have an IAM policy attached that allows access to all necessary actions and resources. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using identity-based policies (IAM policies)</a> in the Amazon Redshift Cluster Management Guide. </p>"
+    },
     "GetReservedNodeExchangeConfigurationOptions":{
       "name":"GetReservedNodeExchangeConfigurationOptions",
       "http":{
@@ -2991,6 +3008,27 @@
         }
       }
     },
+    "ClusterExtendedCredentials":{
+      "type":"structure",
+      "members":{
+        "DbUser":{
+          "shape":"String",
+          "documentation":"<p>A database user name that you provide when you connect to a database. The database user is mapped 1:1 to the source IAM identity. </p>"
+        },
+        "DbPassword":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A temporary password that you provide when you connect to a database.</p>"
+        },
+        "Expiration":{
+          "shape":"TStamp",
+          "documentation":"<p>The time (UTC) when the temporary password expires. After this timestamp, a log in with the temporary password fails.</p>"
+        },
+        "NextRefreshTime":{
+          "shape":"TStamp",
+          "documentation":"<p>Reserved for future use.</p>"
+        }
+      }
+    },
     "ClusterIamRole":{
       "type":"structure",
       "members":{
@@ -3653,7 +3691,7 @@
         },
         "MasterUserPassword":{
           "shape":"String",
-          "documentation":"<p>The password associated with the admin user account for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except ' (single quote), \" (double quote), \\, /, or @.</p> </li> </ul>"
+          "documentation":"<p>The password associated with the admin user account for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterSecurityGroups":{
           "shape":"ClusterSecurityGroupNameList",
@@ -6182,7 +6220,7 @@
         },
         "ClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the cluster that contains the database for which your are requesting credentials. This parameter is case sensitive.</p>"
+          "documentation":"<p>The unique identifier of the cluster that contains the database for which you are requesting credentials. This parameter is case sensitive.</p>"
         },
         "DurationSeconds":{
           "shape":"IntegerOptional",
@@ -6198,6 +6236,24 @@
         }
       },
       "documentation":"<p>The request parameters to get cluster credentials.</p>"
+    },
+    "GetClusterCredentialsWithIAMMessage":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "DbName":{
+          "shape":"String",
+          "documentation":"<p>The name of the database for which you are requesting credentials. If the database name is specified, the IAM policy must allow access to the resource <code>dbname</code> for the specified database name. If the database name is not specified, access to all databases is allowed.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the cluster that contains the database for which you are requesting credentials. </p>"
+        },
+        "DurationSeconds":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of seconds until the returned temporary password expires.</p> <p>Range: 900-3600. Default: 900.</p>"
+        }
+      }
     },
     "GetReservedNodeExchangeConfigurationOptionsInputMessage":{
       "type":"structure",
@@ -7161,7 +7217,7 @@
         },
         "MasterUserPassword":{
           "shape":"String",
-          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except ' (single quote), \" (double quote), \\, /, or @.</p> </li> </ul>"
+          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterParameterGroupName":{
           "shape":"String",

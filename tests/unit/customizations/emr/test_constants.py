@@ -24,7 +24,7 @@ INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY_ARG = (
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG = (
     ' InstanceGroupType=MASTER,InstanceCount=1,InstanceType=d2.xlarge '
-    'InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100},VolumesPerInstance=4},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100}}]}')
+    'InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100},VolumesPerInstance=4},{VolumeSpecification={VolumeType=gp3,SizeInGB=100,Iops=3000,Throughput=200},VolumesPerInstance=1},{VolumeSpecification={VolumeType=gp3,SizeInGB=100}}]}')
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG = (
     ' InstanceGroupType=MASTER,InstanceCount=1,InstanceType=d2.xlarge '
@@ -60,9 +60,15 @@ INSTANCE_GROUPS_WITH_EBS = \
                                                       'VolumesPerInstance': 4
                                                      },
                                                      {'VolumeSpecification':
-                                                       {'Iops': 100,
+                                                       {'Iops': 3000,
                                                         'SizeInGB': 100,
-                                                        'VolumeType': 'gp2'}}]},
+                                                        'VolumeType': 'gp3',
+                                                        'Throughput': 200 },
+                                                      'VolumesPerInstance': 1
+                                                     },
+                                                     {'VolumeSpecification':
+                                                       {'SizeInGB': 100,
+                                                        'VolumeType': 'gp3'}}]},
       'InstanceCount': 2,
       'InstanceRole': 'CORE',
       'InstanceType': 'd2.xlarge',

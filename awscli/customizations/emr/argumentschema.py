@@ -128,6 +128,10 @@ INSTANCE_GROUPS_SCHEMA = {
                                         "Iops": {
                                             "type": "integer",
                                             "description": "The IOPS of the EBS volume that is attached to all the instances in the instance group.",
+                                        },
+                                        "Throughput": {
+                                            "type": "integer",
+                                            "description": "The throughput of the EBS volume that is attached to all the instances in the instance group.",
                                         }
                                     }
                                 },
@@ -374,6 +378,11 @@ INSTANCE_FLEETS_SCHEMA = {
                                                         "type": "integer",
                                                         "description": "The IOPS of the EBS volume that is attached to "
                                                             "all the instances in the instance group.",
+                                                    },
+                                                    "Throughput": {
+                                                         "type": "integer",
+                                                         "description": "The throughput of the EBS volume that is attached to "
+                                                             "all the instances in the instance group.",
                                                     }
                                                 }
                                             },

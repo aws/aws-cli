@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.25.7
+======
+
+* api-change:``frauddetector``: Documentation updates for Amazon Fraud Detector (AWSHawksNest)
+
+
 1.25.6
 ======
 

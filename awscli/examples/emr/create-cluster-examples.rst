@@ -293,7 +293,7 @@ The following example uses a JSON file, ``instancegroupconfig.json``, to specify
         --release-label emr-5.9.0 \
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
-        --instance-groups s3://mybucket/instancegroupconfig.json \
+        --instance-groups file://myfolder/instancegroupconfig.json \
         --auto-scaling-role EMR_AutoScaling_DefaultRole
 
 Contents of ``instancegroupconfig.json``::

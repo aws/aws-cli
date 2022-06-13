@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.25.8
+======
+
+* api-change:``outposts``: This release adds API operations AWS uses to install Outpost servers.
+
+
 1.25.7
 ======
 

@@ -2,7 +2,7 @@
 
 The following ``decrypt`` command example demonstrates the recommended way to decrypt data with the AWS CLI. This version shows how to decrypt data under a symmetric KMS key.
 
-* Provide the ciphertext in a file. 
+* Provide the ciphertext in a file.
 
     In the value of the ``--ciphertext-blob`` parameter, use the ``fileb://`` prefix, which tells the CLI to read the data from a binary file. If the file is not in the current directory, type the full path to file. For more information about reading AWS CLI parameter values from a file, see `Loading AWS CLI parameters from a file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-file.html>` in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters<https://aws.amazon.com/blogs/developer/best-practices-for-local-file-parameters/>` in the *AWS Command Line Tool Blog*.
 

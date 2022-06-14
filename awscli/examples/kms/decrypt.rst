@@ -8,7 +8,7 @@ The following ``decrypt`` command example demonstrates the recommended way to de
 
 * Specify the KMS key to decrypt the ciphertext.
 
-    The ``--key-id`` parameter is not required when decrypting with a symmetric KMS key. AWS KMS can get the key ID of the KMS key that was used to encrypt the data from the metadata in the ciphertedecrypt.rst:**Examxt blob. But it's always a best practice to specify the KMS key you are using. This practice ensures that you use the KMS key that you intend, and prevents you from inadvertently decrypting a ciphertext using a KMS key you do not trust. 
+    The ``--key-id`` parameter is not required when decrypting with a symmetric KMS key. AWS KMS can get the key ID of the KMS key that was used to encrypt the data from the metadata in the ciphertext. But it's always a best practice to specify the KMS key you are using. This practice ensures that you use the KMS key that you intend, and prevents you from inadvertently decrypting a ciphertext using a KMS key you do not trust.
 
 * Request the plaintext output as a text value.
 

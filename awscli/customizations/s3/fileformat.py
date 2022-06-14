@@ -109,9 +109,13 @@ class FileFormat(object):
             3) If the path does not end with a forward slash, the appropriate
                prefix will be formed but use the the name provided as opposed
                to the source name.
+            4) If the path ends with a wildcard (*), trim the star and
+               keep the original path as it is
         """
         if dir_op:
-            if not path.endswith('/'):
+            if path.endswith('*'):
+                path = path[:-1]
+            elif not path.endswith('/'):
                 path += '/'
             return path, True
         else:

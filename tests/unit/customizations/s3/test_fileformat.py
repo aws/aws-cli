@@ -52,6 +52,22 @@ class FileFormatTest(unittest.TestCase):
                      'dir_op': True, 'use_src_name': True}
         self.assertEqual(files, ref_files)
 
+    def test_op_dir_wildcard(self):
+        """
+        Format a paths for directory operation.  There are wildcards at the
+        end of the paths.
+        """
+        src = '.' + os.sep
+        dest = 's3://kyknapp/golfVid/a*'
+        parameters = {'dir_op': True}
+        files = self.file_format.format(src, dest, parameters)
+
+        ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
+                             'type': 'local'},
+                     'dest': {'path': 'kyknapp/golfVid/a', 'type': 's3'},
+                     'dir_op': True, 'use_src_name': True}
+        self.assertEqual(files, ref_files)
+
     def test_local_use_src_name(self):
         """
         No directory operation. S3 source name given. Existing local

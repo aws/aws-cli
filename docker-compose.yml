@@ -1,0 +1,17 @@
+---
+version: '3.4'
+
+services:
+  verify:
+    build:
+      context: .
+      args:
+        DEFAULT_DOCKER_REPO: ${DEFAULT_DOCKER_REPO}
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      - WORKSPACE=/workspace
+      - ARTIFACTORY_USERNAME
+      - ARTIFACTORY_ACCESS_TOKEN
+      - ARTIFACTORY_HOSTNAME

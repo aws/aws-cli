@@ -461,6 +461,23 @@
       ],
       "documentation":"<p>Removes <a href=\"https://docs.aws.amazon.com/lookoutmetrics/latest/dev/detectors-tags.html\">tags</a> from a detector, dataset, or alert.</p>"
     },
+    "UpdateAlert":{
+      "name":"UpdateAlert",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateAlert"
+      },
+      "input":{"shape":"UpdateAlertRequest"},
+      "output":{"shape":"UpdateAlertResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Make changes to an existing alert.</p>"
+    },
     "UpdateAnomalyDetector":{
       "name":"UpdateAnomalyDetector",
       "http":{
@@ -586,6 +603,10 @@
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the alert was created.</p>"
+        },
+        "AlertFilters":{
+          "shape":"AlertFilters",
+          "documentation":"<p>The configuration of the alert filters, containing MetricList and DimensionFilter.</p>"
         }
       },
       "documentation":"<p>A configuration for Amazon SNS-integrated notifications.</p>"
@@ -594,6 +615,20 @@
       "type":"string",
       "max":256,
       "pattern":".*\\S.*"
+    },
+    "AlertFilters":{
+      "type":"structure",
+      "members":{
+        "MetricList":{
+          "shape":"MetricNameList",
+          "documentation":"<p>The list of measures that you want to get alerts for.</p>"
+        },
+        "DimensionFilterList":{
+          "shape":"DimensionFilterList",
+          "documentation":"<p>The list of DimensionFilter objects that are used for dimension-based filtering.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the alert filters.</p>"
     },
     "AlertName":{
       "type":"string",
@@ -1128,7 +1163,6 @@
       "type":"structure",
       "required":[
         "AlertName",
-        "AlertSensitivityThreshold",
         "AnomalyDetectorArn",
         "Action"
       ],
@@ -1156,6 +1190,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/lookoutmetrics/latest/dev/detectors-tags.html\">tags</a> to apply to the alert.</p>"
+        },
+        "AlertFilters":{
+          "shape":"AlertFilters",
+          "documentation":"<p>The configuration of the alert filters, containing MetricList and DimensionFilterList.</p>"
         }
       }
     },
@@ -1704,6 +1742,26 @@
       "type":"list",
       "member":{"shape":"DimensionContribution"}
     },
+    "DimensionFilter":{
+      "type":"structure",
+      "members":{
+        "DimensionName":{
+          "shape":"ColumnName",
+          "documentation":"<p>The name of the dimension to filter on.</p>"
+        },
+        "DimensionValueList":{
+          "shape":"DimensionValueList",
+          "documentation":"<p>The list of values for the dimension specified in DimensionName that you want to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The dimension filter, containing DimensionName and DimensionValueList.</p>"
+    },
+    "DimensionFilterList":{
+      "type":"list",
+      "member":{"shape":"DimensionFilter"},
+      "max":5,
+      "min":1
+    },
     "DimensionList":{
       "type":"list",
       "member":{"shape":"ColumnName"},
@@ -1749,6 +1807,12 @@
     "DimensionValueContributionList":{
       "type":"list",
       "member":{"shape":"DimensionValueContribution"}
+    },
+    "DimensionValueList":{
+      "type":"list",
+      "member":{"shape":"DimensionValue"},
+      "max":10,
+      "min":1
     },
     "ErrorMessage":{
       "type":"string",
@@ -2331,6 +2395,12 @@
       "max":256,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9\\-_]*"
     },
+    "MetricNameList":{
+      "type":"list",
+      "member":{"shape":"MetricName"},
+      "max":5,
+      "min":1
+    },
     "MetricSetDescription":{
       "type":"string",
       "max":256,
@@ -2636,7 +2706,7 @@
         },
         "SnsFormat":{
           "shape":"SnsFormat",
-          "documentation":"<p>The format of the SNS topic.</p>"
+          "documentation":"<p>The format of the SNS topic.</p> <ul> <li> <p> <code>JSON</code> – Send JSON alerts with an anomaly ID and a link to the anomaly detail page. This is the default.</p> </li> <li> <p> <code>LONG_TEXT</code> – Send human-readable alerts with information about the impacted timeseries and a link to the anomaly detail page. We recommend this for email.</p> </li> <li> <p> <code>SHORT_TEXT</code> – Send human-readable alerts with a link to the anomaly detail page. We recommend this for SMS.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains information about the SNS topic to which you want to send your alerts and the IAM role that has access to that topic.</p>"
@@ -2923,6 +2993,41 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateAlertRequest":{
+      "type":"structure",
+      "required":["AlertArn"],
+      "members":{
+        "AlertArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the alert to update.</p>"
+        },
+        "AlertDescription":{
+          "shape":"AlertDescription",
+          "documentation":"<p>A description of the alert.</p>"
+        },
+        "AlertSensitivityThreshold":{
+          "shape":"SensitivityThreshold",
+          "documentation":"<p>An integer from 0 to 100 specifying the alert sensitivity threshold.</p>"
+        },
+        "Action":{
+          "shape":"Action",
+          "documentation":"<p>Action that will be triggered when there is an alert.</p>"
+        },
+        "AlertFilters":{
+          "shape":"AlertFilters",
+          "documentation":"<p>The configuration of the alert filters, containing MetricList and DimensionFilterList.</p>"
+        }
+      }
+    },
+    "UpdateAlertResponse":{
+      "type":"structure",
+      "members":{
+        "AlertArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the updated alert.</p>"
+        }
       }
     },
     "UpdateAnomalyDetectorRequest":{

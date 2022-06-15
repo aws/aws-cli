@@ -98,6 +98,7 @@ class TestHelpPager(unittest.TestCase):
     @skip_if_windows('Requires posix system.')
     def test_no_groff_exists(self):
         renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['man'] = False
         renderer.exists_on_path['groff'] = False
         expected_error = 'Could not find executable named "groff"'
         with self.assertRaisesRegex(ExecutableNotFoundError, expected_error):
@@ -111,6 +112,7 @@ class TestHelpPager(unittest.TestCase):
         renderer = FakePosixHelpRenderer(output_stream=stdout)
         renderer.exists_on_path[fake_pager] = False
 
+        renderer.exists_on_path['man'] = False
         renderer.exists_on_path['groff'] = True
         renderer.mock_popen.communicate.return_value = (b'foo', '')
         renderer.render('foo')
@@ -122,13 +124,22 @@ class TestHelpPager(unittest.TestCase):
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          ['/bin/sh', '-c', "col -bx | vim -c 'set ft=man' -"])
 
-    def test_can_render_contents(self):
+    def test_can_render_contents_without_man(self):
         renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['man'] = False
         renderer.exists_on_path['groff'] = True
         renderer.exists_on_path['less'] = True
         renderer.mock_popen.communicate.return_value = ('rendered', '')
         renderer.render('foo')
         self.assertEqual(renderer.popen_calls[-1][0], (['less', '-R'],))
+
+    def test_can_render_contents(self):
+        renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['man'] = True
+        renderer.mock_popen.communicate.return_value = ('rendered', '')
+        renderer.render('foo')
+        self.assertEqual(renderer.popen_calls[-1][0],
+                         (['man', '-r', '', '-l', '-'],))
 
     def test_can_page_output_on_windows(self):
         renderer = FakeWindowsHelpRenderer()
@@ -149,6 +160,7 @@ class TestHelpPager(unittest.TestCase):
 
         renderer = CtrlCRenderer()
         renderer.mock_popen.communicate.return_value = ('send to pager', '')
+        renderer.exists_on_path['man'] = False
         renderer.exists_on_path['groff'] = True
         renderer.exists_on_path['less'] = True
         renderer.render('foo')

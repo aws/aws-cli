@@ -106,16 +106,23 @@ class PosixHelpRenderer(PagingHelpRenderer):
 
     def _convert_doc_content(self, contents):
         man_contents = publish_string(contents, writer=manpage.Writer())
-        if not self._exists_on_path('groff'):
-            raise ExecutableNotFoundError('groff')
-        cmdline = ['groff', '-m', 'man', '-T', 'ascii']
-        LOG.debug("Running command: %s", cmdline)
-        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        groff_output = p3.communicate(input=man_contents)[0]
-        return groff_output
+        if self._exists_on_path('man'):
+            return man_contents
+        else:
+            if not self._exists_on_path('groff'):
+                raise ExecutableNotFoundError('groff')
+            cmdline = ['groff', '-m', 'man', '-T', 'ascii']
+            LOG.debug("Running command: %s", cmdline)
+            p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            groff_output = p3.communicate(input=man_contents)[0]
+            return groff_output
 
     def _send_output_to_pager(self, output):
-        cmdline = self.get_pager_cmdline()
+        if self._exists_on_path('man'):
+            cmdline = ['man', '-r', '', '-l', '-']
+        else:
+            cmdline = self.get_pager_cmdline()
+
         if not self._exists_on_path(cmdline[0]):
             LOG.debug("Pager '%s' not found in PATH, printing raw help." %
                       cmdline[0])
@@ -135,7 +142,12 @@ class PosixHelpRenderer(PagingHelpRenderer):
             # Ignoring Ctrl-C solves this issue.  It's also
             # the default behavior of less (you can't ctrl-c
             # out of a manpage).
-            p = self._popen(cmdline, stdin=PIPE)
+            if not self._exists_on_path('man'):
+                p = self._popen(cmdline, stdin=PIPE)
+            else:
+                pager = self.get_pager_cmdline()
+                p = self._popen(cmdline, stdin=PIPE,
+                            env=dict({'MANPAGER': pager, **os.environ}))
             p.communicate(input=output)
 
     def _exists_on_path(self, name):

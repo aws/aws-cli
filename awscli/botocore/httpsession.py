@@ -1,26 +1,20 @@
-import logging
-import os
 import os.path
+import os
+import logging
 import socket
-import sys
 from base64 import b64encode
+import sys
 
-from urllib3 import PoolManager, ProxyManager, Timeout, proxy_from_url
-from urllib3.exceptions import (
-    ConnectTimeoutError as URLLib3ConnectTimeoutError,
-)
-from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
-from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
-from urllib3.exceptions import SSLError as URLLib3SSLError
+from urllib3 import PoolManager, proxy_from_url, Timeout
 from urllib3.util.retry import Retry
 from urllib3.util.ssl_ import (
-    DEFAULT_CIPHERS,
-    OP_NO_COMPRESSION,
-    OP_NO_SSLv2,
-    OP_NO_SSLv3,
-    ssl,
+    ssl, OP_NO_SSLv2, OP_NO_SSLv3, OP_NO_COMPRESSION, OP_NO_TICKET,
+    PROTOCOL_TLS, PROTOCOL_TLS_CLIENT, DEFAULT_CIPHERS,
 )
-
+from urllib3.exceptions import SSLError as URLLib3SSLError
+from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
+from urllib3.exceptions import ConnectTimeoutError as URLLib3ConnectTimeoutError
+from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
 try:
     # Always import the original SSLContext, even if it has been patched
     from urllib3.contrib.pyopenssl import orig_util_SSLContext as SSLContext
@@ -28,19 +22,13 @@ except ImportError:
     from urllib3.util.ssl_ import SSLContext
 
 import botocore.awsrequest
-from botocore.compat import ensure_bytes, filter_ssl_warnings, urlparse
-from botocore.exceptions import (
-    ConnectionClosedError,
-    ConnectTimeoutError,
-    EndpointConnectionError,
-    HTTPClientError,
-    InvalidProxiesConfigError,
-    ProxyConnectionError,
-    ReadTimeoutError,
-    SSLError,
-)
-from botocore.vendored import six
 from botocore.vendored.six.moves.urllib_parse import unquote
+from botocore.compat import filter_ssl_warnings, urlparse
+from botocore.exceptions import (
+    ConnectionClosedError, EndpointConnectionError, HTTPClientError,
+    ReadTimeoutError, ProxyConnectionError, ConnectTimeoutError, SSLError,
+    InvalidProxiesConfigError
+)
 
 filter_ssl_warnings()
 logger = logging.getLogger(__name__)
@@ -72,7 +60,13 @@ def create_urllib3_context(ssl_version=None, cert_reqs=None,
         We vendor this function to ensure that the SSL contexts we construct
         always use the std lib SSLContext instead of pyopenssl.
     """
-    context = SSLContext(ssl_version or ssl.PROTOCOL_SSLv23)
+    # PROTOCOL_TLS is deprecated in Python 3.10
+    if not ssl_version or ssl_version == PROTOCOL_TLS:
+        ssl_version = PROTOCOL_TLS_CLIENT
+
+    context = SSLContext(ssl_version)
+
+    context.set_ciphers(ciphers or DEFAULT_CIPHERS)
 
     # Setting the default here, as we may have no ssl module on import
     cert_reqs = ssl.CERT_REQUIRED if cert_reqs is None else cert_reqs
@@ -86,26 +80,51 @@ def create_urllib3_context(ssl_version=None, cert_reqs=None,
         # Disable compression to prevent CRIME attacks for OpenSSL 1.0+
         # (issue urllib3#309)
         options |= OP_NO_COMPRESSION
+        # TLSv1.2 only. Unless set explicitly, do not request tickets.
+        # This may save some bandwidth on wire, and although the ticket is encrypted,
+        # there is a risk associated with it being on wire,
+        # if the server is not rotating its ticketing keys properly.
+        options |= OP_NO_TICKET
 
     context.options |= options
 
-    if getattr(context, 'supports_set_ciphers', True):
-        # Platform-specific: Python 2.6
-        context.set_ciphers(ciphers or DEFAULT_CIPHERS)
+    # Enable post-handshake authentication for TLS 1.3, see GH #1634. PHA is
+    # necessary for conditional client cert authentication with TLS 1.3.
+    # The attribute is None for OpenSSL <= 1.1.0 or does not exist in older
+    # versions of Python.  We only enable on Python 3.7.4+ or if certificate
+    # verification is enabled to work around Python issue #37428
+    # See: https://bugs.python.org/issue37428
+    if (cert_reqs == ssl.CERT_REQUIRED or sys.version_info >= (3, 7, 4)) and getattr(
+        context, "post_handshake_auth", None
+    ) is not None:
+        context.post_handshake_auth = True
 
-    context.verify_mode = cert_reqs
-    if getattr(context, 'check_hostname', None) is not None:
-        # Platform-specific: Python 3.2
-        # We do our own verification, including fingerprints and alternative
-        # hostnames. So disable it here
-        context.check_hostname = False
+    def disable_check_hostname():
+        if (
+            getattr(context, "check_hostname", None) is not None
+        ):  # Platform-specific: Python 3.2
+            # We do our own verification, including fingerprints and alternative
+            # hostnames. So disable it here
+            context.check_hostname = False
+
+    # The order of the below lines setting verify_mode and check_hostname
+    # matter due to safe-guards SSLContext has to prevent an SSLContext with
+    # check_hostname=True, verify_mode=NONE/OPTIONAL. This is made even more
+    # complex because we don't know whether PROTOCOL_TLS_CLIENT will be used
+    # or not so we don't know the initial state of the freshly created SSLContext.
+    if cert_reqs == ssl.CERT_REQUIRED:
+        context.verify_mode = cert_reqs
+        disable_check_hostname()
+    else:
+        disable_check_hostname()
+        context.verify_mode = cert_reqs
 
     # Enable logging of TLS session keys via defacto standard environment variable
     # 'SSLKEYLOGFILE', if the feature is available (Python 3.8+). Skip empty values.
-    if hasattr(context, 'keylog_filename'):
-        keylogfile = os.environ.get('SSLKEYLOGFILE')
-        if keylogfile and not sys.flags.ignore_environment:
-            context.keylog_filename = keylogfile
+    if hasattr(context, "keylog_filename"):
+        sslkeylogfile = os.environ.get("SSLKEYLOGFILE")
+        if sslkeylogfile and not sys.flags.ignore_environment:
+            context.keylog_filename = sslkeylogfile
 
     return context
 
@@ -190,18 +209,20 @@ class URLLib3Session(object):
     v2.7.0 implemented this themselves, later version urllib3 support this
     directly via a flag to urlopen so enabling it if needed should be trivial.
     """
-    def __init__(self,
-                 verify=True,
-                 proxies=None,
-                 timeout=None,
-                 max_pool_connections=MAX_POOL_CONNECTIONS,
-                 socket_options=None,
-                 client_cert=None,
-                 proxies_config=None,
+    def __init__(
+        self,
+        verify=True,
+        proxies=None,
+        timeout=None,
+        max_pool_connections=MAX_POOL_CONNECTIONS,
+        socket_options=None,
+        client_cert=None,
+        proxies_config=None,
     ):
         self._verify = verify
-        self._proxy_config = ProxyConfiguration(proxies=proxies,
-                                                proxies_settings=proxies_config)
+        self._proxy_config = ProxyConfiguration(
+            proxies=proxies, proxies_settings=proxies_config
+        )
         self._pool_classes_by_scheme = {
             'http': botocore.awsrequest.AWSHTTPConnectionPool,
             'https': botocore.awsrequest.AWSHTTPSConnectionPool,
@@ -334,9 +355,7 @@ class URLLib3Session(object):
             return self._path_url(url)
 
     def _chunked(self, headers):
-        transfer_encoding = headers.get('Transfer-Encoding', b'')
-        transfer_encoding = ensure_bytes(transfer_encoding)
-        return transfer_encoding.lower() == b'chunked'
+        return headers.get('Transfer-Encoding', '') == 'chunked'
 
     def send(self, request):
         try:

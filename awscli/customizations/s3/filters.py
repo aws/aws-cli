@@ -97,10 +97,16 @@ class Filter(object):
         # We need to transform the patterns into patterns that have
         # the root dir prefixed, so things like ``--exclude "*"``
         # will actually be ['exclude', '/path/to/root/*']
+
+        # strip out last component if rootdir endswith wildcard
+        path = rootdir
+        if rootdir.endswith('*'):
+            path = rootdir.rsplit('/', maxsplit=1)[0]
+
         full_patterns = []
         for pattern in original_patterns:
             full_patterns.append(
-                (pattern[0], os.path.join(rootdir, pattern[1])))
+                (pattern[0], os.path.join(path, pattern[1])))
         return full_patterns
 
     def call(self, file_infos):

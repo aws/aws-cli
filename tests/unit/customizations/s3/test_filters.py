@@ -223,5 +223,20 @@ class FiltersTest(unittest.TestCase):
         for filtered_file in filtered:
             self.assertFalse('.txt' in filtered_file.src)
 
+    def test_filter_on_s3uri_with_wildcard(self):
+        parameters = {'filters': [['--exclude', '*'], ['--include', 'a[0]*']],
+                      'dir_op': True,
+                      'src': 's3://bucket/prefix/a*',
+                      'dest': 'prefix'}
+        s3_filter = self.create_filter(parameters=parameters)
+        s3_files = [
+            self.file_stat('bucket/prefix/attach-1.txt', src_type='s3'),
+            self.file_stat('bucket/prefix/a0123.txt', src_type='s3'),
+        ]
+        filtered = list(s3_filter.call(s3_files))
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0].src, 'bucket/prefix/a0123.txt')
+
+
 if __name__ == "__main__":
     unittest.main()

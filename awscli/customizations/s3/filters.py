@@ -100,7 +100,7 @@ class Filter(object):
 
         # strip out last component if rootdir endswith wildcard
         path = rootdir
-        if rootdir.endswith('*'):
+        if rootdir is not None and rootdir.endswith('*'):
             path = rootdir.rsplit('/', maxsplit=1)[0]
 
         full_patterns = []

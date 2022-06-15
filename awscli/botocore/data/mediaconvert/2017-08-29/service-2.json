@@ -1737,6 +1737,16 @@
       },
       "documentation": "Settings related to one audio tab on the MediaConvert console. In your job JSON, an instance of AudioDescription is equivalent to one audio tab in the console. Usually, one audio tab corresponds to one output audio track. Depending on how you set up your input audio selectors and whether you use audio selector groups, one audio tab can correspond to a group of output audio tracks."
     },
+    "AudioDurationCorrection": {
+      "type": "string",
+      "documentation": "Apply audio timing corrections to help synchronize audio and video in your output. To apply timing corrections, your input must meet the following requirements: * Container: MP4, or MOV, with an accurate time-to-sample (STTS) table. * Audio track: AAC. Choose from the following audio timing correction settings: * Disabled (Default): Apply no correction. * Auto: Recommended for most inputs. MediaConvert analyzes the audio timing in your input and determines which correction setting to use, if needed. * Track: Adjust the duration of each audio frame by a constant amount to align the audio track length with STTS duration. Track-level correction does not affect pitch, and is recommended for tonal audio content such as music. * Frame: Adjust the duration of each audio frame by a variable amount to align audio frames with STTS timestamps. No corrections are made to already-aligned frames. Frame-level correction may affect the pitch of corrected frames, and is recommended for atonal audio content such as speech or percussion.",
+      "enum": [
+        "DISABLED",
+        "AUTO",
+        "TRACK",
+        "FRAME"
+      ]
+    },
     "AudioLanguageCodeControl": {
       "type": "string",
       "documentation": "Specify which source for language code takes precedence for this audio track. When you choose Follow input (FOLLOW_INPUT), the service uses the language code from the input track if it's present. If there's no languge code on the input track, the service uses the code that you specify in the setting Language code (languageCode or customLanguageCode). When you choose Use configured (USE_CONFIGURED), the service uses the language code that you specify.",
@@ -1818,6 +1828,11 @@
     "AudioSelector": {
       "type": "structure",
       "members": {
+        "AudioDurationCorrection": {
+          "shape": "AudioDurationCorrection",
+          "locationName": "audioDurationCorrection",
+          "documentation": "Apply audio timing corrections to help synchronize audio and video in your output. To apply timing corrections, your input must meet the following requirements: * Container: MP4, or MOV, with an accurate time-to-sample (STTS) table. * Audio track: AAC. Choose from the following audio timing correction settings: * Disabled (Default): Apply no correction. * Auto: Recommended for most inputs. MediaConvert analyzes the audio timing in your input and determines which correction setting to use, if needed. * Track: Adjust the duration of each audio frame by a constant amount to align the audio track length with STTS duration. Track-level correction does not affect pitch, and is recommended for tonal audio content such as music. * Frame: Adjust the duration of each audio frame by a variable amount to align audio frames with STTS timestamps. No corrections are made to already-aligned frames. Frame-level correction may affect the pitch of corrected frames, and is recommended for atonal audio content such as speech or percussion."
+        },
         "CustomLanguageCode": {
           "shape": "__stringMin3Max3PatternAZaZ3",
           "locationName": "customLanguageCode",
@@ -7056,7 +7071,7 @@
         "VideoGenerator": {
           "shape": "InputVideoGenerator",
           "locationName": "videoGenerator",
-          "documentation": "Use this setting if you do not have a video input or if you want to add black video frames before, or after, other inputs. When you include Video generator, MediaConvert creates a video input with black frames and without an audio track. You can specify a value for Video generator, or you can specify an Input file, but you cannot specify both."
+          "documentation": "When you include Video generator, MediaConvert creates a video input with black frames. Use this setting if you do not have a video input or if you want to add black video frames before, or after, other inputs. You can specify Video generator, or you can specify an Input file, but you cannot specify both. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-generator.html"
         },
         "VideoSelector": {
           "shape": "VideoSelector",
@@ -7291,7 +7306,7 @@
           "documentation": "Specify an integer value for Black video duration from 50 to 86400000 to generate a black video input for that many milliseconds. Required when you include Video generator."
         }
       },
-      "documentation": "Use this setting if you do not have a video input or if you want to add black video frames before, or after, other inputs. When you include Video generator, MediaConvert creates a video input with black frames and without an audio track. You can specify a value for Video generator, or you can specify an Input file, but you cannot specify both."
+      "documentation": "When you include Video generator, MediaConvert creates a video input with black frames. Use this setting if you do not have a video input or if you want to add black video frames before, or after, other inputs. You can specify Video generator, or you can specify an Input file, but you cannot specify both. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-generator.html"
     },
     "InsertableImage": {
       "type": "structure",

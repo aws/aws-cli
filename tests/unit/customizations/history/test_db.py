@@ -617,7 +617,7 @@ class TestPayloadSerialzier(unittest.TestCase):
             'list': ['foo', b'\xfe\xed'],
             'more_nesting': {
                 'bytes': b'\xfe\xed',
-                'tuple': ('bar', 'baz', b'\xfe\ed')
+                'tuple': ('bar', 'baz', b'\xfe\xed')
             }
         }
         encoded = {

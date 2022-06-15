@@ -146,7 +146,7 @@ def test_display_error_message(cmd):
     result = _aws(cmd, target_rc=254)
     assert result.rc == 254
     error_message = re.compile(
-        'An error occurred \(.+\) when calling the \w+ operation: \w+')
+        r'An error occurred \(.+\) when calling the \w+ operation: \w+')
     match = error_message.search(result.stderr)
     assert match, (
         f'Error message was not displayed for command "{cmd}": {result.stderr}'

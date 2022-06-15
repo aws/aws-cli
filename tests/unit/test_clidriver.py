@@ -771,7 +771,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         machine = platform.machine()
         driver = create_clidriver()
         user_agent_extra_pattern = re.compile(
-            '^source/%s(\.[a-z_]+)?(\.[0-9]+)?$' % machine
+            fr'^source/{machine}(\.[a-z_]+)?(\.[0-9]+)?$'
         )
         self.assertIsNotNone(user_agent_extra_pattern.match(
             driver.session.user_agent_extra))

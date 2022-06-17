@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.12
+=======
+
+* api-change:``connect``: This release updates these APIs: UpdateInstanceAttribute, DescribeInstanceAttribute and ListInstanceAttributes. You can use it to programmatically enable/disable High volume outbound communications using attribute type HIGH_VOLUME_OUTBOUND on the specified Amazon Connect instance.
+* api-change:``connectcampaigns``: Added Amazon Connect high volume outbound communications SDK.
+* api-change:``dynamodb``: Doc only update for DynamoDB service
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+
+
 1.25.11
 =======
 

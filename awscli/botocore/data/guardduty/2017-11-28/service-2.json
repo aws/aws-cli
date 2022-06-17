@@ -12,6 +12,21 @@
     "uid":"guardduty-2017-11-28"
   },
   "operations":{
+    "AcceptAdministratorInvitation":{
+      "name":"AcceptAdministratorInvitation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/administrator",
+        "responseCode":200
+      },
+      "input":{"shape":"AcceptAdministratorInvitationRequest"},
+      "output":{"shape":"AcceptAdministratorInvitationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Accepts the invitation to be a member account and get monitored by a GuardDuty administrator account that sent the invitation.</p>"
+    },
     "AcceptInvitation":{
       "name":"AcceptInvitation",
       "http":{
@@ -25,7 +40,9 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Accepts the invitation to be monitored by a GuardDuty administrator account.</p>"
+      "documentation":"<p>Accepts the invitation to be monitored by a GuardDuty administrator account.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is deprecated, use AcceptAdministratorInvitation instead"
     },
     "ArchiveFindings":{
       "name":"ArchiveFindings",
@@ -312,6 +329,21 @@
       ],
       "documentation":"<p>Disables an Amazon Web Services account within the Organization as the GuardDuty delegated administrator.</p>"
     },
+    "DisassociateFromAdministratorAccount":{
+      "name":"DisassociateFromAdministratorAccount",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/administrator/disassociate",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateFromAdministratorAccountRequest"},
+      "output":{"shape":"DisassociateFromAdministratorAccountResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p>"
+    },
     "DisassociateFromMasterAccount":{
       "name":"DisassociateFromMasterAccount",
       "http":{
@@ -325,7 +357,9 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p>"
+      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is deprecated, use DisassociateFromAdministratorAccount instead"
     },
     "DisassociateMembers":{
       "name":"DisassociateMembers",
@@ -340,7 +374,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Disassociates GuardDuty member accounts (to the current GuardDuty administrator account) specified by the account IDs. Member accounts added through <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html\">Invitation</a> get deleted from the current GuardDuty administrator account after 30 days of disassociation.</p>"
+      "documentation":"<p>Disassociates GuardDuty member accounts (to the current GuardDuty administrator account) specified by the account IDs.</p>"
     },
     "EnableOrganizationAdminAccount":{
       "name":"EnableOrganizationAdminAccount",
@@ -356,6 +390,21 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Enables an Amazon Web Services account within the organization as the GuardDuty delegated administrator.</p>"
+    },
+    "GetAdministratorAccount":{
+      "name":"GetAdministratorAccount",
+      "http":{
+        "method":"GET",
+        "requestUri":"/detector/{detectorId}/administrator",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAdministratorAccountRequest"},
+      "output":{"shape":"GetAdministratorAccountResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Provides the details for the GuardDuty administrator account associated with the current GuardDuty member account.</p>"
     },
     "GetDetector":{
       "name":"GetDetector",
@@ -460,7 +509,9 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Provides the details for the GuardDuty administrator account associated with the current GuardDuty member account.</p>"
+      "documentation":"<p>Provides the details for the GuardDuty administrator account associated with the current GuardDuty member account.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is deprecated, use GetAdministratorAccount instead"
     },
     "GetMemberDetectors":{
       "name":"GetMemberDetectors",
@@ -492,6 +543,21 @@
       ],
       "documentation":"<p>Retrieves GuardDuty member accounts (of the current GuardDuty administrator account) specified by the account IDs.</p>"
     },
+    "GetRemainingFreeTrialDays":{
+      "name":"GetRemainingFreeTrialDays",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/freeTrial/daysRemaining",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRemainingFreeTrialDaysRequest"},
+      "output":{"shape":"GetRemainingFreeTrialDaysResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Provides the number of days left for each data source used in the free trial period.</p>"
+    },
     "GetThreatIntelSet":{
       "name":"GetThreatIntelSet",
       "http":{
@@ -520,7 +586,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists Amazon GuardDuty usage statistics over the last 30 days for the specified detector ID. For newly enabled detectors or data sources the cost returned will include only the usage so far under 30 days, this may differ from the cost metrics in the console, which projects usage over 30 days to provide a monthly cost estimate. For more information see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/monitoring_costs.html#usage-calculations\">Understanding How Usage Costs are Calculated</a>.</p>"
+      "documentation":"<p>Lists Amazon GuardDuty usage statistics over the last 30 days for the specified detector ID. For newly enabled detectors or data sources, the cost returned will include only the usage so far under 30 days. This may differ from the cost metrics in the console, which project usage over 30 days to provide a monthly cost estimate. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/monitoring_costs.html#usage-calculations\">Understanding How Usage Costs are Calculated</a>.</p>"
     },
     "InviteMembers":{
       "name":"InviteMembers",
@@ -884,6 +950,37 @@
     }
   },
   "shapes":{
+    "AcceptAdministratorInvitationRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "AdministratorId",
+        "InvitationId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "AdministratorId":{
+          "shape":"String",
+          "documentation":"<p>The account ID of the GuardDuty administrator account whose invitation you're accepting.</p>",
+          "locationName":"administratorId"
+        },
+        "InvitationId":{
+          "shape":"String",
+          "documentation":"<p>The value that is used to validate the administrator account to the member account.</p>",
+          "locationName":"invitationId"
+        }
+      }
+    },
+    "AcceptAdministratorInvitationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "AcceptInvitationRequest":{
       "type":"structure",
       "required":[
@@ -908,12 +1005,16 @@
           "documentation":"<p>The value that is used to validate the administrator account to the member account.</p>",
           "locationName":"invitationId"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This input is deprecated, use AcceptAdministratorInvitationRequest instead"
     },
     "AcceptInvitationResponse":{
       "type":"structure",
       "members":{
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This output is deprecated, use AcceptAdministratorInvitationResponse instead"
     },
     "AccessControlList":{
       "type":"structure",
@@ -982,6 +1083,26 @@
       "member":{"shape":"AccountDetail"},
       "max":50,
       "min":1
+    },
+    "AccountFreeTrialInfo":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The account identifier of the GuardDuty member account.</p>",
+          "locationName":"accountId"
+        },
+        "DataSources":{
+          "shape":"DataSourcesFreeTrial",
+          "documentation":"<p>Describes the data source enabled for the GuardDuty member account.</p>",
+          "locationName":"dataSources"
+        }
+      },
+      "documentation":"<p>Provides details of the GuardDuty member account that uses a free trial service.</p>"
+    },
+    "AccountFreeTrialInfos":{
+      "type":"list",
+      "member":{"shape":"AccountFreeTrialInfo"}
     },
     "AccountId":{
       "type":"string",
@@ -1072,6 +1193,37 @@
       "max":300,
       "min":1
     },
+    "Administrator":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account used as the administrator account.</p>",
+          "locationName":"accountId"
+        },
+        "InvitationId":{
+          "shape":"String",
+          "documentation":"<p>The value that is used to validate the administrator account to the member account.</p>",
+          "locationName":"invitationId"
+        },
+        "RelationshipStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the relationship between the administrator and member accounts.</p>",
+          "locationName":"relationshipStatus"
+        },
+        "InvitedAt":{
+          "shape":"String",
+          "documentation":"<p>The timestamp when the invitation was sent.</p>",
+          "locationName":"invitedAt"
+        }
+      },
+      "documentation":"<p>Contains information about the administrator account and invitation.</p>"
+    },
+    "AffectedResources":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "ArchiveFindingsRequest":{
       "type":"structure",
       "required":[
@@ -1139,6 +1291,11 @@
           "shape":"RemoteAccountDetails",
           "documentation":"<p>The details of the Amazon Web Services account that made the API call. This field appears if the call was made from outside your account.</p>",
           "locationName":"remoteAccountDetails"
+        },
+        "AffectedResources":{
+          "shape":"AffectedResources",
+          "documentation":"<p>The details of the Amazon Web Services account that made the API call. This field identifies the resources that were affected by this API call.</p>",
+          "locationName":"affectedResources"
         }
       },
       "documentation":"<p>Contains information about the API action.</p>"
@@ -1792,6 +1949,17 @@
       },
       "documentation":"<p>Contains information on the status of data sources for the detector.</p>"
     },
+    "DataSourceFreeTrial":{
+      "type":"structure",
+      "members":{
+        "FreeTrialDaysRemaining":{
+          "shape":"Integer",
+          "documentation":"<p>A value that specifies the number of days left to use each enabled data source.</p>",
+          "locationName":"freeTrialDaysRemaining"
+        }
+      },
+      "documentation":"<p>Contains information about which data sources are enabled for the GuardDuty member account.</p>"
+    },
     "DataSourceList":{
       "type":"list",
       "member":{"shape":"DataSource"}
@@ -1804,6 +1972,37 @@
       ],
       "max":300,
       "min":1
+    },
+    "DataSourcesFreeTrial":{
+      "type":"structure",
+      "members":{
+        "CloudTrail":{
+          "shape":"DataSourceFreeTrial",
+          "documentation":"<p>Describes whether any AWS CloudTrail management event logs are enabled as data sources.</p>",
+          "locationName":"cloudTrail"
+        },
+        "DnsLogs":{
+          "shape":"DataSourceFreeTrial",
+          "documentation":"<p>Describes whether any DNS logs are enabled as data sources.</p>",
+          "locationName":"dnsLogs"
+        },
+        "FlowLogs":{
+          "shape":"DataSourceFreeTrial",
+          "documentation":"<p>Describes whether any VPC Flow logs are enabled as data sources.</p>",
+          "locationName":"flowLogs"
+        },
+        "S3Logs":{
+          "shape":"DataSourceFreeTrial",
+          "documentation":"<p>Describes whether any S3 data event logs are enabled as data sources.</p>",
+          "locationName":"s3Logs"
+        },
+        "Kubernetes":{
+          "shape":"KubernetesDataSourceFreeTrial",
+          "documentation":"<p>Describes whether any Kubernetes logs are enabled as data sources.</p>",
+          "locationName":"kubernetes"
+        }
+      },
+      "documentation":"<p>Contains information about which data sources are enabled for the GuardDuty member account.</p>"
     },
     "DeclineInvitationsRequest":{
       "type":"structure",
@@ -2199,7 +2398,7 @@
       "members":{
       }
     },
-    "DisassociateFromMasterAccountRequest":{
+    "DisassociateFromAdministratorAccountRequest":{
       "type":"structure",
       "required":["DetectorId"],
       "members":{
@@ -2211,10 +2410,31 @@
         }
       }
     },
-    "DisassociateFromMasterAccountResponse":{
+    "DisassociateFromAdministratorAccountResponse":{
       "type":"structure",
       "members":{
       }
+    },
+    "DisassociateFromMasterAccountRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This input is deprecated, use DisassociateFromAdministratorAccountRequest instead"
+    },
+    "DisassociateFromMasterAccountResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This output is deprecated, use DisassociateFromAdministratorAccountResponse instead"
     },
     "DisassociateMembersRequest":{
       "type":"structure",
@@ -2254,6 +2474,16 @@
           "shape":"String",
           "documentation":"<p>The domain information for the API request.</p>",
           "locationName":"domain"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The network connection protocol observed in the activity that prompted GuardDuty to generate the finding.</p>",
+          "locationName":"protocol"
+        },
+        "Blocked":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the targeted port is blocked.</p>",
+          "locationName":"blocked"
         }
       },
       "documentation":"<p>Contains information about the DNS_REQUEST action described in this finding.</p>"
@@ -2570,6 +2800,29 @@
       },
       "documentation":"<p>Contains information about the location of the remote IP address.</p>"
     },
+    "GetAdministratorAccountRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        }
+      }
+    },
+    "GetAdministratorAccountResponse":{
+      "type":"structure",
+      "required":["Administrator"],
+      "members":{
+        "Administrator":{
+          "shape":"Administrator",
+          "documentation":"<p>The administrator account details.</p>",
+          "locationName":"administrator"
+        }
+      }
+    },
     "GetDetectorRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -2841,7 +3094,9 @@
           "location":"uri",
           "locationName":"detectorId"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This input is deprecated, use GetAdministratorAccountRequest instead"
     },
     "GetMasterAccountResponse":{
       "type":"structure",
@@ -2852,7 +3107,9 @@
           "documentation":"<p>The administrator account details.</p>",
           "locationName":"master"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This output is deprecated, use GetAdministratorAccountResponse instead"
     },
     "GetMemberDetectorsRequest":{
       "type":"structure",
@@ -2928,6 +3185,38 @@
         "UnprocessedAccounts":{
           "shape":"UnprocessedAccounts",
           "documentation":"<p>A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.</p>",
+          "locationName":"unprocessedAccounts"
+        }
+      }
+    },
+    "GetRemainingFreeTrialDaysRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "AccountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>A list of account identifiers of the GuardDuty member account.</p>",
+          "locationName":"accountIds"
+        }
+      }
+    },
+    "GetRemainingFreeTrialDaysResponse":{
+      "type":"structure",
+      "members":{
+        "Accounts":{
+          "shape":"AccountFreeTrialInfos",
+          "documentation":"<p>The member accounts which were included in a request and were processed successfully.</p>",
+          "locationName":"accounts"
+        },
+        "UnprocessedAccounts":{
+          "shape":"UnprocessedAccounts",
+          "documentation":"<p>The member account that was included in a request but for which the request could not be processed.</p>",
           "locationName":"unprocessedAccounts"
         }
       }
@@ -3367,6 +3656,17 @@
         }
       },
       "documentation":"<p>Describes whether any Kubernetes logs will be enabled as a data source.</p>"
+    },
+    "KubernetesDataSourceFreeTrial":{
+      "type":"structure",
+      "members":{
+        "AuditLogs":{
+          "shape":"DataSourceFreeTrial",
+          "documentation":"<p>Describes whether Kubernetes audit logs are enabled as a data source.</p>",
+          "locationName":"auditLogs"
+        }
+      },
+      "documentation":"<p>Provides details about the Kubernetes resources when it is enabled as a data source.</p>"
     },
     "KubernetesDetails":{
       "type":"structure",
@@ -3926,6 +4226,11 @@
           "shape":"String",
           "documentation":"<p>The last-updated timestamp of the member.</p>",
           "locationName":"updatedAt"
+        },
+        "AdministratorId":{
+          "shape":"String",
+          "documentation":"<p>The administrator account ID.</p>",
+          "locationName":"administratorId"
         }
       },
       "documentation":"<p>Contains information about the member account. </p>"
@@ -4308,12 +4613,12 @@
         "Code":{
           "shape":"String",
           "documentation":"<p>The product code information.</p>",
-          "locationName":"code"
+          "locationName":"productCodeId"
         },
         "ProductType":{
           "shape":"String",
           "documentation":"<p>The product code type.</p>",
-          "locationName":"productType"
+          "locationName":"productCodeType"
         }
       },
       "documentation":"<p>Contains information about the product code for the EC2 instance.</p>"
@@ -4609,9 +4914,30 @@
           "shape":"String",
           "documentation":"<p>Feedback that was submitted about the finding.</p>",
           "locationName":"userFeedback"
+        },
+        "AdditionalInfo":{
+          "shape":"ServiceAdditionalInfo",
+          "documentation":"<p>Contains additional information about the generated finding.</p>",
+          "locationName":"additionalInfo"
         }
       },
       "documentation":"<p>Contains additional information about the generated finding.</p>"
+    },
+    "ServiceAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>This field specifies the value of the additional information.</p>",
+          "locationName":"value"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>Describes the type of the additional information.</p>",
+          "locationName":"type"
+        }
+      },
+      "documentation":"<p>Additional information about the generated finding.</p>"
     },
     "SortCriteria":{
       "type":"structure",
@@ -5372,5 +5698,5 @@
       "member":{"shape":"Volume"}
     }
   },
-  "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC Flow Logs, Amazon Web Services CloudTrail event logs, and DNS logs. It uses threat intelligence feeds (such as lists of malicious IPs and domains) and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, URLs, or domains. For example, GuardDuty can detect compromised EC2 instances that serve malware or mine bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise. Some examples of this are unauthorized infrastructure deployments such as EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you of the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon CloudWatch events. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"
+  "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC Flow Logs, AWS CloudTrail management event logs, CloudTrail S3 data event logs, EKS audit logs, and DNS logs. It uses threat intelligence feeds (such as lists of malicious IPs and domains) and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, URLs, or domains. For example, GuardDuty can detect compromised EC2 instances that serve malware or mine bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise. Some examples of this are unauthorized infrastructure deployments such as EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you of the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon CloudWatch events. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"
 }

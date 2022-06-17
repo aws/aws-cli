@@ -13,6 +13,24 @@
     "uid":"finspace-2020-07-13"
   },
   "operations":{
+    "AssociateUserToPermissionGroup":{
+      "name":"AssociateUserToPermissionGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/permission-group/{permissionGroupId}/users/{userId}"
+      },
+      "input":{"shape":"AssociateUserToPermissionGroupRequest"},
+      "output":{"shape":"AssociateUserToPermissionGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Adds a user account to a permission group to grant permissions for actions a user can perform in FinSpace.</p>"
+    },
     "CreateChangeset":{
       "name":"CreateChangeset",
       "http":{
@@ -161,6 +179,24 @@
       ],
       "documentation":"<p>Denies access to the FinSpace web application and API for the specified user.</p>"
     },
+    "DisassociateUserFromPermissionGroup":{
+      "name":"DisassociateUserFromPermissionGroup",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/permission-group/{permissionGroupId}/users/{userId}"
+      },
+      "input":{"shape":"DisassociateUserFromPermissionGroupRequest"},
+      "output":{"shape":"DisassociateUserFromPermissionGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Removes a user account from a permission group.</p>"
+    },
     "EnableUser":{
       "name":"EnableUser",
       "http":{
@@ -232,6 +268,23 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Returns information about a Dataset.</p>"
+    },
+    "GetPermissionGroup":{
+      "name":"GetPermissionGroup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/permission-group/{permissionGroupId}"
+      },
+      "input":{"shape":"GetPermissionGroupRequest"},
+      "output":{"shape":"GetPermissionGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the details of a specific permission group.</p>"
     },
     "GetProgrammaticAccessCredentials":{
       "name":"GetProgrammaticAccessCredentials",
@@ -350,6 +403,23 @@
       ],
       "documentation":"<p>Lists all available permission groups in FinSpace.</p>"
     },
+    "ListPermissionGroupsByUser":{
+      "name":"ListPermissionGroupsByUser",
+      "http":{
+        "method":"GET",
+        "requestUri":"/user/{userId}/permission-groups"
+      },
+      "input":{"shape":"ListPermissionGroupsByUserRequest"},
+      "output":{"shape":"ListPermissionGroupsByUserResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all the permission groups that are associated with a specific user account.</p>"
+    },
     "ListUsers":{
       "name":"ListUsers",
       "http":{
@@ -365,6 +435,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists all available user accounts in FinSpace.</p>"
+    },
+    "ListUsersByPermissionGroup":{
+      "name":"ListUsersByPermissionGroup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/permission-group/{permissionGroupId}/users"
+      },
+      "input":{"shape":"ListUsersByPermissionGroupRequest"},
+      "output":{"shape":"ListUsersByPermissionGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists details of all the users in a specific permission group.</p>"
     },
     "ResetUserPassword":{
       "name":"ResetUserPassword",
@@ -495,6 +582,42 @@
     "ApplicationPermissionList":{
       "type":"list",
       "member":{"shape":"ApplicationPermission"}
+    },
+    "AssociateUserToPermissionGroupRequest":{
+      "type":"structure",
+      "required":[
+        "permissionGroupId",
+        "userId"
+      ],
+      "members":{
+        "permissionGroupId":{
+          "shape":"PermissionGroupId",
+          "documentation":"<p>The unique identifier for the permission group.</p>",
+          "location":"uri",
+          "locationName":"permissionGroupId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier for the user.</p>",
+          "location":"uri",
+          "locationName":"userId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token that ensures idempotency. This token expires in 10 minutes.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateUserToPermissionGroupResponse":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The returned status code of the response.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "Boolean":{
       "type":"boolean",
@@ -645,7 +768,7 @@
       "type":"string",
       "documentation":"Column Description",
       "max":512,
-      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+      "pattern":"[\\s\\S]*"
     },
     "ColumnList":{
       "type":"list",
@@ -950,7 +1073,7 @@
         },
         "s3DestinationExportFileFormat":{
           "shape":"ExportFileFormat",
-          "documentation":"<p>Data view export file format.</p> <ul> <li> <p> <code>PARQUET</code> – Parquet export file format.</p> </li> <li> <p> <code>DELIMITED_TEXT</code> – Delimited text export file format.</p> </li> </ul>"
+          "documentation":"<p>Dataview export file format.</p> <ul> <li> <p> <code>PARQUET</code> – Parquet export file format.</p> </li> <li> <p> <code>DELIMITED_TEXT</code> – Delimited text export file format.</p> </li> </ul>"
         },
         "s3DestinationExportFileFormatOptions":{
           "shape":"S3DestinationFormatOptions",
@@ -1107,8 +1230,7 @@
       "type":"string",
       "documentation":"Description of a dataset",
       "max":1000,
-      "min":1,
-      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+      "pattern":"[\\s\\S]*"
     },
     "DatasetId":{
       "type":"string",
@@ -1245,6 +1367,44 @@
         "userId":{
           "shape":"UserId",
           "documentation":"<p>The unique identifier for the disabled user account.</p>"
+        }
+      }
+    },
+    "DisassociateUserFromPermissionGroupRequest":{
+      "type":"structure",
+      "required":[
+        "permissionGroupId",
+        "userId"
+      ],
+      "members":{
+        "permissionGroupId":{
+          "shape":"PermissionGroupId",
+          "documentation":"<p>The unique identifier for the permission group.</p>",
+          "location":"uri",
+          "locationName":"permissionGroupId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier for the user.</p>",
+          "location":"uri",
+          "locationName":"userId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token that ensures idempotency. This token expires in 10 minutes.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DisassociateUserFromPermissionGroupResponse":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The returned status code of the response.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -1539,6 +1699,24 @@
       },
       "documentation":"Response for the GetDataset operation"
     },
+    "GetPermissionGroupRequest":{
+      "type":"structure",
+      "required":["permissionGroupId"],
+      "members":{
+        "permissionGroupId":{
+          "shape":"PermissionGroupId",
+          "documentation":"<p>The unique identifier for the permission group.</p>",
+          "location":"uri",
+          "locationName":"permissionGroupId"
+        }
+      }
+    },
+    "GetPermissionGroupResponse":{
+      "type":"structure",
+      "members":{
+        "permissionGroup":{"shape":"PermissionGroup"}
+      }
+    },
     "GetProgrammaticAccessCredentialsRequest":{
       "type":"structure",
       "required":["environmentId"],
@@ -1609,7 +1787,7 @@
         },
         "type":{
           "shape":"UserType",
-          "documentation":"<p>Indicates the type of user. </p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> </ul> <ul> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permissions group.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of user. </p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> </ul> <ul> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>"
         },
         "apiAccess":{
           "shape":"ApiAccess",
@@ -1820,6 +1998,46 @@
       },
       "documentation":"Response for the ListDatasets operation"
     },
+    "ListPermissionGroupsByUserRequest":{
+      "type":"structure",
+      "required":[
+        "userId",
+        "maxResults"
+      ],
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier for the user.</p>",
+          "location":"uri",
+          "locationName":"userId"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates where a results page should begin.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ResultLimit",
+          "documentation":"<p>The maximum number of results per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPermissionGroupsByUserResponse":{
+      "type":"structure",
+      "members":{
+        "permissionGroups":{
+          "shape":"PermissionGroupByUserList",
+          "documentation":"<p>A list of returned permission groups.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates where a results page should begin.</p>"
+        }
+      }
+    },
     "ListPermissionGroupsRequest":{
       "type":"structure",
       "required":["maxResults"],
@@ -1844,6 +2062,46 @@
         "permissionGroups":{
           "shape":"PermissionGroupList",
           "documentation":"<p>A list of all the permission groups.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates where a results page should begin.</p>"
+        }
+      }
+    },
+    "ListUsersByPermissionGroupRequest":{
+      "type":"structure",
+      "required":[
+        "permissionGroupId",
+        "maxResults"
+      ],
+      "members":{
+        "permissionGroupId":{
+          "shape":"PermissionGroupId",
+          "documentation":"<p>The unique identifier for the permission group.</p>",
+          "location":"uri",
+          "locationName":"permissionGroupId"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates where a results page should begin.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ResultLimit",
+          "documentation":"<p>The maximum number of results per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListUsersByPermissionGroupResponse":{
+      "type":"structure",
+      "members":{
+        "users":{
+          "shape":"UserByPermissionGroupList",
+          "documentation":"<p>Lists details of all users in a specific permission group.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -1889,10 +2147,7 @@
       "min":1,
       "pattern":".*\\S.*"
     },
-    "PaginationToken":{
-      "type":"string",
-      "documentation":"Pagination token for list operations"
-    },
+    "PaginationToken":{"type":"string"},
     "PartitionColumnList":{
       "type":"list",
       "member":{"shape":"StringValueLength1to255"},
@@ -1931,15 +2186,41 @@
         "lastModifiedTime":{
           "shape":"TimestampEpoch",
           "documentation":"<p>Describes the last time the permission group was updated. The value is determined as epoch time in milliseconds. </p>"
+        },
+        "membershipStatus":{
+          "shape":"PermissionGroupMembershipStatus",
+          "documentation":"<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The structure for a permission group.</p>"
+    },
+    "PermissionGroupByUser":{
+      "type":"structure",
+      "members":{
+        "permissionGroupId":{
+          "shape":"PermissionGroupId",
+          "documentation":"<p>The unique identifier for the permission group.</p>"
+        },
+        "name":{
+          "shape":"PermissionGroupName",
+          "documentation":"<p>The name of the permission group.</p>"
+        },
+        "membershipStatus":{
+          "shape":"PermissionGroupMembershipStatus",
+          "documentation":"<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The structure of a permission group associated with a user account.</p>"
+    },
+    "PermissionGroupByUserList":{
+      "type":"list",
+      "member":{"shape":"PermissionGroupByUser"}
     },
     "PermissionGroupDescription":{
       "type":"string",
       "max":4000,
       "min":1,
-      "pattern":".*\\S.*",
+      "pattern":"[\\s\\S]*",
       "sensitive":true
     },
     "PermissionGroupId":{
@@ -1951,6 +2232,14 @@
     "PermissionGroupList":{
       "type":"list",
       "member":{"shape":"PermissionGroup"}
+    },
+    "PermissionGroupMembershipStatus":{
+      "type":"string",
+      "enum":[
+        "ADDITION_IN_PROGRESS",
+        "ADDITION_SUCCESS",
+        "REMOVAL_IN_PROGRESS"
+      ]
     },
     "PermissionGroupName":{
       "type":"string",
@@ -2037,7 +2326,6 @@
     },
     "ResultLimit":{
       "type":"integer",
-      "documentation":"Maximum number of results to be returned as part of a list operation",
       "max":100,
       "min":1
     },
@@ -2092,6 +2380,7 @@
       "value":{"shape":"StringMapValue"},
       "documentation":"Source Parameters of a Changeset"
     },
+    "StatusCode":{"type":"integer"},
     "StringMapKey":{
       "type":"string",
       "max":128,
@@ -2281,7 +2570,7 @@
         },
         "type":{
           "shape":"UserType",
-          "documentation":"<p>The option to indicate the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code>– A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permissions group.</p> </li> </ul>"
+          "documentation":"<p>The option to indicate the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code>– A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>"
         },
         "firstName":{
           "shape":"FirstName",
@@ -2340,7 +2629,7 @@
         },
         "type":{
           "shape":"UserType",
-          "documentation":"<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permissions group.</p> </li> </ul>"
+          "documentation":"<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>"
         },
         "apiAccess":{
           "shape":"ApiAccess",
@@ -2372,6 +2661,52 @@
         }
       },
       "documentation":"<p>The details of the user account.</p>"
+    },
+    "UserByPermissionGroup":{
+      "type":"structure",
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier for the user.</p>"
+        },
+        "status":{
+          "shape":"UserStatus",
+          "documentation":"<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>"
+        },
+        "firstName":{
+          "shape":"FirstName",
+          "documentation":"<p>The first name of the user.</p>"
+        },
+        "lastName":{
+          "shape":"LastName",
+          "documentation":"<p>The last name of the user.</p>"
+        },
+        "emailAddress":{
+          "shape":"Email",
+          "documentation":"<p>The email address of the user. The email address serves as a unique identifier for each user and cannot be changed after it's created.</p>"
+        },
+        "type":{
+          "shape":"UserType",
+          "documentation":"<p> Indicates the type of user.</p> <ul> <li> <p> <code>SUPER_USER</code> – A user with permission to all the functionality and data in FinSpace.</p> </li> <li> <p> <code>APP_USER</code> – A user with specific permissions in FinSpace. The users are assigned permissions by adding them to a permission group.</p> </li> </ul>"
+        },
+        "apiAccess":{
+          "shape":"ApiAccess",
+          "documentation":"<p>Indicates whether the user can access FinSpace API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the API operations.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any API operations.</p> </li> </ul>"
+        },
+        "apiAccessPrincipalArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM ARN identifier that is attached to FinSpace API calls.</p>"
+        },
+        "membershipStatus":{
+          "shape":"PermissionGroupMembershipStatus",
+          "documentation":"<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The structure of a user account associated with a permission group.</p>"
+    },
+    "UserByPermissionGroupList":{
+      "type":"list",
+      "member":{"shape":"UserByPermissionGroup"}
     },
     "UserId":{
       "type":"string",

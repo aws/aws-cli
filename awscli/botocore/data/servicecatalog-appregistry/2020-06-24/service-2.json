@@ -25,7 +25,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ServiceQuotaExceededException"}
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Associates an attribute group with an application to augment the application's metadata with the group's attributes. This feature enables applications to be described with user-defined details that are machine-readable, such as third-party integrations.</p>"
     },
@@ -41,7 +42,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Associates a resource with an application. Both the resource and the application can be specified either by ID or name.</p>"
     },
@@ -57,7 +59,8 @@
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates a new application that is the top-level node in a hierarchy of related cloud resource abstractions.</p>"
     },
@@ -133,7 +136,8 @@
       "output":{"shape":"DisassociateResourceResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Disassociates a resource from application. Both the resource and the application can be specified either by ID or name.</p>"
     },
@@ -148,7 +152,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Retrieves metadata information about one of your applications. The application can be specified either by its unique ID or by its name (which is unique within one account in one region at a given point in time). Specify by ID in automated workflows if you want to make sure that the exact same application is returned or a <code>ResourceNotFoundException</code> is thrown, avoiding the ABA addressing problem.</p>"
     },
@@ -179,7 +184,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Retrieves an attribute group, either by its name or its ID. The attribute group can be specified either by its unique ID or by its name.</p>"
     },
@@ -243,6 +249,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all attribute groups which you have access to. Results are paginated.</p>",
+      "idempotent":true
+    },
+    "ListAttributeGroupsForApplication":{
+      "name":"ListAttributeGroupsForApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{application}/attribute-group-details"
+      },
+      "input":{"shape":"ListAttributeGroupsForApplicationRequest"},
+      "output":{"shape":"ListAttributeGroupsForApplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the details of all attribute groups associated with a specific application. The results display in pages.</p>",
       "idempotent":true
     },
     "ListTagsForResource":{
@@ -316,7 +338,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates an existing application with new attributes.</p>"
     },
@@ -544,6 +567,28 @@
     "AttributeGroupArn":{
       "type":"string",
       "pattern":"arn:aws[-a-z]*:servicecatalog:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:/attribute-groups/[a-z0-9]+"
+    },
+    "AttributeGroupDetails":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"AttributeGroupId",
+          "documentation":"<p>The unique identifier of the attribute group.</p>"
+        },
+        "arn":{
+          "shape":"AttributeGroupArn",
+          "documentation":"<p>The Amazon resource name (ARN) that specifies the attribute group.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the attribute group. </p>"
+        }
+      },
+      "documentation":"<p> The details related to a specific AttributeGroup. </p>"
+    },
+    "AttributeGroupDetailsList":{
+      "type":"list",
+      "member":{"shape":"AttributeGroupDetails"}
     },
     "AttributeGroupId":{
       "type":"string",
@@ -1078,6 +1123,44 @@
         }
       }
     },
+    "ListAttributeGroupsForApplicationRequest":{
+      "type":"structure",
+      "required":["application"],
+      "members":{
+        "application":{
+          "shape":"ApplicationSpecifier",
+          "documentation":"<p>The name or ID of the application.</p>",
+          "location":"uri",
+          "locationName":"application"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>This token retrieves the next page of results after a previous API call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The upper bound of the number of results to return. The value cannot exceed 25. If you omit this parameter, it defaults to 25. This value is optional.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAttributeGroupsForApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "attributeGroupsDetails":{
+          "shape":"AttributeGroupDetailsList",
+          "documentation":"<p> The details related to a specific AttributeGroup. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next page of results after a previous API call.</p>"
+        }
+      }
+    },
     "ListAttributeGroupsRequest":{
       "type":"structure",
       "members":{
@@ -1394,7 +1477,7 @@
         },
         "name":{
           "shape":"Name",
-          "documentation":"<p>The new name of the application. The name must be unique in the region in which you are updating the application.</p>",
+          "documentation":"<p>Deprecated: The new name of the application. The name must be unique in the region in which you are updating the application. Please do not use this field as we have stopped supporting name updates.</p>",
           "deprecated":true,
           "deprecatedMessage":"Name update for application is deprecated."
         },
@@ -1425,7 +1508,7 @@
         },
         "name":{
           "shape":"Name",
-          "documentation":"<p>The new name of the attribute group. The name must be unique in the region in which you are updating the attribute group.</p>",
+          "documentation":"<p>Deprecated: The new name of the attribute group. The name must be unique in the region in which you are updating the attribute group. Please do not use this field as we have stopped supporting name updates.</p>",
           "deprecated":true,
           "deprecatedMessage":"Name update for attribute group is deprecated."
         },

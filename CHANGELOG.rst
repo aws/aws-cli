@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.25.13
+=======
+
+* api-change:``ds``: This release adds support for describing and updating AWS Managed Microsoft AD settings
+* api-change:``kafka``: Documentation updates to use Az Id during cluster creation.
+* api-change:``outposts``: This release adds the AssetLocation structure to the ListAssets response. AssetLocation includes the RackElevation for an Asset.
+
+
 1.25.12
 =======
 

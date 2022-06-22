@@ -3696,6 +3696,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.14
+=======
+
+* api-change:``ec2``: This release adds support for Private IP VPNs, a new feature allowing S2S VPN connections to use private ip addresses as the tunnel outside ip address over Direct Connect as transport.
+* api-change:``ecs``: Amazon ECS UpdateService now supports the following parameters: PlacementStrategies, PlacementConstraints and CapacityProviderStrategy.
+* api-change:``wellarchitected``: Adds support for lens tagging, Adds support for multiple helpful-resource urls and multiple improvement-plan urls.
+
+
+1.25.13
+=======
+
+* api-change:``ds``: This release adds support for describing and updating AWS Managed Microsoft AD settings
+* api-change:``kafka``: Documentation updates to use Az Id during cluster creation.
+* api-change:``outposts``: This release adds the AssetLocation structure to the ListAssets response. AssetLocation includes the RackElevation for an Asset.
+
+
+1.25.12
+=======
+
+* api-change:``connect``: This release updates these APIs: UpdateInstanceAttribute, DescribeInstanceAttribute and ListInstanceAttributes. You can use it to programmatically enable/disable High volume outbound communications using attribute type HIGH_VOLUME_OUTBOUND on the specified Amazon Connect instance.
+* api-change:``connectcampaigns``: Added Amazon Connect high volume outbound communications SDK.
+* api-change:``dynamodb``: Doc only update for DynamoDB service
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+
+
 1.25.11
 =======
 

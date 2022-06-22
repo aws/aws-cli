@@ -536,7 +536,7 @@
       },
       "input":{"shape":"CreateCustomerGatewayRequest"},
       "output":{"shape":"CreateCustomerGatewayResult"},
-      "documentation":"<p>Provides information to Amazon Web Services about your VPN customer gateway device. The customer gateway is the appliance at your end of the VPN connection. (The device on the Amazon Web Services side of the VPN connection is the virtual private gateway.) You must provide the internet-routable IP address of the customer gateway's external interface. The IP address must be static and can be behind a device performing network address translation (NAT).</p> <p>For devices that use Border Gateway Protocol (BGP), you can also provide the device's BGP Autonomous System Number (ASN). You can use an existing ASN assigned to your network. If you don't have an ASN already, you can use a private ASN. For more information, see <a href=\"https://docs.aws.amazon.com/vpn/latest/s2svpn/cgw-options.html\">Customer gateway options for your Site-to-Site VPN connection</a> in the <i>Amazon Web Services Site-to-Site VPN User Guide</i>.</p> <p>To create more than one customer gateway with the same VPN type, IP address, and BGP ASN, specify a unique device name for each customer gateway. An identical request returns information about the existing customer gateway; it doesn't create a new customer gateway.</p>"
+      "documentation":"<p>Provides information to Amazon Web Services about your customer gateway device. The customer gateway device is the appliance at your end of the VPN connection. You must provide the IP address of the customer gateway device’s external interface. The IP address must be static and can be behind a device performing network address translation (NAT).</p> <p>For devices that use Border Gateway Protocol (BGP), you can also provide the device's BGP Autonomous System Number (ASN). You can use an existing ASN assigned to your network. If you don't have an ASN already, you can use a private ASN. For more information, see <a href=\"https://docs.aws.amazon.com/vpn/latest/s2svpn/cgw-options.html\">Customer gateway options for your Site-to-Site VPN connection</a> in the <i>Amazon Web Services Site-to-Site VPN User Guide</i>.</p> <p>To create more than one customer gateway with the same VPN type, IP address, and BGP ASN, specify a unique device name for each customer gateway. An identical request returns information about the existing customer gateway; it doesn't create a new customer gateway.</p>"
     },
     "CreateDefaultSubnet":{
       "name":"CreateDefaultSubnet",
@@ -10553,8 +10553,7 @@
         },
         "PublicIp":{
           "shape":"String",
-          "documentation":"<p>The Internet-routable IP address for the customer gateway's outside interface. The address must be static.</p>",
-          "locationName":"IpAddress"
+          "documentation":"<p> <i>This member has been deprecated.</i> The Internet-routable IP address for the customer gateway's outside interface. The address must be static.</p>"
         },
         "CertificateArn":{
           "shape":"String",
@@ -10572,6 +10571,10 @@
         "DeviceName":{
           "shape":"String",
           "documentation":"<p>A name for the customer gateway device.</p> <p>Length Constraints: Up to 255 characters.</p>"
+        },
+        "IpAddress":{
+          "shape":"String",
+          "documentation":"<p> IPv4 address for the customer gateway device's outside interface. The address must be static. </p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -13738,7 +13741,7 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p>The Internet-routable IP address of the customer gateway's outside interface.</p>",
+          "documentation":"<p>The IP address of the customer gateway device's outside interface.</p>",
           "locationName":"ipAddress"
         },
         "CertificateArn":{
@@ -16404,7 +16407,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>bgp-asn</code> - The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).</p> </li> <li> <p> <code>customer-gateway-id</code> - The ID of the customer gateway.</p> </li> <li> <p> <code>ip-address</code> - The IP address of the customer gateway's Internet-routable external interface.</p> </li> <li> <p> <code>state</code> - The state of the customer gateway (<code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code>).</p> </li> <li> <p> <code>type</code> - The type of customer gateway. Currently, the only supported type is <code>ipsec.1</code>.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>bgp-asn</code> - The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).</p> </li> <li> <p> <code>customer-gateway-id</code> - The ID of the customer gateway.</p> </li> <li> <p> <code>ip-address</code> - The IP address of the customer gateway device's external interface.</p> </li> <li> <p> <code>state</code> - The state of the customer gateway (<code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code>).</p> </li> <li> <p> <code>type</code> - The type of customer gateway. Currently, the only supported type is <code>ipsec.1</code>.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -51138,6 +51141,16 @@
           "documentation":"<p>The IPv6 CIDR on the Amazon Web Services side of the VPN connection.</p>",
           "locationName":"remoteIpv6NetworkCidr"
         },
+        "OutsideIpAddressType":{
+          "shape":"String",
+          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> </p> <p>Default: <code>PublicIpv4</code> </p>",
+          "locationName":"outsideIpAddressType"
+        },
+        "TransportTransitGatewayAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The transit gateway attachment ID in use for the VPN tunnel.</p>",
+          "locationName":"transportTransitGatewayAttachmentId"
+        },
         "TunnelInsideIpVersion":{
           "shape":"TunnelInsideIpVersion",
           "documentation":"<p>Indicates whether the VPN tunnels process IPv4 or IPv6 traffic.</p>",
@@ -51186,6 +51199,14 @@
         "RemoteIpv6NetworkCidr":{
           "shape":"String",
           "documentation":"<p>The IPv6 CIDR on the Amazon Web Services side of the VPN connection.</p> <p>Default: <code>::/0</code> </p>"
+        },
+        "OutsideIpAddressType":{
+          "shape":"String",
+          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway device.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> </p> <p>Default: <code>PublicIpv4</code> </p>"
+        },
+        "TransportTransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The transit gateway attachment ID to use for the VPN tunnel.</p> <p>Required if <code>OutsideIpAddressType</code> is set to <code>PrivateIpv4</code>.</p>"
         }
       },
       "documentation":"<p>Describes VPN connection options.</p>"

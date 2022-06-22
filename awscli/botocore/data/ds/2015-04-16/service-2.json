@@ -521,6 +521,24 @@
       ],
       "documentation":"<p>Provides information about the Regions that are configured for multi-Region replication.</p>"
     },
+    "DescribeSettings":{
+      "name":"DescribeSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSettingsRequest"},
+      "output":{"shape":"DescribeSettingsResult"},
+      "errors":[
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Retrieves information about the configurable settings for the specified directory.</p>"
+    },
     "DescribeSharedDirectories":{
       "name":"DescribeSharedDirectories",
       "http":{
@@ -1080,6 +1098,26 @@
       ],
       "documentation":"<p>Updates the Remote Authentication Dial In User Service (RADIUS) server information for an AD Connector or Microsoft AD directory.</p>"
     },
+    "UpdateSettings":{
+      "name":"UpdateSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSettingsRequest"},
+      "output":{"shape":"UpdateSettingsResult"},
+      "errors":[
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"DirectoryUnavailableException"},
+        {"shape":"IncompatibleSettingsException"},
+        {"shape":"UnsupportedSettingsException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Updates the configurable settings for the specified directory.</p>"
+    },
     "UpdateTrust":{
       "name":"UpdateTrust",
       "http":{
@@ -1470,7 +1508,10 @@
     },
     "ClientAuthenticationType":{
       "type":"string",
-      "enum":["SmartCard"]
+      "enum":[
+        "SmartCard",
+        "SmartCardOrPassword"
+      ]
     },
     "ClientCertAuthSettings":{
       "type":"structure",
@@ -2306,6 +2347,41 @@
         }
       }
     },
+    "DescribeSettingsRequest":{
+      "type":"structure",
+      "required":["DirectoryId"],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to retrieve information.</p>"
+        },
+        "Status":{
+          "shape":"DirectoryConfigurationStatus",
+          "documentation":"<p>The status of the directory settings for which to retrieve information.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>DescribeSettingsResult.NextToken</code> value from a previous call to <a>DescribeSettings</a>. Pass null if this is the first call.</p>"
+        }
+      }
+    },
+    "DescribeSettingsResult":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory.</p>"
+        },
+        "SettingEntries":{
+          "shape":"SettingEntries",
+          "documentation":"<p>The list of <a>SettingEntry</a> objects that were retrieved.</p> <p>It is possible that this list contains less than the number of items specified in the <code>Limit</code> member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If not null, token that indicates that more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent call to <code>DescribeSettings</code> to retrieve the next set of items. </p>"
+        }
+      }
+    },
     "DescribeSharedDirectoriesRequest":{
       "type":"structure",
       "required":["OwnerDirectoryId"],
@@ -2440,6 +2516,38 @@
       },
       "documentation":"<p>The specified directory has already been shared with this Amazon Web Services account.</p>",
       "exception":true
+    },
+    "DirectoryConfigurationSettingAllowedValues":{"type":"string"},
+    "DirectoryConfigurationSettingLastRequestedDateTime":{"type":"timestamp"},
+    "DirectoryConfigurationSettingLastUpdatedDateTime":{"type":"timestamp"},
+    "DirectoryConfigurationSettingName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-/. _]*$"
+    },
+    "DirectoryConfigurationSettingRequestDetailedStatus":{
+      "type":"map",
+      "key":{"shape":"RegionName"},
+      "value":{"shape":"DirectoryConfigurationStatus"}
+    },
+    "DirectoryConfigurationSettingRequestStatusMessage":{"type":"string"},
+    "DirectoryConfigurationSettingType":{"type":"string"},
+    "DirectoryConfigurationSettingValue":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]*$"
+    },
+    "DirectoryConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "Requested",
+        "Updating",
+        "Updated",
+        "Failed",
+        "Default"
+      ]
     },
     "DirectoryConnectSettings":{
       "type":"structure",
@@ -3136,6 +3244,15 @@
         }
       },
       "documentation":"<p>Contains the results of the <a>GetSnapshotLimits</a> operation.</p>"
+    },
+    "IncompatibleSettingsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"},
+        "RequestId":{"shape":"RequestId"}
+      },
+      "documentation":"<p>The specified directory setting is not compatible with other settings.</p>",
+      "exception":true
     },
     "InsufficientPermissionsException":{
       "type":"structure",
@@ -4049,6 +4166,78 @@
       "exception":true,
       "fault":true
     },
+    "Setting":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DirectoryConfigurationSettingName",
+          "documentation":"<p>The name of the directory setting. For example:</p> <p> <code>TLS_1_0</code> </p>"
+        },
+        "Value":{
+          "shape":"DirectoryConfigurationSettingValue",
+          "documentation":"<p>The value of the directory setting for which to retrieve information. For example, for <code>TLS_1_0</code>, the valid values are: <code>Enable</code> and <code>Disable</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the configurable settings for a directory.</p>"
+    },
+    "SettingEntries":{
+      "type":"list",
+      "member":{"shape":"SettingEntry"}
+    },
+    "SettingEntry":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"DirectoryConfigurationSettingType",
+          "documentation":"<p>The type of directory setting. For example, <code>Protocol</code> or <code>Cipher</code>.</p>"
+        },
+        "Name":{
+          "shape":"DirectoryConfigurationSettingName",
+          "documentation":"<p>The name of the directory setting. For example:</p> <p> <code>TLS_1_0</code> </p>"
+        },
+        "AllowedValues":{
+          "shape":"DirectoryConfigurationSettingAllowedValues",
+          "documentation":"<p>The valid range of values for the directory setting.</p>"
+        },
+        "AppliedValue":{
+          "shape":"DirectoryConfigurationSettingValue",
+          "documentation":"<p>The value of the directory setting that is applied to the directory.</p>"
+        },
+        "RequestedValue":{
+          "shape":"DirectoryConfigurationSettingValue",
+          "documentation":"<p>The value that was last requested for the directory setting.</p>"
+        },
+        "RequestStatus":{
+          "shape":"DirectoryConfigurationStatus",
+          "documentation":"<p>The overall status of the request to update the directory setting request. If the directory setting is deployed in more than one region, and the request fails in any region, the overall status is <code>Failed</code>.</p>"
+        },
+        "RequestDetailedStatus":{
+          "shape":"DirectoryConfigurationSettingRequestDetailedStatus",
+          "documentation":"<p>Details about the status of the request to update the directory setting. If the directory setting is deployed in more than one region, status is returned for the request in each region where the setting is deployed.</p>"
+        },
+        "RequestStatusMessage":{
+          "shape":"DirectoryConfigurationSettingRequestStatusMessage",
+          "documentation":"<p>The last status message for the directory status request.</p>"
+        },
+        "LastUpdatedDateTime":{
+          "shape":"DirectoryConfigurationSettingLastUpdatedDateTime",
+          "documentation":"<p>The date and time when the directory setting was last updated.</p>"
+        },
+        "LastRequestedDateTime":{
+          "shape":"DirectoryConfigurationSettingLastRequestedDateTime",
+          "documentation":"<p>The date and time when the request to update a directory setting was last submitted.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the specified configurable setting for a directory.</p>"
+    },
+    "Settings":{
+      "type":"list",
+      "member":{"shape":"Setting"}
+    },
     "ShareDirectoryRequest":{
       "type":"structure",
       "required":[
@@ -4466,7 +4655,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"(.|\\s)*\\S(.|\\s)*",
+      "pattern":"^(\\p{LD}|\\p{Punct}| )+$",
       "sensitive":true
     },
     "TrustState":{
@@ -4550,6 +4739,15 @@
       "documentation":"<p>The operation is not supported.</p>",
       "exception":true
     },
+    "UnsupportedSettingsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"},
+        "RequestId":{"shape":"RequestId"}
+      },
+      "documentation":"<p>The specified directory setting is not supported.</p>",
+      "exception":true
+    },
     "UpdateConditionalForwarderRequest":{
       "type":"structure",
       "required":[
@@ -4626,6 +4824,32 @@
       "documentation":"<p>Contains the results of the <a>UpdateRadius</a> operation.</p>"
     },
     "UpdateSecurityGroupForDirectoryControllers":{"type":"boolean"},
+    "UpdateSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "DirectoryId",
+        "Settings"
+      ],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to update settings.</p>"
+        },
+        "Settings":{
+          "shape":"Settings",
+          "documentation":"<p>The list of <a>Setting</a> objects.</p>"
+        }
+      }
+    },
+    "UpdateSettingsResult":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory.</p>"
+        }
+      }
+    },
     "UpdateTrustRequest":{
       "type":"structure",
       "required":["TrustId"],

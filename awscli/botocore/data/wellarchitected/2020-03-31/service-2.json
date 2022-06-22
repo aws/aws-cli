@@ -509,7 +509,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List the tags for a resource.</p>"
+      "documentation":"<p>List the tags for a resource.</p> <note> <p>The WorkloadArn parameter can be either a workload ARN or a custom lens ARN.</p> </note>"
     },
     "ListWorkloadShares":{
       "name":"ListWorkloadShares",
@@ -556,7 +556,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds one or more tags to the specified resource.</p>"
+      "documentation":"<p>Adds one or more tags to the specified resource.</p> <note> <p>The WorkloadArn parameter can be either a workload ARN or a custom lens ARN.</p> </note>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -570,7 +570,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes specified tags from a resource.</p> <p>To specify multiple tags, use separate <b>tagKeys</b> parameters, for example:</p> <p> <code>DELETE /tags/WorkloadArn?tagKeys=key1&amp;tagKeys=key2</code> </p>"
+      "documentation":"<p>Deletes specified tags from a resource.</p> <note> <p>The WorkloadArn parameter can be either a workload ARN or a custom lens ARN.</p> </note> <p>To specify multiple tags, use separate <b>tagKeys</b> parameters, for example:</p> <p> <code>DELETE /tags/WorkloadArn?tagKeys=key1&amp;tagKeys=key2</code> </p>"
     },
     "UpdateAnswer":{
       "name":"UpdateAnswer",
@@ -691,6 +691,31 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "AdditionalResourceType":{
+      "type":"string",
+      "enum":[
+        "HELPFUL_RESOURCE",
+        "IMPROVEMENT_PLAN"
+      ]
+    },
+    "AdditionalResources":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"AdditionalResourceType",
+          "documentation":"<p>Type of additional resource.</p>"
+        },
+        "Content":{
+          "shape":"Urls",
+          "documentation":"<p>The URLs for additional resources, either helpful resources or improvement plans. Up to five additional URLs can be specified.</p>"
+        }
+      },
+      "documentation":"<p>The choice level additional resources.</p>"
+    },
+    "AdditionalResourcesList":{
+      "type":"list",
+      "member":{"shape":"AdditionalResources"}
+    },
     "Answer":{
       "type":"structure",
       "members":{
@@ -799,6 +824,10 @@
         "ImprovementPlan":{
           "shape":"ChoiceContent",
           "documentation":"<p>The choice level improvement plan.</p>"
+        },
+        "AdditionalResources":{
+          "shape":"AdditionalResourcesList",
+          "documentation":"<p>The additional resources for a choice. A choice can have up to two additional resources: one of type <code>HELPFUL_RESOURCE</code>, one of type <code>IMPROVEMENT_PLAN</code>, or both.</p>"
         }
       },
       "documentation":"<p>A choice available to answer question.</p>"
@@ -1080,7 +1109,6 @@
         "WorkloadName",
         "Description",
         "Environment",
-        "ReviewOwner",
         "Lenses",
         "ClientRequestToken"
       ],
@@ -1660,13 +1688,17 @@
         "ShareInvitationId":{
           "shape":"ShareInvitationId",
           "documentation":"<p>The ID assigned to the share invitation.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags assigned to the lens.</p>"
         }
       },
       "documentation":"<p>A lens return object.</p>"
     },
     "LensAlias":{
       "type":"string",
-      "documentation":"<p>The alias of the lens, for example, <code>serverless</code>.</p> <p>Each lens is identified by its <a>LensSummary$LensAlias</a>.</p>",
+      "documentation":"<p>The alias of the lens.</p> <p>For Amazon Web Services official lenses, this is either the lens alias, such as <code>serverless</code>, or the lens ARN, such as <code>arn:aws:wellarchitected:us-west-2::lens/serverless</code>.</p> <p>For custom lenses, this is the lens ARN, such as <code>arn:aws:wellarchitected:us-east-1:123456789012:lens/my-lens</code>. </p> <p>Each lens is identified by its <a>LensSummary$LensAlias</a>.</p>",
       "max":128,
       "min":1
     },
@@ -2895,6 +2927,10 @@
         "MilestoneName":{"shape":"MilestoneName"},
         "ClientRequestToken":{"shape":"ClientRequestToken"}
       }
+    },
+    "Urls":{
+      "type":"list",
+      "member":{"shape":"ChoiceContent"}
     },
     "ValidationException":{
       "type":"structure",

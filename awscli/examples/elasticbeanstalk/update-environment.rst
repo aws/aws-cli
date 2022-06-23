@@ -35,7 +35,7 @@ The following command sets the value of the "PARAM1" variable in the "my-env" en
 
 The ``option-settings`` parameter takes a namespace in addition to the name and value of the variable. Elastic Beanstalk supports several namespaces for options in addition to environment variables.
 
-**To set multiple environment variables in shorthand form**
+**To set multiple environment variables using shorthand syntax**
 aws elasticbeanstalk update-environment --environment-name my-env --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=PARAM1,Value=ParamValue Namespace=aws:elasticbeanstalk:application:environment,OptionName=PARAM2,Value=Param2Value
 
 **To configure option settings from a file**

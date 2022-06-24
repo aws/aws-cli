@@ -32,7 +32,7 @@ class RegionCapture(object):
     def __call__(self, request, **kwargs):
         url = request.url
         region = re.match(
-            'https://.*?\.(.*?)\.amazonaws\.com', url).groups(1)[0]
+            r'https://.*?\.(.*?)\.amazonaws\.com', url).groups(1)[0]
         self.region = region
 
 

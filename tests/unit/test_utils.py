@@ -70,7 +70,7 @@ class TestCSVSplit(unittest.TestCase):
                          ['foo', 'bar=BAR', 'baz'])
 
     def test_escape_quotes(self):
-        self.assertEqual(split_on_commas('foo,bar=1\,2\,3,baz'),
+        self.assertEqual(split_on_commas(r'foo,bar=1\,2\,3,baz'),
                          ['foo', 'bar=1,2,3', 'baz'])
 
     def test_no_commas(self):

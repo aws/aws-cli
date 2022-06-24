@@ -41,7 +41,7 @@ class TestCreateStack(BaseAWSCommandParamsTest):
         # we need to be able to quote the value or escape the comma.
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
-        cmdline += ' --parameters ParameterKey=foo,ParameterValue=one\,two'
+        cmdline += r' --parameters ParameterKey=foo,ParameterValue=one\,two'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters': [{'ParameterKey': 'foo',
                                   'ParameterValue': 'one,two'}]}

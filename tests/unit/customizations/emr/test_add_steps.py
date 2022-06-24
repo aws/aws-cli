@@ -208,11 +208,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
 
     def test_custom_jar_step_with_all_fields(self):
         cmd = self.prefix + (
-            'Name=Custom,Type=Custom_jar,'
-            'Jar=s3://mybucket/mytest.jar,'
-            'Args=arg1,arg2,MainClass=mymainclass,'
-            'ActionOnFailure=TERMINATE_CLUSTER,'
-            'Properties=k1=v1\,k2=v2\,k3')
+            r'Name=Custom,Type=Custom_jar,'
+            r'Jar=s3://mybucket/mytest.jar,'
+            r'Args=arg1,arg2,MainClass=mymainclass,'
+            r'ActionOnFailure=TERMINATE_CLUSTER,'
+            r'Properties=k1=v1\,k2=v2\,k3')
         expected_result = {
             'JobFlowId': 'j-ABC',
             'Steps': [

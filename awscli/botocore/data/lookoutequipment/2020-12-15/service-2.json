@@ -218,6 +218,23 @@
       ],
       "documentation":"<p>Lists all datasets currently available in your account, filtering on the dataset name. </p>"
     },
+    "ListInferenceEvents":{
+      "name":"ListInferenceEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInferenceEventsRequest"},
+      "output":{"shape":"ListInferenceEventsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Lists all inference events that have been found for the specified inference scheduler. </p>"
+    },
     "ListInferenceExecutions":{
       "name":"ListInferenceExecutions",
       "http":{
@@ -956,7 +973,7 @@
         },
         "CreatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Specifies the time the dataset was created in Amazon Lookout for Equipment. </p>"
+          "documentation":"<p>Specifies the time the dataset was created in Lookout for Equipment. </p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -1180,6 +1197,10 @@
       },
       "documentation":"<p> Entity that comprises information abount duplicate timestamps in the dataset. </p>"
     },
+    "EventDurationInSeconds":{
+      "type":"long",
+      "min":0
+    },
     "FileNameTimestampFormat":{
       "type":"string",
       "pattern":"^EPOCH|yyyy-MM-dd-HH-mm-ss|yyyyMMddHHmmss$"
@@ -1196,6 +1217,40 @@
       "max":256,
       "min":1,
       "pattern":"\\p{ASCII}{1,256}"
+    },
+    "InferenceEventSummaries":{
+      "type":"list",
+      "member":{"shape":"InferenceEventSummary"}
+    },
+    "InferenceEventSummary":{
+      "type":"structure",
+      "members":{
+        "InferenceSchedulerArn":{
+          "shape":"InferenceSchedulerArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the inference scheduler being used for the inference event. </p>"
+        },
+        "InferenceSchedulerName":{
+          "shape":"InferenceSchedulerName",
+          "documentation":"<p>The name of the inference scheduler being used for the inference events. </p>"
+        },
+        "EventStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Indicates the starting time of an inference event. </p>"
+        },
+        "EventEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Indicates the ending time of an inference event. </p>"
+        },
+        "Diagnostics":{
+          "shape":"ModelMetrics",
+          "documentation":"<p> An array which specifies the names and values of all sensors contributing to an inference event.</p>"
+        },
+        "EventDurationInSeconds":{
+          "shape":"EventDurationInSeconds",
+          "documentation":"<p> Indicates the size of an inference event in seconds. </p>"
+        }
+      },
+      "documentation":"<p>Contains information about the specific inference event, including start and end time, diagnostics information, event duration and so on.</p>"
     },
     "InferenceExecutionStatus":{
       "type":"string",
@@ -1642,6 +1697,49 @@
         }
       }
     },
+    "ListInferenceEventsRequest":{
+      "type":"structure",
+      "required":[
+        "InferenceSchedulerName",
+        "IntervalStartTime",
+        "IntervalEndTime"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An opaque pagination token indicating where to continue the listing of inference events.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Specifies the maximum number of inference events to list. </p>"
+        },
+        "InferenceSchedulerName":{
+          "shape":"InferenceSchedulerIdentifier",
+          "documentation":"<p>The name of the inference scheduler for the inference events listed. </p>"
+        },
+        "IntervalStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Lookout for Equipment will return all the inference events with start time equal to or greater than the start time given.</p>"
+        },
+        "IntervalEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Lookout for Equipment will return all the inference events with end time equal to or less than the end time given.</p>"
+        }
+      }
+    },
+    "ListInferenceEventsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An opaque pagination token indicating where to continue the listing of inference executions. </p>"
+        },
+        "InferenceEventSummaries":{
+          "shape":"InferenceEventSummaries",
+          "documentation":"<p>Provides an array of information about the individual inference events returned from the <code>ListInferenceEvents</code> operation, including scheduler used, event start time, event end time, diagnostics, and so on. </p>"
+        }
+      }
+    },
     "ListInferenceExecutionsRequest":{
       "type":"structure",
       "required":["InferenceSchedulerName"],
@@ -2002,7 +2100,7 @@
       "type":"string",
       "max":1024,
       "min":0,
-      "pattern":"(^$)|([\\P{M}\\p{M}]{1,1023}/$)"
+      "pattern":"(^$)|([\\u0009\\u000A\\u000D\\u0020-\\u00FF]{1,1023}/$)"
     },
     "SensorName":{
       "type":"string",

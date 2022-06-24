@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.17
+=======
+
+* api-change:``glue``: This release enables the new ListCrawls API for viewing the AWS Glue Crawler run history.
+* api-change:``rds-data``: Documentation updates for RDS Data API
+
+
 1.25.16
 =======
 

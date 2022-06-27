@@ -35,6 +35,8 @@ from pprint import pformat
 from subprocess import Popen, PIPE
 import unittest
 
+from awscli.compat import StringIO
+
 from ruamel.yaml import YAML
 
 try:
@@ -360,6 +362,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.driver = create_clidriver()
         self.entry_point = awscli.clidriver.AWSCLIEntryPoint(self.driver)
         self.yaml = YAML(typ="safe", pure=True)
+        self.yaml.representer.default_flow_style = False
 
     def tearDown(self):
         # This clears all the previous registrations.

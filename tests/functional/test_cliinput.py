@@ -13,9 +13,8 @@
 import os
 
 from awscli.testutils import \
-    BaseAWSCommandParamsTest, FileCreator, YAMLStdoutDump
-
-yaml = YAMLStdoutDump(typ="safe", pure=True)
+    BaseAWSCommandParamsTest, FileCreator
+from awscli.utils import dump_yaml_to_str
 
 
 class BaseCLIInputArgumentTest(BaseAWSCommandParamsTest):
@@ -121,7 +120,7 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
             'Body': b'foo',
         }
         command = [
-            's3api', 'put-object', '--cli-input-yaml', yaml.dump(expected_args)
+            's3api', 'put-object', '--cli-input-yaml', dump_yaml_to_str(self.yaml, expected_args)
         ]
         self.run_cmd(command)
         self.assertEqual(self.last_kwargs['Body'].getvalue(), b'foo')

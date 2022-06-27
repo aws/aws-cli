@@ -27,12 +27,14 @@ from awscli.compat import is_windows
 from awscli.utils import (
     split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
     is_document_type, is_document_type_container,
-    operation_uses_document_types, ShapeWalker, ShapeRecordingVisitor,
-    OutputStreamFactory, LazyPager
+    operation_uses_document_types, dump_yaml_to_str, ShapeWalker,
+    ShapeRecordingVisitor, OutputStreamFactory, LazyPager
 )
 from awscli.utils import InstanceMetadataRegionFetcher
 from awscli.utils import IMDSRegionProvider
 from tests import RawResponse
+
+import ruamel.yaml
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -716,6 +718,18 @@ class TestOperationUsesDocumentTypes(BaseShapeTest):
 
     def test_operation_uses_document_types_is_false_when_no_doc_types(self):
         self.assertFalse(operation_uses_document_types(self.operation_model))
+
+
+class TestDumpYamlToStr(unittest.TestCase):
+    def setUp(self):
+        self.yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+        self.yaml.representer.default_flow_style = False
+
+    def test_dump_to_str(self):
+        obj = {'A': 1, 'parameter': "something"}
+        expected_result = "A: 1\nparameter: something\n"
+        result = dump_yaml_to_str(self.yaml, obj)
+        self.assertEqual(result, expected_result)
 
 
 class TestShapeWalker(BaseShapeTest):

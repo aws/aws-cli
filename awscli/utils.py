@@ -453,6 +453,20 @@ def original_ld_library_path(env=None):
             env['LD_LIBRARY_PATH'] = value_to_put_back
 
 
+def dump_yaml_to_str(yaml, data):
+    """Dump a Python object to a YAML-formatted string.
+
+    :type yaml: ruamel.yaml.YAML
+    :param yaml: An instance of ruamel.yaml.YAML.
+
+    :type data: object
+    :param data: A Python object that can be dumped to YAML.
+    """
+    stream = StringIO()
+    yaml.dump(data, stream)
+    return stream.getvalue()
+
+
 class ShapeWalker(object):
     def walk(self, shape, visitor):
         """Walk through and visit shapes for introspection
@@ -511,17 +525,3 @@ class ShapeRecordingVisitor(BaseShapeVisitor):
 
     def visit_shape(self, shape):
         self.visited.append(shape)
-
-
-def dump_yaml_to_str(yaml, data):
-    """Dump a Python object to a YAML-formatted string.
-
-    :type yaml: ruamel.yaml.YAML
-    :param yaml: An instance of ruamel.yaml.YAML.
-
-    :type data: object
-    :param data: A Python object that can be dumped to YAML.
-    """
-    stream = StringIO()
-    yaml.dump(data, stream)
-    return stream.getvalue()

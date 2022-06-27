@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import json
 
-from ruamel import yaml
-
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
@@ -52,7 +50,7 @@ class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
         cmdline = 's3api delete-object --generate-cli-skeleton yaml-input'
         stdout, _, rc = self.run_cmd(cmdline)
         self.assertEqual(rc, 0)
-        loaded_skeleton = yaml.safe_load(stdout)
+        loaded_skeleton = self.yaml.load(stdout)
         self.assertEqual(loaded_skeleton['Bucket'], '')
         self.assertEqual(loaded_skeleton['BypassGovernanceRetention'], True)
         self.assertEqual(loaded_skeleton['Key'], '')
@@ -64,7 +62,7 @@ class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
             'sqs change-message-visibility --generate-cli-skeleton yaml-input'
         )
         self.assertEqual(rc, 0)
-        loaded_skeleton = yaml.safe_load(stdout)
+        loaded_skeleton = self.yaml.load(stdout)
         self.assertEqual(loaded_skeleton['QueueUrl'], '')
         self.assertEqual(loaded_skeleton['ReceiptHandle'], '')
         self.assertEqual(loaded_skeleton['VisibilityTimeout'], 0)
@@ -73,7 +71,7 @@ class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
         cmdline = 'iam create-group --generate-cli-skeleton yaml-input'
         stdout, _, rc = self.run_cmd(cmdline)
         self.assertEqual(rc, 0)
-        loaded_skeleton = yaml.safe_load(stdout)
+        loaded_skeleton = self.yaml.load(stdout)
         self.assertEqual(loaded_skeleton['Path'], '')
         self.assertEqual(loaded_skeleton['GroupName'], '')
 

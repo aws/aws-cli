@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 
 from awscli.compat import ensure_text_type
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -42,6 +42,8 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
                 },
             ]
         }
+        
+        self.yaml = YAML(typ="safe", pure=True)
 
     def test_yaml_response(self):
         stdout, _, _ = self.run_cmd(
@@ -61,7 +63,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
             "  UserName: testuser-51\n"
         )
         self.assertEqual(stdout, expected)
-        parsed_output = yaml.safe_load(stdout)
+        parsed_output = self.yaml.load(stdout)
         self.assertEqual(self.parsed_response, parsed_output)
 
     def test_empty_dict_response_prints_nothing(self):
@@ -92,7 +94,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
             'iam list-users --output yaml --query %s' % jmespath_query,
             expected_rc=0
         )
-        parsed_output = yaml.safe_load(stdout)
+        parsed_output = self.yaml.load(stdout)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
 
     def test_print_int(self):

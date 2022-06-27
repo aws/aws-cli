@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
@@ -145,7 +145,9 @@ class CliInputYAMLArgument(CliInputArgument):
     }
 
     def _load_parameters(self, arg_value):
+        yaml = YAML(typ='safe', pure=True)
+
         try:
-            return yaml.safe_load(arg_value)
+            return yaml.load(arg_value)
         except YAMLError:
             raise ParamError(self.name, "Invalid YAML received.")

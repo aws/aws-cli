@@ -12,9 +12,10 @@
 # language governing permissions and limitations under the License.
 import os
 
-import ruamel.yaml as yaml
+from awscli.testutils import \
+    BaseAWSCommandParamsTest, FileCreator, YAMLStdoutDump
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+yaml = YAMLStdoutDump(typ="safe", pure=True)
 
 
 class BaseCLIInputArgumentTest(BaseAWSCommandParamsTest):

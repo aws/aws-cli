@@ -23,6 +23,7 @@ import logging
 from awscli.compat import six
 from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
+from awscli.compat import StringIO
 from botocore.utils import resolve_imds_endpoint_mode
 from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
@@ -450,6 +451,20 @@ def original_ld_library_path(env=None):
     finally:
         if value_to_put_back is not None:
             env['LD_LIBRARY_PATH'] = value_to_put_back
+
+
+def dump_yaml_to_str(yaml, data):
+    """Dump a Python object to a YAML-formatted string.
+
+    :type yaml: ruamel.yaml.YAML
+    :param yaml: An instance of ruamel.yaml.YAML.
+
+    :type data: object
+    :param data: A Python object that can be dumped to YAML.
+    """
+    stream = StringIO()
+    yaml.dump(data, stream)
+    return stream.getvalue()
 
 
 class ShapeWalker(object):

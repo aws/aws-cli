@@ -362,6 +362,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.driver = create_clidriver()
         self.entry_point = awscli.clidriver.AWSCLIEntryPoint(self.driver)
         self.yaml = YAML(typ="safe", pure=True)
+        self.yaml.representer.default_flow_style = False
 
     def tearDown(self):
         # This clears all the previous registrations.
@@ -1008,22 +1009,3 @@ class ConsistencyWaiter(object):
     def _fail_message(self, attempts, successes):
         format_args = (attempts, successes)
         return 'Failed after %s attempts, only had %s successes' % format_args
-
-
-class YAMLStdoutDump(YAML):
-    """YAML class that can dump output as a string.
-
-    Taken from:
-
-    https://yaml.readthedocs.io/en/latest/example.html#output-of-dump-as-a-string
-
-    """
-
-    def dump(self, data, stream=None, **kwargs):
-        to_stdout = False
-        if stream is None:
-            to_stdout = True
-            stream = StringIO()
-        YAML.dump(self, data, stream, **kwargs)
-        if to_stdout:
-            return stream.getvalue()

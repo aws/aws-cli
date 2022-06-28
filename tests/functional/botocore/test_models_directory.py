@@ -20,5 +20,14 @@ def loader():
     return botocore.session.Session().get_component('data_loader')
 
 
+def _available_services():
+    return botocore.session.Session().get_available_services()
+
+
 def test_models_contains_no_examples_files(loader):
     assert loader.list_available_services('examples-1') == []
+
+
+@pytest.mark.parametrize("service", _available_services())
+def test_models_contains_single_api_version_per_service(service, loader):
+    assert len(loader.list_api_versions(service, 'service-2')) == 1

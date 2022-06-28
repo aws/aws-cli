@@ -12,13 +12,14 @@
 # language governing permissions and limitations under the License.
 import re
 
-import ruamel.yaml as yaml
+import ruamel.yaml
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
 
 from awscli.compat import six
+from awscli.utils import dump_yaml_to_str
 
 
 def intrinsics_multi_constructor(loader, tag_prefix, node):
@@ -85,13 +86,14 @@ def yaml_dump(dict_to_dump):
     :param dict_to_dump:
     :return:
     """
-    FlattenAliasDumper.add_representer(OrderedDict, _dict_representer)
-    _add_yaml_1_1_boolean_resolvers(FlattenAliasDumper)
-    return yaml.dump(
-        dict_to_dump,
-        default_flow_style=False,
-        Dumper=FlattenAliasDumper,
-    )
+
+    yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+    yaml.default_flow_style = False
+    yaml.Representer = FlattenAliasRepresenter
+    _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
+    yaml.Representer.add_representer(OrderedDict, _dict_representer)
+
+    return dump_yaml_to_str(yaml, dict_to_dump)
 
 
 def _dict_constructor(loader, node):
@@ -108,13 +110,17 @@ def yaml_parse(yamlstr):
         # json parser.
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
-        yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
-        yaml.SafeLoader.add_multi_constructor(
+        yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+        yaml.Constructor.add_constructor(
+            ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+            _dict_constructor)
+        yaml.Constructor.add_multi_constructor(
             "!", intrinsics_multi_constructor)
-        _add_yaml_1_1_boolean_resolvers(yaml.SafeLoader)
-        return yaml.safe_load(yamlstr)
+        _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
+
+        return yaml.load(yamlstr)
 
 
-class FlattenAliasDumper(yaml.SafeDumper):
+class FlattenAliasRepresenter(ruamel.yaml.representer.SafeRepresenter):
     def ignore_aliases(self, data):
         return True

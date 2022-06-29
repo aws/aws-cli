@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.25.20
+=======
+
+* api-change:``appstream``: Includes support for StreamingExperienceSettings in CreateStack and UpdateStack APIs
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``medialive``: This release adds support for automatic renewal of MediaLive reservations at the end of each reservation term. Automatic renewal is optional. This release also adds support for labelling accessibility-focused audio and caption tracks in HLS outputs.
+* api-change:``redshift-serverless``: Add new API operations for Amazon Redshift Serverless, a new way of using Amazon Redshift without needing to manually manage provisioned clusters. The new operations let you interact with Redshift Serverless resources, such as create snapshots, list VPC endpoints, delete resource policies, and more.
+* api-change:``sagemaker``: This release adds: UpdateFeatureGroup, UpdateFeatureMetadata, DescribeFeatureMetadata APIs; FeatureMetadata type in Search API; LastModifiedTime, LastUpdateStatus, OnlineStoreTotalSizeBytes in DescribeFeatureGroup API.
+* api-change:``translate``: Added ListLanguages API which can be used to list the languages supported by Translate.
+
+
 1.25.19
 =======
 

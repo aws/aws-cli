@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.7.12
+======
+
+* api-change:``ec2``: This release adds a new spread placement group to EC2 Placement Groups: host level spread, which spread instances between physical hosts, available to Outpost customers only. CreatePlacementGroup and DescribePlacementGroups APIs were updated with a new parameter: SpreadLevel to support this feature.
+* enhancement:Python: Update Python interpreter version range support to 3.10
+* api-change:``finspace-data``: Release new API GetExternalDataViewAccessDetails
+* api-change:``rds-data``: Documentation updates for RDS Data API
+* api-change:``polly``: Add 4 new neural voices - Pedro (es-US), Liam (fr-CA), Daniel (de-DE) and Arthur (en-GB).
+* api-change:``glue``: This release enables the new ListCrawls API for viewing the AWS Glue Crawler run history.
+* api-change:``iot``: This release ease the restriction for the input of tag value to align with AWS standard, now instead of min length 1, we change it to min length 0.
+* api-change:``datasync``: AWS DataSync now supports Amazon FSx for NetApp ONTAP locations.
+
+
 2.7.11
 ======
 

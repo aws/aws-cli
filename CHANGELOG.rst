@@ -3725,6 +3725,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.19
+=======
+
+* api-change:``datasync``: AWS DataSync now supports Amazon FSx for NetApp ONTAP locations.
+* api-change:``ec2``: This release adds a new spread placement group to EC2 Placement Groups: host level spread, which spread instances between physical hosts, available to Outpost customers only. CreatePlacementGroup and DescribePlacementGroups APIs were updated with a new parameter: SpreadLevel to support this feature.
+* api-change:``finspace-data``: Release new API GetExternalDataViewAccessDetails
+* api-change:``polly``: Add 4 new neural voices - Pedro (es-US), Liam (fr-CA), Daniel (de-DE) and Arthur (en-GB).
+
+
+1.25.18
+=======
+
+* api-change:``iot``: This release ease the restriction for the input of tag value to align with AWS standard, now instead of min length 1, we change it to min length 0.
+
+
+1.25.17
+=======
+
+* api-change:``glue``: This release enables the new ListCrawls API for viewing the AWS Glue Crawler run history.
+* api-change:``rds-data``: Documentation updates for RDS Data API
+
+
 1.25.16
 =======
 

@@ -269,6 +269,23 @@
       ],
       "documentation":"<p>Returns information about a Dataset.</p>"
     },
+    "GetExternalDataViewAccessDetails":{
+      "name":"GetExternalDataViewAccessDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datasets/{datasetId}/dataviewsv2/{dataviewId}/external-access-details"
+      },
+      "input":{"shape":"GetExternalDataViewAccessDetailsRequest"},
+      "output":{"shape":"GetExternalDataViewAccessDetailsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the credentials to access the external Dataview from an S3 location. To call this API:</p> <ul> <li> <p>You must retrieve the programmatic credentials.</p> </li> <li> <p>You must be a member of a FinSpace user group, where the dataset that you want to access has <code>Read Dataset Data</code> permissions.</p> </li> </ul>"
+    },
     "GetPermissionGroup":{
       "name":"GetPermissionGroup",
       "http":{
@@ -554,6 +571,12 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "AccessKeyId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
     "AliasString":{
       "type":"string",
       "max":255,
@@ -618,6 +641,28 @@
           "location":"statusCode"
         }
       }
+    },
+    "AwsCredentials":{
+      "type":"structure",
+      "members":{
+        "accessKeyId":{
+          "shape":"AccessKeyId",
+          "documentation":"<p> The unique identifier for the security credentials.</p>"
+        },
+        "secretAccessKey":{
+          "shape":"SecretAccessKey",
+          "documentation":"<p> The secret access key that can be used to sign requests.</p>"
+        },
+        "sessionToken":{
+          "shape":"SessionToken",
+          "documentation":"<p> The token that users must pass to use the credentials.</p>"
+        },
+        "expiration":{
+          "shape":"TimestampEpoch",
+          "documentation":"<p> The Epoch time when the current credentials expire.</p>"
+        }
+      },
+      "documentation":"<p> The credentials required to access the external Dataview from the S3 location.</p>"
     },
     "Boolean":{
       "type":"boolean",
@@ -972,7 +1017,7 @@
         },
         "applicationPermissions":{
           "shape":"ApplicationPermissionList",
-          "documentation":"<p>The option to indicate FinSpace application permissions that are granted to a specific group.</p> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>"
+          "documentation":"<p>The option to indicate FinSpace application permissions that are granted to a specific group.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1699,6 +1744,40 @@
       },
       "documentation":"Response for the GetDataset operation"
     },
+    "GetExternalDataViewAccessDetailsRequest":{
+      "type":"structure",
+      "required":[
+        "dataViewId",
+        "datasetId"
+      ],
+      "members":{
+        "dataViewId":{
+          "shape":"DataViewId",
+          "documentation":"<p>The unique identifier for the Dataview that you want to access.</p>",
+          "location":"uri",
+          "locationName":"dataviewId"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier for the Dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      }
+    },
+    "GetExternalDataViewAccessDetailsResponse":{
+      "type":"structure",
+      "members":{
+        "credentials":{
+          "shape":"AwsCredentials",
+          "documentation":"<p>The credentials required to access the external Dataview from the S3 location.</p>"
+        },
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The location where the external Dataview is stored.</p>"
+        }
+      }
+    },
     "GetPermissionGroupRequest":{
       "type":"structure",
       "required":["permissionGroupId"],
@@ -2177,7 +2256,7 @@
         },
         "applicationPermissions":{
           "shape":"ApplicationPermissionList",
-          "documentation":"<p>Indicates the permissions that are granted to a specific group for accessing the FinSpace application.</p> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>"
+          "documentation":"<p>Indicates the permissions that are granted to a specific group for accessing the FinSpace application.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>"
         },
         "createTime":{
           "shape":"TimestampEpoch",
@@ -2335,10 +2414,40 @@
       "min":20,
       "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
     },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^.*\\S.*$"
+    },
     "S3DestinationFormatOptions":{
       "type":"map",
       "key":{"shape":"StringMapKey"},
       "value":{"shape":"StringMapValue"}
+    },
+    "S3Key":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^.*\\S.*$"
+    },
+    "S3Location":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "key"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p> The name of the S3 bucket.</p>"
+        },
+        "key":{
+          "shape":"S3Key",
+          "documentation":"<p> The path of the folder, within the S3 bucket that contains the Dataset.</p>"
+        }
+      },
+      "documentation":"<p>The location of an external Dataview in an S3 bucket.</p>"
     },
     "SchemaDefinition":{
       "type":"structure",
@@ -2364,10 +2473,24 @@
       },
       "documentation":"<p>A union of schema types.</p>"
     },
+    "SecretAccessKey":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*",
+      "sensitive":true
+    },
     "SessionDuration":{
       "type":"long",
       "max":720,
       "min":60
+    },
+    "SessionToken":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*",
+      "sensitive":true
     },
     "SortColumnList":{
       "type":"list",
@@ -2540,7 +2663,7 @@
         },
         "applicationPermissions":{
           "shape":"ApplicationPermissionList",
-          "documentation":"<p>The permissions that are granted to a specific group for accessing the FinSpace application.</p> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>"
+          "documentation":"<p>The permissions that are granted to a specific group for accessing the FinSpace application.</p> <important> <p>When assigning application permissions, be aware that the permission <code>ManageUsersAndGroups</code> allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.</p> </important> <ul> <li> <p> <code>CreateDataset</code> – Group members can create new datasets.</p> </li> <li> <p> <code>ManageClusters</code> – Group members can manage Apache Spark clusters from FinSpace notebooks.</p> </li> <li> <p> <code>ManageUsersAndGroups</code> – Group members can manage users and permission groups. This is a privileged permission that allows users to grant themselves or others access to any functionality in the application. It should only be granted to trusted users.</p> </li> <li> <p> <code>ManageAttributeSets</code> – Group members can manage attribute sets.</p> </li> <li> <p> <code>ViewAuditData</code> – Group members can view audit data.</p> </li> <li> <p> <code>AccessNotebooks</code> – Group members will have access to FinSpace notebooks.</p> </li> <li> <p> <code>GetTemporaryCredentials</code> – Group members can get temporary API credentials.</p> </li> </ul>"
         },
         "clientToken":{
           "shape":"ClientToken",

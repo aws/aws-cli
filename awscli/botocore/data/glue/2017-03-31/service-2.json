@@ -2076,6 +2076,21 @@
       ],
       "documentation":"<p>Retrieves the names of all crawler resources in this Amazon Web Services account, or the resources with the specified tag. This operation allows you to see which resources are available in your account, and their names.</p> <p>This operation takes the optional <code>Tags</code> field, which you can use as a filter on the response so that tagged resources can be retrieved as a group. If you choose to use tags filtering, only resources with the tag are retrieved.</p>"
     },
+    "ListCrawls":{
+      "name":"ListCrawls",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCrawlsRequest"},
+      "output":{"shape":"ListCrawlsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Returns all the crawls of a specified crawler. Returns only the crawls that have occurred since the launch date of the crawler history feature, and only retains up to 12 months of crawls. Older crawls will not be returned.</p> <p>You may use this API to:</p> <ul> <li> <p>Retrive all the crawls of a specified crawler.</p> </li> <li> <p>Retrieve all the crawls of a specified crawler within a limited count.</p> </li> <li> <p>Retrieve all the crawls of a specified crawler in a specific time range.</p> </li> <li> <p>Retrieve all the crawls of a specified crawler with a particular state, crawl ID, or DPU hour value.</p> </li> </ul>"
+    },
     "ListCustomEntityTypes":{
       "name":"ListCustomEntityTypes",
       "http":{
@@ -5299,6 +5314,7 @@
       },
       "documentation":"<p>The details of a crawl in the workflow.</p>"
     },
+    "CrawlId":{"type":"string"},
     "CrawlList":{
       "type":"list",
       "member":{"shape":"Crawl"}
@@ -5394,12 +5410,71 @@
         },
         "LakeFormationConfiguration":{
           "shape":"LakeFormationConfiguration",
-          "documentation":"<p>Specifies whether the crawler should use AWS Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
+          "documentation":"<p>Specifies whether the crawler should use Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
         }
       },
       "documentation":"<p>Specifies a crawler program that examines a data source and uses classifiers to try to determine its schema. If successful, the crawler records metadata concerning the data source in the Glue Data Catalog.</p>"
     },
     "CrawlerConfiguration":{"type":"string"},
+    "CrawlerHistory":{
+      "type":"structure",
+      "members":{
+        "CrawlId":{
+          "shape":"CrawlId",
+          "documentation":"<p>A UUID identifier for each crawl.</p>"
+        },
+        "State":{
+          "shape":"CrawlerHistoryState",
+          "documentation":"<p>The state of the crawl.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time on which the crawl started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time on which the crawl ended.</p>"
+        },
+        "Summary":{
+          "shape":"NameString",
+          "documentation":"<p>A run summary for the specific crawl in JSON. Contains the catalog tables and partitions that were added, updated, or deleted.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"DescriptionString",
+          "documentation":"<p>If an error occurred, the error message associated with the crawl.</p>"
+        },
+        "LogGroup":{
+          "shape":"LogGroup",
+          "documentation":"<p>The log group associated with the crawl.</p>"
+        },
+        "LogStream":{
+          "shape":"LogStream",
+          "documentation":"<p>The log stream associated with the crawl.</p>"
+        },
+        "MessagePrefix":{
+          "shape":"MessagePrefix",
+          "documentation":"<p>The prefix for a CloudWatch message about this crawl.</p>"
+        },
+        "DPUHour":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>The number of data processing units (DPU) used in hours for the crawl.</p>"
+        }
+      },
+      "documentation":"<p>Contains the information for a run of a crawler.</p>"
+    },
+    "CrawlerHistoryList":{
+      "type":"list",
+      "member":{"shape":"CrawlerHistory"}
+    },
+    "CrawlerHistoryState":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "STOPPED"
+      ]
+    },
     "CrawlerLineageSettings":{
       "type":"string",
       "enum":[
@@ -5545,6 +5620,28 @@
       },
       "documentation":"<p>Specifies data stores to crawl.</p>"
     },
+    "CrawlsFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"FieldName",
+          "documentation":"<p>A key used to filter the crawler runs for a specified crawler. Valid values for each of the field names are:</p> <ul> <li> <p> <code>CRAWL_ID</code>: A string representing the UUID identifier for a crawl.</p> </li> <li> <p> <code>STATE</code>: A string representing the state of the crawl.</p> </li> <li> <p> <code>START_TIME</code> and <code>END_TIME</code>: The epoch timestamp in milliseconds.</p> </li> <li> <p> <code>DPU_HOUR</code>: The number of data processing unit (DPU) hours used for the crawl.</p> </li> </ul>"
+        },
+        "FilterOperator":{
+          "shape":"FilterOperator",
+          "documentation":"<p>A defined comparator that operates on the value. The available operators are:</p> <ul> <li> <p> <code>GT</code>: Greater than.</p> </li> <li> <p> <code>GE</code>: Greater than or equal to.</p> </li> <li> <p> <code>LT</code>: Less than.</p> </li> <li> <p> <code>LE</code>: Less than or equal to.</p> </li> <li> <p> <code>EQ</code>: Equal to.</p> </li> <li> <p> <code>NE</code>: Not equal to.</p> </li> </ul>"
+        },
+        "FieldValue":{
+          "shape":"GenericString",
+          "documentation":"<p>The value provided for comparison on the crawl field. </p>"
+        }
+      },
+      "documentation":"<p>A list of fields, comparators and value that you can use to filter the crawler runs for a specified crawler.</p>"
+    },
+    "CrawlsFilterList":{
+      "type":"list",
+      "member":{"shape":"CrawlsFilter"}
+    },
     "CreateBlueprintRequest":{
       "type":"structure",
       "required":[
@@ -5680,7 +5777,10 @@
           "shape":"LineageConfiguration",
           "documentation":"<p>Specifies data lineage configuration settings for the crawler.</p>"
         },
-        "LakeFormationConfiguration":{"shape":"LakeFormationConfiguration"},
+        "LakeFormationConfiguration":{
+          "shape":"LakeFormationConfiguration",
+          "documentation":"<p>Specifies Lake Formation configuration settings for the crawler.</p>"
+        },
         "Configuration":{
           "shape":"CrawlerConfiguration",
           "documentation":"<p>Crawler configuration information. This versioned JSON string allows users to specify aspects of a crawler's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html\">Configuring a Crawler</a>.</p>"
@@ -8172,6 +8272,16 @@
       "type":"string",
       "pattern":"[\\s\\S]*"
     },
+    "FieldName":{
+      "type":"string",
+      "enum":[
+        "CRAWL_ID",
+        "STATE",
+        "START_TIME",
+        "END_TIME",
+        "DPU_HOUR"
+      ]
+    },
     "FieldType":{"type":"string"},
     "FillMissingValues":{
       "type":"structure",
@@ -8271,6 +8381,17 @@
         "GTE",
         "REGEX",
         "ISNULL"
+      ]
+    },
+    "FilterOperator":{
+      "type":"string",
+      "enum":[
+        "GT",
+        "GE",
+        "LT",
+        "LE",
+        "EQ",
+        "NE"
       ]
     },
     "FilterString":{
@@ -11656,14 +11777,14 @@
       "members":{
         "UseLakeFormationCredentials":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Specifies whether to use AWS Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
+          "documentation":"<p>Specifies whether to use Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
         },
         "AccountId":{
           "shape":"AccountId",
           "documentation":"<p>Required for cross account crawls. For same account crawls as the target data, this can be left as null.</p>"
         }
       },
-      "documentation":"<p>Specifies AWS Lake Formation configuration settings for the crawler.</p>"
+      "documentation":"<p>Specifies Lake Formation configuration settings for the crawler.</p>"
     },
     "Language":{
       "type":"string",
@@ -11812,6 +11933,41 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if the returned list does not contain the last metric available.</p>"
+        }
+      }
+    },
+    "ListCrawlsRequest":{
+      "type":"structure",
+      "required":["CrawlerName"],
+      "members":{
+        "CrawlerName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the crawler whose runs you want to retrieve.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return. The default is 20, and maximum is 100.</p>"
+        },
+        "Filters":{
+          "shape":"CrawlsFilterList",
+          "documentation":"<p>Filters the crawls by the criteria you specify in a list of <code>CrawlsFilter</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListCrawlsResponse":{
+      "type":"structure",
+      "members":{
+        "Crawls":{
+          "shape":"CrawlerHistoryList",
+          "documentation":"<p>A list of <code>CrawlerHistory</code> objects representing the crawl runs that meet your criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.</p>"
         }
       }
     },
@@ -16895,7 +17051,10 @@
           "shape":"LineageConfiguration",
           "documentation":"<p>Specifies data lineage configuration settings for the crawler.</p>"
         },
-        "LakeFormationConfiguration":{"shape":"LakeFormationConfiguration"},
+        "LakeFormationConfiguration":{
+          "shape":"LakeFormationConfiguration",
+          "documentation":"<p>Specifies Lake Formation configuration settings for the crawler.</p>"
+        },
         "Configuration":{
           "shape":"CrawlerConfiguration",
           "documentation":"<p>Crawler configuration information. This versioned JSON string allows users to specify aspects of a crawler's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html\">Configuring a Crawler</a>.</p>"

@@ -2,6 +2,115 @@
 CHANGELOG
 =========
 
+1.25.20
+=======
+
+* api-change:``appstream``: Includes support for StreamingExperienceSettings in CreateStack and UpdateStack APIs
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``medialive``: This release adds support for automatic renewal of MediaLive reservations at the end of each reservation term. Automatic renewal is optional. This release also adds support for labelling accessibility-focused audio and caption tracks in HLS outputs.
+* api-change:``redshift-serverless``: Add new API operations for Amazon Redshift Serverless, a new way of using Amazon Redshift without needing to manually manage provisioned clusters. The new operations let you interact with Redshift Serverless resources, such as create snapshots, list VPC endpoints, delete resource policies, and more.
+* api-change:``sagemaker``: This release adds: UpdateFeatureGroup, UpdateFeatureMetadata, DescribeFeatureMetadata APIs; FeatureMetadata type in Search API; LastModifiedTime, LastUpdateStatus, OnlineStoreTotalSizeBytes in DescribeFeatureGroup API.
+* api-change:``translate``: Added ListLanguages API which can be used to list the languages supported by Translate.
+
+
+1.25.19
+=======
+
+* api-change:``datasync``: AWS DataSync now supports Amazon FSx for NetApp ONTAP locations.
+* api-change:``ec2``: This release adds a new spread placement group to EC2 Placement Groups: host level spread, which spread instances between physical hosts, available to Outpost customers only. CreatePlacementGroup and DescribePlacementGroups APIs were updated with a new parameter: SpreadLevel to support this feature.
+* api-change:``finspace-data``: Release new API GetExternalDataViewAccessDetails
+* api-change:``polly``: Add 4 new neural voices - Pedro (es-US), Liam (fr-CA), Daniel (de-DE) and Arthur (en-GB).
+
+
+1.25.18
+=======
+
+* api-change:``iot``: This release ease the restriction for the input of tag value to align with AWS standard, now instead of min length 1, we change it to min length 0.
+
+
+1.25.17
+=======
+
+* api-change:``glue``: This release enables the new ListCrawls API for viewing the AWS Glue Crawler run history.
+* api-change:``rds-data``: Documentation updates for RDS Data API
+
+
+1.25.16
+=======
+
+* api-change:``lookoutequipment``: This release adds visualizations to the scheduled inference results. Users will be able to see interference results, including diagnostic results from their running inference schedulers.
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has released support for automatic DolbyVision metadata generation when converting HDR10 to DolbyVision.
+* api-change:``mgn``: New and modified APIs for the Post-Migration Framework
+* api-change:``migration-hub-refactor-spaces``: This release adds the new API UpdateRoute that allows route to be updated to ACTIVE/INACTIVE state. In addition, CreateRoute API will now allow users to create route in ACTIVE/INACTIVE state.
+* api-change:``sagemaker``: SageMaker Ground Truth now supports Virtual Private Cloud. Customers can launch labeling jobs and access to their private workforce in VPC mode.
+
+
+1.25.15
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``pricing``: This release introduces 1 update to the GetProducts API. The serviceCode attribute is now required when you use the GetProductsRequest.
+* api-change:``transfer``: Until today, the service supported only RSA host keys and user keys. Now with this launch, Transfer Family has expanded the support for ECDSA and ED25519 host keys and user keys, enabling customers to support a broader set of clients by choosing RSA, ECDSA, and ED25519 host and user keys.
+
+
+1.25.14
+=======
+
+* api-change:``ec2``: This release adds support for Private IP VPNs, a new feature allowing S2S VPN connections to use private ip addresses as the tunnel outside ip address over Direct Connect as transport.
+* api-change:``ecs``: Amazon ECS UpdateService now supports the following parameters: PlacementStrategies, PlacementConstraints and CapacityProviderStrategy.
+* api-change:``wellarchitected``: Adds support for lens tagging, Adds support for multiple helpful-resource urls and multiple improvement-plan urls.
+
+
+1.25.13
+=======
+
+* api-change:``ds``: This release adds support for describing and updating AWS Managed Microsoft AD settings
+* api-change:``kafka``: Documentation updates to use Az Id during cluster creation.
+* api-change:``outposts``: This release adds the AssetLocation structure to the ListAssets response. AssetLocation includes the RackElevation for an Asset.
+
+
+1.25.12
+=======
+
+* api-change:``connect``: This release updates these APIs: UpdateInstanceAttribute, DescribeInstanceAttribute and ListInstanceAttributes. You can use it to programmatically enable/disable High volume outbound communications using attribute type HIGH_VOLUME_OUTBOUND on the specified Amazon Connect instance.
+* api-change:``connectcampaigns``: Added Amazon Connect high volume outbound communications SDK.
+* api-change:``dynamodb``: Doc only update for DynamoDB service
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+
+
+1.25.11
+=======
+
+* api-change:``redshift-data``: This release adds a new --workgroup-name field to operations that connect to an endpoint. Customers can now execute queries against their serverless workgroups.
+* api-change:``redshiftserverless``: Add new API operations for Amazon Redshift Serverless, a new way of using Amazon Redshift without needing to manually manage provisioned clusters. The new operations let you interact with Redshift Serverless resources, such as create snapshots, list VPC endpoints, delete resource policies, and more.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``securityhub``: Added Threats field for security findings. Added new resource details for ECS Container, ECS Task, RDS SecurityGroup, Kinesis Stream, EC2 TransitGateway, EFS AccessPoint, CloudFormation Stack, CloudWatch Alarm, VPC Peering Connection and WAF Rules
+
+
+1.25.10
+=======
+
+* api-change:``finspace-data``: This release adds a new set of APIs, GetPermissionGroup, DisassociateUserFromPermissionGroup, AssociateUserToPermissionGroup, ListPermissionGroupsByUser, ListUsersByPermissionGroup.
+* api-change:``guardduty``: Adds finding fields available from GuardDuty Console. Adds FreeTrial related operations. Deprecates the use of various APIs related to Master Accounts and Replace them with Administrator Accounts.
+* api-change:``servicecatalog-appregistry``: This release adds a new API ListAttributeGroupsForApplication that returns associated attribute groups of an application. In addition, the UpdateApplication and UpdateAttributeGroup APIs will not allow users to update the 'Name' attribute.
+* api-change:``workspaces``: Added new field "reason" to OperationNotSupportedException. Receiving this exception in the DeregisterWorkspaceDirectory API will now return a reason giving more context on the failure.
+
+
+1.25.9
+======
+
+* api-change:``budgets``: Add a budgets ThrottlingException. Update the CostFilters value pattern.
+* api-change:``lookoutmetrics``: Adding filters to Alert and adding new UpdateAlert API.
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added support for rules that constrain Automatic-ABR rendition selection when generating ABR package ladders.
+
+
+1.25.8
+======
+
+* api-change:``outposts``: This release adds API operations AWS uses to install Outpost servers.
+
+
 1.25.7
 ======
 

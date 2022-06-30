@@ -506,3 +506,9 @@ AUTO_TERMINATION_POLICY = (
     'The configuration specifies the termination idle timeout'
     'threshold for an cluster.</p> '
 )
+
+EXECUTION_ROLE_ARN = (
+    '<p>You must grant the execution role the permissions needed '
+    'to access the same IAM resources that the step can access. '
+    'The execution role can be a cross-account IAM Role.</p> '
+)

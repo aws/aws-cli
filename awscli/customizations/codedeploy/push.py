@@ -59,11 +59,11 @@ class Push(BasicCommand):
             'synopsis': '--s3-location s3://<bucket>/<key>',
             'required': True,
             'help_text': (
-                'Required. Information about the location of the application '
-                'revision to be uploaded to Amazon S3. You must specify both '
-                'a bucket and a key that represent the Amazon S3 bucket name '
-                'and the object key name. Content will be zipped before '
-                'uploading. Use the format s3://\<bucket\>/\<key\>'
+                r'Required. Information about the location of the application '
+                r'revision to be uploaded to Amazon S3. You must specify both '
+                r'a bucket and a key that represent the Amazon S3 bucket name '
+                r'and the object key name. Content will be zipped before '
+                r'uploading. Use the format s3://\<bucket\>/\<key\>'
             )
         },
         {

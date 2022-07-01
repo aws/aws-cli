@@ -78,7 +78,7 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
     """Ensures that the arn looks correct.
 
     ARNs look like: arn:aws:cloudtrail:us-east-1:123456789012:trail/foo"""
-    pattern = re.compile('arn:.+:cloudtrail:.+:\d{12}:trail/.+')
+    pattern = re.compile(r'arn:.+:cloudtrail:.+:\d{12}:trail/.+')
     if not pattern.match(trail_arn):
         raise ParamValidationError(
             'Invalid trail ARN provided: %s' % trail_arn

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.22
+=======
+
+* api-change:``dms``: Added new features for AWS DMS version 3.4.7 that includes new endpoint settings for S3, OpenSearch, Postgres, SQLServer and Oracle.
+* api-change:``rds``: Adds support for additional retention periods to Performance Insights.
+
+
 1.25.21
 =======
 

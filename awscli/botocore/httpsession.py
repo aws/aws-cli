@@ -13,16 +13,22 @@ from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
 from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
 from urllib3.exceptions import SSLError as URLLib3SSLError
 from urllib3.util.retry import Retry
+
 from urllib3.util.ssl_ import (
     DEFAULT_CIPHERS,
     OP_NO_COMPRESSION,
     OP_NO_SSLv2,
     OP_NO_SSLv3,
-    OP_NO_TICKET,
     PROTOCOL_TLS,
-    PROTOCOL_TLS_CLIENT,
     ssl,
 )
+
+try:
+    from urllib3.util.ssl_ import PROTOCOL_TLS_CLIENT, OP_NO_TICKET
+except ImportError:
+    # Fallback directly to ssl for version of urllib3 before 1.26.
+    # They are available in the standard library starting in Python 3.6.
+    from ssl import PROTOCOL_TLS_CLIENT, OP_NO_TICKET
 
 try:
     # Always import the original SSLContext, even if it has been patched

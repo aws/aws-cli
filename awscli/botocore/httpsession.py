@@ -229,20 +229,18 @@ class URLLib3Session(object):
     v2.7.0 implemented this themselves, later version urllib3 support this
     directly via a flag to urlopen so enabling it if needed should be trivial.
     """
-    def __init__(
-        self,
-        verify=True,
-        proxies=None,
-        timeout=None,
-        max_pool_connections=MAX_POOL_CONNECTIONS,
-        socket_options=None,
-        client_cert=None,
-        proxies_config=None,
+    def __init__(self,
+                 verify=True,
+                 proxies=None,
+                 timeout=None,
+                 max_pool_connections=MAX_POOL_CONNECTIONS,
+                 socket_options=None,
+                 client_cert=None,
+                 proxies_config=None,
     ):
         self._verify = verify
-        self._proxy_config = ProxyConfiguration(
-            proxies=proxies, proxies_settings=proxies_config
-        )
+        self._proxy_config = ProxyConfiguration(proxies=proxies,
+                                                proxies_settings=proxies_config)
         self._pool_classes_by_scheme = {
             'http': botocore.awsrequest.AWSHTTPConnectionPool,
             'https': botocore.awsrequest.AWSHTTPSConnectionPool,
@@ -375,7 +373,9 @@ class URLLib3Session(object):
             return self._path_url(url)
 
     def _chunked(self, headers):
-        return headers.get('Transfer-Encoding', '') == 'chunked'
+        transfer_encoding = headers.get('Transfer-Encoding', b'')
+        transfer_encoding = ensure_bytes(transfer_encoding)
+        return transfer_encoding.lower() == b'chunked'
 
     def send(self, request):
         try:

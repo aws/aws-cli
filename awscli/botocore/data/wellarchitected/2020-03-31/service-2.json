@@ -590,6 +590,22 @@
       ],
       "documentation":"<p>Update the answer to a specific question in a workload review.</p>"
     },
+    "UpdateGlobalSettings":{
+      "name":"UpdateGlobalSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/global-settings"
+      },
+      "input":{"shape":"UpdateGlobalSettingsInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates whether the Amazon Web Services account is opted into organization sharing features.</p>"
+    },
     "UpdateLensReview":{
       "name":"UpdateLensReview",
       "http":{
@@ -1804,7 +1820,11 @@
       "members":{
         "ShareId":{"shape":"ShareId"},
         "SharedWith":{"shape":"SharedWith"},
-        "Status":{"shape":"ShareStatus"}
+        "Status":{"shape":"ShareStatus"},
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Optional message to compliment the Status field.</p>"
+        }
       },
       "documentation":"<p>A lens share summary return object.</p>"
     },
@@ -2077,6 +2097,11 @@
           "documentation":"<p>The maximum number of results to return for this request.</p>",
           "location":"querystring",
           "locationName":"MaxResults"
+        },
+        "Status":{
+          "shape":"ShareStatus",
+          "location":"querystring",
+          "locationName":"Status"
         }
       }
     },
@@ -2275,6 +2300,11 @@
           "documentation":"<p>The maximum number of results to return for this request.</p>",
           "location":"querystring",
           "locationName":"MaxResults"
+        },
+        "Status":{
+          "shape":"ShareStatus",
+          "location":"querystring",
+          "locationName":"Status"
         }
       },
       "documentation":"<p>Input for List Workload Share</p>"
@@ -2393,6 +2423,13 @@
       "enum":[
         "LENS_VERSION_UPGRADED",
         "LENS_VERSION_DEPRECATED"
+      ]
+    },
+    "OrganizationSharingStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "PermissionType":{
@@ -2634,7 +2671,10 @@
         "REJECTED",
         "PENDING",
         "REVOKED",
-        "EXPIRED"
+        "EXPIRED",
+        "ASSOCIATING",
+        "ASSOCIATED",
+        "FAILED"
       ]
     },
     "SharedWith":{
@@ -2646,6 +2686,11 @@
     "SharedWithPrefix":{
       "type":"string",
       "max":100
+    },
+    "StatusMessage":{
+      "type":"string",
+      "max":512,
+      "min":1
     },
     "TagKey":{
       "type":"string",
@@ -2783,6 +2828,15 @@
         "Answer":{"shape":"Answer"}
       },
       "documentation":"<p>Output of a update answer call.</p>"
+    },
+    "UpdateGlobalSettingsInput":{
+      "type":"structure",
+      "members":{
+        "OrganizationSharingStatus":{
+          "shape":"OrganizationSharingStatus",
+          "documentation":"<p>The status of organization sharing settings.</p>"
+        }
+      }
     },
     "UpdateLensReviewInput":{
       "type":"structure",
@@ -3146,7 +3200,11 @@
         "ShareId":{"shape":"ShareId"},
         "SharedWith":{"shape":"SharedWith"},
         "PermissionType":{"shape":"PermissionType"},
-        "Status":{"shape":"ShareStatus"}
+        "Status":{"shape":"ShareStatus"},
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Optional message to compliment the Status field.</p>"
+        }
       },
       "documentation":"<p>A workload share summary return object.</p>"
     },

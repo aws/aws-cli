@@ -786,6 +786,10 @@
         "Steps":{
           "shape":"StepConfigList",
           "documentation":"<p> A list of <a>StepConfig</a> to be executed by the job flow. </p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"ArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:iam::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>"
         }
       },
       "documentation":"<p> The input argument to the <a>AddJobFlowSteps</a> operation. </p>"
@@ -1871,7 +1875,7 @@
       "members":{
         "VolumeSpecification":{
           "shape":"VolumeSpecification",
-          "documentation":"<p>EBS volume specifications such as volume type, IOPS, and size (GiB) that will be requested for the EBS volume attached to an EC2 instance in the cluster.</p>"
+          "documentation":"<p>EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.</p>"
         },
         "Device":{
           "shape":"String",
@@ -1886,14 +1890,14 @@
       "members":{
         "VolumeSpecification":{
           "shape":"VolumeSpecification",
-          "documentation":"<p>EBS volume specifications such as volume type, IOPS, and size (GiB) that will be requested for the EBS volume attached to an EC2 instance in the cluster.</p>"
+          "documentation":"<p>EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.</p>"
         },
         "VolumesPerInstance":{
           "shape":"Integer",
-          "documentation":"<p>Number of EBS volumes with a specific volume configuration that will be associated with every instance in the instance group</p>"
+          "documentation":"<p>Number of EBS volumes with a specific volume configuration that are associated with every instance in the instance group</p>"
         }
       },
-      "documentation":"<p>Configuration of requested EBS block device associated with the instance group with count of volumes that will be associated to every instance.</p>"
+      "documentation":"<p>Configuration of requested EBS block device associated with the instance group with count of volumes that are associated to every instance.</p>"
     },
     "EbsBlockDeviceConfigList":{
       "type":"list",
@@ -4749,6 +4753,10 @@
         "Status":{
           "shape":"StepStatus",
           "documentation":"<p>The current execution status details of the cluster step.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"OptionalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:iam::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>"
         }
       },
       "documentation":"<p>This represents a step in a cluster.</p>"
@@ -5142,6 +5150,10 @@
       },
       "documentation":"<p> Input to the <a>TerminateJobFlows</a> operation. </p>"
     },
+    "ThroughputVal":{
+      "type":"integer",
+      "min":0
+    },
     "Unit":{
       "type":"string",
       "enum":[
@@ -5248,9 +5260,13 @@
         "SizeInGB":{
           "shape":"Integer",
           "documentation":"<p>The volume size, in gibibytes (GiB). This can be a number from 1 - 1024. If the volume type is EBS-optimized, the minimum value is 10.</p>"
+        },
+        "Throughput":{
+          "shape":"ThroughputVal",
+          "documentation":"<p>The throughput, in mebibyte per second (MiB/s). This optional parameter can be a number from 125 - 1000 and is valid only for gp3 volumes.</p>"
         }
       },
-      "documentation":"<p>EBS volume specifications such as volume type, IOPS, and size (GiB) that will be requested for the EBS volume attached to an EC2 instance in the cluster.</p>"
+      "documentation":"<p>EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.</p>"
     },
     "WholeNumber":{
       "type":"integer",

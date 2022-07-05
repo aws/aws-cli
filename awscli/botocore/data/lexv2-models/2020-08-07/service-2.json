@@ -1327,7 +1327,7 @@
       "members":{
         "transcript":{
           "shape":"Transcript",
-          "documentation":"<p>The content of the transcript that meets the search filter criteria. For the JSON format of the transcript, see <a href=\"https://docs.aws.amazon.com/lex/latest/dg/designing-output-format.html\">Output transcript format</a>.</p>"
+          "documentation":"<p>The content of the transcript that meets the search filter criteria. For the JSON format of the transcript, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/designing-output-format.html\">Output transcript format</a>.</p>"
         }
       },
       "documentation":"<p>The object containing information that associates the recommended intent/slot type with a conversation.</p>"
@@ -1814,7 +1814,7 @@
           "documentation":"<p>The statistical summary of the bot recommendation results.</p>"
         }
       },
-      "documentation":"<p>The object representing the URL of the bot definition, the URL of the associated transcript and a statistical summary of the bot recommendation results.</p>"
+      "documentation":"<p>The object representing the URL of the bot definition, the URL of the associated transcript, and a statistical summary of the bot recommendation results.</p>"
     },
     "BotRecommendationStatus":{
       "type":"string",
@@ -2629,7 +2629,7 @@
         },
         "exportStatus":{
           "shape":"ExportStatus",
-          "documentation":"<p>The status of the export. When the status is <code>Completed</code>, you can use the <a href=\"https://docs.aws.amazon.com/latest/dg/API_DescribeExport.html\">DescribeExport</a> operation to get the pre-signed S3 URL link to your exported bot or bot locale.</p>"
+          "documentation":"<p>The status of the export. When the status is <code>Completed</code>, you can use the <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/API_DescribeExport.html\">DescribeExport</a> operation to get the pre-signed S3 URL link to your exported bot or bot locale.</p>"
         },
         "creationDateTime":{
           "shape":"Timestamp",
@@ -6204,6 +6204,13 @@
       "max":5,
       "min":1
     },
+    "MessageSelectionStrategy":{
+      "type":"string",
+      "enum":[
+        "Random",
+        "Ordered"
+      ]
+    },
     "MessageVariationsList":{
       "type":"list",
       "member":{"shape":"Message"},
@@ -6413,6 +6420,10 @@
         "allowInterrupt":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Indicates whether the user can interrupt a speech prompt from the bot.</p>"
+        },
+        "messageSelectionStrategy":{
+          "shape":"MessageSelectionStrategy",
+          "documentation":"<p>Indicates how a message is selected from a message group among retries.</p>"
         }
       },
       "documentation":"<p>Specifies a list of message groups that Amazon Lex sends to a user to elicit a response.</p>"

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.25.23
+=======
+
+* api-change:``config``: Updating documentation service limits
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``quicksight``: This release allows customers to programmatically create QuickSight accounts with Enterprise and Enterprise + Q editions. It also releases allowlisting domains for embedding QuickSight dashboards at runtime through the embedding APIs.
+* api-change:``rds``: Adds waiters support for DBCluster.
+* api-change:``rolesanywhere``: IAM Roles Anywhere allows your workloads such as servers, containers, and applications to obtain temporary AWS credentials and use the same IAM roles and policies that you have configured for your AWS workloads to access AWS resources.
+* api-change:``ssm-incidents``: Adds support for tagging incident-record on creation by providing incident tags in the template within a response-plan.
+
+
 1.25.22
 =======
 

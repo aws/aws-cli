@@ -1,6 +1,6 @@
 **Example 1: To list all findings for the current region**
 
-The following ``list-findings`` example displays a list of all findingIds for the current region sorted by severit from highest to lowest. ::
+The following ``list-findings`` example displays a list of all findingIds for the current region sorted by severity from highest to lowest. ::
 
     aws guardduty list-findings \
         --detector-id 12abc34d567e8fa901bc2d34eexample \ 

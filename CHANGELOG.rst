@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.24
+=======
+
+* api-change:``cloudformation``: My AWS Service (placeholder) - Add a new feature Account-level Targeting for StackSet operation
+* api-change:``synthetics``: This release introduces Group feature, which enables users to group cross-region canaries.
+
+
 1.25.23
 =======
 

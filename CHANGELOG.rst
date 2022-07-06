@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+2.7.13
+======
+
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``appstream``: Includes support for StreamingExperienceSettings in CreateStack and UpdateStack APIs
+* api-change:``workmail``: This release adds support for managing user availability configurations in Amazon WorkMail.
+* api-change:``dms``: Added new features for AWS DMS version 3.4.7 that includes new endpoint settings for S3, OpenSearch, Postgres, SQLServer and Oracle.
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for alfresco
+* api-change:``ssm-incidents``: Adds support for tagging incident-record on creation by providing incident tags in the template within a response-plan.
+* api-change:``customer-profiles``: This release adds the optional MinAllowedConfidenceScoreForMerging parameter to the CreateDomain, UpdateDomain, and GetAutoMergingPreview APIs in Customer Profiles. This parameter is used as a threshold to influence the profile auto-merging step of the Identity Resolution process.
+* api-change:``rolesanywhere``: IAM Roles Anywhere allows your workloads such as servers, containers, and applications to obtain temporary AWS credentials and use the same IAM roles and policies that you have configured for your AWS workloads to access AWS resources.
+* api-change:``rds``: Adds waiters support for DBCluster.
+* api-change:``athena``: This feature introduces the API support for Athena's parameterized query and BatchGetPreparedStatement API.
+* api-change:``medialive``: This release adds support for automatic renewal of MediaLive reservations at the end of each reservation term. Automatic renewal is optional. This release also adds support for labelling accessibility-focused audio and caption tracks in HLS outputs.
+* api-change:``mwaa``: Documentation updates for Amazon Managed Workflows for Apache Airflow.
+* api-change:``quicksight``: This release allows customers to programmatically create QuickSight accounts with Enterprise and Enterprise + Q editions. It also releases allowlisting domains for embedding QuickSight dashboards at runtime through the embedding APIs.
+* api-change:``redshift-serverless``: Add new API operations for Amazon Redshift Serverless, a new way of using Amazon Redshift without needing to manually manage provisioned clusters. The new operations let you interact with Redshift Serverless resources, such as create snapshots, list VPC endpoints, delete resource policies, and more.
+* api-change:``translate``: Added ListLanguages API which can be used to list the languages supported by Translate.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``glue``: This release adds tag as an input of CreateDatabase
+* api-change:``config``: Updating documentation service limits
+* api-change:``wellarchitected``: Added support for UpdateGlobalSettings API. Added status filter to ListWorkloadShares and ListLensShares.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``rds``: Adds support for additional retention periods to Performance Insights.
+* api-change:``pricing``: Documentation update for GetProducts Response.
+* api-change:``sagemaker``: This release adds: UpdateFeatureGroup, UpdateFeatureMetadata, DescribeFeatureMetadata APIs; FeatureMetadata type in Search API; LastModifiedTime, LastUpdateStatus, OnlineStoreTotalSizeBytes in DescribeFeatureGroup API.
+
+
 2.7.12
 ======
 

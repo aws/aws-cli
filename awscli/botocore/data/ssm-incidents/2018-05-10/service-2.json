@@ -1395,6 +1395,10 @@
           "shape":"Impact",
           "documentation":"<p>The impact of the incident on your customers and applications. </p>"
         },
+        "incidentTags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags to apply to an incident when calling the <code>StartIncident</code> API action.</p>"
+        },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
           "documentation":"<p>The Amazon SNS targets that are notified when updates are made to an incident.</p>"
@@ -2223,6 +2227,13 @@
       "max":50,
       "min":1
     },
+    "TagMapUpdate":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
+    },
     "TagResourceRequest":{
       "type":"structure",
       "required":[
@@ -2573,6 +2584,10 @@
         "incidentTemplateSummary":{
           "shape":"IncidentSummary",
           "documentation":"<p>A brief summary of the incident. This typically contains what has happened, what's currently happening, and next steps.</p>"
+        },
+        "incidentTemplateTags":{
+          "shape":"TagMapUpdate",
+          "documentation":"<p>Tags to apply to an incident when calling the <code>StartIncident</code> API action. To call this action, you must also have permission to call the <code>TagResource</code> API action for the incident record resource.</p>"
         },
         "incidentTemplateTitle":{
           "shape":"IncidentTitle",

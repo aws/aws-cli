@@ -2913,6 +2913,14 @@
       },
       "documentation": "Placeholder documentation for AccessDenied"
     },
+    "AccessibilityType": {
+      "type": "string",
+      "documentation": "Accessibility Type",
+      "enum": [
+        "DOES_NOT_IMPLEMENT_ACCESSIBILITY_FEATURES",
+        "IMPLEMENTS_ACCESSIBILITY_FEATURES"
+      ]
+    },
     "AfdSignaling": {
       "type": "string",
       "documentation": "Afd Signaling",
@@ -3130,7 +3138,7 @@
           "documentation": "Choosing followInput will cause the ISO 639 language code of the output to follow the ISO 639 language code of the input. The languageCode will be used when useConfigured is set, or when followInput is selected but there is no ISO 639 language code specified by the input."
         },
         "Name": {
-          "shape": "__string",
+          "shape": "__stringMax255",
           "locationName": "name",
           "documentation": "The name of this AudioDescription. Outputs will use this name to uniquely identify this AudioDescription.  Description names should be unique within this Live Event."
         },
@@ -4124,6 +4132,11 @@
     "CaptionDescription": {
       "type": "structure",
       "members": {
+        "Accessibility": {
+          "shape": "AccessibilityType",
+          "locationName": "accessibility",
+          "documentation": "Indicates whether the caption track implements accessibility features such as written descriptions of spoken dialog, music, and sounds."
+        },
         "CaptionSelectorName": {
           "shape": "__string",
           "locationName": "captionSelectorName",
@@ -5581,6 +5594,11 @@
           "locationName": "region",
           "documentation": "AWS region, e.g. 'us-west-2'"
         },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
+        },
         "ReservationId": {
           "shape": "__string",
           "locationName": "reservationId",
@@ -6332,6 +6350,11 @@
           "locationName": "region",
           "documentation": "AWS region, e.g. 'us-west-2'"
         },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
+        },
         "ReservationId": {
           "shape": "__string",
           "locationName": "reservationId",
@@ -6419,7 +6442,8 @@
       "documentation": "The status of software on the input device.",
       "enum": [
         "UP_TO_DATE",
-        "NOT_UP_TO_DATE"
+        "NOT_UP_TO_DATE",
+        "UPDATING"
       ]
     },
     "DvbNitSettings": {
@@ -9575,7 +9599,7 @@
           "documentation": "key used to extract the password from EC2 Parameter store"
         },
         "Uri": {
-          "shape": "__string",
+          "shape": "__stringMax2048",
           "locationName": "uri",
           "documentation": "Uniform Resource Identifier - This should be a path to a file accessible to the Live system (eg. a http:// URI) depending on the output type. For example, a RTMP destination should have a uri simliar to: \"rtmp://fmsserver/live\"."
         },
@@ -12668,6 +12692,11 @@
           "locationName": "name",
           "documentation": "Name for the new reservation"
         },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
+        },
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
@@ -12708,6 +12737,11 @@
           "location": "uri",
           "locationName": "offeringId",
           "documentation": "Offering to purchase, e.g. '87654321'"
+        },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
         },
         "RequestId": {
           "shape": "__string",
@@ -12815,6 +12849,22 @@
         "ChannelMappings"
       ]
     },
+    "RenewalSettings": {
+      "type": "structure",
+      "members": {
+        "AutomaticRenewal": {
+          "shape": "ReservationAutomaticRenewal",
+          "locationName": "automaticRenewal",
+          "documentation": "Automatic renewal status for the reservation"
+        },
+        "RenewalCount": {
+          "shape": "__integerMin1",
+          "locationName": "renewalCount",
+          "documentation": "Count for the reservation renewal"
+        }
+      },
+      "documentation": "The Renewal settings for Reservations"
+    },
     "Reservation": {
       "type": "structure",
       "members": {
@@ -12878,6 +12928,11 @@
           "locationName": "region",
           "documentation": "AWS region, e.g. 'us-west-2'"
         },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
+        },
         "ReservationId": {
           "shape": "__string",
           "locationName": "reservationId",
@@ -12910,6 +12965,15 @@
         }
       },
       "documentation": "Reserved resources available to use"
+    },
+    "ReservationAutomaticRenewal": {
+      "type": "string",
+      "documentation": "Automatic Renewal Status for Reservation",
+      "enum": [
+        "DISABLED",
+        "ENABLED",
+        "UNAVAILABLE"
+      ]
     },
     "ReservationCodec": {
       "type": "string",
@@ -15162,6 +15226,11 @@
           "shape": "__string",
           "locationName": "name",
           "documentation": "Name of the reservation"
+        },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
         }
       },
       "documentation": "UpdateReservation request"
@@ -15173,6 +15242,11 @@
           "shape": "__string",
           "locationName": "name",
           "documentation": "Name of the reservation"
+        },
+        "RenewalSettings": {
+          "shape": "RenewalSettings",
+          "locationName": "renewalSettings",
+          "documentation": "Renewal settings for the reservation"
         },
         "ReservationId": {
           "shape": "__string",
@@ -16227,6 +16301,16 @@
       "type": "string",
       "max": 1000,
       "documentation": "Placeholder documentation for __stringMax1000"
+    },
+    "__stringMax2048": {
+      "type": "string",
+      "max": 2048,
+      "documentation": "Placeholder documentation for __stringMax2048"
+    },
+    "__stringMax255": {
+      "type": "string",
+      "max": 255,
+      "documentation": "Placeholder documentation for __stringMax255"
     },
     "__stringMax256": {
       "type": "string",

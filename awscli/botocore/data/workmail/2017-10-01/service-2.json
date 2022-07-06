@@ -90,6 +90,24 @@
       "documentation":"<p>Adds an alias to the set of a given member (user or group) of Amazon WorkMail.</p>",
       "idempotent":true
     },
+    "CreateAvailabilityConfiguration":{
+      "name":"CreateAvailabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAvailabilityConfigurationRequest"},
+      "output":{"shape":"CreateAvailabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"NameAvailabilityException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates an <code>AvailabilityConfiguration</code> for the given WorkMail organization and domain.</p>",
+      "idempotent":true
+    },
     "CreateGroup":{
       "name":"CreateGroup",
       "http":{
@@ -217,6 +235,21 @@
         {"shape":"OrganizationStateException"}
       ],
       "documentation":"<p>Remove one or more specified aliases from a set of aliases for a given user.</p>",
+      "idempotent":true
+    },
+    "DeleteAvailabilityConfiguration":{
+      "name":"DeleteAvailabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAvailabilityConfigurationRequest"},
+      "output":{"shape":"DeleteAvailabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>Deletes the <code>AvailabilityConfiguration</code> for the given WorkMail organization and domain.</p>",
       "idempotent":true
     },
     "DeleteEmailMonitoringConfiguration":{
@@ -693,6 +726,20 @@
       "documentation":"<p>Creates a paginated call to list the aliases associated with a given entity.</p>",
       "idempotent":true
     },
+    "ListAvailabilityConfigurations":{
+      "name":"ListAvailabilityConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAvailabilityConfigurationsRequest"},
+      "output":{"shape":"ListAvailabilityConfigurationsResponse"},
+      "errors":[
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>List all the <code>AvailabilityConfiguration</code>'s for the given WorkMail organization.</p>"
+    },
     "ListGroupMembers":{
       "name":"ListGroupMembers",
       "http":{
@@ -1083,6 +1130,22 @@
       ],
       "documentation":"<p>Applies the specified tags to the specified Amazon WorkMail organization resource.</p>"
     },
+    "TestAvailabilityConfiguration":{
+      "name":"TestAvailabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestAvailabilityConfigurationRequest"},
+      "output":{"shape":"TestAvailabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Performs a test on an availability provider to ensure that access is allowed. For EWS, it verifies the provided credentials can be used to successfully log in. For Lambda, it verifies that the Lambda function can be invoked and that the resource access policy was configured to deny anonymous access. An anonymous invocation is one done without providing either a <code>SourceArn</code> or <code>SourceAccount</code> header.</p> <note> <p>The request must contain either one provider definition (<code>EwsProvider</code> or <code>LambdaProvider</code>) or the <code>DomainName</code> parameter. If the <code>DomainName</code> parameter is provided, the configuration stored under the <code>DomainName</code> will be tested. </p> </note>"
+    },
     "UntagResource":{
       "name":"UntagResource",
       "http":{
@@ -1095,6 +1158,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Untags the specified tags from the specified Amazon WorkMail organization resource.</p>"
+    },
+    "UpdateAvailabilityConfiguration":{
+      "name":"UpdateAvailabilityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAvailabilityConfigurationRequest"},
+      "output":{"shape":"UpdateAvailabilityConfigurationResponse"},
+      "errors":[
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates an existing <code>AvailabilityConfiguration</code> for the given WorkMail organization and domain.</p>",
+      "idempotent":true
     },
     "UpdateDefaultMailDomain":{
       "name":"UpdateDefaultMailDomain",
@@ -1354,6 +1434,47 @@
       "members":{
       }
     },
+    "AvailabilityConfiguration":{
+      "type":"structure",
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>Displays the domain to which the provider applies.</p>"
+        },
+        "ProviderType":{
+          "shape":"AvailabilityProviderType",
+          "documentation":"<p>Displays the provider type that applies to this domain.</p>"
+        },
+        "EwsProvider":{
+          "shape":"RedactedEwsAvailabilityProvider",
+          "documentation":"<p>If <code>ProviderType</code> is <code>EWS</code>, then this field contains <code>RedactedEwsAvailabilityProvider</code>. Otherwise, it is not requried.</p>"
+        },
+        "LambdaProvider":{
+          "shape":"LambdaAvailabilityProvider",
+          "documentation":"<p>If ProviderType is <code>LAMBDA</code> then this field contains <code>LambdaAvailabilityProvider</code>. Otherwise, it is not required.</p>"
+        },
+        "DateCreated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the availability configuration was created.</p>"
+        },
+        "DateModified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the availability configuration was last modified.</p>"
+        }
+      },
+      "documentation":"<p>List all the <code>AvailabilityConfiguration</code>'s for the given WorkMail organization.</p>"
+    },
+    "AvailabilityConfigurationList":{
+      "type":"list",
+      "member":{"shape":"AvailabilityConfiguration"}
+    },
+    "AvailabilityProviderType":{
+      "type":"string",
+      "enum":[
+        "EWS",
+        "LAMBDA"
+      ]
+    },
     "BookingOptions":{
       "type":"structure",
       "members":{
@@ -1425,6 +1546,41 @@
       }
     },
     "CreateAliasResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "CreateAvailabilityConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "DomainName"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"IdempotencyClientToken",
+          "documentation":"<p>An idempotent token that ensures that an API request is executed only once.</p>",
+          "idempotencyToken":true
+        },
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code> will be created.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain to which the provider applies.</p>"
+        },
+        "EwsProvider":{
+          "shape":"EwsAvailabilityProvider",
+          "documentation":"<p>Exchange Web Services (EWS) availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>.</p>"
+        },
+        "LambdaProvider":{
+          "shape":"LambdaAvailabilityProvider",
+          "documentation":"<p>Lambda availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>.</p>"
+        }
+      }
+    },
+    "CreateAvailabilityConfigurationResponse":{
       "type":"structure",
       "members":{
       }
@@ -1697,6 +1853,28 @@
       }
     },
     "DeleteAliasResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAvailabilityConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "DomainName"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code> will be deleted.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain for which the <code>AvailabilityConfiguration</code> will be deleted.</p>"
+        }
+      }
+    },
+    "DeleteAvailabilityConfigurationResponse":{
       "type":"structure",
       "members":{
       }
@@ -2528,6 +2706,34 @@
       "documentation":"<p>You are performing an operation on a user, group, or resource that isn't in the expected state, such as trying to delete an active user.</p>",
       "exception":true
     },
+    "EwsAvailabilityProvider":{
+      "type":"structure",
+      "required":[
+        "EwsEndpoint",
+        "EwsUsername",
+        "EwsPassword"
+      ],
+      "members":{
+        "EwsEndpoint":{
+          "shape":"Url",
+          "documentation":"<p>The endpoint of the remote EWS server.</p>"
+        },
+        "EwsUsername":{
+          "shape":"ExternalUserName",
+          "documentation":"<p>The username used to authenticate the remote EWS server.</p>"
+        },
+        "EwsPassword":{
+          "shape":"Password",
+          "documentation":"<p>The password used to authenticate the remote EWS server.</p>"
+        }
+      },
+      "documentation":"<p>Describes an EWS based availability provider. This is only used as input to the service.</p>"
+    },
+    "ExternalUserName":{
+      "type":"string",
+      "max":256,
+      "pattern":"[\\u0020-\\u00FF]+"
+    },
     "FolderConfiguration":{
       "type":"structure",
       "required":[
@@ -2909,6 +3115,23 @@
       "min":20,
       "pattern":"arn:aws:kms:[a-z0-9-]*:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}"
     },
+    "LambdaArn":{
+      "type":"string",
+      "max":256,
+      "min":49,
+      "pattern":"arn:aws:lambda:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9\\-_\\.]+(:(\\$LATEST|[a-zA-Z0-9\\-_]+))?"
+    },
+    "LambdaAvailabilityProvider":{
+      "type":"structure",
+      "required":["LambdaArn"],
+      "members":{
+        "LambdaArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda that acts as the availability provider.</p>"
+        }
+      },
+      "documentation":"<p>Describes a Lambda based availability provider.</p>"
+    },
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -2971,6 +3194,37 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use to retrieve the next page of results. The value is \"null\" when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListAvailabilityConfigurationsRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code>'s will be listed.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. The first call does not require a token.</p>"
+        }
+      }
+    },
+    "ListAvailabilityConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "AvailabilityConfigurations":{
+          "shape":"AvailabilityConfigurationList",
+          "documentation":"<p>The list of <code>AvailabilityConfiguration</code>'s that exist for the specified Amazon WorkMail organization.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. The value is <code>null</code> when there are no further results to return.</p>"
         }
       }
     },
@@ -3996,6 +4250,20 @@
       "members":{
       }
     },
+    "RedactedEwsAvailabilityProvider":{
+      "type":"structure",
+      "members":{
+        "EwsEndpoint":{
+          "shape":"Url",
+          "documentation":"<p>The endpoint of the remote EWS server.</p>"
+        },
+        "EwsUsername":{
+          "shape":"ExternalUserName",
+          "documentation":"<p>The username used to authenticate the remote EWS server.</p>"
+        }
+      },
+      "documentation":"<p>Describes an EWS based availability provider when returned from the service. It does not contain the password of the endpoint.</p>"
+    },
     "RegisterMailDomainRequest":{
       "type":"structure",
       "required":[
@@ -4313,6 +4581,35 @@
       "max":256,
       "min":0
     },
+    "TestAvailabilityConfigurationRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The Amazon WorkMail organization where the availability provider will be tested.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain to which the provider applies. If this field is provided, a stored availability provider associated to this domain name will be tested.</p>"
+        },
+        "EwsProvider":{"shape":"EwsAvailabilityProvider"},
+        "LambdaProvider":{"shape":"LambdaAvailabilityProvider"}
+      }
+    },
+    "TestAvailabilityConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "TestPassed":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean indicating whether the test passed or failed.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>String containing the reason for a failed test if <code>TestPassed</code> is false.</p>"
+        }
+      }
+    },
     "Timestamp":{"type":"timestamp"},
     "TooManyTagsException":{
       "type":"structure",
@@ -4348,6 +4645,36 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateAvailabilityConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "DomainName"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code> will be updated.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain to which the provider applies the availability configuration.</p>"
+        },
+        "EwsProvider":{
+          "shape":"EwsAvailabilityProvider",
+          "documentation":"<p>The EWS availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>. The previously stored provider will be overridden by the one provided.</p>"
+        },
+        "LambdaProvider":{
+          "shape":"LambdaAvailabilityProvider",
+          "documentation":"<p>The Lambda availability provider definition. The request must contain exactly one provider definition, either <code>EwsProvider</code> or <code>LambdaProvider</code>. The previously stored provider will be overridden by the one provided.</p>"
+        }
+      }
+    },
+    "UpdateAvailabilityConfigurationResponse":{
       "type":"structure",
       "members":{
       }
@@ -4525,6 +4852,11 @@
       "type":"structure",
       "members":{
       }
+    },
+    "Url":{
+      "type":"string",
+      "max":256,
+      "pattern":"https?://[A-Za-z0-9.-]+(:[0-9]+)?/.*"
     },
     "User":{
       "type":"structure",

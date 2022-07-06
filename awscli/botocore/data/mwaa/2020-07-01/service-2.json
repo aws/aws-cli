@@ -216,7 +216,8 @@
     "AirflowConfigurationOptions":{
       "type":"map",
       "key":{"shape":"ConfigKey"},
-      "value":{"shape":"ConfigValue"}
+      "value":{"shape":"ConfigValue"},
+      "sensitive":true
     },
     "AirflowVersion":{
       "type":"string",
@@ -240,7 +241,8 @@
       "type":"string",
       "max":65536,
       "min":1,
-      "pattern":"^[ -~]+$"
+      "pattern":"^[ -~]+$",
+      "sensitive":true
     },
     "CreateCliTokenRequest":{
       "type":"structure",
@@ -258,7 +260,7 @@
       "type":"structure",
       "members":{
         "CliToken":{
-          "shape":"SyntheticCreateCliTokenResponseToken",
+          "shape":"Token",
           "documentation":"<p>An Airflow CLI login token.</p>"
         },
         "WebServerHostname":{
@@ -278,12 +280,12 @@
       ],
       "members":{
         "AirflowConfigurationOptions":{
-          "shape":"SyntheticCreateEnvironmentInputAirflowConfigurationOptions",
+          "shape":"AirflowConfigurationOptions",
           "documentation":"<p>A list of key-value pairs containing the Apache Airflow configuration options you want to attach to your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html\">Apache Airflow configuration options</a>.</p>"
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, defaults to the latest version. Valid values: <code>1.10.12</code>, <code>2.0.2</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (MWAA)</a>.</p>"
+          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, it defaults to the latest version. Valid values: <code>1.10.12</code>, <code>2.0.2</code>, and <code>2.2.2</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (MWAA)</a>.</p>"
         },
         "DagS3Path":{
           "shape":"RelativePath",
@@ -341,7 +343,7 @@
         },
         "Schedulers":{
           "shape":"Schedulers",
-          "documentation":"<p>The number of Apache Airflow schedulers to run in your environment. Valid values:</p> <ul> <li> <p>v2.0.2 - Accepts between 2 to 5. Defaults to 2.</p> </li> <li> <p>v1.10.12 - Accepts 1.</p> </li> </ul>"
+          "documentation":"<p>The number of Apache Airflow schedulers to run in your environment. Valid values:</p> <ul> <li> <p>v2 - Accepts between 2 to 5. Defaults to 2.</p> </li> <li> <p>v1 - Accepts 1.</p> </li> </ul>"
         },
         "SourceBucketArn":{
           "shape":"S3BucketArn",
@@ -391,7 +393,7 @@
           "documentation":"<p>The Airflow web server hostname for the environment.</p>"
         },
         "WebToken":{
-          "shape":"SyntheticCreateWebLoginTokenResponseToken",
+          "shape":"Token",
           "documentation":"<p>An Airflow web server login token.</p>"
         }
       }
@@ -449,7 +451,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version on your environment. Valid values: <code>1.10.12</code>, <code>2.0.2</code>.</p>"
+          "documentation":"<p>The Apache Airflow version on your environment. Valid values: <code>1.10.12</code>, <code>2.0.2</code>, and <code>2.2.2</code>.</p>"
         },
         "Arn":{
           "shape":"EnvironmentArn",
@@ -998,26 +1000,6 @@
       "max":2,
       "min":2
     },
-    "SyntheticCreateCliTokenResponseToken":{
-      "type":"string",
-      "sensitive":true
-    },
-    "SyntheticCreateEnvironmentInputAirflowConfigurationOptions":{
-      "type":"map",
-      "key":{"shape":"ConfigKey"},
-      "value":{"shape":"ConfigValue"},
-      "sensitive":true
-    },
-    "SyntheticCreateWebLoginTokenResponseToken":{
-      "type":"string",
-      "sensitive":true
-    },
-    "SyntheticUpdateEnvironmentInputAirflowConfigurationOptions":{
-      "type":"map",
-      "key":{"shape":"ConfigKey"},
-      "value":{"shape":"ConfigValue"},
-      "sensitive":true
-    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -1068,6 +1050,10 @@
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "Timestamp":{"type":"timestamp"},
+    "Token":{
+      "type":"string",
+      "sensitive":true
+    },
     "Unit":{
       "type":"string",
       "enum":[
@@ -1132,12 +1118,12 @@
       "required":["Name"],
       "members":{
         "AirflowConfigurationOptions":{
-          "shape":"SyntheticUpdateEnvironmentInputAirflowConfigurationOptions",
+          "shape":"AirflowConfigurationOptions",
           "documentation":"<p>A list of key-value pairs containing the Apache Airflow configuration options you want to attach to your environment. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html\">Apache Airflow configuration options</a>.</p>"
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, defaults to the latest version. Valid values: <code>1.10.12</code>, <code>2.0.2</code>.</p>"
+          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, defaults to the latest version. Valid values: <code>1.10.12</code>, <code>2.0.2</code>, and <code>2.2.2</code>.</p>"
         },
         "DagS3Path":{
           "shape":"RelativePath",
@@ -1287,5 +1273,5 @@
       "pattern":"(MON|TUE|WED|THU|FRI|SAT|SUN):([01]\\d|2[0-3]):(00|30)"
     }
   },
-  "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What Is Amazon MWAA?</a>.</p></p> <pre><code> &lt;p&gt; &lt;b&gt;Endpoints&lt;/b&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;api.airflow.{region}.amazonaws.com&lt;/code&gt; - This endpoint is used for environment management.&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html&quot;&gt;CreateEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html&quot;&gt;DeleteEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html&quot;&gt;GetEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html&quot;&gt;ListEnvironments&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html&quot;&gt;ListTagsForResource&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html&quot;&gt;TagResource&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html&quot;&gt;UntagResource&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html&quot;&gt;UpdateEnvironment&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;env.airflow.{region}.amazonaws.com&lt;/code&gt; - This endpoint is used to operate the Airflow environment.&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html &quot;&gt;CreateCliToken&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html&quot;&gt;CreateWebLoginToken&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;ops.airflow.{region}.amazonaws.com&lt;/code&gt; - This endpoint is used to push environment metrics that track environment health.&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/API/API_PublishMetrics.html &quot;&gt;PublishMetrics&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; &lt;b&gt;Regions&lt;/b&gt; &lt;/p&gt; &lt;p&gt;For a list of regions that Amazon MWAA supports, see &lt;a href=&quot;https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html#regions-mwaa&quot;&gt;Region availability&lt;/a&gt; in the &lt;i&gt;Amazon MWAA User Guide&lt;/i&gt;.&lt;/p&gt; </code></pre>"
+  "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What Is Amazon MWAA?</a>.</p> <p> <b>Endpoints</b> </p> <ul> <li> <p> <code>api.airflow.{region}.amazonaws.com</code> - This endpoint is used for environment management.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html\">CreateEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html\">DeleteEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html\">GetEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html\">ListEnvironments</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html\">ListTagsForResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html\">TagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html\">UntagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html\">UpdateEnvironment</a> </p> </li> </ul> </li> <li> <p> <code>env.airflow.{region}.amazonaws.com</code> - This endpoint is used to operate the Airflow environment.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html \">CreateCliToken</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html\">CreateWebLoginToken</a> </p> </li> </ul><br /> </li> <li> <p> <code>ops.airflow.{region}.amazonaws.com</code> - This endpoint is used to push environment metrics that track environment health.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_PublishMetrics.html \">PublishMetrics</a> </p> </li> </ul> </li> </ul> <p> <b>Regions</b> </p> <p>For a list of regions that Amazon MWAA supports, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html#regions-mwaa\">Region availability</a> in the <i>Amazon MWAA User Guide</i>.</p></p>"
 }

@@ -26,6 +26,20 @@
       ],
       "documentation":"<p>Returns the details of a single named query or a list of up to 50 queries, which you provide as an array of query ID strings. Requires you to have access to the workgroup in which the queries were saved. Use <a>ListNamedQueriesInput</a> to get the list of named query IDs in the specified workgroup. If information could not be retrieved for a submitted query ID, information about the query ID submitted is listed under <a>UnprocessedNamedQueryId</a>. Named queries differ from executed queries. Use <a>BatchGetQueryExecutionInput</a> to get details about each unique query execution, and <a>ListQueryExecutionsInput</a> to get a list of query execution IDs.</p>"
     },
+    "BatchGetPreparedStatement":{
+      "name":"BatchGetPreparedStatement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetPreparedStatementInput"},
+      "output":{"shape":"BatchGetPreparedStatementOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Returns the details of a single prepared statement or a list of up to 256 prepared statements for the array of prepared statement names that you provide. Requires you to have access to the workgroup to which the prepared statements belong. If a prepared statement cannot be retrieved for the name specified, the statement is listed in <code>UnprocessedPreparedStatementNames</code>.</p>"
+    },
     "BatchGetQueryExecution":{
       "name":"BatchGetQueryExecution",
       "http":{
@@ -340,7 +354,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Lists the prepared statements in the specfied workgroup.</p>"
+      "documentation":"<p>Lists the prepared statements in the specified workgroup.</p>"
     },
     "ListQueryExecutions":{
       "name":"ListQueryExecutions",
@@ -579,6 +593,36 @@
         "UnprocessedNamedQueryIds":{
           "shape":"UnprocessedNamedQueryIdList",
           "documentation":"<p>Information about provided query IDs.</p>"
+        }
+      }
+    },
+    "BatchGetPreparedStatementInput":{
+      "type":"structure",
+      "required":[
+        "PreparedStatementNames",
+        "WorkGroup"
+      ],
+      "members":{
+        "PreparedStatementNames":{
+          "shape":"PreparedStatementNameList",
+          "documentation":"<p>A list of prepared statement names to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup to which the prepared statements belong.</p>"
+        }
+      }
+    },
+    "BatchGetPreparedStatementOutput":{
+      "type":"structure",
+      "members":{
+        "PreparedStatements":{
+          "shape":"PreparedStatementDetailsList",
+          "documentation":"<p>The list of prepared statements returned.</p>"
+        },
+        "UnprocessedPreparedStatementNames":{
+          "shape":"UnprocessedPreparedStatementNameList",
+          "documentation":"<p>A list of one or more prepared statements that were requested but could not be returned.</p>"
         }
       }
     },
@@ -1073,6 +1117,16 @@
       "box":true,
       "max":9999,
       "min":0
+    },
+    "ExecutionParameter":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ExecutionParameters":{
+      "type":"list",
+      "member":{"shape":"ExecutionParameter"},
+      "min":1
     },
     "ExpressionString":{
       "type":"string",
@@ -1735,6 +1789,14 @@
       },
       "documentation":"<p>A prepared SQL statement for use with Athena.</p>"
     },
+    "PreparedStatementDetailsList":{
+      "type":"list",
+      "member":{"shape":"PreparedStatement"}
+    },
+    "PreparedStatementNameList":{
+      "type":"list",
+      "member":{"shape":"StatementName"}
+    },
     "PreparedStatementSummary":{
       "type":"structure",
       "members":{
@@ -1793,6 +1855,10 @@
         "EngineVersion":{
           "shape":"EngineVersion",
           "documentation":"<p>The engine version that executed the query.</p>"
+        },
+        "ExecutionParameters":{
+          "shape":"ExecutionParameters",
+          "documentation":"<p>A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur.</p>"
         }
       },
       "documentation":"<p>Information about a single instance of a query execution.</p>"
@@ -1901,7 +1967,10 @@
       "type":"structure",
       "members":{
         "Message":{"shape":"ErrorMessage"},
-        "ResourceName":{"shape":"AmazonResourceName"}
+        "ResourceName":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The name of the Amazon resource.</p>"
+        }
       },
       "documentation":"<p>A resource, such as a workgroup, was not found.</p>",
       "exception":true
@@ -2032,6 +2101,10 @@
         "WorkGroup":{
           "shape":"WorkGroupName",
           "documentation":"<p>The name of the workgroup in which the query is being started.</p>"
+        },
+        "ExecutionParameters":{
+          "shape":"ExecutionParameters",
+          "documentation":"<p>A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur.</p>"
         }
       }
     },
@@ -2219,6 +2292,28 @@
     "UnprocessedNamedQueryIdList":{
       "type":"list",
       "member":{"shape":"UnprocessedNamedQueryId"}
+    },
+    "UnprocessedPreparedStatementName":{
+      "type":"structure",
+      "members":{
+        "StatementName":{
+          "shape":"StatementName",
+          "documentation":"<p>The name of a prepared statement that could not be returned due to an error.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code returned when the request for the prepared statement failed.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The error message containing the reason why the prepared statement could not be returned. The following error messages are possible:</p> <ul> <li> <p> <code>INVALID_INPUT</code> - The name of the prepared statement that was provided is not valid (for example, the name is too long).</p> </li> <li> <p> <code>STATEMENT_NOT_FOUND</code> - A prepared statement with the name provided could not be found.</p> </li> <li> <p> <code>UNAUTHORIZED</code> - The requester does not have permission to access the workgroup that contains the prepared statement.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The name of a prepared statement that could not be returned.</p>"
+    },
+    "UnprocessedPreparedStatementNameList":{
+      "type":"list",
+      "member":{"shape":"UnprocessedPreparedStatementName"}
     },
     "UnprocessedQueryExecutionId":{
       "type":"structure",

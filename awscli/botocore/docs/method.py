@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import inspect
+import types
 
 from botocore.docs.example import (
     RequestExampleDocumenter,
@@ -99,14 +100,18 @@ def document_custom_signature(section, name, method,
     :param exclude: The names of the parameters to exclude from
         documentation.
     """
-    argspec = inspect.getfullargspec(method)
-    signature_params = inspect.formatargspec(
-        args=argspec.args[1:],
-        varargs=argspec.varargs,
-        varkw=argspec.varkw,
-        defaults=argspec.defaults
-    )
-    signature_params = signature_params.lstrip('(')
+    signature = inspect.signature(method)
+    # "raw" class methods are FunctionType and they include "self" param
+    # object methods are MethodType and they skip the "self" param
+    if isinstance(method, types.FunctionType):
+        self_param = next(iter(signature.parameters))
+        self_kind = signature.parameters[self_param].kind
+        # safety check that we got the right parameter
+        assert self_kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
+        new_params = signature.parameters.copy()
+        del new_params[self_param]
+        signature = signature.replace(parameters=new_params.values())
+    signature_params = str(signature).lstrip('(')
     signature_params = signature_params.rstrip(')')
     section.style.start_sphinx_py_method(name, signature_params)
 

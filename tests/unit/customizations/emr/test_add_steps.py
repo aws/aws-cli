@@ -255,6 +255,27 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             cmd=cmd, expected_result=expected_result,
             expected_result_release=expected_result_release)
 
+    def test_step_with_execution_role_arn(self):
+        cmd = self.prefix + 'Type=Streaming,' + self.STREAMING_ARGS
+        cmd += ' --execution-role-arn arn:aws:iam::123456789010:role/sample '
+        expected_result = {
+            'ExecutionRoleArn': 'arn:aws:iam::123456789010:role/sample',
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {'Name': 'Streaming program',
+                 'ActionOnFailure': 'CONTINUE',
+                 'HadoopJarStep': self.STREAMING_HADOOP_SCRIPT_RUNNER_STEP
+                 }
+            ]
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = \
+            self.STREAMING_HADOOP_COMMAND_RUNNER_STEP
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd, expected_result=expected_result,
+            expected_result_release=expected_result_release)
+
     def test_streaming_step_missing_args(self):
         cmd = self.prefix + 'Type=Streaming'
         expected_error_msg = '\naws: error: The following ' + \

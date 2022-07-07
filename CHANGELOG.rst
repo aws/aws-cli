@@ -2,6 +2,45 @@
 CHANGELOG
 =========
 
+1.25.24
+=======
+
+* api-change:``cloudformation``: My AWS Service (placeholder) - Add a new feature Account-level Targeting for StackSet operation
+* api-change:``synthetics``: This release introduces Group feature, which enables users to group cross-region canaries.
+
+
+1.25.23
+=======
+
+* api-change:``config``: Updating documentation service limits
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``quicksight``: This release allows customers to programmatically create QuickSight accounts with Enterprise and Enterprise + Q editions. It also releases allowlisting domains for embedding QuickSight dashboards at runtime through the embedding APIs.
+* api-change:``rds``: Adds waiters support for DBCluster.
+* api-change:``rolesanywhere``: IAM Roles Anywhere allows your workloads such as servers, containers, and applications to obtain temporary AWS credentials and use the same IAM roles and policies that you have configured for your AWS workloads to access AWS resources.
+* api-change:``ssm-incidents``: Adds support for tagging incident-record on creation by providing incident tags in the template within a response-plan.
+
+
+1.25.22
+=======
+
+* api-change:``dms``: Added new features for AWS DMS version 3.4.7 that includes new endpoint settings for S3, OpenSearch, Postgres, SQLServer and Oracle.
+* api-change:``rds``: Adds support for additional retention periods to Performance Insights.
+
+
+1.25.21
+=======
+
+* api-change:``athena``: This feature introduces the API support for Athena's parameterized query and BatchGetPreparedStatement API.
+* api-change:``customer-profiles``: This release adds the optional MinAllowedConfidenceScoreForMerging parameter to the CreateDomain, UpdateDomain, and GetAutoMergingPreview APIs in Customer Profiles. This parameter is used as a threshold to influence the profile auto-merging step of the Identity Resolution process.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``glue``: This release adds tag as an input of CreateDatabase
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for alfresco
+* api-change:``mwaa``: Documentation updates for Amazon Managed Workflows for Apache Airflow.
+* api-change:``pricing``: Documentation update for GetProducts Response.
+* api-change:``wellarchitected``: Added support for UpdateGlobalSettings API. Added status filter to ListWorkloadShares and ListLensShares.
+* api-change:``workmail``: This release adds support for managing user availability configurations in Amazon WorkMail.
+
+
 1.25.20
 =======
 

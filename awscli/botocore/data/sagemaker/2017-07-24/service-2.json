@@ -15131,6 +15131,45 @@
       "member":{"shape":"TrainingInputMode"},
       "min":1
     },
+    "InstanceGroup":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "InstanceCount",
+        "InstanceGroupName"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"TrainingInstanceType",
+          "documentation":"<p>Specifies the instance type of the instance group.</p>"
+        },
+        "InstanceCount":{
+          "shape":"TrainingInstanceCount",
+          "documentation":"<p>Specifies the number of instances of the instance group.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"InstanceGroupName",
+          "documentation":"<p>Specifies the name of the instance group.</p>"
+        }
+      },
+      "documentation":"<p>Defines an instance group for heterogeneous cluster training. When requesting a training job using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html\">CreateTrainingJob</a> API, you can configure up to 5 different ML training instance groups.</p>"
+    },
+    "InstanceGroupName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":".+"
+    },
+    "InstanceGroupNames":{
+      "type":"list",
+      "member":{"shape":"InstanceGroupName"},
+      "max":5
+    },
+    "InstanceGroups":{
+      "type":"list",
+      "member":{"shape":"InstanceGroup"},
+      "max":5
+    },
     "InstanceMetadataServiceConfiguration":{
       "type":"structure",
       "required":["MinimumInstanceMetadataServiceVersion"],
@@ -23439,11 +23478,7 @@
     },
     "ResourceConfig":{
       "type":"structure",
-      "required":[
-        "InstanceType",
-        "InstanceCount",
-        "VolumeSizeInGB"
-      ],
+      "required":["VolumeSizeInGB"],
       "members":{
         "InstanceType":{
           "shape":"TrainingInstanceType",
@@ -23460,6 +23495,10 @@
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The Amazon Web Services KMS key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance(s) that run the training job.</p> <note> <p>Certain Nitro-based instances include local storage, dependent on the instance type. Local storage volumes are encrypted using a hardware module on the instance. You can't request a <code>VolumeKmsKeyId</code> when using an instance type with local storage.</p> <p>For a list of instance types that support local instance storage, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes\">Instance Store Volumes</a>.</p> <p>For more information about local instance storage encryption, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html\">SSD Instance Store Volumes</a>.</p> </note> <p>The <code>VolumeKmsKeyId</code> can be in any of the following formats:</p> <ul> <li> <p>// KMS Key ID</p> <p> <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>// Amazon Resource Name (ARN) of a KMS Key</p> <p> <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "InstanceGroups":{
+          "shape":"InstanceGroups",
+          "documentation":"<p>The configuration of a heterogeneous cluster in JSON format.</p>"
         }
       },
       "documentation":"<p>Describes the resources, including ML compute instances and ML storage volumes, to use for model training. </p>"
@@ -23694,6 +23733,10 @@
         "AttributeNames":{
           "shape":"AttributeNames",
           "documentation":"<p>A list of one or more attribute names to use that are found in a specified augmented manifest file.</p>"
+        },
+        "InstanceGroupNames":{
+          "shape":"InstanceGroupNames",
+          "documentation":"<p>A list of names of instance groups that get data from the S3 data source.</p>"
         }
       },
       "documentation":"<p>Describes the S3 data source.</p>"
@@ -24996,7 +25039,7 @@
     },
     "TrainingInstanceCount":{
       "type":"integer",
-      "min":1
+      "min":0
     },
     "TrainingInstanceType":{
       "type":"string",

@@ -13,6 +13,23 @@
     "uid":"synthetics-2017-10-11"
   },
   "operations":{
+    "AssociateResource":{
+      "name":"AssociateResource",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/group/{groupIdentifier}/associate"
+      },
+      "input":{"shape":"AssociateResourceRequest"},
+      "output":{"shape":"AssociateResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associates a canary with a group. Using groups can help you with managing and automating your canaries, and you can also view aggregated run results and statistics for all canaries in a group. </p> <p>You must run this operation in the Region where the canary exists.</p>"
+    },
     "CreateCanary":{
       "name":"CreateCanary",
       "http":{
@@ -26,7 +43,23 @@
         {"shape":"ValidationException"},
         {"shape":"RequestEntityTooLargeException"}
       ],
-      "documentation":"<p>Creates a canary. Canaries are scripts that monitor your endpoints and APIs from the outside-in. Canaries help you check the availability and latency of your web services and troubleshoot anomalies by investigating load time data, screenshots of the UI, logs, and metrics. You can set up a canary to run continuously or just once. </p> <p>Do not use <code>CreateCanary</code> to modify an existing canary. Use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_UpdateCanary.html\">UpdateCanary</a> instead.</p> <p>To create canaries, you must have the <code>CloudWatchSyntheticsFullAccess</code> policy. If you are creating a new IAM role for the canary, you also need the the <code>iam:CreateRole</code>, <code>iam:CreatePolicy</code> and <code>iam:AttachRolePolicy</code> permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Roles\">Necessary Roles and Permissions</a>.</p> <p>Do not include secrets or proprietary information in your canary names. The canary name makes up part of the Amazon Resource Name (ARN) for the canary, and the ARN is included in outbound calls over the internet. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/servicelens_canaries_security.html\">Security Considerations for Synthetics Canaries</a>.</p>"
+      "documentation":"<p>Creates a canary. Canaries are scripts that monitor your endpoints and APIs from the outside-in. Canaries help you check the availability and latency of your web services and troubleshoot anomalies by investigating load time data, screenshots of the UI, logs, and metrics. You can set up a canary to run continuously or just once. </p> <p>Do not use <code>CreateCanary</code> to modify an existing canary. Use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_UpdateCanary.html\">UpdateCanary</a> instead.</p> <p>To create canaries, you must have the <code>CloudWatchSyntheticsFullAccess</code> policy. If you are creating a new IAM role for the canary, you also need the <code>iam:CreateRole</code>, <code>iam:CreatePolicy</code> and <code>iam:AttachRolePolicy</code> permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Roles\">Necessary Roles and Permissions</a>.</p> <p>Do not include secrets or proprietary information in your canary names. The canary name makes up part of the Amazon Resource Name (ARN) for the canary, and the ARN is included in outbound calls over the internet. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/servicelens_canaries_security.html\">Security Considerations for Synthetics Canaries</a>.</p>"
+    },
+    "CreateGroup":{
+      "name":"CreateGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/group"
+      },
+      "input":{"shape":"CreateGroupRequest"},
+      "output":{"shape":"CreateGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a group which you can use to associate canaries with each other, including cross-Region canaries. Using groups can help you with managing and automating your canaries, and you can also view aggregated run results and statistics for all canaries in a group. </p> <p>Groups are global resources. When you create a group, it is replicated across Amazon Web Services Regions, and you can view it and add canaries to it from any Region. Although the group ARN format reflects the Region name where it was created, a group is not constrained to any Region. This means that you can put canaries from multiple Regions into the same group, and then use that group to view and manage all of those canaries in a single view.</p> <p>Groups are supported in all Regions except the Regions that are disabled by default. For more information about these Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable\">Enabling a Region</a>.</p> <p>Each group can contain as many as 10 canaries. You can have as many as 20 groups in your account. Any single canary can be a member of up to 10 groups.</p>"
     },
     "DeleteCanary":{
       "name":"DeleteCanary",
@@ -42,7 +75,23 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Permanently deletes the specified canary.</p> <p>If you specify <code>DeleteLambda</code> to <code>true</code>, CloudWatch Synthetics also deletes the Lambda functions and layers that are used by the canary.</p> <p>Other esources used and created by the canary are not automatically deleted. After you delete a canary that you do not intend to use again, you should also delete the following:</p> <ul> <li> <p>The CloudWatch alarms created for this canary. These alarms have a name of <code>Synthetics-SharpDrop-Alarm-<i>MyCanaryName</i> </code>.</p> </li> <li> <p>Amazon S3 objects and buckets, such as the canary's artifact location.</p> </li> <li> <p>IAM roles created for the canary. If they were created in the console, these roles have the name <code> role/service-role/CloudWatchSyntheticsRole-<i>MyCanaryName</i> </code>.</p> </li> <li> <p>CloudWatch Logs log groups created for the canary. These logs groups have the name <code>/aws/lambda/cwsyn-<i>MyCanaryName</i> </code>. </p> </li> </ul> <p>Before you delete a canary, you might want to use <code>GetCanary</code> to display the information about this canary. Make note of the information returned by this operation so that you can delete these resources after you delete the canary.</p>"
+      "documentation":"<p>Permanently deletes the specified canary.</p> <p>If you specify <code>DeleteLambda</code> to <code>true</code>, CloudWatch Synthetics also deletes the Lambda functions and layers that are used by the canary.</p> <p>Other resources used and created by the canary are not automatically deleted. After you delete a canary that you do not intend to use again, you should also delete the following:</p> <ul> <li> <p>The CloudWatch alarms created for this canary. These alarms have a name of <code>Synthetics-SharpDrop-Alarm-<i>MyCanaryName</i> </code>.</p> </li> <li> <p>Amazon S3 objects and buckets, such as the canary's artifact location.</p> </li> <li> <p>IAM roles created for the canary. If they were created in the console, these roles have the name <code> role/service-role/CloudWatchSyntheticsRole-<i>MyCanaryName</i> </code>.</p> </li> <li> <p>CloudWatch Logs log groups created for the canary. These logs groups have the name <code>/aws/lambda/cwsyn-<i>MyCanaryName</i> </code>. </p> </li> </ul> <p>Before you delete a canary, you might want to use <code>GetCanary</code> to display the information about this canary. Make note of the information returned by this operation so that you can delete these resources after you delete the canary.</p>"
+    },
+    "DeleteGroup":{
+      "name":"DeleteGroup",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/group/{groupIdentifier}"
+      },
+      "input":{"shape":"DeleteGroupRequest"},
+      "output":{"shape":"DeleteGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a group. The group doesn't need to be empty to be deleted. If there are canaries in the group, they are not deleted when you delete the group. </p> <p>Groups are a global resource that appear in all Regions, but the request to delete a group must be made from its home Region. You can find the home Region of a group within its ARN.</p>"
     },
     "DescribeCanaries":{
       "name":"DescribeCanaries",
@@ -86,6 +135,22 @@
       ],
       "documentation":"<p>Returns a list of Synthetics canary runtime versions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html\"> Canary Runtime Versions</a>.</p>"
     },
+    "DisassociateResource":{
+      "name":"DisassociateResource",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/group/{groupIdentifier}/disassociate"
+      },
+      "input":{"shape":"DisassociateResourceRequest"},
+      "output":{"shape":"DisassociateResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Removes a canary from a group. You must run this operation in the Region where the canary exists.</p>"
+    },
     "GetCanary":{
       "name":"GetCanary",
       "http":{
@@ -115,6 +180,67 @@
       ],
       "documentation":"<p>Retrieves a list of runs for a specified canary.</p>"
     },
+    "GetGroup":{
+      "name":"GetGroup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/group/{groupIdentifier}"
+      },
+      "input":{"shape":"GetGroupRequest"},
+      "output":{"shape":"GetGroupResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Returns information about one group. Groups are a global resource, so you can use this operation from any Region.</p>"
+    },
+    "ListAssociatedGroups":{
+      "name":"ListAssociatedGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resource/{resourceArn}/groups"
+      },
+      "input":{"shape":"ListAssociatedGroupsRequest"},
+      "output":{"shape":"ListAssociatedGroupsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the groups that the specified canary is associated with. The canary that you specify must be in the current Region.</p>"
+    },
+    "ListGroupResources":{
+      "name":"ListGroupResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/group/{groupIdentifier}/resources"
+      },
+      "input":{"shape":"ListGroupResourcesRequest"},
+      "output":{"shape":"ListGroupResourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>This operation returns a list of the ARNs of the canaries that are associated with the specified group.</p>"
+    },
+    "ListGroups":{
+      "name":"ListGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/groups"
+      },
+      "input":{"shape":"ListGroupsRequest"},
+      "output":{"shape":"ListGroupsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of all groups in the account, displaying their names, unique IDs, and ARNs. The groups from all Regions are returned.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -124,11 +250,13 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
-        {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Displays the tags associated with a canary.</p>"
+      "documentation":"<p>Displays the tags associated with a canary or group.</p>"
     },
     "StartCanary":{
       "name":"StartCanary",
@@ -160,7 +288,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Stops the canary to prevent all future runs. If the canary is currently running, Synthetics stops waiting for the current run of the specified canary to complete. The run that is in progress completes on its own, publishes metrics, and uploads artifacts, but it is not recorded in Synthetics as a completed run.</p> <p>You can use <code>StartCanary</code> to start it running again with the canary’s current schedule at any point in the future. </p>"
+      "documentation":"<p>Stops the canary to prevent all future runs. If the canary is currently running,the run that is in progress completes on its own, publishes metrics, and uploads artifacts, but it is not recorded in Synthetics as a completed run.</p> <p>You can use <code>StartCanary</code> to start it running again with the canary’s current schedule at any point in the future. </p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -171,11 +299,13 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
-        {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified canary. </p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with a canary that already has tags. If you specify a new tag key for the alarm, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the alarm, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a canary.</p>"
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified canary or group. </p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with a resource that already has tags. If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the resource. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a canary or group.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -186,11 +316,13 @@
       "input":{"shape":"UntagResourceRequest"},
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
-        {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Removes one or more tags from the specified canary.</p>"
+      "documentation":"<p>Removes one or more tags from the specified resource.</p>"
     },
     "UpdateCanary":{
       "name":"UpdateCanary",
@@ -207,7 +339,7 @@
         {"shape":"ConflictException"},
         {"shape":"RequestEntityTooLargeException"}
       ],
-      "documentation":"<p>Use this operation to change the settings of a canary that has already been created.</p> <p>You can't use this operation to update the tags of an existing canary. To change the tags of an existing canary, use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_TagResource.html\">TagResource</a>.</p>"
+      "documentation":"<p>Updates the configuration of a canary that has already been created.</p> <p>You can't use this operation to update the tags of an existing canary. To change the tags of an existing canary, use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_TagResource.html\">TagResource</a>.</p>"
     }
   },
   "shapes":{
@@ -231,6 +363,39 @@
       },
       "documentation":"<p>A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.</p>"
     },
+    "AssociateResourceRequest":{
+      "type":"structure",
+      "required":[
+        "GroupIdentifier",
+        "ResourceArn"
+      ],
+      "members":{
+        "GroupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>Specifies the group. You can specify the group name, the ARN, or the group ID as the <code>GroupIdentifier</code>.</p>",
+          "location":"uri",
+          "locationName":"groupIdentifier"
+        },
+        "ResourceArn":{
+          "shape":"CanaryArn",
+          "documentation":"<p>The ARN of the canary that you want to associate with the specified group.</p>"
+        }
+      }
+    },
+    "AssociateResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was not valid.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "BaseScreenshot":{
       "type":"structure",
       "required":["ScreenshotName"],
@@ -241,7 +406,7 @@
         },
         "IgnoreCoordinates":{
           "shape":"BaseScreenshotIgnoreCoordinates",
-          "documentation":"<p>Coordinates that define the part of a screen to ignore during screenshot comparisons. To obtain the coordinates to use here, use the CloudWatch Logs console to draw the boundaries on the screen. For more information, see {LINK}</p>"
+          "documentation":"<p>Coordinates that define the part of a screen to ignore during screenshot comparisons. To obtain the coordinates to use here, use the CloudWatch console to draw the boundaries on the screen. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/synthetics_canaries_deletion.html\"> Editing or deleting a canary</a> </p>"
         }
       },
       "documentation":"<p>A structure representing a screenshot that is used as a baseline during visual monitoring comparisons made by the canary.</p>"
@@ -448,7 +613,7 @@
         },
         "EnvironmentVariables":{
           "shape":"EnvironmentVariablesMap",
-          "documentation":"<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ \"key1\" : \"value1\", \"key2\" : \"value2\", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can't specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime\"> Runtime environment variables</a>.</p>"
+          "documentation":"<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ \"key1\" : \"value1\", \"key2\" : \"value2\", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can't specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime\"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>"
         }
       },
       "documentation":"<p>A structure that contains input information for a canary run.</p>"
@@ -670,7 +835,7 @@
         },
         "RunConfig":{
           "shape":"CanaryRunConfigInput",
-          "documentation":"<p>A structure that contains the configuration for individual canary runs, such as timeout value.</p>"
+          "documentation":"<p>A structure that contains the configuration for individual canary runs, such as timeout value and environment variables.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>"
         },
         "SuccessRetentionPeriodInDays":{
           "shape":"MaxSize1024",
@@ -707,6 +872,29 @@
         }
       }
     },
+    "CreateGroupRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"GroupName",
+          "documentation":"<p>The name for the group. It can include any Unicode characters.</p> <p>The names for all groups in your account, across all Regions, must be unique.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of key-value pairs to associate with the group. You can associate as many as 50 tags with a group.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p>"
+        }
+      }
+    },
+    "CreateGroupResponse":{
+      "type":"structure",
+      "members":{
+        "Group":{
+          "shape":"Group",
+          "documentation":"<p>A structure that contains information about the group that was just created.</p>"
+        }
+      }
+    },
     "DeleteCanaryRequest":{
       "type":"structure",
       "required":["Name"],
@@ -730,6 +918,23 @@
       "members":{
       }
     },
+    "DeleteGroupRequest":{
+      "type":"structure",
+      "required":["GroupIdentifier"],
+      "members":{
+        "GroupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>Specifies which group to delete. You can specify the group name, the ARN, or the group ID as the <code>GroupIdentifier</code>.</p>",
+          "location":"uri",
+          "locationName":"groupIdentifier"
+        }
+      }
+    },
+    "DeleteGroupResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DescribeCanariesLastRunNameFilter":{
       "type":"list",
       "member":{"shape":"CanaryName"},
@@ -741,7 +946,7 @@
       "members":{
         "NextToken":{
           "shape":"Token",
-          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanaries</code> operation to retrieve the next set of results.</p>"
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanariesLastRun</code> operation to retrieve the next set of results.</p>"
         },
         "MaxResults":{
           "shape":"MaxSize100",
@@ -828,6 +1033,30 @@
         }
       }
     },
+    "DisassociateResourceRequest":{
+      "type":"structure",
+      "required":[
+        "GroupIdentifier",
+        "ResourceArn"
+      ],
+      "members":{
+        "GroupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>Specifies the group. You can specify the group name, the ARN, or the group ID as the <code>GroupIdentifier</code>.</p>",
+          "location":"uri",
+          "locationName":"groupIdentifier"
+        },
+        "ResourceArn":{
+          "shape":"CanaryArn",
+          "documentation":"<p>The ARN of the canary that you want to remove from the specified group.</p>"
+        }
+      }
+    },
+    "DisassociateResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "EncryptionMode":{
       "type":"string",
       "enum":[
@@ -869,7 +1098,7 @@
       "members":{
         "Canary":{
           "shape":"Canary",
-          "documentation":"<p>A strucure that contains the full information about the canary.</p>"
+          "documentation":"<p>A structure that contains the full information about the canary.</p>"
         }
       }
     },
@@ -906,6 +1135,104 @@
         }
       }
     },
+    "GetGroupRequest":{
+      "type":"structure",
+      "required":["GroupIdentifier"],
+      "members":{
+        "GroupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>Specifies the group to return information for. You can specify the group name, the ARN, or the group ID as the <code>GroupIdentifier</code>.</p>",
+          "location":"uri",
+          "locationName":"groupIdentifier"
+        }
+      }
+    },
+    "GetGroupResponse":{
+      "type":"structure",
+      "members":{
+        "Group":{
+          "shape":"Group",
+          "documentation":"<p>A structure that contains information about the group.</p>"
+        }
+      }
+    },
+    "Group":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the group.</p>"
+        },
+        "Name":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the group.</p>"
+        },
+        "Arn":{
+          "shape":"GroupArn",
+          "documentation":"<p>The ARN of the group.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of key-value pairs that are associated with the canary.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the group was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the group was most recently updated.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about one group.</p>"
+    },
+    "GroupArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:group:[0-9a-z]+"
+    },
+    "GroupIdentifier":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "GroupName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "GroupSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the group.</p>"
+        },
+        "Name":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the group.</p>"
+        },
+        "Arn":{
+          "shape":"GroupArn",
+          "documentation":"<p>The ARN of the group.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing some information about a group.</p>"
+    },
+    "GroupSummaryList":{
+      "type":"list",
+      "member":{"shape":"GroupSummary"}
+    },
+    "InternalFailureException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>An internal failure occurred. Try the operation again.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -921,13 +1248,105 @@
       "min":1,
       "pattern":"arn:(aws[a-zA-Z-]*)?:kms:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:key/[\\w\\-\\/]+"
     },
+    "ListAssociatedGroupsRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxGroupResults",
+          "documentation":"<p>Specify this parameter to limit how many groups are returned each time you use the <code>ListAssociatedGroups</code> operation. If you omit this parameter, the default of 20 is used.</p>"
+        },
+        "ResourceArn":{
+          "shape":"CanaryArn",
+          "documentation":"<p>The ARN of the canary that you want to view groups for.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListAssociatedGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "Groups":{
+          "shape":"GroupSummaryList",
+          "documentation":"<p>An array of structures that contain information about the groups that this canary is associated with.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>ListAssociatedGroups</code> operation to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListGroupResourcesRequest":{
+      "type":"structure",
+      "required":["GroupIdentifier"],
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxGroupResults",
+          "documentation":"<p>Specify this parameter to limit how many canary ARNs are returned each time you use the <code>ListGroupResources</code> operation. If you omit this parameter, the default of 20 is used.</p>"
+        },
+        "GroupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>Specifies the group to return information for. You can specify the group name, the ARN, or the group ID as the <code>GroupIdentifier</code>.</p>",
+          "location":"uri",
+          "locationName":"groupIdentifier"
+        }
+      }
+    },
+    "ListGroupResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "Resources":{
+          "shape":"StringList",
+          "documentation":"<p>An array of ARNs. These ARNs are for the canaries that are associated with the group.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>ListGroupResources</code> operation to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxGroupResults",
+          "documentation":"<p>Specify this parameter to limit how many groups are returned each time you use the <code>ListGroups</code> operation. If you omit this parameter, the default of 20 is used.</p>"
+        }
+      }
+    },
+    "ListGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "Groups":{
+          "shape":"GroupSummaryList",
+          "documentation":"<p>An array of structures that each contain information about one group.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>ListGroups</code> operation to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
       "members":{
         "ResourceArn":{
-          "shape":"CanaryArn",
-          "documentation":"<p>The ARN of the canary that you want to view tags for.</p> <p>The ARN format of a canary is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:canary:<i>canary-name</i> </code>.</p>",
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the canary or group that you want to view tags for.</p> <p>The ARN format of a canary is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:canary:<i>canary-name</i> </code>.</p> <p>The ARN format of a group is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:group:<i>group-name</i> </code> </p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -938,7 +1357,7 @@
       "members":{
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The list of tag keys and values associated with the canary that you specified.</p>"
+          "documentation":"<p>The list of tag keys and values associated with the resource that you specified.</p>"
         }
       }
     },
@@ -951,6 +1370,11 @@
       "type":"integer",
       "max":840,
       "min":3
+    },
+    "MaxGroupResults":{
+      "type":"integer",
+      "max":20,
+      "min":1
     },
     "MaxOneYearInSeconds":{
       "type":"long",
@@ -972,7 +1396,22 @@
       "max":3008,
       "min":960
     },
+    "NotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The specified resource was not found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
     "NullableBoolean":{"type":"boolean"},
+    "PaginationToken":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^.+$"
+    },
     "RequestEntityTooLargeException":{
       "type":"structure",
       "members":{
@@ -981,6 +1420,12 @@
       "documentation":"<p>One of the input resources is larger than is allowed.</p>",
       "error":{"httpStatusCode":413},
       "exception":true
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:(canary|group):[0-9a-z_\\-]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1044,6 +1489,15 @@
       "max":5,
       "min":0
     },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request exceeded a service quota value.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
+    },
     "StartCanaryRequest":{
       "type":"structure",
       "required":["Name"],
@@ -1067,7 +1521,7 @@
       "members":{
         "Name":{
           "shape":"CanaryName",
-          "documentation":"<p>The name of the canary that you want to stop. To find the names of your canaries, use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DescribeCanaries.html\">DescribeCanaries</a>.</p>",
+          "documentation":"<p>The name of the canary that you want to stop. To find the names of your canaries, use <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DescribeCanaries.html\">ListCanaries</a>.</p>",
           "location":"uri",
           "locationName":"name"
         }
@@ -1082,6 +1536,10 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "SubnetId":{"type":"string"},
     "SubnetIds":{
@@ -1117,14 +1575,14 @@
       ],
       "members":{
         "ResourceArn":{
-          "shape":"CanaryArn",
-          "documentation":"<p>The ARN of the canary that you're adding tags to.</p> <p>The ARN format of a canary is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:canary:<i>canary-name</i> </code>.</p>",
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the canary or group that you're adding tags to.</p> <p>The ARN format of a canary is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:canary:<i>canary-name</i> </code>.</p> <p>The ARN format of a group is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:group:<i>group-name</i> </code> </p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The list of key-value pairs to associate with the canary.</p>"
+          "documentation":"<p>The list of key-value pairs to associate with the resource.</p>"
         }
       }
     },
@@ -1143,6 +1601,15 @@
       "max":252,
       "min":4
     },
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>There were too many simultaneous requests. Try the operation again.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "UUID":{
       "type":"string",
       "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
@@ -1155,8 +1622,8 @@
       ],
       "members":{
         "ResourceArn":{
-          "shape":"CanaryArn",
-          "documentation":"<p>The ARN of the canary that you're removing tags from.</p> <p>The ARN format of a canary is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:canary:<i>canary-name</i> </code>.</p>",
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the canary or group that you're removing tags from.</p> <p>The ARN format of a canary is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:canary:<i>canary-name</i> </code>.</p> <p>The ARN format of a group is <code>arn:aws:synthetics:<i>Region</i>:<i>account-id</i>:group:<i>group-name</i> </code> </p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -1201,7 +1668,7 @@
         },
         "RunConfig":{
           "shape":"CanaryRunConfigInput",
-          "documentation":"<p>A structure that contains the timeout value that is used for each individual run of the canary.</p>"
+          "documentation":"<p>A structure that contains the timeout value that is used for each individual run of the canary.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>"
         },
         "SuccessRetentionPeriodInDays":{
           "shape":"MaxSize1024",
@@ -1256,7 +1723,7 @@
           "documentation":"<p>Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html\"> CanaryRun</a> from any past run of this canary.</p>"
         }
       },
-      "documentation":"<p>An object that specifies what screenshots to use as a baseline for visual monitoring by this canary, and optionally the parts of the screenshots to ignore during the visual monitoring comparison.</p> <p>Visual monitoring is supported only on canaries running the <b>syn-puppeteer-node-3.2</b> runtime or later. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Library_SyntheticsLogger_VisualTesting.html\"> Visual monitoring</a> and <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Blueprints_VisualTesting.html\"> Visual monitoring blueprint</a> </p>"
+      "documentation":"<p>An object that specifies what screenshots to use as a baseline for visual monitoring by this canary. It can optionally also specify parts of the screenshots to ignore during the visual monitoring comparison.</p> <p>Visual monitoring is supported only on canaries running the <b>syn-puppeteer-node-3.2</b> runtime or later. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Library_SyntheticsLogger_VisualTesting.html\"> Visual monitoring</a> and <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Blueprints_VisualTesting.html\"> Visual monitoring blueprint</a> </p>"
     },
     "VisualReferenceOutput":{
       "type":"structure",
@@ -1267,7 +1734,7 @@
         },
         "BaseCanaryRunId":{
           "shape":"String",
-          "documentation":"<p>The ID of the canary run that produced the screenshots that are used as the baseline for visual monitoring comparisons during future runs of this canary.</p>"
+          "documentation":"<p>The ID of the canary run that produced the baseline screenshots that are used for visual monitoring comparisons by this canary.</p>"
         }
       },
       "documentation":"<p>If this canary performs visual monitoring by comparing screenshots, this structure contains the ID of the canary run that is used as the baseline for screenshots, and the coordinates of any parts of those screenshots that are ignored during visual monitoring comparison.</p> <p>Visual monitoring is supported only on canaries running the <b>syn-puppeteer-node-3.2</b> runtime or later.</p>"

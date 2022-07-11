@@ -7,4 +7,4 @@ The following ``connect-custom-key-store`` example reconnects the specified cust
 
 This command does not return any output. To verify that the command was effective, use the ``describe-custom-key-stores`` command.
 
-For more information, see `Connecting and Disconnecting a Custom Key Store <https://docs.aws.amazon.com/kms/latest/developerguide/disconnect-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Connecting and disconnecting a custom key store <https://docs.aws.amazon.com/kms/latest/developerguide/disconnect-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.

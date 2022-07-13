@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.25.29
+=======
+
+* api-change:``appconfig``: Adding Create, Get, Update, Delete, and List APIs for new two new resources: Extensions and ExtensionAssociations.
+
+
 1.25.28
 =======
 

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.7.15
+======
+
+* api-change:``redshift``: This release adds a new --snapshot-arn field for describe-cluster-snapshots, describe-node-configuration-options, restore-from-cluster-snapshot, authorize-snapshot-acsess, and revoke-snapshot-acsess APIs. It allows customers to give a Redshift snapshot ARN or a Redshift Serverless ARN as input.
+* api-change:``backup``: This release adds support for authentication using IAM user identity instead of passed IAM role, identified by excluding the IamRoleArn field in the StartRestoreJob API. This feature applies to only resource clients with a destructive restore nature (e.g. SAP HANA).
+* api-change:``redshift-serverless``: Removed prerelease language for GA launch.
+* api-change:``ec2``: Build, manage, and monitor a unified global network that connects resources running across your cloud and on-premises environments using the AWS Cloud WAN APIs.
+* api-change:``networkmanager``: This release adds general availability API support for AWS Cloud WAN.
+
+
 2.7.14
 ======
 

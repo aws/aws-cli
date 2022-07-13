@@ -42,3 +42,17 @@ The preceding example assumes the ``base64`` utility is available, which is comm
         --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile
+
+**Example 3: Encrypting with an asymmetric KMS key**
+
+The following ``encrypt`` command shows how to encrypt plaintext with an asymmetric KMS key. The ``--encryption-algorithm`` parameter is required. ::
+
+    aws kms encrypt \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --encryption-algorithm RSAES_OAEP_SHA_256 \
+        --plaintext fileb://ExamplePlaintextFile \
+        --output text \
+        --query CiphertextBlob | base64 \
+        --decode > ExampleEncryptedFile
+
+This command produces no output. The output from the ``decrypt`` command is base64-decoded and saved in a file.

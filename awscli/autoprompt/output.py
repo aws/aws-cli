@@ -81,7 +81,7 @@ class OutputGetter:
             # user enters query like Groups[2] jmespath will return "null"
             # so we change all the numbers in brackets to 0 to keep the output
             # meaningful
-            query = re.sub(r'([\{\[])\d+?([\}\]])', '\g<1>0\g<2>', query)
+            query = re.sub(r'([\{\[])\d+?([\}\]])', r'\g<1>0\g<2>', query)
             # In case of incorrect expression we return an error message
             # but we want to do it only in the case expression is really broken
             # and not during user types it so if expression has open bracket

@@ -1,10 +1,10 @@
-**To get the names of key policies for a CMK**
+**To get the names of key policies for a KMS key**
 
-The following ``list-key-policies`` example gets the names of the key policies for a customer managed CMK in the example account and Region. You can use this command to find the names of key policies for AWS managed CMKs and customer managed CMKs. 
+The following ``list-key-policies`` example gets the names of the key policies for a customer managed key in the example account and Region. You can use this command to find the names of key policies for AWS managed keys and customer managed keys. 
 
 Because the only valid key policy name is ``default``, this command is not useful.
 
-To specify the CMK, use the ``key-id`` parameter. This example uses a key ID value, but you can use a key ID or key ARN in this command. ::
+To specify the KMS key, use the ``key-id`` parameter. This example uses a key ID value, but you can use a key ID or key ARN in this command. ::
 
     aws kms list-key-policies \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab

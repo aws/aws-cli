@@ -141,7 +141,8 @@
         {"shape":"AuthorizationQuotaExceededFault"},
         {"shape":"DependentServiceRequestThrottlingFault"},
         {"shape":"InvalidClusterSnapshotStateFault"},
-        {"shape":"LimitExceededFault"}
+        {"shape":"LimitExceededFault"},
+        {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Authorizes the specified Amazon Web Services account to restore the specified snapshot.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
@@ -907,7 +908,8 @@
       "errors":[
         {"shape":"ClusterNotFoundFault"},
         {"shape":"ClusterSnapshotNotFoundFault"},
-        {"shape":"InvalidTagFault"}
+        {"shape":"InvalidTagFault"},
+        {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Returns one or more snapshot objects, which contain metadata about your cluster snapshots. By default, this operation returns information about all snapshots of all clusters that are owned by your Amazon Web Services account. No information is returned for snapshots owned by inactive Amazon Web Services accounts.</p> <p>If you specify both tag keys and tag values in the same request, Amazon Redshift returns all snapshots that match any combination of the specified keys and values. For example, if you have <code>owner</code> and <code>environment</code> for tag keys, and <code>admin</code> and <code>test</code> for tag values, all snapshots that have any combination of those values are returned. Only snapshots that you own are returned in the response; shared snapshots are not returned with the tag key and tag value request parameters.</p> <p>If both tag keys and values are omitted from the request, snapshots are returned regardless of whether they have tag keys or values associated with them.</p>"
     },
@@ -1179,7 +1181,8 @@
         {"shape":"ClusterSnapshotNotFoundFault"},
         {"shape":"InvalidClusterSnapshotStateFault"},
         {"shape":"ClusterNotFoundFault"},
-        {"shape":"AccessToSnapshotDeniedFault"}
+        {"shape":"AccessToSnapshotDeniedFault"},
+        {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Returns properties of possible node configurations such as node type, number of nodes, and disk usage for the specified action type.</p>"
     },
@@ -2141,7 +2144,8 @@
       "errors":[
         {"shape":"AccessToSnapshotDeniedFault"},
         {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"ClusterSnapshotNotFoundFault"}
+        {"shape":"ClusterSnapshotNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Removes the ability of the specified Amazon Web Services account to restore the specified snapshot. If the account is currently restoring the snapshot, the restore will run to completion.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
@@ -2543,14 +2547,15 @@
     },
     "AuthorizeSnapshotAccessMessage":{
       "type":"structure",
-      "required":[
-        "SnapshotIdentifier",
-        "AccountWithRestoreAccess"
-      ],
+      "required":["AccountWithRestoreAccess"],
       "members":{
         "SnapshotIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the snapshot the account is authorized to restore.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot to authorize access to.</p>"
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
@@ -3759,7 +3764,7 @@
         },
         "ElasticIp":{
           "shape":"String",
-          "documentation":"<p>The Elastic IP (EIP) address for the cluster.</p> <p>Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible through an Internet gateway. For more information about provisioning clusters in EC2-VPC, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms\">Supported Platforms to Launch Your Cluster</a> in the Amazon Redshift Cluster Management Guide.</p>"
+          "documentation":"<p>The Elastic IP (EIP) address for the cluster. You don't have to specify the EIP for a publicly accessible cluster with AvailabilityZoneRelocation turned on.</p> <p>Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible through an Internet gateway. For more information about provisioning clusters in EC2-VPC, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms\">Supported Platforms to Launch Your Cluster</a> in the Amazon Redshift Cluster Management Guide.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -4803,6 +4808,10 @@
           "shape":"String",
           "documentation":"<p>The snapshot identifier of the snapshot about which to return information.</p>"
         },
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot associated with the message to describe cluster snapshots.</p>"
+        },
         "SnapshotType":{
           "shape":"String",
           "documentation":"<p>The type of snapshots for which you are requesting information. By default, snapshots of all types are returned.</p> <p>Valid Values: <code>automated</code> | <code>manual</code> </p>"
@@ -5262,6 +5271,10 @@
         "SnapshotIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the snapshot to evaluate for possible node configurations.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot associated with the message to describe node configuration.</p>"
         },
         "OwnerAccount":{
           "shape":"String",
@@ -8546,10 +8559,7 @@
     },
     "RestoreFromClusterSnapshotMessage":{
       "type":"structure",
-      "required":[
-        "ClusterIdentifier",
-        "SnapshotIdentifier"
-      ],
+      "required":["ClusterIdentifier"],
       "members":{
         "ClusterIdentifier":{
           "shape":"String",
@@ -8558,6 +8568,10 @@
         "SnapshotIdentifier":{
           "shape":"String",
           "documentation":"<p>The name of the snapshot from which to create the new cluster. This parameter isn't case sensitive.</p> <p>Example: <code>my-snapshot-id</code> </p>"
+        },
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot associated with the message to restore from a cluster.</p>"
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
@@ -8597,7 +8611,7 @@
         },
         "ElasticIp":{
           "shape":"String",
-          "documentation":"<p>The elastic IP (EIP) address for the cluster.</p>"
+          "documentation":"<p>The elastic IP (EIP) address for the cluster. You don't have to specify the EIP for a publicly accessible cluster with AvailabilityZoneRelocation turned on.</p>"
         },
         "ClusterParameterGroupName":{
           "shape":"String",
@@ -8867,14 +8881,15 @@
     },
     "RevokeSnapshotAccessMessage":{
       "type":"structure",
-      "required":[
-        "SnapshotIdentifier",
-        "AccountWithRestoreAccess"
-      ],
+      "required":["AccountWithRestoreAccess"],
       "members":{
         "SnapshotIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the snapshot that the account can no longer access.</p>"
+        },
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot associated with the message to revoke access.</p>"
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",

@@ -231,6 +231,16 @@
       "output":{"shape":"AssociateTransitGatewayMulticastDomainResult"},
       "documentation":"<p>Associates the specified subnets and transit gateway attachments with the specified transit gateway multicast domain.</p> <p>The transit gateway attachment must be in the available state before you can add a resource. Use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeTransitGatewayAttachments.html\">DescribeTransitGatewayAttachments</a> to see the state of the attachment.</p>"
     },
+    "AssociateTransitGatewayPolicyTable":{
+      "name":"AssociateTransitGatewayPolicyTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateTransitGatewayPolicyTableRequest"},
+      "output":{"shape":"AssociateTransitGatewayPolicyTableResult"},
+      "documentation":"<p>Associates the specified transit gateway attachment with a transit gateway policy table.</p>"
+    },
     "AssociateTransitGatewayRouteTable":{
       "name":"AssociateTransitGatewayRouteTable",
       "http":{
@@ -1044,7 +1054,17 @@
       },
       "input":{"shape":"CreateTransitGatewayPeeringAttachmentRequest"},
       "output":{"shape":"CreateTransitGatewayPeeringAttachmentResult"},
-      "documentation":"<p>Requests a transit gateway peering attachment between the specified transit gateway (requester) and a peer transit gateway (accepter). The peer transit gateway can be in your account or a different Amazon Web Services account.</p> <p>After you create the peering attachment, the owner of the accepter transit gateway must accept the attachment request.</p>"
+      "documentation":"<p>Requests a transit gateway peering attachment between the specified transit gateway (requester) and a peer transit gateway (accepter). The transit gateways must be in different Regions. The peer transit gateway can be in your account or a different Amazon Web Services account.</p> <p>After you create the peering attachment, the owner of the accepter transit gateway must accept the attachment request.</p>"
+    },
+    "CreateTransitGatewayPolicyTable":{
+      "name":"CreateTransitGatewayPolicyTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTransitGatewayPolicyTableRequest"},
+      "output":{"shape":"CreateTransitGatewayPolicyTableResult"},
+      "documentation":"<p>Creates a transit gateway policy table.</p>"
     },
     "CreateTransitGatewayPrefixListReference":{
       "name":"CreateTransitGatewayPrefixListReference",
@@ -1075,6 +1095,16 @@
       "input":{"shape":"CreateTransitGatewayRouteTableRequest"},
       "output":{"shape":"CreateTransitGatewayRouteTableResult"},
       "documentation":"<p>Creates a route table for the specified transit gateway.</p>"
+    },
+    "CreateTransitGatewayRouteTableAnnouncement":{
+      "name":"CreateTransitGatewayRouteTableAnnouncement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTransitGatewayRouteTableAnnouncementRequest"},
+      "output":{"shape":"CreateTransitGatewayRouteTableAnnouncementResult"},
+      "documentation":"<p>Advertises a new transit gateway route table.</p>"
     },
     "CreateTransitGatewayVpcAttachment":{
       "name":"CreateTransitGatewayVpcAttachment",
@@ -1650,6 +1680,16 @@
       "output":{"shape":"DeleteTransitGatewayPeeringAttachmentResult"},
       "documentation":"<p>Deletes a transit gateway peering attachment.</p>"
     },
+    "DeleteTransitGatewayPolicyTable":{
+      "name":"DeleteTransitGatewayPolicyTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTransitGatewayPolicyTableRequest"},
+      "output":{"shape":"DeleteTransitGatewayPolicyTableResult"},
+      "documentation":"<p>Deletes the specified transit gateway policy table.</p>"
+    },
     "DeleteTransitGatewayPrefixListReference":{
       "name":"DeleteTransitGatewayPrefixListReference",
       "http":{
@@ -1679,6 +1719,16 @@
       "input":{"shape":"DeleteTransitGatewayRouteTableRequest"},
       "output":{"shape":"DeleteTransitGatewayRouteTableResult"},
       "documentation":"<p>Deletes the specified transit gateway route table. You must disassociate the route table from any transit gateway route tables before you can delete it.</p>"
+    },
+    "DeleteTransitGatewayRouteTableAnnouncement":{
+      "name":"DeleteTransitGatewayRouteTableAnnouncement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTransitGatewayRouteTableAnnouncementRequest"},
+      "output":{"shape":"DeleteTransitGatewayRouteTableAnnouncementResult"},
+      "documentation":"<p>Advertises to the transit gateway that a transit gateway route table is deleted.</p>"
     },
     "DeleteTransitGatewayVpcAttachment":{
       "name":"DeleteTransitGatewayVpcAttachment",
@@ -2964,6 +3014,26 @@
       "output":{"shape":"DescribeTransitGatewayPeeringAttachmentsResult"},
       "documentation":"<p>Describes your transit gateway peering attachments.</p>"
     },
+    "DescribeTransitGatewayPolicyTables":{
+      "name":"DescribeTransitGatewayPolicyTables",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTransitGatewayPolicyTablesRequest"},
+      "output":{"shape":"DescribeTransitGatewayPolicyTablesResult"},
+      "documentation":"<p>Describes one or more transit gateway route policy tables. </p>"
+    },
+    "DescribeTransitGatewayRouteTableAnnouncements":{
+      "name":"DescribeTransitGatewayRouteTableAnnouncements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTransitGatewayRouteTableAnnouncementsRequest"},
+      "output":{"shape":"DescribeTransitGatewayRouteTableAnnouncementsResult"},
+      "documentation":"<p>Describes one or more transit gateway route table advertisements.</p>"
+    },
     "DescribeTransitGatewayRouteTables":{
       "name":"DescribeTransitGatewayRouteTables",
       "http":{
@@ -3397,6 +3467,16 @@
       "input":{"shape":"DisassociateTransitGatewayMulticastDomainRequest"},
       "output":{"shape":"DisassociateTransitGatewayMulticastDomainResult"},
       "documentation":"<p>Disassociates the specified subnets from the transit gateway multicast domain. </p>"
+    },
+    "DisassociateTransitGatewayPolicyTable":{
+      "name":"DisassociateTransitGatewayPolicyTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateTransitGatewayPolicyTableRequest"},
+      "output":{"shape":"DisassociateTransitGatewayPolicyTableResult"},
+      "documentation":"<p>Removes the association between an an attachment and a policy table.</p>"
     },
     "DisassociateTransitGatewayRouteTable":{
       "name":"DisassociateTransitGatewayRouteTable",
@@ -3875,6 +3955,26 @@
       "input":{"shape":"GetTransitGatewayMulticastDomainAssociationsRequest"},
       "output":{"shape":"GetTransitGatewayMulticastDomainAssociationsResult"},
       "documentation":"<p>Gets information about the associations for the transit gateway multicast domain.</p>"
+    },
+    "GetTransitGatewayPolicyTableAssociations":{
+      "name":"GetTransitGatewayPolicyTableAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTransitGatewayPolicyTableAssociationsRequest"},
+      "output":{"shape":"GetTransitGatewayPolicyTableAssociationsResult"},
+      "documentation":"<p>Gets a list of the transit gateway policy table associations.</p>"
+    },
+    "GetTransitGatewayPolicyTableEntries":{
+      "name":"GetTransitGatewayPolicyTableEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTransitGatewayPolicyTableEntriesRequest"},
+      "output":{"shape":"GetTransitGatewayPolicyTableEntriesResult"},
+      "documentation":"<p>Returns a list of transit gateway policy table entries.</p>"
     },
     "GetTransitGatewayPrefixListReferences":{
       "name":"GetTransitGatewayPrefixListReferences",
@@ -6905,6 +7005,37 @@
           "shape":"TransitGatewayMulticastDomainAssociations",
           "documentation":"<p>Information about the transit gateway multicast domain associations.</p>",
           "locationName":"associations"
+        }
+      }
+    },
+    "AssociateTransitGatewayPolicyTableRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayPolicyTableId",
+        "TransitGatewayAttachmentId"
+      ],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table to associate with the transit gateway attachment.</p>"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment to associate with the policy table.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssociateTransitGatewayPolicyTableResult":{
+      "type":"structure",
+      "members":{
+        "Association":{
+          "shape":"TransitGatewayPolicyTableAssociation",
+          "documentation":"<p>Describes the association of a transit gateway and a transit gateway policy table.</p>",
+          "locationName":"association"
         }
       }
     },
@@ -12976,6 +13107,7 @@
           "shape":"String",
           "documentation":"<p>The Region where the peer transit gateway is located.</p>"
         },
+        "Options":{"shape":"CreateTransitGatewayPeeringAttachmentRequestOptions"},
         "TagSpecifications":{
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to apply to the transit gateway peering attachment.</p>",
@@ -12987,6 +13119,12 @@
         }
       }
     },
+    "CreateTransitGatewayPeeringAttachmentRequestOptions":{
+      "type":"structure",
+      "members":{
+        "DynamicRouting":{"shape":"DynamicRoutingValue"}
+      }
+    },
     "CreateTransitGatewayPeeringAttachmentResult":{
       "type":"structure",
       "members":{
@@ -12994,6 +13132,34 @@
           "shape":"TransitGatewayPeeringAttachment",
           "documentation":"<p>The transit gateway peering attachment.</p>",
           "locationName":"transitGatewayPeeringAttachment"
+        }
+      }
+    },
+    "CreateTransitGatewayPolicyTableRequest":{
+      "type":"structure",
+      "required":["TransitGatewayId"],
+      "members":{
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the transit gateway used for the policy table.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags specification for the transit gateway policy table created during the request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateTransitGatewayPolicyTableResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTable":{
+          "shape":"TransitGatewayPolicyTable",
+          "documentation":"<p>Describes the created transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTable"
         }
       }
     },
@@ -13104,6 +13270,42 @@
           "shape":"TransitGatewayRoute",
           "documentation":"<p>Information about the route.</p>",
           "locationName":"route"
+        }
+      }
+    },
+    "CreateTransitGatewayRouteTableAnnouncementRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayRouteTableId",
+        "PeeringAttachmentId"
+      ],
+      "members":{
+        "TransitGatewayRouteTableId":{
+          "shape":"TransitGatewayRouteTableId",
+          "documentation":"<p>The ID of the transit gateway route table.</p>"
+        },
+        "PeeringAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the peering attachment.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags specifications applied to the transit gateway route table announcement.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateTransitGatewayRouteTableAnnouncementResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAnnouncement":{
+          "shape":"TransitGatewayRouteTableAnnouncement",
+          "documentation":"<p>Provides details about the transit gateway route table announcement.</p>",
+          "locationName":"transitGatewayRouteTableAnnouncement"
         }
       }
     },
@@ -15142,6 +15344,30 @@
         }
       }
     },
+    "DeleteTransitGatewayPolicyTableRequest":{
+      "type":"structure",
+      "required":["TransitGatewayPolicyTableId"],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The transit gateway policy table to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteTransitGatewayPolicyTableResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTable":{
+          "shape":"TransitGatewayPolicyTable",
+          "documentation":"<p>Provides details about the deleted transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTable"
+        }
+      }
+    },
     "DeleteTransitGatewayPrefixListReferenceRequest":{
       "type":"structure",
       "required":[
@@ -15225,6 +15451,30 @@
           "shape":"TransitGatewayRoute",
           "documentation":"<p>Information about the route.</p>",
           "locationName":"route"
+        }
+      }
+    },
+    "DeleteTransitGatewayRouteTableAnnouncementRequest":{
+      "type":"structure",
+      "required":["TransitGatewayRouteTableAnnouncementId"],
+      "members":{
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "documentation":"<p>The transit gateway route table ID that's being deleted. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteTransitGatewayRouteTableAnnouncementResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAnnouncement":{
+          "shape":"TransitGatewayRouteTableAnnouncement",
+          "documentation":"<p>Provides details about a deleted transit gateway route table.</p>",
+          "locationName":"transitGatewayRouteTableAnnouncement"
         }
       }
     },
@@ -20701,6 +20951,88 @@
         }
       }
     },
+    "DescribeTransitGatewayPolicyTablesRequest":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableIds":{
+          "shape":"TransitGatewayPolicyTableIdStringList",
+          "documentation":"<p>The IDs of the transit gateway policy tables.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters associated with the transit gateway policy table.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"TransitGatewayMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeTransitGatewayPolicyTablesResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTables":{
+          "shape":"TransitGatewayPolicyTableList",
+          "documentation":"<p>Describes the transit gateway policy tables.</p>",
+          "locationName":"transitGatewayPolicyTables"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeTransitGatewayRouteTableAnnouncementsRequest":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAnnouncementIds":{
+          "shape":"TransitGatewayRouteTableAnnouncementIdStringList",
+          "documentation":"<p>The IDs of the transit gateway route tables that are being advertised.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters associated with the transit gateway policy table.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"TransitGatewayMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeTransitGatewayRouteTableAnnouncementsResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAnnouncements":{
+          "shape":"TransitGatewayRouteTableAnnouncementList",
+          "documentation":"<p>Describes the transit gateway route table announcement.</p>",
+          "locationName":"transitGatewayRouteTableAnnouncements"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeTransitGatewayRouteTablesRequest":{
       "type":"structure",
       "members":{
@@ -22173,10 +22505,7 @@
     },
     "DisableTransitGatewayRouteTablePropagationRequest":{
       "type":"structure",
-      "required":[
-        "TransitGatewayRouteTableId",
-        "TransitGatewayAttachmentId"
-      ],
+      "required":["TransitGatewayRouteTableId"],
       "members":{
         "TransitGatewayRouteTableId":{
           "shape":"TransitGatewayRouteTableId",
@@ -22189,6 +22518,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "documentation":"<p>The ID of the route table announcement.</p>"
         }
       }
     },
@@ -22471,6 +22804,37 @@
           "shape":"TransitGatewayMulticastDomainAssociations",
           "documentation":"<p>Information about the association.</p>",
           "locationName":"associations"
+        }
+      }
+    },
+    "DisassociateTransitGatewayPolicyTableRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayPolicyTableId",
+        "TransitGatewayAttachmentId"
+      ],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the disassociated policy table.</p>"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment to disassociate from the policy table.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisassociateTransitGatewayPolicyTableResult":{
+      "type":"structure",
+      "members":{
+        "Association":{
+          "shape":"TransitGatewayPolicyTableAssociation",
+          "documentation":"<p>Returns details about the transit gateway policy table disassociation.</p>",
+          "locationName":"association"
         }
       }
     },
@@ -22799,6 +23163,13 @@
       "type":"double",
       "max":99.999,
       "min":0.001
+    },
+    "DynamicRoutingValue":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
     },
     "EbsBlockDevice":{
       "type":"structure",
@@ -23590,10 +23961,7 @@
     },
     "EnableTransitGatewayRouteTablePropagationRequest":{
       "type":"structure",
-      "required":[
-        "TransitGatewayRouteTableId",
-        "TransitGatewayAttachmentId"
-      ],
+      "required":["TransitGatewayRouteTableId"],
       "members":{
         "TransitGatewayRouteTableId":{
           "shape":"TransitGatewayRouteTableId",
@@ -23606,6 +23974,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "documentation":"<p>The ID of the transit gateway route table announcement.</p>"
         }
       }
     },
@@ -26748,6 +27120,85 @@
           "shape":"String",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"nextToken"
+        }
+      }
+    },
+    "GetTransitGatewayPolicyTableAssociationsRequest":{
+      "type":"structure",
+      "required":["TransitGatewayPolicyTableId"],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters associated with the transit gateway policy table.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"TransitGatewayMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetTransitGatewayPolicyTableAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "Associations":{
+          "shape":"TransitGatewayPolicyTableAssociationList",
+          "documentation":"<p>Returns details about the transit gateway policy table association.</p>",
+          "locationName":"associations"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetTransitGatewayPolicyTableEntriesRequest":{
+      "type":"structure",
+      "required":["TransitGatewayPolicyTableId"],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters associated with the transit gateway policy table.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"TransitGatewayMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetTransitGatewayPolicyTableEntriesResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableEntries":{
+          "shape":"TransitGatewayPolicyTableEntryList",
+          "documentation":"<p>The entries for the transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTableEntries"
         }
       }
     },
@@ -36483,6 +36934,10 @@
         "PropagationDefaultRouteTableId":{
           "shape":"TransitGatewayRouteTableId",
           "documentation":"<p>The ID of the default propagation route table.</p>"
+        },
+        "AmazonSideAsn":{
+          "shape":"Long",
+          "documentation":"<p>A private Autonomous System Number (ASN) for the Amazon side of a BGP session. The range is 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs.</p>"
         }
       },
       "documentation":"<p>The transit gateway options.</p>"
@@ -38962,6 +39417,10 @@
           "shape":"String",
           "documentation":"<p>The ID of the transit gateway.</p>",
           "locationName":"transitGatewayId"
+        },
+        "CoreNetworkId":{
+          "shape":"String",
+          "locationName":"coreNetworkId"
         },
         "OwnerId":{
           "shape":"String",
@@ -42642,7 +43101,9 @@
         "transit-gateway-attachment",
         "transit-gateway-connect-peer",
         "transit-gateway-multicast-domain",
+        "transit-gateway-policy-table",
         "transit-gateway-route-table",
+        "transit-gateway-route-table-announcement",
         "volume",
         "vpc",
         "vpc-endpoint",
@@ -48612,6 +49073,11 @@
           "documentation":"<p>The ID of the transit gateway peering attachment.</p>",
           "locationName":"transitGatewayAttachmentId"
         },
+        "AccepterTransitGatewayAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the accepter transit gateway attachment.</p>",
+          "locationName":"accepterTransitGatewayAttachmentId"
+        },
         "RequesterTgwInfo":{
           "shape":"PeeringTgwInfo",
           "documentation":"<p>Information about the requester transit gateway.</p>",
@@ -48621,6 +49087,10 @@
           "shape":"PeeringTgwInfo",
           "documentation":"<p>Information about the accepter transit gateway.</p>",
           "locationName":"accepterTgwInfo"
+        },
+        "Options":{
+          "shape":"TransitGatewayPeeringAttachmentOptions",
+          "locationName":"options"
         },
         "Status":{
           "shape":"PeeringAttachmentStatus",
@@ -48651,6 +49121,188 @@
         "shape":"TransitGatewayPeeringAttachment",
         "locationName":"item"
       }
+    },
+    "TransitGatewayPeeringAttachmentOptions":{
+      "type":"structure",
+      "members":{
+        "DynamicRouting":{
+          "shape":"DynamicRoutingValue",
+          "locationName":"dynamicRouting"
+        }
+      }
+    },
+    "TransitGatewayPolicyRule":{
+      "type":"structure",
+      "members":{
+        "SourceCidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The source CIDR block for the transit gateway policy rule.</p>",
+          "locationName":"sourceCidrBlock"
+        },
+        "SourcePortRange":{
+          "shape":"String",
+          "documentation":"<p>The port range for the transit gateway policy rule. Currently this is set to * (all).</p>",
+          "locationName":"sourcePortRange"
+        },
+        "DestinationCidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The destination CIDR block for the transit gateway policy rule.</p>",
+          "locationName":"destinationCidrBlock"
+        },
+        "DestinationPortRange":{
+          "shape":"String",
+          "documentation":"<p>The port range for the transit gateway policy rule. Currently this is set to * (all).</p>",
+          "locationName":"destinationPortRange"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The protocol used by the transit gateway policy rule.</p>",
+          "locationName":"protocol"
+        },
+        "MetaData":{
+          "shape":"TransitGatewayPolicyRuleMetaData",
+          "documentation":"<p>The meta data tags used for the transit gateway policy rule.</p>",
+          "locationName":"metaData"
+        }
+      },
+      "documentation":"<p>Describes a rule associated with a transit gateway policy.</p>"
+    },
+    "TransitGatewayPolicyRuleMetaData":{
+      "type":"structure",
+      "members":{
+        "MetaDataKey":{
+          "shape":"String",
+          "documentation":"<p>The key name for the transit gateway policy rule meta data tag.</p>",
+          "locationName":"metaDataKey"
+        },
+        "MetaDataValue":{
+          "shape":"String",
+          "documentation":"<p>The value of the key for the transit gateway policy rule meta data tag.</p>",
+          "locationName":"metaDataValue"
+        }
+      },
+      "documentation":"<p>Describes the meta data tags associated with a transit gateway policy rule.</p>"
+    },
+    "TransitGatewayPolicyTable":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTableId"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the transit gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "State":{
+          "shape":"TransitGatewayPolicyTableState",
+          "documentation":"<p>The state of the transit gateway policy table</p>",
+          "locationName":"state"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the transit gateway policy table was created.</p>",
+          "locationName":"creationTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>he key-value pairs associated with the transit gateway policy table.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a transit gateway policy table.</p>"
+    },
+    "TransitGatewayPolicyTableAssociation":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTableId"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource ID of the transit gateway attachment.</p>",
+          "locationName":"resourceId"
+        },
+        "ResourceType":{
+          "shape":"TransitGatewayAttachmentResourceType",
+          "documentation":"<p>The resource type for the transit gateway policy table association.</p>",
+          "locationName":"resourceType"
+        },
+        "State":{
+          "shape":"TransitGatewayAssociationState",
+          "documentation":"<p>The state of the transit gateway policy table association.</p>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>Describes a transit gateway policy table association.</p>"
+    },
+    "TransitGatewayPolicyTableAssociationList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayPolicyTableAssociation",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayPolicyTableEntry":{
+      "type":"structure",
+      "members":{
+        "PolicyRuleNumber":{
+          "shape":"String",
+          "documentation":"<p>The rule number for the transit gateway policy table entry.</p>",
+          "locationName":"policyRuleNumber"
+        },
+        "PolicyRule":{
+          "shape":"TransitGatewayPolicyRule",
+          "documentation":"<p>The policy rule associated with the transit gateway policy table.</p>",
+          "locationName":"policyRule"
+        },
+        "TargetRouteTableId":{
+          "shape":"TransitGatewayRouteTableId",
+          "documentation":"<p>The ID of the target route table.</p>",
+          "locationName":"targetRouteTableId"
+        }
+      },
+      "documentation":"<p>Describes a transit gateway policy table entry</p>"
+    },
+    "TransitGatewayPolicyTableEntryList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayPolicyTableEntry",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayPolicyTableId":{"type":"string"},
+    "TransitGatewayPolicyTableIdStringList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayPolicyTableId",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayPolicyTableList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayPolicyTable",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayPolicyTableState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
     },
     "TransitGatewayPrefixListAttachment":{
       "type":"structure",
@@ -48752,6 +49404,11 @@
           "shape":"TransitGatewayPropagationState",
           "documentation":"<p>The state.</p>",
           "locationName":"state"
+        },
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "documentation":"<p>The ID of the transit gateway route table announcement.</p>",
+          "locationName":"transitGatewayRouteTableAnnouncementId"
         }
       },
       "documentation":"<p>Describes route propagation.</p>"
@@ -48815,6 +49472,10 @@
           "shape":"PrefixListResourceId",
           "documentation":"<p>The ID of the prefix list used for destination matches.</p>",
           "locationName":"prefixListId"
+        },
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "locationName":"transitGatewayRouteTableAnnouncementId"
         },
         "TransitGatewayAttachments":{
           "shape":"TransitGatewayRouteAttachmentList",
@@ -48920,6 +49581,98 @@
       },
       "documentation":"<p>Describes a transit gateway route table.</p>"
     },
+    "TransitGatewayRouteTableAnnouncement":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "documentation":"<p>The ID of the transit gateway route table announcement.</p>",
+          "locationName":"transitGatewayRouteTableAnnouncementId"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the transit gateway.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "CoreNetworkId":{
+          "shape":"String",
+          "locationName":"coreNetworkId"
+        },
+        "PeerTransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the peer transit gateway.</p>",
+          "locationName":"peerTransitGatewayId"
+        },
+        "PeerCoreNetworkId":{
+          "shape":"String",
+          "locationName":"peerCoreNetworkId"
+        },
+        "PeeringAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the peering attachment.</p>",
+          "locationName":"peeringAttachmentId"
+        },
+        "AnnouncementDirection":{
+          "shape":"TransitGatewayRouteTableAnnouncementDirection",
+          "documentation":"<p>The direction for the route table announcement.</p>",
+          "locationName":"announcementDirection"
+        },
+        "TransitGatewayRouteTableId":{
+          "shape":"TransitGatewayRouteTableId",
+          "documentation":"<p>The ID of the transit gateway route table.</p>",
+          "locationName":"transitGatewayRouteTableId"
+        },
+        "State":{
+          "shape":"TransitGatewayRouteTableAnnouncementState",
+          "documentation":"<p>The state of the transit gateway announcement.</p>",
+          "locationName":"state"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the transit gateway route table announcement was created.</p>",
+          "locationName":"creationTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key-value pairs associated with the route table announcement.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a transit gateway route table announcement.</p>"
+    },
+    "TransitGatewayRouteTableAnnouncementDirection":{
+      "type":"string",
+      "enum":[
+        "outgoing",
+        "incoming"
+      ]
+    },
+    "TransitGatewayRouteTableAnnouncementId":{"type":"string"},
+    "TransitGatewayRouteTableAnnouncementIdStringList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayRouteTableAnnouncementId",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayRouteTableAnnouncementList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayRouteTableAnnouncement",
+        "locationName":"item"
+      }
+    },
+    "TransitGatewayRouteTableAnnouncementState":{
+      "type":"string",
+      "enum":[
+        "available",
+        "pending",
+        "failing",
+        "failed",
+        "deleting",
+        "deleted"
+      ]
+    },
     "TransitGatewayRouteTableAssociation":{
       "type":"structure",
       "members":{
@@ -48990,6 +49743,11 @@
           "shape":"TransitGatewayPropagationState",
           "documentation":"<p>The state of the resource.</p>",
           "locationName":"state"
+        },
+        "TransitGatewayRouteTableAnnouncementId":{
+          "shape":"TransitGatewayRouteTableAnnouncementId",
+          "documentation":"<p>The ID of the transit gateway route table announcement.</p>",
+          "locationName":"transitGatewayRouteTableAnnouncementId"
         }
       },
       "documentation":"<p>Describes a route table propagation.</p>"

@@ -273,6 +273,42 @@
       ],
       "documentation":"<p>Creates an Amazon Web Services site-to-site VPN attachment on an edge location of a core network.</p>"
     },
+    "CreateTransitGatewayPeering":{
+      "name":"CreateTransitGatewayPeering",
+      "http":{
+        "method":"POST",
+        "requestUri":"/transit-gateway-peerings"
+      },
+      "input":{"shape":"CreateTransitGatewayPeeringRequest"},
+      "output":{"shape":"CreateTransitGatewayPeeringResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a transit gateway peering connection.</p>"
+    },
+    "CreateTransitGatewayRouteTableAttachment":{
+      "name":"CreateTransitGatewayRouteTableAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/transit-gateway-route-table-attachments"
+      },
+      "input":{"shape":"CreateTransitGatewayRouteTableAttachmentRequest"},
+      "output":{"shape":"CreateTransitGatewayRouteTableAttachmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a transit gateway route table attachment.</p>"
+    },
     "CreateVpcAttachment":{
       "name":"CreateVpcAttachment",
       "http":{
@@ -434,6 +470,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an existing link. You must first disassociate the link from any devices and customer gateways.</p>"
+    },
+    "DeletePeering":{
+      "name":"DeletePeering",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/peerings/{peeringId}"
+      },
+      "input":{"shape":"DeletePeeringRequest"},
+      "output":{"shape":"DeletePeeringResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing peering connection.</p>"
     },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
@@ -681,6 +735,23 @@
       ],
       "documentation":"<p>Returns information about the LIVE policy for a core network.</p>"
     },
+    "GetCoreNetworkChangeEvents":{
+      "name":"GetCoreNetworkChangeEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/core-networks/{coreNetworkId}/core-network-change-events/{policyVersionId}"
+      },
+      "input":{"shape":"GetCoreNetworkChangeEventsRequest"},
+      "output":{"shape":"GetCoreNetworkChangeEventsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a core network change event.</p>"
+    },
     "GetCoreNetworkChangeSet":{
       "name":"GetCoreNetworkChangeSet",
       "http":{
@@ -713,7 +784,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Gets details about a core network policy. You can get details about your current live policy or any previous policy version.</p>"
+      "documentation":"<p>Returns details about a core network policy. You can get details about your current live policy or any previous policy version.</p>"
     },
     "GetCustomerGatewayAssociations":{
       "name":"GetCustomerGatewayAssociations",
@@ -953,6 +1024,23 @@
       ],
       "documentation":"<p>Gets information about one or more of your transit gateway Connect peer associations in a global network.</p>"
     },
+    "GetTransitGatewayPeering":{
+      "name":"GetTransitGatewayPeering",
+      "http":{
+        "method":"GET",
+        "requestUri":"/transit-gateway-peerings/{peeringId}"
+      },
+      "input":{"shape":"GetTransitGatewayPeeringRequest"},
+      "output":{"shape":"GetTransitGatewayPeeringResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a transit gateway peer.</p>"
+    },
     "GetTransitGatewayRegistrations":{
       "name":"GetTransitGatewayRegistrations",
       "http":{
@@ -969,6 +1057,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about the transit gateway registrations in a specified global network.</p>"
+    },
+    "GetTransitGatewayRouteTableAttachment":{
+      "name":"GetTransitGatewayRouteTableAttachment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/transit-gateway-route-table-attachments/{attachmentId}"
+      },
+      "input":{"shape":"GetTransitGatewayRouteTableAttachmentRequest"},
+      "output":{"shape":"GetTransitGatewayRouteTableAttachmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a transit gateway route table attachment.</p>"
     },
     "GetVpcAttachment":{
       "name":"GetVpcAttachment",
@@ -1059,7 +1164,24 @@
         "requestUri":"/organizations/service-access"
       },
       "input":{"shape":"ListOrganizationServiceAccessStatusRequest"},
-      "output":{"shape":"ListOrganizationServiceAccessStatusResponse"}
+      "output":{"shape":"ListOrganizationServiceAccessStatusResponse"},
+      "documentation":"<p>Gets the status of the Service Linked Role (SLR) deployment for the accounts in a given Amazon Web Services Organization.</p>"
+    },
+    "ListPeerings":{
+      "name":"ListPeerings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/peerings"
+      },
+      "input":{"shape":"ListPeeringsRequest"},
+      "output":{"shape":"ListPeeringsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the peerings for a core network.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1184,7 +1306,8 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
-      ]
+      ],
+      "documentation":"<p>Enables for the Network Manager service for an Amazon Web Services Organization. This can only be called by a management account within the organization. </p>"
     },
     "StartRouteAnalysis":{
       "name":"StartRouteAnalysis",
@@ -1447,9 +1570,16 @@
     "AccountStatus":{
       "type":"structure",
       "members":{
-        "AccountId":{"shape":"AccountId"},
-        "SLRDeploymentStatus":{"shape":"SLRDeploymentStatus"}
-      }
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of an account within the Amazon Web Services Organization.</p>"
+        },
+        "SLRDeploymentStatus":{
+          "shape":"SLRDeploymentStatus",
+          "documentation":"<p>The status of SLR deployment for the account.</p>"
+        }
+      },
+      "documentation":"<p>Describes the current status of an account within an Amazon Web Services Organization, including service-linked roles (SLRs).</p>"
     },
     "AccountStatusList":{
       "type":"list",
@@ -1609,7 +1739,7 @@
       "members":{
         "CoreNetworkId":{
           "shape":"CoreNetworkId",
-          "documentation":"<p>A core network ID.</p>"
+          "documentation":"<p>The ID of a core network.</p>"
         },
         "CoreNetworkArn":{
           "shape":"CoreNetworkArn",
@@ -1695,7 +1825,8 @@
       "enum":[
         "CONNECT",
         "SITE_TO_SITE_VPN",
-        "VPC"
+        "VPC",
+        "TRANSIT_GATEWAY_ROUTE_TABLE"
       ]
     },
     "Bandwidth":{
@@ -1742,6 +1873,15 @@
         "OUT_OF_DATE"
       ]
     },
+    "ChangeStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED"
+      ]
+    },
     "ChangeType":{
       "type":"string",
       "enum":[
@@ -1749,7 +1889,11 @@
         "CORE_NETWORK_EDGE",
         "ATTACHMENT_MAPPING",
         "ATTACHMENT_ROUTE_PROPAGATION",
-        "ATTACHMENT_ROUTE_STATIC"
+        "ATTACHMENT_ROUTE_STATIC",
+        "CORE_NETWORK_CONFIGURATION",
+        "SEGMENTS_CONFIGURATION",
+        "SEGMENT_ACTIONS_CONFIGURATION",
+        "ATTACHMENT_POLICIES_CONFIGURATION"
       ]
     },
     "ClientToken":{
@@ -1841,7 +1985,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags associated with the Connect peer.</p>"
+          "documentation":"<p>The list of key-value tags associated with the Connect peer.</p>"
         }
       },
       "documentation":"<p>Describes a core network Connect peer.</p>"
@@ -1985,7 +2129,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags associated with a Connect peer summary.</p>"
+          "documentation":"<p>The list of key-value tags associated with the Connect peer summary.</p>"
         }
       },
       "documentation":"<p>Summary description of a Connect peer.</p>"
@@ -2152,7 +2296,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags associated with a core network.</p>"
+          "documentation":"<p>The list of key-value tags associated with a core network.</p>"
         }
       },
       "documentation":"<p>Describes a core network.</p>"
@@ -2185,9 +2329,69 @@
         "NewValues":{
           "shape":"CoreNetworkChangeValues",
           "documentation":"<p>The new value for a core network</p>"
+        },
+        "IdentifierPath":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>Uniquely identifies the path for a change within the changeset. For example, the <code>IdentifierPath</code> for a core network segment change might be <code>\"CORE_NETWORK_SEGMENT/us-east-1/devsegment\"</code>.</p>"
         }
       },
       "documentation":"<p>Details describing a core network change.</p>"
+    },
+    "CoreNetworkChangeEvent":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ChangeType",
+          "documentation":"<p>Describes the type of change event. </p>"
+        },
+        "Action":{
+          "shape":"ChangeAction",
+          "documentation":"<p>The action taken for the change event.</p>"
+        },
+        "IdentifierPath":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>Uniquely identifies the path for a change within the changeset. For example, the <code>IdentifierPath</code> for a core network segment change might be <code>\"CORE_NETWORK_SEGMENT/us-east-1/devsegment\"</code>.</p>"
+        },
+        "EventTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp for an event change in status.</p>"
+        },
+        "Status":{
+          "shape":"ChangeStatus",
+          "documentation":"<p>The status of the core network change event.</p>"
+        },
+        "Values":{
+          "shape":"CoreNetworkChangeEventValues",
+          "documentation":"<p>Details of the change event.</p>"
+        }
+      },
+      "documentation":"<p>Describes a core network change event. This can be a change to a segment, attachment, route, etc.</p>"
+    },
+    "CoreNetworkChangeEventList":{
+      "type":"list",
+      "member":{"shape":"CoreNetworkChangeEvent"}
+    },
+    "CoreNetworkChangeEventValues":{
+      "type":"structure",
+      "members":{
+        "EdgeLocation":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>The edge location for the core network change event.</p>"
+        },
+        "SegmentName":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The segment name if the change event is associated with a segment.</p>"
+        },
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the attachment if the change event is associated with an attachment. </p>"
+        },
+        "Cidr":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>For a <code>STATIC_ROUTE</code> event, this is the IP address.</p>"
+        }
+      },
+      "documentation":"<p>Describes a core network change event.</p>"
     },
     "CoreNetworkChangeList":{
       "type":"list",
@@ -2842,6 +3046,76 @@
         }
       }
     },
+    "CreateTransitGatewayPeeringRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "TransitGatewayArn"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of a core network.</p>"
+        },
+        "TransitGatewayArn":{
+          "shape":"TransitGatewayArn",
+          "documentation":"<p>The ARN of the transit gateway for the peering request.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The list of key-value tags associated with the request.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token associated with the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTransitGatewayPeeringResponse":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPeering":{
+          "shape":"TransitGatewayPeering",
+          "documentation":"<p>Returns information about the transit gateway peering connection request.</p>"
+        }
+      }
+    },
+    "CreateTransitGatewayRouteTableAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "PeeringId",
+        "TransitGatewayRouteTableArn"
+      ],
+      "members":{
+        "PeeringId":{
+          "shape":"PeeringId",
+          "documentation":"<p>The ID of the peer for the </p>"
+        },
+        "TransitGatewayRouteTableArn":{
+          "shape":"TransitGatewayRouteTableArn",
+          "documentation":"<p>The ARN of the transit gateway route table for the attachment request.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The list of key-value tags associated with the request.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token associated with the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTransitGatewayRouteTableAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAttachment":{
+          "shape":"TransitGatewayRouteTableAttachment",
+          "documentation":"<p>The route table associated with the create transit gateway route table attachment request.</p>"
+        }
+      }
+    },
     "CreateVpcAttachmentRequest":{
       "type":"structure",
       "required":[
@@ -3137,6 +3411,27 @@
         "Link":{
           "shape":"Link",
           "documentation":"<p>Information about the link.</p>"
+        }
+      }
+    },
+    "DeletePeeringRequest":{
+      "type":"structure",
+      "required":["PeeringId"],
+      "members":{
+        "PeeringId":{
+          "shape":"PeeringId",
+          "documentation":"<p>The ID of the peering connection to delete.</p>",
+          "location":"uri",
+          "locationName":"peeringId"
+        }
+      }
+    },
+    "DeletePeeringResponse":{
+      "type":"structure",
+      "members":{
+        "Peering":{
+          "shape":"Peering",
+          "documentation":"<p>Information about a deleted peering connection.</p>"
         }
       }
     },
@@ -3664,6 +3959,52 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use for the next page of results.</p>"
+        }
+      }
+    },
+    "GetCoreNetworkChangeEventsRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "PolicyVersionId"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of a core network.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkId"
+        },
+        "PolicyVersionId":{
+          "shape":"Integer",
+          "documentation":"<p>The ID of the policy version.</p>",
+          "location":"uri",
+          "locationName":"policyVersionId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetCoreNetworkChangeEventsResponse":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkChangeEvents":{
+          "shape":"CoreNetworkChangeEventList",
+          "documentation":"<p>The response to <code>GetCoreNetworkChangeEventsRequest</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -4466,6 +4807,27 @@
         }
       }
     },
+    "GetTransitGatewayPeeringRequest":{
+      "type":"structure",
+      "required":["PeeringId"],
+      "members":{
+        "PeeringId":{
+          "shape":"PeeringId",
+          "documentation":"<p>The ID of the peering request.</p>",
+          "location":"uri",
+          "locationName":"peeringId"
+        }
+      }
+    },
+    "GetTransitGatewayPeeringResponse":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPeering":{
+          "shape":"TransitGatewayPeering",
+          "documentation":"<p>Returns information about a transit gateway peering. </p>"
+        }
+      }
+    },
     "GetTransitGatewayRegistrationsRequest":{
       "type":"structure",
       "required":["GlobalNetworkId"],
@@ -4506,6 +4868,27 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetTransitGatewayRouteTableAttachmentRequest":{
+      "type":"structure",
+      "required":["AttachmentId"],
+      "members":{
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the transit gateway route table attachment.</p>",
+          "location":"uri",
+          "locationName":"attachmentId"
+        }
+      }
+    },
+    "GetTransitGatewayRouteTableAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayRouteTableAttachment":{
+          "shape":"TransitGatewayRouteTableAttachment",
+          "documentation":"<p>Returns information about the transit gateway route table attachment.</p>"
         }
       }
     },
@@ -4895,11 +5278,13 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "NextToken":{
           "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -4908,8 +5293,68 @@
     "ListOrganizationServiceAccessStatusResponse":{
       "type":"structure",
       "members":{
-        "OrganizationStatus":{"shape":"OrganizationStatus"},
-        "NextToken":{"shape":"NextToken"}
+        "OrganizationStatus":{
+          "shape":"OrganizationStatus",
+          "documentation":"<p>Displays the status of an Amazon Web Services Organization.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListPeeringsRequest":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of a core network.</p>",
+          "location":"querystring",
+          "locationName":"coreNetworkId"
+        },
+        "PeeringType":{
+          "shape":"PeeringType",
+          "documentation":"<p>Returns a list of a peering requests.</p>",
+          "location":"querystring",
+          "locationName":"peeringType"
+        },
+        "EdgeLocation":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>Returns a list edge locations for the </p>",
+          "location":"querystring",
+          "locationName":"edgeLocation"
+        },
+        "State":{
+          "shape":"PeeringState",
+          "documentation":"<p>Returns a list of the peering request states.</p>",
+          "location":"querystring",
+          "locationName":"state"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPeeringsResponse":{
+      "type":"structure",
+      "members":{
+        "Peerings":{
+          "shape":"PeeringList",
+          "documentation":"<p>Lists the transit gateway peerings for the <code>ListPeerings</code> request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
       }
     },
     "ListTagsForResourceRequest":{
@@ -4967,7 +5412,7 @@
         },
         "CoreNetworkId":{
           "shape":"CoreNetworkId",
-          "documentation":"<p>a core network ID.</p>"
+          "documentation":"<p>The ID of a core network.</p>"
         },
         "AwsRegion":{
           "shape":"ExternalRegionCode",
@@ -5195,11 +5640,24 @@
     "OrganizationStatus":{
       "type":"structure",
       "members":{
-        "OrganizationId":{"shape":"OrganizationId"},
-        "OrganizationAwsServiceAccessStatus":{"shape":"OrganizationAwsServiceAccessStatus"},
-        "SLRDeploymentStatus":{"shape":"SLRDeploymentStatus"},
-        "AccountStatusList":{"shape":"AccountStatusList"}
-      }
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The ID of an Amazon Web Services Organization.</p>"
+        },
+        "OrganizationAwsServiceAccessStatus":{
+          "shape":"OrganizationAwsServiceAccessStatus",
+          "documentation":"<p>The status of the organization's AWS service access. This will be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        },
+        "SLRDeploymentStatus":{
+          "shape":"SLRDeploymentStatus",
+          "documentation":"<p>The status of the SLR deployment for the account. This will be either <code>SUCCEEDED</code> or <code>IN_PROGRESS</code>.</p>"
+        },
+        "AccountStatusList":{
+          "shape":"AccountStatusList",
+          "documentation":"<p>The current service-linked role (SLR) deployment status for an Amazon Web Services Organization's accounts. This will be either <code>SUCCEEDED</code> or <code>IN_PROGRESS</code>.</p>"
+        }
+      },
+      "documentation":"<p>The status of an Amazon Web Services Organization and the accounts within that organization.</p>"
     },
     "PathComponent":{
       "type":"structure",
@@ -5223,12 +5681,81 @@
       "type":"list",
       "member":{"shape":"PathComponent"}
     },
+    "Peering":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network for the peering request.</p>"
+        },
+        "CoreNetworkArn":{
+          "shape":"CoreNetworkArn",
+          "documentation":"<p>The ARN of a core network.</p>"
+        },
+        "PeeringId":{
+          "shape":"PeeringId",
+          "documentation":"<p>The ID of the peering attachment. </p>"
+        },
+        "OwnerAccountId":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the account owner.</p>"
+        },
+        "PeeringType":{
+          "shape":"PeeringType",
+          "documentation":"<p>The type of peering. This will be <code>TRANSIT_GATEWAY</code>.</p>"
+        },
+        "State":{
+          "shape":"PeeringState",
+          "documentation":"<p>The current state of the peering connection. </p>"
+        },
+        "EdgeLocation":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>The edge location for the peer.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The resource ARN of the peer.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The list of key-value tags associated with the peering.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the attachment peer was created.</p>"
+        }
+      },
+      "documentation":"<p>Describes a peering connection.</p>"
+    },
+    "PeeringId":{
+      "type":"string",
+      "max":50,
+      "min":0,
+      "pattern":"^peering-([0-9a-f]{8,17})$"
+    },
+    "PeeringList":{
+      "type":"list",
+      "member":{"shape":"Peering"}
+    },
+    "PeeringState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "FAILED",
+        "AVAILABLE",
+        "DELETING"
+      ]
+    },
+    "PeeringType":{
+      "type":"string",
+      "enum":["TRANSIT_GATEWAY"]
+    },
     "ProposedSegmentChange":{
       "type":"structure",
       "members":{
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The key-value tags that changed for the segment.</p>"
+          "documentation":"<p>The list of key-value tags that changed for the segment.</p>"
         },
         "AttachmentPolicyRuleNumber":{
           "shape":"Integer",
@@ -5778,13 +6305,19 @@
       "type":"structure",
       "required":["Action"],
       "members":{
-        "Action":{"shape":"Action"}
+        "Action":{
+          "shape":"Action",
+          "documentation":"<p>The action to take for the update request. This can be either <code>ENABLE</code> or <code>DISABLE</code>.</p>"
+        }
       }
     },
     "StartOrganizationServiceAccessUpdateResponse":{
       "type":"structure",
       "members":{
-        "OrganizationStatus":{"shape":"OrganizationStatus"}
+        "OrganizationStatus":{
+          "shape":"OrganizationStatus",
+          "documentation":"<p>The status of the service access update request for an Amazon Web Services Organization.</p>"
+        }
       }
     },
     "StartRouteAnalysisRequest":{
@@ -5983,6 +6516,20 @@
         "DELETED"
       ]
     },
+    "TransitGatewayPeering":{
+      "type":"structure",
+      "members":{
+        "Peering":{
+          "shape":"Peering",
+          "documentation":"<p>Describes a transit gateway peer connection.</p>"
+        },
+        "TransitGatewayArn":{
+          "shape":"TransitGatewayArn",
+          "documentation":"<p>The ARN of the transit gateway.</p>"
+        }
+      },
+      "documentation":"<p>Describes a transit gateway peering attachment.</p>"
+    },
     "TransitGatewayRegistration":{
       "type":"structure",
       "members":{
@@ -6034,6 +6581,21 @@
       "max":500,
       "min":0,
       "pattern":"[\\s\\S]*"
+    },
+    "TransitGatewayRouteTableAttachment":{
+      "type":"structure",
+      "members":{
+        "Attachment":{"shape":"Attachment"},
+        "PeeringId":{
+          "shape":"PeeringId",
+          "documentation":"<p>The ID of the peering attachment.</p>"
+        },
+        "TransitGatewayRouteTableArn":{
+          "shape":"TransitGatewayRouteTableArn",
+          "documentation":"<p>The ARN of the transit gateway attachment route table.</p>"
+        }
+      },
+      "documentation":"<p>Describes a transit gateway route table attachment.</p>"
     },
     "TunnelProtocol":{
       "type":"string",

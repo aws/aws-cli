@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 import os
-from asyncio import get_event_loop
+from asyncio import new_event_loop, set_event_loop
 from collections.abc import MutableMapping
 
 from prompt_toolkit.application import Application
@@ -61,14 +61,14 @@ class WizardApp(Application):
         )
 
     def run(self, pre_run=None, **kwargs):
-        loop = get_event_loop()
-        previous_exc_handler = loop.get_exception_handler()
-        loop.set_exception_handler(self._handle_exception)
+        loop = new_event_loop()
         try:
+            set_event_loop(loop)
+            loop.set_exception_handler(self._handle_exception)
             f = self.run_async(pre_run=pre_run, set_exception_handler=False)
             return loop.run_until_complete(f)
         finally:
-            loop.set_exception_handler(previous_exc_handler)
+            loop.close()
 
     def _handle_exception(self, loop, context):
         self.exit(

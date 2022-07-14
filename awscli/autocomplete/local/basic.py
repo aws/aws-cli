@@ -546,7 +546,7 @@ class QueryCompleter(BaseCompleter):
         # user enters query like Groups[2] jmespath will return "null"
         # and we won't be able to prompting so we change all the numbers
         # in brackets to 0 to be able to get the shape of the nested structure
-        query = re.sub(r'([\{\[])\d+?([\}\]])', '\g<1>0\g<2>', query)
+        query = re.sub(r'([\{\[])\d+?([\}\]])', r'\g<1>0\g<2>', query)
         return query.rsplit('.', 1)
 
     def _create_completions(self, results, last_key, fragment):

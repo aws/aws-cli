@@ -11,7 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest, TestEventHandler
+from awscli.testutils import BaseAWSCommandParamsTest, EventCaptureHandler
 import os
 
 
@@ -82,7 +82,7 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances {"InstanceId":"i-12345678"}'
-        handler = TestEventHandler()
+        handler = EventCaptureHandler()
         event = 'process-cli-arg.elb.register-instances-with-load-balancer'
         self.driver.session.register(event, handler.handler)
         self.run_cmd(cmdline)

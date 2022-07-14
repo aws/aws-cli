@@ -48,13 +48,7 @@ HBASE_BACKUP_VERSION = (
 # create-cluster options help text
 
 CREATE_CLUSTER_DESCRIPTION = (
-    'Creates an Amazon EMR cluster with the specified configurations. '
-    'Quick start: '
-    'aws emr create-cluster --release-label <release-label> '
-    '--instance-type <instance-type> --instance-count <instance-count>'
-    'Values for the following can be set in the AWS CLI. '
-    'config file using the <code>aws configure set</code> command: <code>--service-role, --log-uri, '
-    'and InstanceProfile and KeyName arguments under --ec2-attributes.')
+    'Creates an Amazon EMR cluster with the specified configurations.')
 
 DESCRIBE_CLUSTER_DESCRIPTION = (
     'Provides  cluster-level details including status, hardware '

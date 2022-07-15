@@ -774,9 +774,9 @@
     },
     "ConnectionId":{
       "type":"string",
-      "max":255,
+      "max":1024,
       "min":1,
-      "pattern":"^([\\w-]+)$"
+      "pattern":"^[a-zA-Z0-9+/=]{1,1024}$"
     },
     "ContactName":{
       "type":"string",
@@ -1227,9 +1227,35 @@
         "Status":{
           "shape":"LineItemStatus",
           "documentation":"<p>The status of the line item.</p>"
+        },
+        "ShipmentInformation":{
+          "shape":"ShipmentInformation",
+          "documentation":"<p> Information about a line item shipment. </p>"
+        },
+        "AssetInformationList":{
+          "shape":"LineItemAssetInformationList",
+          "documentation":"<p> Information about assets. </p>"
         }
       },
       "documentation":"<p>Information about a line item.</p>"
+    },
+    "LineItemAssetInformation":{
+      "type":"structure",
+      "members":{
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p> The ID of the asset. </p>"
+        },
+        "MacAddressList":{
+          "shape":"MacAddressList",
+          "documentation":"<p> MAC addresses of the asset. </p>"
+        }
+      },
+      "documentation":"<p> Information about a line item asset. </p>"
+    },
+    "LineItemAssetInformationList":{
+      "type":"list",
+      "member":{"shape":"LineItemAssetInformation"}
     },
     "LineItemId":{
       "type":"string",
@@ -1494,6 +1520,16 @@
           "documentation":"<p>The resource tags.</p>"
         }
       }
+    },
+    "MacAddress":{
+      "type":"string",
+      "max":17,
+      "min":17,
+      "pattern":"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+    },
+    "MacAddressList":{
+      "type":"list",
+      "member":{"shape":"MacAddress"}
     },
     "MaxResults1000":{
       "type":"integer",
@@ -1850,6 +1886,29 @@
       "error":{"httpStatusCode":402},
       "exception":true
     },
+    "ShipmentCarrier":{
+      "type":"string",
+      "enum":[
+        "DHL",
+        "DBS",
+        "FEDEX",
+        "UPS"
+      ]
+    },
+    "ShipmentInformation":{
+      "type":"structure",
+      "members":{
+        "ShipmentTrackingNumber":{
+          "shape":"TrackingId",
+          "documentation":"<p> The tracking number of the shipment. </p>"
+        },
+        "ShipmentCarrier":{
+          "shape":"ShipmentCarrier",
+          "documentation":"<p> The carrier of the shipment. </p>"
+        }
+      },
+      "documentation":"<p> Information about a line item shipment. </p>"
+    },
     "Site":{
       "type":"structure",
       "members":{
@@ -2058,6 +2117,12 @@
       "max":1005,
       "min":1,
       "pattern":"^(\\d+)##(\\S+)$"
+    },
+    "TrackingId":{
+      "type":"string",
+      "max":42,
+      "min":6,
+      "pattern":"^[a-zA-Z0-9]+$"
     },
     "UnderlayIpAddress":{
       "type":"string",

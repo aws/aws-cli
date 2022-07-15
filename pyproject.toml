@@ -2,3 +2,25 @@
 requires = ["setuptools>=40.6.0,<59.0.0", "wheel<=0.37.0"]
 build-backend = "backends.pep517"
 backend-path = ["."]
+
+
+[tool.pytest.ini_options]
+# We set error warning filters in order to enforce that particular
+# undesired warnings are not emitted as part of the codebase. If you
+# want to override these filters with pytest's default warning filters
+# (i.e. print out deprecation warnings instead of erroring out on them),
+# you can run pytest with the -Wd flag.
+filterwarnings = [
+    # Prevents declaring tests that cannot be collected by pytest
+    "error::pytest.PytestCollectionWarning",
+
+    # Prevents use of functionality that is deprecated or pending deprecation
+    "error::DeprecationWarning",
+    "error::PendingDeprecationWarning",
+
+    # Do not error out on deprecation warnings stemming from our current
+    # version of setuptools (57.5.0) in a Python 3.10 environment. When we add
+    # support for the latest version of setuptools, we should be able to remove
+    # these filters.
+    'default:The distutils\.sysconfig module is deprecated:DeprecationWarning'
+]

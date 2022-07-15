@@ -573,6 +573,12 @@
       },
       "documentation":"<p>Provides information about an Athena query error. The <code>AthenaError</code> feature provides standardized error information to help you understand failed queries and take steps after a query failure occurs. <code>AthenaError</code> includes an <code>ErrorCategory</code> field that specifies whether the cause of the failed query is due to system error, user error, or other error.</p>"
     },
+    "AwsAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^[0-9]+$"
+    },
     "BatchGetNamedQueryInput":{
       "type":"structure",
       "required":["NamedQueryIds"],
@@ -581,7 +587,8 @@
           "shape":"NamedQueryIdList",
           "documentation":"<p>An array of query IDs.</p>"
         }
-      }
+      },
+      "documentation":"<p>Contains an array of named query IDs.</p>"
     },
     "BatchGetNamedQueryOutput":{
       "type":"structure",
@@ -634,7 +641,8 @@
           "shape":"QueryExecutionIdList",
           "documentation":"<p>An array of query execution IDs.</p>"
         }
-      }
+      },
+      "documentation":"<p>Contains an array of query execution IDs.</p>"
     },
     "BatchGetQueryExecutionOutput":{
       "type":"structure",
@@ -1743,7 +1751,12 @@
       "max":1024,
       "min":0
     },
-    "NamedQueryId":{"type":"string"},
+    "NamedQueryId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"\\S+"
+    },
     "NamedQueryIdList":{
       "type":"list",
       "member":{"shape":"NamedQueryId"},
@@ -1877,7 +1890,12 @@
       },
       "documentation":"<p>The database and data catalog context in which the query execution occurs.</p>"
     },
-    "QueryExecutionId":{"type":"string"},
+    "QueryExecutionId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"\\S+"
+    },
     "QueryExecutionIdList":{
       "type":"list",
       "member":{"shape":"QueryExecutionId"},
@@ -1979,7 +1997,7 @@
       "type":"structure",
       "members":{
         "OutputLocation":{
-          "shape":"String",
+          "shape":"ResultOutputLocation",
           "documentation":"<p>The location in Amazon S3 where your query results are stored, such as <code>s3://path/to/query/bucket/</code>. To run the query, you must specify the query results location using one of the ways: either for individual queries using either this setting (client-side), or in the workgroup, using <a>WorkGroupConfiguration</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Query Results</a>. If workgroup settings override client-side settings, then the query uses the settings specified for the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
         },
         "EncryptionConfiguration":{
@@ -1987,7 +2005,7 @@
           "documentation":"<p>If query results are encrypted in Amazon S3, indicates the encryption option used (for example, <code>SSE_KMS</code> or <code>CSE_KMS</code>) and key information. This is a client-side setting. If workgroup settings override client-side settings, then the query uses the encryption configuration that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href=\"https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html\">Workgroup Settings Override Client-Side Settings</a>.</p>"
         },
         "ExpectedBucketOwner":{
-          "shape":"String",
+          "shape":"AwsAccountId",
           "documentation":"<p>The Amazon Web Services account ID that you expect to be the owner of the Amazon S3 bucket specified by <a>ResultConfiguration$OutputLocation</a>. If set, Athena uses the value for <code>ExpectedBucketOwner</code> when it makes Amazon S3 calls to your specified output location. If the <code>ExpectedBucketOwner</code> Amazon Web Services account ID does not match the actual owner of the Amazon S3 bucket, the call fails with a permissions error.</p> <p>This is a client-side setting. If workgroup settings override client-side settings, then the query uses the <code>ExpectedBucketOwner</code> setting that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href=\"https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html\">Workgroup Settings Override Client-Side Settings</a>.</p>"
         },
         "AclConfiguration":{
@@ -2001,7 +2019,7 @@
       "type":"structure",
       "members":{
         "OutputLocation":{
-          "shape":"String",
+          "shape":"ResultOutputLocation",
           "documentation":"<p>The location in Amazon S3 where your query results are stored, such as <code>s3://path/to/query/bucket/</code>. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Query Results</a> If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup. The \"workgroup settings override\" is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
         },
         "RemoveOutputLocation":{
@@ -2017,7 +2035,7 @@
           "documentation":"<p>If set to \"true\", indicates that the previously-specified encryption configuration (also known as the client-side setting) for queries in this workgroup should be ignored and set to null. If set to \"false\" or not set, and a value is present in the <code>EncryptionConfiguration</code> in <code>ResultConfigurationUpdates</code> (the client-side setting), the <code>EncryptionConfiguration</code> in the workgroup's <code>ResultConfiguration</code> will be updated with the new value. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html\">Workgroup Settings Override Client-Side Settings</a>.</p>"
         },
         "ExpectedBucketOwner":{
-          "shape":"String",
+          "shape":"AwsAccountId",
           "documentation":"<p>The Amazon Web Services account ID that you expect to be the owner of the Amazon S3 bucket specified by <a>ResultConfiguration$OutputLocation</a>. If set, Athena uses the value for <code>ExpectedBucketOwner</code> when it makes Amazon S3 calls to your specified output location. If the <code>ExpectedBucketOwner</code> Amazon Web Services account ID does not match the actual owner of the Amazon S3 bucket, the call fails with a permissions error.</p> <p>If workgroup settings override client-side settings, then the query uses the <code>ExpectedBucketOwner</code> setting that is specified for the workgroup, and also uses the location for storing query results specified in the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a> and <a href=\"https://docs.aws.amazon.com/athena/latest/ug/workgroups-settings-override.html\">Workgroup Settings Override Client-Side Settings</a>.</p>"
         },
         "RemoveExpectedBucketOwner":{
@@ -2035,6 +2053,7 @@
       },
       "documentation":"<p>The information about the updates in the query results, such as output location and encryption configuration for the query results.</p>"
     },
+    "ResultOutputLocation":{"type":"string"},
     "ResultSet":{
       "type":"structure",
       "members":{

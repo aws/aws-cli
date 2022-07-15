@@ -122,6 +122,25 @@
       ],
       "documentation":"<p>Clears existing query suggestions from an index.</p> <p>This deletes existing suggestions only, not the queries in the query log. After you clear suggestions, Amazon Kendra learns new suggestions based on new queries added to the query log from the time you cleared suggestions. If you do not see any new suggestions, then please allow Amazon Kendra to collect enough queries to learn new suggestions.</p> <p> <code>ClearQuerySuggestions</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
     },
+    "CreateAccessControlConfiguration":{
+      "name":"CreateAccessControlConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAccessControlConfigurationRequest"},
+      "output":{"shape":"CreateAccessControlConfigurationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an access configuration for your documents. This includes user and group access information for your documents. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p> <p>You can use this to re-configure your existing document level access control without indexing all of your documents again. For example, your index contains top-secret company documents that only certain employees or users should access. One of these users leaves the company or switches to a team that should be blocked from access to top-secret documents. Your documents in your index still give this user access to top-secret documents due to the user having access at the time your documents were indexed. You can create a specific access control configuration for this user with deny access. You can later update the access control configuration to allow access in the case the user returns to the company and re-joins the 'top-secret' team. You can re-configure access control for your documents circumstances change.</p> <p>To apply your access control configuration to certain documents, you call the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_BatchPutDocument.html\">BatchPutDocument</a> API with the <code>AccessControlConfigurationId</code> included in the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_Document.html\">Document</a> object. If you use an S3 bucket as a data source, you update the <code>.metadata.json</code> with the <code>AccessControlConfigurationId</code> and synchronize your data source. Amazon Kendra currently only supports access control configuration for S3 data sources and documents indexed using the <code>BatchPutDocument</code> API.</p>"
+    },
     "CreateDataSource":{
       "name":"CreateDataSource",
       "http":{
@@ -178,7 +197,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an new set of frequently asked question (FAQ) questions and answers.</p> <p>Adding FAQs to an index is an asynchronous operation.</p> <p>For an example of adding an FAQ to an index using Python and Java SDKs, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html#using-faq-file\">Using you FAQ file</a>.</p>"
+      "documentation":"<p>Creates an new set of frequently asked question (FAQ) questions and answers.</p> <p>Adding FAQs to an index is an asynchronous operation.</p> <p>For an example of adding an FAQ to an index using Python and Java SDKs, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html#using-faq-file\">Using your FAQ file</a>.</p>"
     },
     "CreateIndex":{
       "name":"CreateIndex",
@@ -197,7 +216,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new Amazon Kendra index. Index creation is an asynchronous API. To determine if index creation has completed, check the <code>Status</code> field returned from a call to <code>DescribeIndex</code>. The <code>Status</code> field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once the index is active you can index your documents using the <code>BatchPutDocument</code> API or using one of the supported data sources.</p> <p>For an example of creating an index and data source using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html\">Getting started with Python SDK</a>. For an example of creating an index and data source using the Java SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html\">Getting started with Java SDK</a>.</p>"
+      "documentation":"<p>Creates an Amazon Kendra index. Index creation is an asynchronous API. To determine if index creation has completed, check the <code>Status</code> field returned from a call to <code>DescribeIndex</code>. The <code>Status</code> field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once the index is active you can index your documents using the <code>BatchPutDocument</code> API or using one of the supported data sources.</p> <p>For an example of creating an index and data source using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html\">Getting started with Python SDK</a>. For an example of creating an index and data source using the Java SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html\">Getting started with Java SDK</a>.</p>"
     },
     "CreateQuerySuggestionsBlockList":{
       "name":"CreateQuerySuggestionsBlockList",
@@ -236,6 +255,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a thesaurus for an index. The thesaurus contains a list of synonyms in Solr format.</p> <p>For an example of adding a thesaurus file to an index, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/index-synonyms-adding-thesaurus-file.html\">Adding custom synonyms to an index</a>.</p>"
+    },
+    "DeleteAccessControlConfiguration":{
+      "name":"DeleteAccessControlConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAccessControlConfigurationRequest"},
+      "output":{"shape":"DeleteAccessControlConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an access control configuration that you created for your documents in an index. This includes user and group access information for your documents. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
     },
     "DeleteDataSource":{
       "name":"DeleteDataSource",
@@ -357,6 +394,23 @@
       ],
       "documentation":"<p>Deletes an existing Amazon Kendra thesaurus. </p>"
     },
+    "DescribeAccessControlConfiguration":{
+      "name":"DescribeAccessControlConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAccessControlConfigurationRequest"},
+      "output":{"shape":"DescribeAccessControlConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about an access control configuration that you created for your documents in an index. This includes user and group access information for your documents. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
+    },
     "DescribeDataSource":{
       "name":"DescribeDataSource",
       "http":{
@@ -423,7 +477,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes an existing Amazon Kendra index.</p>"
+      "documentation":"<p>Gets information about an existing Amazon Kendra index.</p>"
     },
     "DescribePrincipalMapping":{
       "name":"DescribePrincipalMapping",
@@ -457,7 +511,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes a block list used for query suggestions for an index.</p> <p>This is used to check the current settings that are applied to a block list.</p> <p> <code>DescribeQuerySuggestionsBlockList</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
+      "documentation":"<p>Gets information about a block list used for query suggestions for an index.</p> <p>This is used to check the current settings that are applied to a block list.</p> <p> <code>DescribeQuerySuggestionsBlockList</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
     },
     "DescribeQuerySuggestionsConfig":{
       "name":"DescribeQuerySuggestionsConfig",
@@ -474,7 +528,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the settings of query suggestions for an index.</p> <p>This is used to check the current settings applied to query suggestions.</p> <p> <code>DescribeQuerySuggestionsConfig</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
+      "documentation":"<p>Gets information on the settings of query suggestions for an index.</p> <p>This is used to check the current settings applied to query suggestions.</p> <p> <code>DescribeQuerySuggestionsConfig</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
     },
     "DescribeThesaurus":{
       "name":"DescribeThesaurus",
@@ -491,7 +545,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes an existing Amazon Kendra thesaurus.</p>"
+      "documentation":"<p>Gets information about an existing Amazon Kendra thesaurus.</p>"
     },
     "DisassociateEntitiesFromExperience":{
       "name":"DisassociateEntitiesFromExperience",
@@ -561,6 +615,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves search metrics data. The data provides a snapshot of how your users interact with your search application and how effective the application is.</p>"
+    },
+    "ListAccessControlConfigurations":{
+      "name":"ListAccessControlConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAccessControlConfigurationsRequest"},
+      "output":{"shape":"ListAccessControlConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists one or more access control configurations for an index. This includes user and group access information for your documents. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
     },
     "ListDataSourceSyncJobs":{
       "name":"ListDataSourceSyncJobs",
@@ -748,7 +819,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the Amazon Kendra thesauri associated with an index.</p>"
+      "documentation":"<p>Lists the thesauri for an index.</p>"
     },
     "PutPrincipalMapping":{
       "name":"PutPrincipalMapping",
@@ -766,7 +837,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Maps users to their groups so that you only need to provide the user ID when you issue the query.</p> <p>You can also map sub groups to groups. For example, the group \"Company Intellectual Property Teams\" includes sub groups \"Research\" and \"Engineering\". These sub groups include their own list of users or people who work in these teams. Only users who work in research and engineering, and therefore belong in the intellectual property group, can see top-secret company documents in their search results.</p> <p>You map users to their groups when you want to filter search results for different users based on their group’s access to documents. For more information on filtering search results for different users, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/user-context-filter.html\">Filtering on user context</a>.</p> <p>If more than five <code>PUT</code> actions for a group are currently processing, a validation exception is thrown.</p> <p> <code>PutPrincipalMapping</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
+      "documentation":"<p>Maps users to their groups so that you only need to provide the user ID when you issue the query.</p> <p>You can also map sub groups to groups. For example, the group \"Company Intellectual Property Teams\" includes sub groups \"Research\" and \"Engineering\". These sub groups include their own list of users or people who work in these teams. Only users who work in research and engineering, and therefore belong in the intellectual property group, can see top-secret company documents in their search results.</p> <p>This is useful for user context filtering, where search results are filtered based on the user or their group access to documents. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/user-context-filter.html\">Filtering on user context</a>.</p> <p>If more than five <code>PUT</code> actions for a group are currently processing, a validation exception is thrown.</p> <p> <code>PutPrincipalMapping</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
     },
     "Query":{
       "name":"Query",
@@ -873,6 +944,25 @@
       ],
       "documentation":"<p>Removes a tag from an index, FAQ, or a data source.</p>"
     },
+    "UpdateAccessControlConfiguration":{
+      "name":"UpdateAccessControlConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAccessControlConfigurationRequest"},
+      "output":{"shape":"UpdateAccessControlConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an access control configuration for your documents in an index. This includes user and group access information for your documents. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p> <p>You can update an access control configuration you created without indexing all of your documents again. For example, your index contains top-secret company documents that only certain employees or users should access. You created an 'allow' access control configuration for one user who recently joined the 'top-secret' team, switching from a team with 'deny' access to top-secret documents. However, the user suddenly returns to their previous team and should no longer have access to top secret documents. You can update the access control configuration to re-configure access control for your documents as circumstances change.</p> <p>You call the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_BatchPutDocument.html\">BatchPutDocument</a> API to apply the updated access control configuration, with the <code>AccessControlConfigurationId</code> included in the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_Document.html\">Document</a> object. If you use an S3 bucket as a data source, you synchronize your data source to apply the the <code>AccessControlConfigurationId</code> in the <code>.metadata.json</code> file. Amazon Kendra currently only supports access control configuration for S3 data sources and documents indexed using the <code>BatchPutDocument</code> API.</p>"
+    },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
       "http":{
@@ -974,10 +1064,37 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates a thesaurus file associated with an index.</p>"
+      "documentation":"<p>Updates a thesaurus for an index.</p>"
     }
   },
   "shapes":{
+    "AccessControlConfigurationId":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "AccessControlConfigurationName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"[\\S\\s]*"
+    },
+    "AccessControlConfigurationSummary":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"AccessControlConfigurationId",
+          "documentation":"<p>The identifier of the access control configuration.</p>"
+        }
+      },
+      "documentation":"<p>Summary information on an access control configuration that you created for your documents in an index.</p>"
+    },
+    "AccessControlConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"AccessControlConfigurationSummary"}
+    },
     "AccessControlListConfiguration":{
       "type":"structure",
       "members":{
@@ -1079,7 +1196,7 @@
         },
         "CrawlComments":{
           "shape":"Boolean",
-          "documentation":"<p> <code>TRUE</code> to index comments of wikis and blogs.</p>"
+          "documentation":"<p> <code>TRUE</code> to index comments of blogs and other content.</p>"
         },
         "EntityFilter":{
           "shape":"EntityFilter",
@@ -1110,7 +1227,7 @@
           "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your Alfresco. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/vpc-configuration.html\">Configuring a VPC</a>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p>"
+      "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p> <note> <p>Alfresco data source connector is currently in preview mode. Basic authentication is currently supported. If you would like to use Alfresco connector in production, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a>.</p> </note>"
     },
     "AlfrescoEntity":{
       "type":"string",
@@ -1753,11 +1870,11 @@
         },
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the user name and password required to connect to the Confluence instance. If you use Confluence cloud, you use a generated API token as the password. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-confluence.html\">Using a Confluemce data source</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the user name and password required to connect to the Confluence instance. If you use Confluence cloud, you use a generated API token as the password. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-confluence.html\">Using a Confluence data source</a>.</p>"
         },
         "Version":{
           "shape":"ConfluenceVersion",
-          "documentation":"<p>The version or the type of the Confluence installation to connect to.</p>"
+          "documentation":"<p>The version or the type of Confluence installation to connect to.</p>"
         },
         "SpaceConfiguration":{
           "shape":"ConfluenceSpaceConfiguration",
@@ -2010,6 +2127,50 @@
       "max":10,
       "min":0
     },
+    "CreateAccessControlConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "IndexId",
+        "Name"
+      ],
+      "members":{
+        "IndexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index to create an access control configuration for your documents.</p>"
+        },
+        "Name":{
+          "shape":"AccessControlConfigurationName",
+          "documentation":"<p>A name for the access control configuration.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description for the access control configuration.</p>"
+        },
+        "AccessControlList":{
+          "shape":"PrincipalList",
+          "documentation":"<p>Information on principals (users and/or groups) and which documents they should have access to. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
+        },
+        "HierarchicalAccessControlList":{
+          "shape":"HierarchicalPrincipalList",
+          "documentation":"<p>The list of <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_Principal.html\">principal</a> lists that define the hierarchy for which documents users should have access to.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientTokenName",
+          "documentation":"<p>A token that you provide to identify the request to create an access control configuration. Multiple calls to the <code>CreateAccessControlConfiguration</code> API with the same client token will create only one access control configuration.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateAccessControlConfigurationResponse":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"AccessControlConfigurationId",
+          "documentation":"<p>The identifier of the access control configuration for your documents in an index.</p>"
+        }
+      }
+    },
     "CreateDataSourceRequest":{
       "type":"structure",
       "required":[
@@ -2020,48 +2181,48 @@
       "members":{
         "Name":{
           "shape":"DataSourceName",
-          "documentation":"<p>A unique name for the data source. A data source name can't be changed without deleting and recreating the data source.</p>"
+          "documentation":"<p>A unique name for the data source connector. A data source name can't be changed without deleting and recreating the data source connector.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that should be associated with this data source.</p>"
+          "documentation":"<p>The identifier of the index you want to use with the data source connector.</p>"
         },
         "Type":{
           "shape":"DataSourceType",
-          "documentation":"<p>The type of repository that contains the data source.</p>"
+          "documentation":"<p>The type of data source repository. For example, <code>SHAREPOINT</code>.</p>"
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>Configuration information that is required to access the data source repository.</p> <p>You can't specify the <code>Configuration</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>Configuration</code> parameter is required for all other data sources.</p>"
+          "documentation":"<p>Configuration information to connect to your data source repository.</p> <p>You can't specify the <code>Configuration</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>Configuration</code> parameter is required for all other data sources.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A description for the data source.</p>"
+          "documentation":"<p>A description for the data source connector.</p>"
         },
         "Schedule":{
           "shape":"ScanSchedule",
-          "documentation":"<p>Sets the frequency for Amazon Kendra to check the documents in your repository and update the index. If you don't set a schedule Amazon Kendra will not periodically update the index. You can call the <code>StartDataSourceSyncJob</code> API to update the index.</p> <p>You can't specify the <code>Schedule</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p>"
+          "documentation":"<p>Sets the frequency for Amazon Kendra to check the documents in your data source repository and update the index. If you don't set a schedule Amazon Kendra will not periodically update the index. You can call the <code>StartDataSourceSyncJob</code> API to update the index.</p> <p>You can't specify the <code>Schedule</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM Roles for Amazon Kendra</a>.</p> <p>You can't specify the <code>RoleArn</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>RoleArn</code> parameter is required for all other data sources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source connector. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM Roles for Amazon Kendra</a>.</p> <p>You can't specify the <code>RoleArn</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>RoleArn</code> parameter is required for all other data sources.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>A list of key-value pairs that identify the data source. You can use the tags to identify and organize your resources and to control access to resources.</p>"
+          "documentation":"<p>A list of key-value pairs that identify the data source connector. You can use the tags to identify and organize your resources and to control access to resources.</p>"
         },
         "ClientToken":{
           "shape":"ClientTokenName",
-          "documentation":"<p>A token that you provide to identify the request to create a data source. Multiple calls to the <code>CreateDataSource</code> API with the same client token will create only one data source.</p>",
+          "documentation":"<p>A token that you provide to identify the request to create a data source connector. Multiple calls to the <code>CreateDataSource</code> API with the same client token will create only one data source connector.</p>",
           "idempotencyToken":true
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The code for a language. This allows you to support a language for all documents when creating the data source. English is supported by default. For more information on supported languages, including their codes, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-languages.html\">Adding documents in languages other than English</a>.</p>"
+          "documentation":"<p>The code for a language. This allows you to support a language for all documents when creating the data source connector. English is supported by default. For more information on supported languages, including their codes, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-languages.html\">Adding documents in languages other than English</a>.</p>"
         },
         "CustomDocumentEnrichmentConfiguration":{
           "shape":"CustomDocumentEnrichmentConfiguration",
-          "documentation":"<p>Configuration information for altering document metadata and content during the document ingestion process when you create a data source.</p> <p>For more information on how to create, modify and delete document metadata, or make other content alterations when you ingest documents into Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html\">Customizing document metadata during the ingestion process</a>.</p>"
+          "documentation":"<p>Configuration information for altering document metadata and content during the document ingestion process.</p> <p>For more information on how to create, modify and delete document metadata, or make other content alterations when you ingest documents into Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html\">Customizing document metadata during the ingestion process</a>.</p>"
         }
       }
     },
@@ -2071,7 +2232,7 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>A unique identifier for the data source.</p>"
+          "documentation":"<p>The identifier of the data source connector.</p>"
         }
       }
     },
@@ -2130,19 +2291,19 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the FAQ.</p>"
+          "documentation":"<p>The identifier of the index for the FAQ.</p>"
         },
         "Name":{
           "shape":"FaqName",
-          "documentation":"<p>The name that should be associated with the FAQ.</p>"
+          "documentation":"<p>A name for the FAQ.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A description of the FAQ.</p>"
+          "documentation":"<p>A description for the FAQ.</p>"
         },
         "S3Path":{
           "shape":"S3Path",
-          "documentation":"<p>The S3 location of the FAQ input data.</p>"
+          "documentation":"<p>The path to the FAQ file in S3.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
@@ -2154,7 +2315,7 @@
         },
         "FileFormat":{
           "shape":"FaqFileFormat",
-          "documentation":"<p>The format of the input file. You can choose between a basic CSV format, a CSV format that includes customs attributes in a header, and a JSON format that includes custom attributes.</p> <p>The format must match the format of the file stored in the S3 bucket identified in the <code>S3Path</code> parameter.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html\">Adding questions and answers</a>.</p>"
+          "documentation":"<p>The format of the FAQ input file. You can choose between a basic CSV format, a CSV format that includes customs attributes in a header, and a JSON format that includes custom attributes.</p> <p>The format must match the format of the file stored in the S3 bucket identified in the <code>S3Path</code> parameter.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html\">Adding questions and answers</a>.</p>"
         },
         "ClientToken":{
           "shape":"ClientTokenName",
@@ -2185,7 +2346,7 @@
       "members":{
         "Name":{
           "shape":"IndexName",
-          "documentation":"<p>The name for the new index.</p>"
+          "documentation":"<p>A name for the index.</p>"
         },
         "Edition":{
           "shape":"IndexEdition",
@@ -2295,15 +2456,15 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The unique identifier of the index for the new thesaurus. </p>"
+          "documentation":"<p>The identifier of the index for the thesaurus.</p>"
         },
         "Name":{
           "shape":"ThesaurusName",
-          "documentation":"<p>The name for the new thesaurus.</p>"
+          "documentation":"<p>A name for the thesaurus.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description for the new thesaurus.</p>"
+          "documentation":"<p>A description for the thesaurus.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
@@ -2315,7 +2476,7 @@
         },
         "SourceS3Path":{
           "shape":"S3Path",
-          "documentation":"<p>The thesaurus file Amazon S3 source path. </p>"
+          "documentation":"<p>The path to the thesaurus file in S3.</p>"
         },
         "ClientToken":{
           "shape":"ClientTokenName",
@@ -2766,6 +2927,28 @@
       "max":65535,
       "min":1
     },
+    "DeleteAccessControlConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "IndexId",
+        "Id"
+      ],
+      "members":{
+        "IndexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index for an access control configuration.</p>"
+        },
+        "Id":{
+          "shape":"AccessControlConfigurationId",
+          "documentation":"<p>The identifier of the access control configuration you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteAccessControlConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteDataSourceRequest":{
       "type":"structure",
       "required":[
@@ -2775,11 +2958,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The unique identifier of the data source to delete.</p>"
+          "documentation":"<p>The identifier of the data source you want to delete.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The unique identifier of the index associated with the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source.</p>"
         }
       }
     },
@@ -2796,7 +2979,7 @@
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index for your Amazon Kendra experience you want to delete.</p>"
+          "documentation":"<p>The identifier of the index for your Amazon Kendra experience.</p>"
         }
       }
     },
@@ -2814,11 +2997,11 @@
       "members":{
         "Id":{
           "shape":"FaqId",
-          "documentation":"<p>The identifier of the FAQ to remove.</p>"
+          "documentation":"<p>The identifier of the FAQ you want to remove.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The index to remove the FAQ from.</p>"
+          "documentation":"<p>The identifier of the index for the FAQ.</p>"
         }
       }
     },
@@ -2828,7 +3011,7 @@
       "members":{
         "Id":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index to delete.</p>"
+          "documentation":"<p>The identifier of the index you want to delete.</p>"
         }
       }
     },
@@ -2845,7 +3028,7 @@
         },
         "DataSourceId":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source you want to delete a group from.</p> <p>This is useful if a group is tied to multiple data sources and you want to delete a group from accessing documents in a certain data source. For example, the groups \"Research\", \"Engineering\", and \"Sales and Marketing\" are all tied to the company's documents stored in the data sources Confluence and Salesforce. You want to delete \"Research\" and \"Engineering\" groups from Salesforce, so that these groups cannot access customer-related documents stored in Salesforce. Only \"Sales and Marketing\" should access documents in the Salesforce data source.</p>"
+          "documentation":"<p>The identifier of the data source you want to delete a group from.</p> <p>A group can be tied to multiple data sources. You can delete a group from accessing documents in a certain data source. For example, the groups \"Research\", \"Engineering\", and \"Sales and Marketing\" are all tied to the company's documents stored in the data sources Confluence and Salesforce. You want to delete \"Research\" and \"Engineering\" groups from Salesforce, so that these groups cannot access customer-related documents stored in Salesforce. Only \"Sales and Marketing\" should access documents in the Salesforce data source.</p>"
         },
         "GroupId":{
           "shape":"GroupId",
@@ -2866,11 +3049,11 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the you want to delete a block list from.</p>"
+          "documentation":"<p>The identifier of the index for the block list.</p>"
         },
         "Id":{
           "shape":"QuerySuggestionsBlockListId",
-          "documentation":"<p>The unique identifier of the block list that needs to be deleted.</p>"
+          "documentation":"<p>The identifier of the block list you want to delete.</p>"
         }
       }
     },
@@ -2883,11 +3066,54 @@
       "members":{
         "Id":{
           "shape":"ThesaurusId",
-          "documentation":"<p>The identifier of the thesaurus to delete.</p>"
+          "documentation":"<p>The identifier of the thesaurus you want to delete.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index associated with the thesaurus to delete.</p>"
+          "documentation":"<p>The identifier of the index for the thesaurus.</p>"
+        }
+      }
+    },
+    "DescribeAccessControlConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "IndexId",
+        "Id"
+      ],
+      "members":{
+        "IndexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index for an access control configuration.</p>"
+        },
+        "Id":{
+          "shape":"AccessControlConfigurationId",
+          "documentation":"<p>The identifier of the access control configuration you want to get information on.</p>"
+        }
+      }
+    },
+    "DescribeAccessControlConfigurationResponse":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"AccessControlConfigurationName",
+          "documentation":"<p>The name for the access control configuration.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description for the access control configuration.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The error message containing details if there are issues processing the access control configuration.</p>"
+        },
+        "AccessControlList":{
+          "shape":"PrincipalList",
+          "documentation":"<p>Information on principals (users and/or groups) and which documents they should have access to. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
+        },
+        "HierarchicalAccessControlList":{
+          "shape":"HierarchicalPrincipalList",
+          "documentation":"<p>The list of <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_Principal.html\">principal</a> lists that define the hierarchy for which documents users should have access to.</p>"
         }
       }
     },
@@ -2900,11 +3126,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The unique identifier of the data source to describe.</p>"
+          "documentation":"<p>The identifier of the data source.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source.</p>"
         }
       }
     },
@@ -2929,7 +3155,7 @@
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>Describes how the data source is configured. The specific information in the description depends on the data source provider.</p>"
+          "documentation":"<p>Configuration details for the data source. This shows how the data source is configured. The configuration options for a data source depend on the data source provider.</p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -2941,7 +3167,7 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description of the data source.</p>"
+          "documentation":"<p>The description for the data source.</p>"
         },
         "Status":{
           "shape":"DataSourceStatus",
@@ -2982,7 +3208,7 @@
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index for your Amazon Kendra experience you want to get information on.</p>"
+          "documentation":"<p>The identifier of the index for your Amazon Kendra experience.</p>"
         }
       }
     },
@@ -3044,11 +3270,11 @@
       "members":{
         "Id":{
           "shape":"FaqId",
-          "documentation":"<p>The unique identifier of the FAQ.</p>"
+          "documentation":"<p>The identifier of the FAQ you want to get information on.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the FAQ.</p>"
+          "documentation":"<p>The identifier of the index for the FAQ.</p>"
         }
       }
     },
@@ -3061,7 +3287,7 @@
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the FAQ.</p>"
+          "documentation":"<p>The identifier of the index for the FAQ.</p>"
         },
         "Name":{
           "shape":"FaqName",
@@ -3108,7 +3334,7 @@
       "members":{
         "Id":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index to describe.</p>"
+          "documentation":"<p>The identifier of the index you want to get information on.</p>"
         }
       }
     },
@@ -3153,7 +3379,7 @@
         },
         "DocumentMetadataConfigurations":{
           "shape":"DocumentMetadataConfigurationList",
-          "documentation":"<p>Configuration settings for any metadata applied to the documents in the index.</p>"
+          "documentation":"<p>Configuration information for document metadata or fields. Document metadata are fields or attributes associated with your documents. For example, the company department name associated with each document.</p>"
         },
         "IndexStatistics":{
           "shape":"IndexStatistics",
@@ -3177,7 +3403,7 @@
         },
         "UserGroupResolutionConfiguration":{
           "shape":"UserGroupResolutionConfiguration",
-          "documentation":"<p>Shows whether you have enabled the configuration for fetching access levels of groups and users from an Amazon Web Services Single Sign On identity source.</p>"
+          "documentation":"<p>Whether you have enabled the configuration for fetching access levels of groups and users from an Amazon Web Services Single Sign On identity source.</p>"
         }
       }
     },
@@ -3236,7 +3462,7 @@
         },
         "Id":{
           "shape":"QuerySuggestionsBlockListId",
-          "documentation":"<p>The unique identifier of the block list.</p>"
+          "documentation":"<p>The identifier of the block list you want to get information on.</p>"
         }
       }
     },
@@ -3245,35 +3471,35 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>Shows the identifier of the index for the block list.</p>"
+          "documentation":"<p>The identifier of the index for the block list.</p>"
         },
         "Id":{
           "shape":"QuerySuggestionsBlockListId",
-          "documentation":"<p>Shows the unique identifier of the block list.</p>"
+          "documentation":"<p>The identifier of the block list.</p>"
         },
         "Name":{
           "shape":"QuerySuggestionsBlockListName",
-          "documentation":"<p>Shows the name of the block list.</p>"
+          "documentation":"<p>The name of the block list.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>Shows the description for the block list.</p>"
+          "documentation":"<p>The description for the block list.</p>"
         },
         "Status":{
           "shape":"QuerySuggestionsBlockListStatus",
-          "documentation":"<p>Shows whether the current status of the block list is <code>ACTIVE</code> or <code>INACTIVE</code>.</p>"
+          "documentation":"<p>The current status of the block list. When the value is <code>ACTIVE</code>, the block list is ready for use.</p>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p>Shows the error message with details when there are issues in processing the block list.</p>"
+          "documentation":"<p>The error message containing details if there are issues processing the block list.</p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Shows the date-time a block list for query suggestions was created.</p>"
+          "documentation":"<p>The date-time a block list for query suggestions was created.</p>"
         },
         "UpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Shows the date-time a block list for query suggestions was last updated.</p>"
+          "documentation":"<p>The date-time a block list for query suggestions was last updated.</p>"
         },
         "SourceS3Path":{
           "shape":"S3Path",
@@ -3281,15 +3507,15 @@
         },
         "ItemCount":{
           "shape":"Integer",
-          "documentation":"<p>Shows the current number of valid, non-empty words or phrases in the block list text file.</p>"
+          "documentation":"<p>The current number of valid, non-empty words or phrases in the block list text file.</p>"
         },
         "FileSizeBytes":{
           "shape":"Long",
-          "documentation":"<p>Shows the current size of the block list text file in S3.</p>"
+          "documentation":"<p>The current size of the block list text file in S3.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Shows the current IAM (Identity and Access Management) role used by Amazon Kendra to access the block list text file in S3.</p> <p>The role needs S3 read permissions to your file in S3 and needs to give STS (Security Token Service) assume role permissions to Amazon Kendra.</p>"
+          "documentation":"<p>The IAM (Identity and Access Management) role used by Amazon Kendra to access the block list text file in S3.</p> <p>The role needs S3 read permissions to your file in S3 and needs to give STS (Security Token Service) assume role permissions to Amazon Kendra.</p>"
         }
       }
     },
@@ -3299,7 +3525,7 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index you want to describe query suggestions settings for.</p>"
+          "documentation":"<p>The identifier of the index with query suggestions that you want to get information on.</p>"
         }
       }
     },
@@ -3308,39 +3534,39 @@
       "members":{
         "Mode":{
           "shape":"Mode",
-          "documentation":"<p>Shows whether query suggestions are currently in <code>ENABLED</code> mode or <code>LEARN_ONLY</code> mode.</p> <p>By default, Amazon Kendra enables query suggestions.<code>LEARN_ONLY</code> turns off query suggestions for your users. You can change the mode using the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UpdateQuerySuggestionsConfig.html\">UpdateQuerySuggestionsConfig</a> API.</p>"
+          "documentation":"<p>Whether query suggestions are currently in <code>ENABLED</code> mode or <code>LEARN_ONLY</code> mode.</p> <p>By default, Amazon Kendra enables query suggestions.<code>LEARN_ONLY</code> turns off query suggestions for your users. You can change the mode using the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UpdateQuerySuggestionsConfig.html\">UpdateQuerySuggestionsConfig</a> API.</p>"
         },
         "Status":{
           "shape":"QuerySuggestionsStatus",
-          "documentation":"<p>Shows whether the status of query suggestions settings is currently Active or Updating.</p> <p>Active means the current settings apply and Updating means your changed settings are in the process of applying.</p>"
+          "documentation":"<p>Whether the status of query suggestions settings is currently <code>ACTIVE</code> or <code>UPDATING</code>.</p> <p>Active means the current settings apply and Updating means your changed settings are in the process of applying.</p>"
         },
         "QueryLogLookBackWindowInDays":{
           "shape":"Integer",
-          "documentation":"<p>Shows how recent your queries are in your query log time window (in days).</p>"
+          "documentation":"<p>How recent your queries are in your query log time window (in days).</p>"
         },
         "IncludeQueriesWithoutUserInformation":{
           "shape":"ObjectBoolean",
-          "documentation":"<p>Shows whether Amazon Kendra uses all queries or only uses queries that include user information to generate query suggestions.</p>"
+          "documentation":"<p> <code>TRUE</code> to use all queries, otherwise use only queries that include user information to generate the query suggestions.</p>"
         },
         "MinimumNumberOfQueryingUsers":{
           "shape":"MinimumNumberOfQueryingUsers",
-          "documentation":"<p>Shows the minimum number of unique users who must search a query in order for the query to be eligible to suggest to your users.</p>"
+          "documentation":"<p>The minimum number of unique users who must search a query in order for the query to be eligible to suggest to your users.</p>"
         },
         "MinimumQueryCount":{
           "shape":"MinimumQueryCount",
-          "documentation":"<p>Shows the minimum number of times a query must be searched in order for the query to be eligible to suggest to your users.</p>"
+          "documentation":"<p>The minimum number of times a query must be searched in order for the query to be eligible to suggest to your users.</p>"
         },
         "LastSuggestionsBuildTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Shows the date-time query suggestions for an index was last updated.</p>"
+          "documentation":"<p>The date-time query suggestions for an index was last updated.</p>"
         },
         "LastClearTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Shows the date-time query suggestions for an index was last cleared.</p> <p>After you clear suggestions, Amazon Kendra learns new suggestions based on new queries added to the query log from the time you cleared suggestions. Amazon Kendra only considers re-occurences of a query from the time you cleared suggestions. </p>"
+          "documentation":"<p>The date-time query suggestions for an index was last cleared.</p> <p>After you clear suggestions, Amazon Kendra learns new suggestions based on new queries added to the query log from the time you cleared suggestions. Amazon Kendra only considers re-occurences of a query from the time you cleared suggestions. </p>"
         },
         "TotalSuggestionsCount":{
           "shape":"Integer",
-          "documentation":"<p>Shows the current total count of query suggestions for an index.</p> <p>This count can change when you update your query suggestions settings, if you filter out certain queries from suggestions using a block list, and as the query log accumulates more queries for Amazon Kendra to learn from.</p>"
+          "documentation":"<p>The current total count of query suggestions for an index.</p> <p>This count can change when you update your query suggestions settings, if you filter out certain queries from suggestions using a block list, and as the query log accumulates more queries for Amazon Kendra to learn from.</p>"
         }
       }
     },
@@ -3353,11 +3579,11 @@
       "members":{
         "Id":{
           "shape":"ThesaurusId",
-          "documentation":"<p>The identifier of the thesaurus to describe.</p>"
+          "documentation":"<p>The identifier of the thesaurus you want to get information on.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index associated with the thesaurus to describe.</p>"
+          "documentation":"<p>The identifier of the index for the thesaurus.</p>"
         }
       }
     },
@@ -3370,7 +3596,7 @@
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index associated with the thesaurus to describe.</p>"
+          "documentation":"<p>The identifier of the index for the thesaurus.</p>"
         },
         "Name":{
           "shape":"ThesaurusName",
@@ -3512,7 +3738,7 @@
         },
         "AccessControlList":{
           "shape":"PrincipalList",
-          "documentation":"<p>Information on user and group access rights, which is used for user context filtering.</p>"
+          "documentation":"<p>Information on principals (users and/or groups) and which documents they should have access to. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
         },
         "HierarchicalAccessControlList":{
           "shape":"HierarchicalPrincipalList",
@@ -3521,6 +3747,10 @@
         "ContentType":{
           "shape":"ContentType",
           "documentation":"<p>The file type of the document in the <code>Blob</code> field.</p>"
+        },
+        "AccessControlConfigurationId":{
+          "shape":"AccessControlConfigurationId",
+          "documentation":"<p>The identifier of the access control configuration that you want to apply to the document.</p>"
         }
       },
       "documentation":"<p>A document in an index.</p>"
@@ -3717,14 +3947,14 @@
         },
         "Relevance":{
           "shape":"Relevance",
-          "documentation":"<p>Provides manual tuning parameters to determine how the field affects the search results.</p>"
+          "documentation":"<p>Provides tuning parameters to determine how the field affects the search results.</p>"
         },
         "Search":{
           "shape":"Search",
           "documentation":"<p>Provides information about how the field is used during a search.</p>"
         }
       },
-      "documentation":"<p>Specifies the properties of a custom index field.</p>"
+      "documentation":"<p>Specifies the properties, such as relevance tuning and searchability, of an index field.</p>"
     },
     "DocumentMetadataConfigurationList":{
       "type":"list",
@@ -3746,9 +3976,12 @@
       "members":{
         "Name":{
           "shape":"DocumentMetadataConfigurationName",
-          "documentation":"<p>The name of the tuning configuration to override document relevance at the index level.</p>"
+          "documentation":"<p>The name of the index field.</p>"
         },
-        "Relevance":{"shape":"Relevance"}
+        "Relevance":{
+          "shape":"Relevance",
+          "documentation":"<p>Provides information for tuning the relevance of a field in a search. When a query includes terms that match the field, the results are given a boost in the response based on these tuning parameters.</p>"
+        }
       },
       "documentation":"<p>Overrides the document relevance properties of a custom index field.</p>"
     },
@@ -4191,7 +4424,7 @@
           "documentation":"<p>The code for a language. This shows a supported language for the FAQ document as part of the summary information for FAQs. English is supported by default. For more information on supported languages, including their codes, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-languages.html\">Adding documents in languages other than English</a>.</p>"
         }
       },
-      "documentation":"<p>Provides information about a frequently asked questions and answer contained in an index.</p>"
+      "documentation":"<p>Summary information for frequently asked questions and answers included in an index.</p>"
     },
     "FaqSummaryItems":{
       "type":"list",
@@ -4538,7 +4771,7 @@
           "documentation":"<p>If you have more than 1000 users and/or sub groups for a single group, you need to provide the path to the S3 file that lists your users and sub groups for a group. Your sub groups can contain more than 1000 users, but the list of sub groups that belong to a group (and/or users) must be no more than 1000.</p> <p>You can download this <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/samples/group_members.zip\">example S3 file</a> that uses the correct format for listing group members. Note, <code>dataSourceId</code> is optional. The value of <code>type</code> for a group is always <code>GROUP</code> and for a user it is always <code>USER</code>.</p>"
         }
       },
-      "documentation":"<p>A list of users or sub groups that belong to a group. Users and groups are useful for filtering search results to different users based on their group's access to documents.</p>"
+      "documentation":"<p>A list of users or sub groups that belong to a group. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
     },
     "GroupOrderingIdSummaries":{
       "type":"list",
@@ -4569,21 +4802,21 @@
           "documentation":"<p>The reason an action could not be processed. An action can be a <code>PUT</code> or <code>DELETE</code> action for mapping users to their groups.</p>"
         }
       },
-      "documentation":"<p>Information on the processing of <code>PUT</code> and <code>DELETE</code> actions for mapping users to their groups.</p>"
+      "documentation":"<p>Summary information on the processing of <code>PUT</code> and <code>DELETE</code> actions for mapping users to their groups.</p>"
     },
     "GroupSummary":{
       "type":"structure",
       "members":{
         "GroupId":{
           "shape":"GroupId",
-          "documentation":"<p> The identifier of the group you want group summary information on. </p>"
+          "documentation":"<p>The identifier of the group you want group summary information on.</p>"
         },
         "OrderingId":{
           "shape":"PrincipalOrderingId",
-          "documentation":"<p> The timestamp identifier used for the latest <code>PUT</code> or <code>DELETE</code> action. </p>"
+          "documentation":"<p>The timestamp identifier used for the latest <code>PUT</code> or <code>DELETE</code> action.</p>"
         }
       },
-      "documentation":"<p> Group summary information. </p>"
+      "documentation":"<p>Summary information for groups.</p>"
     },
     "Groups":{
       "type":"list",
@@ -4718,7 +4951,7 @@
           "documentation":"<p>The current status of the index. When the status is <code>ACTIVE</code>, the index is ready to search.</p>"
         }
       },
-      "documentation":"<p>A summary of information on the configuration of an index.</p>"
+      "documentation":"<p>Summary information on the configuration of an index.</p>"
     },
     "IndexConfigurationSummaryList":{
       "type":"list",
@@ -5026,6 +5259,38 @@
       "min":2,
       "pattern":"[a-zA-Z-]*"
     },
+    "ListAccessControlConfigurationsRequest":{
+      "type":"structure",
+      "required":["IndexId"],
+      "members":{
+        "IndexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index for the access control configuration.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>If the previous response was incomplete (because there is more data to retrieve), Amazon Kendra returns a pagination token in the response. You can use this pagination token to retrieve the next set of access control configurations.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsIntegerForListAccessControlConfigurationsRequest",
+          "documentation":"<p>The maximum number of access control configurations to return.</p>"
+        }
+      }
+    },
+    "ListAccessControlConfigurationsResponse":{
+      "type":"structure",
+      "required":["AccessControlConfigurations"],
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>If the response is truncated, Amazon Kendra returns this token that you can use in the subsequent request to retrieve the next set of access control configurations.</p>"
+        },
+        "AccessControlConfigurations":{
+          "shape":"AccessControlConfigurationSummaryList",
+          "documentation":"<p>The details of your access control configurations.</p>"
+        }
+      }
+    },
     "ListDataSourceSyncJobsRequest":{
       "type":"structure",
       "required":[
@@ -5039,7 +5304,7 @@
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5078,7 +5343,7 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source.</p>"
+          "documentation":"<p>The identifier of the index used with one or more data sources.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5365,7 +5630,7 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index associated with the thesaurus to list.</p>"
+          "documentation":"<p>The identifier of the index with one or more thesauri.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5404,6 +5669,11 @@
     "MaxLinksPerPage":{
       "type":"integer",
       "max":1000,
+      "min":1
+    },
+    "MaxResultsIntegerForListAccessControlConfigurationsRequest":{
+      "type":"integer",
+      "max":100,
       "min":1
     },
     "MaxResultsIntegerForListDataSourceSyncJobsRequest":{
@@ -5708,14 +5978,14 @@
         },
         "Access":{
           "shape":"ReadAccessType",
-          "documentation":"<p>Whether to allow or deny access to the principal.</p>"
+          "documentation":"<p>Whether to allow or deny document access to the principal.</p>"
         },
         "DataSourceId":{
           "shape":"DataSourceId",
           "documentation":"<p>The identifier of the data source the principal should access documents from.</p>"
         }
       },
-      "documentation":"<p>Provides user and group information for document access filtering.</p>"
+      "documentation":"<p>Provides user and group information for <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/user-context-filter.html\">user context filtering</a>.</p>"
     },
     "PrincipalList":{
       "type":"list",
@@ -6082,7 +6352,7 @@
         },
         "FolderIds":{
           "shape":"FolderIdList",
-          "documentation":"<p>The identifier of the Quip folders you want to index.</p>"
+          "documentation":"<p>The identifiers of the Quip folders you want to index.</p>"
         },
         "ThreadFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
@@ -6142,7 +6412,7 @@
           "documentation":"<p>A list of values that should be given a different boost when they appear in the result list. For example, if you are boosting a field called \"department,\" query terms that match the department field are boosted in the result. However, you can add entries from the department field to boost documents with those values higher. </p> <p>For example, you can add entries to the map with names of departments. If you add \"HR\",5 and \"Legal\",3 those departments are given special attention when they appear in the metadata of a document. When those terms appear they are given the specified importance instead of the regular importance for the boost.</p>"
         }
       },
-      "documentation":"<p>Provides information for manually tuning the relevance of a field in a search. When a query includes terms that match the field, the results are given a boost in the response based on these tuning parameters.</p>"
+      "documentation":"<p>Provides information for tuning the relevance of a field in a search. When a query includes terms that match the field, the results are given a boost in the response based on these tuning parameters.</p>"
     },
     "RelevanceFeedback":{
       "type":"structure",
@@ -6678,7 +6948,7 @@
         },
         "AuthenticationType":{
           "shape":"ServiceNowAuthenticationType",
-          "documentation":"<p>The type of authentication used to connect to the ServiceNow instance. If you choose <code>HTTP_BASIC</code>, Amazon Kendra is authenticated using the user name and password provided in the Secrets Manager secret in the <code>SecretArn</code> field. When you choose <code>OAUTH2</code>, Amazon Kendra is authenticated using the OAuth token and secret provided in the Secrets Manager secret, and the user name and password are used to determine which information Amazon Kendra has access to.</p> <p>When you use <code>OAUTH2</code> authentication, you must generate a token and a client secret using the ServiceNow console. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-servicenow.html\">Using a ServiceNow data source</a>.</p>"
+          "documentation":"<p>The type of authentication used to connect to the ServiceNow instance. If you choose <code>HTTP_BASIC</code>, Amazon Kendra is authenticated using the user name and password provided in the Secrets Manager secret in the <code>SecretArn</code> field. If you choose <code>OAUTH2</code>, Amazon Kendra is authenticated using the credentials of client ID, client secret, user name and password.</p> <p>When you use <code>OAUTH2</code> authentication, you must generate a token and a client secret using the ServiceNow console. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-servicenow.html\">Using a ServiceNow data source</a>.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to ServiceNow as your data source.</p>"
@@ -6695,7 +6965,7 @@
       "members":{
         "CrawlAttachments":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether Amazon Kendra should index attachments to knowledge articles.</p>"
+          "documentation":"<p> <code>TRUE</code> to index attachments to knowledge articles.</p>"
         },
         "IncludeAttachmentFilePatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
@@ -6736,7 +7006,7 @@
       "members":{
         "CrawlAttachments":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether Amazon Kendra should crawl attachments to the service catalog items. </p>"
+          "documentation":"<p> <code>TRUE</code> to index attachments to service catalog items.</p>"
         },
         "IncludeAttachmentFilePatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
@@ -7461,6 +7731,44 @@
       "members":{
       }
     },
+    "UpdateAccessControlConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "IndexId",
+        "Id"
+      ],
+      "members":{
+        "IndexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index for an access control configuration.</p>"
+        },
+        "Id":{
+          "shape":"AccessControlConfigurationId",
+          "documentation":"<p>The identifier of the access control configuration you want to update.</p>"
+        },
+        "Name":{
+          "shape":"AccessControlConfigurationName",
+          "documentation":"<p>A new name for the access control configuration.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A new description for the access control configuration.</p>"
+        },
+        "AccessControlList":{
+          "shape":"PrincipalList",
+          "documentation":"<p>Information you want to update on principals (users and/or groups) and which documents they should have access to. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents.</p>"
+        },
+        "HierarchicalAccessControlList":{
+          "shape":"HierarchicalPrincipalList",
+          "documentation":"<p>The updated list of <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_Principal.html\">principal</a> lists that define the hierarchy for which documents users should have access to.</p>"
+        }
+      }
+    },
+    "UpdateAccessControlConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateDataSourceRequest":{
       "type":"structure",
       "required":[
@@ -7470,39 +7778,39 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The unique identifier of the data source to update.</p>"
+          "documentation":"<p>The identifier of the data source you want to update.</p>"
         },
         "Name":{
           "shape":"DataSourceName",
-          "documentation":"<p>The name of the data source to update. The name of the data source can't be updated. To rename a data source you must delete the data source and re-create it.</p>"
+          "documentation":"<p>A new name for the data source connector. You must first delete the data source and re-create it to change the name of the data source.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source to update.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>Configuration information for an Amazon Kendra data source you want to update.</p>"
+          "documentation":"<p>Configuration information you want to update for the data source connector.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The new description for the data source.</p>"
+          "documentation":"<p>A new description for the data source connector.</p>"
         },
         "Schedule":{
           "shape":"ScanSchedule",
-          "documentation":"<p>The new update schedule for the data source.</p>"
+          "documentation":"<p>The sync schedule you want to update for the data source connector.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the new role to use when the data source is accessing resources on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM Roles for Amazon Kendra</a>.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The code for a language. This allows you to support a language for all documents when updating the data source. English is supported by default. For more information on supported languages, including their codes, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-languages.html\">Adding documents in languages other than English</a>.</p>"
+          "documentation":"<p>The code for a language you want to update for the data source connector. This allows you to support a language for all documents when updating the data source. English is supported by default. For more information on supported languages, including their codes, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-languages.html\">Adding documents in languages other than English</a>.</p>"
         },
         "CustomDocumentEnrichmentConfiguration":{
           "shape":"CustomDocumentEnrichmentConfiguration",
-          "documentation":"<p>Configuration information for altering document metadata and content during the document ingestion process when you update a data source.</p> <p>For more information on how to create, modify and delete document metadata, or make other content alterations when you ingest documents into Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html\">Customizing document metadata during the ingestion process</a>.</p>"
+          "documentation":"<p>Configuration information you want to update for altering document metadata and content during the document ingestion process.</p> <p>For more information on how to create, modify and delete document metadata, or make other content alterations when you ingest documents into Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html\">Customizing document metadata during the ingestion process</a>.</p>"
         }
       }
     },
@@ -7519,11 +7827,11 @@
         },
         "Name":{
           "shape":"ExperienceName",
-          "documentation":"<p>The name of your Amazon Kendra experience you want to update.</p>"
+          "documentation":"<p>A new name for your Amazon Kendra experience.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index for your Amazon Kendra experience you want to update.</p>"
+          "documentation":"<p>The identifier of the index for your Amazon Kendra experience.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
@@ -7531,11 +7839,11 @@
         },
         "Configuration":{
           "shape":"ExperienceConfiguration",
-          "documentation":"<p>Configuration information for your Amazon Kendra you want to update.</p>"
+          "documentation":"<p>Configuration information you want to update for your Amazon Kendra experience.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description of your Amazon Kendra experience you want to update.</p>"
+          "documentation":"<p>A new description for your Amazon Kendra experience.</p>"
         }
       }
     },
@@ -7545,15 +7853,15 @@
       "members":{
         "Id":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index to update.</p>"
+          "documentation":"<p>The identifier of the index you want to update.</p>"
         },
         "Name":{
           "shape":"IndexName",
-          "documentation":"<p>The name of the index to update.</p>"
+          "documentation":"<p>The name of the index you want to update.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>A new IAM role that gives Amazon Kendra permission to access your Amazon CloudWatch logs.</p>"
+          "documentation":"<p>An Identity and Access Management (IAM) role that gives Amazon Kendra permission to access Amazon CloudWatch logs and metrics.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -7561,7 +7869,7 @@
         },
         "DocumentMetadataConfigurationUpdates":{
           "shape":"DocumentMetadataConfigurationList",
-          "documentation":"<p>The document metadata you want to update.</p>"
+          "documentation":"<p>The document metadata configuration you want to update for the index. Document metadata are fields or attributes associated with your documents. For example, the company department name associated with each document.</p>"
         },
         "CapacityUnits":{
           "shape":"CapacityUnitsConfiguration",
@@ -7590,19 +7898,19 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index for a block list.</p>"
+          "documentation":"<p>The identifier of the index for the block list.</p>"
         },
         "Id":{
           "shape":"QuerySuggestionsBlockListId",
-          "documentation":"<p>The unique identifier of a block list.</p>"
+          "documentation":"<p>The identifier of the block list you want to update.</p>"
         },
         "Name":{
           "shape":"QuerySuggestionsBlockListName",
-          "documentation":"<p>The name of a block list.</p>"
+          "documentation":"<p>A new name for the block list.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description for a block list.</p>"
+          "documentation":"<p>A new description for the block list.</p>"
         },
         "SourceS3Path":{
           "shape":"S3Path",
@@ -7620,7 +7928,7 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index you want to update query suggestions settings for.</p>"
+          "documentation":"<p> The identifier of the index with query suggestions you want to update.</p>"
         },
         "Mode":{
           "shape":"Mode",
@@ -7653,23 +7961,23 @@
       "members":{
         "Id":{
           "shape":"ThesaurusId",
-          "documentation":"<p>The identifier of the thesaurus to update.</p>"
+          "documentation":"<p>The identifier of the thesaurus you want to update.</p>"
         },
         "Name":{
           "shape":"ThesaurusName",
-          "documentation":"<p>The updated name of the thesaurus.</p>"
+          "documentation":"<p>A new name for the thesaurus.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index associated with the thesaurus to update.</p>"
+          "documentation":"<p>The identifier of the index for the thesaurus.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The updated description of the thesaurus.</p>"
+          "documentation":"<p>A new description for the thesaurus.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The updated role ARN of the thesaurus.</p>"
+          "documentation":"<p>An IAM role that gives Amazon Kendra permissions to access thesaurus file specified in <code>SourceS3Path</code>.</p>"
         },
         "SourceS3Path":{"shape":"S3Path"}
       }
@@ -7720,7 +8028,7 @@
           "documentation":"<p>The list of data source groups you want to filter search results based on groups' access to documents in that data source.</p>"
         }
       },
-      "documentation":"<p>Provides information about the user context for an Amazon Kendra index.</p> <p>This is used for filtering search results for different users based on their access to documents.</p> <p>You provide one of the following:</p> <ul> <li> <p>User token</p> </li> <li> <p>User ID, the groups the user belongs to, and any data sources the groups can access.</p> </li> </ul> <p>If you provide both, an exception is thrown.</p>"
+      "documentation":"<p>Provides information about the user context for an Amazon Kendra index.</p> <p>User context filtering is a kind of personalized search with the benefit of controlling access to documents. For example, not all teams that search the company portal for information should access top-secret company documents, nor are these documents relevant to all users. Only specific users or groups of teams given access to top-secret documents should see these documents in their search results.</p> <p>You provide one of the following:</p> <ul> <li> <p>User token</p> </li> <li> <p>User ID, the groups the user belongs to, and any data sources the groups can access.</p> </li> </ul> <p>If you provide both, an exception is thrown.</p>"
     },
     "UserContextPolicy":{
       "type":"string",
@@ -7738,7 +8046,7 @@
           "documentation":"<p>The identity store provider (mode) you want to use to fetch access levels of groups and users. Amazon Web Services Single Sign On is currently the only available mode. Your users and groups must exist in an Amazon Web Services SSO identity source in order to use this mode.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information to fetch access levels of groups and users from an Amazon Web Services Single Sign On identity source. This is useful for setting up user context filtering, where Amazon Kendra filters search results for different users based on their group's access to documents. You can also map your users to their groups for user context filtering using the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PutPrincipalMapping.html\">PutPrincipalMapping API</a>.</p> <p>To set up an Amazon Web Services SSO identity source in the console to use with Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an Amazon Web Services SSO identity source</a>. You must also grant the required permissions to use Amazon Web Services SSO with Amazon Kendra. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-aws-sso\">IAM roles for Amazon Web Services SSO</a>.</p> <p>Amazon Kendra currently does not support using <code>UserGroupResolutionConfiguration</code> with an Amazon Web Services organization member account for your Amazon Web Services SSO identify source. You must create your index in the management account for the organization in order to use <code>UserGroupResolutionConfiguration</code>.</p>"
+      "documentation":"<p>Provides the configuration information to fetch access levels of groups and users from an Amazon Web Services Single Sign On identity source. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents. You can also use the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PutPrincipalMapping.html\">PutPrincipalMapping</a> API to map users to their groups so that you only need to provide the user ID when you issue the query.</p> <p>To set up an Amazon Web Services SSO identity source in the console to use with Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an Amazon Web Services SSO identity source</a>. You must also grant the required permissions to use Amazon Web Services SSO with Amazon Kendra. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-aws-sso\">IAM roles for Amazon Web Services SSO</a>.</p> <p>Amazon Kendra currently does not support using <code>UserGroupResolutionConfiguration</code> with an Amazon Web Services organization member account for your Amazon Web Services SSO identify source. You must create your index in the management account for the organization in order to use <code>UserGroupResolutionConfiguration</code>.</p>"
     },
     "UserGroupResolutionMode":{
       "type":"string",
@@ -7886,7 +8194,7 @@
         },
         "AuthenticationConfiguration":{
           "shape":"AuthenticationConfiguration",
-          "documentation":"<p>Configuration information required to connect to websites using authentication.</p> <p>You can connect to websites using basic authentication of user name and password.</p> <p>You must provide the website host name and port number. For example, the host name of https://a.example.com/page1.html is \"a.example.com\" and the port is 443, the standard port for HTTPS. You use a secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a> to store your authentication credentials.</p>"
+          "documentation":"<p>Configuration information required to connect to websites using authentication.</p> <p>You can connect to websites using basic authentication of user name and password. You use a secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a> to store your authentication credentials.</p> <p>You must provide the website host name and port number. For example, the host name of https://a.example.com/page1.html is \"a.example.com\" and the port is 443, the standard port for HTTPS.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information required for Amazon Kendra Web Crawler.</p>"

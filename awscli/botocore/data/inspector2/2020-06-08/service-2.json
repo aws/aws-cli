@@ -246,6 +246,22 @@
       ],
       "documentation":"<p>Enables the Amazon Inspector delegated administrator for your Organizations organization.</p>"
     },
+    "GetConfiguration":{
+      "name":"GetConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfigurationRequest"},
+      "output":{"shape":"GetConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves setting configurations for Inspector scans.</p>"
+    },
     "GetDelegatedAdminAccount":{
       "name":"GetDelegatedAdminAccount",
       "http":{
@@ -501,6 +517,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
+    },
+    "UpdateConfiguration":{
+      "name":"UpdateConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configuration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConfigurationRequest"},
+      "output":{"shape":"UpdateConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates setting configurations for your Amazon Inspector account. When you use this API as an Amazon Inspector delegated administrator this updates the setting for all accounts you manage. Member accounts in an organization cannot update this setting.</p>"
     },
     "UpdateFilter":{
       "name":"UpdateFilter",
@@ -1216,7 +1249,7 @@
         },
         "resourceType":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for.</p>"
+          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code> or <code>AWS_ECR_REPOSITORY</code>.</p>"
         },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
@@ -1372,6 +1405,10 @@
         "name":{
           "shape":"FilterName",
           "documentation":"<p>The name of the filter. Minimum length of 3. Maximum length of 64. Valid characters include alphanumeric characters, dot (.), underscore (_), and dash (-). Spaces are not allowed.</p>"
+        },
+        "reason":{
+          "shape":"FilterReason",
+          "documentation":"<p>The reason for creating the filter.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1812,6 +1849,27 @@
         "UNKNOWN"
       ]
     },
+    "EcrConfiguration":{
+      "type":"structure",
+      "required":["rescanDuration"],
+      "members":{
+        "rescanDuration":{
+          "shape":"EcrRescanDuration",
+          "documentation":"<p>The ECR automated re-scan duration defines how long an ECR image will be actively scanned by Amazon Inspector. When the number of days since an image was last pushed exceeds the automated re-scan duration the monitoring state of that image becomes <code>inactive</code> and all associated findings are scheduled for closure.</p>"
+        }
+      },
+      "documentation":"<p>Details about the ECR automated re-scan duration setting for your environment</p>"
+    },
+    "EcrConfigurationState":{
+      "type":"structure",
+      "members":{
+        "rescanDurationState":{
+          "shape":"EcrRescanDurationState",
+          "documentation":"<p>An object that contains details about the state of the ECR automated re-scan setting.</p>"
+        }
+      },
+      "documentation":"<p>Details about the state of the ECR scans for your environment.</p>"
+    },
     "EcrContainerImageMetadata":{
       "type":"structure",
       "members":{
@@ -1835,6 +1893,40 @@
         }
       },
       "documentation":"<p>Information on the Amazon ECR repository metadata associated with a finding.</p>"
+    },
+    "EcrRescanDuration":{
+      "type":"string",
+      "enum":[
+        "LIFETIME",
+        "DAYS_30",
+        "DAYS_180"
+      ]
+    },
+    "EcrRescanDurationState":{
+      "type":"structure",
+      "members":{
+        "rescanDuration":{
+          "shape":"EcrRescanDuration",
+          "documentation":"<p>The ECR automated re-scan duration defines how long an ECR image will be actively scanned by Amazon Inspector. When the number of days since an image was last pushed exceeds the automated re-scan duration the monitoring state of that image becomes <code>inactive</code> and all associated findings are scheduled for closure.</p>"
+        },
+        "status":{
+          "shape":"EcrRescanDurationStatus",
+          "documentation":"<p>The status of changes to the ECR automated re-scan duration.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>A timestamp representing when the last time the ECR scan duration setting was changed.</p>"
+        }
+      },
+      "documentation":"<p>Details about the state of any changes to the ECR automated re-scan duration setting.</p>"
+    },
+    "EcrRescanDurationStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "PENDING",
+        "FAILED"
+      ]
     },
     "EcrScanFrequency":{
       "type":"string",
@@ -1923,7 +2015,8 @@
         "EVENTBRIDGE_UNAVAILABLE",
         "EVENTBRIDGE_THROTTLED",
         "RESOURCE_SCAN_NOT_DISABLED",
-        "DISASSOCIATE_ALL_MEMBERS"
+        "DISASSOCIATE_ALL_MEMBERS",
+        "ACCOUNT_IS_ISOLATED"
       ]
     },
     "ErrorMessage":{"type":"string"},
@@ -2461,6 +2554,20 @@
         "EC2",
         "ECR"
       ]
+    },
+    "GetConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ecrConfiguration":{
+          "shape":"EcrConfigurationState",
+          "documentation":"<p>Specifies how the ECR automated re-scan duration is currently configured for your environment.</p>"
+        }
+      }
     },
     "GetDelegatedAdminAccountRequest":{
       "type":"structure",
@@ -3301,7 +3408,11 @@
         "GOBINARY",
         "GOMOD",
         "JAR",
-        "OS"
+        "OS",
+        "PIP",
+        "PYTHONPKG",
+        "NODEPKG",
+        "POM"
       ]
     },
     "PackageName":{
@@ -3507,7 +3618,11 @@
       "type":"string",
       "enum":[
         "INTERNAL_ERROR",
-        "INVALID_PERMISSIONS"
+        "INVALID_PERMISSIONS",
+        "NO_FINDINGS_FOUND",
+        "BUCKET_NOT_FOUND",
+        "INCOMPATIBLE_BUCKET_REGION",
+        "MALFORMED_KMS_KEY"
       ]
     },
     "RepositoryAggregation":{
@@ -3742,7 +3857,8 @@
         "IMAGE_SIZE_EXCEEDED",
         "SCAN_FREQUENCY_MANUAL",
         "SCAN_FREQUENCY_SCAN_ON_PUSH",
-        "EC2_INSTANCE_STOPPED"
+        "EC2_INSTANCE_STOPPED",
+        "PENDING_DISABLE"
       ]
     },
     "ScanType":{
@@ -4106,6 +4222,21 @@
       "members":{
       }
     },
+    "UpdateConfigurationRequest":{
+      "type":"structure",
+      "required":["ecrConfiguration"],
+      "members":{
+        "ecrConfiguration":{
+          "shape":"EcrConfiguration",
+          "documentation":"<p>Specifies how the ECR automated re-scan will be updated for your environment.</p>"
+        }
+      }
+    },
+    "UpdateConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateFilterRequest":{
       "type":"structure",
       "required":["filterArn"],
@@ -4129,6 +4260,10 @@
         "name":{
           "shape":"FilterName",
           "documentation":"<p>The name of the filter.</p>"
+        },
+        "reason":{
+          "shape":"FilterReason",
+          "documentation":"<p>The reason the filter was updated.</p>"
         }
       }
     },
@@ -4284,7 +4419,7 @@
     },
     "VulnerabilityId":{
       "type":"string",
-      "max":64,
+      "max":128,
       "min":1
     },
     "VulnerabilityIdList":{

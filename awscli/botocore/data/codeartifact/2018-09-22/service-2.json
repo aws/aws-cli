@@ -194,6 +194,23 @@
       ],
       "documentation":"<p> Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DomainDescription.html\">DomainDescription</a> object that contains information about the requested domain. </p>"
     },
+    "DescribePackage":{
+      "name":"DescribePackage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/package"
+      },
+      "input":{"shape":"DescribePackageRequest"},
+      "output":{"shape":"DescribePackageResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDescription.html\">PackageDescription</a> object that contains information about the requested package.</p>"
+    },
     "DescribePackageVersion":{
       "name":"DescribePackageVersion",
       "http":{
@@ -333,7 +350,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Gets the readme file or descriptive text for a package version. </p> <p> The returned text might contain formatting. For example, it might contain formatting for Markdown or reStructuredText. </p>"
+      "documentation":"<p> Gets the readme file or descriptive text for a package version. For packages that do not contain a readme file, CodeArtifact extracts a description from a metadata file. For example, from the <code>&lt;description&gt;</code> element in the <code>pom.xml</code> file of a Maven package. </p> <p> The returned text might contain formatting. For example, it might contain formatting for Markdown or reStructuredText. </p>"
     },
     "GetRepositoryEndpoint":{
       "name":"GetRepositoryEndpoint",
@@ -521,6 +538,23 @@
       ],
       "documentation":"<p> Sets a resource policy on a domain that specifies permissions to access it. </p> <p> When you call <code>PutDomainPermissionsPolicy</code>, the resource policy on the domain is ignored when evaluting permissions. This ensures that the owner of a domain cannot lock themselves out of the domain, which would prevent them from being able to update the resource policy. </p>"
     },
+    "PutPackageOriginConfiguration":{
+      "name":"PutPackageOriginConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/package"
+      },
+      "input":{"shape":"PutPackageOriginConfigurationRequest"},
+      "output":{"shape":"PutPackageOriginConfigurationResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Sets the package origin configuration for a package.</p> <p>The package origin configuration determines how new versions of a package can be added to a repository. You can allow or block direct publishing of new package versions, or ingestion and retaining of new package versions from an external connection or upstream source. For more information about package origin controls and configuration, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/package-origin-controls.html\">Editing package origin controls</a> in the <i>CodeArtifact User Guide</i>.</p> <p> <code>PutPackageOriginConfiguration</code> can be called on a package that doesn't yet exist in the repository. When called on a package that does not exist, a package is created in the repository with no versions and the requested restrictions are set on the package. This can be used to preemptively block ingesting or retaining any versions from external connections or upstream repositories, or to block publishing any versions of the package into the repository before connecting any package managers or publishers to the repository.</p>"
+    },
     "PutRepositoryPermissionsPolicy":{
       "name":"PutRepositoryPermissionsPolicy",
       "http":{
@@ -628,6 +662,20 @@
       "min":12,
       "pattern":"[0-9]{12}"
     },
+    "AllowPublish":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "BLOCK"
+      ]
+    },
+    "AllowUpstream":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "BLOCK"
+      ]
+    },
     "Arn":{
       "type":"string",
       "max":1011,
@@ -700,7 +748,7 @@
         },
         "externalConnection":{
           "shape":"ExternalConnectionName",
-          "documentation":"<p> The name of the external connection to add to the repository. The following values are supported: </p> <ul> <li> <p> <code>public:npmjs</code> - for the npm public repository. </p> </li> <li> <p> <code>public:nuget-org</code> - for the NuGet Gallery. </p> </li> <li> <p> <code>public:pypi</code> - for the Python Package Index. </p> </li> <li> <p> <code>public:maven-central</code> - for Maven Central. </p> </li> <li> <p> <code>public:maven-googleandroid</code> - for the Google Android repository. </p> </li> <li> <p> <code>public:maven-gradleplugins</code> - for the Gradle plugins repository. </p> </li> <li> <p> <code>public:maven-commonsware</code> - for the CommonsWare Android repository. </p> </li> </ul>",
+          "documentation":"<p> The name of the external connection to add to the repository. The following values are supported: </p> <ul> <li> <p> <code>public:npmjs</code> - for the npm public repository. </p> </li> <li> <p> <code>public:pypi</code> - for the Python Package Index. </p> </li> <li> <p> <code>public:maven-central</code> - for Maven Central. </p> </li> <li> <p> <code>public:maven-googleandroid</code> - for the Google Android repository. </p> </li> <li> <p> <code>public:maven-gradleplugins</code> - for the Gradle plugins repository. </p> </li> <li> <p> <code>public:maven-commonsware</code> - for the CommonsWare Android repository. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"external-connection"
         }
@@ -763,7 +811,7 @@
         },
         "sourceRepository":{
           "shape":"RepositoryName",
-          "documentation":"<p> The name of the repository that contains the package versions to copy. </p>",
+          "documentation":"<p> The name of the repository that contains the package versions to be copied. </p>",
           "location":"querystring",
           "locationName":"source-repository"
         },
@@ -775,25 +823,25 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package that is copied. </p>",
+          "documentation":"<p> The format of the package versions to be copied. </p>",
           "location":"querystring",
           "locationName":"format"
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package versions to be copied. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. The namespace is required when copying Maven package versions. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
         "package":{
           "shape":"PackageName",
-          "documentation":"<p> The name of the package that is copied. </p>",
+          "documentation":"<p> The name of the package that contains the versions to be copied. </p>",
           "location":"querystring",
           "locationName":"package"
         },
         "versions":{
           "shape":"PackageVersionList",
-          "documentation":"<p> The versions of the package to copy. </p> <note> <p> You must specify <code>versions</code> or <code>versionRevisions</code>. You cannot specify both. </p> </note>"
+          "documentation":"<p> The versions of the package to be copied. </p> <note> <p> You must specify <code>versions</code> or <code>versionRevisions</code>. You cannot specify both. </p> </note>"
         },
         "versionRevisions":{
           "shape":"PackageVersionRevisionMap",
@@ -995,7 +1043,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package versions to be deleted. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. The namespace is required when deleting Maven package versions. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -1130,6 +1178,63 @@
         "domain":{"shape":"DomainDescription"}
       }
     },
+    "DescribePackageRequest":{
+      "type":"structure",
+      "required":[
+        "domain",
+        "repository",
+        "format",
+        "package"
+      ],
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain that contains the repository that contains the package.</p>",
+          "location":"querystring",
+          "locationName":"domain"
+        },
+        "domainOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
+          "location":"querystring",
+          "locationName":"domain-owner"
+        },
+        "repository":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the requested package. </p>",
+          "location":"querystring",
+          "locationName":"repository"
+        },
+        "format":{
+          "shape":"PackageFormat",
+          "documentation":"<p>A format that specifies the type of the requested package.</p>",
+          "location":"querystring",
+          "locationName":"format"
+        },
+        "namespace":{
+          "shape":"PackageNamespace",
+          "documentation":"<p>The namespace of the requested package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. The namespace is required when requesting Maven packages. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "package":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the requested package.</p>",
+          "location":"querystring",
+          "locationName":"package"
+        }
+      }
+    },
+    "DescribePackageResult":{
+      "type":"structure",
+      "required":["package"],
+      "members":{
+        "package":{
+          "shape":"PackageDescription",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDescription.html\">PackageDescription</a> object that contains information about the requested package.</p>"
+        }
+      }
+    },
     "DescribePackageVersionRequest":{
       "type":"structure",
       "required":[
@@ -1166,7 +1271,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the requested package version. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -1233,7 +1338,7 @@
     "Description":{
       "type":"string",
       "max":1000,
-      "pattern":"\\P{C}+"
+      "pattern":"\\P{C}*"
     },
     "DisassociateExternalConnectionRequest":{
       "type":"structure",
@@ -1314,7 +1419,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package versions to be disposed. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -1393,6 +1498,20 @@
       },
       "documentation":"<p> Information about a domain. A domain is a container for repositories. When you create a domain, it is empty until you add one or more repositories. </p>"
     },
+    "DomainEntryPoint":{
+      "type":"structure",
+      "members":{
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that a package was originally published to.</p>"
+        },
+        "externalConnectionName":{
+          "shape":"ExternalConnectionName",
+          "documentation":"<p>The name of the external connection that a package was ingested from.</p>"
+        }
+      },
+      "documentation":"<p>Information about how a package originally entered the CodeArtifact domain. For packages published directly to CodeArtifact, the entry point is the repository it was published to. For packages ingested from an external repository, the entry point is the external connection that it was ingested from. An external connection is a CodeArtifact repository that is connected to an external repository such as the npm registry or NuGet gallery.</p>"
+    },
     "DomainName":{
       "type":"string",
       "max":50,
@@ -1443,6 +1562,8 @@
     "ErrorMessage":{"type":"string"},
     "ExternalConnectionName":{
       "type":"string",
+      "max":100,
+      "min":2,
       "pattern":"[A-Za-z0-9][A-Za-z0-9._\\-:]{1,99}"
     },
     "ExternalConnectionStatus":{
@@ -1550,7 +1671,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package version with the requested asset file. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -1638,13 +1759,13 @@
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> A format that specifies the type of the package version with the requested readme file. </p> <note> <p>Although <code>maven</code> is listed as a valid value, CodeArtifact does not support displaying readme files for Maven packages.</p> </note>",
+          "documentation":"<p> A format that specifies the type of the package version with the requested readme file. </p>",
           "location":"querystring",
           "locationName":"format"
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package version with the requested readme file. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -1671,7 +1792,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package version with the requested readme file. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>"
         },
         "package":{
           "shape":"PackageName",
@@ -1875,25 +1996,25 @@
         },
         "repository":{
           "shape":"RepositoryName",
-          "documentation":"<p> The name of the repository that contains the package that contains the returned package version assets. </p>",
+          "documentation":"<p> The name of the repository that contains the package that contains the requested package version assets. </p>",
           "location":"querystring",
           "locationName":"repository"
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package that contains the returned package version assets. </p>",
+          "documentation":"<p> The format of the package that contains the requested package version assets. </p>",
           "location":"querystring",
           "locationName":"format"
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package version that contains the requested package version assets. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
         "package":{
           "shape":"PackageName",
-          "documentation":"<p> The name of the package that contains the returned package version assets. </p>",
+          "documentation":"<p> The name of the package that contains the requested package version assets. </p>",
           "location":"querystring",
           "locationName":"package"
         },
@@ -1922,19 +2043,19 @@
       "members":{
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the package that contains the returned package version assets. </p>"
+          "documentation":"<p> The format of the package that contains the requested package version assets. </p>"
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package version that contains the requested package version assets. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>"
         },
         "package":{
           "shape":"PackageName",
-          "documentation":"<p> The name of the package that contains the returned package version assets. </p>"
+          "documentation":"<p> The name of the package that contains the requested package version assets. </p>"
         },
         "version":{
           "shape":"PackageVersion",
-          "documentation":"<p> The version of the package associated with the returned assets. </p>"
+          "documentation":"<p> The version of the package associated with the requested assets. </p>"
         },
         "versionRevision":{
           "shape":"PackageVersionRevision",
@@ -1986,7 +2107,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package version with the requested dependencies. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -2019,7 +2140,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package version that contains the returned dependencies. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>"
         },
         "package":{
           "shape":"PackageName",
@@ -2059,7 +2180,7 @@
       "members":{
         "domain":{
           "shape":"DomainName",
-          "documentation":"<p> The name of the domain that contains the repository that contains the returned package versions. </p>",
+          "documentation":"<p> The name of the domain that contains the repository that contains the requested package versions. </p>",
           "location":"querystring",
           "locationName":"domain"
         },
@@ -2071,37 +2192,37 @@
         },
         "repository":{
           "shape":"RepositoryName",
-          "documentation":"<p> The name of the repository that contains the package. </p>",
+          "documentation":"<p> The name of the repository that contains the requested package versions. </p>",
           "location":"querystring",
           "locationName":"repository"
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the returned packages. </p>",
+          "documentation":"<p> The format of the returned package versions. </p>",
           "location":"querystring",
           "locationName":"format"
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package that contains the requested package versions. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
         "package":{
           "shape":"PackageName",
-          "documentation":"<p> The name of the package for which you want to return a list of package versions. </p>",
+          "documentation":"<p> The name of the package for which you want to request package versions. </p>",
           "location":"querystring",
           "locationName":"package"
         },
         "status":{
           "shape":"PackageVersionStatus",
-          "documentation":"<p> A string that specifies the status of the package versions to include in the returned list. </p>",
+          "documentation":"<p> A string that filters the requested package versions by status. </p>",
           "location":"querystring",
           "locationName":"status"
         },
         "sortBy":{
           "shape":"PackageVersionSortType",
-          "documentation":"<p> How to sort the returned list of package versions. </p>",
+          "documentation":"<p> How to sort the requested list of package versions. </p>",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -2116,6 +2237,12 @@
           "documentation":"<p> The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. </p>",
           "location":"querystring",
           "locationName":"next-token"
+        },
+        "originType":{
+          "shape":"PackageVersionOriginType",
+          "documentation":"<p>The <code>originType</code> used to filter package versions. Only package versions with the provided <code>originType</code> will be returned.</p>",
+          "location":"querystring",
+          "locationName":"originType"
         }
       }
     },
@@ -2132,7 +2259,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package that contains the requested package versions. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>"
         },
         "package":{
           "shape":"PackageName",
@@ -2162,7 +2289,7 @@
       "members":{
         "domain":{
           "shape":"DomainName",
-          "documentation":"<p> The name of the domain that contains the repository that contains the requested list of packages. </p>",
+          "documentation":"<p> The name of the domain that contains the repository that contains the requested packages. </p>",
           "location":"querystring",
           "locationName":"domain"
         },
@@ -2174,25 +2301,25 @@
         },
         "repository":{
           "shape":"RepositoryName",
-          "documentation":"<p> The name of the repository from which packages are to be listed. </p>",
+          "documentation":"<p> The name of the repository that contains the requested packages. </p>",
           "location":"querystring",
           "locationName":"repository"
         },
         "format":{
           "shape":"PackageFormat",
-          "documentation":"<p> The format of the packages. </p>",
+          "documentation":"<p>The format used to filter requested packages. Only packages from the provided format will be returned.</p>",
           "location":"querystring",
           "locationName":"format"
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace used to filter requested packages. Only packages with the provided namespace will be returned. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
         "packagePrefix":{
           "shape":"PackageName",
-          "documentation":"<p> A prefix used to filter returned packages. Only packages with names that start with <code>packagePrefix</code> are returned. </p>",
+          "documentation":"<p> A prefix used to filter requested packages. Only packages with names that start with <code>packagePrefix</code> are returned. </p>",
           "location":"querystring",
           "locationName":"package-prefix"
         },
@@ -2207,6 +2334,18 @@
           "documentation":"<p> The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. </p>",
           "location":"querystring",
           "locationName":"next-token"
+        },
+        "publish":{
+          "shape":"AllowPublish",
+          "documentation":"<p>The value of the <code>Publish</code> package origin control restriction used to filter requested packages. Only packages with the provided restriction are returned. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html\">PackageOriginRestrictions</a>.</p>",
+          "location":"querystring",
+          "locationName":"publish"
+        },
+        "upstream":{
+          "shape":"AllowUpstream",
+          "documentation":"<p>The value of the <code>Upstream</code> package origin control restriction used to filter requested packages. Only packages with the provided restriction are returned. For more information, see <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html\">PackageOriginRestrictions</a>.</p>",
+          "location":"querystring",
+          "locationName":"upstream"
         }
       }
     },
@@ -2352,7 +2491,7 @@
       "members":{
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package that this package depends on. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>"
         },
         "package":{
           "shape":"PackageName",
@@ -2373,6 +2512,28 @@
       "type":"list",
       "member":{"shape":"PackageDependency"}
     },
+    "PackageDescription":{
+      "type":"structure",
+      "members":{
+        "format":{
+          "shape":"PackageFormat",
+          "documentation":"<p>A format that specifies the type of the package.</p>"
+        },
+        "namespace":{
+          "shape":"PackageNamespace",
+          "documentation":"<p>The namespace of the package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>"
+        },
+        "name":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the package.</p>"
+        },
+        "originConfiguration":{
+          "shape":"PackageOriginConfiguration",
+          "documentation":"<p>The package origin configuration for the package.</p>"
+        }
+      },
+      "documentation":"<p>Details about a package.</p>"
+    },
     "PackageFormat":{
       "type":"string",
       "enum":[
@@ -2386,13 +2547,41 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[^!#/\\s]+"
+      "pattern":"[^#/\\s]+"
     },
     "PackageNamespace":{
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[^!#/\\s]+"
+      "pattern":"[^#/\\s]+"
+    },
+    "PackageOriginConfiguration":{
+      "type":"structure",
+      "members":{
+        "restrictions":{
+          "shape":"PackageOriginRestrictions",
+          "documentation":"<p>A <code>PackageOriginRestrictions</code> object that contains information about the upstream and publish package origin configuration for the package.</p>"
+        }
+      },
+      "documentation":"<p>Details about the package origin configuration of a package.</p>"
+    },
+    "PackageOriginRestrictions":{
+      "type":"structure",
+      "required":[
+        "publish",
+        "upstream"
+      ],
+      "members":{
+        "publish":{
+          "shape":"AllowPublish",
+          "documentation":"<p>The package origin configuration that determines if new versions of the package can be published directly to the repository.</p>"
+        },
+        "upstream":{
+          "shape":"AllowUpstream",
+          "documentation":"<p>The package origin configuration that determines if new versions of the package can be added to the repository from an external connection or upstream source.</p>"
+        }
+      },
+      "documentation":"<p>Details about the origin restrictions set on the package. The package origin restrictions determine how new versions of a package can be added to a specific repository.</p>"
     },
     "PackageSummary":{
       "type":"structure",
@@ -2403,11 +2592,15 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>"
         },
         "package":{
           "shape":"PackageName",
           "documentation":"<p> The name of the package. </p>"
+        },
+        "originConfiguration":{
+          "shape":"PackageOriginConfiguration",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginConfiguration.html\">PackageOriginConfiguration</a> object that contains a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html\">PackageOriginRestrictions</a> object that contains information about the upstream and publish package origin restrictions.</p>"
         }
       },
       "documentation":"<p> Details about a package, including its format, namespace, and name. The <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_ListPackages.html\">ListPackages</a> operation returns a list of <code>PackageSummary</code> objects. </p>"
@@ -2420,7 +2613,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[^!#/\\s]+"
+      "pattern":"[^#/\\s]+"
     },
     "PackageVersionDescription":{
       "type":"structure",
@@ -2431,7 +2624,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>"
+          "documentation":"<p>The namespace of the package version. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>"
         },
         "packageName":{
           "shape":"PackageName",
@@ -2472,6 +2665,10 @@
         "status":{
           "shape":"PackageVersionStatus",
           "documentation":"<p> A string that contains the status of the package version. </p>"
+        },
+        "origin":{
+          "shape":"PackageVersionOrigin",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionOrigin.html\">PackageVersionOrigin</a> object that contains information about how the package version was added to the repository.</p>"
         }
       },
       "documentation":"<p> Details about a package version. </p>"
@@ -2488,7 +2685,7 @@
           "documentation":"<p> The error message associated with the error. </p>"
         }
       },
-      "documentation":"<p> An error associated with package. </p>"
+      "documentation":"<p>l An error associated with package. </p>"
     },
     "PackageVersionErrorCode":{
       "type":"string",
@@ -2510,6 +2707,28 @@
       "type":"list",
       "member":{"shape":"PackageVersion"},
       "max":100
+    },
+    "PackageVersionOrigin":{
+      "type":"structure",
+      "members":{
+        "domainEntryPoint":{
+          "shape":"DomainEntryPoint",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DomainEntryPoint.html\">DomainEntryPoint</a> object that contains information about from which repository or external connection the package version was added to the domain.</p>"
+        },
+        "originType":{
+          "shape":"PackageVersionOriginType",
+          "documentation":"<p>Describes how the package version was originally added to the domain. An <code>INTERNAL</code> origin type means the package version was published directly to a repository in the domain. An <code>EXTERNAL</code> origin type means the package version was ingested from an external connection.</p>"
+        }
+      },
+      "documentation":"<p>Information about how a package version was added to a repository.</p>"
+    },
+    "PackageVersionOriginType":{
+      "type":"string",
+      "enum":[
+        "INTERNAL",
+        "EXTERNAL",
+        "UNKNOWN"
+      ]
     },
     "PackageVersionRevision":{
       "type":"string",
@@ -2555,6 +2774,10 @@
         "status":{
           "shape":"PackageVersionStatus",
           "documentation":"<p> A string that contains the status of the package version. It can be one of the following: </p>"
+        },
+        "origin":{
+          "shape":"PackageVersionOrigin",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionOrigin.html\">PackageVersionOrigin</a> object that contains information about how the package version was added to the repository.</p>"
         }
       },
       "documentation":"<p> Details about a package version, including its status, version, and revision. The <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_ListPackageVersions.html\">ListPackageVersions</a> operation returns a list of <code>PackageVersionSummary</code> objects. </p>"
@@ -2571,8 +2794,9 @@
     },
     "PolicyDocument":{
       "type":"string",
-      "max":5120,
-      "min":1
+      "max":7168,
+      "min":1,
+      "pattern":"[\\P{C}\\s]+"
     },
     "PolicyRevision":{
       "type":"string",
@@ -2611,6 +2835,67 @@
         "policy":{
           "shape":"ResourcePolicy",
           "documentation":"<p> The resource policy that was set after processing the request. </p>"
+        }
+      }
+    },
+    "PutPackageOriginConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "domain",
+        "repository",
+        "format",
+        "package",
+        "restrictions"
+      ],
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain that contains the repository that contains the package.</p>",
+          "location":"querystring",
+          "locationName":"domain"
+        },
+        "domainOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. </p>",
+          "location":"querystring",
+          "locationName":"domain-owner"
+        },
+        "repository":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the package.</p>",
+          "location":"querystring",
+          "locationName":"repository"
+        },
+        "format":{
+          "shape":"PackageFormat",
+          "documentation":"<p>A format that specifies the type of the package to be updated.</p>",
+          "location":"querystring",
+          "locationName":"format"
+        },
+        "namespace":{
+          "shape":"PackageNamespace",
+          "documentation":"<p>The namespace of the package to be updated. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "package":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the package to be updated.</p>",
+          "location":"querystring",
+          "locationName":"package"
+        },
+        "restrictions":{
+          "shape":"PackageOriginRestrictions",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html\">PackageOriginRestrictions</a> object that contains information about the <code>upstream</code> and <code>publish</code> package origin restrictions. The <code>upstream</code> restriction determines if new package versions can be ingested or retained from external connections or upstream repositories. The <code>publish</code> restriction determines if new package versions can be published directly to the repository.</p> <p>You must include both the desired <code>upstream</code> and <code>publish</code> restrictions.</p>"
+        }
+      }
+    },
+    "PutPackageOriginConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "originConfiguration":{
+          "shape":"PackageOriginConfiguration",
+          "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginConfiguration.html\">PackageOriginConfiguration</a> object that describes the origin configuration set for the package. It contains a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html\">PackageOriginRestrictions</a> object that describes how new versions of the package can be introduced to the repository.</p>"
         }
       }
     },
@@ -2870,7 +3155,8 @@
     "TagKey":{
       "type":"string",
       "max":128,
-      "min":1
+      "min":1,
+      "pattern":"\\P{C}+"
     },
     "TagKeyList":{
       "type":"list",
@@ -2911,7 +3197,8 @@
     "TagValue":{
       "type":"string",
       "max":256,
-      "min":0
+      "min":0,
+      "pattern":"\\P{C}*"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -2991,7 +3278,7 @@
         },
         "namespace":{
           "shape":"PackageNamespace",
-          "documentation":"<p> The namespace of the package. The package component that specifies its namespace depends on its type. For example: </p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> A Python package does not contain a corresponding component, so Python packages do not have a namespace. </p> </li> </ul>",
+          "documentation":"<p>The namespace of the package version to be updated. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>",
           "location":"querystring",
           "locationName":"namespace"
         },
@@ -3130,5 +3417,5 @@
       ]
     }
   },
-  "documentation":"<p> CodeArtifact is a fully managed artifact repository compatible with language-native package managers and build tools such as npm, Apache Maven, pip, and dotnet. You can use CodeArtifact to share packages with development teams and pull packages. Packages can be pulled from both public and CodeArtifact repositories. You can also create an upstream relationship between a CodeArtifact repository and another repository, which effectively merges their contents from the point of view of a package manager client. </p> <p> <b>CodeArtifact Components</b> </p> <p>Use the information in this guide to help you work with the following CodeArtifact components:</p> <ul> <li> <p> <b>Repository</b>: A CodeArtifact repository contains a set of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/welcome.html#welcome-concepts-package-version\">package versions</a>, each of which maps to a set of assets, or files. Repositories are polyglot, so a single repository can contain packages of any supported type. Each repository exposes endpoints for fetching and publishing packages using tools like the <b> <code>npm</code> </b> CLI, the Maven CLI (<b> <code>mvn</code> </b>), Python CLIs (<b> <code>pip</code> </b> and <code>twine</code>), and NuGet CLIs (<code>nuget</code> and <code>dotnet</code>).</p> </li> <li> <p> <b>Domain</b>: Repositories are aggregated into a higher-level entity known as a <i>domain</i>. All package assets and metadata are stored in the domain, but are consumed through repositories. A given package asset, such as a Maven JAR file, is stored once per domain, no matter how many repositories it's present in. All of the assets and metadata in a domain are encrypted with the same customer master key (CMK) stored in Key Management Service (KMS).</p> <p>Each repository is a member of a single domain and can't be moved to a different domain.</p> <p>The domain allows organizational policy to be applied across multiple repositories, such as which accounts can access repositories in the domain, and which public repositories can be used as sources of packages.</p> <p>Although an organization can have multiple domains, we recommend a single production domain that contains all published artifacts so that teams can find and share packages across their organization.</p> </li> <li> <p> <b>Package</b>: A <i>package</i> is a bundle of software and the metadata required to resolve dependencies and install the software. CodeArtifact supports <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-npm.html\">npm</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-python.html\">PyPI</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-maven\">Maven</a>, and <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-nuget\">NuGet</a> package formats.</p> <p>In CodeArtifact, a package consists of:</p> <ul> <li> <p>A <i>name</i> (for example, <code>webpack</code> is the name of a popular npm package)</p> </li> <li> <p>An optional namespace (for example, <code>@types</code> in <code>@types/node</code>)</p> </li> <li> <p>A set of versions (for example, <code>1.0.0</code>, <code>1.0.1</code>, <code>1.0.2</code>, etc.)</p> </li> <li> <p> Package-level metadata (for example, npm tags)</p> </li> </ul> </li> <li> <p> <b>Package version</b>: A version of a package, such as <code>@types/node 12.6.9</code>. The version number format and semantics vary for different package formats. For example, npm package versions must conform to the <a href=\"https://semver.org/\">Semantic Versioning specification</a>. In CodeArtifact, a package version consists of the version identifier, metadata at the package version level, and a set of assets.</p> </li> <li> <p> <b>Upstream repository</b>: One repository is <i>upstream</i> of another when the package versions in it can be accessed from the repository endpoint of the downstream repository, effectively merging the contents of the two repositories from the point of view of a client. CodeArtifact allows creating an upstream relationship between two repositories.</p> </li> <li> <p> <b>Asset</b>: An individual file stored in CodeArtifact associated with a package version, such as an npm <code>.tgz</code> file or Maven POM and JAR files.</p> </li> </ul> <p>CodeArtifact supports these operations:</p> <ul> <li> <p> <code>AssociateExternalConnection</code>: Adds an existing external connection to a repository. </p> </li> <li> <p> <code>CopyPackageVersions</code>: Copies package versions from one repository to another repository in the same domain.</p> </li> <li> <p> <code>CreateDomain</code>: Creates a domain</p> </li> <li> <p> <code>CreateRepository</code>: Creates a CodeArtifact repository in a domain. </p> </li> <li> <p> <code>DeleteDomain</code>: Deletes a domain. You cannot delete a domain that contains repositories. </p> </li> <li> <p> <code>DeleteDomainPermissionsPolicy</code>: Deletes the resource policy that is set on a domain.</p> </li> <li> <p> <code>DeletePackageVersions</code>: Deletes versions of a package. After a package has been deleted, it can be republished, but its assets and metadata cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DeleteRepository</code>: Deletes a repository. </p> </li> <li> <p> <code>DeleteRepositoryPermissionsPolicy</code>: Deletes the resource policy that is set on a repository.</p> </li> <li> <p> <code>DescribeDomain</code>: Returns a <code>DomainDescription</code> object that contains information about the requested domain.</p> </li> <li> <p> <code>DescribePackageVersion</code>: Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html\">PackageVersionDescription</a> object that contains details about a package version. </p> </li> <li> <p> <code>DescribeRepository</code>: Returns a <code>RepositoryDescription</code> object that contains detailed information about the requested repository. </p> </li> <li> <p> <code>DisposePackageVersions</code>: Disposes versions of a package. A package version with the status <code>Disposed</code> cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DisassociateExternalConnection</code>: Removes an existing external connection from a repository. </p> </li> <li> <p> <code>GetAuthorizationToken</code>: Generates a temporary authorization token for accessing repositories in the domain. The token expires the authorization period has passed. The default authorization period is 12 hours and can be customized to any length with a maximum of 12 hours.</p> </li> <li> <p> <code>GetDomainPermissionsPolicy</code>: Returns the policy of a resource that is attached to the specified domain. </p> </li> <li> <p> <code>GetPackageVersionAsset</code>: Returns the contents of an asset that is in a package version. </p> </li> <li> <p> <code>GetPackageVersionReadme</code>: Gets the readme file or descriptive text for a package version.</p> </li> <li> <p> <code>GetRepositoryEndpoint</code>: Returns the endpoint of a repository for a specific package format. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>maven</code> </p> </li> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>nuget</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> </ul> </li> <li> <p> <code>GetRepositoryPermissionsPolicy</code>: Returns the resource policy that is set on a repository. </p> </li> <li> <p> <code>ListDomains</code>: Returns a list of <code>DomainSummary</code> objects. Each returned <code>DomainSummary</code> object contains information about a domain.</p> </li> <li> <p> <code>ListPackages</code>: Lists the packages in a repository.</p> </li> <li> <p> <code>ListPackageVersionAssets</code>: Lists the assets for a given package version.</p> </li> <li> <p> <code>ListPackageVersionDependencies</code>: Returns a list of the direct dependencies for a package version. </p> </li> <li> <p> <code>ListPackageVersions</code>: Returns a list of package versions for a specified package in a repository.</p> </li> <li> <p> <code>ListRepositories</code>: Returns a list of repositories owned by the Amazon Web Services account that called this method.</p> </li> <li> <p> <code>ListRepositoriesInDomain</code>: Returns a list of the repositories in a domain.</p> </li> <li> <p> <code>PutDomainPermissionsPolicy</code>: Attaches a resource policy to a domain.</p> </li> <li> <p> <code>PutRepositoryPermissionsPolicy</code>: Sets the resource policy on a repository that specifies permissions to access it. </p> </li> <li> <p> <code>UpdatePackageVersionsStatus</code>: Updates the status of one or more versions of a package.</p> </li> <li> <p> <code>UpdateRepository</code>: Updates the properties of a repository.</p> </li> </ul>"
+  "documentation":"<p> CodeArtifact is a fully managed artifact repository compatible with language-native package managers and build tools such as npm, Apache Maven, pip, and dotnet. You can use CodeArtifact to share packages with development teams and pull packages. Packages can be pulled from both public and CodeArtifact repositories. You can also create an upstream relationship between a CodeArtifact repository and another repository, which effectively merges their contents from the point of view of a package manager client. </p> <p> <b>CodeArtifact Components</b> </p> <p>Use the information in this guide to help you work with the following CodeArtifact components:</p> <ul> <li> <p> <b>Repository</b>: A CodeArtifact repository contains a set of <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/welcome.html#welcome-concepts-package-version\">package versions</a>, each of which maps to a set of assets, or files. Repositories are polyglot, so a single repository can contain packages of any supported type. Each repository exposes endpoints for fetching and publishing packages using tools like the <b> <code>npm</code> </b> CLI, the Maven CLI (<b> <code>mvn</code> </b>), Python CLIs (<b> <code>pip</code> </b> and <code>twine</code>), and NuGet CLIs (<code>nuget</code> and <code>dotnet</code>).</p> </li> <li> <p> <b>Domain</b>: Repositories are aggregated into a higher-level entity known as a <i>domain</i>. All package assets and metadata are stored in the domain, but are consumed through repositories. A given package asset, such as a Maven JAR file, is stored once per domain, no matter how many repositories it's present in. All of the assets and metadata in a domain are encrypted with the same customer master key (CMK) stored in Key Management Service (KMS).</p> <p>Each repository is a member of a single domain and can't be moved to a different domain.</p> <p>The domain allows organizational policy to be applied across multiple repositories, such as which accounts can access repositories in the domain, and which public repositories can be used as sources of packages.</p> <p>Although an organization can have multiple domains, we recommend a single production domain that contains all published artifacts so that teams can find and share packages across their organization.</p> </li> <li> <p> <b>Package</b>: A <i>package</i> is a bundle of software and the metadata required to resolve dependencies and install the software. CodeArtifact supports <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-npm.html\">npm</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-python.html\">PyPI</a>, <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-maven\">Maven</a>, and <a href=\"https://docs.aws.amazon.com/codeartifact/latest/ug/using-nuget\">NuGet</a> package formats.</p> <p>In CodeArtifact, a package consists of:</p> <ul> <li> <p>A <i>name</i> (for example, <code>webpack</code> is the name of a popular npm package)</p> </li> <li> <p>An optional namespace (for example, <code>@types</code> in <code>@types/node</code>)</p> </li> <li> <p>A set of versions (for example, <code>1.0.0</code>, <code>1.0.1</code>, <code>1.0.2</code>, etc.)</p> </li> <li> <p> Package-level metadata (for example, npm tags)</p> </li> </ul> </li> <li> <p> <b>Package version</b>: A version of a package, such as <code>@types/node 12.6.9</code>. The version number format and semantics vary for different package formats. For example, npm package versions must conform to the <a href=\"https://semver.org/\">Semantic Versioning specification</a>. In CodeArtifact, a package version consists of the version identifier, metadata at the package version level, and a set of assets.</p> </li> <li> <p> <b>Upstream repository</b>: One repository is <i>upstream</i> of another when the package versions in it can be accessed from the repository endpoint of the downstream repository, effectively merging the contents of the two repositories from the point of view of a client. CodeArtifact allows creating an upstream relationship between two repositories.</p> </li> <li> <p> <b>Asset</b>: An individual file stored in CodeArtifact associated with a package version, such as an npm <code>.tgz</code> file or Maven POM and JAR files.</p> </li> </ul> <p>CodeArtifact supports these operations:</p> <ul> <li> <p> <code>AssociateExternalConnection</code>: Adds an existing external connection to a repository. </p> </li> <li> <p> <code>CopyPackageVersions</code>: Copies package versions from one repository to another repository in the same domain.</p> </li> <li> <p> <code>CreateDomain</code>: Creates a domain</p> </li> <li> <p> <code>CreateRepository</code>: Creates a CodeArtifact repository in a domain. </p> </li> <li> <p> <code>DeleteDomain</code>: Deletes a domain. You cannot delete a domain that contains repositories. </p> </li> <li> <p> <code>DeleteDomainPermissionsPolicy</code>: Deletes the resource policy that is set on a domain.</p> </li> <li> <p> <code>DeletePackageVersions</code>: Deletes versions of a package. After a package has been deleted, it can be republished, but its assets and metadata cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DeleteRepository</code>: Deletes a repository. </p> </li> <li> <p> <code>DeleteRepositoryPermissionsPolicy</code>: Deletes the resource policy that is set on a repository.</p> </li> <li> <p> <code>DescribeDomain</code>: Returns a <code>DomainDescription</code> object that contains information about the requested domain.</p> </li> <li> <p> <code>DescribePackage</code>: Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDescription.html\">PackageDescription</a> object that contains details about a package. </p> </li> <li> <p> <code>DescribePackageVersion</code>: Returns a <a href=\"https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html\">PackageVersionDescription</a> object that contains details about a package version. </p> </li> <li> <p> <code>DescribeRepository</code>: Returns a <code>RepositoryDescription</code> object that contains detailed information about the requested repository. </p> </li> <li> <p> <code>DisposePackageVersions</code>: Disposes versions of a package. A package version with the status <code>Disposed</code> cannot be restored because they have been permanently removed from storage.</p> </li> <li> <p> <code>DisassociateExternalConnection</code>: Removes an existing external connection from a repository. </p> </li> <li> <p> <code>GetAuthorizationToken</code>: Generates a temporary authorization token for accessing repositories in the domain. The token expires the authorization period has passed. The default authorization period is 12 hours and can be customized to any length with a maximum of 12 hours.</p> </li> <li> <p> <code>GetDomainPermissionsPolicy</code>: Returns the policy of a resource that is attached to the specified domain. </p> </li> <li> <p> <code>GetPackageVersionAsset</code>: Returns the contents of an asset that is in a package version. </p> </li> <li> <p> <code>GetPackageVersionReadme</code>: Gets the readme file or descriptive text for a package version.</p> </li> <li> <p> <code>GetRepositoryEndpoint</code>: Returns the endpoint of a repository for a specific package format. A repository has one endpoint for each package format: </p> <ul> <li> <p> <code>maven</code> </p> </li> <li> <p> <code>npm</code> </p> </li> <li> <p> <code>nuget</code> </p> </li> <li> <p> <code>pypi</code> </p> </li> </ul> </li> <li> <p> <code>GetRepositoryPermissionsPolicy</code>: Returns the resource policy that is set on a repository. </p> </li> <li> <p> <code>ListDomains</code>: Returns a list of <code>DomainSummary</code> objects. Each returned <code>DomainSummary</code> object contains information about a domain.</p> </li> <li> <p> <code>ListPackages</code>: Lists the packages in a repository.</p> </li> <li> <p> <code>ListPackageVersionAssets</code>: Lists the assets for a given package version.</p> </li> <li> <p> <code>ListPackageVersionDependencies</code>: Returns a list of the direct dependencies for a package version. </p> </li> <li> <p> <code>ListPackageVersions</code>: Returns a list of package versions for a specified package in a repository.</p> </li> <li> <p> <code>ListRepositories</code>: Returns a list of repositories owned by the Amazon Web Services account that called this method.</p> </li> <li> <p> <code>ListRepositoriesInDomain</code>: Returns a list of the repositories in a domain.</p> </li> <li> <p> <code>PutDomainPermissionsPolicy</code>: Attaches a resource policy to a domain.</p> </li> <li> <p> <code>PutPackageOriginConfiguration</code>: Sets the package origin configuration for a package, which determine how new versions of the package can be added to a specific repository.</p> </li> <li> <p> <code>PutRepositoryPermissionsPolicy</code>: Sets the resource policy on a repository that specifies permissions to access it. </p> </li> <li> <p> <code>UpdatePackageVersionsStatus</code>: Updates the status of one or more versions of a package.</p> </li> <li> <p> <code>UpdateRepository</code>: Updates the properties of a repository.</p> </li> </ul>"
 }

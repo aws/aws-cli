@@ -132,10 +132,10 @@ class TestLSCommand(unittest.TestCase):
             's3', region_name=None, endpoint_url=None, verify=None,
             config=None))
 
-    def test_ls_command_with_non_existsent_url(self):
+    def test_ls_command_with_non_existent_url(self):
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region=None, endpoint_url=None,
-                                    verify_ssl=None)
+                                 verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3:///random_nonsense',
                                 human_readable=False, summarize=False,
                                 request_payer=None, page_size=None)
@@ -147,7 +147,6 @@ class TestLSCommand(unittest.TestCase):
         # Verify get_client
         get_client = self.session.create_client
         args = get_client.call_args
-        
         self.assertEqual(args, mock.call(
             's3', region_name=None, endpoint_url=None, verify=None,
             config=None))

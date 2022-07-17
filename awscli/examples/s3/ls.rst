@@ -83,8 +83,6 @@ Output::
    Total Objects: 2
    Total Size: 408 Bytes
 
-**Listing from an S3 access point**
-
 **Example 6: Listing from an S3 access point**
 
 The following ``ls`` command list objects from access point (``myaccesspoint``)::

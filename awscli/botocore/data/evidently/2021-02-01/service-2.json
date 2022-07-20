@@ -46,7 +46,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates an Evidently <i>experiment</i>. Before you create an experiment, you must create the feature to use for the experiment.</p> <p>An experiment helps you make feature design decisions based on evidence and data. An experiment can test as many as five variations at once. Evidently collects experiment data and analyzes it by statistical methods, and provides clear recommendations about which variations perform better.</p> <p>Don't use this operation to update an existing experiment. Instead, use <a href=\"https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateExperiment.html\">UpdateExperiment</a>. </p>",
+      "documentation":"<p>Creates an Evidently <i>experiment</i>. Before you create an experiment, you must create the feature to use for the experiment.</p> <p>An experiment helps you make feature design decisions based on evidence and data. An experiment can test as many as five variations at once. Evidently collects experiment data and analyzes it by statistical methods, and provides clear recommendations about which variations perform better.</p> <p>You can optionally specify a <code>segment</code> to have the experiment consider only certain audience types in the experiment, such as using only user sessions from a certain location or who use a certain internet browser.</p> <p>Don't use this operation to update an existing experiment. Instead, use <a href=\"https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateExperiment.html\">UpdateExperiment</a>. </p>",
       "idempotent":true
     },
     "CreateFeature":{
@@ -101,6 +101,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a project, which is the logical object in Evidently that can contain features, launches, and experiments. Use projects to group similar features together.</p> <p>To update an existing project, use <a href=\"https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_UpdateProject.html\">UpdateProject</a>.</p>"
+    },
+    "CreateSegment":{
+      "name":"CreateSegment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/segments",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSegmentRequest"},
+      "output":{"shape":"CreateSegmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Use this operation to define a <i>segment</i> of your audience. A segment is a portion of your audience that share one or more characteristics. Examples could be Chrome browser users, users in Europe, or Firefox browser users in Europe who also fit other criteria that your application collects, such as age.</p> <p>Using a segment in an experiment limits that experiment to evaluate only the users who match the segment criteria. Using one or more segments in a launch allow you to define different traffic splits for the different audience segments.</p> <pre><code> &lt;p&gt;For more information about segment pattern syntax, see &lt;a href=&quot;https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Evidently-segments-syntax.html&quot;&gt; Segment rule pattern syntax&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;The pattern that you define for a segment is matched against the value of &lt;code&gt;evaluationContext&lt;/code&gt;, which is passed into Evidently in the &lt;a href=&quot;https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_EvaluateFeature.html&quot;&gt;EvaluateFeature&lt;/a&gt; operation, when Evidently assigns a feature variation to a user.&lt;/p&gt; </code></pre>"
     },
     "DeleteExperiment":{
       "name":"DeleteExperiment",
@@ -179,6 +196,25 @@
       "documentation":"<p>Deletes an Evidently project. Before you can delete a project, you must delete all the features that the project contains. To delete a feature, use <a href=\"https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_DeleteFeature.html\">DeleteFeature</a>.</p>",
       "idempotent":true
     },
+    "DeleteSegment":{
+      "name":"DeleteSegment",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/segments/{segment}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSegmentRequest"},
+      "output":{"shape":"DeleteSegmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a segment. You can't delete a segment that is being used in a launch or experiment, even if that launch or experiment is not currently running.</p>",
+      "idempotent":true
+    },
     "EvaluateFeature":{
       "name":"EvaluateFeature",
       "http":{
@@ -194,7 +230,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This operation assigns a feature variation to one given user session. You pass in an <code>entityID</code> that represents the user. Evidently then checks the evaluation rules and assigns the variation.</p> <p>The first rules that are evaluated are the override rules. If the user's <code>entityID</code> matches an override rule, the user is served the variation specified by that rule.</p> <p>Next, if there is a launch of the feature, the user might be assigned to a variation in the launch. The chance of this depends on the percentage of users that are allocated to that launch. If the user is enrolled in the launch, the variation they are served depends on the allocation of the various feature variations used for the launch.</p> <p>If the user is not assigned to a launch, and there is an ongoing experiment for this feature, the user might be assigned to a variation in the experiment. The chance of this depends on the percentage of users that are allocated to that experiment. If the user is enrolled in the experiment, the variation they are served depends on the allocation of the various feature variations used for the experiment. </p> <p>If the user is not assigned to a launch or experiment, they are served the default variation.</p>",
+      "documentation":"<p>This operation assigns a feature variation to one given user session. You pass in an <code>entityID</code> that represents the user. Evidently then checks the evaluation rules and assigns the variation.</p> <p>The first rules that are evaluated are the override rules. If the user's <code>entityID</code> matches an override rule, the user is served the variation specified by that rule.</p> <pre><code> &lt;p&gt;If there is a current launch with this feature that uses segment overrides, and if the user session's &lt;code&gt;evaluationContext&lt;/code&gt; matches a segment rule defined in a segment override, the configuration in the segment overrides is used. For more information about segments, see &lt;a href=&quot;https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_CreateSegment.html&quot;&gt;CreateSegment&lt;/a&gt; and &lt;a href=&quot;https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Evidently-segments.html&quot;&gt;Use segments to focus your audience&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;If there is a launch with no segment overrides, the user might be assigned to a variation in the launch. The chance of this depends on the percentage of users that are allocated to that launch. If the user is enrolled in the launch, the variation they are served depends on the allocation of the various feature variations used for the launch.&lt;/p&gt; &lt;p&gt;If the user is not assigned to a launch, and there is an ongoing experiment for this feature, the user might be assigned to a variation in the experiment. The chance of this depends on the percentage of users that are allocated to that experiment.&lt;/p&gt; &lt;p&gt;If the experiment uses a segment, then only user sessions with &lt;code&gt;evaluationContext&lt;/code&gt; values that match the segment rule are used in the experiment.&lt;/p&gt; &lt;p&gt;If the user is enrolled in the experiment, the variation they are served depends on the allocation of the various feature variations used for the experiment. &lt;/p&gt; &lt;p&gt;If the user is not assigned to a launch or experiment, they are served the default variation.&lt;/p&gt; </code></pre>",
       "endpoint":{"hostPrefix":"dataplane."}
     },
     "GetExperiment":{
@@ -283,6 +319,23 @@
       ],
       "documentation":"<p>Returns the details about one launch. You must already know the project name. To retrieve a list of projects in your account, use <a href=\"https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_ListProjects.html\">ListProjects</a>.</p>"
     },
+    "GetSegment":{
+      "name":"GetSegment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/segments/{segment}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSegmentRequest"},
+      "output":{"shape":"GetSegmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about the specified segment. Specify the segment you want to view by specifying its ARN.</p>"
+    },
     "ListExperiments":{
       "name":"ListExperiments",
       "http":{
@@ -347,6 +400,39 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns configuration details about all the projects in the current Region in your account.</p>"
+    },
+    "ListSegmentReferences":{
+      "name":"ListSegmentReferences",
+      "http":{
+        "method":"GET",
+        "requestUri":"/segments/{segment}/references",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSegmentReferencesRequest"},
+      "output":{"shape":"ListSegmentReferencesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Use this operation to find which experiments or launches are using a specified segment.</p>"
+    },
+    "ListSegments":{
+      "name":"ListSegments",
+      "http":{
+        "method":"GET",
+        "requestUri":"/segments",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSegmentsRequest"},
+      "output":{"shape":"ListSegmentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of audience segments that you have created in your account in this Region.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -473,6 +559,22 @@
       "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified CloudWatch Evidently resource. Projects, features, launches, and experiments can be tagged.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the <code>TagResource</code> action with a resource that already has tags. If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the alarm. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>",
       "idempotent":true
     },
+    "TestSegmentPattern":{
+      "name":"TestSegmentPattern",
+      "http":{
+        "method":"POST",
+        "requestUri":"/test-segment-pattern",
+        "responseCode":200
+      },
+      "input":{"shape":"TestSegmentPatternRequest"},
+      "output":{"shape":"TestSegmentPatternResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Use this operation to test a rules pattern that you plan to use to create an audience segment. For more information about segments, see <a href=\"https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_CreateSegment.html\">CreateSegment</a>.</p>"
+    },
     "UntagResource":{
       "name":"UntagResource",
       "http":{
@@ -553,6 +655,7 @@
       "output":{"shape":"UpdateProjectResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
@@ -716,6 +819,10 @@
           "documentation":"<p>The portion of the available audience that you want to allocate to this experiment, in thousandths of a percent. The available audience is the total audience minus the audience that you have allocated to overrides or current launches of this feature.</p> <p>This is represented in thousandths of a percent. For example, specify 10,000 to allocate 10% of the available audience.</p>",
           "box":true
         },
+        "segment":{
+          "shape":"SegmentRef",
+          "documentation":"<p>Specifies an audience <i>segment</i> to use in the experiment. When a segment is used in an experiment, only user sessions that match the segment pattern are used in the experiment.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Assigns one or more tags (key-value pairs) to the experiment.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <pre><code> &lt;p&gt;You can associate as many as 50 tags with an experiment.&lt;/p&gt; &lt;p&gt;For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html&quot;&gt;Tagging Amazon Web Services resources&lt;/a&gt;.&lt;/p&gt; </code></pre>"
@@ -821,7 +928,7 @@
         },
         "randomizationSalt":{
           "shape":"RandomizationSalt",
-          "documentation":"<p>When Evidently assigns a particular user session to a launch, it must use a randomization ID to determine which variation the user session is served. This randomization ID is a combination of the entity ID and <code>randomizationSalt</code>. If you omit <code>randomizationSalt</code>, Evidently uses the launch name as the <code>randomizationsSalt</code>.</p>"
+          "documentation":"<p>When Evidently assigns a particular user session to a launch, it must use a randomization ID to determine which variation the user session is served. This randomization ID is a combination of the entity ID and <code>randomizationSalt</code>. If you omit <code>randomizationSalt</code>, Evidently uses the launch name as the <code>randomizationSalt</code>.</p>"
         },
         "scheduledSplitsConfig":{
           "shape":"ScheduledSplitsLaunchConfig",
@@ -872,6 +979,42 @@
         "project":{
           "shape":"Project",
           "documentation":"<p>A structure that contains information about the created project.</p>"
+        }
+      }
+    },
+    "CreateSegmentRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pattern"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>An optional description for this segment.</p>"
+        },
+        "name":{
+          "shape":"SegmentName",
+          "documentation":"<p>A name for the segment.</p>"
+        },
+        "pattern":{
+          "shape":"SegmentPattern",
+          "documentation":"<p>The pattern to use for the segment. For more information about pattern syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Evidently-segments-syntax.html\"> Segment rule pattern syntax</a>.</p>",
+          "jsonvalue":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Assigns one or more tags (key-value pairs) to the segment.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <pre><code> &lt;p&gt;You can associate as many as 50 tags with a segment.&lt;/p&gt; &lt;p&gt;For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html&quot;&gt;Tagging Amazon Web Services resources&lt;/a&gt;.&lt;/p&gt; </code></pre>"
+        }
+      }
+    },
+    "CreateSegmentResponse":{
+      "type":"structure",
+      "required":["segment"],
+      "members":{
+        "segment":{
+          "shape":"Segment",
+          "documentation":"<p>A structure that contains the complete information about the segment that was just created.</p>"
         }
       }
     },
@@ -982,6 +1125,23 @@
       "members":{
       }
     },
+    "DeleteSegmentRequest":{
+      "type":"structure",
+      "required":["segment"],
+      "members":{
+        "segment":{
+          "shape":"SegmentRef",
+          "documentation":"<p>Specifies the segment to delete.</p>",
+          "location":"uri",
+          "locationName":"segment"
+        }
+      }
+    },
+    "DeleteSegmentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Description":{
       "type":"string",
       "max":160,
@@ -1037,7 +1197,7 @@
         },
         "evaluationContext":{
           "shape":"JsonValue",
-          "documentation":"<p>A JSON block of attributes that you can optionally pass in. This JSON block is included in the evaluation events sent to Evidently from the user session. </p>",
+          "documentation":"<p>A JSON object of attributes that you can optionally pass in as part of the evaluation event sent to Evidently from the user session. Evidently can use this value to match user sessions with defined audience segments. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Evidently-segments.html\">Use segments to focus your audience</a>.</p> <pre><code> &lt;p&gt;If you include this parameter, the value must be a JSON object. A JSON array is not supported.&lt;/p&gt; </code></pre>",
           "jsonvalue":true
         },
         "feature":{
@@ -1262,6 +1422,10 @@
         "schedule":{
           "shape":"ExperimentSchedule",
           "documentation":"<p>A structure that contains the time and date that Evidently completed the analysis of the experiment.</p>"
+        },
+        "segment":{
+          "shape":"SegmentArn",
+          "documentation":"<p>The audience segment being used for the experiment, if a segment is being used.</p>"
         },
         "status":{
           "shape":"ExperimentStatus",
@@ -1793,6 +1957,28 @@
         }
       }
     },
+    "GetSegmentRequest":{
+      "type":"structure",
+      "required":["segment"],
+      "members":{
+        "segment":{
+          "shape":"SegmentRef",
+          "documentation":"<p>The ARN of the segment to return information for.</p>",
+          "location":"uri",
+          "locationName":"segment"
+        }
+      }
+    },
+    "GetSegmentResponse":{
+      "type":"structure",
+      "required":["segment"],
+      "members":{
+        "segment":{
+          "shape":"Segment",
+          "documentation":"<p>A structure that contains the complete information about the segment.</p>"
+        }
+      }
+    },
     "GroupName":{
       "type":"string",
       "max":127,
@@ -2164,6 +2350,82 @@
         }
       }
     },
+    "ListSegmentReferencesRequest":{
+      "type":"structure",
+      "required":[
+        "segment",
+        "type"
+      ],
+      "members":{
+        "maxResults":{
+          "shape":"MaxReferences",
+          "documentation":"<p>The maximum number of results to include in the response. If you omit this, the default of 50 is used.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of results. You received this token from a previous <code>ListSegmentReferences</code> operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "segment":{
+          "shape":"SegmentRef",
+          "documentation":"<p>The ARN of the segment that you want to view information for.</p>",
+          "location":"uri",
+          "locationName":"segment"
+        },
+        "type":{
+          "shape":"SegmentReferenceResourceType",
+          "documentation":"<p>Specifies whether to return information about launches or experiments that use this segment.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        }
+      }
+    },
+    "ListSegmentReferencesResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use in a subsequent <code>ListSegmentReferences</code> operation to return the next set of results.</p>"
+        },
+        "referencedBy":{
+          "shape":"RefResourceList",
+          "documentation":"<p>An array of structures, where each structure contains information about one experiment or launch that uses this segment. </p>"
+        }
+      }
+    },
+    "ListSegmentsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxSegments",
+          "documentation":"<p>The maximum number of results to include in the response. If you omit this, the default of 50 is used.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of results. You received this token from a previous <code>ListSegments</code> operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use in a subsequent <code>ListSegments</code> operation to return the next set of results.</p>"
+        },
+        "segments":{
+          "shape":"SegmentList",
+          "documentation":"<p>An array of structures that contain information about the segments in this Region.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -2208,6 +2470,18 @@
       "min":1
     },
     "MaxProjects":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "MaxReferences":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxSegments":{
       "type":"integer",
       "box":true,
       "max":50,
@@ -2399,6 +2673,7 @@
       },
       "documentation":"<p>A structure that contains the configuration of which variation to use as the \"control\" version. The \"control\" version is used for comparison with other variations. This structure also specifies how much experiment traffic is allocated to each variation.</p>"
     },
+    "PrimitiveBoolean":{"type":"boolean"},
     "Project":{
       "type":"structure",
       "required":[
@@ -2508,7 +2783,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)"
+      "pattern":"(^[a-zA-Z0-9._-]*$)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[a-zA-Z0-9._-]*)"
     },
     "ProjectStatus":{
       "type":"string",
@@ -2642,6 +2917,48 @@
       "min":0,
       "pattern":".*"
     },
+    "RefResource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the experiment or launch.</p>"
+        },
+        "endTime":{
+          "shape":"String",
+          "documentation":"<p>The day and time that this experiment or launch ended.</p>"
+        },
+        "lastUpdatedOn":{
+          "shape":"String",
+          "documentation":"<p>The day and time that this experiment or launch was most recently updated.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the experiment or launch.</p>"
+        },
+        "startTime":{
+          "shape":"String",
+          "documentation":"<p>The day and time that this experiment or launch started.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the experiment or launch.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether the resource that this structure contains information about is an experiment or a launch.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about one experiment or launch that uses the specified segment. </p>"
+    },
+    "RefResourceList":{
+      "type":"list",
+      "member":{"shape":"RefResource"}
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -2723,7 +3040,11 @@
       "members":{
         "groupWeights":{
           "shape":"GroupToWeightMap",
-          "documentation":"<p>The traffic allocation percentages among the feature variations during one step of a launch. This is a set of key-value pairs. The keys are variation names. The values represent the percentage of traffic to allocate to that variation during this step.</p>"
+          "documentation":"<p>The traffic allocation percentages among the feature variations during one step of a launch. This is a set of key-value pairs. The keys are variation names. The values represent the percentage of traffic to allocate to that variation during this step.</p> <p>The values is expressed in thousandths of a percent, so assigning a weight of 50000 assigns 50% of traffic to that variation.</p> <p>If the sum of the weights for all the variations in a segment override does not add up to 100,000, then the remaining traffic that matches this segment is not assigned by this segment override, and instead moves on to the next segment override or the default traffic split.</p>"
+        },
+        "segmentOverrides":{
+          "shape":"SegmentOverridesList",
+          "documentation":"<p>Use this parameter to specify different traffic splits for one or more audience <i>segments</i>. A segment is a portion of your audience that share one or more characteristics. Examples could be Chrome browser users, users in Europe, or Firefox browser users in Europe who also fit other criteria that your application collects, such as age.</p> <p>This parameter is an array of up to six segment override objects. Each of these objects specifies a segment that you have already created, and defines the traffic split for that segment.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
@@ -2741,7 +3062,11 @@
       "members":{
         "groupWeights":{
           "shape":"GroupToWeightMap",
-          "documentation":"<p>The traffic allocation percentages among the feature variations during one step of a launch. This is a set of key-value pairs. The keys are variation names. The values represent the percentage of traffic to allocate to that variation during this step.</p>"
+          "documentation":"<p>The traffic allocation percentages among the feature variations during one step of a launch. This is a set of key-value pairs. The keys are variation names. The values represent the percentage of traffic to allocate to that variation during this step.</p> <pre><code> &lt;p&gt;The values is expressed in thousandths of a percent, so assigning a weight of 50000 assigns 50% of traffic to that variation.&lt;/p&gt; &lt;p&gt;If the sum of the weights for all the variations in a segment override does not add up to 100,000, then the remaining traffic that matches this segment is not assigned by this segment override, and instead moves on to the next segment override or the default traffic split.&lt;/p&gt; </code></pre>"
+        },
+        "segmentOverrides":{
+          "shape":"SegmentOverridesList",
+          "documentation":"<p>Use this parameter to specify different traffic splits for one or more audience <i>segments</i>. A segment is a portion of your audience that share one or more characteristics. Examples could be Chrome browser users, users in Europe, or Firefox browser users in Europe who also fit other criteria that your application collects, such as age.</p> <p>This parameter is an array of up to six segment override objects. Each of these objects specifies a segment that you have already created, and defines the traffic split for that segment.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
@@ -2782,6 +3107,119 @@
       "member":{"shape":"ScheduledSplit"},
       "max":6,
       "min":1
+    },
+    "Segment":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdTime",
+        "lastUpdatedTime",
+        "name",
+        "pattern"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SegmentArn",
+          "documentation":"<p>The ARN of the segment.</p>"
+        },
+        "createdTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that this segment was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The customer-created description for this segment.</p>"
+        },
+        "experimentCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of experiments that this segment is used in. This count includes all current experiments, not just those that are currently running.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that this segment was most recently updated.</p>"
+        },
+        "launchCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of launches that this segment is used in. This count includes all current launches, not just those that are currently running.</p>"
+        },
+        "name":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment.</p>"
+        },
+        "pattern":{
+          "shape":"SegmentPattern",
+          "documentation":"<p/>",
+          "jsonvalue":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of tag keys and values associated with this launch.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about one audience <i>segment</i>. You can use segments in your experiments and launches to narrow the user sessions used for experiment or launch to only the user sessions that match one or more criteria.</p>"
+    },
+    "SegmentArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*"
+    },
+    "SegmentList":{
+      "type":"list",
+      "member":{"shape":"Segment"}
+    },
+    "SegmentName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[-a-zA-Z0-9._]*$"
+    },
+    "SegmentOverride":{
+      "type":"structure",
+      "required":[
+        "evaluationOrder",
+        "segment",
+        "weights"
+      ],
+      "members":{
+        "evaluationOrder":{
+          "shape":"Long",
+          "documentation":"<p>A number indicating the order to use to evaluate segment overrides, if there are more than one. Segment overrides with lower numbers are evaluated first.</p>"
+        },
+        "segment":{
+          "shape":"SegmentRef",
+          "documentation":"<p>The ARN of the segment to use.</p>"
+        },
+        "weights":{
+          "shape":"GroupToWeightMap",
+          "documentation":"<p>The traffic allocation percentages among the feature variations to assign to this segment. This is a set of key-value pairs. The keys are variation names. The values represent the amount of traffic to allocate to that variation for this segment. This is expressed in thousandths of a percent, so a weight of 50000 represents 50% of traffic.</p>"
+        }
+      },
+      "documentation":"<p>This structure specifies a segment that you have already created, and defines the traffic split for that segment to be used in a launch.</p>"
+    },
+    "SegmentOverridesList":{
+      "type":"list",
+      "member":{"shape":"SegmentOverride"},
+      "max":6,
+      "min":0
+    },
+    "SegmentPattern":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "SegmentRef":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(^[-a-zA-Z0-9._]*$)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*)"
+    },
+    "SegmentReferenceResourceType":{
+      "type":"string",
+      "enum":[
+        "EXPERIMENT",
+        "LAUNCH"
+      ]
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -3015,6 +3453,35 @@
       "max":256,
       "min":0
     },
+    "TestSegmentPatternRequest":{
+      "type":"structure",
+      "required":[
+        "pattern",
+        "payload"
+      ],
+      "members":{
+        "pattern":{
+          "shape":"SegmentPattern",
+          "documentation":"<p>The pattern to test.</p>",
+          "jsonvalue":true
+        },
+        "payload":{
+          "shape":"JsonValue",
+          "documentation":"<p>A sample <code>evaluationContext</code> JSON block to test against the specified pattern.</p>",
+          "jsonvalue":true
+        }
+      }
+    },
+    "TestSegmentPatternResponse":{
+      "type":"structure",
+      "required":["match"],
+      "members":{
+        "match":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the pattern matches the payload.</p>"
+        }
+      }
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -3178,10 +3645,18 @@
           "shape":"RandomizationSalt",
           "documentation":"<p>When Evidently assigns a particular user session to an experiment, it must use a randomization ID to determine which variation the user session is served. This randomization ID is a combination of the entity ID and <code>randomizationSalt</code>. If you omit <code>randomizationSalt</code>, Evidently uses the experiment name as the <code>randomizationSalt</code>.</p>"
         },
+        "removeSegment":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>Removes a segment from being used in an experiment. You can't use this parameter if the experiment is currently running.</p>"
+        },
         "samplingRate":{
           "shape":"SplitWeight",
           "documentation":"<p>The portion of the available audience that you want to allocate to this experiment, in thousandths of a percent. The available audience is the total audience minus the audience that you have allocated to overrides or current launches of this feature.</p> <p>This is represented in thousandths of a percent. For example, specify 20,000 to allocate 20% of the available audience.</p>",
           "box":true
+        },
+        "segment":{
+          "shape":"SegmentRef",
+          "documentation":"<p>Adds an audience <i>segment</i> to an experiment. When a segment is used in an experiment, only user sessions that match the segment pattern are used in the experiment. You can't use this parameter if the experiment is currently running.</p>"
         },
         "treatments":{
           "shape":"TreatmentConfigList",

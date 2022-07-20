@@ -236,6 +236,7 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
@@ -295,6 +296,24 @@
       ],
       "documentation":"<p> Returns a list of the anomalies that belong to an insight that you specify using its ID. </p>"
     },
+    "ListAnomalousLogGroups":{
+      "name":"ListAnomalousLogGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-log-anomalies",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnomalousLogGroupsRequest"},
+      "output":{"shape":"ListAnomalousLogGroupsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> Returns the list of log groups that contain log anomalies. </p>"
+    },
     "ListEvents":{
       "name":"ListEvents",
       "http":{
@@ -329,6 +348,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p> Returns a list of insights in your Amazon Web Services account. You can specify which insights are returned by their start time and status (<code>ONGOING</code>, <code>CLOSED</code>, or <code>ANY</code>). </p>"
+    },
+    "ListMonitoredResources":{
+      "name":"ListMonitoredResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/monitoredResources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMonitoredResourcesRequest"},
+      "output":{"shape":"ListMonitoredResourcesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> Returns the list of all log groups that are being monitored and tagged by DevOps Guru. </p>"
     },
     "ListNotificationChannels":{
       "name":"ListNotificationChannels",
@@ -606,6 +642,36 @@
       },
       "documentation":"<p>Information about your account's integration with Amazon CodeGuru Profiler. This returns whether DevOps Guru is configured to consume recommendations generated from Amazon CodeGuru Profiler.</p>"
     },
+    "AnomalousLogGroup":{
+      "type":"structure",
+      "members":{
+        "LogGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p> The name of the CloudWatch log group. </p>"
+        },
+        "ImpactStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time the anomalous log events began. The impact start time indicates the time of the first log anomaly event that occurs. </p>"
+        },
+        "ImpactEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time the anomalous log events stopped. </p>"
+        },
+        "NumberOfLogLinesScanned":{
+          "shape":"NumberOfLogLinesScanned",
+          "documentation":"<p> The number of log lines that were scanned for anomalous log events. </p>"
+        },
+        "LogAnomalyShowcases":{
+          "shape":"LogAnomalyShowcases",
+          "documentation":"<p> The log anomalies in the log group. Each log anomaly displayed represents a cluster of similar anomalous log events. </p>"
+        }
+      },
+      "documentation":"<p> An Amazon CloudWatch log group that contains log anomalies and is used to generate an insight. </p>"
+    },
+    "AnomalousLogGroups":{
+      "type":"list",
+      "member":{"shape":"AnomalousLogGroup"}
+    },
     "AnomalyDescription":{"type":"string"},
     "AnomalyId":{
       "type":"string",
@@ -867,7 +933,7 @@
           "documentation":"<p> The value of the CloudWatch dimension. </p>"
         }
       },
-      "documentation":"<p> The dimension of am Amazon CloudWatch metric that is used when DevOps Guru analyzes the resources in your account for operational problems and anomalous behavior. A dimension is a name/value pair that is part of the identity of a metric. A metric can have up to 10 dimensions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension\">Dimensions</a> in the <i>Amazon CloudWatch User Guide</i>. </p>"
+      "documentation":"<p> The dimension of an Amazon CloudWatch metric that is used when DevOps Guru analyzes the resources in your account for operational problems and anomalous behavior. A dimension is a name/value pair that is part of the identity of a metric. A metric can have up to 10 dimensions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension\">Dimensions</a> in the <i>Amazon CloudWatch User Guide</i>. </p>"
     },
     "CloudWatchMetricsDimensionName":{"type":"string"},
     "CloudWatchMetricsDimensionValue":{"type":"string"},
@@ -1487,6 +1553,11 @@
       "type":"list",
       "member":{"shape":"Event"}
     },
+    "Explanation":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "GetCostEstimationRequest":{
       "type":"structure",
       "members":{
@@ -1729,6 +1800,50 @@
         }
       }
     },
+    "ListAnomalousLogGroupsMaxResults":{
+      "type":"integer",
+      "max":200,
+      "min":1
+    },
+    "ListAnomalousLogGroupsRequest":{
+      "type":"structure",
+      "required":["InsightId"],
+      "members":{
+        "InsightId":{
+          "shape":"InsightId",
+          "documentation":"<p> The ID of the insight containing the log groups. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListAnomalousLogGroupsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"UuidNextToken",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.</p>"
+        }
+      }
+    },
+    "ListAnomalousLogGroupsResponse":{
+      "type":"structure",
+      "required":[
+        "InsightId",
+        "AnomalousLogGroups"
+      ],
+      "members":{
+        "InsightId":{
+          "shape":"InsightId",
+          "documentation":"<p> The ID of the insight containing the log groups. </p>"
+        },
+        "AnomalousLogGroups":{
+          "shape":"AnomalousLogGroups",
+          "documentation":"<p> The list of Amazon CloudWatch log groups that are related to an insight. </p>"
+        },
+        "NextToken":{
+          "shape":"UuidNextToken",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.</p>"
+        }
+      }
+    },
     "ListEventsFilters":{
       "type":"structure",
       "members":{
@@ -1914,6 +2029,61 @@
       },
       "documentation":"<p> A filter used by <code>ListInsights</code> to specify which insights to return. </p>"
     },
+    "ListMonitoredResourcesFilters":{
+      "type":"structure",
+      "required":[
+        "ResourcePermission",
+        "ResourceTypeFilters"
+      ],
+      "members":{
+        "ResourcePermission":{
+          "shape":"ResourcePermission",
+          "documentation":"<p> The permission status of a resource. </p>"
+        },
+        "ResourceTypeFilters":{
+          "shape":"ResourceTypeFilters",
+          "documentation":"<p> The type of resource that you wish to retrieve, such as log groups. </p>"
+        }
+      },
+      "documentation":"<p> Filters to determine which monitored resources you want to retrieve. You can filter by resource type or resource permission status. </p>"
+    },
+    "ListMonitoredResourcesMaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListMonitoredResourcesRequest":{
+      "type":"structure",
+      "required":["Filters"],
+      "members":{
+        "Filters":{
+          "shape":"ListMonitoredResourcesFilters",
+          "documentation":"<p> Filters to determine which monitored resources you want to retrieve. You can filter by resource type or resource permission status. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListMonitoredResourcesMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"UuidNextToken",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.</p>"
+        }
+      }
+    },
+    "ListMonitoredResourcesResponse":{
+      "type":"structure",
+      "required":["MonitoredResourceIdentifiers"],
+      "members":{
+        "MonitoredResourceIdentifiers":{
+          "shape":"MonitoredResourceIdentifiers",
+          "documentation":"<p> Information about the resource that is being monitored, including the name of the resource, the type of resource, and whether or not permission is given to DevOps Guru to access that resource. </p>"
+        },
+        "NextToken":{
+          "shape":"UuidNextToken",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.</p>"
+        }
+      }
+    },
     "ListNotificationChannelsRequest":{
       "type":"structure",
       "members":{
@@ -2027,8 +2197,145 @@
         "ZH_TW"
       ]
     },
+    "LogAnomalyClass":{
+      "type":"structure",
+      "members":{
+        "LogStreamName":{
+          "shape":"LogStreamName",
+          "documentation":"<p> The name of the Amazon CloudWatch log stream that the anomalous log event belongs to. A log stream is a sequence of log events that share the same source. </p>"
+        },
+        "LogAnomalyType":{
+          "shape":"LogAnomalyType",
+          "documentation":"<p> The type of log anomaly that has been detected. </p>"
+        },
+        "LogAnomalyToken":{
+          "shape":"LogAnomalyToken",
+          "documentation":"<p> The token where the anomaly was detected. This may refer to an exception or another location, or it may be blank for log anomalies such as format anomalies. </p>"
+        },
+        "LogEventId":{
+          "shape":"LogEventId",
+          "documentation":"<p> The ID of the log event. </p>"
+        },
+        "Explanation":{
+          "shape":"Explanation",
+          "documentation":"<p> The explanation for why the log event is considered an anomaly. </p>"
+        },
+        "NumberOfLogLinesOccurrences":{
+          "shape":"NumberOfLogLinesOccurrences",
+          "documentation":"<p> The number of log lines where this anomalous log event occurs. </p>"
+        },
+        "LogEventTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time of the first occurrence of the anomalous log event. </p>"
+        }
+      },
+      "documentation":"<p> Information about an anomalous log event found within a log group. </p>"
+    },
+    "LogAnomalyClasses":{
+      "type":"list",
+      "member":{"shape":"LogAnomalyClass"},
+      "max":10,
+      "min":0
+    },
+    "LogAnomalyShowcase":{
+      "type":"structure",
+      "members":{
+        "LogAnomalyClasses":{
+          "shape":"LogAnomalyClasses",
+          "documentation":"<p> A list of anomalous log events that may be related. </p>"
+        }
+      },
+      "documentation":"<p> A cluster of similar anomalous log events found within a log group. </p>"
+    },
+    "LogAnomalyShowcases":{
+      "type":"list",
+      "member":{"shape":"LogAnomalyShowcase"},
+      "max":20,
+      "min":0
+    },
+    "LogAnomalyToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "LogAnomalyType":{
+      "type":"string",
+      "enum":[
+        "KEYWORD",
+        "KEYWORD_TOKEN",
+        "FORMAT",
+        "HTTP_CODE",
+        "BLOCK_FORMAT",
+        "NUMERICAL_POINT",
+        "NUMERICAL_NAN",
+        "NEW_FIELD_NAME"
+      ]
+    },
+    "LogEventId":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "LogGroupName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "LogStreamName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "LogsAnomalyDetectionIntegration":{
+      "type":"structure",
+      "members":{
+        "OptInStatus":{
+          "shape":"OptInStatus",
+          "documentation":"<p>Specifies if DevOps Guru is configured to perform log anomaly detection on CloudWatch log groups.</p>"
+        }
+      },
+      "documentation":"<p> Information about the integration of DevOps Guru with CloudWatch log groups for log anomaly detection. </p>"
+    },
+    "LogsAnomalyDetectionIntegrationConfig":{
+      "type":"structure",
+      "members":{
+        "OptInStatus":{
+          "shape":"OptInStatus",
+          "documentation":"<p>Specifies if DevOps Guru is configured to perform log anomaly detection on CloudWatch log groups.</p>"
+        }
+      },
+      "documentation":"<p> Information about the integration of DevOps Guru with CloudWatch log groups for log anomaly detection. You can use this to update the configuration. </p>"
+    },
     "MeanTimeToRecoverInMilliseconds":{"type":"long"},
     "MetricValue":{"type":"double"},
+    "MonitoredResourceIdentifier":{
+      "type":"structure",
+      "members":{
+        "MonitoredResourceName":{
+          "shape":"MonitoredResourceName",
+          "documentation":"<p> The name of the resource being monitored. </p>"
+        },
+        "Type":{
+          "shape":"ResourceType",
+          "documentation":"<p> The type of resource being monitored. </p>"
+        },
+        "ResourcePermission":{
+          "shape":"ResourcePermission",
+          "documentation":"<p> The permission status of a resource. </p>"
+        }
+      },
+      "documentation":"<p> Information about the resource that is being monitored, including the name of the resource, the type of resource, and whether or not permission is given to DevOps Guru to access that resource. </p>"
+    },
+    "MonitoredResourceIdentifiers":{
+      "type":"list",
+      "member":{"shape":"MonitoredResourceIdentifier"}
+    },
+    "MonitoredResourceName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\.\\-_\\/#A-Za-z0-9]+"
+    },
     "NotificationChannel":{
       "type":"structure",
       "members":{
@@ -2065,6 +2372,8 @@
     "NumOpenReactiveInsights":{"type":"integer"},
     "NumProactiveInsights":{"type":"integer"},
     "NumReactiveInsights":{"type":"integer"},
+    "NumberOfLogLinesOccurrences":{"type":"integer"},
+    "NumberOfLogLinesScanned":{"type":"integer"},
     "OpsCenterIntegration":{
       "type":"structure",
       "members":{
@@ -2083,7 +2392,7 @@
           "documentation":"<p> Specifies if DevOps Guru is enabled to create an Amazon Web Services Systems Manager OpsItem for each created insight. </p>"
         }
       },
-      "documentation":"<p> Information about whether DevOps Guru is configured to create an OpsItem in Amazon Web Services Systems Manager OpsCenter for each created insight. </p>"
+      "documentation":"<p> Information about whether DevOps Guru is configured to create an OpsItem in Amazon Web Services Systems Manager OpsCenter for each created insight. You can use this to update the configuration.</p>"
     },
     "OptInStatus":{
       "type":"string",
@@ -2982,11 +3291,26 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ResourcePermission":{
+      "type":"string",
+      "enum":[
+        "FULL_PERMISSION",
+        "MISSING_PERMISSION"
+      ]
+    },
     "ResourceType":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"^[a-zA-Z]+[a-zA-Z0-9-_:]*$"
+    },
+    "ResourceTypeFilter":{
+      "type":"string",
+      "enum":["LOG_GROUPS"]
+    },
+    "ResourceTypeFilters":{
+      "type":"list",
+      "member":{"shape":"ResourceTypeFilter"}
     },
     "RetryAfterSeconds":{"type":"integer"},
     "SearchInsightsAccountIdList":{
@@ -3182,6 +3506,10 @@
         "OpsCenter":{
           "shape":"OpsCenterIntegration",
           "documentation":"<p> Information about whether DevOps Guru is configured to create an OpsItem in Amazon Web Services Systems Manager OpsCenter for each created insight. </p>"
+        },
+        "LogsAnomalyDetection":{
+          "shape":"LogsAnomalyDetectionIntegration",
+          "documentation":"<p> Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. </p>"
         }
       },
       "documentation":"<p> Information about the integration of DevOps Guru with another Amazon Web Services service, such as Amazon Web Services Systems Manager. </p>"
@@ -3533,7 +3861,11 @@
     "UpdateServiceIntegrationConfig":{
       "type":"structure",
       "members":{
-        "OpsCenter":{"shape":"OpsCenterIntegrationConfig"}
+        "OpsCenter":{"shape":"OpsCenterIntegrationConfig"},
+        "LogsAnomalyDetection":{
+          "shape":"LogsAnomalyDetectionIntegrationConfig",
+          "documentation":"<p> Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. </p>"
+        }
       },
       "documentation":"<p> Information about updating the integration status of an Amazon Web Services service, such as Amazon Web Services Systems Manager, with DevOps Guru. </p>"
     },

@@ -217,6 +217,31 @@
       ],
       "documentation":"<p>Creates a <code>Domain</code> used by Amazon SageMaker Studio. A domain consists of an associated Amazon Elastic File System (EFS) volume, a list of authorized users, and a variety of security, application, policy, and Amazon Virtual Private Cloud (VPC) configurations. An Amazon Web Services account is limited to one domain per region. Users within a domain can share notebook files and other artifacts with each other.</p> <p> <b>EFS storage</b> </p> <p>When a domain is created, an EFS volume is created for use by all of the users within the domain. Each user receives a private home directory within the EFS volume for notebooks, Git repositories, and data files.</p> <p>SageMaker uses the Amazon Web Services Key Management Service (Amazon Web Services KMS) to encrypt the EFS volume attached to the domain with an Amazon Web Services managed key by default. For more control, you can specify a customer managed key. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/encryption-at-rest.html\">Protect Data at Rest Using Encryption</a>.</p> <p> <b>VPC configuration</b> </p> <p>All SageMaker Studio traffic between the domain and the EFS volume is through the specified VPC and subnets. For other Studio traffic, you can specify the <code>AppNetworkAccessType</code> parameter. <code>AppNetworkAccessType</code> corresponds to the network access type that you choose when you onboard to Studio. The following options are available:</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic goes through a VPC managed by Amazon SageMaker, which allows internet access. This is the default value.</p> </li> <li> <p> <code>VpcOnly</code> - All Studio traffic is through the specified VPC and subnets. Internet access is disabled by default. To allow internet access, you must specify a NAT gateway.</p> <p>When internet access is disabled, you won't be able to run a Studio notebook or to train or host models unless your VPC has an interface endpoint to the SageMaker API and runtime or a NAT gateway and your security groups allow outbound connections.</p> </li> </ul> <important> <p>NFS traffic over TCP on port 2049 needs to be allowed in both inbound and outbound rules in order to launch a SageMaker Studio app successfully.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-notebooks-and-internet-access.html\">Connect SageMaker Studio Notebooks to Resources in a VPC</a>.</p>"
     },
+    "CreateEdgeDeploymentPlan":{
+      "name":"CreateEdgeDeploymentPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEdgeDeploymentPlanRequest"},
+      "output":{"shape":"CreateEdgeDeploymentPlanResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates an edge deployment plan, consisting of multiple stages. Each stage may have a different deployment configuration and devices.</p>"
+    },
+    "CreateEdgeDeploymentStage":{
+      "name":"CreateEdgeDeploymentStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEdgeDeploymentStageRequest"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a new stage in an existing edge deployment plan.</p>"
+    },
     "CreateEdgePackagingJob":{
       "name":"CreateEdgePackagingJob",
       "http":{
@@ -808,6 +833,30 @@
       ],
       "documentation":"<p>Used to delete a domain. If you onboarded with IAM mode, you will need to delete your domain to onboard again using SSO. Use with caution. All of the members of the domain will lose access to their EFS volume, including data, notebooks, and other artifacts. </p>"
     },
+    "DeleteEdgeDeploymentPlan":{
+      "name":"DeleteEdgeDeploymentPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEdgeDeploymentPlanRequest"},
+      "errors":[
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes an edge deployment plan if (and only if) all the stages in the plan are inactive or there are no stages in the plan.</p>"
+    },
+    "DeleteEdgeDeploymentStage":{
+      "name":"DeleteEdgeDeploymentStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEdgeDeploymentStageRequest"},
+      "errors":[
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Delete a stage in an edge deployment plan if (and only if) the stage is inactive.</p>"
+    },
     "DeleteEndpoint":{
       "name":"DeleteEndpoint",
       "http":{
@@ -1295,6 +1344,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>The description of the domain.</p>"
+    },
+    "DescribeEdgeDeploymentPlan":{
+      "name":"DescribeEdgeDeploymentPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEdgeDeploymentPlanRequest"},
+      "output":{"shape":"DescribeEdgeDeploymentPlanResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Describes an edge deployment plan with deployment status per stage.</p>"
     },
     "DescribeEdgePackagingJob":{
       "name":"DescribeEdgePackagingJob",
@@ -1995,6 +2057,16 @@
       "output":{"shape":"ListDomainsResponse"},
       "documentation":"<p>Lists the domains.</p>"
     },
+    "ListEdgeDeploymentPlans":{
+      "name":"ListEdgeDeploymentPlans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEdgeDeploymentPlansRequest"},
+      "output":{"shape":"ListEdgeDeploymentPlansResponse"},
+      "documentation":"<p>Lists all edge deployment plans.</p>"
+    },
     "ListEdgePackagingJobs":{
       "name":"ListEdgePackagingJobs",
       "http":{
@@ -2320,6 +2392,16 @@
       "output":{"shape":"ListProjectsOutput"},
       "documentation":"<p>Gets a list of the projects in an Amazon Web Services account.</p>"
     },
+    "ListStageDevices":{
+      "name":"ListStageDevices",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStageDevicesRequest"},
+      "output":{"shape":"ListStageDevicesResponse"},
+      "documentation":"<p>Lists devices allocated to the stage, containing detailed device information and deployment status.</p>"
+    },
     "ListStudioLifecycleConfigs":{
       "name":"ListStudioLifecycleConfigs",
       "http":{
@@ -2543,6 +2625,15 @@
       ],
       "documentation":"<p>Notifies the pipeline that the execution of a callback step succeeded and provides a list of the step's output parameters. When a callback step is run, the pipeline generates a callback token and includes the token in a message sent to Amazon Simple Queue Service (Amazon SQS).</p>"
     },
+    "StartEdgeDeploymentStage":{
+      "name":"StartEdgeDeploymentStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartEdgeDeploymentStageRequest"},
+      "documentation":"<p>Starts a stage in an edge deployment plan.</p>"
+    },
     "StartMonitoringSchedule":{
       "name":"StartMonitoringSchedule",
       "http":{
@@ -2604,6 +2695,15 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops a model compilation job.</p> <p> To stop a job, Amazon SageMaker sends the algorithm the SIGTERM signal. This gracefully shuts the job down. If the job hasn't stopped, it sends the SIGKILL signal.</p> <p>When it receives a <code>StopCompilationJob</code> request, Amazon SageMaker changes the <a>CompilationJobSummary$CompilationJobStatus</a> of the job to <code>Stopping</code>. After Amazon SageMaker stops the job, it sets the <a>CompilationJobSummary$CompilationJobStatus</a> to <code>Stopped</code>. </p>"
+    },
+    "StopEdgeDeploymentStage":{
+      "name":"StopEdgeDeploymentStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopEdgeDeploymentStageRequest"},
+      "documentation":"<p>Stops a stage in an edge deployment plan.</p>"
     },
     "StopEdgePackagingJob":{
       "name":"StopEdgePackagingJob",
@@ -6201,6 +6301,63 @@
         }
       }
     },
+    "CreateEdgeDeploymentPlanRequest":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanName",
+        "ModelConfigs",
+        "DeviceFleetName"
+      ],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan.</p>"
+        },
+        "ModelConfigs":{
+          "shape":"EdgeDeploymentModelConfigs",
+          "documentation":"<p>List of models associated with the edge deployment plan.</p>"
+        },
+        "DeviceFleetName":{
+          "shape":"EntityName",
+          "documentation":"<p>The device fleet used for this edge deployment plan.</p>"
+        },
+        "Stages":{
+          "shape":"DeploymentStages",
+          "documentation":"<p>List of stages of the edge deployment plan. The number of stages is limited to 10 per deployment.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>List of tags with which to tag the edge deployment plan.</p>"
+        }
+      }
+    },
+    "CreateEdgeDeploymentPlanResponse":{
+      "type":"structure",
+      "required":["EdgeDeploymentPlanArn"],
+      "members":{
+        "EdgeDeploymentPlanArn":{
+          "shape":"EdgeDeploymentPlanArn",
+          "documentation":"<p>The ARN of the edge deployment plan.</p>"
+        }
+      }
+    },
+    "CreateEdgeDeploymentStageRequest":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanName",
+        "Stages"
+      ],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan.</p>"
+        },
+        "Stages":{
+          "shape":"DeploymentStages",
+          "documentation":"<p>List of stages to be added to the edge deployment plan.</p>"
+        }
+      }
+    },
     "CreateEdgePackagingJobRequest":{
       "type":"structure",
       "required":[
@@ -8381,6 +8538,33 @@
         }
       }
     },
+    "DeleteEdgeDeploymentPlanRequest":{
+      "type":"structure",
+      "required":["EdgeDeploymentPlanName"],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan to delete.</p>"
+        }
+      }
+    },
+    "DeleteEdgeDeploymentStageRequest":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanName",
+        "StageName"
+      ],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan from which the stage will be deleted.</p>"
+        },
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage.</p>"
+        }
+      }
+    },
     "DeleteEndpointConfigInput":{
       "type":"structure",
       "required":["EndpointConfigName"],
@@ -8792,6 +8976,68 @@
         }
       },
       "documentation":"<p>The deployment configuration for an endpoint, which contains the desired deployment strategy and rollback configurations.</p>"
+    },
+    "DeploymentStage":{
+      "type":"structure",
+      "required":[
+        "StageName",
+        "DeviceSelectionConfig"
+      ],
+      "members":{
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage.</p>"
+        },
+        "DeviceSelectionConfig":{
+          "shape":"DeviceSelectionConfig",
+          "documentation":"<p>Configuration of the devices in the stage.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"EdgeDeploymentConfig",
+          "documentation":"<p>Configuration of the deployment details.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a stage in an edge deployment plan.</p>"
+    },
+    "DeploymentStageMaxResults":{
+      "type":"integer",
+      "max":10
+    },
+    "DeploymentStageStatusSummaries":{
+      "type":"list",
+      "member":{"shape":"DeploymentStageStatusSummary"}
+    },
+    "DeploymentStageStatusSummary":{
+      "type":"structure",
+      "required":[
+        "StageName",
+        "DeviceSelectionConfig",
+        "DeploymentConfig",
+        "DeploymentStatus"
+      ],
+      "members":{
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage.</p>"
+        },
+        "DeviceSelectionConfig":{
+          "shape":"DeviceSelectionConfig",
+          "documentation":"<p>Configuration of the devices in the stage.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"EdgeDeploymentConfig",
+          "documentation":"<p>Configuration of the deployment details.</p>"
+        },
+        "DeploymentStatus":{
+          "shape":"EdgeDeploymentStatus",
+          "documentation":"<p>General status of the current state.</p>"
+        }
+      },
+      "documentation":"<p>Contains information summarizing the deployment stage results.</p>"
+    },
+    "DeploymentStages":{
+      "type":"list",
+      "member":{"shape":"DeploymentStage"}
     },
     "DeregisterDevicesRequest":{
       "type":"structure",
@@ -9679,6 +9925,80 @@
         "SecurityGroupIdForDomainBoundary":{
           "shape":"SecurityGroupId",
           "documentation":"<p>The ID of the security group that authorizes traffic between the <code>RSessionGateway</code> apps and the <code>RStudioServerPro</code> app.</p>"
+        }
+      }
+    },
+    "DescribeEdgeDeploymentPlanRequest":{
+      "type":"structure",
+      "required":["EdgeDeploymentPlanName"],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the deployment plan to describe.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the edge deployment plan has enough stages to require tokening, then this is the response from the last list of stages returned.</p>"
+        },
+        "MaxResults":{
+          "shape":"DeploymentStageMaxResults",
+          "documentation":"<p>The maximum number of results to select (50 by default).</p>"
+        }
+      }
+    },
+    "DescribeEdgeDeploymentPlanResponse":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanArn",
+        "EdgeDeploymentPlanName",
+        "ModelConfigs",
+        "DeviceFleetName",
+        "Stages"
+      ],
+      "members":{
+        "EdgeDeploymentPlanArn":{
+          "shape":"EdgeDeploymentPlanArn",
+          "documentation":"<p>The ARN of edge deployment plan.</p>"
+        },
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan.</p>"
+        },
+        "ModelConfigs":{
+          "shape":"EdgeDeploymentModelConfigs",
+          "documentation":"<p>List of models associated with the edge deployment plan.</p>"
+        },
+        "DeviceFleetName":{
+          "shape":"EntityName",
+          "documentation":"<p>The device fleet used for this edge deployment plan.</p>"
+        },
+        "EdgeDeploymentSuccess":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices with the successful deployment.</p>"
+        },
+        "EdgeDeploymentPending":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices yet to pick up deployment, or in progress.</p>"
+        },
+        "EdgeDeploymentFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices that failed the deployment.</p>"
+        },
+        "Stages":{
+          "shape":"DeploymentStageStatusSummaries",
+          "documentation":"<p>List of stages in the edge deployment plan.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token to use when calling the next set of stages in the edge deployment plan.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the edge deployment plan was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the edge deployment plan was last updated.</p>"
         }
       }
     },
@@ -12141,6 +12461,78 @@
       "min":20,
       "pattern":"^arn:aws[a-z\\-]*:[a-z\\-]*:[a-z\\-]*:\\d{12}:[a-z\\-]*/?[a-zA-Z_0-9+=,.@\\-_/]+$"
     },
+    "DeviceDeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "READYTODEPLOY",
+        "INPROGRESS",
+        "DEPLOYED",
+        "FAILED",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "DeviceDeploymentSummaries":{
+      "type":"list",
+      "member":{"shape":"DeviceDeploymentSummary"}
+    },
+    "DeviceDeploymentSummary":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanArn",
+        "EdgeDeploymentPlanName",
+        "StageName",
+        "DeviceName",
+        "DeviceArn"
+      ],
+      "members":{
+        "EdgeDeploymentPlanArn":{
+          "shape":"EdgeDeploymentPlanArn",
+          "documentation":"<p>The ARN of the edge deployment plan.</p>"
+        },
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan.</p>"
+        },
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage in the edge deployment plan.</p>"
+        },
+        "DeployedStageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the deployed stage.</p>"
+        },
+        "DeviceFleetName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the fleet to which the device belongs to.</p>"
+        },
+        "DeviceName":{
+          "shape":"DeviceName",
+          "documentation":"<p>The name of the device.</p>"
+        },
+        "DeviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The ARN of the device.</p>"
+        },
+        "DeviceDeploymentStatus":{
+          "shape":"DeviceDeploymentStatus",
+          "documentation":"<p>The deployment status of the device.</p>"
+        },
+        "DeviceDeploymentStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>The detailed error message for the deployoment status result.</p>"
+        },
+        "Description":{
+          "shape":"DeviceDescription",
+          "documentation":"<p>The description of the device.</p>"
+        },
+        "DeploymentStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the deployment on the device started.</p>"
+        }
+      },
+      "documentation":"<p>Contains information summarizing device details and deployment status.</p>"
+    },
     "DeviceDescription":{
       "type":"string",
       "max":40,
@@ -12197,6 +12589,29 @@
       "type":"list",
       "member":{"shape":"DeviceName"}
     },
+    "DeviceSelectionConfig":{
+      "type":"structure",
+      "required":["DeviceSubsetType"],
+      "members":{
+        "DeviceSubsetType":{
+          "shape":"DeviceSubsetType",
+          "documentation":"<p>Type of device subsets to deploy to the current stage.</p>"
+        },
+        "Percentage":{
+          "shape":"Percentage",
+          "documentation":"<p>Percentage of devices in the fleet to deploy to the current stage.</p>"
+        },
+        "DeviceNames":{
+          "shape":"DeviceNames",
+          "documentation":"<p>List of devices chosen to deploy.</p>"
+        },
+        "DeviceNameContains":{
+          "shape":"DeviceName",
+          "documentation":"<p>A filter to select devices with names containing this name.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the configurations of selected devices.</p>"
+    },
     "DeviceStats":{
       "type":"structure",
       "required":[
@@ -12214,6 +12629,14 @@
         }
       },
       "documentation":"<p>Status of devices.</p>"
+    },
+    "DeviceSubsetType":{
+      "type":"string",
+      "enum":[
+        "PERCENTAGE",
+        "SELECTION",
+        "NAMECONTAINS"
+      ]
     },
     "DeviceSummaries":{
       "type":"list",
@@ -12554,6 +12977,131 @@
         }
       },
       "documentation":"<p>A directed edge connecting two lineage entities.</p>"
+    },
+    "EdgeDeploymentConfig":{
+      "type":"structure",
+      "required":["FailureHandlingPolicy"],
+      "members":{
+        "FailureHandlingPolicy":{
+          "shape":"FailureHandlingPolicy",
+          "documentation":"<p>Toggle that determines whether to rollback to previous configuration if the current deployment fails. By default this is turned on. You may turn this off if you want to investigate the errors yourself.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration of a deployment.</p>"
+    },
+    "EdgeDeploymentModelConfig":{
+      "type":"structure",
+      "required":[
+        "ModelHandle",
+        "EdgePackagingJobName"
+      ],
+      "members":{
+        "ModelHandle":{
+          "shape":"EntityName",
+          "documentation":"<p>The name the device application uses to reference this model.</p>"
+        },
+        "EdgePackagingJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The edge packaging job associated with this deployment.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration of a model in a deployment.</p>"
+    },
+    "EdgeDeploymentModelConfigs":{
+      "type":"list",
+      "member":{"shape":"EdgeDeploymentModelConfig"}
+    },
+    "EdgeDeploymentPlanArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\-]*:sagemaker:[a-z\\-]*:\\d{12}:edge-deployment/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
+    "EdgeDeploymentPlanSummaries":{
+      "type":"list",
+      "member":{"shape":"EdgeDeploymentPlanSummary"}
+    },
+    "EdgeDeploymentPlanSummary":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanArn",
+        "EdgeDeploymentPlanName",
+        "DeviceFleetName",
+        "EdgeDeploymentSuccess",
+        "EdgeDeploymentPending",
+        "EdgeDeploymentFailed"
+      ],
+      "members":{
+        "EdgeDeploymentPlanArn":{
+          "shape":"EdgeDeploymentPlanArn",
+          "documentation":"<p>The ARN of the edge deployment plan.</p>"
+        },
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan.</p>"
+        },
+        "DeviceFleetName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the device fleet used for the deployment. </p>"
+        },
+        "EdgeDeploymentSuccess":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices with the successful deployment.</p>"
+        },
+        "EdgeDeploymentPending":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices yet to pick up the deployment, or in progress.</p>"
+        },
+        "EdgeDeploymentFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices that failed the deployment.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the edge deployment plan was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the edge deployment plan was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains information summarizing an edge deployment plan.</p>"
+    },
+    "EdgeDeploymentStatus":{
+      "type":"structure",
+      "required":[
+        "StageStatus",
+        "EdgeDeploymentSuccessInStage",
+        "EdgeDeploymentPendingInStage",
+        "EdgeDeploymentFailedInStage"
+      ],
+      "members":{
+        "StageStatus":{
+          "shape":"StageStatus",
+          "documentation":"<p>The general status of the current stage.</p>"
+        },
+        "EdgeDeploymentSuccessInStage":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices with the successful deployment in the current stage.</p>"
+        },
+        "EdgeDeploymentPendingInStage":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices yet to pick up the deployment in current stage, or in progress.</p>"
+        },
+        "EdgeDeploymentFailedInStage":{
+          "shape":"Integer",
+          "documentation":"<p>The number of edge devices that failed the deployment in current stage.</p>"
+        },
+        "EdgeDeploymentStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message about deployment status in current stage.</p>"
+        },
+        "EdgeDeploymentStageStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the deployment API started.</p>"
+        }
+      },
+      "documentation":"<p>Contains information summarizing the deployment stage results.</p>"
     },
     "EdgeModel":{
       "type":"structure",
@@ -13326,6 +13874,13 @@
         }
       },
       "documentation":"<p>The container for the metadata for Fail step.</p>"
+    },
+    "FailureHandlingPolicy":{
+      "type":"string",
+      "enum":[
+        "ROLLBACK_ON_FAILURE",
+        "DO_NOTHING"
+      ]
     },
     "FailureReason":{
       "type":"string",
@@ -16646,6 +17201,75 @@
         }
       }
     },
+    "ListEdgeDeploymentPlansRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The response from the last list when returning a list large enough to need tokening.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListMaxResults",
+          "documentation":"<p>The maximum number of results to select (50 by default).</p>",
+          "box":true
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects edge deployment plans created after this time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects edge deployment plans created before this time.</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects edge deployment plans that were last updated after this time.</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects edge deployment plans that were last updated before this time.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Selects edge deployment plans with names containing this name.</p>"
+        },
+        "DeviceFleetNameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Selects edge deployment plans with a device fleet name containing this name.</p>"
+        },
+        "SortBy":{
+          "shape":"ListEdgeDeploymentPlansSortBy",
+          "documentation":"<p>The column by which to sort the edge deployment plans. Can be one of <code>NAME</code>, <code>DEVICEFLEETNAME</code>, <code>CREATIONTIME</code>, <code>LASTMODIFIEDTIME</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The direction of the sorting (ascending or descending).</p>"
+        }
+      }
+    },
+    "ListEdgeDeploymentPlansResponse":{
+      "type":"structure",
+      "required":["EdgeDeploymentPlanSummaries"],
+      "members":{
+        "EdgeDeploymentPlanSummaries":{
+          "shape":"EdgeDeploymentPlanSummaries",
+          "documentation":"<p>List of summaries of edge deployment plans.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when calling the next page of results.</p>"
+        }
+      }
+    },
+    "ListEdgeDeploymentPlansSortBy":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "DEVICE_FLEET_NAME",
+        "CREATION_TIME",
+        "LAST_MODIFIED_TIME"
+      ]
+    },
     "ListEdgePackagingJobsRequest":{
       "type":"structure",
       "members":{
@@ -18279,6 +18903,50 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the result of the previous <code>ListCompilationJobs</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of model compilation jobs, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListStageDevicesRequest":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanName",
+        "StageName"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The response from the last list when returning a list large enough to neeed tokening.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListMaxResults",
+          "documentation":"<p>The maximum number of requests to select.</p>",
+          "box":true
+        },
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan.</p>"
+        },
+        "ExcludeDevicesDeployedInOtherStage":{
+          "shape":"Boolean",
+          "documentation":"<p>Toggle for excluding devices deployed in other stages.</p>"
+        },
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage in the deployment.</p>"
+        }
+      }
+    },
+    "ListStageDevicesResponse":{
+      "type":"structure",
+      "required":["DeviceDeploymentSummaries"],
+      "members":{
+        "DeviceDeploymentSummaries":{
+          "shape":"DeviceDeploymentSummaries",
+          "documentation":"<p>List of summaries of devices allocated to the stage.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when calling the next page of results.</p>"
         }
       }
     },
@@ -21350,6 +22018,10 @@
       "member":{"shape":"PendingProductionVariantSummary"},
       "min":1
     },
+    "Percentage":{
+      "type":"integer",
+      "max":100
+    },
     "Phase":{
       "type":"structure",
       "members":{
@@ -22970,7 +23642,6 @@
     },
     "QueryLineageRequest":{
       "type":"structure",
-      "required":["StartArns"],
       "members":{
         "StartArns":{
           "shape":"QueryLineageStartArns",
@@ -23023,7 +23694,7 @@
       "type":"list",
       "member":{"shape":"AssociationEntityArn"},
       "max":1,
-      "min":1
+      "min":0
     },
     "QueryLineageTypes":{
       "type":"list",
@@ -24331,6 +25002,36 @@
         "TFRecord"
       ]
     },
+    "StageStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "READYTODEPLOY",
+        "STARTING",
+        "INPROGRESS",
+        "DEPLOYED",
+        "FAILED",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "StartEdgeDeploymentStageRequest":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanName",
+        "StageName"
+      ],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan to start.</p>"
+        },
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage to start.</p>"
+        }
+      }
+    },
     "StartMonitoringScheduleRequest":{
       "type":"structure",
       "required":["MonitoringScheduleName"],
@@ -24445,6 +25146,23 @@
         "CompilationJobName":{
           "shape":"EntityName",
           "documentation":"<p>The name of the model compilation job to stop.</p>"
+        }
+      }
+    },
+    "StopEdgeDeploymentStageRequest":{
+      "type":"structure",
+      "required":[
+        "EdgeDeploymentPlanName",
+        "StageName"
+      ],
+      "members":{
+        "EdgeDeploymentPlanName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the edge deployment plan to stop.</p>"
+        },
+        "StageName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the stage to stop.</p>"
         }
       }
     },

@@ -194,7 +194,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates a task.</p> <p>A task includes a source location and a destination location, and a configuration that specifies how data is transferred. A task always transfers data from the source location to the destination location. The configuration specifies options such as task scheduling, bandwidth limits, etc. A task is the complete definition of a data transfer.</p> <p>When you create a task that transfers data between Amazon Web Services services in different Amazon Web Services Regions, one of the two locations that you specify must reside in the Region where DataSync is being used. The other location must be specified in a different Region.</p> <p>You can transfer data between commercial Amazon Web Services Regions except for China, or between Amazon Web Services GovCloud (US) Regions.</p> <important> <p>When you use DataSync to copy files or objects between Amazon Web Services Regions, you pay for data transfer between Regions. This is billed as data transfer OUT from your source Region to your destination Region. For more information, see <a href=\"http://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer\">Data Transfer pricing</a>. </p> </important>"
+      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p> <p>When you create a task that transfers data between Amazon Web Services services in different Amazon Web Services Regions, one of your locations must reside in the Region where you're using DataSync.</p> <p>For more information, see the following topics:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-locations.html\">Working with DataSync locations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-task.html\">Configure DataSync task settings</a> </p> </li> </ul>"
     },
     "DeleteAgent":{
       "name":"DeleteAgent",
@@ -488,7 +488,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns a list of all the tasks.</p>"
+      "documentation":"<p>Returns a list of the DataSync tasks you created.</p>"
     },
     "StartTaskExecution":{
       "name":"StartTaskExecution",
@@ -838,7 +838,7 @@
         "Protocol":{"shape":"FsxProtocol"},
         "SecurityGroupArns":{
           "shape":"Ec2SecurityGroupArnList",
-          "documentation":"<p>Specifies the security groups that DataSync can use to access your FSx for ONTAP file system. You must configure the security groups to allow outbound traffic on the following ports (depending on the protocol that you're using):</p> <ul> <li> <p> <b>Network File System (NFS)</b>: TCP port 2049</p> </li> <li> <p> <b>Server Message Block (SMB)</b>: TCP port 445</p> </li> </ul> <p>Your file system's security groups must also allow inbound traffic on the same port.</p>"
+          "documentation":"<p>Specifies the Amazon EC2 security groups that provide access to your file system's preferred subnet.</p> <p>The security groups must allow outbound traffic on the following ports (depending on the protocol you use):</p> <ul> <li> <p> <b>Network File System (NFS)</b>: TCP ports 111, 635, and 2049</p> </li> <li> <p> <b>Server Message Block (SMB)</b>: TCP port 445</p> </li> </ul> <p>Your file system's security groups must also allow inbound traffic on the same ports.</p>"
         },
         "StorageVirtualMachineArn":{
           "shape":"StorageVirtualMachineArn",
@@ -913,31 +913,31 @@
       "members":{
         "Subdirectory":{
           "shape":"FsxWindowsSubdirectory",
-          "documentation":"<p>A subdirectory in the location's path. This subdirectory in the Amazon FSx for Windows File Server file system is used to read data from the Amazon FSx for Windows File Server source location or write data to the FSx for Windows File Server destination.</p>"
+          "documentation":"<p>Specifies a mount path for your file system using forward slashes. This is where DataSync reads or writes data (depending on if this is a source or destination location).</p>"
         },
         "FsxFilesystemArn":{
           "shape":"FsxFilesystemArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the FSx for Windows File Server file system.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) for the FSx for Windows File Server file system.</p>"
         },
         "SecurityGroupArns":{
           "shape":"Ec2SecurityGroupArnList",
-          "documentation":"<p>The ARNs of the security groups that are used to configure the FSx for Windows File Server file system.</p>"
+          "documentation":"<p>Specifies the ARNs of the security groups that provide access to your file system's preferred subnet.</p> <note> <p>If you choose a security group that doesn't allow connections from within itself, do one of the following:</p> <ul> <li> <p>Configure the security group to allow it to communicate within itself.</p> </li> <li> <p>Choose a different security group that can communicate with the mount target's security group.</p> </li> </ul> </note>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents a tag that you want to add to the resource. The value can be an empty string. This value helps you manage, filter, and search for your resources. We recommend that you create a name tag for your location.</p>"
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your location.</p>"
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>The user who has the permissions to access files and folders in the FSx for Windows File Server file system.</p> <p>For information about choosing a user name that ensures sufficient permissions to files, folders, and metadata, see <a href=\"create-fsx-location.html#FSxWuser\">user</a>.</p>"
+          "documentation":"<p>Specifies the user who has the permissions to access files and folders in the file system.</p> <p>For information about choosing a user name that ensures sufficient permissions to files, folders, and metadata, see <a href=\"create-fsx-location.html#FSxWuser\">user</a>.</p>"
         },
         "Domain":{
           "shape":"SmbDomain",
-          "documentation":"<p>The name of the Windows domain that the FSx for Windows File Server belongs to.</p>"
+          "documentation":"<p>Specifies the name of the Windows domain that the FSx for Windows File Server belongs to.</p>"
         },
         "Password":{
           "shape":"SmbPassword",
-          "documentation":"<p>The password of the user who has the permissions to access files and folders in the FSx for Windows File Server file system.</p>"
+          "documentation":"<p>Specifies the password of the user who has the permissions to access files and folders in the file system.</p>"
         }
       }
     },
@@ -946,7 +946,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the FSx for Windows File Server file system location you created.</p>"
+          "documentation":"<p>The ARN of the FSx for Windows File Server file system location you created.</p>"
         }
       }
     },
@@ -2097,7 +2097,7 @@
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>Specifies a user who has permission to access your SVM.</p>"
+          "documentation":"<p>Specifies a user name that can mount the location and access the files, folders, and metadata that you need in the SVM.</p> <p>If you provide a user in your Active Directory, note the following:</p> <ul> <li> <p>If you're using Directory Service for Microsoft Active Directory, the user must be a member of the Amazon Web Services Delegated FSx Administrators group.</p> </li> <li> <p>If you're using a self-managed Active Directory, the user must be a member of either the Domain Admins group or a custom group that you specified for file system administration when you created your file system.</p> </li> </ul> <p>Make sure that the user has the permissions it needs to copy the data you want:</p> <ul> <li> <p> <code>SE_TCB_NAME</code>: Required to set object ownership and file metadata. With this privilege, you also can copy NTFS discretionary access lists (DACLs).</p> </li> <li> <p> <code>SE_SECURITY_NAME</code>: May be needed to copy NTFS system access control lists (SACLs). This operation specifically requires the Windows privilege, which is granted to members of the Domain Admins group. If you configure your task to copy SACLs, make sure that the user has the required privileges. For information about copying SACLs, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-task.html#configure-ownership-and-permissions\">Ownership and permissions-related options</a>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies the Server Message Block (SMB) protocol configuration that DataSync uses to access your Amazon FSx for NetApp ONTAP file system. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-ontap-location.html#create-ontap-location-access\">Accessing FSx for ONTAP file systems</a>.</p>"
@@ -2430,10 +2430,10 @@
         },
         "Operator":{
           "shape":"Operator",
-          "documentation":"<p>The operator that is used to compare filter values (for example, <code>Equals</code> or <code>Contains</code>). For more about API filtering operators, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/query-resources.html\">API filters for ListTasks and ListLocations</a>.</p>"
+          "documentation":"<p>The operator that is used to compare filter values (for example, <code>Equals</code> or <code>Contains</code>).</p>"
         }
       },
-      "documentation":"<p>You can use API filters to narrow down the list of resources returned by <code>ListLocations</code>. For example, to retrieve all your Amazon S3 locations, you can use <code>ListLocations</code> with filter name <code>LocationType S3</code> and <code>Operator Equals</code>.</p>"
+      "documentation":"<p>Narrow down the list of resources returned by <code>ListLocations</code>. For example, to see all your Amazon S3 locations, create a filter using <code>\"Name\": \"LocationType\"</code>, <code>\"Operator\": \"Equals\"</code>, and <code>\"Values\": \"S3\"</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/query-resources.html\">filtering resources</a>.</p>"
     },
     "LocationFilterName":{
       "type":"string",
@@ -3040,10 +3040,10 @@
         },
         "Operator":{
           "shape":"Operator",
-          "documentation":"<p>The operator that is used to compare filter values (for example, <code>Equals</code> or <code>Contains</code>). For more about API filtering operators, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/query-resources.html\">API filters for ListTasks and ListLocations</a>.</p>"
+          "documentation":"<p>The operator that is used to compare filter values (for example, <code>Equals</code> or <code>Contains</code>).</p>"
         }
       },
-      "documentation":"<p>You can use API filters to narrow down the list of resources returned by <code>ListTasks</code>. For example, to retrieve all tasks on a source location, you can use <code>ListTasks</code> with filter name <code>LocationId</code> and <code>Operator Equals</code> with the ARN for the location.</p>"
+      "documentation":"<p>You can use API filters to narrow down the list of resources returned by <code>ListTasks</code>. For example, to retrieve all tasks on a source location, you can use <code>ListTasks</code> with filter name <code>LocationId</code> and <code>Operator Equals</code> with the ARN for the location.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/query-resources.html\">filtering DataSync resources</a>.</p>"
     },
     "TaskFilterName":{
       "type":"string",

@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.7.17
+======
+
+* api-change:``mediapackage``: This release adds "IncludeIframeOnlyStream" for Dash endpoints and increases the number of supported video and audio encryption presets for Speke v2
+* api-change:``datasync``: Documentation updates for AWS DataSync regarding configuring Amazon FSx for ONTAP location security groups and SMB user permissions.
+* api-change:``kms``: Added support for the SM2 KeySpec in China Partition Regions
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``sagemaker``: Amazon SageMaker Edge Manager provides lightweight model deployment feature to deploy machine learning models on requested devices.
+* api-change:``wafv2``: This SDK release provide customers ability to add sensitivity level for WAF SQLI Match Statements.
+* api-change:``glue``: Documentation updates for AWS Glue Job Timeout and Autoscaling
+* api-change:``sagemaker-edge``: Amazon SageMaker Edge Manager provides lightweight model deployment feature to deploy machine learning models on requested devices.
+* api-change:``sso-admin``: AWS SSO now supports attaching customer managed policies and a permissions boundary to your permission sets. This release adds new API operations to manage and view the customer managed policies and the permissions boundary for a given permission set.
+* api-change:``workspaces``: Increased the character limit of the login message from 850 to 2000 characters.
+* api-change:``sagemaker``: Fixed an issue with cross account QueryLineage
+* api-change:``elasticache``: Adding AutoMinorVersionUpgrade in the DescribeReplicationGroups API
+* api-change:``drs``: Changed existing APIs to allow choosing a dynamic volume type for replicating volumes, to reduce costs for customers.
+* api-change:``evidently``: This release adds support for the new segmentation feature.
+* api-change:``discovery``: Add AWS Agentless Collector details to the GetDiscoverySummary API response
+* api-change:``devops-guru``: Added new APIs for log anomaly detection feature.
+
+
 2.7.16
 ======
 

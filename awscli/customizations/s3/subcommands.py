@@ -475,7 +475,7 @@ class ListCommand(S3Command):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         if not bucket:
-            self._list_all_buckets()
+            self._list_all_buckets(parsed_args.summarize)
         elif parsed_args.dir_op:
             # Then --recursive was specified.
             self._list_all_objects_recursive(
@@ -539,13 +539,18 @@ class ListCommand(S3Command):
             uni_print(print_str)
         self._at_first_page = False
 
-    def _list_all_buckets(self):
+    def _list_all_buckets(self, summarize):
         response_data = self.client.list_buckets()
         buckets = response_data['Buckets']
         for bucket in buckets:
             last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
+
+            if summarize:
+                bucket, key = find_bucket_key(bucket['Name'])
+                self._list_all_objects(
+                    bucket, key, None, None)
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None,
                                     request_payer=None):

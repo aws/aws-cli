@@ -48,4 +48,4 @@ Output::
         ]
     }
 
-For more information, see `Working with Parameter Versions <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-versions.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Working with parameter versions <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-versions.html>`__ in the *AWS Systems Manager User Guide*.

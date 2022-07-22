@@ -12,11 +12,10 @@
 # language governing permissions and limitations under the License.
 import json
 
-import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape, \
     ListShape, MapShape
 
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import mock, unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler
@@ -47,7 +46,7 @@ class TestRecursiveShapes(unittest.TestCase):
         indent = self.help_command.doc.style.indent.call_count
         dedent = self.help_command.doc.style.dedent.call_count
         message = 'Imbalanced indentation: indent (%s) != dedent (%s)'
-        self.assertEquals(indent, dedent, message % (indent, dedent))
+        self.assertEqual(indent, dedent, message % (indent, dedent))
 
     def test_handle_recursive_input(self):
         shape_map = {
@@ -359,7 +358,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         operation_handler = OperationDocumentEventHandler(help_command)
         operation_handler.doc_description(help_command=help_command)
         rendered = help_command.doc.getvalue().decode('utf-8')
-        # Should expect an externa link because we're generating html.
+        # Should expect an external link because we're generating html.
         self.assertIn(
             'See also: `AWS API Documentation '
             '<https://docs.aws.amazon.com/goto/'

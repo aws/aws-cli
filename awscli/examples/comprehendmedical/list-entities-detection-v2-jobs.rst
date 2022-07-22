@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-For more information, see `Batch APIs <https://docs.aws.amazon.com/comprehend/latest/dg/batch-api-med.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Batch APIs <https://docs.aws.amazon.com/comprehend-medical/latest/dev/textanalysis-batchapi.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

@@ -3,6 +3,8 @@
 # which doesn't have argparse.  Given that argparse is
 # a dependency that eventually gets installed, we could
 # try to bootstrap, but using optparse is just easier.
+from __future__ import print_function
+
 import optparse
 import os
 import platform
@@ -18,10 +20,13 @@ PACKAGES_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'packages')
 INSTALL_DIR = os.path.expanduser(os.path.join(
     '~', '.local', 'lib', 'aws'))
-GTE_PY37 = sys.version_info[:2] >= (3, 7)
 UNSUPPORTED_PYTHON = (
-    (sys.version_info[0] == 2 and sys.version_info[:2] <= (2, 6)) or
-    (sys.version_info[0] == 3 and sys.version_info[:2] <= (3, 3))
+    (2,6),
+    (2,7),
+    (3,3),
+    (3,4),
+    (3,5),
+    (3,6),
 )
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
@@ -34,6 +39,32 @@ class BadRCError(Exception):
 
 class MultipleBundlesError(Exception):
     pass
+
+
+class PythonDeprecationWarning(Warning):
+    """
+    Python version being used is scheduled to become unsupported
+    in an future release. See warning for specifics.
+    """
+    pass
+
+
+def _build_deprecations():
+    py_36_params = {
+        'date': 'May 30, 2022',
+        'blog_link': (
+            'https://aws.amazon.com/blogs/developer/'
+            'python-support-policy-updates-for-aws-sdks-and-tools/'
+        )
+    }
+
+    return {
+        # Example for future deprecations
+        # (3, 6): py_36_params
+    }
+
+
+DEPRECATED_PYTHON = _build_deprecations()
 
 
 @contextmanager
@@ -84,24 +115,6 @@ def _create_virtualenv_internal(location, working_dir):
     run('%s -m venv %s' % (sys.executable, location))
 
 
-def _create_virtualenv_external(location, working_dir):
-    # working_dir is used (generally somewhere in /tmp) so that we
-    # don't modify the install/packages directories.
-    with cd(PACKAGES_DIR):
-        venv = _get_venv_package_tarball('.')
-        compressed = tarfile.open(venv)
-        compressed.extractall(path=working_dir)
-        compressed.close()
-    with cd(working_dir):
-        # We know that virtualenv is the only dir in this directory
-        # so we can listdir()[0] it.
-        with cd(os.listdir('.')[0]):
-            run(('%s virtualenv.py --no-download '
-                 '--python %s %s') % (sys.executable,
-                                      sys.executable,
-                                      location))
-
-
 def _get_package_tarball(package_dir, package_prefix):
     package_filenames = sorted([p for p in os.listdir(package_dir)
                                 if p.startswith(package_prefix)])
@@ -127,33 +140,42 @@ def pip_install_packages(install_dir):
         )
         raise MultipleBundlesError(message % PACKAGES_DIR)
     cli_tarball = cli_tarball[0]
-    pip_script = os.path.join(install_dir, bin_path(), 'pip')
+    python = os.path.join(install_dir, bin_path(), 'python')
 
     setup_requires_dir = os.path.join(PACKAGES_DIR, 'setup')
     with cd(setup_requires_dir):
-        _install_setup_deps(pip_script, '.')
+        _install_setup_deps(python, '.')
 
     with cd(PACKAGES_DIR):
-        run('%s install %s --find-links file://%s %s' % (
-                pip_script, INSTALL_ARGS, PACKAGES_DIR, cli_tarball))
+        run(
+            '{} -m pip install {} --find-links file://{} {}'.format(
+                python, INSTALL_ARGS, PACKAGES_DIR, cli_tarball
+            )
+        )
 
 
-def _install_setup_deps(pip_script, setup_package_dir):
+def _install_setup_deps(python, setup_package_dir):
     # Some packages declare `setup_requires`, which is a list of dependencies
     # to be used at setup time. These need to be installed before anything
     # else, and pip doesn't manage them.  We have to manage this ourselves
     # so for now we're explicitly installing the one setup_requires package
     # we need.  This comes from python-dateutils.
     setuptools_scm_tarball = _get_package_tarball(
-        setup_package_dir, 'setuptools_scm')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, setuptools_scm_tarball))
-    wheel_tarball = _get_package_tarball(
-        setup_package_dir, 'wheel')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, wheel_tarball))
+        setup_package_dir, 'setuptools_scm'
+    )
+    run(
+        (
+            '{} -m pip install --no-binary :all: --no-cache-dir --no-index '
+            '--find-links file://{} {}'
+        ).format(python, setup_package_dir, setuptools_scm_tarball)
+    )
+    wheel_tarball = _get_package_tarball(setup_package_dir, 'wheel')
+    run(
+        (
+            '{} -m pip install --no-binary :all: --no-cache-dir --no-index '
+            '--find-links file://{} {}'
+        ).format(python, setup_package_dir, wheel_tarball)
+    )
 
 
 def create_symlink(real_location, symlink_name):
@@ -181,17 +203,32 @@ def main():
                       "-b /usr/local/bin/aws.  This is an optional argument. "
                       "If you do not provide this argument you will have to "
                       "add INSTALL_DIR/bin to your PATH.")
-    if UNSUPPORTED_PYTHON:
+    py_version = sys.version_info[:2]
+    if py_version in UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
-            "Unsupported Python version detected: Python %s.%s\n"
-            "To continue using this installer you must use Python 2.7 "
-            "and greater or Python 3.4 and greater.\n"
-            "For more information see the following blog post:\n"
-            "https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6"
-            "-and-python-3-3-in-botocore-boto3-and-the-aws-cli/"
-        )
-        print(unsupported_python_msg % sys.version_info[:2])
+            "Unsupported Python version detected: Python {}.{}\n"
+            "To continue using this installer you must use Python 3.7 "
+            "or later.\n"
+            "For more information see the following blog post: "
+            "https://aws.amazon.com/blogs/developer/announcing-end-"
+            "of-support-for-python-2-7-in-aws-sdk-for-python-and-"
+            "aws-cli-v1/\n"
+        ).format(py_version[0], py_version[1])
+        print(unsupported_python_msg, file=sys.stderr)
         sys.exit(1)
+
+    if py_version in DEPRECATED_PYTHON:
+        params = DEPRECATED_PYTHON[py_version]
+        deprecated_python_msg = (
+            "Deprecated Python version detected: Python {}.{}\n"
+            "Starting {}, the AWS CLI will no longer support "
+            "this version of Python. To continue receiving service updates, "
+            "bug fixes, and security updates please upgrade to Python 3.7 or "
+            "later. More information can be found here: {}"
+        ).format(
+            py_version[0], py_version[1], params['date'], params['blog_link']
+        )
+        print(deprecated_python_msg, file=sys.stderr)
 
     opts = parser.parse_args()[0]
     working_dir = create_working_dir()
@@ -213,10 +250,7 @@ def main():
         shutil.rmtree(working_dir)
 
 
-if GTE_PY37:
-    create_virtualenv = _create_virtualenv_internal
-else:
-    create_virtualenv = _create_virtualenv_external
+create_virtualenv = _create_virtualenv_internal
 
 
 if __name__ == '__main__':

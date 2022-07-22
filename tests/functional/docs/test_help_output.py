@@ -23,10 +23,10 @@ at the man output, we look one step before at the generated rst output
 """
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
+from awscli.testutils import mock
 
 from awscli.compat import six
 from awscli.alias import AliasLoader
-import mock
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):
@@ -437,15 +437,15 @@ class TestIotData(BaseAWSHelpOutputTest):
         self.driver.main(['iot-data', 'help'])
         # Ensure the note is in help page.
         self.assert_contains(
-            'The default endpoint data.iot.[region].amazonaws.com is '
-            'intended for testing purposes only.')
+            'The default endpoints (intended for testing purposes only) can be found at '
+            'https://docs.aws.amazon.com/general/latest/gr/iot-core.html#iot-core-data-plane-endpoints')
 
     def test_operation_help_command_has_note(self):
         self.driver.main(['iot-data', 'get-thing-shadow', 'help'])
         # Ensure the note is in help page.
         self.assert_contains(
-            'The default endpoint data.iot.[region].amazonaws.com is '
-            'intended for testing purposes only.')
+            'The default endpoints (intended for testing purposes only) can be found at '
+            'https://docs.aws.amazon.com/general/latest/gr/iot-core.html#iot-core-data-plane-endpoints')
 
 
 class TestSMSVoice(BaseAWSHelpOutputTest):

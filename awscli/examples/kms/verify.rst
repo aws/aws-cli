@@ -21,4 +21,4 @@ Output::
         "SigningAlgorithm": "RSASSA_PKCS1_V1_5_SHA_256"
     }
 
-For more information about using asymmetric CMKs in AWS KMS, see `Using Symmetric and Asymmetric Keys <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service API Reference*.
+For more information about using asymmetric KMS keys in AWS KMS, see `Using asymmetric keys <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.

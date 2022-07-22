@@ -30,7 +30,7 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
-    RequestParamsMapper, split_s3_bucket_key
+    RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
@@ -249,12 +249,12 @@ SSE_C_COPY_SOURCE_KEY = {
 STORAGE_CLASS = {'name': 'storage-class',
                  'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA',
                              'ONEZONE_IA', 'INTELLIGENT_TIERING', 'GLACIER',
-                             'DEEP_ARCHIVE'],
+                             'DEEP_ARCHIVE', 'GLACIER_IR'],
                  'help_text': (
                      "The type of storage to use for the object. "
                      "Valid choices are: STANDARD | REDUCED_REDUNDANCY "
                      "| STANDARD_IA | ONEZONE_IA | INTELLIGENT_TIERING "
-                     "| GLACIER | DEEP_ARCHIVE. "
+                     "| GLACIER | DEEP_ARCHIVE | GLACIER_IR. "
                      "Defaults to 'STANDARD'")}
 
 
@@ -636,11 +636,12 @@ class WebsiteCommand(S3Command):
         # bucketname
         #
         # We also strip off the trailing slash if a user
-        # accidently appends a slash.
+        # accidentally appends a slash.
         if path.startswith('s3://'):
             path = path[5:]
         if path.endswith('/'):
             path = path[:-1]
+        block_unsupported_resources(path)
         return path
 
 
@@ -1099,7 +1100,7 @@ class CommandArchitecture(object):
         )
 
     def _map_sse_c_params(self, request_parameters, paths_type):
-        # SSE-C may be neaded for HeadObject for copies/downloads/deletes
+        # SSE-C may be needed for HeadObject for copies/downloads/deletes
         # If the operation is s3 to s3, the FileGenerator should use the
         # copy source key and algorithm. Otherwise, use the regular
         # SSE-C key and algorithm. Note the reverse FileGenerator does

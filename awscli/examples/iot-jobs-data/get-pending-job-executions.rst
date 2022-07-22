@@ -4,6 +4,7 @@ The following ``get-pending-job-executions`` example displays a list of all jobs
 
     aws iot-jobs-data get-pending-job-executions \
         --thing-name MotionSensor1 
+        --endpoint-url https://1234567890abcd.jobs.iot.us-west-2.amazonaws.com
 
 Output::
 

@@ -33,19 +33,11 @@ import string
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
+from unittest import mock
 
 from awscli.compat import StringIO
 
 
-try:
-    import mock
-except ImportError as e:
-    # In the off chance something imports this module
-    # that's not suppose to, we should not stop the CLI
-    # by raising an ImportError.  Now if anything actually
-    # *uses* this module that isn't suppose to, that's a
-    # different story.
-    mock = None
 from awscli.compat import six
 from botocore.session import Session
 from botocore.exceptions import ClientError
@@ -89,18 +81,6 @@ def skip_if_windows(reason):
         return unittest.skipIf(
             platform.system() not in ['Darwin', 'Linux'], reason)(func)
     return decorator
-
-
-def set_invalid_utime(path):
-    """Helper function to set an invalid last modified time"""
-    try:
-        os.utime(path, (-1, -100000000000))
-    except (OSError, OverflowError):
-        # Some OS's such as Windows throws an error for trying to set a
-        # last modified time of that size. So if an error is thrown, set it
-        # to just a negative time which will trigger the warning as well for
-        # Windows.
-        os.utime(path, (-1, -1))
 
 
 def create_clidriver():
@@ -937,6 +917,7 @@ class TestEventHandler(object):
     def __init__(self, handler=None):
         self._handler = handler
         self._called = False
+        self.__test__ = False
 
     @property
     def called(self):

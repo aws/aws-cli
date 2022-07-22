@@ -1,9 +1,13 @@
-**To execute an Auto Scaling policy**
+**To execute a scaling policy**
 
-This example executes the specified Auto Scaling policy for the specified Auto Scaling group::
+This example executes the scaling policy named ``my-step-scale-out-policy`` for the specified Auto Scaling group. ::
 
-    aws autoscaling execute-policy --auto-scaling-group-name my-auto-scaling-group --policy-name ScaleIn --honor-cooldown
+    aws autoscaling execute-policy \
+        --auto-scaling-group-name my-asg \
+        --policy-name  my-step-scale-out-policy \
+        --metric-value 95 \
+        --breach-threshold 80
 
-For more information, see `Dynamic Scaling`_ in the *Amazon EC2 Auto Scaling User Guide*.
+This command produces no output.
 
-.. _`Dynamic Scaling`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
+For more information, see `Step and simple scaling policies <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html>`_ in the *Amazon EC2 Auto Scaling User Guide*.

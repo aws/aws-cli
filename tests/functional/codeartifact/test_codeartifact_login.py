@@ -1,25 +1,22 @@
+import copy
 import os
 import platform
 import subprocess
 import time
 
-from datetime import datetime
-from dateutil.tz import tzlocal
-from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
+from tests import CLIRunner, AWSRequest, AWSResponse
+from awscli.testutils import unittest, FileCreator, mock
 from awscli.compat import urlparse, StringIO, RawConfigParser
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
 
 
-class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
+class TestCodeArtifactLogin(unittest.TestCase):
 
-    prefix = 'codeartifact login'
+    prefix = ['codeartifact', 'login']
 
     def setUp(self):
-        super(TestCodeArtifactLogin, self).setUp()
-
         self.file_creator = FileCreator()
         self.test_pypi_rc_path = self.file_creator.full_path('pypirc')
         if not os.path.isdir(os.path.dirname(self.test_pypi_rc_path)):
@@ -30,6 +27,8 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         self.repository = 'repository'
         self.auth_token = 'auth-token'
         self.namespace = 'namespace'
+        self.nuget_index_url_fmt = '{endpoint}v3/index.json'
+        self.nuget_source_name = self.domain + '/' + self.repository
         self.duration = 3600
         self.expiration = time.time() + self.duration
         self.expiration_as_datetime = parse_timestamp(self.expiration)
@@ -43,9 +42,14 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
         self.subprocess_patch = mock.patch('subprocess.check_call')
         self.subprocess_mock = self.subprocess_patch.start()
+        self.subprocess_check_output_patch = mock.patch(
+            'subprocess.check_output'
+        )
+        self.subprocess_check_out_mock = \
+            self.subprocess_check_output_patch.start()
+        self.cli_runner = CLIRunner()
 
     def tearDown(self):
-        super(TestCodeArtifactLogin, self).tearDown()
         self.pypi_rc_path_patch.stop()
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
@@ -63,31 +67,77 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
                 repository=self.repository
             )
 
-        cmdline = self.prefix
-        cmdline += ' --domain %s' % self.domain
-        cmdline += ' --repository %s' % self.repository
-        cmdline += ' --tool %s' % tool
+        cmdline = copy.copy(self.prefix)
+        cmdline.extend([
+            '--domain', self.domain,
+            '--repository', self.repository,
+            '--tool', tool,
+        ])
 
         if include_domain_owner:
-            cmdline += ' --domain-owner %s' % self.domain_owner
+            cmdline.extend(['--domain-owner', self.domain_owner])
 
         if dry_run:
-            cmdline += ' --dry-run'
+            cmdline.append('--dry-run')
 
         if include_duration_seconds:
-            cmdline += ' --duration-seconds %s' % self.duration
+            cmdline.extend(['--duration-seconds', str(self.duration)])
 
         if include_namespace:
-            cmdline += ' --namespace %s' % self.namespace
+            cmdline.extend(['--namespace', self.namespace])
 
-        # Responses from calls to services.
-        self.parsed_responses = [
-            {"authorizationToken": self.auth_token,
-                "expiration": self.expiration},  # GetAuthorizationToken
-            {"repositoryEndpoint": self.endpoint},  # GetRepositoryEndpoint
-        ]
+        self.cli_runner.add_response(
+            AWSResponse(
+                service_name='codeartifact',
+                operation_name='GetAuthorizationToken',
+                parsed_response={
+                    "authorizationToken": self.auth_token,
+                    "expiration": self.expiration_as_datetime
+                }
+            )
+        )
+        self.cli_runner.add_response(
+            AWSResponse(
+                service_name='codeartifact',
+                operation_name='GetRepositoryEndpoint',
+                parsed_response={"repositoryEndpoint": self.endpoint}
+            )
+        )
 
         return cmdline
+
+    def _get_nuget_commands(self):
+        nuget_index_url = self.nuget_index_url_fmt.format(
+            endpoint=self.endpoint
+        )
+
+        commands = []
+        commands.append(
+            [
+                'nuget', 'sources', 'add',
+                '-name', self.nuget_source_name,
+                '-source', nuget_index_url,
+                '-username', 'aws',
+                '-password', self.auth_token
+            ]
+        )
+        return commands
+
+    def _get_dotnet_commands(self):
+        nuget_index_url = self.nuget_index_url_fmt.format(
+            endpoint=self.endpoint
+        )
+
+        commands = []
+        commands.append(
+            [
+                'dotnet', 'nuget', 'add', 'source', nuget_index_url,
+                '--name', self.nuget_source_name,
+                '--username', 'aws',
+                '--password', self.auth_token
+            ]
+        )
+        return commands
 
     def _get_npm_commands(self, **kwargs):
         npm_cmd = 'npm.cmd' \
@@ -184,10 +234,9 @@ password: {auth_token}'''
         )
 
     def _assert_operations_called(
-        self, package_format,
-            include_domain_owner=False, include_duration_seconds=False
+        self, package_format, result,
+        include_domain_owner=False, include_duration_seconds=False
     ):
-        self.assertEqual(len(self.operations_called), 2)
 
         get_auth_token_kwargs = {
             'domain': self.domain
@@ -206,19 +255,19 @@ password: {auth_token}'''
             get_auth_token_kwargs['durationSeconds'] = self.duration
 
         self.assertEqual(
-            self.operations_called[0][0].name, 'GetAuthorizationToken'
-        )
-        self.assertEqual(
-            self.operations_called[0][1],
-            get_auth_token_kwargs
-        )
-
-        self.assertEqual(
-            self.operations_called[1][0].name, 'GetRepositoryEndpoint'
-        )
-        self.assertEqual(
-            self.operations_called[1][1],
-            get_repo_endpoint_kwargs
+            result.aws_requests,
+            [
+                AWSRequest(
+                    service_name='codeartifact',
+                    operation_name='GetAuthorizationToken',
+                    params=get_auth_token_kwargs,
+                ),
+                AWSRequest(
+                    service_name='codeartifact',
+                    operation_name='GetRepositoryEndpoint',
+                    params=get_repo_endpoint_kwargs,
+                )
+            ]
         )
 
     def _assert_subprocess_execution(self, commands):
@@ -230,6 +279,17 @@ password: {auth_token}'''
             ) for command in commands
         ]
         self.subprocess_mock.assert_has_calls(
+            expected_calls, any_order=True
+        )
+
+    def _assert_subprocess_check_output_execution(self, commands):
+        expected_calls = [
+            mock.call(
+                command,
+                stderr=subprocess.PIPE,
+            ) for command in commands
+        ]
+        self.subprocess_check_out_mock.assert_has_calls(
             expected_calls, any_order=True
         )
 
@@ -270,57 +330,305 @@ password: {auth_token}'''
             self.assertIn('password', pypi_rc.options(server))
             self.assertEqual(pypi_rc.get(server, 'password'), password)
 
+    def test_nuget_login_without_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='nuget')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_with_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='nuget', include_domain_owner=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_without_domain_owner_with_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='nuget', include_duration_seconds=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_with_domain_owner_duration_sections(self):
+        cmdline = self._setup_cmd(
+            tool='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_without_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(tool='nuget', dry_run=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    def test_nuget_login_with_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_domain_owner=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    def test_nuget_login_with_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    def test_nuget_login_with_domain_owner_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_domain_owner=True,
+            include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='dotnet')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='dotnet', include_domain_owner=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_with_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='dotnet', include_duration_seconds=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_duration_sections(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet',
+            include_domain_owner=True,
+            include_duration_seconds=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(tool='dotnet', dry_run=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet', include_domain_owner=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet', include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet', include_domain_owner=True,
+            include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
     def test_npm_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='npm')
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(package_format='npm')
-        self._assert_expiration_printed_to_stdout(stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='npm', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_npm_commands())
 
     def test_npm_login_without_domain_owner_dry_run(self):
         cmdline = self._setup_cmd(tool='npm', dry_run=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(package_format='npm')
-        self._assert_dry_run_execution(self._get_npm_commands(), stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='npm', result=result)
+        self._assert_dry_run_execution(self._get_npm_commands(), result.stdout)
 
     def test_npm_login_with_domain_owner(self):
         cmdline = self._setup_cmd(tool='npm', include_domain_owner=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='npm',
+            package_format='npm', result=result,
             include_domain_owner=True, include_duration_seconds=False
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_npm_commands())
 
     def test_npm_login_with_domain_owner_duration(self):
         cmdline = self._setup_cmd(tool='npm', include_domain_owner=True,
                                   include_duration_seconds=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='npm',
+            package_format='npm', result=result,
             include_domain_owner=True, include_duration_seconds=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_npm_commands())
 
     def test_npm_login_with_domain_owner_dry_run(self):
         cmdline = self._setup_cmd(
             tool='npm', include_domain_owner=True, dry_run=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='npm', include_domain_owner=True
+            package_format='npm', result=result, include_domain_owner=True
         )
-        self._assert_dry_run_execution(self._get_npm_commands(), stdout)
+        self._assert_dry_run_execution(self._get_npm_commands(), result.stdout)
 
     def test_npm_login_with_namespace(self):
         cmdline = self._setup_cmd(
             tool='npm', include_namespace=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(package_format='npm')
-        self._assert_expiration_printed_to_stdout(stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='npm', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(
             self._get_npm_commands(scope='@{}'.format(self.namespace))
         )
@@ -329,82 +637,87 @@ password: {auth_token}'''
         cmdline = self._setup_cmd(
             tool='npm', include_namespace=True, dry_run=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(package_format='npm')
-        self._assert_dry_run_execution(self._get_npm_commands(
-            scope='@{}'.format(self.namespace)), stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='npm', result=result)
+        self._assert_dry_run_execution(
+            self._get_npm_commands(scope='@{}'.format(self.namespace)),
+            result.stdout
+        )
 
     def test_pip_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='pip')
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='pypi'
-        )
-        self._assert_expiration_printed_to_stdout(stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='pypi', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_pip_commands())
 
     def test_pip_login_without_domain_owner_dry_run(self):
         cmdline = self._setup_cmd(tool='pip', dry_run=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='pypi'
-        )
-        self._assert_dry_run_execution(self._get_pip_commands(), stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='pypi', result=result)
+        self._assert_dry_run_execution(self._get_pip_commands(), result.stdout)
 
     def test_pip_login_with_domain_owner(self):
         cmdline = self._setup_cmd(tool='pip', include_domain_owner=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True
+            package_format='pypi', result=result, include_domain_owner=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_pip_commands())
 
     def test_pip_login_with_domain_owner_duration(self):
         cmdline = self._setup_cmd(tool='pip', include_domain_owner=True,
                                   include_duration_seconds=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True,
+            package_format='pypi', result=result, include_domain_owner=True,
             include_duration_seconds=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_pip_commands())
 
     def test_pip_login_with_domain_owner_dry_run(self):
         cmdline = self._setup_cmd(
             tool='pip', include_domain_owner=True, dry_run=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True
+            package_format='pypi', result=result, include_domain_owner=True
         )
-        self._assert_dry_run_execution(self._get_pip_commands(), stdout)
+        self._assert_dry_run_execution(self._get_pip_commands(), result.stdout)
 
     def test_pip_login_with_namespace(self):
         cmdline = self._setup_cmd(tool='pip', include_namespace=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self._assert_operations_called(
-            package_format='pypi'
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self._assert_operations_called(package_format='pypi', result=result)
+        self.assertIn(
+            'Argument --namespace is not supported for pip', result.stderr
         )
-        self.assertIn('Argument --namespace is not supported for pip', stderr)
 
     def test_pip_login_with_namespace_dry_run(self):
         cmdline = self._setup_cmd(
             tool='pip', include_namespace=True, dry_run=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self._assert_operations_called(
-            package_format='pypi'
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self._assert_operations_called(package_format='pypi', result=result)
+        self.assertIn(
+            'Argument --namespace is not supported for pip', result.stderr
         )
-        self.assertIn('Argument --namespace is not supported for pip', stderr)
 
     def test_twine_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='twine')
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='pypi'
-        )
-        self._assert_expiration_printed_to_stdout(stdout)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='pypi', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
         with open(self.test_pypi_rc_path) as f:
             test_pypi_rc_str = f.read()
 
@@ -418,10 +731,9 @@ password: {auth_token}'''
 
     def test_twine_login_without_domain_owner_dry_run(self):
         cmdline = self._setup_cmd(tool='twine', dry_run=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='pypi'
-        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='pypi', result=result)
         self.assertFalse(os.path.exists(self.test_pypi_rc_path))
         self._assert_pypi_rc_has_expected_content(
             pypi_rc_str=self._get_twine_commands(),
@@ -433,11 +745,12 @@ password: {auth_token}'''
 
     def test_twine_login_with_domain_owner(self):
         cmdline = self._setup_cmd(tool='twine', include_domain_owner=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True
+            package_format='pypi', result=result, include_domain_owner=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_expiration_printed_to_stdout(result.stdout)
 
         with open(self.test_pypi_rc_path) as f:
             test_pypi_rc_str = f.read()
@@ -453,12 +766,13 @@ password: {auth_token}'''
     def test_twine_login_with_domain_owner_duration(self):
         cmdline = self._setup_cmd(tool='twine', include_domain_owner=True,
                                   include_duration_seconds=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True,
+            package_format='pypi', result=result, include_domain_owner=True,
             include_duration_seconds=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_expiration_printed_to_stdout(result.stdout)
 
         with open(self.test_pypi_rc_path) as f:
             test_pypi_rc_str = f.read()
@@ -475,9 +789,10 @@ password: {auth_token}'''
         cmdline = self._setup_cmd(
             tool='twine', include_domain_owner=True, dry_run=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
         self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True
+            package_format='pypi', result=result, include_domain_owner=True
         )
         self.assertFalse(os.path.exists(self.test_pypi_rc_path))
         self._assert_pypi_rc_has_expected_content(
@@ -492,21 +807,21 @@ password: {auth_token}'''
         cmdline = self._setup_cmd(
             tool='twine', include_namespace=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self._assert_operations_called(
-            package_format='pypi'
-        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self._assert_operations_called(package_format='pypi', result=result)
         self.assertIn(
-            'Argument --namespace is not supported for twine', stderr)
+            'Argument --namespace is not supported for twine', result.stderr
+        )
 
     def test_twine_login_with_namespace_dry_run(self):
         cmdline = self._setup_cmd(
             tool='twine', include_namespace=True, dry_run=True
         )
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self._assert_operations_called(
-            package_format='pypi',
-        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self._assert_operations_called(package_format='pypi', result=result)
         self.assertFalse(os.path.exists(self.test_pypi_rc_path))
         self.assertIn(
-            'Argument --namespace is not supported for twine', stderr)
+            'Argument --namespace is not supported for twine', result.stderr
+        )

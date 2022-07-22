@@ -22,7 +22,7 @@ from awscli.compat import six
 def intrinsics_multi_constructor(loader, tag_prefix, node):
     """
     YAML constructor to parse CloudFormation intrinsics.
-    This will return a dictionary with key being the instrinsic name
+    This will return a dictionary with key being the intrinsic name
     """
 
     # Get the actual tag name excluding the first exclamation
@@ -80,6 +80,12 @@ def _dict_constructor(loader, node):
     return OrderedDict(loader.construct_pairs(node))
 
 
+class SafeLoaderWrapper(yaml.SafeLoader):
+    """Isolated safe loader to allow for customizations without global changes.
+    """
+
+    pass
+
 def yaml_parse(yamlstr):
     """Parse a yaml string"""
     try:
@@ -88,10 +94,11 @@ def yaml_parse(yamlstr):
         # json parser.
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
-        yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
-        yaml.SafeLoader.add_multi_constructor(
-            "!", intrinsics_multi_constructor)
-        return yaml.safe_load(yamlstr)
+        loader = SafeLoaderWrapper
+        loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
+                               _dict_constructor)
+        loader.add_multi_constructor("!", intrinsics_multi_constructor)
+        return yaml.load(yamlstr, loader)
 
 
 class FlattenAliasDumper(yaml.SafeDumper):

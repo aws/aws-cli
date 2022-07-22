@@ -1,23 +1,21 @@
 **Counting Open Workflow Executions**
 
-You can use ``swf count-open-workflow-executions`` to retrieve the number of open workflow executions for a given
-domain. You can specify filters to count specific classes of executions.
+You can use ``swf count-open-workflow-executions`` to retrieve the number of open workflow executions for a given domain. You can specify filters to count specific classes of executions.
 
-The ``--domain`` and ``--start-time-filter`` arguments are required. All other arguments are optional.
+The ``--domain`` and ``--start-time-filter`` arguments are required. All other arguments are optional. ::
 
-Here is a basic example::
+    aws swf count-open-workflow-executions \
+        --domain DataFrobtzz \
+        --start-time-filter "{ \"latestDate\" : 1377129600, \"oldestDate\" : 1370044800 }"
 
-  aws swf count-open-workflow-executions --domain DataFrobtzz --start-time-filter "{ \"latestDate\" : 1377129600, \"oldestDate\" : 1370044800 }"
+Output::
 
-Result::
+    {
+        "count": 4,
+        "truncated": false
+    }
 
-  {
-    "count": 4,
-    "truncated": false
-  }
-
-If "truncated" is ``true``, then "count" represents the maximum number that can be returned by Amazon SWF. Any further
-results are truncated.
+If "truncated" is ``true``, then "count" represents the maximum number that can be returned by Amazon SWF. Any further results are truncated.
 
 To reduce the number of results returned, you can:
 
@@ -28,5 +26,5 @@ To reduce the number of results returned, you can:
 
 For more information, see `CountOpenWorkflowExecutions`_ in the *Amazon Simple Workflow Service API Reference*
 
-.. _`CountOpenWorkflowExecutions`: http://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountOpenWorkflowExecutions.html
+.. _`CountOpenWorkflowExecutions`: https://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountOpenWorkflowExecutions.html
 

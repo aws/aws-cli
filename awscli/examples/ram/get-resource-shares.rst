@@ -1,6 +1,6 @@
-**To list your resource shares**
+**Example 1: To list resource shares you own and share with others**
 
-The following ``get-resource-shares`` example lists your resource shares. ::
+The following ``get-resource-shares`` example lists the resource shares that created and are sharing with others. ::
 
     aws ram get-resource-shares \
         --resource-owner SELF
@@ -34,4 +34,17 @@ Output::
                 "lastUpdatedTime": 1565295733.282
             }
         ]
+    }
+
+**Example 2: To list resource shares owned by others and shared with you**
+
+The following ``get-resource-shares`` example lists the resource shares that others created and shared with you. In this example, there are none. ::
+
+    aws ram get-resource-shares \
+        --resource-owner OTHER-ACCOUNTS
+
+Output::
+
+    {
+        "resourceShares": []
     }

@@ -4,7 +4,7 @@ The following ``associate-approval-rule-template-with-repository`` example assoc
 
     aws codecommit associate-approval-rule-template-with-repository \
         --repository-name MyDemoRepo  \
-        --approval-rule-template-name 2-approver-rule-for-master
+        --approval-rule-template-name 2-approver-rule-for-main
 
 This command produces no output.
 

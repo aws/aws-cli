@@ -2,7 +2,7 @@
 
 The following ``untag-queue`` example removes a cost allocation tag from the specified Amazon SQS queue. ::
 
-    aws sqs tag-queue \
+    aws sqs untag-queue \
         --queue-url https://sqs.us-west-2.amazonaws.com/123456789012/MyQueue \
         --tag-keys "Priority"
 

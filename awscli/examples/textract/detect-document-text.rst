@@ -1,10 +1,19 @@
 **To detect text in a document**
 
-The following ``detect-document-text`` The following example shows how to detect text in a document. ::
+The following ``detect-document-text`` The following example shows how to detect text in a document. 
 
-    aws textract detect-document-text --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}'
+Linux/macOS::
 
-Output ::
+    aws textract detect-document-text \
+        --document '{"S3Object":{"Bucket":"bucket","Name":"document"}}'
+
+Windows::
+
+    aws textract detect-document-text \
+        --document "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
+        --region region-name
+
+Output::
 
     {
         "Blocks": [

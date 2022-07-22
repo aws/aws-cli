@@ -28,8 +28,9 @@ import shutil
 import copy
 import logging
 
+import pytest
+
 from awscli.compat import six, urlopen
-from nose.plugins.attrib import attr
 import botocore.session
 
 from awscli.testutils import unittest, get_stdout_encoding
@@ -179,7 +180,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         # And verify that the object no longer exists in the from_bucket.
         self.assertTrue(self.key_not_exists(from_bucket, key_name='foo.txt'))
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_mv_s3_to_s3_multipart(self):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
@@ -241,7 +242,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         self.assertTrue(self.key_not_exists(from_bucket, file_name))
         self.assertTrue(self.key_exists(to_bucket, file_name))
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_mv_with_large_file(self):
         bucket_name = _SHARED_BUCKET
         # 40MB will force a multipart upload.
@@ -373,7 +374,7 @@ class TestCp(BaseS3IntegrationTest):
             self.get_key_contents(bucket_name, key_name='foo.txt'),
             'this is foo.txt')
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_cp_s3_s3_multipart(self):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
@@ -398,7 +399,7 @@ class TestCp(BaseS3IntegrationTest):
             self.content_type_for_key(bucket_name, key_name='bar.jpeg'),
             'image/jpeg')
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_download_large_file(self):
         # This will force a multipart download.
         bucket_name = _SHARED_BUCKET
@@ -411,7 +412,7 @@ class TestCp(BaseS3IntegrationTest):
         self.assertEqual(os.path.getsize(local_foo_txt),
                          len(foo_contents.getvalue()))
 
-    @attr('slow')
+    @pytest.mark.slow
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = _SHARED_BUCKET
@@ -441,7 +442,7 @@ class TestCp(BaseS3IntegrationTest):
         # about this test is that it does not hang.
         self.assertIn(process.returncode, [0, 1, -2])
 
-    @attr('slow')
+    @pytest.mark.slow
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_cleans_up_aborted_uploads(self):
         bucket_name = _SHARED_BUCKET
@@ -528,7 +529,7 @@ class TestCp(BaseS3IntegrationTest):
         response = self.head_object(bucket_name, 'foo.txt')
         self.assertEqual(response['WebsiteRedirectLocation'], website_redirect)
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_copy_large_file_signature_v4(self):
         # Just verify that we can upload a large file to a region
         # that uses signature version 4.
@@ -900,7 +901,7 @@ class TestSourceRegion(BaseS3IntegrationTest):
             self.key_not_exists(
                 bucket_name=self.src_bucket, key_name='foo.txt'))
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_mv_large_file_region(self):
         foo_txt = self.files.create_file('foo.txt', 'a' * 1024 * 1024 * 10)
         p = aws('s3 cp %s s3://%s/foo.txt --region %s' %
@@ -925,7 +926,7 @@ class TestWarnings(BaseS3IntegrationTest):
         bucket_name = _SHARED_BUCKET
         filename = os.path.join(self.files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, bucket_name))
-        # If the local path provided by the user is nonexistant for an
+        # If the local path provided by the user is nonexistent for an
         # upload, this should error out.
         self.assertEqual(p.rc, 255, p.stderr)
         self.assertIn('The user-provided path %s does not exist.' %
@@ -1418,7 +1419,7 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
                                  peak_memory / 1024.0 / 1024.0))
             self.fail(failure_message)
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_transfer_single_large_file(self):
         # 40MB will force a multipart upload.
         bucket_name = _SHARED_BUCKET
@@ -1442,7 +1443,7 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
     # point where this test fails on other distros, so for now we're disabling
     # the test on RHEL until we come up with a better way to collect
     # memory usage.
-    @attr('slow')
+    @pytest.mark.slow
     @unittest.skipIf(_running_on_rhel(),
                      'Streaming memory tests no supported on RHEL.')
     def test_stream_large_file(self):
@@ -1479,7 +1480,7 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
         full_command = 's3 cp s3://%s/foo.txt - > %s' % (bucket_name, foo_txt)
         p = aws(full_command, collect_memory=True)
         self.assert_no_errors(p)
-        # Use the ususal bar for maximum memory usage since a streaming
+        # Use the usual bar for maximum memory usage since a streaming
         # download's memory usage should be comparable to non-streaming
         # transfers.
         self.assert_max_memory_used(p, self.max_mem_allowed, full_command)
@@ -1570,8 +1571,7 @@ class TestIncludeExcludeFilters(BaseS3IntegrationTest):
                 "--exclude '*' --include 'test/*' --recursive"
                 % self.files.rootdir)
         self.assert_no_errors(p)
-        self.assertRegexpMatches(p.stdout,
-                                 r'\(dryrun\) upload:.*test/foo.txt.*')
+        self.assertRegex(p.stdout, r'\(dryrun\) upload:.*test/foo.txt.*')
 
     def test_s3_filtering(self):
         # Should behave the same as local file filtering.
@@ -1591,7 +1591,7 @@ class TestIncludeExcludeFilters(BaseS3IntegrationTest):
         p = aws("s3 rm s3://%s/ --dryrun --exclude '*.txt' --recursive"
                 % bucket_name)
         self.assert_no_errors(p)
-        self.assertRegexpMatches(p.stdout, r'\(dryrun\) delete:.*baz.jpg.*')
+        self.assertRegex(p.stdout, r'\(dryrun\) delete:.*baz.jpg.*')
         self.assertNotIn(p.stdout, 'bar.txt')
         self.assertNotIn(p.stdout, 'foo.txt')
 
@@ -1730,7 +1730,7 @@ class TestStreams(BaseS3IntegrationTest):
         self.assertEqual(self.get_key_contents(bucket_name, 'stream'),
                          unicode_str)
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_multipart_upload(self):
         """
         This tests the ability to multipart upload streams from stdin.
@@ -1776,11 +1776,11 @@ class TestStreams(BaseS3IntegrationTest):
         self.assert_no_errors(p)
         self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
 
-    @attr('slow')
+    @pytest.mark.slow
     def test_multipart_download(self):
         """
         This tests the ability to multipart download streams to stdout.
-        The data has some unicode in it to avoid having to do a seperate
+        The data has some unicode in it to avoid having to do a separate
         multipart download test just for unicode.
         """
         bucket_name = _SHARED_BUCKET

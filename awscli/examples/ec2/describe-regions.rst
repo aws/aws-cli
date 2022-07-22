@@ -96,11 +96,14 @@ Output::
         ]
     }
 
+For more information, see `Regions and Zones <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To describe enabled Regions with an endpoint whose name contains a specific string**
 
 The following ``describe-regions`` example describes all Regions that you have enabled that have the string "us" in the endpoint. ::
 
-    aws ec2 describe-regions --filters "Name=endpoint,Values=*us*"
+    aws ec2 describe-regions \
+        --filters "Name=endpoint,Values=*us*"
 
 Output::
 
@@ -121,13 +124,15 @@ Output::
             {
                 "Endpoint": "ec2.us-west-2.amazonaws.com",
                 "RegionName": "us-west-2"
-            },
+            }
         ]
     }
 
-**To describe all Regions**
+For more information, see `Regions and Zones <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`__ in the *Amazon EC2 User Guide*.
 
-The following ``describe-regions`` example describes all available Regions, including opt-in Regions like HKG and BAH. For a description of opt-in Regions, see `Available Regions <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions>`__ in the *Amazon EC2 User Guide*. ::
+**Example 3: To describe all Regions**
+
+The following ``describe-regions`` example describes all available Regions, including Regions that are disabled. ::
 
     aws ec2 describe-regions \
         --all-regions
@@ -234,7 +239,9 @@ Output::
         ]
     }
 
-**To list the Region names only**
+For more information, see `Regions and Zones <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`__ in the *Amazon EC2 User Guide*.
+
+**Example 4: To list the Region names only**
 
 The following ``describe-regions`` example uses the ``--query`` parameter to filter the output and return only the names of the Regions as text. ::
 
@@ -264,3 +271,5 @@ Output::
     us-east-2
     us-west-1
     us-west-2
+
+For more information, see `Regions and Zones <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`__ in the *Amazon EC2 User Guide*.

@@ -81,4 +81,4 @@ Output::
 
 To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ .
 
-For more information, see `Transferring Registration for a Domain to Amazon Route 53 <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-to-route-53.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Transferring Registration for a Domain to Amazon Route 53 <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-to-route-53.html>`__ in the *Amazon Route 53 Developer Guide*.

@@ -7,14 +7,15 @@ The following ``describe-domain-configuration`` example displays details about t
 
 Output::
 
-    {    
-        "domainConfigurationName": "additionalDataDomain",   
-        "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/additionalDataDomain/dikMh",   
-        "domainName": "d01645582h24k4we2vblw-ats.iot.us-west-2.amazonaws.com",   
-        "serverCertificates": [],   
-        "domainConfigurationStatus": "ENABLED",  
-        "serviceType": "DATA",  
-        "domainType": "AWS_MANAGED"
+    {
+        "domainConfigurationName": "additionalDataDomain",
+        "domainConfigurationArn": "arn:aws:iot:us-east-1:758EXAMPLE143:domainconfiguration/additionalDataDomain/norpw",
+        "domainName": "d055exampleed74y71zfd-ats.beta.us-east-1.iot.amazonaws.com",
+        "serverCertificates": [],
+        "domainConfigurationStatus": "ENABLED",
+        "serviceType": "DATA",
+        "domainType": "AWS_MANAGED",
+        "lastStatusChangeDate": 1601923783.774
     }
 
 For more information, see `Configurable Endpoints <https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-configurable-aws.html>`__ in the *AWS IoT Developer Guide*.

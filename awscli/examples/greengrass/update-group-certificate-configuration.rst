@@ -1,6 +1,6 @@
-**To update the expiry of a group's certificate authority (CA)**
+**To update the expiry of a group's certificates**
 
-The following ``update-group-certificate-configuration`` example sets a 10-day expiry for the CA of the specified group. ::
+The following ``update-group-certificate-configuration`` example sets a 10-day expiry for the certificates generated for the specified group. ::
 
     aws greengrass update-group-certificate-configuration \
         --group-id "8eaadd72-ce4b-4f15-892a-0cc4f3a343f1" \

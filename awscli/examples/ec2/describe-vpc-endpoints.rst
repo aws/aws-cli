@@ -1,6 +1,6 @@
 **To describe your VPC endpoints**
 
-The following ``describe-vpc-endpoints`` example displays details for all of your endpoints. ::
+The following ``describe-vpc-endpoints`` example displays details for all of your VPC endpoints. ::
 
     aws ec2 describe-vpc-endpoints
 
@@ -65,8 +65,25 @@ Output::
                     }
                 ],
                 "OwnerId": "123456789012"
+            },
+            {
+                "VpcEndpointId": "vpce-aabbaabbaabbaabba",
+                "VpcEndpointType": "GatewayLoadBalancer",
+                "VpcId": "vpc-111122223333aabbc",
+                "ServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-123123a1c43abc123",
+                "State": "available",
+                "SubnetIds": [
+                    "subnet-0011aabbcc2233445"
+                ],
+                "RequesterManaged": false,
+                "NetworkInterfaceIds": [
+                    "eni-01010120203030405"
+                ],
+                "CreationTimestamp": "2020-11-11T08:06:03.522Z",
+                "Tags": [],
+                "OwnerId": "123456789012"
             }
         ]
     }
 
-For more information, see `Modifying a Gateway Endpoint <https://docs.aws.amazon.com/vpc/latest/userguide/vpce-gateway.html#modify-gateway-endpoint>`__ in the *AWS VPC User Guide*.
+For more information, see `VPC endpoints <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-endpoints.html>`__ in the *Amazon VPC User Guide*.

@@ -21,10 +21,7 @@ from botocore.exceptions import NoCredentialsError
 
 class DescribeCluster(Command):
     NAME = 'describe-cluster'
-    DESCRIPTION = ('Provides  cluster-level details including status, hardware'
-                   ' and software configuration, VPC settings, bootstrap'
-                   ' actions, instance groups and so on. For information about'
-                   ' the cluster steps, see <code>list-steps</code>.')
+    DESCRIPTION = helptext.DESCRIBE_CLUSTER_DESCRIPTION
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID}
@@ -44,14 +41,6 @@ class DescribeCluster(Command):
             describe_cluster = describe_cluster_result['Cluster']
             if describe_cluster.get('InstanceCollectionType') == constants.INSTANCE_FLEET_TYPE:
                 is_fleet_based_cluster = True
-
-            if 'Ec2InstanceAttributes' in describe_cluster:
-                ec2_instance_attr_keys = \
-                    describe_cluster['Ec2InstanceAttributes'].keys()
-                ec2_instance_attr = \
-                    describe_cluster['Ec2InstanceAttributes']
-        else:
-            ec2_instance_attr_keys = {}
 
         if is_fleet_based_cluster:
             list_instance_fleets_result = self._call(

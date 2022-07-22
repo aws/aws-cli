@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 
 import difflib
-import mock
-import unittest
 
+from awscli.testutils import mock, unittest
 from awscli.compat import six
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter

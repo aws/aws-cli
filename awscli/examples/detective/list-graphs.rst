@@ -1,6 +1,6 @@
-**To view a list of behavior graphs that your account is the master for**
+**To view a list of behavior graphs that your account is the administrator for**
 
-The following ``list-graphs`` example retrieves the behavior graphs that the calling account is the master for within the current Region. ::
+The following ``list-graphs`` example retrieves the behavior graphs that the calling account is the administrator for within the current Region. ::
 
     aws detective list-graphs
 

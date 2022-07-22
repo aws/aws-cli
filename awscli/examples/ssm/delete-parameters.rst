@@ -17,4 +17,4 @@ Output::
         ]
     }
 
-For more information, see `Working with Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-working.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Working with Parameter Store <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-working-with.html>`__ in the *AWS Systems Manager User Guide*.

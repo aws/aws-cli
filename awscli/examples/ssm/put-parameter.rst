@@ -15,6 +15,8 @@ Output::
         "Tier": "Standard"
     }
 
+For more information, see `Create a Systems Manager parameter (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html>`__, 'Managing parameter tiers <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__, and `Working with parameter policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 2: To create an advanced parameter**
 
 The following ``put-parameter`` example creates an advanced parameter. ::
@@ -32,6 +34,8 @@ Output::
         "Version": 1,
         "Tier": "Advanced"
     }
+
+For more information, see `Create a Systems Manager parameter (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html>`__, 'Managing parameter tiers <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__, and `Working with parameter policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 3: To convert a standard parameter to an advanced parameter**
 
@@ -51,6 +55,8 @@ Output::
         "Tier": "Advanced"
     }
 
+For more information, see `Create a Systems Manager parameter (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html>`__, 'Managing parameter tiers <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__, and `Working with parameter policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.
+
 **Example 4: To create a parameter with a policy attached**
 
 The following ``put-parameter`` example creates an advanced parameter with a parameter policy attached. ::
@@ -68,6 +74,8 @@ Output::
         "Version": 1,
         "Tier": "Advanced"
     }
+
+For more information, see `Create a Systems Manager parameter (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html>`__, 'Managing parameter tiers <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__, and `Working with parameter policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 5: To add a policy to an existing parameter**
 
@@ -88,4 +96,4 @@ Output::
         "Tier": "Advanced"
     }
 
-For more information, see `About Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-about-examples.html>`__, About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__, and `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Create a Systems Manager parameter (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html>`__, 'Managing parameter tiers <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__, and `Working with parameter policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.

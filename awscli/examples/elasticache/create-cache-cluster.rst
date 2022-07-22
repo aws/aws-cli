@@ -3,10 +3,11 @@
 The following ``create-cache-cluster`` example creates a cache cluster using the Redis engine. ::
 
     aws elasticache create-cache-cluster \
-        -- cache-cluster-id "cluster-test" \
+        --cache-cluster-id "cluster-test" \
         --engine redis \
         --cache-node-type cache.m5.large \
         --num-cache-nodes 1
+
 
 Output::
 

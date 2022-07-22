@@ -1,6 +1,6 @@
 **To start a migration**
 
-The following ``start-migratio`` migrates your data from self-hosted Redis on Amazon EC2 to Amazon ElastiCache, using the Redis engine. ::
+The following ``start-migration`` migrates your data from self-hosted Redis on Amazon EC2 to Amazon ElastiCache, using the Redis engine. ::
 
     aws elasticache start-migration \
        --replication-group-id test \

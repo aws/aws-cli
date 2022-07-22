@@ -1,10 +1,23 @@
 **To start analyzing text in a multi-page document**
 
-The following ``start-document-analysis`` example shows how to start asynchronous analysis of text in a multi-page document. ::
+The following ``start-document-analysis`` example shows how to start asynchronous analysis of text in a multi-page document. 
 
-    aws textract start-document-analysis --document-location '{"S3Object":{"Bucket":"reescheastv","Name":"doctest.png"}}' --feature-types '["TABLES","FORMS"]' --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
+Linux/macOS::
 
-Output ::
+    aws textract start-document-analysis \
+        --document-location '{"S3Object":{"Bucket":"bucket","Name":"document"}}' \
+        --feature-types '["TABLES","FORMS"]' \
+        --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
+
+Windows::
+
+    aws textract start-document-analysis \
+        --document-location "{\"S3Object\":{\"Bucket\":\"bucket\",\"Name\":\"document\"}}" \
+        --feature-types "[\"TABLES\", \"FORMS\"]" \
+        --region region-name \
+        --notification-channel "SNSTopicArn=arn:snsTopic,RoleArn=roleArn"
+
+Output::
 
     {
         "JobId": "df7cf32ebbd2a5de113535fcf4d921926a701b09b4e7d089f3aebadb41e0712b"

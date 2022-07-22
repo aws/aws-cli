@@ -41,6 +41,8 @@ necessary to maintain backwards compatibility.  This is done in the
 import re
 import string
 
+from awscli.utils import is_document_type
+
 
 _EOF = object()
 
@@ -69,7 +71,7 @@ class ShorthandParseError(Exception):
             num_spaces = self.index - last_newline - 1
         if '\n' in self.value[self.index:]:
             # If there's newline in the remaining, divide value
-            # into consumed and remainig
+            # into consumed and remaining
             # foo==bar,\n
             #     ^
             # bar=baz
@@ -107,10 +109,14 @@ class DuplicateKeyInObjectError(ShorthandParseError):
     def _construct_msg(self):
         msg = (
             "Second instance of key \"%s\" encountered for input:\n%s\n"
-            "This is often because there is a preceeding \",\" instead of a "
+            "This is often because there is a preceding \",\" instead of a "
             "space."
         ) % (self.key, self._error_location())
         return msg
+
+
+class DocumentTypesNotSupportedError(Exception):
+    pass
 
 
 class ShorthandParser(object):
@@ -156,7 +162,7 @@ class ShorthandParser(object):
             parser.parse('a=b')  # {'a': 'b'}
             parser.parse('a=b,c')  # {'a': ['b', 'c']}
 
-        :tpye value: str
+        :type value: str
         :param value: Any value that needs to be parsed.
 
         :return: Parsed value, which will be a dictionary.
@@ -418,6 +424,25 @@ class ModelVisitor(object):
 
 
 class BackCompatVisitor(ModelVisitor):
+    def _visit_structure(self, parent, shape, name, value):
+        self._raise_if_document_type_found(value, shape)
+        if not isinstance(value, dict):
+            return
+        for member_name, member_shape in shape.members.items():
+            try:
+                self._visit(value, member_shape, member_name,
+                            value.get(member_name))
+            except DocumentTypesNotSupportedError:
+                # Catch and propagate the document type error to a better
+                # error message as when the original error is thrown there is
+                # no reference to the original member that used the document
+                # type.
+                raise ShorthandParseError(
+                    'Shorthand syntax does not support document types. Use '
+                    'JSON input for top-level argument to specify nested '
+                    'parameter: %s' % member_name
+                )
+
     def _visit_list(self, parent, shape, name, value):
         if not isinstance(value, list):
             # Convert a -> [a] because they specified
@@ -443,3 +468,14 @@ class BackCompatVisitor(ModelVisitor):
                 parent[name] = True
             elif value.lower() == 'false':
                 parent[name] = False
+
+    def _raise_if_document_type_found(self, value, member_shape):
+        # Shorthand syntax does not have support for explicit typing and
+        # instead relies on the model to do type coercion. However, document
+        # types are unmodeled. So using short hand syntax on a document type
+        # would result in all values being typed as strings (e.g. 1 -> "1",
+        # null -> "null") which is probably not desired. So blocking the use
+        # of document types allows us to add proper support for them in the
+        # future in a backwards compatible way.
+        if value is not None and is_document_type(member_shape):
+            raise DocumentTypesNotSupportedError()

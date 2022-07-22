@@ -1,43 +1,133 @@
-**To create a launch configuration**
+**Example 1: To create a launch configuration**
 
-This example creates a launch configuration::
+This example creates a simple launch configuration. ::
 
-    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large
 
-This example creates a launch configuration with a key pair and a bootstrapping script::
+This command produces no output.
 
-    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --key-name my-key-pair --image-id ami-c6169af6 --instance-type m1.small --user-data file://myuserdata.txt
+For more information, see `Creating a launch configuration <https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-config.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-This example creates a launch configuration based on an existing instance. In addition, it also specifies launch configuration attributes such as a security group, tenancy, Amazon EBS optimization, and a bootstrapping script::
+**Example 2: To create a launch configuration with a security group, key pair, and bootrapping script**
 
-    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --key-name my-key-pair --instance-id i-7e13c876 --security-groups sg-eb2af88e --instance-type m1.small --user-data file://myuserdata.txt --instance-monitoring Enabled=true --no-ebs-optimized --no-associate-public-ip-address --placement-tenancy dedicated --iam-instance-profile my-autoscaling-role
+This example creates a launch configuration with a security group, a key pair, and a bootrapping script contained in the user data. ::
 
-Add the following parameter to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100.
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --security-groups sg-eb2af88example \
+        --key-name my-key-pair \
+        --user-data file://myuserdata.txt
 
-Parameter::
+This command produces no output.
 
-    --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+For more information, see `Creating a launch configuration <https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-config.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-Add the following parameter to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``.
+**Example 3: To create a launch configuration with an IAM role**
 
-Parameter::
+This example creates a launch configuration with the instance profile name of an IAM role. ::
 
-    --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --iam-instance-profile my-autoscaling-role 
 
-Add the following parameter to omit a device included on the instance (for example, ``/dev/sdf``).
+This command produces no output.
 
-Parameter::
+For more information, see `IAM role for applications that run on Amazon EC2 instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/us-iam-role.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-    --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+**Example 4: To create a launch configuration with detailed monitoring enabled**
 
-For more information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
+This example creates a launch configuration with EC2 detailed monitoring enabled, which sends EC2 metrics to CloudWatch in 1-minute periods. ::
 
-This example creates a launch configuration that uses Spot Instances::
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --instance-monitoring Enabled=true 
 
-    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-01e24be29428c15b2 --instance-type c5.large --spot-price "0.50"
+This command produces no output.
 
-For more information, see `Launching Spot Instances in Your Auto Scaling Group`_ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Configuring monitoring for Auto Scaling instances  <https://docs.aws.amazon.com/autoscaling/ec2/userguide/enable-as-instance-metrics.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Quoting Strings`: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#quoting-strings
+**Example 5: To create a launch configuration that launches Spot Instances**
 
-.. _`Launching Spot Instances in Your Auto Scaling Group`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-launch-spot-instances.html
+This example creates a launch configuration that uses Spot Instances as the only purchase option. ::
+
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --spot-price "0.50"
+
+This command produces no output.
+
+For more information, see `Requesting Spot Instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-launch-spot-instances.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+
+**Example 6: To create a launch configuration using an EC2 instance**
+
+This example creates a launch configuration based on the attributes of an existing instance. It overrides the placement tenancy and whether a public IP address is set by including the ``--placement-tenancy`` and ``--no-associate-public-ip-address`` options. ::
+
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc-from-instance \
+        --instance-id i-0123a456700123456 \
+        --instance-type m5.large \
+        --no-associate-public-ip-address \
+        --placement-tenancy dedicated 
+
+This command produces no output.
+
+For more information, see `Creating a launch configuration using an EC2 instance <https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-lc-with-instanceID.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+
+**Example 7: To create a launch configuration with a block device mapping for an Amazon EBS volume**
+
+This example creates a launch configuration with a block device mapping for an Amazon EBS ``gp3`` volume with the device name ``/dev/sdh`` and a volume size of 20. ::
+
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --block-device-mappings '[{"DeviceName":"/dev/sdh","Ebs":{"VolumeSize":20,"VolumeType":"gp3"}}]'
+
+This command produces no output.
+
+For more information, see `EBS <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_Ebs.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
+
+For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
+
+**Example 8: To create a launch configuration with a block device mapping for an instance store volume**
+
+This example creates a launch configuration with ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``. ::
+
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --block-device-mappings '[{"DeviceName":"/dev/sdc","VirtualName":"ephemeral1"}]'
+
+This command produces no output.
+
+For more information, see `BlockDeviceMapping <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_BlockDeviceMapping.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
+
+For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
+
+**Example 9: To create a launch configuration and suppress a block device from attaching at launch time**
+
+This example creates a launch configuration that suppresses a block device specified by the block device mapping of the AMI (for example, ``/dev/sdf``). ::
+
+    aws autoscaling create-launch-configuration \
+        --launch-configuration-name my-lc \
+        --image-id ami-04d5cc9b88example \
+        --instance-type m5.large \
+        --block-device-mappings '[{"DeviceName":"/dev/sdf","NoDevice":""}]'
+
+This command produces no output.
+
+For more information, see `BlockDeviceMapping <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_BlockDeviceMapping.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
+
+For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 

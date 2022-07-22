@@ -3,7 +3,7 @@
 The following ``create-group`` example creates a group named ``cli-created-group``. ::
 
     aws greengrass create-group \
-        cli-created-group
+        --name cli-created-group
 
 Output::
 
@@ -14,3 +14,5 @@ Output::
         "LastUpdatedTimestamp": "2019-06-25T18:07:17.688Z",
         "Name": "cli-created-group"
     }
+
+For more information, see `Overview of the AWS IoT Greengrass Group Object Model <https://docs.aws.amazon.com/greengrass/latest/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

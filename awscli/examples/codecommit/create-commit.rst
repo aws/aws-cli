@@ -1,8 +1,11 @@
 **To create a commit**
 
-The following ``create-commit`` example demonstrates how to create an initial commit for a repository that adds a ``readme.md`` file to a repository named ``MyDemoRepo`` in the ``master`` branch. ::
+The following ``create-commit`` example demonstrates how to create an initial commit for a repository that adds a ``readme.md`` file to a repository named ``MyDemoRepo`` in the ``main`` branch. ::
 
-    aws codecommit create-commit --repository-name MyDemoRepo --branch-name master --put-files "filePath=readme.md,fileContent='Welcome to our team repository.'"
+    aws codecommit create-commit \
+        --repository-name MyDemoRepo \
+        --branch-name main \
+        --put-files "filePath=readme.md,fileContent='Welcome to our team repository.'"
 
 Output::
 
@@ -20,6 +23,4 @@ Output::
         "filesUpdated": []
     }
 
-For more information, see `Create a Commit in AWS CodeCommit`_ in the *AWS CodeCommit User Guide*.
-
-.. _`Create a Commit in AWS CodeCommit`: https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-commit.html#how-to-create-commit-cli
+For more information, see `Create a Commit in AWS CodeCommit <https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-commit.html#how-to-create-commit-cli>`__ in the *AWS CodeCommit User Guide*.

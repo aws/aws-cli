@@ -1,10 +1,9 @@
 **To list endpoint groups**
 
-The following ``list-endpoint-groups`` example lists the endpoint groups for a listener. ::
+The following ``list-endpoint-groups`` example lists the endpoint groups for a listener. This listener has two endpoint groups. ::
 
-    aws globalaccelerator list-endpoint-groups \
-            --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234 \
-            --region us-west-2
+    aws globalaccelerator --region us-west-2 list-endpoint-groups \
+        --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234
 
 Output::
 

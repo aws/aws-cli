@@ -76,8 +76,9 @@ def resolve_verify_ssl(parsed_args, session, **kwargs):
         if not arg_value:
             verify = False
         else:
-            verify = getattr(parsed_args, 'ca_bundle', None) or \
-                        session.get_config_variable('ca_bundle')
+            # in case if `ca_bundle` not in args it'll be retrieved
+            # from config on session.client creation step
+            verify = getattr(parsed_args, 'ca_bundle', None)
         setattr(parsed_args, arg_name, verify)
 
 

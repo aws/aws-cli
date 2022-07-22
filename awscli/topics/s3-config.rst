@@ -82,6 +82,12 @@ could instead run these commands::
     $ aws configure set default.s3.use_accelerate_endpoint true
     $ aws configure set default.s3.addressing_style path
 
+To programmatically set these values for a profile other than the default
+profile the ``--profile`` flag can be provided. For example, to set
+configuration for a profile named ``test-profile`` you could run a command like
+this one::
+
+    $ aws configure set s3.max_concurrent_requests 20 --profile test-profile
 
 max_concurrent_requests
 -----------------------

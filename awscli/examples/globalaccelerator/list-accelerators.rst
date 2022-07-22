@@ -1,13 +1,13 @@
 **To list your accelerators** 
 
-The following ``list-accelerators`` example lists the accelerators in your account. ::
+The following ``list-accelerators`` example lists the accelerators in your AWS account. This account has two accelerators. ::
 
-    aws globalaccelerator list-accelerators
+    aws globalaccelerator list-accelerators 
 
 Output::
 
     {
-    "Accelerators": [
+        "Accelerators": [
             {
                 "AcceleratorArn": "arn:aws:globalaccelerator::012345678901:accelerator/5555abcd-abcd-5555-abcd-5555EXAMPLE1",
                 "Name": "TestAccelerator",

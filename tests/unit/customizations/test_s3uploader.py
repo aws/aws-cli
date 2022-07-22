@@ -11,13 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import mock
 import random
 import string
 import tempfile
 import hashlib
 import shutil
-from mock import patch, Mock
 
 import botocore
 import botocore.session
@@ -26,7 +24,7 @@ from botocore.stub import Stubber
 from s3transfer import S3Transfer
 
 from awscli.compat import OrderedDict
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.s3uploader import S3Uploader
 from awscli.customizations.s3uploader import NoSuchBucketError
 
@@ -40,8 +38,8 @@ class TestS3Uploader(unittest.TestCase):
         self.s3client = botocore.session.get_session().create_client(
                 's3', region_name=region)
         self.s3client_stub = Stubber(self.s3client)
-        self.transfer_manager_mock = Mock(spec=S3Transfer)
-        self.transfer_manager_mock.upload = Mock()
+        self.transfer_manager_mock = mock.Mock(spec=S3Transfer)
+        self.transfer_manager_mock.upload = mock.Mock()
         self.bucket_name = "bucketname"
         self.prefix = None
 
@@ -49,8 +47,8 @@ class TestS3Uploader(unittest.TestCase):
             self.s3client, self.bucket_name, self.prefix, None, False,
             self.transfer_manager_mock)
 
-    @patch('os.path.getsize', return_value=1)
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch('os.path.getsize', return_value=1)
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_successful(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
@@ -63,14 +61,14 @@ class TestS3Uploader(unittest.TestCase):
             self.bucket_name, prefix, remote_path)
 
         # Setup mock to fake that file does not exist
-        s3uploader.file_exists = Mock()
+        s3uploader.file_exists = mock.Mock()
         s3uploader.file_exists.return_value = False
         # set the metadata used by the uploader when uploading
         artifact_metadata = {"key": "val"}
         s3uploader.artifact_metadata = artifact_metadata
 
         upload_url = s3uploader.upload(file_name, remote_path)
-        self.assertEquals(expected_upload_url, upload_url)
+        self.assertEqual(expected_upload_url, upload_url)
 
         expected_extra_args = {
             # expected encryption args
@@ -83,8 +81,8 @@ class TestS3Uploader(unittest.TestCase):
                 expected_extra_args, mock.ANY)
         s3uploader.file_exists.assert_called_once_with(remote_path_with_prefix)
 
-    @patch('os.path.getsize', return_value=1)
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch('os.path.getsize', return_value=1)
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_successful_odict(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
@@ -97,14 +95,14 @@ class TestS3Uploader(unittest.TestCase):
             self.bucket_name, prefix, remote_path)
 
         # Setup mock to fake that file does not exist
-        s3uploader.file_exists = Mock()
+        s3uploader.file_exists = mock.Mock()
         s3uploader.file_exists.return_value = False
         # set the metadata used by the uploader when uploading
         artifact_metadata = OrderedDict({"key": "val"})
         s3uploader.artifact_metadata = artifact_metadata
 
         upload_url = s3uploader.upload(file_name, remote_path)
-        self.assertEquals(expected_upload_url, upload_url)
+        self.assertEqual(expected_upload_url, upload_url)
 
         expected_extra_args = {
             # expected encryption args
@@ -117,13 +115,13 @@ class TestS3Uploader(unittest.TestCase):
                 expected_extra_args, mock.ANY)
         s3uploader.file_exists.assert_called_once_with(remote_path_with_prefix)
 
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_idempotency(self, progress_percentage_mock):
         file_name = "filename"
         remote_path = "remotepath"
 
         # Setup mock to fake that file was already uploaded
-        self.s3uploader.file_exists = Mock()
+        self.s3uploader.file_exists = mock.Mock()
         self.s3uploader.file_exists.return_value = True
 
         self.s3uploader.upload(file_name, remote_path)
@@ -131,8 +129,8 @@ class TestS3Uploader(unittest.TestCase):
         self.transfer_manager_mock.upload.assert_not_called()
         self.s3uploader.file_exists.assert_called_once_with(remote_path)
 
-    @patch('os.path.getsize', return_value=1)
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch('os.path.getsize', return_value=1)
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_force_upload(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
@@ -145,12 +143,12 @@ class TestS3Uploader(unittest.TestCase):
             None, True, self.transfer_manager_mock)
 
         # Pretend file already exists
-        self.s3uploader.file_exists = Mock()
+        self.s3uploader.file_exists = mock.Mock()
         self.s3uploader.file_exists.return_value = True
 
         # Because we forced an update, this should reupload even if file exists
         upload_url = self.s3uploader.upload(file_name, remote_path)
-        self.assertEquals(expected_upload_url, upload_url)
+        self.assertEqual(expected_upload_url, upload_url)
 
         expected_encryption_args = {
             "ServerSideEncryption": "AES256"
@@ -162,8 +160,8 @@ class TestS3Uploader(unittest.TestCase):
         # Since ForceUpload=True, we should NEVER do the file-exists check
         self.s3uploader.file_exists.assert_not_called()
 
-    @patch('os.path.getsize', return_value=1)
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch('os.path.getsize', return_value=1)
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_successful_custom_kms_key(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
@@ -176,11 +174,11 @@ class TestS3Uploader(unittest.TestCase):
             kms_key_id, False, self.transfer_manager_mock)
 
         # Setup mock to fake that file does not exist
-        self.s3uploader.file_exists = Mock()
+        self.s3uploader.file_exists = mock.Mock()
         self.s3uploader.file_exists.return_value = False
 
         upload_url = self.s3uploader.upload(file_name, remote_path)
-        self.assertEquals(expected_upload_url, upload_url)
+        self.assertEqual(expected_upload_url, upload_url)
 
         expected_encryption_args = {
             "ServerSideEncryption": "aws:kms",
@@ -191,14 +189,14 @@ class TestS3Uploader(unittest.TestCase):
                 expected_encryption_args, mock.ANY)
         self.s3uploader.file_exists.assert_called_once_with(remote_path)
 
-    @patch('os.path.getsize', return_value=1)
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch('os.path.getsize', return_value=1)
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_successful_nobucket(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
 
         # Setup mock to fake that file does not exist
-        self.s3uploader.file_exists = Mock()
+        self.s3uploader.file_exists = mock.Mock()
         self.s3uploader.file_exists.return_value = False
 
         # Setup uploader to return a NOSuchBucket exception
@@ -209,14 +207,14 @@ class TestS3Uploader(unittest.TestCase):
         with self.assertRaises(NoSuchBucketError):
             self.s3uploader.upload(file_name, remote_path)
 
-    @patch('os.path.getsize', return_value=1)
-    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    @mock.patch('os.path.getsize', return_value=1)
+    @mock.patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_successful_exceptions(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
 
         # Setup mock to fake that file does not exist
-        self.s3uploader.file_exists = Mock()
+        self.s3uploader.file_exists = mock.Mock()
         self.s3uploader.file_exists.return_value = False
 
         # Raise an unrecognized botocore error
@@ -238,10 +236,10 @@ class TestS3Uploader(unittest.TestCase):
         filename = "filename"
         extension = "extn"
 
-        self.s3uploader.file_checksum = Mock()
+        self.s3uploader.file_checksum = mock.Mock()
         self.s3uploader.file_checksum.return_value = checksum
 
-        self.s3uploader.upload = Mock()
+        self.s3uploader.upload = mock.Mock()
 
         self.s3uploader.upload_with_dedup(filename, extension)
 
@@ -279,9 +277,9 @@ class TestS3Uploader(unittest.TestCase):
             self.assertFalse(self.s3uploader.file_exists(key))
 
         # Let's pretend some other unknown exception happened
-        s3mock = Mock()
+        s3mock = mock.Mock()
         uploader = S3Uploader(s3mock, self.bucket_name)
-        s3mock.head_object = Mock()
+        s3mock.head_object = mock.Mock()
         s3mock.head_object.side_effect = RuntimeError()
 
         with self.assertRaises(RuntimeError):
@@ -309,7 +307,7 @@ class TestS3Uploader(unittest.TestCase):
     def test_make_url(self):
         path = "Hello/how/are/you"
         expected = "s3://{0}/{1}".format(self.bucket_name, path)
-        self.assertEquals(expected, self.s3uploader.make_url(path))
+        self.assertEqual(expected, self.s3uploader.make_url(path))
 
     def test_to_path_style_s3_url_us_east_1(self):
         key = "path/to/file"

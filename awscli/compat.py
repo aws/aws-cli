@@ -77,7 +77,7 @@ class NonTranslatedStdout(object):
 
     It is deliberately set to binary mode so that `\r` does not get added to
     the line ending. This can be useful when printing commands where a
-    windows style line ending would casuse errors.
+    windows style line ending would cause errors.
     """
 
     def __enter__(self):

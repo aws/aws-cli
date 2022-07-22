@@ -98,19 +98,16 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
 
 
 def _find_quote_char_in_part(part):
-    if '"' not in part and "'" not in part:
-        return
+    """
+    Returns a single or double quote character, whichever appears first in the
+    given string. None is returned if the given string doesn't have a single or
+    double quote character.
+    """
     quote_char = None
-    double_quote = part.find('"')
-    single_quote = part.find("'")
-    if double_quote >= 0 and single_quote == -1:
-        quote_char = '"'
-    elif single_quote >= 0 and double_quote == -1:
-        quote_char = "'"
-    elif double_quote < single_quote:
-        quote_char = '"'
-    elif single_quote < double_quote:
-        quote_char = "'"
+    for ch in part:
+        if ch in ('"', "'"):
+            quote_char = ch
+            break
     return quote_char
 
 
@@ -129,6 +126,43 @@ def find_service_and_method_in_event_name(event_name):
     if len(split_event) > 1:
         operation_name = split_event[1]
     return service_name, operation_name
+
+
+def is_document_type(shape):
+    """Check if shape is a document type"""
+    return getattr(shape, 'is_document_type', False)
+
+
+def is_document_type_container(shape):
+    """Check if the shape is a document type or wraps document types
+
+    This is helpful to determine if a shape purely deals with document types
+    whether the shape is a document type or it is lists or maps whose base
+    values are document types.
+    """
+    if not shape:
+        return False
+    recording_visitor = ShapeRecordingVisitor()
+    ShapeWalker().walk(shape, recording_visitor)
+    end_shape = recording_visitor.visited.pop()
+    if not is_document_type(end_shape):
+        return False
+    for shape in recording_visitor.visited:
+        if shape.type_name not in ['list', 'map']:
+            return False
+    return True
+
+
+def operation_uses_document_types(operation_model):
+    """Check if document types are ever used in the operation"""
+    recording_visitor = ShapeRecordingVisitor()
+    walker = ShapeWalker()
+    walker.walk(operation_model.input_shape, recording_visitor)
+    walker.walk(operation_model.output_shape, recording_visitor)
+    for visited_shape in recording_visitor.visited:
+        if is_document_type(visited_shape):
+            return True
+    return False
 
 
 def json_encoder(obj):
@@ -193,3 +227,63 @@ def write_exception(ex, outfile):
     outfile.write("\n")
     outfile.write(six.text_type(ex))
     outfile.write("\n")
+
+
+class ShapeWalker(object):
+    def walk(self, shape, visitor):
+        """Walk through and visit shapes for introspection
+
+        :type shape: botocore.model.Shape
+        :param shape: Shape to walk
+
+        :type visitor: BaseShapeVisitor
+        :param visitor: The visitor to call when walking a shape
+        """
+
+        if shape is None:
+            return
+        stack = []
+        return self._walk(shape, visitor, stack)
+
+    def _walk(self, shape, visitor, stack):
+        if shape.name in stack:
+            return
+        stack.append(shape.name)
+        getattr(self, '_walk_%s' % shape.type_name, self._default_scalar_walk)(
+            shape, visitor, stack
+        )
+        stack.pop()
+
+    def _walk_structure(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        for _, member_shape in shape.members.items():
+            self._walk(member_shape, visitor, stack)
+
+    def _walk_list(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        self._walk(shape.member, visitor, stack)
+
+    def _walk_map(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        self._walk(shape.value, visitor, stack)
+
+    def _default_scalar_walk(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+
+    def _do_shape_visit(self, shape, visitor):
+        visitor.visit_shape(shape)
+
+
+class BaseShapeVisitor(object):
+    """Visit shape encountered by ShapeWalker"""
+    def visit_shape(self, shape):
+        pass
+
+
+class ShapeRecordingVisitor(BaseShapeVisitor):
+    """Record shapes visited by ShapeWalker"""
+    def __init__(self):
+        self.visited = []
+
+    def visit_shape(self, shape):
+        self.visited.append(shape)

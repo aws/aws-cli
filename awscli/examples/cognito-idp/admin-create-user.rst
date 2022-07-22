@@ -4,19 +4,15 @@ The following ``admin-create-user`` example creates a user with the specified se
 
     aws cognito-idp admin-create-user \
         --user-pool-id us-west-2_aaaaaaaaa \
-        --username diego@example.com \
-        --user-attributes Name=email,Value=kermit2@somewhere.com Name=phone_number,Value="+15555551212" \
+        --username diego \
+        --user-attributes Name=email,Value=diego@example.com Name=phone_number,Value="+15555551212" \
         --message-action SUPPRESS
 
 Output::
 
     {
         "User": {
-            "Username": "7325c1de-b05b-4f84-b321-9adc6e61f4a2",
-            "Enabled": true,
-            "UserStatus": "FORCE_CHANGE_PASSWORD",
-            "UserCreateDate": 1548099495.428,
-            "UserLastModifiedDate": 1548099495.428,
+            "Username": "diego",
             "Attributes": [
                 {
                     "Name": "sub",
@@ -30,6 +26,10 @@ Output::
                     "Name": "email",
                     "Value": "diego@example.com"
                 }
-            ]
+            ],
+            "UserCreateDate": 1548099495.428,
+            "UserLastModifiedDate": 1548099495.428,
+            "Enabled": true,
+            "UserStatus": "FORCE_CHANGE_PASSWORD"
         }
     }

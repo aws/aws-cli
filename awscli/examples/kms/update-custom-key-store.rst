@@ -10,4 +10,4 @@ The following ``update-custom-key-store`` example provides the current password 
 
 This command does not return any output. To verify that the password change was effective, connect the custom key store.
 
-For more information, see `Editing Custom Key Store Settings <https://docs.aws.amazon.com/kms/latest/developerguide/update-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Editing custom key store settings <https://docs.aws.amazon.com/kms/latest/developerguide/update-keystore.html>`__ in the *AWS Key Management Service Developer Guide*.

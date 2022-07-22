@@ -1,11 +1,10 @@
 **To create an accelerator**
 
-The following ``create-accelerator`` example creates an accelerator with two tags. You must specify the ``US-West-2 (Oregon)`` Region to create or update an accelerator. ::
+The following ``create-accelerator`` example creates an accelerator with two tags with two BYOIP static IP addresses. You must specify the ``US-West-2 (Oregon)`` Region to create or update an accelerator. ::
 
     aws globalaccelerator create-accelerator \
         --name ExampleAccelerator \
         --tags Key="Name",Value="Example Name" Key="Project",Value="Example Project" \
-        --region us-west-2 \
         --ip-addresses 192.0.2.250 198.51.100.52
 
 Output::

@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import set_invalid_utime
-from mock import patch
 import os
 
 from awscli.compat import six
+from awscli.testutils import mock
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -135,16 +134,21 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_warning_on_invalid_timestamp(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
 
-        # Set the update time to a value that will raise a ValueError when
-        # converting to datetime
-        set_invalid_utime(full_path)
         cmdline = '%s %s s3://bucket/key.txt' % \
                   (self.prefix, self.files.rootdir)
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []},
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
-        self.run_cmd(cmdline, expected_rc=2)
+        # Patch get_file_stat to return a value indicating that an invalid
+        # timestamp was loaded. It is impossible to set an invalid timestamp
+        # on all OSes so it has to be patched.
+        # TODO: find another method to test this behavior without patching.
+        with mock.patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                return_value=(None, None)
+        ):
+            self.run_cmd(cmdline, expected_rc=2)
 
         # We should still have put the object
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
@@ -185,7 +189,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         def side_effect(_):
             os.remove(full_path)
             raise ValueError()
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect
                 ):
@@ -208,7 +212,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         def side_effect(_):
             os.remove(full_path)
             raise OSError()
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect
                 ):

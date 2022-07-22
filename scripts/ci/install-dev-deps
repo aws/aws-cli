@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+import os
+from contextlib import contextmanager
+from subprocess import check_call
+
+_dname = os.path.dirname
+
+REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
+
+
+@contextmanager
+def cd(path):
+    """Change directory while inside context manager."""
+    cwd = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
+
+
+def run(command):
+    return check_call(command, shell=True)
+
+
+if __name__ == "__main__":
+    with cd(REPO_ROOT):
+        run("pip install -r requirements-dev-lock.txt")

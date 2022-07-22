@@ -1,17 +1,16 @@
 **To get information about a repository**
 
-This example shows details about an AWS CodeCommit repository.
+This example shows details about an AWS CodeCommit repository. ::
 
-Command::
-
-  aws codecommit get-repository --repository-name MyDemoRepo
+    aws codecommit get-repository \
+        --repository-name MyDemoRepo
 
 Output::
 
-  {
-    "repositoryMetadata": {
+    {
+        "repositoryMetadata": {
             "creationDate": 1429203623.625,
-            "defaultBranch": "master",
+            "defaultBranch": "main",
             "repositoryName": "MyDemoRepo",
             "cloneUrlSsh": "ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/v1/repos/MyDemoRepo",
             "lastModifiedDate": 1430783812.0869999,
@@ -21,4 +20,4 @@ Output::
             "Arn": "arn:aws:codecommit:us-east-1:80398EXAMPLE:MyDemoRepo
             "accountId": "111111111111"
         }
-  }
+    }

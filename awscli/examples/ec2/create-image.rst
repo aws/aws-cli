@@ -1,39 +1,33 @@
-**To create an AMI from an Amazon EBS-backed instance**
+**Example 1: To create an AMI from an Amazon EBS-backed instance**
 
-This example creates an AMI from the specified instance.
+The following ``create-image`` example creates an AMI from the specified instance. ::
 
-Command::
-
-  aws ec2 create-image --instance-id i-1234567890abcdef0 --name "My server" --description "An AMI for my server"
-
-Output::
-
-  {
-      "ImageId": "ami-5731123e"
-  }
-
-This example creates an AMI and sets the --no-reboot parameter, so that the instance is not rebooted before the image is created.
-
-Command::
-
-  aws ec2 create-image --instance-id i-0b09a25c58929de26 --name "My server" --no-reboot
+    aws ec2 create-image \
+        --instance-id i-1234567890abcdef0 \
+        --name "My server" \
+        --description "An AMI for my server"
 
 Output::
 
-  {
-    "ImageId": "ami-1a2b3c4d"
-  }
+    {
+        "ImageId": "ami-0eab20fe36f83e1a8"
+    }
 
-**To create an AMI using a block device mapping**
+For more information about specifying a block device mapping for your AMI, see `Specifying a block device mapping for an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html#create-ami-bdm>`__ in the *Amazon EC2 User Guide*.
 
-Add the following parameter to your ``create-image`` command to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100::
+**Example 2: To create an AMI from an Amazon EBS-backed instance without reboot**
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+The following ``create-image`` example creates an AMI and sets the --no-reboot parameter, so that the instance is not rebooted before the image is created. ::
 
-Add the following parameter to your ``create-image`` command to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``::
+    aws ec2 create-image \
+        --instance-id i-0b09a25c58929de26 \
+        --name "My server" \
+        --no-reboot
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+Output::
 
-Add the following parameter to your ``create-image`` command to omit a device included on the instance (for example, ``/dev/sdf``)::
+    {
+        "ImageId": "ami-01d7dcccb80665a0f"
+    }
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+For more information about specifying a block device mapping for your AMI, see `Specifying a block device mapping for an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html#create-ami-bdm>`__ in the *Amazon EC2 User Guide*.

@@ -256,6 +256,20 @@
       ],
       "documentation":"<p>Streams the results of a single query execution specified by <code>QueryExecutionId</code> from the Athena query results location in Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Query Results</a> in the <i>Amazon Athena User Guide</i>. This request does not execute the query but returns results. Use <a>StartQueryExecution</a> to run a query.</p> <p>To stream query results successfully, the IAM principal with permission to call <code>GetQueryResults</code> also must have permissions to the Amazon S3 <code>GetObject</code> action for the Athena query results location.</p> <important> <p>IAM principals with permission to the Amazon S3 <code>GetObject</code> action for the query results location are able to retrieve query results from Amazon S3 even if permission to the <code>GetQueryResults</code> action is denied. To restrict user or role access, ensure that Amazon S3 permissions to the Athena query location are denied.</p> </important>"
     },
+    "GetQueryRuntimeStatistics":{
+      "name":"GetQueryRuntimeStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetQueryRuntimeStatisticsInput"},
+      "output":{"shape":"GetQueryRuntimeStatisticsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Returns query execution runtime statistics related to a single execution of a query if you have access to the workgroup in which the query ran. The query execution runtime statistics is returned only when <a>QueryExecutionStatus$State</a> is in a SUCCEEDED or FAILED state.</p>"
+    },
     "GetTableMetadata":{
       "name":"GetTableMetadata",
       "http":{
@@ -1285,6 +1299,25 @@
         }
       }
     },
+    "GetQueryRuntimeStatisticsInput":{
+      "type":"structure",
+      "required":["QueryExecutionId"],
+      "members":{
+        "QueryExecutionId":{
+          "shape":"QueryExecutionId",
+          "documentation":"<p>The unique ID of the query execution.</p>"
+        }
+      }
+    },
+    "GetQueryRuntimeStatisticsOutput":{
+      "type":"structure",
+      "members":{
+        "QueryRuntimeStatistics":{
+          "shape":"QueryRuntimeStatistics",
+          "documentation":"<p>Runtime statistics about the query execution.</p>"
+        }
+      }
+    },
     "GetTableMetadataInput":{
       "type":"structure",
       "required":[
@@ -1976,6 +2009,138 @@
       },
       "documentation":"<p>The completion date, current state, submission time, and state change reason (if applicable) for the query execution.</p>"
     },
+    "QueryRuntimeStatistics":{
+      "type":"structure",
+      "members":{
+        "Timeline":{"shape":"QueryRuntimeStatisticsTimeline"},
+        "Rows":{"shape":"QueryRuntimeStatisticsRows"},
+        "OutputStage":{
+          "shape":"QueryStage",
+          "documentation":"<p>Stage statistics such as input and output rows and bytes, execution time, and stage state. This information also includes substages and the query stage plan.</p>"
+        }
+      },
+      "documentation":"<p>The query execution timeline, statistics on input and output rows and bytes, and the different query stages that form the query execution plan.</p>"
+    },
+    "QueryRuntimeStatisticsRows":{
+      "type":"structure",
+      "members":{
+        "InputRows":{
+          "shape":"Long",
+          "documentation":"<p>The number of rows read to execute the query.</p>"
+        },
+        "InputBytes":{
+          "shape":"Long",
+          "documentation":"<p>The number of bytes read to execute the query.</p>"
+        },
+        "OutputBytes":{
+          "shape":"Long",
+          "documentation":"<p>The number of bytes returned by the query.</p>"
+        },
+        "OutputRows":{
+          "shape":"Long",
+          "documentation":"<p>The number of rows returned by the query.</p>"
+        }
+      },
+      "documentation":"<p>Statistics such as input rows and bytes read by the query, rows and bytes output by the query, and the number of rows written by the query.</p>"
+    },
+    "QueryRuntimeStatisticsTimeline":{
+      "type":"structure",
+      "members":{
+        "QueryQueueTimeInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The number of milliseconds that the query was in your query queue waiting for resources. Note that if transient errors occur, Athena might automatically add the query back to the queue.</p>"
+        },
+        "QueryPlanningTimeInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The number of milliseconds that Athena took to plan the query processing flow. This includes the time spent retrieving table partitions from the data source. Note that because the query engine performs the query planning, query planning time is a subset of engine processing time.</p>"
+        },
+        "EngineExecutionTimeInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The number of milliseconds that the query took to execute.</p>"
+        },
+        "ServiceProcessingTimeInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The number of milliseconds that Athena took to finalize and publish the query results after the query engine finished running the query.</p>"
+        },
+        "TotalExecutionTimeInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The number of milliseconds that Athena took to run the query.</p>"
+        }
+      },
+      "documentation":"<p>Timeline statistics such as query queue time, planning time, execution time, service processing time, and total execution time.</p>"
+    },
+    "QueryStage":{
+      "type":"structure",
+      "members":{
+        "StageId":{
+          "shape":"Long",
+          "documentation":"<p>The identifier for a stage.</p>"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>State of the stage after query execution.</p>"
+        },
+        "OutputBytes":{
+          "shape":"Long",
+          "documentation":"<p>The number of bytes output from the stage after execution.</p>"
+        },
+        "OutputRows":{
+          "shape":"Long",
+          "documentation":"<p>The number of rows output from the stage after execution.</p>"
+        },
+        "InputBytes":{
+          "shape":"Long",
+          "documentation":"<p>The number of bytes input into the stage for execution.</p>"
+        },
+        "InputRows":{
+          "shape":"Long",
+          "documentation":"<p>The number of rows input into the stage for execution.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"Long",
+          "documentation":"<p>Time taken to execute this stage.</p>"
+        },
+        "QueryStagePlan":{
+          "shape":"QueryStagePlanNode",
+          "documentation":"<p>Stage plan information such as name, identifier, sub plans, and source stages.</p>"
+        },
+        "SubStages":{
+          "shape":"QueryStages",
+          "documentation":"<p>List of sub query stages that form this stage execution plan.</p>"
+        }
+      },
+      "documentation":"<p>Stage statistics such as input and output rows and bytes, execution time and stage state. This information also includes substages and the query stage plan.</p>"
+    },
+    "QueryStagePlanNode":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name of the query stage plan that describes the operation this stage is performing as part of query execution.</p>"
+        },
+        "Identifier":{
+          "shape":"String",
+          "documentation":"<p>Information about the operation this query stage plan node is performing.</p>"
+        },
+        "Children":{
+          "shape":"QueryStagePlanNodes",
+          "documentation":"<p>Stage plan information such as name, identifier, sub plans, and remote sources of child plan nodes/</p>"
+        },
+        "RemoteSources":{
+          "shape":"StringList",
+          "documentation":"<p>Source plan node IDs.</p>"
+        }
+      },
+      "documentation":"<p>Stage plan information such as name, identifier, sub plans, and remote sources.</p>"
+    },
+    "QueryStagePlanNodes":{
+      "type":"list",
+      "member":{"shape":"QueryStagePlanNode"}
+    },
+    "QueryStages":{
+      "type":"list",
+      "member":{"shape":"QueryStage"}
+    },
     "QueryString":{
       "type":"string",
       "max":262144,
@@ -2167,6 +2332,10 @@
       }
     },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "TableMetadata":{
       "type":"structure",
       "required":["Name"],

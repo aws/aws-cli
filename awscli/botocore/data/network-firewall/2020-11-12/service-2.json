@@ -703,12 +703,46 @@
       "member":{"shape":"AzSubnet"}
     },
     "Boolean":{"type":"boolean"},
+    "CIDRCount":{
+      "type":"integer",
+      "max":1000000,
+      "min":0
+    },
+    "CIDRSummary":{
+      "type":"structure",
+      "members":{
+        "AvailableCIDRCount":{
+          "shape":"CIDRCount",
+          "documentation":"<p>The number of CIDR blocks available for use by the IP set references in a firewall.</p>"
+        },
+        "UtilizedCIDRCount":{
+          "shape":"CIDRCount",
+          "documentation":"<p>The number of CIDR blocks used by the IP set references in a firewall.</p>"
+        },
+        "IPSetReferences":{
+          "shape":"IPSetMetadataMap",
+          "documentation":"<p>The list of the IP set references used by a firewall.</p>"
+        }
+      },
+      "documentation":"<p>Summarizes the CIDR blocks used by the IP set references in a firewall. Network Firewall calculates the number of CIDRs by taking an aggregated count of all CIDRs used by the IP sets you are referencing.</p>"
+    },
+    "CapacityUsageSummary":{
+      "type":"structure",
+      "members":{
+        "CIDRs":{
+          "shape":"CIDRSummary",
+          "documentation":"<p>Describes the capacity usage of the CIDR blocks used by the IP set references in a firewall.</p>"
+        }
+      },
+      "documentation":"<p>The capacity usage summary of the resources used by the <a>ReferenceSets</a> in a firewall.</p>"
+    },
     "CollectionMember_String":{"type":"string"},
     "ConfigurationSyncState":{
       "type":"string",
       "enum":[
         "PENDING",
-        "IN_SYNC"
+        "IN_SYNC",
+        "CAPACITY_CONSTRAINED"
       ]
     },
     "CreateFirewallPolicyRequest":{
@@ -1498,6 +1532,10 @@
         "SyncStates":{
           "shape":"SyncStates",
           "documentation":"<p>The subnets that you've configured for use by the Network Firewall firewall. This contains one array element per Availability Zone where you've configured a subnet. These objects provide details of the information that is summarized in the <code>ConfigurationSyncStateSummary</code> and <code>Status</code>, broken down by zone and configuration object. </p>"
+        },
+        "CapacityUsageSummary":{
+          "shape":"CapacityUsageSummary",
+          "documentation":"<p>Describes the capacity usage of the resources contained in a firewall's reference sets. Network Firewall calclulates the capacity usage by taking an aggregated count of all of the resources used by all of the reference sets in a firewall.</p>"
         }
       },
       "documentation":"<p>Detailed information about the current status of a <a>Firewall</a>. You can retrieve this for a firewall by calling <a>DescribeFirewall</a> and providing the firewall name and ARN.</p>"
@@ -1585,6 +1623,43 @@
         }
       },
       "documentation":"<p>A list of IP addresses and address ranges, in CIDR notation. This is part of a <a>RuleVariables</a>. </p>"
+    },
+    "IPSetArn":{"type":"string"},
+    "IPSetMetadata":{
+      "type":"structure",
+      "members":{
+        "ResolvedCIDRCount":{
+          "shape":"CIDRCount",
+          "documentation":"<p>Describes the total number of CIDR blocks currently in use by the IP set references in a firewall. To determine how many CIDR blocks are available for you to use in a firewall, you can call <code>AvailableCIDRCount</code>.</p>"
+        }
+      },
+      "documentation":"<p>General information about the IP set.</p>"
+    },
+    "IPSetMetadataMap":{
+      "type":"map",
+      "key":{"shape":"IPSetArn"},
+      "value":{"shape":"IPSetMetadata"}
+    },
+    "IPSetReference":{
+      "type":"structure",
+      "members":{
+        "ReferenceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you are referencing in your rule group.</p>"
+        }
+      },
+      "documentation":"<p>Configures one or more IP set references for a Suricata-compatible rule group. This is used in <a>CreateRuleGroup</a> or <a>UpdateRuleGroup</a>. An IP set reference is a rule variable that references a resource that you create and manage in another Amazon Web Services service, such as an Amazon VPC prefix list. Network Firewall IP set references enable you to dynamically update the contents of your rules. When you create, update, or delete the IP set you are referencing in your rule, Network Firewall automatically updates the rule's content with the changes. For more information about IP set references in Network Firewall, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references\">Using IP set references</a> in the <i>Network Firewall Developer Guide</i>.</p> <p> Network Firewall currently supports only <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html\">Amazon VPC prefix lists</a> as IP set references. </p>"
+    },
+    "IPSetReferenceMap":{
+      "type":"map",
+      "key":{"shape":"IPSetReferenceName"},
+      "value":{"shape":"IPSetReference"}
+    },
+    "IPSetReferenceName":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"^[A-Za-z][A-Za-z0-9_]*$"
     },
     "IPSets":{
       "type":"map",
@@ -1920,7 +1995,8 @@
       "type":"string",
       "enum":[
         "PENDING",
-        "IN_SYNC"
+        "IN_SYNC",
+        "CAPACITY_CONSTRAINED"
       ]
     },
     "PolicyString":{
@@ -2024,6 +2100,16 @@
       "members":{
       }
     },
+    "ReferenceSets":{
+      "type":"structure",
+      "members":{
+        "IPSetReferences":{
+          "shape":"IPSetReferenceMap",
+          "documentation":"<p>The list of IP set references.</p>"
+        }
+      },
+      "documentation":"<p>Contains a set of IP set references.</p>"
+    },
     "ResourceArn":{
       "type":"string",
       "max":256,
@@ -2105,6 +2191,10 @@
         "RuleVariables":{
           "shape":"RuleVariables",
           "documentation":"<p>Settings that are available for use in the rules in the rule group. You can only use these for stateful rule groups. </p>"
+        },
+        "ReferenceSets":{
+          "shape":"ReferenceSets",
+          "documentation":"<p>The list of a rule group's reference sets.</p>"
         },
         "RulesSource":{
           "shape":"RulesSource",

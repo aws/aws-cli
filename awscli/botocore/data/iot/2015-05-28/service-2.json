@@ -112,7 +112,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Attaches the specified policy to the specified principal (certificate or other credential).</p> <p> <b>Note:</b> This action is deprecated. Please use <a>AttachPolicy</a> instead.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AttachPrincipalPolicy</a> action.</p>",
+      "documentation":"<p>Attaches the specified policy to the specified principal (certificate or other credential).</p> <p> <b>Note:</b> This action is deprecated and works as expected for backward compatibility, but we won't add enhancements. Use <a>AttachPolicy</a> instead.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AttachPrincipalPolicy</a> action.</p>",
       "deprecated":true
     },
     "AttachSecurityProfile":{
@@ -11141,6 +11141,16 @@
         "REBUILDING"
       ]
     },
+    "IndexingFilter":{
+      "type":"structure",
+      "members":{
+        "namedShadowNames":{
+          "shape":"NamedShadowNamesFilter",
+          "documentation":"<p>The shadow names that you select to index. The default maximum number of shadow names for indexing is 10. To increase the limit, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits\">Amazon Web Services IoT Device Management Quotas</a> in the <i>Amazon Web Services General Reference</i>. </p>"
+        }
+      },
+      "documentation":"<p>Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.</p>"
+    },
     "InlineDocument":{"type":"string"},
     "InputName":{
       "type":"string",
@@ -14624,6 +14634,10 @@
         "ON"
       ]
     },
+    "NamedShadowNamesFilter":{
+      "type":"list",
+      "member":{"shape":"ShadowName"}
+    },
     "NamespaceId":{
       "type":"string",
       "max":64,
@@ -16323,6 +16337,12 @@
         }
       }
     },
+    "ShadowName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_-]+"
+    },
     "SigV4Authorization":{
       "type":"structure",
       "required":[
@@ -17383,6 +17403,10 @@
         "customFields":{
           "shape":"Fields",
           "documentation":"<p>Contains custom field names and their data type.</p>"
+        },
+        "filter":{
+          "shape":"IndexingFilter",
+          "documentation":"<p>Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.</p>"
         }
       },
       "documentation":"<p>The thing indexing configuration. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-index.html\">Managing Thing Indexing</a>.</p>"

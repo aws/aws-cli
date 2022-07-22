@@ -619,6 +619,19 @@
       "min":1
     },
     "ActionsEnabled":{"type":"boolean"},
+    "ActionsSuppressedBy":{
+      "type":"string",
+      "enum":[
+        "WaitPeriod",
+        "ExtensionPeriod",
+        "Alarm"
+      ]
+    },
+    "ActionsSuppressedReason":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "AlarmArn":{
       "type":"string",
       "max":1600,
@@ -863,11 +876,35 @@
         },
         "StateUpdatedTimestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The time stamp of the last update to the alarm state.</p>"
+          "documentation":"<p>Tracks the timestamp of any state update, even if <code>StateValue</code> doesn't change.</p>"
         },
         "StateValue":{
           "shape":"StateValue",
           "documentation":"<p>The state value for the alarm.</p>"
+        },
+        "StateTransitionedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp of the last change to the alarm's <code>StateValue</code>. </p>"
+        },
+        "ActionsSuppressedBy":{
+          "shape":"ActionsSuppressedBy",
+          "documentation":"<p> When the value is <code>ALARM</code>, it means that the actions are suppressed because the suppressor alarm is in <code>ALARM</code> When the value is <code>WaitPeriod</code>, it means that the actions are suppressed because the composite alarm is waiting for the suppressor alarm to go into into the <code>ALARM</code> state. The maximum waiting time is as specified in <code>ActionsSuppressorWaitPeriod</code>. After this time, the composite alarm performs its actions. When the value is <code>ExtensionPeriod</code>, it means that the actions are suppressed because the composite alarm is waiting after the suppressor alarm went out of the <code>ALARM</code> state. The maximum waiting time is as specified in <code>ActionsSuppressorExtensionPeriod</code>. After this time, the composite alarm performs its actions. </p>"
+        },
+        "ActionsSuppressedReason":{
+          "shape":"ActionsSuppressedReason",
+          "documentation":"<p> Captures the reason for action suppression. </p>"
+        },
+        "ActionsSuppressor":{
+          "shape":"AlarmArn",
+          "documentation":"<p> Actions will be suppressed if the suppressor alarm is in the <code>ALARM</code> state. <code>ActionsSuppressor</code> can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm. </p>"
+        },
+        "ActionsSuppressorWaitPeriod":{
+          "shape":"SuppressorPeriod",
+          "documentation":"<p> The maximum time in seconds that the composite alarm waits for the suppressor alarm to go into the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>WaitPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>"
+        },
+        "ActionsSuppressorExtensionPeriod":{
+          "shape":"SuppressorPeriod",
+          "documentation":"<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>"
         }
       },
       "documentation":"<p>The details about a composite alarm.</p>",
@@ -884,7 +921,13 @@
         "StateReason",
         "StateReasonData",
         "StateUpdatedTimestamp",
-        "StateValue"
+        "StateValue",
+        "StateTransitionedTimestamp",
+        "ActionsSuppressedBy",
+        "ActionsSuppressedReason",
+        "ActionsSuppressor",
+        "ActionsSuppressorWaitPeriod",
+        "ActionsSuppressorExtensionPeriod"
       ]
     },
     "CompositeAlarms":{
@@ -2889,6 +2932,18 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of key-value pairs to associate with the composite alarm. You can associate as many as 50 tags with an alarm.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values.</p>"
+        },
+        "ActionsSuppressor":{
+          "shape":"AlarmArn",
+          "documentation":"<p> Actions will be suppressed if the suppressor alarm is in the <code>ALARM</code> state. <code>ActionsSuppressor</code> can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm. </p>"
+        },
+        "ActionsSuppressorWaitPeriod":{
+          "shape":"SuppressorPeriod",
+          "documentation":"<p> The maximum time in seconds that the composite alarm waits for the suppressor alarm to go into the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>WaitPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>"
+        },
+        "ActionsSuppressorExtensionPeriod":{
+          "shape":"SuppressorPeriod",
+          "documentation":"<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>"
         }
       }
     },
@@ -3377,6 +3432,7 @@
       "type":"integer",
       "min":1
     },
+    "SuppressorPeriod":{"type":"integer"},
     "Tag":{
       "type":"structure",
       "required":[

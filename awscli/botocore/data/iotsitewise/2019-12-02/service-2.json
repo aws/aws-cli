@@ -216,6 +216,27 @@
       "documentation":"<p>Creates an asset model from specified property and hierarchy definitions. You create assets from asset models. With asset models, you can easily create assets of the same type that have standardized definitions. Each asset created from a model inherits the asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/define-models.html\">Defining asset models</a> in the <i>IoT SiteWise User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "CreateBulkImportJob":{
+      "name":"CreateBulkImportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/jobs",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateBulkImportJobRequest"},
+      "output":{"shape":"CreateBulkImportJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<note> <p>This API operation is in preview release for IoT SiteWise and is subject to change. We recommend that you use this operation only with test data, and not in production environments.</p> </note> <p>Defines a job to ingest data to IoT SiteWise from Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/CreateBulkImportJob.html\">Create a bulk import job (CLI)</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <important> <p>You must enable IoT SiteWise to export data to Amazon S3 before you create a bulk import job. For more information about how to configure storage settings, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_PutStorageConfiguration.html\">PutStorageConfiguration</a>.</p> </important>",
+      "endpoint":{"hostPrefix":"data."}
+    },
     "CreateDashboard":{
       "name":"CreateDashboard",
       "http":{
@@ -504,6 +525,23 @@
       ],
       "documentation":"<p>Retrieves information about an asset property.</p> <note> <p>When you call this operation for an attribute property, this response includes the default attribute value that you define in the asset model. If you update the default value in the model, this operation's response includes the new default value.</p> </note> <p>This operation doesn't return the value of the asset property. To get the value of an asset property, use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyValue.html\">GetAssetPropertyValue</a>.</p>",
       "endpoint":{"hostPrefix":"api."}
+    },
+    "DescribeBulkImportJob":{
+      "name":"DescribeBulkImportJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/jobs/{jobId}"
+      },
+      "input":{"shape":"DescribeBulkImportJobRequest"},
+      "output":{"shape":"DescribeBulkImportJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<note> <p>This API operation is in preview release for IoT SiteWise and is subject to change. We recommend that you use this operation only with test data, and not in production environments.</p> </note> <p>Retrieves information about a bulk import job request. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/DescribeBulkImportJob.html\">Describe a bulk import job (CLI)</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"data."}
     },
     "DescribeDashboard":{
       "name":"DescribeDashboard",
@@ -851,6 +889,23 @@
       ],
       "documentation":"<p>Retrieves a paginated list of associated assets.</p> <p>You can use this operation to do the following:</p> <ul> <li> <p>List child assets associated to a parent asset by a hierarchy that you specify.</p> </li> <li> <p>List an asset's parent asset.</p> </li> </ul>",
       "endpoint":{"hostPrefix":"api."}
+    },
+    "ListBulkImportJobs":{
+      "name":"ListBulkImportJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/jobs"
+      },
+      "input":{"shape":"ListBulkImportJobsRequest"},
+      "output":{"shape":"ListBulkImportJobsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<note> <p>This API operation is in preview release for IoT SiteWise and is subject to change. We recommend that you use this operation only with test data, and not in production environments.</p> </note> <p>Retrieves a paginated list of bulk import job requests. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/ListBulkImportJobs.html\">List bulk import jobs (CLI)</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"data."}
     },
     "ListDashboards":{
       "name":"ListDashboards",
@@ -2772,6 +2827,11 @@
         }
       }
     },
+    "Bucket":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
     "CapabilityConfiguration":{
       "type":"string",
       "max":104857600,
@@ -2797,6 +2857,23 @@
       "max":64,
       "min":36,
       "pattern":"\\S{36,64}"
+    },
+    "ColumnName":{
+      "type":"string",
+      "enum":[
+        "ALIAS",
+        "ASSET_ID",
+        "PROPERTY_ID",
+        "DATA_TYPE",
+        "TIMESTAMP_SECONDS",
+        "TIMESTAMP_NANO_OFFSET",
+        "QUALITY",
+        "VALUE"
+      ]
+    },
+    "ColumnNames":{
+      "type":"list",
+      "member":{"shape":"ColumnName"}
     },
     "CompositeModelProperty":{
       "type":"structure",
@@ -3050,6 +3127,60 @@
         }
       }
     },
+    "CreateBulkImportJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "jobRoleArn",
+        "files",
+        "errorReportLocation",
+        "jobConfiguration"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The unique name that helps identify the job request.</p>"
+        },
+        "jobRoleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the IAM role that allows IoT SiteWise to read Amazon S3 data.</p>"
+        },
+        "files":{
+          "shape":"Files",
+          "documentation":"<p>The files in the specified Amazon S3 bucket that contain your data.</p>"
+        },
+        "errorReportLocation":{
+          "shape":"ErrorReportLocation",
+          "documentation":"<p>The Amazon S3 destination where errors associated with the job creation request are saved.</p>"
+        },
+        "jobConfiguration":{
+          "shape":"JobConfiguration",
+          "documentation":"<p>Contains the configuration information of a job, such as the file format used to save data in Amazon S3.</p>"
+        }
+      }
+    },
+    "CreateBulkImportJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobName",
+        "jobStatus"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the job.</p>"
+        },
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The unique name that helps identify the job request.</p>"
+        },
+        "jobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
+        }
+      }
+    },
     "CreateDashboardRequest":{
       "type":"structure",
       "required":[
@@ -3269,6 +3400,16 @@
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the project, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:project/${ProjectId}</code> </p>"
         }
       }
+    },
+    "Csv":{
+      "type":"structure",
+      "members":{
+        "columnNames":{
+          "shape":"ColumnNames",
+          "documentation":"<p>The column names specified in the .csv file.</p>"
+        }
+      },
+      "documentation":"<p>A .csv file.</p>"
     },
     "CustomerManagedS3Storage":{
       "type":"structure",
@@ -3775,6 +3916,70 @@
         "assetDescription":{
           "shape":"Description",
           "documentation":"<p>A description for the asset.</p>"
+        }
+      }
+    },
+    "DescribeBulkImportJobRequest":{
+      "type":"structure",
+      "required":["jobId"],
+      "members":{
+        "jobId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the job.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        }
+      }
+    },
+    "DescribeBulkImportJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobName",
+        "jobStatus",
+        "jobRoleArn",
+        "files",
+        "errorReportLocation",
+        "jobConfiguration",
+        "jobCreationDate",
+        "jobLastUpdateDate"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the job.</p>"
+        },
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The unique name that helps identify the job request.</p>"
+        },
+        "jobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
+        },
+        "jobRoleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the IAM role that allows IoT SiteWise to read Amazon S3 data.</p>"
+        },
+        "files":{
+          "shape":"Files",
+          "documentation":"<p>The files in the specified Amazon S3 bucket that contain your data.</p>"
+        },
+        "errorReportLocation":{
+          "shape":"ErrorReportLocation",
+          "documentation":"<p>The Amazon S3 destination where errors associated with the job creation request are saved.</p>"
+        },
+        "jobConfiguration":{
+          "shape":"JobConfiguration",
+          "documentation":"<p>Contains the configuration information of a job, such as the file format used to save data in Amazon S3.</p>"
+        },
+        "jobCreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the job was created, in Unix epoch TIME.</p>"
+        },
+        "jobLastUpdateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the job was last updated, in Unix epoch time.</p>"
         }
       }
     },
@@ -4374,6 +4579,24 @@
       "documentation":"<p>Contains the details of an IoT SiteWise error.</p>"
     },
     "ErrorMessage":{"type":"string"},
+    "ErrorReportLocation":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "prefix"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"Bucket",
+          "documentation":"<p>The name of the Amazon S3 bucket to which errors associated with the bulk import job are sent.</p>"
+        },
+        "prefix":{
+          "shape":"String",
+          "documentation":"<p>Amazon S3 uses the prefix as a folder name to organize data in the bucket. Each Amazon S3 object has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html\">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 destination where errors associated with the job creation request are saved.</p>"
+    },
     "ExceptionMessage":{"type":"string"},
     "Expression":{
       "type":"string",
@@ -4401,6 +4624,42 @@
     "ExpressionVariables":{
       "type":"list",
       "member":{"shape":"ExpressionVariable"}
+    },
+    "File":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "key"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"Bucket",
+          "documentation":"<p>The name of the Amazon S3 bucket from which data is imported.</p>"
+        },
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key of the Amazon S3 object that contains your data. Each object has a key that is a unique identifier. Each object has exactly one key.</p>"
+        },
+        "versionId":{
+          "shape":"String",
+          "documentation":"<p>The version ID to identify a specific version of the Amazon S3 object that contains your data.</p>"
+        }
+      },
+      "documentation":"<p>The file in Amazon S3 where your data is saved. </p>"
+    },
+    "FileFormat":{
+      "type":"structure",
+      "members":{
+        "csv":{
+          "shape":"Csv",
+          "documentation":"<p>The .csv file format.</p>"
+        }
+      },
+      "documentation":"<p>The file format of the data.</p>"
+    },
+    "Files":{
+      "type":"list",
+      "member":{"shape":"File"}
     },
     "ForwardingConfig":{
       "type":"structure",
@@ -5009,6 +5268,55 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "JobConfiguration":{
+      "type":"structure",
+      "required":["fileFormat"],
+      "members":{
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>The file format of the data in Amazon S3.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration information of a job, such as the file format used to save data in Amazon S3.</p>"
+    },
+    "JobStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "CANCELLED",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "COMPLETED_WITH_FAILURES"
+      ]
+    },
+    "JobSummaries":{
+      "type":"list",
+      "member":{"shape":"JobSummary"}
+    },
+    "JobSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the job.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The unique name that helps identify the job request.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains a job summary information.</p>"
+    },
     "KmsKeyId":{
       "type":"string",
       "max":2048,
@@ -5256,6 +5564,55 @@
         "assetSummaries":{
           "shape":"AssociatedAssetsSummaries",
           "documentation":"<p>A list that summarizes the associated assets.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListBulkImportJobsFilter":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "PENDING",
+        "RUNNING",
+        "CANCELLED",
+        "FAILED",
+        "COMPLETED_WITH_FAILURES",
+        "COMPLETED"
+      ]
+    },
+    "ListBulkImportJobsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "filter":{
+          "shape":"ListBulkImportJobsFilter",
+          "documentation":"<p>You can use a filter to select the bulk import jobs that you want to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"filter"
+        }
+      }
+    },
+    "ListBulkImportJobsResponse":{
+      "type":"structure",
+      "required":["jobSummaries"],
+      "members":{
+        "jobSummaries":{
+          "shape":"JobSummaries",
+          "documentation":"<p>One or more job summaries to list.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -6168,6 +6525,7 @@
         "MULTI_LAYER_STORAGE"
       ]
     },
+    "String":{"type":"string"},
     "TagKey":{
       "type":"string",
       "max":128,

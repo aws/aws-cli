@@ -27,7 +27,8 @@
         {"shape":"ServiceException"},
         {"shape":"ThrottlingException"},
         {"shape":"EC2InstanceNotFoundException"},
-        {"shape":"EC2InstanceStateInvalidException"}
+        {"shape":"EC2InstanceStateInvalidException"},
+        {"shape":"EC2InstanceUnavailableException"}
       ],
       "documentation":"<p>Pushes an SSH public key to the specified EC2 instance for use by the specified user. The key remains for 60 seconds. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html\">Connect to your Linux instance using EC2 Instance Connect</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
@@ -49,7 +50,8 @@
         {"shape":"EC2InstanceTypeInvalidException"},
         {"shape":"SerialConsoleSessionLimitExceededException"},
         {"shape":"SerialConsoleSessionUnavailableException"},
-        {"shape":"EC2InstanceStateInvalidException"}
+        {"shape":"EC2InstanceStateInvalidException"},
+        {"shape":"EC2InstanceUnavailableException"}
       ],
       "documentation":"<p>Pushes an SSH public key to the specified EC2 instance. The key remains for 60 seconds, which gives you 60 seconds to establish a serial console connection to the instance using SSH. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-serial-console.html\">EC2 Serial Console</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     }
@@ -91,6 +93,14 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The instance type is not supported for connecting via the serial console. Only Nitro instance types are currently supported.</p>",
+      "exception":true
+    },
+    "EC2InstanceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The instance is currently unavailable. Wait a few minutes and try again.</p>",
       "exception":true
     },
     "InstanceId":{

@@ -303,9 +303,10 @@ STS on your behalf.
 
 When you specify a profile that has IAM role configuration, the AWS CLI will
 make an ``AssumeRoleWithWebIdentity`` call to retrieve temporary credentials.
-These credentials are then stored (in ``~/.aws/cli/cache``).  Subsequent AWS
-CLI commands will use the cached temporary credentials until they expire, in
-which case the AWS CLI will automatically refresh credentials.
+These credentials are then stored (in ``~/.aws/cli/cache``, or the directory
+specified by the ``AWS_CREDENTIAL_CACHE_DIR`` environment variable).
+Subsequent AWS CLI commands will use the cached temporary credentials until
+they expire, in which case the AWS CLI will automatically refresh credentials.
 
 You can specify the following configuration values for configuring an
 assume role with web identity profile in the shared config:
@@ -342,6 +343,10 @@ This provider can also be configured via the environment:
 
 ``AWS_ROLE_SESSION_NAME``
     The name applied to this assume-role session.
+
+``AWS_CREDENTIAL_CACHE_DIR```
+    The directory in which to cache temporary credentials. Defaults to
+    ``~/.aws/cli/cache`` if unset.
 
 .. note::
 

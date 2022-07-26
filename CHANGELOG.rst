@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.25.38
+=======
+
+* api-change:``appsync``: Adds support for a new API to evaluate mapping templates with mock data, allowing you to remotely unit test your AppSync resolvers and functions.
+* api-change:``detective``: Added the ability to get data source package information for the behavior graph. Graph administrators can now start (or stop) optional datasources on the behavior graph.
+* api-change:``guardduty``: Amazon GuardDuty introduces a new Malware Protection feature that triggers malware scan on selected EC2 instance resources, after the service detects a potentially malicious activity.
+* api-change:``lookoutvision``: This release introduces support for the automatic scaling of inference units used by Amazon Lookout for Vision models.
+* api-change:``macie2``: This release adds support for retrieving (revealing) sample occurrences of sensitive data that Amazon Macie detects and reports in findings.
+* api-change:``rds``: Adds support for using RDS Proxies with RDS for MariaDB databases.
+* api-change:``rekognition``: This release introduces support for the automatic scaling of inference units used by Amazon Rekognition Custom Labels models.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``transfer``: AWS Transfer Family now supports Applicability Statement 2 (AS2), a network protocol used for the secure and reliable transfer of critical Business-to-Business (B2B) data over the public internet using HTTP/HTTPS as the transport mechanism.
+
+
 1.25.37
 =======
 

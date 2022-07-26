@@ -173,6 +173,8 @@ class CLIDocumentEventHandler(object):
             argument.argument_model, argument.cli_type_name)))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
+        if argument.choices:
+            self._document_choices(argument, doc)
         if hasattr(argument, 'argument_model'):
             self._document_enums(argument.argument_model, doc)
             self._document_nested_structure(argument.argument_model, doc)
@@ -192,6 +194,15 @@ class CLIDocumentEventHandler(object):
             text=related_item
         )
         doc.write('\n')
+
+    def _document_choices(self, argument, doc):
+        """Documents global argument choices"""
+        doc.style.new_paragraph()
+        doc.write('Possible values:')
+        doc.style.start_ul()
+        for choice in argument.choices:
+            doc.style.li('``%s``' % choice)
+        doc.style.end_ul()
 
     def _document_enums(self, model, doc):
         """Documents top-level parameter enums"""
@@ -320,19 +331,6 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         pass
 
     def doc_synopsis_end(self, help_command, **kwargs):
-        pass
-
-    # A service document has no option section.
-    def doc_options_start(self, help_command, **kwargs):
-        pass
-
-    def doc_option(self, arg_name, help_command, **kwargs):
-        pass
-
-    def doc_option_example(self, arg_name, help_command, **kwargs):
-        pass
-
-    def doc_options_end(self, help_command, **kwargs):
         pass
 
     def doc_description(self, help_command, **kwargs):

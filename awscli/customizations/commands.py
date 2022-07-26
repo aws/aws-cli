@@ -2,7 +2,7 @@ import logging
 import os
 
 from botocore import model
-from botocore.compat import OrderedDict
+from botocore.compat import copy_kwargs, OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli
@@ -230,8 +230,12 @@ class BasicCommand(CLICommand):
         command_help_table = {}
         if self.SUBCOMMANDS:
             command_help_table = self.create_help_command_table()
+        arg_table = OrderedDict()
+        if awscli.clidriver.GLOBAL_ARG_TABLE:
+            arg_table.update(awscli.clidriver.GLOBAL_ARG_TABLE)
+        arg_table.update(self.arg_table)
         return BasicHelp(self._session, self, command_table=command_help_table,
-                         arg_table=self.arg_table)
+                         arg_table=arg_table)
 
     def create_help_command_table(self):
         """

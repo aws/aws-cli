@@ -49,6 +49,7 @@ from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import write_exception
 
 
+GLOBAL_ARG_TABLE = None
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
@@ -116,6 +117,8 @@ class CLIDriver(object):
     def _get_argument_table(self):
         if self._argument_table is None:
             self._argument_table = self._build_argument_table()
+            global GLOBAL_ARG_TABLE
+            GLOBAL_ARG_TABLE = self._argument_table
         return self._argument_table
 
     def _build_command_table(self):
@@ -390,7 +393,7 @@ class ServiceCommand(CLICommand):
         return ServiceHelpCommand(session=self.session,
                                   obj=self._get_service_model(),
                                   command_table=command_table,
-                                  arg_table=None,
+                                  arg_table=GLOBAL_ARG_TABLE,
                                   event_class='.'.join(self.lineage_names),
                                   name=self._name)
 
@@ -533,10 +536,14 @@ class ServiceOperation(object):
                 call_parameters, parsed_globals)
 
     def create_help_command(self):
+        arg_table = OrderedDict()
+        if GLOBAL_ARG_TABLE:
+            arg_table.update(GLOBAL_ARG_TABLE)
+        arg_table.update(self.arg_table)
         return OperationHelpCommand(
             self._session,
             operation_model=self._operation_model,
-            arg_table=self.arg_table,
+            arg_table=arg_table,
             name=self._name, event_class='.'.join(self.lineage_names))
 
     def _add_help(self, parser):

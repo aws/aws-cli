@@ -2,7 +2,7 @@ import logging
 import os
 
 from botocore import model
-from botocore.compat import copy_kwargs, OrderedDict
+from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli

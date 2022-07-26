@@ -41,7 +41,7 @@ EnvironmentVariables = {
 
 
 SCALAR_TYPES = set([
-    'string', 'float', 'int', 'integer', 'long', 'boolean', 'double',
-    'blob', 'timestamp'
+    'string', 'float', 'int', 'integer', 'long', 'boolean',
+    'double', 'blob', 'timestamp'
 ])
 COMPLEX_TYPES = set(['structure', 'map', 'list'])

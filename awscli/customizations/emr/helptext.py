@@ -48,13 +48,7 @@ HBASE_BACKUP_VERSION = (
 # create-cluster options help text
 
 CREATE_CLUSTER_DESCRIPTION = (
-    'Creates an Amazon EMR cluster with the specified configurations. '
-    'Quick start: '
-    'aws emr create-cluster --release-label <release-label> '
-    '--instance-type <instance-type> --instance-count <instance-count>'
-    'Values for the following can be set in the AWS CLI. '
-    'config file using the <code>aws configure set</code> command: <code>--service-role, --log-uri, '
-    'and InstanceProfile and KeyName arguments under --ec2-attributes.')
+    'Creates an Amazon EMR cluster with the specified configurations.')
 
 DESCRIBE_CLUSTER_DESCRIPTION = (
     'Provides  cluster-level details including status, hardware '
@@ -505,4 +499,10 @@ AUTO_TERMINATION_POLICY = (
     '<p>Auto termination policy for an Amazon EMR cluster. '
     'The configuration specifies the termination idle timeout'
     'threshold for an cluster.</p> '
+)
+
+EXECUTION_ROLE_ARN = (
+    '<p>You must grant the execution role the permissions needed '
+    'to access the same IAM resources that the step can access. '
+    'The execution role can be a cross-account IAM Role.</p> '
 )

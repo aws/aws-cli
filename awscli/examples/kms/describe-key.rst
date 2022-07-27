@@ -116,6 +116,7 @@ Output::
 
 For more information, see `Viewing multi-Region keys <https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-view.html>`__ in the *AWS Key Management Service Developer Guide*.
 
+
 **To get details about an HMAC KMS key**
 
 The following ``describe-key`` example gets detailed information about an HMAC KMS key. ::

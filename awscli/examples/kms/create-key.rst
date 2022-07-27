@@ -174,12 +174,13 @@ Output::
         "Origin": "AWS_KMS"
       }
     }
-
+    
 **Example 5: To create a KMS key for imported key material**
 
 The following ``create-key`` example creates a creates a KMS key with no key material. When the operation is complete, you can import your own key material into the KMS key. To create this KMS key, set the ``--origin`` parameter to ``EXTERNAL``. ::
 
-aws kms create-key \
+
+    aws kms create-key \
         --origin EXTERNAL
 
 Output::
@@ -210,9 +211,11 @@ Output::
 
 The following ``create-key`` example creates a creates a KMS key in the specified AWS CloudHSM custom key store. The operation creates the KMS key and its metadata in AWS KMS and creates the key material in the AWS CloudHSM cluster associated with the custom key store. The ``--custom-key-store-id`` and ``--origin`` parameters are required. ::
 
-aws kms create-key \
-    --origin AWS_CLOUDHSM \
-    --custom-key-store-id cks-1234567890abcdef0
+    aws kms create-key \
+        --origin AWS_CLOUDHSM \
+        --custom-key-store-id cks-1234567890abcdef0
+
+Output::
 
     {
       "KeyMetadata": {
@@ -235,4 +238,4 @@ aws kms create-key \
         "MultiRegion": false,
         "Origin": "AWS_CLOUDHSM"
       }
-    }   
+    }

@@ -413,7 +413,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_can_emit_http_request_record(self):
         # HTTP_REQUEST records have have their entire body field as a binary
-        # blob, howver it will all be utf-8 valid since the binary fields
+        # blob, however it will all be utf-8 valid since the binary fields
         # from the api call will have been b64 encoded.
         payload = {
             'url': ('https://lambda.us-west-2.amazonaws.com/2015-03-31/'

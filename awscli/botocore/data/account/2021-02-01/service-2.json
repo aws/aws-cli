@@ -27,7 +27,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the specified alternate contact from an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p>",
+      "documentation":"<p>Deletes the specified alternate contact from an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p> <note> <p>Before you can update the alternate contact information for an Amazon Web Services account that is managed by Organizations, you must first enable integration between Amazon Web Services Account Management and Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/using-orgs-trusted-access.html\">Enabling trusted access for Amazon Web Services Account Management</a>.</p> </note>",
       "idempotent":true
     },
     "GetAlternateContact":{
@@ -46,7 +46,25 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the specified alternate contact attached to an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p>"
+      "documentation":"<p>Retrieves the specified alternate contact attached to an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p> <note> <p>Before you can update the alternate contact information for an Amazon Web Services account that is managed by Organizations, you must first enable integration between Amazon Web Services Account Management and Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/using-orgs-trusted-access.html\">Enabling trusted access for Amazon Web Services Account Management</a>.</p> </note>"
+    },
+    "GetContactInformation":{
+      "name":"GetContactInformation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/getContactInformation",
+        "responseCode":200
+      },
+      "input":{"shape":"GetContactInformationRequest"},
+      "output":{"shape":"GetContactInformationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the primary contact information of an Amazon Web Services account.</p> <p>For complete details about how to use the primary contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Update the primary and alternate contact information</a>.</p>"
     },
     "PutAlternateContact":{
       "name":"PutAlternateContact",
@@ -62,7 +80,24 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Modifies the specified alternate contact attached to an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p>",
+      "documentation":"<p>Modifies the specified alternate contact attached to an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p> <note> <p>Before you can update the alternate contact information for an Amazon Web Services account that is managed by Organizations, you must first enable integration between Amazon Web Services Account Management and Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/using-orgs-trusted-access.html\">Enabling trusted access for Amazon Web Services Account Management</a>.</p> </note>",
+      "idempotent":true
+    },
+    "PutContactInformation":{
+      "name":"PutContactInformation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/putContactInformation",
+        "responseCode":200
+      },
+      "input":{"shape":"PutContactInformationRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the primary contact information of an Amazon Web Services account.</p> <p>For complete details about how to use the primary contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Update the primary and alternate contact information</a>.</p>",
       "idempotent":true
     }
   },
@@ -83,6 +118,12 @@
     "AccountId":{
       "type":"string",
       "pattern":"^\\d{12}$"
+    },
+    "AddressLine":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "sensitive":true
     },
     "AlternateContact":{
       "type":"structure",
@@ -118,6 +159,93 @@
         "SECURITY"
       ]
     },
+    "City":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "sensitive":true
+    },
+    "CompanyName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "sensitive":true
+    },
+    "ContactInformation":{
+      "type":"structure",
+      "required":[
+        "AddressLine1",
+        "City",
+        "CountryCode",
+        "FullName",
+        "PhoneNumber",
+        "PostalCode"
+      ],
+      "members":{
+        "AddressLine1":{
+          "shape":"AddressLine",
+          "documentation":"<p>The first line of the primary contact address.</p>"
+        },
+        "AddressLine2":{
+          "shape":"AddressLine",
+          "documentation":"<p>The second line of the primary contact address, if any.</p>"
+        },
+        "AddressLine3":{
+          "shape":"AddressLine",
+          "documentation":"<p>The third line of the primary contact address, if any.</p>"
+        },
+        "City":{
+          "shape":"City",
+          "documentation":"<p>The city of the primary contact address.</p>"
+        },
+        "CompanyName":{
+          "shape":"CompanyName",
+          "documentation":"<p>The name of the company associated with the primary contact information, if any.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The ISO-3166 two-letter country code for the primary contact address.</p>"
+        },
+        "DistrictOrCounty":{
+          "shape":"DistrictOrCounty",
+          "documentation":"<p>The district or county of the primary contact address, if any.</p>"
+        },
+        "FullName":{
+          "shape":"FullName",
+          "documentation":"<p>The full name of the primary contact address.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"ContactInformationPhoneNumber",
+          "documentation":"<p>The phone number of the primary contact information. The number will be validated and, in some countries, checked for activation.</p>"
+        },
+        "PostalCode":{
+          "shape":"PostalCode",
+          "documentation":"<p>The postal code of the primary contact address.</p>"
+        },
+        "StateOrRegion":{
+          "shape":"StateOrRegion",
+          "documentation":"<p>The state or region of the primary contact address. This field is required in selected countries.</p>"
+        },
+        "WebsiteUrl":{
+          "shape":"WebsiteUrl",
+          "documentation":"<p>The URL of the website associated with the primary contact information, if any.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details of the primary contact information associated with an Amazon Web Services account.</p>"
+    },
+    "ContactInformationPhoneNumber":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^[+][\\s0-9()-]+$",
+      "sensitive":true
+    },
+    "CountryCode":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "sensitive":true
+    },
     "DeleteAlternateContactRequest":{
       "type":"structure",
       "required":["AlternateContactType"],
@@ -132,11 +260,23 @@
         }
       }
     },
+    "DistrictOrCounty":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "sensitive":true
+    },
     "EmailAddress":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[\\w+=,.-]+@[\\w.-]+\\.[\\w]+",
+      "pattern":"^[\\s]*[\\w+=.#!&-]+@[\\w.-]+\\.[\\w]+[\\s]*$",
+      "sensitive":true
+    },
+    "FullName":{
+      "type":"string",
+      "max":50,
+      "min":1,
       "sensitive":true
     },
     "GetAlternateContactRequest":{
@@ -159,6 +299,24 @@
         "AlternateContact":{
           "shape":"AlternateContact",
           "documentation":"<p>A structure that contains the details for the specified alternate contact.</p>"
+        }
+      }
+    },
+    "GetContactInformationRequest":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. If you don't specify this parameter, it defaults to the Amazon Web Services account of the identity used to call the operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must also be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-trusted-access.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-delegated-admin.html\">delegated admin</a> account assigned.</p> <note> <p>The management account can't specify its own <code>AccountId</code>. It must call the operation in standalone context by not including the <code>AccountId</code> parameter.</p> </note> <p>To call this operation on an account that is not a member of an organization, don't specify this parameter. Instead, call the operation using an identity belonging to the account whose contacts you wish to retrieve or modify.</p>"
+        }
+      }
+    },
+    "GetContactInformationResponse":{
+      "type":"structure",
+      "members":{
+        "ContactInformation":{
+          "shape":"ContactInformation",
+          "documentation":"<p>Contains the details of the primary contact information associated with an Amazon Web Services account.</p>"
         }
       }
     },
@@ -185,6 +343,12 @@
       "max":25,
       "min":1,
       "pattern":"^[\\s0-9()+-]+$",
+      "sensitive":true
+    },
+    "PostalCode":{
+      "type":"string",
+      "max":20,
+      "min":1,
       "sensitive":true
     },
     "PutAlternateContactRequest":{
@@ -223,6 +387,20 @@
         }
       }
     },
+    "PutContactInformationRequest":{
+      "type":"structure",
+      "required":["ContactInformation"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. If you don't specify this parameter, it defaults to the Amazon Web Services account of the identity used to call the operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must also be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-trusted-access.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-delegated-admin.html\">delegated admin</a> account assigned.</p> <note> <p>The management account can't specify its own <code>AccountId</code>. It must call the operation in standalone context by not including the <code>AccountId</code> parameter.</p> </note> <p>To call this operation on an account that is not a member of an organization, don't specify this parameter. Instead, call the operation using an identity belonging to the account whose contacts you wish to retrieve or modify.</p>"
+        },
+        "ContactInformation":{
+          "shape":"ContactInformation",
+          "documentation":"<p>Contains the details of the primary contact information associated with an Amazon Web Services account.</p>"
+        }
+      }
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["message"],
@@ -235,6 +413,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "StateOrRegion":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "sensitive":true
     },
     "String":{"type":"string"},
     "Title":{
@@ -269,6 +453,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WebsiteUrl":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
     }
   },
   "documentation":"<p>Operations for Amazon Web Services Account Management</p>"

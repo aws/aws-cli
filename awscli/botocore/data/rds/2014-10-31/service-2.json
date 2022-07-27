@@ -1534,6 +1534,24 @@
       ],
       "documentation":"<p>Lists all tags on an Amazon RDS resource.</p> <p>For an overview on tagging an Amazon RDS resource, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
+    "ModifyActivityStream":{
+      "name":"ModifyActivityStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyActivityStreamRequest"},
+      "output":{
+        "shape":"ModifyActivityStreamResponse",
+        "resultWrapper":"ModifyActivityStreamResult"
+      },
+      "errors":[
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"}
+      ],
+      "documentation":"<p>Changes the audit policy state of a database activity stream to either locked (default) or unlocked. A locked policy is read-only, whereas an unlocked policy is read/write. If your activity stream is started and locked, you can unlock it, customize your audit policy, and then lock your activity stream. Restarting the activity stream isn't required. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.Modifying.html\"> Modifying a database activity stream</a> in the <i>Amazon RDS User Guide</i>. </p> <p>This operation is supported for RDS for Oracle only.</p>"
+    },
     "ModifyCertificates":{
       "name":"ModifyCertificates",
       "http":{
@@ -2563,6 +2581,15 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ActivityStreamPolicyStatus":{
+      "type":"string",
+      "enum":[
+        "locked",
+        "unlocked",
+        "locking-policy",
+        "unlocking-policy"
+      ]
+    },
     "ActivityStreamStatus":{
       "type":"string",
       "enum":[
@@ -2699,6 +2726,13 @@
         "shape":"String",
         "locationName":"AttributeValue"
       }
+    },
+    "AuditPolicyState":{
+      "type":"string",
+      "enum":[
+        "locked",
+        "unlocked"
+      ]
     },
     "AuthScheme":{
       "type":"string",
@@ -5664,6 +5698,10 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The network type of the DB instance.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p>"
+        },
+        "ActivityStreamPolicyStatus":{
+          "shape":"ActivityStreamPolicyStatus",
+          "documentation":"<p>The status of the policy state of the activity stream.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",
@@ -9559,6 +9597,48 @@
       "member":{
         "shape":"MinimumEngineVersionPerAllowedValue",
         "locationName":"MinimumEngineVersionPerAllowedValue"
+      }
+    },
+    "ModifyActivityStreamRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the RDS for Oracle DB instance, for example, <code>arn:aws:rds:us-east-1:12345667890:instance:my-orcl-db</code>.</p>"
+        },
+        "AuditPolicyState":{
+          "shape":"AuditPolicyState",
+          "documentation":"<p>The audit policy state. When a policy is unlocked, it is read/write. When it is locked, it is read-only. You can edit your audit policy only when the activity stream is unlocked or stopped.</p>"
+        }
+      }
+    },
+    "ModifyActivityStreamResponse":{
+      "type":"structure",
+      "members":{
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of messages in the database activity stream.</p>"
+        },
+        "KinesisStreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Kinesis data stream to be used for the database activity stream.</p>"
+        },
+        "Status":{
+          "shape":"ActivityStreamStatus",
+          "documentation":"<p>The status of the modification to the database activity stream.</p>"
+        },
+        "Mode":{
+          "shape":"ActivityStreamMode",
+          "documentation":"<p>The mode of the database activity stream.</p>"
+        },
+        "EngineNativeAuditFieldsIncluded":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether engine-native audit fields are included in the database activity stream.</p>"
+        },
+        "PolicyStatus":{
+          "shape":"ActivityStreamPolicyStatus",
+          "documentation":"<p>The status of the modification to the policy state of the database activity stream.</p>"
+        }
       }
     },
     "ModifyCertificatesMessage":{

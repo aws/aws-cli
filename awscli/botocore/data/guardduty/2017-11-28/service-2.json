@@ -284,6 +284,21 @@
       ],
       "documentation":"<p>Deletes the ThreatIntelSet specified by the ThreatIntelSet ID.</p>"
     },
+    "DescribeMalwareScans":{
+      "name":"DescribeMalwareScans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/malware-scans",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeMalwareScansRequest"},
+      "output":{"shape":"DescribeMalwareScansResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns a list of malware scans.</p>"
+    },
     "DescribeOrganizationConfiguration":{
       "name":"DescribeOrganizationConfiguration",
       "http":{
@@ -495,6 +510,21 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Returns the count of all GuardDuty membership invitations that were sent to the current member account except the currently accepted invitation.</p>"
+    },
+    "GetMalwareScanSettings":{
+      "name":"GetMalwareScanSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/detector/{detectorId}/malware-scan-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMalwareScanSettingsRequest"},
+      "output":{"shape":"GetMalwareScanSettingsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns the details of the malware scan settings.</p>"
     },
     "GetMasterAccount":{
       "name":"GetMasterAccount",
@@ -887,6 +917,21 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Updates the IPSet specified by the IPSet ID.</p>"
+    },
+    "UpdateMalwareScanSettings":{
+      "name":"UpdateMalwareScanSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/malware-scan-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMalwareScanSettingsRequest"},
+      "output":{"shape":"UpdateMalwareScanSettingsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Updates the malware scan settings.</p>"
     },
     "UpdateMemberDetectors":{
       "name":"UpdateMemberDetectors",
@@ -1874,6 +1919,17 @@
       "key":{"shape":"String"},
       "value":{"shape":"Condition"}
     },
+    "CriterionKey":{
+      "type":"string",
+      "enum":[
+        "EC2_INSTANCE_ARN",
+        "SCAN_ID",
+        "ACCOUNT_ID",
+        "GUARDDUTY_FINDING_ID",
+        "SCAN_START_TIME",
+        "SCAN_STATUS"
+      ]
+    },
     "DNSLogsConfigurationResult":{
       "type":"structure",
       "required":["Status"],
@@ -1893,7 +1949,8 @@
         "CLOUD_TRAIL",
         "DNS_LOGS",
         "S3_LOGS",
-        "KUBERNETES_AUDIT_LOGS"
+        "KUBERNETES_AUDIT_LOGS",
+        "EC2_MALWARE_SCAN"
       ]
     },
     "DataSourceConfigurations":{
@@ -1908,6 +1965,11 @@
           "shape":"KubernetesConfiguration",
           "documentation":"<p>Describes whether any Kubernetes logs are enabled as data sources.</p>",
           "locationName":"kubernetes"
+        },
+        "MalwareProtection":{
+          "shape":"MalwareProtectionConfiguration",
+          "documentation":"<p>Describes whether Malware Protection is enabled as a data source.</p>",
+          "locationName":"malwareProtection"
         }
       },
       "documentation":"<p>Contains information about which data sources are enabled.</p>"
@@ -1945,6 +2007,11 @@
           "shape":"KubernetesConfigurationResult",
           "documentation":"<p>An object that contains information on the status of all Kubernetes data sources.</p>",
           "locationName":"kubernetes"
+        },
+        "MalwareProtection":{
+          "shape":"MalwareProtectionConfigurationResult",
+          "documentation":"<p>Describes the configuration of Malware Protection data sources.</p>",
+          "locationName":"malwareProtection"
         }
       },
       "documentation":"<p>Contains information on the status of data sources for the detector.</p>"
@@ -2000,6 +2067,11 @@
           "shape":"KubernetesDataSourceFreeTrial",
           "documentation":"<p>Describes whether any Kubernetes logs are enabled as data sources.</p>",
           "locationName":"kubernetes"
+        },
+        "MalwareProtection":{
+          "shape":"MalwareProtectionDataSourceFreeTrial",
+          "documentation":"<p>Describes whether Malware Protection is enabled as a data source.</p>",
+          "locationName":"malwareProtection"
         }
       },
       "documentation":"<p>Contains information about which data sources are enabled for the GuardDuty member account.</p>"
@@ -2214,6 +2286,54 @@
     "DeleteThreatIntelSetResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DescribeMalwareScansRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector that the request is associated with.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.</p>",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"IntegerValueWithMax",
+          "documentation":"<p>You can use this parameter to indicate the maximum number of items that you want in the response. The default value is 50. The maximum value is 50.</p>",
+          "locationName":"maxResults"
+        },
+        "FilterCriteria":{
+          "shape":"FilterCriteria",
+          "documentation":"<p>Represents the criteria to be used in the filter for describing scan entries.</p>",
+          "locationName":"filterCriteria"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>Represents the criteria used for sorting scan entries.</p>",
+          "locationName":"sortCriteria"
+        }
+      }
+    },
+    "DescribeMalwareScansResponse":{
+      "type":"structure",
+      "required":["Scans"],
+      "members":{
+        "Scans":{
+          "shape":"Scans",
+          "documentation":"<p>Contains information about malware scans.</p>",
+          "locationName":"scans"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>",
+          "locationName":"nextToken"
+        }
       }
     },
     "DescribeOrganizationConfigurationRequest":{
@@ -2500,6 +2620,178 @@
       "documentation":"<p>Contains information about the domain.</p>"
     },
     "Double":{"type":"double"},
+    "EbsSnapshotPreservation":{
+      "type":"string",
+      "enum":[
+        "NO_RETENTION",
+        "RETENTION_WITH_FINDING"
+      ]
+    },
+    "EbsVolumeDetails":{
+      "type":"structure",
+      "members":{
+        "ScannedVolumeDetails":{
+          "shape":"VolumeDetails",
+          "documentation":"<p>List of EBS volumes that were scanned.</p>",
+          "locationName":"scannedVolumeDetails"
+        },
+        "SkippedVolumeDetails":{
+          "shape":"VolumeDetails",
+          "documentation":"<p>List of EBS volumes that were skipped from the malware scan.</p>",
+          "locationName":"skippedVolumeDetails"
+        }
+      },
+      "documentation":"<p>Contains list of scanned and skipped EBS volumes with details.</p>"
+    },
+    "EbsVolumeScanDetails":{
+      "type":"structure",
+      "members":{
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>Unique Id of the malware scan that generated the finding.</p>",
+          "locationName":"scanId"
+        },
+        "ScanStartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Returns the start date and time of the malware scan.</p>",
+          "locationName":"scanStartedAt"
+        },
+        "ScanCompletedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Returns the completion date and time of the malware scan.</p>",
+          "locationName":"scanCompletedAt"
+        },
+        "TriggerFindingId":{
+          "shape":"String",
+          "documentation":"<p>GuardDuty finding ID that triggered a malware scan.</p>",
+          "locationName":"triggerFindingId"
+        },
+        "Sources":{
+          "shape":"Sources",
+          "documentation":"<p>Contains list of threat intelligence sources used to detect threats.</p>",
+          "locationName":"sources"
+        },
+        "ScanDetections":{
+          "shape":"ScanDetections",
+          "documentation":"<p>Contains a complete view providing malware scan result details.</p>",
+          "locationName":"scanDetections"
+        }
+      },
+      "documentation":"<p>Contains details from the malware scan that created a finding.</p>"
+    },
+    "EbsVolumesResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"DataSourceStatus",
+          "documentation":"<p>Describes whether scanning EBS volumes is enabled as a data source.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>"
+    },
+    "EcsClusterDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the ECS Cluster.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the cluster.</p>",
+          "locationName":"arn"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the ECS cluster.</p>",
+          "locationName":"status"
+        },
+        "ActiveServicesCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of services that are running on the cluster in an ACTIVE state.</p>",
+          "locationName":"activeServicesCount"
+        },
+        "RegisteredContainerInstancesCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of container instances registered into the cluster.</p>",
+          "locationName":"registeredContainerInstancesCount"
+        },
+        "RunningTasksCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tasks in the cluster that are in the RUNNING state.</p>",
+          "locationName":"runningTasksCount"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags of the ECS Cluster.</p>",
+          "locationName":"tags"
+        },
+        "TaskDetails":{
+          "shape":"EcsTaskDetails",
+          "documentation":"<p>Contains information about the details of the ECS Task.</p>",
+          "locationName":"taskDetails"
+        }
+      },
+      "documentation":"<p>Contains information about the details of the ECS Cluster.</p>"
+    },
+    "EcsTaskDetails":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task.</p>",
+          "locationName":"arn"
+        },
+        "DefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the task definition that creates the task.</p>",
+          "locationName":"definitionArn"
+        },
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version counter for the task.</p>",
+          "locationName":"version"
+        },
+        "TaskCreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the task was created.</p>",
+          "locationName":"createdAt"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the task started.</p>",
+          "locationName":"startedAt"
+        },
+        "StartedBy":{
+          "shape":"String",
+          "documentation":"<p>Contains the tag specified when a task is started.</p>",
+          "locationName":"startedBy"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags of the ECS Task.</p>",
+          "locationName":"tags"
+        },
+        "Volumes":{
+          "shape":"Volumes",
+          "documentation":"<p>The list of data volume definitions for the task.</p>",
+          "locationName":"volumes"
+        },
+        "Containers":{
+          "shape":"Containers",
+          "documentation":"<p>The containers that's associated with the task.</p>",
+          "locationName":"containers"
+        },
+        "Group":{
+          "shape":"String",
+          "documentation":"<p>The name of the task group that's associated with the task.</p>",
+          "locationName":"group"
+        }
+      },
+      "documentation":"<p>Contains information about the task in an ECS cluster.</p>"
+    },
     "EksClusterDetails":{
       "type":"structure",
       "members":{
@@ -2583,6 +2875,10 @@
         "NOT_USEFUL"
       ]
     },
+    "FilePaths":{
+      "type":"list",
+      "member":{"shape":"ScanFilePath"}
+    },
     "FilterAction":{
       "type":"string",
       "enum":[
@@ -2591,6 +2887,60 @@
       ],
       "max":300,
       "min":1
+    },
+    "FilterCondition":{
+      "type":"structure",
+      "members":{
+        "EqualsValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Represents an <i>equal</i> <b/> condition to be applied to a single field when querying for scan entries.</p>",
+          "locationName":"equalsValue"
+        },
+        "GreaterThan":{
+          "shape":"LongValue",
+          "documentation":"<p>Represents a <i>greater than</i> condition to be applied to a single field when querying for scan entries.</p>",
+          "locationName":"greaterThan"
+        },
+        "LessThan":{
+          "shape":"LongValue",
+          "documentation":"<p>Represents a <i>less than</i> condition to be applied to a single field when querying for scan entries.</p>",
+          "locationName":"lessThan"
+        }
+      },
+      "documentation":"<p>Contains information about the condition.</p>"
+    },
+    "FilterCriteria":{
+      "type":"structure",
+      "members":{
+        "FilterCriterion":{
+          "shape":"FilterCriterionList",
+          "documentation":"<p>Represents a condition that when matched will be added to the response of the operation.</p>",
+          "locationName":"filterCriterion"
+        }
+      },
+      "documentation":"<p>Represents the criteria to be used in the filter for describing scan entries.</p>"
+    },
+    "FilterCriterion":{
+      "type":"structure",
+      "members":{
+        "CriterionKey":{
+          "shape":"CriterionKey",
+          "documentation":"<p>An enum value representing possible scan properties to match with given scan entries.</p>",
+          "locationName":"criterionKey"
+        },
+        "FilterCondition":{
+          "shape":"FilterCondition",
+          "documentation":"<p>Contains information about the condition.</p>",
+          "locationName":"filterCondition"
+        }
+      },
+      "documentation":"<p>Represents a condition that when matched will be added to the response of the operation.</p>"
+    },
+    "FilterCriterionList":{
+      "type":"list",
+      "member":{"shape":"FilterCriterion"},
+      "max":1,
+      "min":0
     },
     "FilterDescription":{
       "type":"string",
@@ -3084,6 +3434,33 @@
         }
       }
     },
+    "GetMalwareScanSettingsRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector that the scan setting is associated with.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        }
+      }
+    },
+    "GetMalwareScanSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "ScanResourceCriteria":{
+          "shape":"ScanResourceCriteria",
+          "documentation":"<p>Represents the criteria to be used in the filter for scanning resources.</p>",
+          "locationName":"scanResourceCriteria"
+        },
+        "EbsSnapshotPreservation":{
+          "shape":"EbsSnapshotPreservation",
+          "documentation":"<p>An enum value representing possible snapshot preservations.</p>",
+          "locationName":"ebsSnapshotPreservation"
+        }
+      }
+    },
     "GetMasterAccountRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -3342,6 +3719,27 @@
       "type":"string",
       "pattern":"^arn:[A-Za-z_.-]{1,20}:guardduty:[A-Za-z0-9_/.-]{0,63}:\\d+:detector/[A-Za-z0-9_/.-]{32,264}$"
     },
+    "HighestSeverityThreatDetails":{
+      "type":"structure",
+      "members":{
+        "Severity":{
+          "shape":"String",
+          "documentation":"<p>Severity level of the highest severity threat detected.</p>",
+          "locationName":"severity"
+        },
+        "ThreatName":{
+          "shape":"String",
+          "documentation":"<p>Threat name of the highest severity threat detected as part of the malware scan.</p>",
+          "locationName":"threatName"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of infected files with the highest severity threat detected.</p>",
+          "locationName":"count"
+        }
+      },
+      "documentation":"<p>Contains details of the highest severity threat detected during scan and number of infected files.</p>"
+    },
     "HostPath":{
       "type":"structure",
       "members":{
@@ -3368,6 +3766,10 @@
         }
       },
       "documentation":"<p>Contains information about the EC2 instance profile.</p>"
+    },
+    "InstanceArn":{
+      "type":"string",
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):[a-z]+:[a-z]+(-[0-9]+|-[a-z]+)+:([0-9]{12}):[a-z\\-]+\\/[a-zA-Z0-9]*$"
     },
     "InstanceDetails":{
       "type":"structure",
@@ -3441,6 +3843,11 @@
       "documentation":"<p>Contains information about the details of an instance.</p>"
     },
     "Integer":{"type":"integer"},
+    "IntegerValueWithMax":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
     "InternalServerErrorException":{
       "type":"structure",
       "members":{
@@ -4151,6 +4558,49 @@
       "min":1
     },
     "Long":{"type":"long"},
+    "LongValue":{"type":"long"},
+    "MalwareProtectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "ScanEc2InstanceWithFindings":{
+          "shape":"ScanEc2InstanceWithFindings",
+          "documentation":"<p>Describes the configuration of Malware Protection for EC2 instances with findings.</p>",
+          "locationName":"scanEc2InstanceWithFindings"
+        }
+      },
+      "documentation":"<p>Describes whether Malware Protection will be enabled as a data source.</p>"
+    },
+    "MalwareProtectionConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "ScanEc2InstanceWithFindings":{
+          "shape":"ScanEc2InstanceWithFindingsResult",
+          "documentation":"<p>Describes the configuration of Malware Protection for EC2 instances with findings.</p>",
+          "locationName":"scanEc2InstanceWithFindings"
+        },
+        "ServiceRole":{
+          "shape":"String",
+          "documentation":"<p>The GuardDuty Malware Protection service role.</p>",
+          "locationName":"serviceRole"
+        }
+      },
+      "documentation":"<p>An object that contains information on the status of all Malware Protection data sources.</p>"
+    },
+    "MalwareProtectionDataSourceFreeTrial":{
+      "type":"structure",
+      "members":{
+        "ScanEc2InstanceWithFindings":{
+          "shape":"DataSourceFreeTrial",
+          "documentation":"<p>Describes whether Malware Protection for EC2 instances with findings is enabled as a data source.</p>",
+          "locationName":"scanEc2InstanceWithFindings"
+        }
+      },
+      "documentation":"<p>Provides details about Malware Protection when it is enabled as a data source.</p>"
+    },
+    "MapEquals":{
+      "type":"list",
+      "member":{"shape":"ScanConditionPair"}
+    },
     "Master":{
       "type":"structure",
       "members":{
@@ -4377,6 +4827,11 @@
       "type":"list",
       "member":{"shape":"NetworkInterface"}
     },
+    "NonEmptyString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
     "NotEquals":{
       "type":"list",
       "member":{"shape":"String"}
@@ -4426,6 +4881,11 @@
           "shape":"OrganizationKubernetesConfiguration",
           "documentation":"<p>Describes the configuration of Kubernetes data sources for new members of the organization.</p>",
           "locationName":"kubernetes"
+        },
+        "MalwareProtection":{
+          "shape":"OrganizationMalwareProtectionConfiguration",
+          "documentation":"<p>Describes the configuration of Malware Protection for new members of the organization.</p>",
+          "locationName":"malwareProtection"
         }
       },
       "documentation":"<p>An object that contains information on which data sources will be configured to be automatically enabled for new members within the organization.</p>"
@@ -4443,9 +4903,36 @@
           "shape":"OrganizationKubernetesConfigurationResult",
           "documentation":"<p>Describes the configuration of Kubernetes data sources.</p>",
           "locationName":"kubernetes"
+        },
+        "MalwareProtection":{
+          "shape":"OrganizationMalwareProtectionConfigurationResult",
+          "documentation":"<p>Describes the configuration of Malware Protection data source for an organization.</p>",
+          "locationName":"malwareProtection"
         }
       },
       "documentation":"<p>An object that contains information on which data sources are automatically enabled for new members within the organization.</p>"
+    },
+    "OrganizationEbsVolumes":{
+      "type":"structure",
+      "members":{
+        "AutoEnable":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether scanning EBS volumes should be auto-enabled for new members joining the organization.</p>",
+          "locationName":"autoEnable"
+        }
+      },
+      "documentation":"<p>Organization-wide EBS volumes scan configuration.</p>"
+    },
+    "OrganizationEbsVolumesResult":{
+      "type":"structure",
+      "members":{
+        "AutoEnable":{
+          "shape":"Boolean",
+          "documentation":"<p>An object that contains the status of whether scanning EBS volumes should be auto-enabled for new members joining the organization.</p>",
+          "locationName":"autoEnable"
+        }
+      },
+      "documentation":"<p>An object that contains information on the status of whether EBS volumes scanning will be enabled as a data source for an organization.</p>"
     },
     "OrganizationKubernetesAuditLogsConfiguration":{
       "type":"structure",
@@ -4495,6 +4982,28 @@
       },
       "documentation":"<p>The current configuration of all Kubernetes data sources for the organization.</p>"
     },
+    "OrganizationMalwareProtectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "ScanEc2InstanceWithFindings":{
+          "shape":"OrganizationScanEc2InstanceWithFindings",
+          "documentation":"<p>Whether Malware Protection for EC2 instances with findings should be auto-enabled for new members joining the organization.</p>",
+          "locationName":"scanEc2InstanceWithFindings"
+        }
+      },
+      "documentation":"<p>Organization-wide Malware Protection configurations.</p>"
+    },
+    "OrganizationMalwareProtectionConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "ScanEc2InstanceWithFindings":{
+          "shape":"OrganizationScanEc2InstanceWithFindingsResult",
+          "documentation":"<p>Describes the configuration for scanning EC2 instances with findings for an organization.</p>",
+          "locationName":"scanEc2InstanceWithFindings"
+        }
+      },
+      "documentation":"<p>An object that contains information on the status of all Malware Protection data source for an organization.</p>"
+    },
     "OrganizationS3LogsConfiguration":{
       "type":"structure",
       "required":["AutoEnable"],
@@ -4518,6 +5027,28 @@
         }
       },
       "documentation":"<p>The current configuration of S3 data event logs as a data source for the organization.</p>"
+    },
+    "OrganizationScanEc2InstanceWithFindings":{
+      "type":"structure",
+      "members":{
+        "EbsVolumes":{
+          "shape":"OrganizationEbsVolumes",
+          "documentation":"<p>Whether scanning EBS volumes should be auto-enabled for new members joining the organization.</p>",
+          "locationName":"ebsVolumes"
+        }
+      },
+      "documentation":"<p>Organization-wide EC2 instances with findings scan configuration.</p>"
+    },
+    "OrganizationScanEc2InstanceWithFindingsResult":{
+      "type":"structure",
+      "members":{
+        "EbsVolumes":{
+          "shape":"OrganizationEbsVolumesResult",
+          "documentation":"<p>Describes the configuration for scanning EBS volumes for an organization.</p>",
+          "locationName":"ebsVolumes"
+        }
+      },
+      "documentation":"<p>An object that contains information on the status of scanning EC2 instances with findings for an organization.</p>"
     },
     "Owner":{
       "type":"structure",
@@ -4586,6 +5117,10 @@
     "PortProbeDetails":{
       "type":"list",
       "member":{"shape":"PortProbeDetail"}
+    },
+    "PositiveLong":{
+      "type":"long",
+      "min":0
     },
     "PrivateIpAddressDetails":{
       "type":"structure",
@@ -4749,9 +5284,34 @@
           "shape":"String",
           "documentation":"<p>The type of Amazon Web Services resource.</p>",
           "locationName":"resourceType"
+        },
+        "EbsVolumeDetails":{
+          "shape":"EbsVolumeDetails",
+          "documentation":"<p>Contains list of scanned and skipped EBS volumes with details.</p>",
+          "locationName":"ebsVolumeDetails"
+        },
+        "EcsClusterDetails":{
+          "shape":"EcsClusterDetails",
+          "documentation":"<p>Contains information about the details of the ECS Cluster.</p>",
+          "locationName":"ecsClusterDetails"
+        },
+        "ContainerDetails":{
+          "shape":"Container",
+          "locationName":"containerDetails"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
+    },
+    "ResourceDetails":{
+      "type":"structure",
+      "members":{
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>InstanceArn that was scanned in the scan entry.</p>",
+          "locationName":"instanceArn"
+        }
+      },
+      "documentation":"<p>Represents the resources that were scanned in the scan entry.</p>"
     },
     "ResourceList":{
       "type":"list",
@@ -4830,6 +5390,293 @@
         }
       },
       "documentation":"<p>Describes whether S3 data event logs will be enabled as a data source.</p>"
+    },
+    "Scan":{
+      "type":"structure",
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector that the request is associated with.</p>",
+          "locationName":"detectorId"
+        },
+        "AdminDetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique detector ID of the administrator account that the request is associated with. Note that this value will be the same as the one used for <code>DetectorId</code> if the account is an administrator.</p>",
+          "locationName":"adminDetectorId"
+        },
+        "ScanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique scan ID associated with a scan entry.</p>",
+          "locationName":"scanId"
+        },
+        "ScanStatus":{
+          "shape":"ScanStatus",
+          "documentation":"<p>An enum value representing possible scan statuses.</p>",
+          "locationName":"scanStatus"
+        },
+        "FailureReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Represents the reason for FAILED scan status.</p>",
+          "locationName":"failureReason"
+        },
+        "ScanStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the scan was triggered.</p>",
+          "locationName":"scanStartTime"
+        },
+        "ScanEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the scan was finished.</p>",
+          "locationName":"scanEndTime"
+        },
+        "TriggerDetails":{
+          "shape":"TriggerDetails",
+          "documentation":"<p>Represents the reason the scan was triggered.</p>",
+          "locationName":"triggerDetails"
+        },
+        "ResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>Represents the resources that were scanned in the scan entry.</p>",
+          "locationName":"resourceDetails"
+        },
+        "ScanResultDetails":{
+          "shape":"ScanResultDetails",
+          "documentation":"<p>Represents the result of the scan.</p>",
+          "locationName":"scanResultDetails"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID for the account that belongs to the scan.</p>",
+          "locationName":"accountId"
+        },
+        "TotalBytes":{
+          "shape":"PositiveLong",
+          "documentation":"<p>Represents total bytes that were scanned.</p>",
+          "locationName":"totalBytes"
+        },
+        "FileCount":{
+          "shape":"PositiveLong",
+          "documentation":"<p>Represents the number of files that were scanned.</p>",
+          "locationName":"fileCount"
+        },
+        "AttachedVolumes":{
+          "shape":"VolumeDetails",
+          "documentation":"<p>List of volumes that were attached to the original instance to be scanned.</p>",
+          "locationName":"attachedVolumes"
+        }
+      },
+      "documentation":"<p>Contains information about a malware scan.</p>"
+    },
+    "ScanCondition":{
+      "type":"structure",
+      "required":["MapEquals"],
+      "members":{
+        "MapEquals":{
+          "shape":"MapEquals",
+          "documentation":"<p>Represents an <i>mapEqual</i> <b/> condition to be applied to a single field when triggering for malware scan.</p>",
+          "locationName":"mapEquals"
+        }
+      },
+      "documentation":"<p>Contains information about the condition.</p>"
+    },
+    "ScanConditionPair":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>Represents <i>key</i> <b/> in the map condition.</p>",
+          "locationName":"key"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>Represents optional <i>value</i> <b/> in the map condition. If not specified, only <i>key</i> <b/> will be matched.</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>Represents key, value pair to be matched against given resource property.</p>"
+    },
+    "ScanCriterion":{
+      "type":"map",
+      "key":{"shape":"ScanCriterionKey"},
+      "value":{"shape":"ScanCondition"},
+      "documentation":"<p>Represents a map of resource properties that match specified conditions and values when triggering malware scans.</p>"
+    },
+    "ScanCriterionKey":{
+      "type":"string",
+      "documentation":"<p>An enum value representing possible resource properties to match with given scan condition.</p>",
+      "enum":["EC2_INSTANCE_TAG"]
+    },
+    "ScanDetections":{
+      "type":"structure",
+      "members":{
+        "ScannedItemCount":{
+          "shape":"ScannedItemCount",
+          "documentation":"<p>Total number of scanned files.</p>",
+          "locationName":"scannedItemCount"
+        },
+        "ThreatsDetectedItemCount":{
+          "shape":"ThreatsDetectedItemCount",
+          "documentation":"<p>Total number of infected files.</p>",
+          "locationName":"threatsDetectedItemCount"
+        },
+        "HighestSeverityThreatDetails":{
+          "shape":"HighestSeverityThreatDetails",
+          "documentation":"<p>Details of the highest severity threat detected during malware scan and number of infected files.</p>",
+          "locationName":"highestSeverityThreatDetails"
+        },
+        "ThreatDetectedByName":{
+          "shape":"ThreatDetectedByName",
+          "documentation":"<p>Contains details about identified threats organized by threat name.</p>",
+          "locationName":"threatDetectedByName"
+        }
+      },
+      "documentation":"<p>Contains a complete view providing malware scan result details.</p>"
+    },
+    "ScanEc2InstanceWithFindings":{
+      "type":"structure",
+      "members":{
+        "EbsVolumes":{
+          "shape":"Boolean",
+          "documentation":"<p>Describes the configuration for scanning EBS volumes as data source.</p>",
+          "locationName":"ebsVolumes"
+        }
+      },
+      "documentation":"<p>Describes whether Malware Protection for EC2 instances with findings will be enabled as a data source.</p>"
+    },
+    "ScanEc2InstanceWithFindingsResult":{
+      "type":"structure",
+      "members":{
+        "EbsVolumes":{
+          "shape":"EbsVolumesResult",
+          "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>",
+          "locationName":"ebsVolumes"
+        }
+      },
+      "documentation":"<p>An object that contains information on the status of whether Malware Protection for EC2 instances with findings will be enabled as a data source.</p>"
+    },
+    "ScanFilePath":{
+      "type":"structure",
+      "members":{
+        "FilePath":{
+          "shape":"String",
+          "documentation":"<p>The file path of the infected file.</p>",
+          "locationName":"filePath"
+        },
+        "VolumeArn":{
+          "shape":"String",
+          "documentation":"<p>EBS volume Arn details of the infected file.</p>",
+          "locationName":"volumeArn"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>The hash value of the infected file.</p>",
+          "locationName":"hash"
+        },
+        "FileName":{
+          "shape":"String",
+          "documentation":"<p>File name of the infected file.</p>",
+          "locationName":"fileName"
+        }
+      },
+      "documentation":"<p>Contains details of infected file including name, file path and hash.</p>"
+    },
+    "ScanResourceCriteria":{
+      "type":"structure",
+      "members":{
+        "Include":{
+          "shape":"ScanCriterion",
+          "documentation":"<p>Represents condition that when matched will allow a malware scan for a certain resource.</p>",
+          "locationName":"include"
+        },
+        "Exclude":{
+          "shape":"ScanCriterion",
+          "documentation":"<p>Represents condition that when matched will prevent a malware scan for a certain resource.</p>",
+          "locationName":"exclude"
+        }
+      },
+      "documentation":"<p>Contains information about criteria used to filter resources before triggering malware scan.</p>"
+    },
+    "ScanResult":{
+      "type":"string",
+      "enum":[
+        "CLEAN",
+        "INFECTED"
+      ]
+    },
+    "ScanResultDetails":{
+      "type":"structure",
+      "members":{
+        "ScanResult":{
+          "shape":"ScanResult",
+          "documentation":"<p>An enum value representing possible scan results.</p>",
+          "locationName":"scanResult"
+        }
+      },
+      "documentation":"<p>Represents the result of the scan.</p>"
+    },
+    "ScanStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "ScanThreatName":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the identified threat.</p>",
+          "locationName":"name"
+        },
+        "Severity":{
+          "shape":"String",
+          "documentation":"<p>Severity of threat identified as part of the malware scan.</p>",
+          "locationName":"severity"
+        },
+        "ItemCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of files infected with given threat.</p>",
+          "locationName":"itemCount"
+        },
+        "FilePaths":{
+          "shape":"FilePaths",
+          "documentation":"<p>List of infected files in EBS volume with details.</p>",
+          "locationName":"filePaths"
+        }
+      },
+      "documentation":"<p>Contains files infected with the given threat providing details of malware name and severity.</p>"
+    },
+    "ScanThreatNames":{
+      "type":"list",
+      "member":{"shape":"ScanThreatName"}
+    },
+    "ScannedItemCount":{
+      "type":"structure",
+      "members":{
+        "TotalGb":{
+          "shape":"Integer",
+          "documentation":"<p>Total GB of files scanned for malware.</p>",
+          "locationName":"totalGb"
+        },
+        "Files":{
+          "shape":"Integer",
+          "documentation":"<p>Number of files scanned.</p>",
+          "locationName":"files"
+        },
+        "Volumes":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of scanned volumes.</p>",
+          "locationName":"volumes"
+        }
+      },
+      "documentation":"<p>Total number of scanned files.</p>"
+    },
+    "Scans":{
+      "type":"list",
+      "member":{"shape":"Scan"}
     },
     "SecurityContext":{
       "type":"structure",
@@ -4919,6 +5766,16 @@
           "shape":"ServiceAdditionalInfo",
           "documentation":"<p>Contains additional information about the generated finding.</p>",
           "locationName":"additionalInfo"
+        },
+        "FeatureName":{
+          "shape":"String",
+          "documentation":"<p>The name of the feature that generated a finding.</p>",
+          "locationName":"featureName"
+        },
+        "EbsVolumeScanDetails":{
+          "shape":"EbsVolumeScanDetails",
+          "documentation":"<p>Returns details from the malware scan that created a finding.</p>",
+          "locationName":"ebsVolumeScanDetails"
         }
       },
       "documentation":"<p>Contains additional information about the generated finding.</p>"
@@ -4956,6 +5813,10 @@
       "documentation":"<p>Contains information about the criteria used for sorting findings.</p>"
     },
     "SourceIps":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "Sources":{
       "type":"list",
       "member":{"shape":"String"}
     },
@@ -5090,6 +5951,32 @@
       "type":"list",
       "member":{"shape":"Tag"}
     },
+    "ThreatDetectedByName":{
+      "type":"structure",
+      "members":{
+        "ItemCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of infected files identified.</p>",
+          "locationName":"itemCount"
+        },
+        "UniqueThreatNameCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of unique threats by name identified, as part of the malware scan.</p>",
+          "locationName":"uniqueThreatNameCount"
+        },
+        "Shortened":{
+          "shape":"Boolean",
+          "documentation":"<p>Flag to determine if the finding contains every single infected file-path and/or every threat.</p>",
+          "locationName":"shortened"
+        },
+        "ThreatNames":{
+          "shape":"ScanThreatNames",
+          "documentation":"<p>List of identified threats with details, organized by threat name.</p>",
+          "locationName":"threatNames"
+        }
+      },
+      "documentation":"<p>Contains details about identified threats organized by threat name.</p>"
+    },
     "ThreatIntelSetFormat":{
       "type":"string",
       "enum":[
@@ -5147,6 +6034,17 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ThreatsDetectedItemCount":{
+      "type":"structure",
+      "members":{
+        "Files":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of infected files.</p>",
+          "locationName":"files"
+        }
+      },
+      "documentation":"<p>Contains total number of infected files.</p>"
+    },
     "Timestamp":{"type":"timestamp"},
     "Total":{
       "type":"structure",
@@ -5163,6 +6061,22 @@
         }
       },
       "documentation":"<p>Contains the total usage with the corresponding currency unit for that value.</p>"
+    },
+    "TriggerDetails":{
+      "type":"structure",
+      "members":{
+        "GuardDutyFindingId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the GuardDuty finding that triggered the BirdDog scan.</p>",
+          "locationName":"guardDutyFindingId"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the scan trigger.</p>",
+          "locationName":"description"
+        }
+      },
+      "documentation":"<p>Represents the reason the scan was triggered.</p>"
     },
     "UnarchiveFindingsRequest":{
       "type":"structure",
@@ -5398,6 +6312,33 @@
       }
     },
     "UpdateIPSetResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateMalwareScanSettingsRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector that specifies the GuardDuty service where you want to update scan settings.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "ScanResourceCriteria":{
+          "shape":"ScanResourceCriteria",
+          "documentation":"<p>Represents the criteria to be used in the filter for selecting resources to scan.</p>",
+          "locationName":"scanResourceCriteria"
+        },
+        "EbsSnapshotPreservation":{
+          "shape":"EbsSnapshotPreservation",
+          "documentation":"<p>An enum value representing possible snapshot preservations.</p>",
+          "locationName":"ebsSnapshotPreservation"
+        }
+      }
+    },
+    "UpdateMalwareScanSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -5672,6 +6613,51 @@
         }
       },
       "documentation":"<p>Volume used by the Kubernetes workload.</p>"
+    },
+    "VolumeDetail":{
+      "type":"structure",
+      "members":{
+        "VolumeArn":{
+          "shape":"String",
+          "documentation":"<p>EBS volume Arn information.</p>",
+          "locationName":"volumeArn"
+        },
+        "VolumeType":{
+          "shape":"String",
+          "documentation":"<p>The EBS volume type.</p>",
+          "locationName":"volumeType"
+        },
+        "DeviceName":{
+          "shape":"String",
+          "documentation":"<p>The device name for the EBS volume.</p>",
+          "locationName":"deviceName"
+        },
+        "VolumeSizeInGB":{
+          "shape":"Integer",
+          "documentation":"<p>EBS volume size in GB.</p>",
+          "locationName":"volumeSizeInGB"
+        },
+        "EncryptionType":{
+          "shape":"String",
+          "documentation":"<p>EBS volume encryption type.</p>",
+          "locationName":"encryptionType"
+        },
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>Snapshot Arn of the EBS volume.</p>",
+          "locationName":"snapshotArn"
+        },
+        "KmsKeyArn":{
+          "shape":"String",
+          "documentation":"<p>KMS key Arn used to encrypt the EBS volume.</p>",
+          "locationName":"kmsKeyArn"
+        }
+      },
+      "documentation":"<p>Contains EBS volume details.</p>"
+    },
+    "VolumeDetails":{
+      "type":"list",
+      "member":{"shape":"VolumeDetail"}
     },
     "VolumeMount":{
       "type":"structure",

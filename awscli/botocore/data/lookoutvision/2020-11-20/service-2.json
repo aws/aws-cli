@@ -285,7 +285,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists the Amazon Lookout for Vision projects in your AWS account.</p> <p>The <code>ListProjects</code> operation is eventually consistent. Recent calls to <code>CreateProject</code> and <code>DeleteProject</code> might take a while to appear in the response from <code>ListProjects</code>.</p> <p>This operation requires permissions to perform the <code>lookoutvision:ListProjects</code> operation.</p>"
+      "documentation":"<p>Lists the Amazon Lookout for Vision projects in your AWS account that are in the AWS Region in which you call <code>ListProjects</code>.</p> <p>The <code>ListProjects</code> operation is eventually consistent. Recent calls to <code>CreateProject</code> and <code>DeleteProject</code> might take a while to appear in the response from <code>ListProjects</code>.</p> <p>This operation requires permissions to perform the <code>lookoutvision:ListProjects</code> operation.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1401,6 +1401,14 @@
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The identifer for the AWS Key Management Service (AWS KMS) key that was used to encrypt the model during training.</p>"
+        },
+        "MinInferenceUnits":{
+          "shape":"InferenceUnits",
+          "documentation":"<p>The minimum number of inference units used by the model. For more information, see <a>StartModel</a> </p>"
+        },
+        "MaxInferenceUnits":{
+          "shape":"InferenceUnits",
+          "documentation":"<p>The maximum number of inference units Amazon Lookout for Vision uses to auto-scale the model. For more information, see <a>StartModel</a>.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lookout for Vision model.</p>"
@@ -1924,6 +1932,10 @@
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amzn-Client-Token"
+        },
+        "MaxInferenceUnits":{
+          "shape":"InferenceUnits",
+          "documentation":"<p>The maximum number of inference units to use for auto-scaling the model. If you don't specify a value, Amazon Lookout for Vision doesn't auto-scale the model.</p>"
         }
       }
     },

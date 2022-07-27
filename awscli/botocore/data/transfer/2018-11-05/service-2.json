@@ -29,7 +29,57 @@
         {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Used by administrators to choose which groups in the directory should have access to upload and download files over the enabled protocols using Amazon Web Services Transfer Family. For example, a Microsoft Active Directory might contain 50,000 users, but only a small fraction might need the ability to transfer files to the server. An administrator can use <code>CreateAccess</code> to limit the access to the correct set of users who need this ability.</p>"
+      "documentation":"<p>Used by administrators to choose which groups in the directory should have access to upload and download files over the enabled protocols using Transfer Family. For example, a Microsoft Active Directory might contain 50,000 users, but only a small fraction might need the ability to transfer files to the server. An administrator can use <code>CreateAccess</code> to limit the access to the correct set of users who need this ability.</p>"
+    },
+    "CreateAgreement":{
+      "name":"CreateAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAgreementRequest"},
+      "output":{"shape":"CreateAgreementResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates an agreement. An agreement is a bilateral trading partner agreement, or partnership, between an Transfer Family server and an AS2 process. The agreement defines the file and message transfer relationship between the server and the AS2 process. To define an agreement, Transfer Family combines a server, local profile, partner profile, certificate, and other attributes.</p> <p>The partner is identified with the <code>PartnerProfileId</code>, and the AS2 process is identified with the <code>LocalProfileId</code>.</p>"
+    },
+    "CreateConnector":{
+      "name":"CreateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateConnectorRequest"},
+      "output":{"shape":"CreateConnectorResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates the connector, which captures the parameters for an outbound connection for the AS2 protocol. The connector is required for sending files from a customer's non Amazon Web Services server. </p>"
+    },
+    "CreateProfile":{
+      "name":"CreateProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProfileRequest"},
+      "output":{"shape":"CreateProfileResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates the profile for the AS2 process. The agreement is between the partner and the AS2 process.</p>"
     },
     "CreateServer":{
       "name":"CreateServer",
@@ -65,7 +115,7 @@
         {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Amazon Web Services Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>"
+      "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>"
     },
     "CreateWorkflow":{
       "name":"CreateWorkflow",
@@ -99,6 +149,66 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Allows you to delete the access specified in the <code>ServerID</code> and <code>ExternalID</code> parameters.</p>"
+    },
+    "DeleteAgreement":{
+      "name":"DeleteAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAgreementRequest"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Delete the agreement that's specified in the provided <code>AgreementId</code>.</p>"
+    },
+    "DeleteCertificate":{
+      "name":"DeleteCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCertificateRequest"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the certificate that's specified in the <code>CertificateId</code> parameter.</p>"
+    },
+    "DeleteConnector":{
+      "name":"DeleteConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteConnectorRequest"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the agreement that's specified in the provided <code>ConnectorId</code>.</p>"
+    },
+    "DeleteProfile":{
+      "name":"DeleteProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProfileRequest"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the profile that's specified in the <code>ProfileId</code> parameter.</p>"
     },
     "DeleteServer":{
       "name":"DeleteServer",
@@ -177,7 +287,55 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes the access that is assigned to the specific file transfer protocol-enabled server, as identified by its <code>ServerId</code> property and its <code>ExternalID</code>.</p> <p>The response from this call returns the properties of the access that is associated with the <code>ServerId</code> value that was specified.</p>"
+      "documentation":"<p>Describes the access that is assigned to the specific file transfer protocol-enabled server, as identified by its <code>ServerId</code> property and its <code>ExternalId</code>.</p> <p>The response from this call returns the properties of the access that is associated with the <code>ServerId</code> value that was specified.</p>"
+    },
+    "DescribeAgreement":{
+      "name":"DescribeAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAgreementRequest"},
+      "output":{"shape":"DescribeAgreementResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes the agreement that's identified by the <code>AgreementId</code>.</p>"
+    },
+    "DescribeCertificate":{
+      "name":"DescribeCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCertificateRequest"},
+      "output":{"shape":"DescribeCertificateResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes the certificate that's identified by the <code>CertificateId</code>.</p>"
+    },
+    "DescribeConnector":{
+      "name":"DescribeConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeConnectorRequest"},
+      "output":{"shape":"DescribeConnectorResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes the connector that's identified by the <code>ConnectorId.</code> </p>"
     },
     "DescribeExecution":{
       "name":"DescribeExecution",
@@ -194,6 +352,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p>"
+    },
+    "DescribeProfile":{
+      "name":"DescribeProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeProfileRequest"},
+      "output":{"shape":"DescribeProfileResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the details of the profile that's specified by the <code>ProfileId</code>.</p>"
     },
     "DescribeSecurityPolicy":{
       "name":"DescribeSecurityPolicy",
@@ -259,6 +433,22 @@
       ],
       "documentation":"<p>Describes the specified workflow.</p>"
     },
+    "ImportCertificate":{
+      "name":"ImportCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportCertificateRequest"},
+      "output":{"shape":"ImportCertificateResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p>"
+    },
     "ImportSshPublicKey":{
       "name":"ImportSshPublicKey",
       "http":{
@@ -294,6 +484,57 @@
       ],
       "documentation":"<p>Lists the details for all the accesses you have on your server.</p>"
     },
+    "ListAgreements":{
+      "name":"ListAgreements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAgreementsRequest"},
+      "output":{"shape":"ListAgreementsResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the agreements for the server that's identified by the <code>ServerId</code> that you supply. If you want to limit the results to a certain number, supply a value for the <code>MaxResults</code> parameter. If you ran the command previously and received a value for <code>NextToken</code>, you can supply that value to continue listing agreements from where you left off.</p>"
+    },
+    "ListCertificates":{
+      "name":"ListCertificates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCertificatesRequest"},
+      "output":{"shape":"ListCertificatesResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the current certificates that have been imported into Transfer Family. If you want to limit the results to a certain number, supply a value for the <code>MaxResults</code> parameter. If you ran the command previously and received a value for the <code>NextToken</code> parameter, you can supply that value to continue listing certificates from where you left off.</p>"
+    },
+    "ListConnectors":{
+      "name":"ListConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListConnectorsRequest"},
+      "output":{"shape":"ListConnectorsResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the connectors for the specified Region.</p>"
+    },
     "ListExecutions":{
       "name":"ListExecutions",
       "http":{
@@ -310,6 +551,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all executions for the specified workflow.</p>"
+    },
+    "ListProfiles":{
+      "name":"ListProfiles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProfilesRequest"},
+      "output":{"shape":"ListProfilesResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the profiles for your system. If you want to limit the results to a certain number, supply a value for the <code>MaxResults</code> parameter. If you ran the command previously and received a value for <code>NextToken</code>, you can supply that value to continue listing profiles from where you left off.</p>"
     },
     "ListSecurityPolicies":{
       "name":"ListSecurityPolicies",
@@ -410,6 +668,23 @@
       ],
       "documentation":"<p>Sends a callback for asynchronous custom steps.</p> <p> The <code>ExecutionId</code>, <code>WorkflowId</code>, and <code>Token</code> are passed to the target resource during execution of a custom step of a workflow. You must include those with their callback as well as providing a status. </p>"
     },
+    "StartFileTransfer":{
+      "name":"StartFileTransfer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartFileTransferRequest"},
+      "output":{"shape":"StartFileTransferResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Begins an outbound file transfer. You specify the <code>ConnectorId</code> and the file paths for where to send the files. </p>"
+    },
     "StartServer":{
       "name":"StartServer",
       "http":{
@@ -440,7 +715,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Changes the state of a file transfer protocol-enabled server from <code>ONLINE</code> to <code>OFFLINE</code>. An <code>OFFLINE</code> server cannot accept and process file transfer jobs. Information tied to your server, such as server and user properties, are not affected by stopping your server.</p> <note> <p>Stopping the server will not reduce or impact your file transfer protocol endpoint billing; you must delete the server to stop being billed.</p> </note> <p>The state of <code>STOPPING</code> indicates that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>STOP_FAILED</code> can indicate an error condition.</p> <p>No response is returned from this call.</p>"
+      "documentation":"<p>Changes the state of a file transfer protocol-enabled server from <code>ONLINE</code> to <code>OFFLINE</code>. An <code>OFFLINE</code> server cannot accept and process file transfer jobs. Information tied to your server, such as server and user properties, are not affected by stopping your server.</p> <note> <p>Stopping the server does not reduce or impact your file transfer protocol endpoint billing; you must delete the server to stop being billed.</p> </note> <p>The state of <code>STOPPING</code> indicates that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>STOP_FAILED</code> can indicate an error condition.</p> <p>No response is returned from this call.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -505,6 +780,72 @@
       ],
       "documentation":"<p>Allows you to update parameters for the access specified in the <code>ServerID</code> and <code>ExternalID</code> parameters.</p>"
     },
+    "UpdateAgreement":{
+      "name":"UpdateAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAgreementRequest"},
+      "output":{"shape":"UpdateAgreementResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates some of the parameters for an existing agreement. Provide the <code>AgreementId</code> and the <code>ServerId</code> for the agreement that you want to update, along with the new values for the parameters to update.</p>"
+    },
+    "UpdateCertificate":{
+      "name":"UpdateCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCertificateRequest"},
+      "output":{"shape":"UpdateCertificateResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the active and inactive dates for a certificate.</p>"
+    },
+    "UpdateConnector":{
+      "name":"UpdateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateConnectorRequest"},
+      "output":{"shape":"UpdateConnectorResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates some of the parameters for an existing connector. Provide the <code>ConnectorId</code> for the connector that you want to update, along with the new values for the parameters to update.</p>"
+    },
+    "UpdateProfile":{
+      "name":"UpdateProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProfileRequest"},
+      "output":{"shape":"UpdateProfileResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates some of the parameters for an existing profile. Provide the <code>ProfileId</code> for the profile that you want to update, along with the new values for the parameters to update.</p>"
+    },
     "UpdateServer":{
       "name":"UpdateServer",
       "http":{
@@ -558,11 +899,78 @@
       "type":"list",
       "member":{"shape":"AddressAllocationId"}
     },
+    "AgreementId":{
+      "type":"string",
+      "max":19,
+      "min":19,
+      "pattern":"^a-([0-9a-f]{17})$"
+    },
+    "AgreementStatusType":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
     "Arn":{
       "type":"string",
       "max":1600,
       "min":20,
       "pattern":"arn:.*"
+    },
+    "As2ConnectorConfig":{
+      "type":"structure",
+      "members":{
+        "LocalProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the AS2 process.</p>"
+        },
+        "PartnerProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the partner for the connector.</p>"
+        },
+        "MessageSubject":{
+          "shape":"MessageSubject",
+          "documentation":"<p>A short description to help identify the connector.</p>"
+        },
+        "Compression":{
+          "shape":"CompressionEnum",
+          "documentation":"<p>Specifies whether the AS2 file is compressed.</p>"
+        },
+        "EncryptionAlgorithm":{
+          "shape":"EncryptionAlg",
+          "documentation":"<p>The algorithm that is used to encrypt the file.</p>"
+        },
+        "SigningAlgorithm":{
+          "shape":"SigningAlg",
+          "documentation":"<p>The algorithm that is used to sign the AS2 transfers for this partner profile.</p>"
+        },
+        "MdnSigningAlgorithm":{
+          "shape":"MdnSigningAlg",
+          "documentation":"<p>The signing algorithm for the MDN response.</p>"
+        },
+        "MdnResponse":{
+          "shape":"MdnResponse",
+          "documentation":"<p>Used for outbound requests (from an Transfer Family server to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:</p> <ul> <li> <p> <code>SYNC</code>: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).</p> </li> <li> <p> <code>NONE</code>: Specifies that no MDN response is required.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the details for a connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
+    },
+    "As2Id":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\p{Print}\\s]*"
+    },
+    "As2Transport":{
+      "type":"string",
+      "enum":["HTTP"]
+    },
+    "As2Transports":{
+      "type":"list",
+      "member":{"shape":"As2Transport"},
+      "max":1,
+      "min":1
     },
     "CallbackToken":{
       "type":"string",
@@ -570,9 +978,69 @@
       "min":1,
       "pattern":"\\w+"
     },
+    "CertDate":{"type":"timestamp"},
+    "CertSerial":{
+      "type":"string",
+      "max":48,
+      "min":0,
+      "pattern":"^[\\p{XDigit}{2}:?]*"
+    },
     "Certificate":{
       "type":"string",
       "max":1600
+    },
+    "CertificateBodyType":{
+      "type":"string",
+      "max":16384,
+      "min":1,
+      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "sensitive":true
+    },
+    "CertificateChainType":{
+      "type":"string",
+      "max":2097152,
+      "min":1,
+      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "sensitive":true
+    },
+    "CertificateId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^cert-([0-9a-f]{17})$"
+    },
+    "CertificateIds":{
+      "type":"list",
+      "member":{"shape":"CertificateId"}
+    },
+    "CertificateStatusType":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "PENDING_ROTATION",
+        "INACTIVE"
+      ]
+    },
+    "CertificateType":{
+      "type":"string",
+      "enum":[
+        "CERTIFICATE",
+        "CERTIFICATE_WITH_PRIVATE_KEY"
+      ]
+    },
+    "CertificateUsageType":{
+      "type":"string",
+      "enum":[
+        "SIGNING",
+        "ENCRYPTION"
+      ]
+    },
+    "CompressionEnum":{
+      "type":"string",
+      "enum":[
+        "ZLIB",
+        "DISABLED"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -582,6 +1050,12 @@
       },
       "documentation":"<p>This exception is thrown when the <code>UpdateServer</code> is called for a file transfer protocol-enabled server that has VPC as the endpoint type and the server's <code>VpcEndpointID</code> is not in the available state.</p>",
       "exception":true
+    },
+    "ConnectorId":{
+      "type":"string",
+      "max":19,
+      "min":19,
+      "pattern":"^c-([0-9a-f]{17})$"
     },
     "CopyStepDetails":{
       "type":"structure",
@@ -619,20 +1093,20 @@
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
-          "documentation":"<p>A session policy for your user so that you can use the same IAM role across multiple users. This policy scopes down user access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This only applies when the domain of <code>ServerId</code> is S3. EFS does not use session policies.</p> <p>For session policies, Amazon Web Services Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy.html\">Example session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web Services Security Token Service API Reference</i>.</p> </note>"
+          "documentation":"<p>A session policy for your user so that you can use the same Identity and Access Management (IAM) role across multiple users. This policy scopes down a user's access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This policy applies only when the domain of <code>ServerId</code> is Amazon S3. Amazon EFS does not use session policies.</p> <p>For session policies, Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy.html\">Example session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Security Token Service API Reference</i>.</p> </note>"
         },
         "PosixProfile":{"shape":"PosixProfile"},
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -640,7 +1114,7 @@
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regex used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regular expression used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
         }
       }
     },
@@ -657,7 +1131,136 @@
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>The external ID of the group whose users have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family.</p>"
+          "documentation":"<p>The external ID of the group whose users have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family.</p>"
+        }
+      }
+    },
+    "CreateAgreementRequest":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "LocalProfileId",
+        "PartnerProfileId",
+        "BaseDirectory",
+        "AccessRole"
+      ],
+      "members":{
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A name or short description to identify the agreement. </p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>A system-assigned unique identifier for a server instance. This is the specific server that the agreement uses.</p>"
+        },
+        "LocalProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the AS2 local profile.</p>"
+        },
+        "PartnerProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the partner profile used in the agreement.</p>"
+        },
+        "BaseDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>The landing directory (folder) for files transferred by using the AS2 protocol.</p> <p>A <code>BaseDirectory</code> example is <code>/<i>DOC-EXAMPLE-BUCKET</i>/<i>home</i>/<i>mydirectory</i> </code>.</p>"
+        },
+        "AccessRole":{
+          "shape":"Role",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that grants access to at least the <code>HomeDirectory</code> of your users' Amazon S3 buckets.</p>"
+        },
+        "Status":{
+          "shape":"AgreementStatusType",
+          "documentation":"<p>The status of the agreement. The agreement can be either <code>ACTIVE</code> or <code>INACTIVE</code>.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for agreements.</p>"
+        }
+      }
+    },
+    "CreateAgreementResponse":{
+      "type":"structure",
+      "required":["AgreementId"],
+      "members":{
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>The unique identifier for the agreement. Use this ID for deleting, or updating an agreement, as well as in any other API calls that require that you specify the agreement ID.</p>"
+        }
+      }
+    },
+    "CreateConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "Url",
+        "As2Config",
+        "AccessRole"
+      ],
+      "members":{
+        "Url":{
+          "shape":"Url",
+          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+        },
+        "As2Config":{
+          "shape":"As2ConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+        },
+        "AccessRole":{
+          "shape":"Role",
+          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+        },
+        "LoggingRole":{
+          "shape":"Role",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a connector to turn on CloudWatch logging for Amazon S3 events. When set, you can view connector activity in your CloudWatch logs.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for connectors. Tags are metadata attached to connectors for any purpose.</p>"
+        }
+      }
+    },
+    "CreateConnectorResponse":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector, returned after the API call succeeds.</p>"
+        }
+      }
+    },
+    "CreateProfileRequest":{
+      "type":"structure",
+      "required":[
+        "As2Id",
+        "ProfileType"
+      ],
+      "members":{
+        "As2Id":{
+          "shape":"As2Id",
+          "documentation":"<p>The <code>As2Id</code> is the <i>AS2-name</i>, as defined in the defined in the <a href=\"https://datatracker.ietf.org/doc/html/rfc4130\">RFC 4130</a>. For inbound transfers, this is the <code>AS2-From</code> header for the AS2 messages sent from the partner. For outbound connectors, this is the <code>AS2-To</code> header for the AS2 messages sent to the partner using the <code>StartFileTransfer</code> API operation. This ID cannot include spaces.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>Indicates whether to list only <code>LOCAL</code> type profiles or only <code>PARTNER</code> type profiles. If not supplied in the request, the command lists all types of profiles.</p>"
+        },
+        "CertificateIds":{
+          "shape":"CertificateIds",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for AS2 profiles.</p>"
+        }
+      }
+    },
+    "CreateProfileResponse":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The unique identifier for the AS2 profile, returned after the API call succeeds.</p>"
         }
       }
     },
@@ -666,7 +1269,7 @@
       "members":{
         "Certificate":{
           "shape":"Certificate",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager (ACM) certificate. Required when <code>Protocols</code> is set to <code>FTPS</code>.</p> <p>To request a new public certificate, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html\">Request a public certificate</a> in the <i> Amazon Web Services Certificate Manager User Guide</i>.</p> <p>To import an existing certificate into ACM, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates into ACM</a> in the <i> Amazon Web Services Certificate Manager User Guide</i>.</p> <p>To request a private certificate to use FTPS through private IP addresses, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-private.html\">Request a private certificate</a> in the <i> Amazon Web Services Certificate Manager User Guide</i>.</p> <p>Certificates with the following cryptographic algorithms and key sizes are supported:</p> <ul> <li> <p>2048-bit RSA (RSA_2048)</p> </li> <li> <p>4096-bit RSA (RSA_4096)</p> </li> <li> <p>Elliptic Prime Curve 256 bit (EC_prime256v1)</p> </li> <li> <p>Elliptic Prime Curve 384 bit (EC_secp384r1)</p> </li> <li> <p>Elliptic Prime Curve 521 bit (EC_secp521r1)</p> </li> </ul> <note> <p>The certificate must be a valid SSL/TLS X.509 version 3 certificate with FQDN or IP address specified and information about the issuer.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Certificate Manager (ACM) certificate. Required when <code>Protocols</code> is set to <code>FTPS</code>.</p> <p>To request a new public certificate, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html\">Request a public certificate</a> in the <i>Certificate Manager User Guide</i>.</p> <p>To import an existing certificate into ACM, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates into ACM</a> in the <i>Certificate Manager User Guide</i>.</p> <p>To request a private certificate to use FTPS through private IP addresses, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-private.html\">Request a private certificate</a> in the <i>Certificate Manager User Guide</i>.</p> <p>Certificates with the following cryptographic algorithms and key sizes are supported:</p> <ul> <li> <p>2048-bit RSA (RSA_2048)</p> </li> <li> <p>4096-bit RSA (RSA_4096)</p> </li> <li> <p>Elliptic Prime Curve 256 bit (EC_prime256v1)</p> </li> <li> <p>Elliptic Prime Curve 384 bit (EC_secp384r1)</p> </li> <li> <p>Elliptic Prime Curve 521 bit (EC_secp521r1)</p> </li> </ul> <note> <p>The certificate must be a valid SSL/TLS X.509 version 3 certificate with FQDN or IP address specified and information about the issuer.</p> </note>"
         },
         "Domain":{
           "shape":"Domain",
@@ -674,7 +1277,7 @@
         },
         "EndpointDetails":{
           "shape":"EndpointDetails",
-          "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your server. When you host your endpoint within your VPC, you can make it accessible only to resources within your VPC, or you can attach Elastic IP addresses and make it accessible to clients over the internet. Your VPC's default security groups are automatically assigned to your endpoint.</p>"
+          "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your server. When you host your endpoint within your VPC, you can make your endpoint accessible only to resources within your VPC, or you can attach Elastic IP addresses and make your endpoint accessible to clients over the internet. Your VPC's default security groups are automatically assigned to your endpoint.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -682,7 +1285,7 @@
         },
         "HostKey":{
           "shape":"HostKey",
-          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your server.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option: you can create a stronger key using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Change the host key for your SFTP-enabled server</a> in the <i>Amazon Web Services Transfer Family User Guide</i>.</p>"
+          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your server.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option. You can create a stronger key by using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Change the host key for your SFTP-enabled server</a> in the <i>Transfer Family User Guide</i>.</p>"
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
@@ -690,27 +1293,27 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>Specifies the mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Amazon Web Services Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Amazon Web Services Managed Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connectors. This option also requires you to provide a Directory ID using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an API Gateway endpoint URL to call for authentication using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use a Lambda function as your identity provider. If you choose this value, you must specify the ARN for the lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
-          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
+          "documentation":"<p>Specifies a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
         },
         "PreAuthenticationLoginBanner":{
           "shape":"PreAuthenticationLoginBanner",
-          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system.</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
+          "documentation":"<p>Specifies a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system:</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
         },
         "Protocols":{
           "shape":"Protocols",
-          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> </ul> <note> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Amazon Web Services Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </note>"
+          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
         },
         "ProtocolDetails":{
           "shape":"ProtocolDetails",
-          "documentation":"<p>The protocol settings that are configured for your server.</p> <ul> <li> <p> Use the <code>PassiveIp</code> parameter to indicate passive mode (for FTP and FTPS protocols). Enter a single dotted-quad IPv4 address, such as the external IP address of a firewall, router, or load balancer. </p> </li> <li> <p>Use the <code>SetStatOption</code> to ignore the error that is generated when the client attempts to use SETSTAT on a file you are uploading to an S3 bucket. Set the value to <code>ENABLE_NO_OP</code> to have the Transfer Family server ignore the SETSTAT command, and upload files without needing to make any changes to your SFTP client. Note that with <code>SetStatOption</code> set to <code>ENABLE_NO_OP</code>, Transfer generates a log entry to CloudWatch Logs, so you can determine when the client is making a SETSTAT call.</p> </li> <li> <p>Use the <code>TlsSessionResumptionMode</code> parameter to determine whether or not your Transfer server resumes recent, negotiated sessions through a unique session ID.</p> </li> </ul>"
+          "documentation":"<p>The protocol settings that are configured for your server.</p> <ul> <li> <p> To indicate passive mode (for FTP and FTPS protocols), use the <code>PassiveIp</code> parameter. Enter a single dotted-quad IPv4 address, such as the external IP address of a firewall, router, or load balancer. </p> </li> <li> <p>To ignore the error that is generated when the client attempts to use the <code>SETSTAT</code> command on a file that you are uploading to an Amazon S3 bucket, use the <code>SetStatOption</code> parameter. To have the Transfer Family server ignore the <code>SETSTAT</code> command and upload files without needing to make any changes to your SFTP client, set the value to <code>ENABLE_NO_OP</code>. If you set the <code>SetStatOption</code> parameter to <code>ENABLE_NO_OP</code>, Transfer Family generates a log entry to Amazon CloudWatch Logs, so that you can determine when the client is making a <code>SETSTAT</code> call.</p> </li> <li> <p>To determine whether your Transfer Family server resumes recent, negotiated sessions through a unique session ID, use the <code>TlsSessionResumptionMode</code> parameter.</p> </li> <li> <p> <code>As2Transports</code> indicates the transport method for the AS2 messages. Currently, only HTTP is supported.</p> </li> </ul>"
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
@@ -722,7 +1325,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role used for executing the workflow.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p>"
         }
       }
     },
@@ -750,15 +1353,15 @@
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
-          "documentation":"<p>A session policy for your user so that you can use the same IAM role across multiple users. This policy scopes down user access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This only applies when the domain of <code>ServerId</code> is S3. EFS does not use session policies.</p> <p>For session policies, Amazon Web Services Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy.html\">Example session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web Services Security Token Service API Reference</i>.</p> </note>"
+          "documentation":"<p>A session policy for your user so that you can use the same Identity and Access Management (IAM) role across multiple users. This policy scopes down a user's access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This policy applies only when the domain of <code>ServerId</code> is Amazon S3. Amazon EFS does not use session policies.</p> <p>For session policies, Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy.html\">Example session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web Services Security Token Service API Reference</i>.</p> </note>"
         },
         "PosixProfile":{
           "shape":"PosixProfile",
@@ -766,7 +1369,7 @@
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -813,7 +1416,7 @@
         },
         "Steps":{
           "shape":"WorkflowSteps",
-          "documentation":"<p>Specifies the details for the steps that are in the specified workflow.</p> <p> The <code>TYPE</code> specifies which of the following actions is being taken for this step. </p> <ul> <li> <p> <i>COPY</i>: copy the file to another location</p> </li> <li> <p> <i>CUSTOM</i>: custom step with a lambda target</p> </li> <li> <p> <i>DELETE</i>: delete the file</p> </li> <li> <p> <i>TAG</i>: add a tag to the file</p> </li> </ul> <note> <p> Currently, copying and tagging are supported only on S3. </p> </note> <p> For file location, you specify either the S3 bucket and key, or the EFS filesystem ID and path. </p>"
+          "documentation":"<p>Specifies the details for the steps that are in the specified workflow.</p> <p> The <code>TYPE</code> specifies which of the following actions is being taken for this step. </p> <ul> <li> <p> <i>COPY</i>: Copy the file to another location.</p> </li> <li> <p> <i>CUSTOM</i>: Perform a custom step with an Lambda function target.</p> </li> <li> <p> <i>DELETE</i>: Delete the file.</p> </li> <li> <p> <i>TAG</i>: Add a tag to the file.</p> </li> </ul> <note> <p> Currently, copying and tagging are supported only on S3. </p> </note> <p> For file location, you specify either the S3 bucket and key, or the EFS file system ID and path. </p>"
         },
         "OnExceptionSteps":{
           "shape":"WorkflowSteps",
@@ -888,7 +1491,54 @@
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regex used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regular expression used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+        }
+      }
+    },
+    "DeleteAgreementRequest":{
+      "type":"structure",
+      "required":[
+        "AgreementId",
+        "ServerId"
+      ],
+      "members":{
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>A unique identifier for the agreement. This identifier is returned when you create an agreement.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>The server ID associated with the agreement that you are deleting.</p>"
+        }
+      }
+    },
+    "DeleteCertificateRequest":{
+      "type":"structure",
+      "required":["CertificateId"],
+      "members":{
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>The ID of the certificate object that you are deleting.</p>"
+        }
+      }
+    },
+    "DeleteConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        }
+      }
+    },
+    "DeleteProfileRequest":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The ID of the profile that you are deleting.</p>"
         }
       }
     },
@@ -978,7 +1628,7 @@
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regex used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regular expression used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
         }
       }
     },
@@ -996,6 +1646,73 @@
         "Access":{
           "shape":"DescribedAccess",
           "documentation":"<p>The external ID of the server that the access is attached to.</p>"
+        }
+      }
+    },
+    "DescribeAgreementRequest":{
+      "type":"structure",
+      "required":[
+        "AgreementId",
+        "ServerId"
+      ],
+      "members":{
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>A unique identifier for the agreement. This identifier is returned when you create an agreement.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>The server ID that's associated with the agreement.</p>"
+        }
+      }
+    },
+    "DescribeAgreementResponse":{
+      "type":"structure",
+      "required":["Agreement"],
+      "members":{
+        "Agreement":{
+          "shape":"DescribedAgreement",
+          "documentation":"<p>The details for the specified agreement, returned as a <code>DescribedAgreement</code> object.</p>"
+        }
+      }
+    },
+    "DescribeCertificateRequest":{
+      "type":"structure",
+      "required":["CertificateId"],
+      "members":{
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        }
+      }
+    },
+    "DescribeCertificateResponse":{
+      "type":"structure",
+      "required":["Certificate"],
+      "members":{
+        "Certificate":{
+          "shape":"DescribedCertificate",
+          "documentation":"<p>The details for the specified certificate, returned as an object.</p>"
+        }
+      }
+    },
+    "DescribeConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        }
+      }
+    },
+    "DescribeConnectorResponse":{
+      "type":"structure",
+      "required":["Connector"],
+      "members":{
+        "Connector":{
+          "shape":"DescribedConnector",
+          "documentation":"<p>The structure that contains the details of the connector.</p>"
         }
       }
     },
@@ -1030,6 +1747,26 @@
         "Execution":{
           "shape":"DescribedExecution",
           "documentation":"<p>The structure that contains the details of the workflow' execution.</p>"
+        }
+      }
+    },
+    "DescribeProfileRequest":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The identifier of the profile that you want described.</p>"
+        }
+      }
+    },
+    "DescribeProfileResponse":{
+      "type":"structure",
+      "required":["Profile"],
+      "members":{
+        "Profile":{
+          "shape":"DescribedProfile",
+          "documentation":"<p>The details of the specified profile, returned as an object.</p>"
         }
       }
     },
@@ -1086,7 +1823,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The name of the user assigned to one or more servers. User names are part of the sign-in credentials to use the Amazon Web Services Transfer Family service and perform file transfer tasks.</p>"
+          "documentation":"<p>The name of the user assigned to one or more servers. User names are part of the sign-in credentials to use the Transfer Family service and perform file transfer tasks.</p>"
         }
       }
     },
@@ -1136,27 +1873,172 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>In most cases, you can use this value instead of the session policy to lock down the associated access to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>In most cases, you can use this value instead of the session policy to lock down the associated access to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p>"
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "Policy":{
           "shape":"Policy",
-          "documentation":"<p>A session policy for your user so that you can use the same IAM role across multiple users. This policy scopes down user access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p>"
+          "documentation":"<p>A session policy for your user so that you can use the same Identity and Access Management (IAM) role across multiple users. This policy scopes down a user's access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p>"
         },
         "PosixProfile":{"shape":"PosixProfile"},
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regex used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regular expression used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
         }
       },
       "documentation":"<p>Describes the properties of the access that was specified.</p>"
+    },
+    "DescribedAgreement":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) for the agreement.</p>"
+        },
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>A unique identifier for the agreement. This identifier is returned when you create an agreement.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The name or short description that's used to identify the agreement.</p>"
+        },
+        "Status":{
+          "shape":"AgreementStatusType",
+          "documentation":"<p>The current status of the agreement, either <code>ACTIVE</code> or <code>INACTIVE</code>.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>A system-assigned unique identifier for a server instance. This identifier indicates the specific server that the agreement uses.</p>"
+        },
+        "LocalProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the AS2 process.</p>"
+        },
+        "PartnerProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the partner in the agreement.</p>"
+        },
+        "BaseDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>The landing directory (folder) for files that are transferred by using the AS2 protocol.</p>"
+        },
+        "AccessRole":{
+          "shape":"Role",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that grants access to at least the <code>HomeDirectory</code> of your users' Amazon S3 buckets.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for agreements.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of an agreement.</p>"
+    },
+    "DescribedCertificate":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) for the certificate.</p>"
+        },
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        },
+        "Usage":{
+          "shape":"CertificateUsageType",
+          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
+        },
+        "Status":{
+          "shape":"CertificateStatusType",
+          "documentation":"<p>The certificate can be either <code>ACTIVE</code>, <code>PENDING_ROTATION</code>, or <code>INACTIVE</code>. <code>PENDING_ROTATION</code> means that this certificate will replace the current certificate when it expires.</p>"
+        },
+        "Certificate":{
+          "shape":"CertificateBodyType",
+          "documentation":"<p>The file name for the certificate.</p>"
+        },
+        "CertificateChain":{
+          "shape":"CertificateChainType",
+          "documentation":"<p>The list of certificates that make up the chain for the certificate.</p>"
+        },
+        "ActiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+        },
+        "InactiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+        },
+        "Serial":{
+          "shape":"CertSerial",
+          "documentation":"<p>The serial number for the certificate.</p>"
+        },
+        "NotBeforeDate":{
+          "shape":"CertDate",
+          "documentation":"<p>The earliest date that the certificate is valid.</p>"
+        },
+        "NotAfterDate":{
+          "shape":"CertDate",
+          "documentation":"<p>The final date that the certificate is valid.</p>"
+        },
+        "Type":{
+          "shape":"CertificateType",
+          "documentation":"<p>If a private key has been specified for the certificate, its type is <code>CERTIFICATE_WITH_PRIVATE_KEY</code>. If there is no private key, the type is <code>CERTIFICATE</code>.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The name or description that's used to identity the certificate. </p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for certificates.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of a certificate.</p>"
+    },
+    "DescribedConnector":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) for the connector.</p>"
+        },
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "Url":{
+          "shape":"Url",
+          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+        },
+        "As2Config":{
+          "shape":"As2ConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+        },
+        "AccessRole":{
+          "shape":"Role",
+          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+        },
+        "LoggingRole":{
+          "shape":"Role",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a connector to turn on CloudWatch logging for Amazon S3 events. When set, you can view connector activity in your CloudWatch logs.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for connectors.</p>"
+        }
+      },
+      "documentation":"<p>Describes the parameters for the connector, as identified by the <code>ConnectorId</code>.</p>"
     },
     "DescribedExecution":{
       "type":"structure",
@@ -1171,7 +2053,7 @@
         },
         "ServiceMetadata":{
           "shape":"ServiceMetadata",
-          "documentation":"<p>A container object for the session details associated with a workflow.</p>"
+          "documentation":"<p>A container object for the session details that are associated with a workflow.</p>"
         },
         "ExecutionRole":{
           "shape":"Role",
@@ -1192,6 +2074,37 @@
         }
       },
       "documentation":"<p>The details for an execution object.</p>"
+    },
+    "DescribedProfile":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) for the profile.</p>"
+        },
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the local or partner AS2 profile.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>Indicates whether to list only <code>LOCAL</code> type profiles or only <code>PARTNER</code> type profiles. If not supplied in the request, the command lists all types of profiles.</p>"
+        },
+        "As2Id":{
+          "shape":"As2Id",
+          "documentation":"<p>The unique identifier for the AS2 process.</p>"
+        },
+        "CertificateIds":{
+          "shape":"CertificateIds",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for profiles.</p>"
+        }
+      },
+      "documentation":"<p>The details for a local or partner AS2 profile. profile.</p>"
     },
     "DescribedSecurityPolicy":{
       "type":"structure",
@@ -1246,7 +2159,7 @@
         },
         "EndpointDetails":{
           "shape":"EndpointDetails",
-          "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your server. When you host your endpoint within your VPC, you can make it accessible only to resources within your VPC, or you can attach Elastic IP addresses and make it accessible to clients over the internet. Your VPC's default security groups are automatically assigned to your endpoint.</p>"
+          "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your server. When you host your endpoint within your VPC, you can make your endpoint accessible only to resources within your VPC, or you can attach Elastic IP addresses and make your endpoint accessible to clients over the internet. Your VPC's default security groups are automatically assigned to your endpoint.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -1262,19 +2175,19 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>Specifies the mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Amazon Web Services Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Amazon Web Services Managed Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connectors. This option also requires you to provide a Directory ID using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an API Gateway endpoint URL to call for authentication using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use a Lambda function as your identity provider. If you choose this value, you must specify the ARN for the lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
-          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
+          "documentation":"<p>Specifies a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
         },
         "PreAuthenticationLoginBanner":{
           "shape":"PreAuthenticationLoginBanner",
-          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system.</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
+          "documentation":"<p>Specifies a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system:</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
         },
         "Protocols":{
           "shape":"Protocols",
@@ -1290,7 +2203,7 @@
         },
         "State":{
           "shape":"State",
-          "documentation":"<p>Specifies the condition of a server for the server that was described. A value of <code>ONLINE</code> indicates that the server can accept jobs and transfer files. A <code>State</code> value of <code>OFFLINE</code> means that the server cannot perform file transfer operations.</p> <p>The states of <code>STARTING</code> and <code>STOPPING</code> indicate that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>START_FAILED</code> or <code>STOP_FAILED</code> can indicate an error condition.</p>"
+          "documentation":"<p>The condition of the server that was described. A value of <code>ONLINE</code> indicates that the server can accept jobs and transfer files. A <code>State</code> value of <code>OFFLINE</code> means that the server cannot perform file transfer operations.</p> <p>The states of <code>STARTING</code> and <code>STOPPING</code> indicate that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>START_FAILED</code> or <code>STOP_FAILED</code> can indicate an error condition.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1302,7 +2215,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role used for executing the workflow.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p>"
         }
       },
       "documentation":"<p>Describes the properties of a file transfer protocol-enabled server that was specified.</p>"
@@ -1321,15 +2234,15 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the HomeDirectory parameter value.</p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the HomeDirectory parameter value.</p>"
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "Policy":{
           "shape":"Policy",
-          "documentation":"<p>A session policy for your user so that you can use the same IAM role across multiple users. This policy scopes down user access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p>"
+          "documentation":"<p>A session policy for your user so that you can use the same Identity and Access Management (IAM) role across multiple users. This policy scopes down a user's access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p>"
         },
         "PosixProfile":{
           "shape":"PosixProfile",
@@ -1337,7 +2250,7 @@
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "SshPublicKeys":{
           "shape":"SshPublicKeys",
@@ -1385,6 +2298,12 @@
       },
       "documentation":"<p>Describes the properties of the specified workflow</p>"
     },
+    "Description":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[\\p{Graph}]+"
+    },
     "DirectoryId":{
       "type":"string",
       "max":12,
@@ -1422,6 +2341,14 @@
       "max":65536,
       "min":1,
       "pattern":"^[^\\x00]+$"
+    },
+    "EncryptionAlg":{
+      "type":"string",
+      "enum":[
+        "AES128_CBC",
+        "AES192_CBC",
+        "AES256_CBC"
+      ]
     },
     "EndpointDetails":{
       "type":"structure",
@@ -1523,7 +2450,7 @@
       "members":{
         "StepType":{
           "shape":"WorkflowStepType",
-          "documentation":"<p>One of the available step types.</p> <ul> <li> <p> <i>COPY</i>: copy the file to another location</p> </li> <li> <p> <i>CUSTOM</i>: custom step with a lambda target</p> </li> <li> <p> <i>DELETE</i>: delete the file</p> </li> <li> <p> <i>TAG</i>: add a tag to the file</p> </li> </ul>"
+          "documentation":"<p>One of the available step types.</p> <ul> <li> <p> <i>COPY</i>: Copy the file to another location.</p> </li> <li> <p> <i>CUSTOM</i>: Perform a custom step with an Lambda function target.</p> </li> <li> <p> <i>DELETE</i>: Delete the file.</p> </li> <li> <p> <i>TAG</i>: Add a tag to the file.</p> </li> </ul>"
         },
         "Outputs":{
           "shape":"StepResultOutputsJson",
@@ -1531,7 +2458,7 @@
         },
         "Error":{
           "shape":"ExecutionError",
-          "documentation":"<p>Specifies the details for an error, if it occurred during execution of the specified workfow step.</p>"
+          "documentation":"<p>Specifies the details for an error, if it occurred during execution of the specified workflow step.</p>"
         }
       },
       "documentation":"<p>Specifies the following details for the step: error (if any), outputs (if any), and the step type.</p>"
@@ -1553,7 +2480,7 @@
       "members":{
         "S3FileLocation":{
           "shape":"S3FileLocation",
-          "documentation":"<p>Specifies the S3 details for the file being used, such as bucket, Etag, and so forth.</p>"
+          "documentation":"<p>Specifies the S3 details for the file being used, such as bucket, ETag, and so forth.</p>"
         },
         "EfsFileLocation":{
           "shape":"EfsFileLocation",
@@ -1561,6 +2488,18 @@
         }
       },
       "documentation":"<p>Specifies the Amazon S3 or EFS file details to be used in the step.</p>"
+    },
+    "FilePath":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^(.)+"
+    },
+    "FilePaths":{
+      "type":"list",
+      "member":{"shape":"FilePath"},
+      "max":10,
+      "min":1
     },
     "Fips":{"type":"boolean"},
     "Function":{
@@ -1624,7 +2563,7 @@
         },
         "DirectoryId":{
           "shape":"DirectoryId",
-          "documentation":"<p>The identifier of the Amazon Web Services Directory Service directory that you want to stop sharing.</p>"
+          "documentation":"<p>The identifier of the Directory Service directory that you want to stop sharing.</p>"
         },
         "Function":{
           "shape":"Function",
@@ -1642,6 +2581,57 @@
         "AWS_DIRECTORY_SERVICE",
         "AWS_LAMBDA"
       ]
+    },
+    "ImportCertificateRequest":{
+      "type":"structure",
+      "required":[
+        "Usage",
+        "Certificate"
+      ],
+      "members":{
+        "Usage":{
+          "shape":"CertificateUsageType",
+          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
+        },
+        "Certificate":{
+          "shape":"CertificateBodyType",
+          "documentation":"<p>The file that contains the certificate to import.</p>"
+        },
+        "CertificateChain":{
+          "shape":"CertificateChainType",
+          "documentation":"<p>An optional list of certificates that make up the chain for the certificate that's being imported.</p>"
+        },
+        "PrivateKey":{
+          "shape":"PrivateKeyType",
+          "documentation":"<p>The file that contains the private key for the certificate that's being imported.</p>"
+        },
+        "ActiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+        },
+        "InactiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A short description that helps identify the certificate. </p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for certificates.</p>"
+        }
+      }
+    },
+    "ImportCertificateResponse":{
+      "type":"structure",
+      "required":["CertificateId"],
+      "members":{
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        }
+      }
     },
     "ImportSshPublicKeyRequest":{
       "type":"structure",
@@ -1769,17 +2759,103 @@
         }
       }
     },
+    "ListAgreementsRequest":{
+      "type":"structure",
+      "required":["ServerId"],
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of agreements to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When you can get additional results from the <code>ListAgreements</code> call, a <code>NextToken</code> parameter is returned in the output. You can then pass in a subsequent command to the <code>NextToken</code> parameter to continue listing additional agreements.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>The identifier of the server for which you want a list of agreements.</p>"
+        }
+      }
+    },
+    "ListAgreementsResponse":{
+      "type":"structure",
+      "required":["Agreements"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns a token that you can use to call <code>ListAgreements</code> again and receive additional results, if there are any.</p>"
+        },
+        "Agreements":{
+          "shape":"ListedAgreements",
+          "documentation":"<p>Returns an array, where each item contains the details of an agreement.</p>"
+        }
+      }
+    },
+    "ListCertificatesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of certificates to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When you can get additional results from the <code>ListCertificates</code> call, a <code>NextToken</code> parameter is returned in the output. You can then pass in a subsequent command to the <code>NextToken</code> parameter to continue listing additional certificates.</p>"
+        }
+      }
+    },
+    "ListCertificatesResponse":{
+      "type":"structure",
+      "required":["Certificates"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns the next token, which you can use to list the next certificate.</p>"
+        },
+        "Certificates":{
+          "shape":"ListedCertificates",
+          "documentation":"<p>Returns an array of the certificates that are specified in the <code>ListCertificates</code> call.</p>"
+        }
+      }
+    },
+    "ListConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of connectors to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When you can get additional results from the <code>ListConnectors</code> call, a <code>NextToken</code> parameter is returned in the output. You can then pass in a subsequent command to the <code>NextToken</code> parameter to continue listing additional connectors.</p>"
+        }
+      }
+    },
+    "ListConnectorsResponse":{
+      "type":"structure",
+      "required":["Connectors"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns a token that you can use to call <code>ListConnectors</code> again and receive additional results, if there are any.</p>"
+        },
+        "Connectors":{
+          "shape":"ListedConnectors",
+          "documentation":"<p>Returns an array, where each item contains the details of a connector.</p>"
+        }
+      }
+    },
     "ListExecutionsRequest":{
       "type":"structure",
       "required":["WorkflowId"],
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the aximum number of executions to return.</p>"
+          "documentation":"<p>Specifies the maximum number of executions to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p> <code>ListExecutions</code> returns the <code>NextToken</code> parameter in the output. You can then pass the <code>NextToken</code> parameter in a subsequent command to continue listing additional executions.</p> <p> This is useful for pagination, for instance. If you have 100 executions for a workflow, you might only want to list first 10. If so, callthe API by specifing the <code>max-results</code>: </p> <p> <code>aws transfer list-executions --max-results 10</code> </p> <p> This returns details for the first 10 executions, as well as the pointer (<code>NextToken</code>) to the eleventh execution. You can now call the API again, suppling the <code>NextToken</code> value you received: </p> <p> <code>aws transfer list-executions --max-results 10 --next-token $somePointerReturnedFromPreviousListResult</code> </p> <p> This call returns the next 10 executions, the 11th through the 20th. You can then repeat the call until the details for all 100 executions have been returned. </p>"
+          "documentation":"<p> <code>ListExecutions</code> returns the <code>NextToken</code> parameter in the output. You can then pass the <code>NextToken</code> parameter in a subsequent command to continue listing additional executions.</p> <p> This is useful for pagination, for instance. If you have 100 executions for a workflow, you might only want to list first 10. If so, call the API by specifying the <code>max-results</code>: </p> <p> <code>aws transfer list-executions --max-results 10</code> </p> <p> This returns details for the first 10 executions, as well as the pointer (<code>NextToken</code>) to the eleventh execution. You can now call the API again, supplying the <code>NextToken</code> value you received: </p> <p> <code>aws transfer list-executions --max-results 10 --next-token $somePointerReturnedFromPreviousListResult</code> </p> <p> This call returns the next 10 executions, the 11th through the 20th. You can then repeat the call until the details for all 100 executions have been returned. </p>"
         },
         "WorkflowId":{
           "shape":"WorkflowId",
@@ -1805,6 +2881,37 @@
         "Executions":{
           "shape":"ListedExecutions",
           "documentation":"<p>Returns the details for each execution.</p> <ul> <li> <p> <b>NextToken</b>: returned from a call to several APIs, you can use pass it to a subsequent command to continue listing additional executions.</p> </li> <li> <p> <b>StartTime</b>: timestamp indicating when the execution began.</p> </li> <li> <p> <b>Executions</b>: details of the execution, including the execution ID, initial file location, and Service metadata.</p> </li> <li> <p> <b>Status</b>: one of the following values: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>EXCEPTION</code>, <code>HANDLING_EXEPTION</code>. </p> </li> </ul>"
+        }
+      }
+    },
+    "ListProfilesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of profiles to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When there are additional results that were not returned, a <code>NextToken</code> parameter is returned. You can use that value for a subsequent call to <code>ListProfiles</code> to continue listing results.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>Indicates whether to list only <code>LOCAL</code> type profiles or only <code>PARTNER</code> type profiles. If not supplied in the request, the command lists all types of profiles.</p>"
+        }
+      }
+    },
+    "ListProfilesResponse":{
+      "type":"structure",
+      "required":["Profiles"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns a token that you can use to call <code>ListProfiles</code> again and receive additional results, if there are any.</p>"
+        },
+        "Profiles":{
+          "shape":"ListedProfiles",
+          "documentation":"<p>Returns an array, where each item contains the details of a profile.</p>"
         }
       }
     },
@@ -1972,15 +3079,15 @@
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regex used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regular expression used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
         }
       },
       "documentation":"<p>Lists the properties for one or more specified associated accesses.</p>"
@@ -1988,6 +3095,108 @@
     "ListedAccesses":{
       "type":"list",
       "member":{"shape":"ListedAccess"}
+    },
+    "ListedAgreement":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the specified agreement.</p>"
+        },
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>A unique identifier for the agreement. This identifier is returned when you create an agreement.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The current description for the agreement. You can change it by calling the <code>UpdateAgreement</code> operation and providing a new description. </p>"
+        },
+        "Status":{
+          "shape":"AgreementStatusType",
+          "documentation":"<p>The agreement can be either <code>ACTIVE</code> or <code>INACTIVE</code>.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>The unique identifier for the agreement.</p>"
+        },
+        "LocalProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the AS2 process.</p>"
+        },
+        "PartnerProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the partner process.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of an agreement.</p>"
+    },
+    "ListedAgreements":{
+      "type":"list",
+      "member":{"shape":"ListedAgreement"}
+    },
+    "ListedCertificate":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the specified certificate.</p>"
+        },
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        },
+        "Usage":{
+          "shape":"CertificateUsageType",
+          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
+        },
+        "Status":{
+          "shape":"CertificateStatusType",
+          "documentation":"<p>The certificate can be either <code>ACTIVE</code>, <code>PENDING_ROTATION</code>, or <code>INACTIVE</code>. <code>PENDING_ROTATION</code> means that this certificate will replace the current certificate when it expires.</p>"
+        },
+        "ActiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+        },
+        "InactiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+        },
+        "Type":{
+          "shape":"CertificateType",
+          "documentation":"<p>The type for the certificate. If a private key has been specified for the certificate, its type is <code>CERTIFICATE_WITH_PRIVATE_KEY</code>. If there is no private key, the type is <code>CERTIFICATE</code>.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The name or short description that's used to identify the certificate.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of a certificate.</p>"
+    },
+    "ListedCertificates":{
+      "type":"list",
+      "member":{"shape":"ListedCertificate"}
+    },
+    "ListedConnector":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the specified connector.</p>"
+        },
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "Url":{
+          "shape":"Url",
+          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Returns details of the connector that is specified.</p>"
+    },
+    "ListedConnectors":{
+      "type":"list",
+      "member":{"shape":"ListedConnector"}
     },
     "ListedExecution":{
       "type":"structure",
@@ -2002,7 +3211,7 @@
         },
         "ServiceMetadata":{
           "shape":"ServiceMetadata",
-          "documentation":"<p>A container object for the session details associated with a workflow.</p>"
+          "documentation":"<p>A container object for the session details that are associated with a workflow.</p>"
         },
         "Status":{
           "shape":"ExecutionStatus",
@@ -2014,6 +3223,32 @@
     "ListedExecutions":{
       "type":"list",
       "member":{"shape":"ListedExecution"}
+    },
+    "ListedProfile":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the specified profile.</p>"
+        },
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>A unique identifier for the local or partner AS2 profile.</p>"
+        },
+        "As2Id":{
+          "shape":"As2Id",
+          "documentation":"<p>The unique identifier for the AS2 process.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>Indicates whether to list only <code>LOCAL</code> type profiles or only <code>PARTNER</code> type profiles. If not supplied in the request, the command lists all types of profiles.</p>"
+        }
+      },
+      "documentation":"<p>Returns the properties of the profile that was specified.</p>"
+    },
+    "ListedProfiles":{
+      "type":"list",
+      "member":{"shape":"ListedProfile"}
     },
     "ListedServer":{
       "type":"structure",
@@ -2029,7 +3264,7 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>Specifies the mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Amazon Web Services Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Amazon Web Services Managed Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connectors. This option also requires you to provide a Directory ID using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an API Gateway endpoint URL to call for authentication using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use a Lambda function as your identity provider. If you choose this value, you must specify the ARN for the lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -2037,7 +3272,7 @@
         },
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -2045,7 +3280,7 @@
         },
         "State":{
           "shape":"State",
-          "documentation":"<p>Specifies the condition of a server for the server that was described. A value of <code>ONLINE</code> indicates that the server can accept jobs and transfer files. A <code>State</code> value of <code>OFFLINE</code> means that the server cannot perform file transfer operations.</p> <p>The states of <code>STARTING</code> and <code>STOPPING</code> indicate that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>START_FAILED</code> or <code>STOP_FAILED</code> can indicate an error condition.</p>"
+          "documentation":"<p>The condition of the server that was described. A value of <code>ONLINE</code> indicates that the server can accept jobs and transfer files. A <code>State</code> value of <code>OFFLINE</code> means that the server cannot perform file transfer operations.</p> <p>The states of <code>STARTING</code> and <code>STOPPING</code> indicate that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>START_FAILED</code> or <code>STOP_FAILED</code> can indicate an error condition.</p>"
         },
         "UserCount":{
           "shape":"UserCount",
@@ -2072,11 +3307,11 @@
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p> <note> <p>The IAM role that controls your users' access to your Amazon S3 bucket for servers with <code>Domain=S3</code>, or your EFS file system for servers with <code>Domain=EFS</code>. </p> <p>The policies attached to this role determine the level of access you want to provide your users when transferring files into and out of your S3 buckets or EFS file systems.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p> <note> <p>The IAM role that controls your users' access to your Amazon S3 bucket for servers with <code>Domain=S3</code>, or your EFS file system for servers with <code>Domain=EFS</code>. </p> <p>The policies attached to this role determine the level of access you want to provide your users when transferring files into and out of your S3 buckets or EFS file systems.</p> </note>"
         },
         "SshPublicKeyCount":{
           "shape":"SshPublicKeyCount",
@@ -2126,11 +3361,11 @@
       "members":{
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "LogGroupName":{
           "shape":"LogGroupName",
-          "documentation":"<p>The name of the CloudWatch logging group for the Amazon Web Services Transfer server to which this workflow belongs.</p>"
+          "documentation":"<p>The name of the CloudWatch logging group for the Transfer Family server to which this workflow belongs.</p>"
         }
       },
       "documentation":"<p>Consists of the logging role and the log group name.</p>"
@@ -2150,7 +3385,31 @@
       "max":1000,
       "min":1
     },
+    "MdnResponse":{
+      "type":"string",
+      "enum":[
+        "SYNC",
+        "NONE"
+      ]
+    },
+    "MdnSigningAlg":{
+      "type":"string",
+      "enum":[
+        "SHA256",
+        "SHA384",
+        "SHA512",
+        "SHA1",
+        "NONE",
+        "DEFAULT"
+      ]
+    },
     "Message":{"type":"string"},
+    "MessageSubject":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^[\\p{Print}\\p{Blank}]+"
+    },
     "NextToken":{
       "type":"string",
       "max":6144,
@@ -2218,12 +3477,33 @@
       "max":512,
       "pattern":"[\\x09-\\x0D\\x20-\\x7E]*"
     },
+    "PrivateKeyType":{
+      "type":"string",
+      "max":16384,
+      "min":1,
+      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "sensitive":true
+    },
+    "ProfileId":{
+      "type":"string",
+      "max":19,
+      "min":19,
+      "pattern":"^p-([0-9a-f]{17})$"
+    },
+    "ProfileType":{
+      "type":"string",
+      "enum":[
+        "LOCAL",
+        "PARTNER"
+      ]
+    },
     "Protocol":{
       "type":"string",
       "enum":[
         "SFTP",
         "FTP",
-        "FTPS"
+        "FTPS",
+        "AS2"
       ]
     },
     "ProtocolDetails":{
@@ -2240,6 +3520,10 @@
         "SetStatOption":{
           "shape":"SetStatOption",
           "documentation":"<p>Use the <code>SetStatOption</code> to ignore the error that is generated when the client attempts to use <code>SETSTAT</code> on a file you are uploading to an S3 bucket.</p> <p>Some SFTP file transfer clients can attempt to change the attributes of remote files, including timestamp and permissions, using commands, such as <code>SETSTAT</code> when uploading the file. However, these commands are not compatible with object storage systems, such as Amazon S3. Due to this incompatibility, file uploads from these clients can result in errors even when the file is otherwise successfully uploaded.</p> <p>Set the value to <code>ENABLE_NO_OP</code> to have the Transfer Family server ignore the <code>SETSTAT</code> command, and upload files without needing to make any changes to your SFTP client. While the <code>SetStatOption</code> <code>ENABLE_NO_OP</code> setting ignores the error, it does generate a log entry in Amazon CloudWatch Logs, so you can determine when the client is making a <code>SETSTAT</code> call.</p> <note> <p>If you want to preserve the original timestamp for your file, and modify other file attributes using <code>SETSTAT</code>, you can use Amazon EFS as backend storage with Transfer Family.</p> </note>"
+        },
+        "As2Transports":{
+          "shape":"As2Transports",
+          "documentation":"<p>Indicates the transport method for the AS2 messages. Currently, only HTTP is supported.</p>"
         }
       },
       "documentation":"<p> The protocol settings that are configured for your server. </p>"
@@ -2247,7 +3531,7 @@
     "Protocols":{
       "type":"list",
       "member":{"shape":"Protocol"},
-      "max":3,
+      "max":4,
       "min":1
     },
     "Resource":{"type":"string"},
@@ -2311,7 +3595,7 @@
         },
         "Key":{
           "shape":"S3Key",
-          "documentation":"<p>The name assigned to the file when it was created in S3. You use the object key to retrieve the object.</p>"
+          "documentation":"<p>The name assigned to the file when it was created in Amazon S3. You use the object key to retrieve the object.</p>"
         },
         "VersionId":{
           "shape":"S3VersionId",
@@ -2322,7 +3606,7 @@
           "documentation":"<p>The entity tag is a hash of the object. The ETag reflects changes only to the contents of an object, not its metadata.</p>"
         }
       },
-      "documentation":"<p>Specifies the details for the file location for the file being used in the workflow. Only applicable if you are using S3 storage.</p>"
+      "documentation":"<p>Specifies the details for the file location for the file that's being used in the workflow. Only applicable if you are using S3 storage.</p>"
     },
     "S3InputFileLocation":{
       "type":"structure",
@@ -2333,7 +3617,7 @@
         },
         "Key":{
           "shape":"S3Key",
-          "documentation":"<p>The name assigned to the file when it was created in S3. You use the object key to retrieve the object.</p>"
+          "documentation":"<p>The name assigned to the file when it was created in Amazon S3. You use the object key to retrieve the object.</p>"
         }
       },
       "documentation":"<p>Specifies the customer input S3 file location. If it is used inside <code>copyStepDetails.DestinationFileLocation</code>, it should be the S3 copy destination.</p> <p> You need to provide the bucket and key. The key can represent either a path or a file. This is determined by whether or not you end the key value with the forward slash (/) character. If the final character is \"/\", then your file is copied to the folder, and its name does not change. If, rather, the final character is alphanumeric, your uploaded file is renamed to the path value. In this case, if a file with that name already exists, it is overwritten. </p> <p>For example, if your path is <code>shared-files/bob/</code>, your uploaded files are copied to the <code>shared-files/bob/</code>, folder. If your path is <code>shared-files/today</code>, each uploaded file is copied to the <code>shared-files</code> folder and named <code>today</code>: each upload overwrites the previous version of the <i>bob</i> file.</p>"
@@ -2465,7 +3749,7 @@
           "documentation":"<p>The Server ID (<code>ServerId</code>), Session ID (<code>SessionId</code>) and user (<code>UserName</code>) make up the <code>UserDetails</code>.</p>"
         }
       },
-      "documentation":"<p>A container object for the session details associated with a workflow.</p>"
+      "documentation":"<p>A container object for the session details that are associated with a workflow.</p>"
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -2488,6 +3772,16 @@
       "enum":[
         "DEFAULT",
         "ENABLE_NO_OP"
+      ]
+    },
+    "SigningAlg":{
+      "type":"string",
+      "enum":[
+        "SHA256",
+        "SHA384",
+        "SHA512",
+        "SHA1",
+        "NONE"
       ]
     },
     "SourceFileLocation":{
@@ -2538,6 +3832,33 @@
       "type":"list",
       "member":{"shape":"SshPublicKey"},
       "max":5
+    },
+    "StartFileTransferRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "SendFilePaths"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector. </p>"
+        },
+        "SendFilePaths":{
+          "shape":"FilePaths",
+          "documentation":"<p>An array of strings. Each string represents the absolute path for one outbound file transfer. For example, <code> <i>DOC-EXAMPLE-BUCKET</i>/<i>myfile.txt</i> </code>. </p>"
+        }
+      }
+    },
+    "StartFileTransferResponse":{
+      "type":"structure",
+      "required":["TransferId"],
+      "members":{
+        "TransferId":{
+          "shape":"TransferId",
+          "documentation":"<p>Returns the unique identifier for this file transfer. </p>"
+        }
+      }
     },
     "StartServerRequest":{
       "type":"structure",
@@ -2724,6 +4045,12 @@
         "ENFORCED"
       ]
     },
+    "TransferId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z./-]+$"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -2754,20 +4081,20 @@
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the <code>HomeDirectory</code> parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
-          "documentation":"<p>A session policy for your user so that you can use the same IAM role across multiple users. This policy scopes down user access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This only applies when the domain of <code>ServerId</code> is S3. EFS does not use session policies.</p> <p>For session policies, Amazon Web Services Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy.html\">Example session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web ServicesSecurity Token Service API Reference</i>.</p> </note>"
+          "documentation":"<p>A session policy for your user so that you can use the same Identity and Access Management (IAM) role across multiple users. This policy scopes down a user's access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This policy applies only when the domain of <code>ServerId</code> is Amazon S3. Amazon EFS does not use session policies.</p> <p>For session policies, Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy.html\">Example session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web ServicesSecurity Token Service API Reference</i>.</p> </note>"
         },
         "PosixProfile":{"shape":"PosixProfile"},
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -2775,7 +4102,7 @@
         },
         "ExternalId":{
           "shape":"ExternalId",
-          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Amazon Web Services Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regex used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
+          "documentation":"<p>A unique identifier that is required to identify specific groups within your directory. The users of the group that you associate have access to your Amazon S3 or Amazon EFS resources over the enabled protocols using Transfer Family. If you know the group name, you can view the SID values by running the following command using Windows PowerShell.</p> <p> <code>Get-ADGroup -Filter {samAccountName -like \"<i>YourGroupName</i>*\"} -Properties * | Select SamAccountName,ObjectSid</code> </p> <p>In that command, replace <i>YourGroupName</i> with the name of your Active Directory group.</p> <p>The regular expression used to validate this parameter is a string of characters consisting of uppercase and lowercase alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-</p>"
         }
       }
     },
@@ -2796,6 +4123,149 @@
         }
       }
     },
+    "UpdateAgreementRequest":{
+      "type":"structure",
+      "required":[
+        "AgreementId",
+        "ServerId"
+      ],
+      "members":{
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>A unique identifier for the agreement. This identifier is returned when you create an agreement.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>A system-assigned unique identifier for a server instance. This is the specific server that the agreement uses.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>To replace the existing description, provide a short description for the agreement. </p>"
+        },
+        "Status":{
+          "shape":"AgreementStatusType",
+          "documentation":"<p>You can update the status for the agreement, either activating an inactive agreement or the reverse.</p>"
+        },
+        "LocalProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>To change the local profile identifier, provide a new value here.</p>"
+        },
+        "PartnerProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>To change the partner profile identifier, provide a new value here.</p>"
+        },
+        "BaseDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>To change the landing directory (folder) for files that are transferred, provide the bucket folder that you want to use; for example, <code>/<i>DOC-EXAMPLE-BUCKET</i>/<i>home</i>/<i>mydirectory</i> </code>.</p>"
+        },
+        "AccessRole":{
+          "shape":"Role",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that grants access to at least the <code>HomeDirectory</code> of your users' Amazon S3 buckets.</p>"
+        }
+      }
+    },
+    "UpdateAgreementResponse":{
+      "type":"structure",
+      "required":["AgreementId"],
+      "members":{
+        "AgreementId":{
+          "shape":"AgreementId",
+          "documentation":"<p>A unique identifier for the agreement. This identifier is returned when you create an agreement.</p>"
+        }
+      }
+    },
+    "UpdateCertificateRequest":{
+      "type":"structure",
+      "required":["CertificateId"],
+      "members":{
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>The identifier of the certificate object that you are updating.</p>"
+        },
+        "ActiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+        },
+        "InactiveDate":{
+          "shape":"CertDate",
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A short description to help identify the certificate.</p>"
+        }
+      }
+    },
+    "UpdateCertificateResponse":{
+      "type":"structure",
+      "required":["CertificateId"],
+      "members":{
+        "CertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>Returns the identifier of the certificate object that you are updating.</p>"
+        }
+      }
+    },
+    "UpdateConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "Url":{
+          "shape":"Url",
+          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+        },
+        "As2Config":{
+          "shape":"As2ConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+        },
+        "AccessRole":{
+          "shape":"Role",
+          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+        },
+        "LoggingRole":{
+          "shape":"Role",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a connector to turn on CloudWatch logging for Amazon S3 events. When set, you can view connector activity in your CloudWatch logs.</p>"
+        }
+      }
+    },
+    "UpdateConnectorResponse":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>Returns the identifier of the connector object that you are updating.</p>"
+        }
+      }
+    },
+    "UpdateProfileRequest":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The identifier of the profile object that you are updating.</p>"
+        },
+        "CertificateIds":{
+          "shape":"CertificateIds",
+          "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        }
+      }
+    },
+    "UpdateProfileResponse":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>Returns the identifier for the profile that's being updated.</p>"
+        }
+      }
+    },
     "UpdateServerRequest":{
       "type":"structure",
       "required":["ServerId"],
@@ -2806,11 +4276,11 @@
         },
         "ProtocolDetails":{
           "shape":"ProtocolDetails",
-          "documentation":"<p>The protocol settings that are configured for your server.</p> <ul> <li> <p> Use the <code>PassiveIp</code> parameter to indicate passive mode (for FTP and FTPS protocols). Enter a single dotted-quad IPv4 address, such as the external IP address of a firewall, router, or load balancer. </p> </li> <li> <p>Use the <code>SetStatOption</code> to ignore the error that is generated when the client attempts to use SETSTAT on a file you are uploading to an S3 bucket. Set the value to <code>ENABLE_NO_OP</code> to have the Transfer Family server ignore the SETSTAT command, and upload files without needing to make any changes to your SFTP client. Note that with <code>SetStatOption</code> set to <code>ENABLE_NO_OP</code>, Transfer generates a log entry to CloudWatch Logs, so you can determine when the client is making a SETSTAT call.</p> </li> <li> <p>Use the <code>TlsSessionResumptionMode</code> parameter to determine whether or not your Transfer server resumes recent, negotiated sessions through a unique session ID.</p> </li> </ul>"
+          "documentation":"<p>The protocol settings that are configured for your server.</p> <ul> <li> <p> To indicate passive mode (for FTP and FTPS protocols), use the <code>PassiveIp</code> parameter. Enter a single dotted-quad IPv4 address, such as the external IP address of a firewall, router, or load balancer. </p> </li> <li> <p>To ignore the error that is generated when the client attempts to use the <code>SETSTAT</code> command on a file that you are uploading to an Amazon S3 bucket, use the <code>SetStatOption</code> parameter. To have the Transfer Family server ignore the <code>SETSTAT</code> command and upload files without needing to make any changes to your SFTP client, set the value to <code>ENABLE_NO_OP</code>. If you set the <code>SetStatOption</code> parameter to <code>ENABLE_NO_OP</code>, Transfer Family generates a log entry to Amazon CloudWatch Logs, so that you can determine when the client is making a <code>SETSTAT</code> call.</p> </li> <li> <p>To determine whether your Transfer Family server resumes recent, negotiated sessions through a unique session ID, use the <code>TlsSessionResumptionMode</code> parameter.</p> </li> <li> <p> <code>As2Transports</code> indicates the transport method for the AS2 messages. Currently, only HTTP is supported.</p> </li> </ul>"
         },
         "EndpointDetails":{
           "shape":"EndpointDetails",
-          "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your server. When you host your endpoint within your VPC, you can make it accessible only to resources within your VPC, or you can attach Elastic IP addresses and make it accessible to clients over the internet. Your VPC's default security groups are automatically assigned to your endpoint.</p>"
+          "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your server. When you host your endpoint within your VPC, you can make your endpoint accessible only to resources within your VPC, or you can attach Elastic IP addresses and make your endpoint accessible to clients over the internet. Your VPC's default security groups are automatically assigned to your endpoint.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -2818,7 +4288,7 @@
         },
         "HostKey":{
           "shape":"HostKey",
-          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your server.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option: you can create a stronger key using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Change the host key for your SFTP-enabled server</a> in the <i>Amazon Web Services Transfer Family User Guide</i>.</p>"
+          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your server.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option. You can create a stronger key by using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Change the host key for your SFTP-enabled server</a> in the <i>Transfer Family User Guide</i>.</p>"
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
@@ -2826,15 +4296,15 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, user activity can be viewed in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
-          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
+          "documentation":"<p>Specifies a string to display when users connect to a server. This string is displayed after the user authenticates.</p> <note> <p>The SFTP protocol does not support post-authentication display banners.</p> </note>"
         },
         "PreAuthenticationLoginBanner":{
           "shape":"PreAuthenticationLoginBanner",
-          "documentation":"<p>Specify a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system.</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
+          "documentation":"<p>Specifies a string to display when users connect to a server. This string is displayed before the user authenticates. For example, the following banner displays details about using the system:</p> <p> <code>This system is for the use of authorized users only. Individuals using this computer system without authority, or in excess of their authority, are subject to having all of their activities on this system monitored and recorded by system personnel.</code> </p>"
         },
         "Protocols":{
           "shape":"Protocols",
@@ -2850,7 +4320,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role used for executing the workflow.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
         }
       }
     },
@@ -2877,15 +4347,15 @@
         },
         "HomeDirectoryType":{
           "shape":"HomeDirectoryType",
-          "documentation":"<p>The type of landing directory (folder) you want your users' home directory to be when they log into the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or EFS paths visible to your users.</p>"
+          "documentation":"<p>The type of landing directory (folder) that you want your users' home directory to be when they log in to the server. If you set it to <code>PATH</code>, the user will see the absolute Amazon S3 bucket or EFS paths as is in their file transfer protocol clients. If you set it <code>LOGICAL</code>, you need to provide mappings in the <code>HomeDirectoryMappings</code> for how you want to make Amazon S3 or Amazon EFS paths visible to your users.</p>"
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Amazon Web Services Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can only be set when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock down your user to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to '/' and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
-          "documentation":"<p>A session policy for your user so that you can use the same IAM role across multiple users. This policy scopes down user access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This only applies when the domain of <code>ServerId</code> is S3. EFS does not use session policies.</p> <p>For session policies, Amazon Web Services Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy\">Creating a session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web Services Security Token Service API Reference</i>.</p> </note>"
+          "documentation":"<p>A session policy for your user so that you can use the same Identity and Access Management (IAM) role across multiple users. This policy scopes down a user's access to portions of their Amazon S3 bucket. Variables that you can use inside this policy include <code>${Transfer:UserName}</code>, <code>${Transfer:HomeDirectory}</code>, and <code>${Transfer:HomeBucket}</code>.</p> <note> <p>This policy applies only when the domain of <code>ServerId</code> is Amazon S3. Amazon EFS does not use session policies.</p> <p>For session policies, Transfer Family stores the policy as a JSON blob, instead of the Amazon Resource Name (ARN) of the policy. You save the policy as a JSON blob and pass it in the <code>Policy</code> argument.</p> <p>For an example of a session policy, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/session-policy\">Creating a session policy</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">AssumeRole</a> in the <i>Amazon Web Services Security Token Service API Reference</i>.</p> </note>"
         },
         "PosixProfile":{
           "shape":"PosixProfile",
@@ -2893,7 +4363,7 @@
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that controls your users' access to your Amazon S3 bucket or EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that controls your users' access to your Amazon S3 bucket or Amazon EFS file system. The policies attached to this role determine the level of access that you want to provide your users when transferring files into and out of your Amazon S3 bucket or Amazon EFS file system. The IAM role should also contain a trust relationship that allows the server to access your resources when servicing your users' transfer requests.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -2989,7 +4459,7 @@
           "documentation":"<p>Includes the necessary permissions for S3, EFS, and Lambda operations that Transfer can assume, so that all workflow steps can operate on the required resources</p>"
         }
       },
-      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role used for executing the workflow.</p>"
+      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p>"
     },
     "WorkflowDetails":{
       "type":"structure",
@@ -3013,7 +4483,7 @@
       "members":{
         "Type":{
           "shape":"WorkflowStepType",
-          "documentation":"<p> Currently, the following step types are supported. </p> <ul> <li> <p> <i>COPY</i>: copy the file to another location</p> </li> <li> <p> <i>CUSTOM</i>: custom step with a lambda target</p> </li> <li> <p> <i>DELETE</i>: delete the file</p> </li> <li> <p> <i>TAG</i>: add a tag to the file</p> </li> </ul>"
+          "documentation":"<p> Currently, the following step types are supported. </p> <ul> <li> <p> <i>COPY</i>: Copy the file to another location.</p> </li> <li> <p> <i>CUSTOM</i>: Perform a custom step with an Lambda function target.</p> </li> <li> <p> <i>DELETE</i>: Delete the file.</p> </li> <li> <p> <i>TAG</i>: Add a tag to the file.</p> </li> </ul>"
         },
         "CopyStepDetails":{
           "shape":"CopyStepDetails",
@@ -3054,5 +4524,5 @@
       "max":8
     }
   },
-  "documentation":"<p>Amazon Web Services Transfer Family is a fully managed service that enables the transfer of files over the File Transfer Protocol (FTP), File Transfer Protocol over SSL (FTPS), or Secure Shell (SSH) File Transfer Protocol (SFTP) directly into and out of Amazon Simple Storage Service (Amazon S3). Amazon Web Services helps you seamlessly migrate your file transfer workflows to Amazon Web Services Transfer Family by integrating with existing authentication systems, and providing DNS routing with Amazon Route 53 so nothing changes for your customers and partners, or their applications. With your data in Amazon S3, you can use it with Amazon Web Services services for processing, analytics, machine learning, and archiving. Getting started with Amazon Web Services Transfer Family is easy since there is no infrastructure to buy and set up.</p>"
+  "documentation":"<p>Transfer Family is a fully managed service that enables the transfer of files over the File Transfer Protocol (FTP), File Transfer Protocol over SSL (FTPS), or Secure Shell (SSH) File Transfer Protocol (SFTP) directly into and out of Amazon Simple Storage Service (Amazon S3). Amazon Web Services helps you seamlessly migrate your file transfer workflows to Transfer Family by integrating with existing authentication systems, and providing DNS routing with Amazon Route 53 so nothing changes for your customers and partners, or their applications. With your data in Amazon S3, you can use it with Amazon Web Services for processing, analytics, machine learning, and archiving. Getting started with Transfer Family is easy since there is no infrastructure to buy and set up.</p>"
 }

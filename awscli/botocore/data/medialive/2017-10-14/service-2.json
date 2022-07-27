@@ -1978,6 +1978,56 @@
       ],
       "documentation": "Purchase an offering and create a reservation."
     },
+    "RebootInputDevice": {
+      "name": "RebootInputDevice",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/inputDevices/{inputDeviceId}/reboot",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "RebootInputDeviceRequest"
+      },
+      "output": {
+        "shape": "RebootInputDeviceResponse",
+        "documentation": "Your reboot request has succeeded."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "Reboot operation failed, input could not be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to reboot input device."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "Input device not found."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on reboot device calls to the input device service."
+        }
+      ],
+      "documentation": "Send a reboot command to the specified input device. The device will begin rebooting within a few seconds of sending the command. When the reboot is complete, the device\u2019s connection status will change to connected."
+    },
     "RejectInputDeviceTransfer": {
       "name": "RejectInputDeviceTransfer",
       "http": {
@@ -2081,6 +2131,56 @@
         }
       ],
       "documentation": "Starts an existing channel"
+    },
+    "StartInputDeviceMaintenanceWindow": {
+      "name": "StartInputDeviceMaintenanceWindow",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/inputDevices/{inputDeviceId}/startInputDeviceMaintenanceWindow",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StartInputDeviceMaintenanceWindowRequest"
+      },
+      "output": {
+        "shape": "StartInputDeviceMaintenanceWindowResponse",
+        "documentation": "Your start maintenance window request has succeeded."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "Start maintenance window operation failed, input could not be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to start a maintenance window for this input device."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "Input device not found."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on start maintenance window calls to the input device service."
+        }
+      ],
+      "documentation": "Start a maintenance window for the specified input device. Starting a maintenance window will give the device up to two hours to install software. If the device was streaming prior to the maintenance, it will resume streaming when the software is fully installed. Devices automatically install updates while they are powered on and their MediaLive channels are stopped. A maintenance window allows you to update a device without having to stop MediaLive channels that use the device. The device must remain powered on and connected to the internet for the duration of the maintenance."
     },
     "StartMultiplex": {
       "name": "StartMultiplex",
@@ -12792,6 +12892,51 @@
       },
       "documentation": "Raw Settings"
     },
+    "RebootInputDevice": {
+      "type": "structure",
+      "members": {
+        "Force": {
+          "shape": "RebootInputDeviceForce",
+          "locationName": "force",
+          "documentation": "Force a reboot of an input device. If the device is streaming, it will stop streaming and begin rebooting within a few seconds of sending the command. If the device was streaming prior to the reboot, the device will resume streaming when the reboot completes."
+        }
+      },
+      "documentation": "Placeholder documentation for RebootInputDevice"
+    },
+    "RebootInputDeviceForce": {
+      "type": "string",
+      "documentation": "Whether or not to force reboot the input device.",
+      "enum": [
+        "NO",
+        "YES"
+      ]
+    },
+    "RebootInputDeviceRequest": {
+      "type": "structure",
+      "members": {
+        "Force": {
+          "shape": "RebootInputDeviceForce",
+          "locationName": "force",
+          "documentation": "Force a reboot of an input device. If the device is streaming, it will stop streaming and begin rebooting within a few seconds of sending the command. If the device was streaming prior to the reboot, the device will resume streaming when the reboot completes."
+        },
+        "InputDeviceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "inputDeviceId",
+          "documentation": "The unique ID of the input device to reboot. For example, hd-123456789abcdef."
+        }
+      },
+      "documentation": "A request to reboot an AWS Elemental device.",
+      "required": [
+        "InputDeviceId"
+      ]
+    },
+    "RebootInputDeviceResponse": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for RebootInputDeviceResponse"
+    },
     "Rec601Settings": {
       "type": "structure",
       "members": {
@@ -13932,6 +14077,27 @@
         }
       },
       "documentation": "Placeholder documentation for StartChannelResponse"
+    },
+    "StartInputDeviceMaintenanceWindowRequest": {
+      "type": "structure",
+      "members": {
+        "InputDeviceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "inputDeviceId",
+          "documentation": "The unique ID of the input device to start a maintenance window for. For example, hd-123456789abcdef."
+        }
+      },
+      "required": [
+        "InputDeviceId"
+      ],
+      "documentation": "Placeholder documentation for StartInputDeviceMaintenanceWindowRequest"
+    },
+    "StartInputDeviceMaintenanceWindowResponse": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for StartInputDeviceMaintenanceWindowResponse"
     },
     "StartMultiplexRequest": {
       "type": "structure",

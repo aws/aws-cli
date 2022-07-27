@@ -534,6 +534,7 @@
       "exception":true,
       "fault":true
     },
+    "IsLongDurationTestBoolean":{"type":"boolean"},
     "ListSuiteDefinitionsRequest":{
       "type":"structure",
       "members":{
@@ -639,6 +640,13 @@
       "min":1
     },
     "ParallelRun":{"type":"boolean"},
+    "Protocol":{
+      "type":"string",
+      "enum":[
+        "MqttV3_1_1",
+        "MqttV5"
+      ]
+    },
     "QualificationReportDownloadUrl":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
@@ -769,6 +777,10 @@
           "shape":"IntendedForQualificationBoolean",
           "documentation":"<p>Gets the tests intended for qualification in a suite.</p>"
         },
+        "isLongDurationTest":{
+          "shape":"IsLongDurationTestBoolean",
+          "documentation":"<p> Verifies if the test suite is a long duration test. </p>"
+        },
         "rootGroup":{
           "shape":"RootGroup",
           "documentation":"<p>Gets test suite root group.</p>"
@@ -776,6 +788,10 @@
         "devicePermissionRoleArn":{
           "shape":"AmazonResourceName",
           "documentation":"<p>Gets the device permission ARN.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p> Gets the MQTT protocol that is configured in the suite definition.</p>"
         }
       },
       "documentation":"<p>Gets Suite Definition Configuration.</p>"
@@ -798,6 +814,14 @@
         "intendedForQualification":{
           "shape":"IntendedForQualificationBoolean",
           "documentation":"<p>Specifies if the test suite is intended for qualification.</p>"
+        },
+        "isLongDurationTest":{
+          "shape":"IsLongDurationTestBoolean",
+          "documentation":"<p> Verifies if the test suite is a long duration test. </p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p> Gets the MQTT protocol that is configured in the suite definition.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -907,6 +931,7 @@
       "type":"list",
       "member":{"shape":"SuiteRunInformation"}
     },
+    "SystemMessage":{"type":"string"},
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"String128"},
@@ -983,6 +1008,10 @@
         "failure":{
           "shape":"Failure",
           "documentation":"<p>Provides test case run failure result.</p>"
+        },
+        "testScenarios":{
+          "shape":"TestCaseScenariosList",
+          "documentation":"<p> Provides the test scenarios for the test case run. </p>"
         }
       },
       "documentation":"<p>Provides the test case run.</p>"
@@ -991,6 +1020,58 @@
       "type":"list",
       "member":{"shape":"TestCaseRun"},
       "documentation":"<p>Tests under each group result.</p>"
+    },
+    "TestCaseScenario":{
+      "type":"structure",
+      "members":{
+        "testCaseScenarioId":{
+          "shape":"TestCaseScenarioId",
+          "documentation":"<p>Provides test case scenario ID.</p>"
+        },
+        "testCaseScenarioType":{
+          "shape":"TestCaseScenarioType",
+          "documentation":"<p>Provides test case scenario type. Type is one of the following:</p> <ul> <li> <p>Advanced</p> </li> <li> <p>Basic</p> </li> </ul>"
+        },
+        "status":{
+          "shape":"TestCaseScenarioStatus",
+          "documentation":"<p>Provides the test case scenario status. Status is one of the following:</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running.</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>"
+        },
+        "failure":{
+          "shape":"Failure",
+          "documentation":"<p>Provides test case scenario failure result.</p>"
+        },
+        "systemMessage":{
+          "shape":"SystemMessage",
+          "documentation":"<p> </p>"
+        }
+      },
+      "documentation":"<p>Provides test case scenario.</p>"
+    },
+    "TestCaseScenarioId":{"type":"string"},
+    "TestCaseScenarioStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL",
+        "CANCELED",
+        "PENDING",
+        "RUNNING",
+        "STOPPING",
+        "STOPPED",
+        "PASS_WITH_WARNINGS",
+        "ERROR"
+      ]
+    },
+    "TestCaseScenarioType":{
+      "type":"string",
+      "enum":[
+        "Advanced",
+        "Basic"
+      ]
+    },
+    "TestCaseScenariosList":{
+      "type":"list",
+      "member":{"shape":"TestCaseScenario"}
     },
     "TestResult":{
       "type":"structure",

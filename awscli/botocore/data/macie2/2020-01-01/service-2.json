@@ -1618,6 +1618,116 @@
       ],
       "documentation": "<p>Retrieves information about an account that's associated with an Amazon Macie administrator account.</p>"
     },
+    "GetRevealConfiguration": {
+      "name": "GetRevealConfiguration",
+      "http": {
+        "method": "GET",
+        "requestUri": "/reveal-configuration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetRevealConfigurationRequest"
+      },
+      "output": {
+        "shape": "GetRevealConfigurationResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>The request failed because you sent too many requests during a certain amount of time.</p>"
+        },
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>The request failed because it contains a syntax error.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure.</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>The request was denied because you don't have sufficient access to the specified resource.</p>"
+        }
+      ],
+      "documentation": "<p>Retrieves the status and configuration settings for retrieving (revealing) occurrences of sensitive data reported by findings.</p>"
+    },
+    "GetSensitiveDataOccurrences": {
+      "name": "GetSensitiveDataOccurrences",
+      "http": {
+        "method": "GET",
+        "requestUri": "/findings/{findingId}/reveal",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetSensitiveDataOccurrencesRequest"
+      },
+      "output": {
+        "shape": "GetSensitiveDataOccurrencesResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "<p>The request failed because it contains instructions that Amazon Macie can't process (Unprocessable Entity).</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure.</p>"
+        },
+        {
+          "shape": "ServiceQuotaExceededException",
+          "documentation": "<p>The request failed because fulfilling the request would exceed one or more service quotas for your account.</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>The request was denied because you don't have sufficient access to the specified resource.</p>"
+        },
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>The request failed because the specified resource wasn't found.</p>"
+        },
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>The request failed because you sent too many requests during a certain amount of time.</p>"
+        }
+      ],
+      "documentation": "<p>Retrieves (reveals) occurrences of sensitive data reported by a finding.</p>"
+    },
+    "GetSensitiveDataOccurrencesAvailability": {
+      "name": "GetSensitiveDataOccurrencesAvailability",
+      "http": {
+        "method": "GET",
+        "requestUri": "/findings/{findingId}/reveal/availability",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetSensitiveDataOccurrencesAvailabilityRequest"
+      },
+      "output": {
+        "shape": "GetSensitiveDataOccurrencesAvailabilityResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>The request failed because the specified resource wasn't found.</p>"
+        },
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>The request failed because you sent too many requests during a certain amount of time.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure.</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>The request was denied because you don't have sufficient access to the specified resource.</p>"
+        }
+      ],
+      "documentation": "<p>Checks whether occurrences of sensitive data can be retrieved (revealed) for a finding.</p>"
+    },
     "GetUsageStatistics": {
       "name": "GetUsageStatistics",
       "http": {
@@ -2513,6 +2623,40 @@
         }
       ],
       "documentation": "<p>Updates the Amazon Macie configuration settings for an organization in Organizations.</p>"
+    },
+    "UpdateRevealConfiguration": {
+      "name": "UpdateRevealConfiguration",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/reveal-configuration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateRevealConfigurationRequest"
+      },
+      "output": {
+        "shape": "UpdateRevealConfigurationResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>The request failed because you sent too many requests during a certain amount of time.</p>"
+        },
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>The request failed because it contains a syntax error.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure.</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>The request was denied because you don't have sufficient access to the specified resource.</p>"
+        }
+      ],
+      "documentation": "<p>Updates the status and configuration settings for retrieving (revealing) occurrences of sensitive data reported by findings.</p>"
     }
   },
   "shapes": {
@@ -2693,6 +2837,14 @@
         }
       },
       "documentation": "<p>Provides information about an identity that performed an action on an affected resource by using temporary security credentials. The credentials were obtained using the AssumeRole operation of the Security Token Service (STS) API.</p>"
+    },
+    "AvailabilityCode": {
+      "type": "string",
+      "documentation": "<p>Specifies whether occurrences of sensitive data can be retrieved for a finding. Possible values are:</p>",
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE"
+      ]
     },
     "AwsAccount": {
       "type": "structure",
@@ -3443,12 +3595,12 @@
         "keywords": {
           "shape": "__listOf__string",
           "locationName": "keywords",
-          "documentation": "<p>An array that lists specific character sequences (<i>keywords</i>), one of which must be within proximity (maximumMatchDistance) of the regular expression to match. The array can contain as many as 50 keywords. Each keyword can contain 3-90 UTF-8 characters. Keywords aren't case sensitive.</p>"
+          "documentation": "<p>An array that lists specific character sequences (<i>keywords</i>), one of which must precede and be within proximity (maximumMatchDistance) of the regular expression to match. The array can contain as many as 50 keywords. Each keyword can contain 3-90 UTF-8 characters. Keywords aren't case sensitive.</p>"
         },
         "maximumMatchDistance": {
           "shape": "__integer",
           "locationName": "maximumMatchDistance",
-          "documentation": "<p>The maximum number of characters that can exist between text that matches the regular expression and the character sequences specified by the keywords array. Amazon Macie includes or excludes a result based on the proximity of a keyword to text that matches the regular expression. The distance can be 1-300 characters. The default value is 50.</p>"
+          "documentation": "<p>The maximum number of characters that can exist between the end of at least one complete character sequence specified by the keywords array and the end of the text that matches the regex pattern. If a complete keyword precedes all the text that matches the pattern and the keyword is within the specified distance, Amazon Macie includes the result. The distance can be 1-300 characters. The default value is 50.</p>"
         },
         "name": {
           "shape": "__string",
@@ -4052,7 +4204,7 @@
         "lastRunTime": {
           "shape": "__timestampIso8601",
           "locationName": "lastRunTime",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when the job started. If the job is a recurring job, this value indicates when the most recent run started.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when the job started. If the job is a recurring job, this value indicates when the most recent run started or, if the job hasn't run yet, when the job was created.</p>"
         },
         "managedDataIdentifierIds": {
           "shape": "__listOf__string",
@@ -4119,6 +4271,20 @@
           "documentation": "<p>Specifies whether the maximum number of Amazon Macie member accounts are part of the organization.</p>"
         }
       }
+    },
+    "DetectedDataDetails": {
+      "type": "structure",
+      "members": {
+        "value": {
+          "shape": "__stringMin1Max128",
+          "locationName": "value",
+          "documentation": "<p>An occurrence of the specified type of sensitive data. Each occurrence can contain 1-128 characters.</p>"
+        }
+      },
+      "documentation": "<p>Specifies 1-10 occurrences of a specific type of sensitive data reported by a finding.</p>",
+      "required": [
+        "value"
+      ]
     },
     "DisableMacieRequest": {
       "type": "structure",
@@ -4706,12 +4872,12 @@
         "keywords": {
           "shape": "__listOf__string",
           "locationName": "keywords",
-          "documentation": "<p>An array that lists specific character sequences (<i>keywords</i>), one of which must be within proximity (maximumMatchDistance) of the regular expression to match. Keywords aren't case sensitive.</p>"
+          "documentation": "<p>An array that lists specific character sequences (<i>keywords</i>), one of which must precede and be within proximity (maximumMatchDistance) of the regular expression to match. Keywords aren't case sensitive.</p>"
         },
         "maximumMatchDistance": {
           "shape": "__integer",
           "locationName": "maximumMatchDistance",
-          "documentation": "<p>The maximum number of characters that can exist between text that matches the regular expression and the character sequences specified by the keywords array. Amazon Macie includes or excludes a result based on the proximity of a keyword to text that matches the regular expression.</p>"
+          "documentation": "<p>The maximum number of characters that can exist between the end of at least one complete character sequence specified by the keywords array and the end of the text that matches the regex pattern. If a complete keyword precedes all the text that matches the pattern and the keyword is within the specified distance, Amazon Macie includes the result. Otherwise, Macie excludes the result.</p>"
         },
         "name": {
           "shape": "__string",
@@ -4997,6 +5163,83 @@
           "shape": "__timestampIso8601",
           "locationName": "updatedAt",
           "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, of the most recent change to the status of the relationship between the account and the administrator account.</p>"
+        }
+      }
+    },
+    "GetRevealConfigurationRequest": {
+      "type": "structure",
+      "members": {}
+    },
+    "GetRevealConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "configuration": {
+          "shape": "RevealConfiguration",
+          "locationName": "configuration",
+          "documentation": "<p>The current configuration settings and the status of the configuration for the account.</p>"
+        }
+      }
+    },
+    "GetSensitiveDataOccurrencesAvailabilityRequest": {
+      "type": "structure",
+      "members": {
+        "findingId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "findingId",
+          "documentation": "<p>The unique identifier for the finding.</p>"
+        }
+      },
+      "required": [
+        "findingId"
+      ]
+    },
+    "GetSensitiveDataOccurrencesAvailabilityResponse": {
+      "type": "structure",
+      "members": {
+        "code": {
+          "shape": "AvailabilityCode",
+          "locationName": "code",
+          "documentation": "<p>Specifies whether occurrences of sensitive data can be retrieved for the finding. Possible values are: AVAILABLE, the sensitive data can be retrieved; and, UNAVAILABLE, the sensitive data can't be retrieved. If this value is UNAVAILABLE, the reasons array indicates why the data can't be retrieved.</p>"
+        },
+        "reasons": {
+          "shape": "__listOfUnavailabilityReasonCode",
+          "locationName": "reasons",
+          "documentation": "<p>Specifies why occurrences of sensitive data can't be retrieved for the finding. Possible values are:</p> <ul><li><p>INVALID_CLASSIFICATION_RESULT - Amazon Macie can't verify the location of the sensitive data to retrieve. There isn't a corresponding sensitive data discovery result for the finding. Or the sensitive data discovery result specified by the ClassificationDetails.detailedResultsLocation field of the finding isn't available, is malformed or corrupted, or uses an unsupported storage format.</p></li> <li><p>OBJECT_EXCEEDS_SIZE_QUOTA - The storage size of the affected S3 object exceeds the size quota for retrieving occurrences of sensitive data.</p></li> <li><p>OBJECT_UNAVAILABLE - The affected S3 object isn't available. The object might have been renamed, moved, or deleted. Or the object was changed after Amazon Macie created the finding.</p></li> <li><p>UNSUPPORTED_FINDING_TYPE - The specified finding isn't a sensitive data finding.</p></li> <li><p>UNSUPPORTED_OBJECT_TYPE - The affected S3 object uses a file or storage format that Macie doesn't support for retrieving occurrences of sensitive data.</p></li></ul> <p>This value is null if sensitive data can be retrieved for the finding.</p>"
+        }
+      }
+    },
+    "GetSensitiveDataOccurrencesRequest": {
+      "type": "structure",
+      "members": {
+        "findingId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "findingId",
+          "documentation": "<p>The unique identifier for the finding.</p>"
+        }
+      },
+      "required": [
+        "findingId"
+      ]
+    },
+    "GetSensitiveDataOccurrencesResponse": {
+      "type": "structure",
+      "members": {
+        "error": {
+          "shape": "__string",
+          "locationName": "error",
+          "documentation": "<p>If an error occurred when Amazon Macie attempted to retrieve occurrences of sensitive data reported by the finding, a description of the error that occurred. This value is null if the status (status) of the request is PROCESSING or SUCCESS.</p>"
+        },
+        "sensitiveDataOccurrences": {
+          "shape": "SensitiveDataOccurrences",
+          "locationName": "sensitiveDataOccurrences",
+          "documentation": "<p>A map that specifies 1-100 types of sensitive data reported by the finding and, for each type, 1-10 occurrences of sensitive data.</p>"
+        },
+        "status": {
+          "shape": "RevealRequestStatus",
+          "locationName": "status",
+          "documentation": "<p>The status of the request to retrieve occurrences of sensitive data reported by the finding. Possible values are:</p> <ul><li><p>ERROR - An error occurred when Amazon Macie attempted to locate, retrieve, or encrypt the sensitive data. The error value indicates the nature of the error that occurred.</p></li> <li><p>PROCESSING - Macie is processing the request.</p></li> <li><p>SUCCESS - Macie successfully located, retrieved, and encrypted the sensitive data.</p></li></ul>"
         }
       }
     },
@@ -5304,7 +5547,7 @@
         "isDefinedInJob": {
           "shape": "IsDefinedInJob",
           "locationName": "isDefinedInJob",
-          "documentation": "<p>Specifies whether any one-time or recurring jobs are configured to analyze data in the bucket. Possible values are:</p> <ul><li><p>TRUE - The bucket is explicitly included in the bucket definition (S3BucketDefinitionForJob) for one or more jobs and at least one of those jobs has a status other than CANCELLED. Or the bucket matched the bucket criteria (S3BucketCriteriaForJob) for at least one job that previously ran.</p></li> <li><p>FALSE - The bucket isn't explicitly included in the bucket definition (S3BucketDefinitionForJob) for any jobs, all the jobs that explicitly include the bucket in their bucket definitions have a status of CANCELLED, or the bucket didn't match the bucket criteria (S3BucketCriteriaForJob) for any jobs that previously ran.</p></li> <li><p>UNKNOWN - An exception occurred when Amazon Macie attempted to retrieve job data for the bucket.</p></li></ul> <p></p>"
+          "documentation": "<p>Specifies whether any one-time or recurring jobs are configured to analyze data in the bucket. Possible values are:</p> <ul><li><p>TRUE - The bucket is explicitly included in the bucket definition (S3BucketDefinitionForJob) for one or more jobs and at least one of those jobs has a status other than CANCELLED. Or the bucket matched the bucket criteria (S3BucketCriteriaForJob) for at least one job that previously ran.</p></li> <li><p>FALSE - The bucket isn't explicitly included in the bucket definition (S3BucketDefinitionForJob) for any jobs, all the jobs that explicitly include the bucket in their bucket definitions have a status of CANCELLED, or the bucket didn't match the bucket criteria (S3BucketCriteriaForJob) for any jobs that previously ran.</p></li> <li><p>UNKNOWN - An exception occurred when Amazon Macie attempted to retrieve job data for the bucket.</p></li></ul>"
         },
         "isMonitoredByJob": {
           "shape": "IsMonitoredByJob",
@@ -6115,7 +6358,7 @@
           "documentation": "<p>An array of objects, one for each occurrence of sensitive data in an Apache Avro object container, Apache Parquet file, JSON file, or JSON Lines file. This value is null for all other types of files.</p> <p>For an Avro object container or Parquet file, each Record object specifies a record index and the path to a field in a record that contains the sensitive data. For a JSON or JSON Lines file, each Record object specifies the path to a field or array that contains the sensitive data. For a JSON Lines file, it also specifies the index of the line that contains the data.</p>"
         }
       },
-      "documentation": "<p>Specifies the location of 1-15 occurrences of sensitive data that was detected by a managed data identifier or a custom data identifier and produced a sensitive data finding.</p>"
+      "documentation": "<p>Specifies the location of 1-15 occurrences of sensitive data that was detected by a managed data identifier or a custom data identifier and produced a sensitive data finding. Depending on the file or storage format of the affected S3 object, you can optionally retrieve (reveal) sample occurrences of the sensitive data that was detected.</p>"
     },
     "OrderBy": {
       "type": "string",
@@ -6337,6 +6580,42 @@
       },
       "documentation": "<p>Provides information about the resources that a finding applies to.</p>"
     },
+    "RevealConfiguration": {
+      "type": "structure",
+      "members": {
+        "kmsKeyId": {
+          "shape": "__stringMin1Max2048",
+          "locationName": "kmsKeyId",
+          "documentation": "<p>The Amazon Resource Name (ARN), ID, or alias of the KMS key to use to encrypt sensitive data that's retrieved. The key must be an existing, customer managed, symmetric encryption key that's in the same Amazon Web Services Region as the Amazon Macie account.</p> <p>If this value specifies an alias, it must include the following prefix: alias/. If this value specifies a key that's owned by another Amazon Web Services account, it must specify the ARN of the key or the ARN of the key's alias.</p>"
+        },
+        "status": {
+          "shape": "RevealStatus",
+          "locationName": "status",
+          "documentation": "<p>The status of the configuration for the Amazon Macie account. In a request, valid values are: ENABLED, enable the configuration for the account; and, DISABLED, disable the configuration for the account. In a response, possible values are: ENABLED, the configuration is currently enabled for the account; and, DISABLED, the configuration is currently disabled for the account.</p>"
+        }
+      },
+      "documentation": "<p>Specifies the configuration settings for retrieving occurrences of sensitive data reported by findings, and the status of the configuration for an Amazon Macie account. When you enable the configuration for the first time, your request must specify an AWS Key Management Service (AWS KMS) key. Otherwise, an error occurs. Macie uses the specified key to encrypt the sensitive data that you retrieve.</p>",
+      "required": [
+        "status"
+      ]
+    },
+    "RevealRequestStatus": {
+      "type": "string",
+      "documentation": "<p>The status of a request to retrieve occurrences of sensitive data reported by a finding. Possible values are:</p>",
+      "enum": [
+        "SUCCESS",
+        "PROCESSING",
+        "ERROR"
+      ]
+    },
+    "RevealStatus": {
+      "type": "string",
+      "documentation": "<p>The status of the configuration for the Amazon Macie account. In a request, valid values are:</p>",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "S3Bucket": {
       "type": "structure",
       "members": {
@@ -6451,7 +6730,7 @@
         "kmsKeyArn": {
           "shape": "__string",
           "locationName": "kmsKeyArn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the KMS key to use for encryption of the results. This must be the ARN of an existing, symmetric, customer managed KMS key that's in the same Amazon Web Services Region as the bucket.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for encryption of the results. This must be the ARN of an existing, symmetric encryption KMS key that's in the same Amazon Web Services Region as the bucket.</p>"
         }
       },
       "documentation": "<p>Specifies an S3 bucket to store data classification results in, and the encryption settings to use when storing results in that bucket.</p>",
@@ -6810,6 +7089,16 @@
         "CREDENTIALS",
         "CUSTOM_IDENTIFIER"
       ]
+    },
+    "SensitiveDataOccurrences": {
+      "type": "map",
+      "documentation": "<p>Specifies a type of sensitive data reported by a finding and provides occurrences of the specified type of sensitive data.</p>",
+      "key": {
+        "shape": "__string"
+      },
+      "value": {
+        "shape": "__listOfDetectedDataDetails"
+      }
     },
     "ServerSideEncryption": {
       "type": "structure",
@@ -7210,12 +7499,12 @@
         "keywords": {
           "shape": "__listOf__string",
           "locationName": "keywords",
-          "documentation": "<p>An array that lists specific character sequences (<i>keywords</i>), one of which must be within proximity (maximumMatchDistance) of the regular expression to match. The array can contain as many as 50 keywords. Each keyword can contain 3-90 UTF-8 characters. Keywords aren't case sensitive.</p>"
+          "documentation": "<p>An array that lists specific character sequences (<i>keywords</i>), one of which must precede and be within proximity (maximumMatchDistance) of the regular expression to match. The array can contain as many as 50 keywords. Each keyword can contain 3-90 UTF-8 characters. Keywords aren't case sensitive.</p>"
         },
         "maximumMatchDistance": {
           "shape": "__integer",
           "locationName": "maximumMatchDistance",
-          "documentation": "<p>The maximum number of characters that can exist between text that matches the regular expression and the character sequences specified by the keywords array. Amazon Macie includes or excludes a result based on the proximity of a keyword to text that matches the regular expression. The distance can be 1-300 characters. The default value is 50.</p>"
+          "documentation": "<p>The maximum number of characters that can exist between the end of at least one complete character sequence specified by the keywords array and the end of the text that matches the regex pattern. If a complete keyword precedes all the text that matches the pattern and the keyword is within the specified distance, Amazon Macie includes the result. The distance can be 1-300 characters. The default value is 50.</p>"
         },
         "regex": {
           "shape": "__string",
@@ -7274,11 +7563,40 @@
         "aws:kms"
       ]
     },
+    "UnavailabilityReasonCode": {
+      "type": "string",
+      "documentation": "<p>Specifies why occurrences of sensitive data can't be retrieved for a finding. Possible values are:</p>",
+      "enum": [
+        "OBJECT_EXCEEDS_SIZE_QUOTA",
+        "UNSUPPORTED_OBJECT_TYPE",
+        "UNSUPPORTED_FINDING_TYPE",
+        "INVALID_CLASSIFICATION_RESULT",
+        "OBJECT_UNAVAILABLE"
+      ]
+    },
     "Unit": {
       "type": "string",
       "enum": [
         "TERABYTES"
       ]
+    },
+    "UnprocessableEntityException": {
+      "type": "structure",
+      "members": {
+        "message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "<p>The type of error that occurred and prevented Amazon Macie from retrieving occurrences of sensitive data reported by the finding. Possible values are:</p> <ul><li><p>INVALID_CLASSIFICATION_RESULT</code> - Amazon Macie can't verify the location of the sensitive data to retrieve. There isn't a corresponding sensitive data discovery result for the finding. Or the sensitive data discovery result specified by the ClassificationDetails.detailedResultsLocation field of the finding isn't available, is malformed or corrupted, or uses an unsupported storage format.</p></li> <li><p>OBJECT_EXCEEDS_SIZE_QUOTA - The storage size of the affected S3 object exceeds the size quota for retrieving occurrences of sensitive data.</p></li> <li><p>OBJECT_UNAVAILABLE - The affected S3 object isn't available. The object might have been renamed, moved, or deleted. Or the object was changed after Amazon Macie created the finding.</p></li> <li><p>UNSUPPORTED_FINDING_TYPE - The specified finding isn't a sensitive data finding..</p></li> <li><p>UNSUPPORTED_OBJECT_TYPE - The affected S3 object uses a file or storage format that Amazon Macie doesn't support for retrieving occurrences of sensitive data.</p></li></ul>"
+        }
+      },
+      "documentation": "<p>Provides information about an error that occurred due to an unprocessable entity.</p>",
+      "required": [
+        "message"
+      ],
+      "exception": true,
+      "error": {
+        "httpStatusCode": 422
+      }
     },
     "UnprocessedAccount": {
       "type": "structure",
@@ -7469,6 +7787,29 @@
     "UpdateOrganizationConfigurationResponse": {
       "type": "structure",
       "members": {}
+    },
+    "UpdateRevealConfigurationRequest": {
+      "type": "structure",
+      "members": {
+        "configuration": {
+          "shape": "RevealConfiguration",
+          "locationName": "configuration",
+          "documentation": "<p>The new configuration settings and the status of the configuration for the account.</p>"
+        }
+      },
+      "required": [
+        "configuration"
+      ]
+    },
+    "UpdateRevealConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "configuration": {
+          "shape": "RevealConfiguration",
+          "locationName": "configuration",
+          "documentation": "<p>The new configuration settings and the status of the configuration for the account.</p>"
+        }
+      }
     },
     "UsageByAccount": {
       "type": "structure",
@@ -7776,6 +8117,12 @@
         "shape": "CustomDataIdentifierSummary"
       }
     },
+    "__listOfDetectedDataDetails": {
+      "type": "list",
+      "member": {
+        "shape": "DetectedDataDetails"
+      }
+    },
     "__listOfFinding": {
       "type": "list",
       "member": {
@@ -7878,6 +8225,13 @@
         "shape": "TagValuePair"
       }
     },
+    "__listOfUnavailabilityReasonCode": {
+      "type": "list",
+      "min": 0,
+      "member": {
+        "shape": "UnavailabilityReasonCode"
+      }
+    },
     "__listOfUnprocessedAccount": {
       "type": "list",
       "member": {
@@ -7919,6 +8273,16 @@
     },
     "__string": {
       "type": "string"
+    },
+    "__stringMin1Max128": {
+      "type": "string",
+      "min": 1,
+      "max": 128
+    },
+    "__stringMin1Max2048": {
+      "type": "string",
+      "min": 1,
+      "max": 2048
     },
     "__timestampIso8601": {
       "type": "timestamp",

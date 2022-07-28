@@ -6,14 +6,14 @@ To request a 2048-bit RSA asymmetric data key pair, use the ``key-pair-spec`` pa
 
 The KMS key you specify must be a symmetric encryption KMS key, that is, a KMS key with a ``KeySpec`` value of ``SYMMETRIC_DEFAULT``.
 
-NOTE: The values in the output of this example are truncated for display.
-::
+NOTE: The values in the output of this example are truncated for display. ::
 
     aws kms generate-data-key-pair \
         --key-id --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --key-pair-spec RSA_2048
 
 Output::
+    
     {
         "PrivateKeyCiphertextBlob": "AQIDAHi6LtupRpdKl2aJTzkK6FbhOtQkMlQJJH3PdtHvS/y+hAFFxmiD134doUDzMGmfCEtcAAAHaTCCB2UGCSqGSIb3DQEHBqCCB1...",
         "PrivateKeyPlaintext": "MIIG/QIBADANBgkqhkiG9w0BAQEFAASCBucwggbjAgEAAoIBgQDcDd4YzI+u9Kfv4t2UkTWhShBXkekS4cBVt07I0P42ZgMf+YvU5IgS4ut...",

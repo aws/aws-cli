@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.40
+=======
+
+* api-change:``ec2``: Documentation updates for VM Import/Export.
+* api-change:``es``: This release adds support for gp3 EBS (Elastic Block Store) storage.
+* api-change:``lookoutvision``: This release introduces support for image segmentation models and updates CPU accelerator options for models hosted on edge devices.
+* api-change:``opensearch``: This release adds support for gp3 EBS (Elastic Block Store) storage.
+
+
 1.25.39
 =======
 

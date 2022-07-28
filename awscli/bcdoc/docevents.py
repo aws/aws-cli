@@ -23,6 +23,9 @@ DOC_EVENTS = {
     'doc-option': '.%s.%s',
     'doc-option-example': '.%s.%s',
     'doc-options-end': '.%s',
+    'doc-global-options-start': '.%s',
+    'doc-global-option': '.%s.%s',
+    'doc-global-options-end': '.%s',
     'doc-examples': '.%s',
     'doc-output': '.%s',
     'doc-subitems-start': '.%s',
@@ -57,6 +60,15 @@ def generate_events(session, help_command):
                 'doc-synopsis-option.%s.%s' % (help_command.event_class,
                                                arg_name),
                 arg_name=arg_name, help_command=help_command)
+    if help_command.global_arg_table:
+        for arg_name in help_command.global_arg_table:
+            if getattr(help_command.global_arg_table[arg_name],
+                       '_UNDOCUMENTED', False):
+                continue
+            session.emit(
+                'doc-synopsis-option.%s.%s' % (help_command.event_class,
+                                               arg_name),
+                arg_name=arg_name, help_command=help_command)
     session.emit('doc-synopsis-end.%s' % help_command.event_class,
                  help_command=help_command)
     session.emit('doc-options-start.%s' % help_command.event_class,
@@ -73,6 +85,18 @@ def generate_events(session, help_command):
                          (help_command.event_class, arg_name),
                          arg_name=arg_name, help_command=help_command)
     session.emit('doc-options-end.%s' % help_command.event_class,
+                 help_command=help_command)
+    if help_command.global_arg_table:
+        session.emit('doc-global-options-start.%s' % help_command.event_class,
+                    help_command=help_command)
+        for arg_name in help_command.global_arg_table:
+            if getattr(help_command.global_arg_table[arg_name],
+                    '_UNDOCUMENTED', False):
+                continue
+            session.emit('doc-global-option.%s.%s' % (help_command.event_class,
+                                                    arg_name),
+                        arg_name=arg_name, help_command=help_command)
+    session.emit('doc-global-options-end.%s' % help_command.event_class,
                  help_command=help_command)
     session.emit('doc-subitems-start.%s' % help_command.event_class,
                  help_command=help_command)

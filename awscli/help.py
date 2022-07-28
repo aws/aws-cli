@@ -206,7 +206,8 @@ class HelpCommand(object):
     EventHandler class used by this HelpCommand.
     """
 
-    def __init__(self, session, obj, command_table, arg_table):
+    def __init__(self, session, obj, command_table, arg_table,
+                 global_arg_table={}):
         self.session = session
         self.obj = obj
         if command_table is None:
@@ -215,6 +216,7 @@ class HelpCommand(object):
         if arg_table is None:
             arg_table = {}
         self.arg_table = arg_table
+        self.global_arg_table = global_arg_table
         self._subcommand_table = {}
         self._related_items = []
         self.renderer = get_renderer()
@@ -284,7 +286,7 @@ class ProviderHelpCommand(HelpCommand):
     def __init__(self, session, command_table, arg_table,
                  description, synopsis, usage):
         HelpCommand.__init__(self, session, None,
-                             command_table, arg_table)
+                             command_table, arg_table, arg_table)
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
@@ -336,7 +338,7 @@ class ServiceHelpCommand(HelpCommand):
     def __init__(self, session, obj, command_table, arg_table, name,
                  event_class):
         super(ServiceHelpCommand, self).__init__(session, obj, command_table,
-                                                 arg_table)
+                                                 arg_table, {})
         self._name = name
         self._event_class = event_class
 
@@ -358,9 +360,10 @@ class OperationHelpCommand(HelpCommand):
     """
     EventHandlerClass = OperationDocumentEventHandler
 
-    def __init__(self, session, operation_model, arg_table, name,
-                 event_class):
-        HelpCommand.__init__(self, session, operation_model, None, arg_table)
+    def __init__(self, session, operation_model, arg_table,
+                 global_arg_table, name, event_class):
+        HelpCommand.__init__(self, session, operation_model,
+                             None, arg_table, global_arg_table)
         self.param_shorthand = ParamShorthandParser()
         self._name = name
         self._event_class = event_class
@@ -378,7 +381,7 @@ class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
 
     def __init__(self, session):
-        super(TopicListerCommand, self).__init__(session, None, {}, {})
+        super(TopicListerCommand, self).__init__(session, None, {}, {}, {})
 
     @property
     def event_class(self):
@@ -393,7 +396,7 @@ class TopicHelpCommand(HelpCommand):
     EventHandlerClass = TopicDocumentEventHandler
 
     def __init__(self, session, topic_name):
-        super(TopicHelpCommand, self).__init__(session, None, {}, {})
+        super(TopicHelpCommand, self).__init__(session, None, {}, {}, {})
         self._topic_name = topic_name
 
     @property

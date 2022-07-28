@@ -139,6 +139,7 @@ class CLIDriver(object):
         for service_name in services:
             commands[service_name] = ServiceCommand(cli_name=service_name,
                                                     session=self.session,
+                                                    global_arg_table=self._get_argument_table(),
                                                     service_name=service_name)
         return commands
 
@@ -293,7 +294,8 @@ class ServiceCommand(CLICommand):
 
     """
 
-    def __init__(self, cli_name, session, service_name=None):
+    def __init__(self, cli_name, session,
+                 global_arg_table={}, service_name=None):
         # The cli_name is the name the user types, the name we show
         # in doc, etc.
         # The service_name is the name we used internally with botocore.
@@ -306,6 +308,7 @@ class ServiceCommand(CLICommand):
         # botocore expects.
         self._name = cli_name
         self.session = session
+        self._global_arg_table = global_arg_table
         self._command_table = None
         if service_name is None:
             # Then default to using the cli name.
@@ -322,6 +325,10 @@ class ServiceCommand(CLICommand):
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def global_arg_table(self):
+        return self._global_arg_table
 
     @property
     def service_model(self):
@@ -372,6 +379,7 @@ class ServiceCommand(CLICommand):
                 session=self.session,
                 operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
+                global_arg_table=self.global_arg_table,
             )
         self.session.emit('building-command-table.%s' % self._name,
                           command_table=command_table,
@@ -418,7 +426,7 @@ class ServiceOperation(object):
     DEFAULT_ARG_CLASS = CLIArgument
 
     def __init__(self, name, parent_name, operation_caller,
-                 operation_model, session):
+                 operation_model, session, global_arg_table={}):
         """
 
         :type name: str
@@ -440,6 +448,7 @@ class ServiceOperation(object):
 
         """
         self._arg_table = None
+        self._global_arg_table = global_arg_table
         self._name = name
         # These is used so we can figure out what the proper event
         # name should be <parent name>.<name>.
@@ -477,6 +486,10 @@ class ServiceOperation(object):
         if self._arg_table is None:
             self._arg_table = self._create_argument_table()
         return self._arg_table
+    
+    @property
+    def global_arg_table(self):
+        return self._global_arg_table
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
@@ -537,6 +550,7 @@ class ServiceOperation(object):
             self._session,
             operation_model=self._operation_model,
             arg_table=self.arg_table,
+            global_arg_table=self.global_arg_table,
             name=self._name, event_class='.'.join(self.lineage_names))
 
     def _add_help(self, parser):

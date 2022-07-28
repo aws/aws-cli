@@ -124,7 +124,11 @@ class CLIDocumentEventHandler(object):
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
-        argument = help_command.arg_table[arg_name]
+        if arg_name in help_command.global_arg_table:
+            arg_table = help_command.global_arg_table
+        else:
+            arg_table = help_command.arg_table
+        argument = arg_table[arg_name]
         if argument.group_name in self._arg_groups:
             if argument.group_name in self._documented_arg_groups:
                 # This arg is already documented so we can move on.
@@ -178,6 +182,22 @@ class CLIDocumentEventHandler(object):
             self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
+    
+    def doc_global_options_start(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Global Options')
+
+    def doc_global_option(self, arg_name, help_command, **kwargs):
+        doc = help_command.doc
+        argument = help_command.global_arg_table[arg_name]
+        doc.writeln('``%s`` (%s)' % (argument.cli_name,
+                                     argument.cli_type_name))
+        doc.include_doc_string(argument.documentation)
+        if argument.choices:
+            doc.style.start_ul()
+            for choice in argument.choices:
+                doc.style.li(choice)
+            doc.style.end_ul()
 
     def doc_relateditems_start(self, help_command, **kwargs):
         if help_command.related_items:
@@ -283,21 +303,13 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
         doc = help_command.doc
         doc.style.new_paragraph()
 
+    # A provider document's options are provided by
+    # the global option methods.
     def doc_options_start(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h2('Options')
+        pass
 
     def doc_option(self, arg_name, help_command, **kwargs):
-        doc = help_command.doc
-        argument = help_command.arg_table[arg_name]
-        doc.writeln('``%s`` (%s)' % (argument.cli_name,
-                                     argument.cli_type_name))
-        doc.include_doc_string(argument.documentation)
-        if argument.choices:
-            doc.style.start_ul()
-            for choice in argument.choices:
-                doc.style.li(choice)
-            doc.style.end_ul()
+        pass
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
@@ -333,6 +345,12 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         pass
 
     def doc_options_end(self, help_command, **kwargs):
+        pass
+
+    def doc_global_option_start(self, help_command, **kwargs):
+        pass
+
+    def doc_global_option(self, help_command, **kwargs):
         pass
 
     def doc_description(self, help_command, **kwargs):

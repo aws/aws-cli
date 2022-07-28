@@ -103,7 +103,8 @@ class TestHelpDocumentationModifications(TestPaginateBase):
         with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'result_key': 'abc'}):
             help_command = OperationHelpCommand(
-                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+                mock.Mock(), mock.Mock(), mock.Mock(), mock.Mock(),
+                'foo', OperationDocumentEventHandler)
             help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
@@ -116,7 +117,8 @@ class TestHelpDocumentationModifications(TestPaginateBase):
         with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'result_key': ['abc', '123']}):
             help_command = OperationHelpCommand(
-                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+                mock.Mock(), mock.Mock(), mock.Mock(), mock.Mock(),
+                'foo', OperationDocumentEventHandler)
             help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
@@ -127,7 +129,8 @@ class TestHelpDocumentationModifications(TestPaginateBase):
         with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'limit_key': 'aaa'}):
             help_command = OperationHelpCommand(
-                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+                mock.Mock(), mock.Mock(), mock.Mock(), mock.Mock(),
+                'foo', OperationDocumentEventHandler)
             help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
@@ -140,7 +143,8 @@ class TestHelpDocumentationModifications(TestPaginateBase):
         with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value=None):
             help_command = OperationHelpCommand(
-                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+                mock.Mock(), mock.Mock(), mock.Mock(), mock.Mock(),
+                'foo', OperationDocumentEventHandler)
             help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)

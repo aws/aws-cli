@@ -121,8 +121,8 @@ class TestBasicCommandHooks(unittest.TestCase):
         driver.main('s3 foo'.split())
 
         self.assert_events_fired_in_order([
-            'building-command-table.main',
             'building-top-level-params',
+            'building-command-table.main',
             'top-level-args-parsed',
             'session-initialized',
             'building-command-table.s3',

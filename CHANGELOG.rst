@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.25.41
+=======
+
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``fsx``: Documentation updates for Amazon FSx
+* api-change:``shield``: AWS Shield Advanced now supports filtering for ListProtections and ListProtectionGroups.
+
+
 1.25.40
 =======
 

@@ -2168,7 +2168,11 @@
         },
         "Iops":{
           "shape":"IntegerClass",
-          "documentation":"<p>Specifies the IOPD for a Provisioned IOPS EBS volume (SSD).</p>"
+          "documentation":"<p>Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).</p>"
+        },
+        "Throughput":{
+          "shape":"IntegerClass",
+          "documentation":"<p>Specifies the Throughput for GP3 EBS volume (SSD).</p>"
         }
       },
       "documentation":"<p>Options to enable, disable, and specify the properties of EBS storage volumes. For more information, see <a href=\"http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs\" target=\"_blank\"> Configuring EBS-based Storage</a>.</p>"
@@ -3893,7 +3897,7 @@
     "StartTimestamp":{"type":"timestamp"},
     "StorageSubTypeName":{
       "type":"string",
-      "documentation":"<p> SubType of the given storage type. List of available sub-storage options: For \"instance\" storageType we wont have any storageSubType, in case of \"ebs\" storageType we will have following valid storageSubTypes <ol> <li>standard</li> <li>gp2</li> <li>io1</li> </ol> Refer <code><a>VolumeType</a></code> for more information regarding above EBS storage options. </p>"
+      "documentation":"<p> SubType of the given storage type. List of available sub-storage options: For \"instance\" storageType we wont have any storageSubType, in case of \"ebs\" storageType we will have following valid storageSubTypes <ol> <li>standard</li> <li>gp2</li> <li>gp3</li> <li>io1</li> </ol> Refer <code><a>VolumeType</a></code> for more information regarding above EBS storage options. </p>"
     },
     "StorageType":{
       "type":"structure",
@@ -3912,7 +3916,7 @@
       "members":{
         "LimitName":{
           "shape":"LimitName",
-          "documentation":"<p> Name of storage limits that are applicable for given storage type. If <code> <a>StorageType</a> </code> is ebs, following storage options are applicable <ol> <li>MinimumVolumeSize</li> Minimum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumVolumeSize</li> Maximum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumIops</li> Maximum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumIops</li> Minimum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. </ol> </p>"
+          "documentation":"<p> Name of storage limits that are applicable for given storage type. If <code> <a>StorageType</a> </code> is ebs, following storage options are applicable <ol> <li>MinimumVolumeSize</li> Minimum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumVolumeSize</li> Maximum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumIops</li> Maximum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumIops</li> Minimum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumThroughput</li> Maximum amount of Throughput that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumThroughput</li> Minimum amount of Throughput that is applicable for given storage type.It can be empty if it is not applicable. </ol> </p>"
         },
         "LimitValues":{
           "shape":"LimitValueList",
@@ -4293,11 +4297,12 @@
     },
     "VolumeType":{
       "type":"string",
-      "documentation":"<p> The type of EBS volume, standard, gp2, or io1. See <a href=\"http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs\" target=\"_blank\">Configuring EBS-based Storage</a>for more information.</p>",
+      "documentation":"<p> The type of EBS volume, standard, gp2, gp3 or io1. See <a href=\"http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs\" target=\"_blank\">Configuring EBS-based Storage</a>for more information.</p>",
       "enum":[
         "standard",
         "gp2",
-        "io1"
+        "io1",
+        "gp3"
       ]
     },
     "ZoneAwarenessConfig":{

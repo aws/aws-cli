@@ -908,6 +908,21 @@
       ],
       "documentation":"<p>Accepts a resource type and returns a list of resource identifiers that are aggregated for a specific resource type across accounts and regions. A resource identifier includes the resource type, ID, (if available) the custom resource name, source account, and source region. You can narrow the results to include only resources that have specific resource IDs, or a resource name, or source account ID, or source region.</p> <p>For example, if the input consists of accountID 12345678910 and the region is us-east-1 for resource type <code>AWS::EC2::Instance</code> then the API returns all the EC2 instance identifiers of accountID 12345678910 and region us-east-1.</p>"
     },
+    "ListConformancePackComplianceScores":{
+      "name":"ListConformancePackComplianceScores",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListConformancePackComplianceScoresRequest"},
+      "output":{"shape":"ListConformancePackComplianceScoresResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidLimitException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Returns a list of conformance pack compliance scores. A compliance score is the percentage of the number of compliant rule-resource combinations in a conformance pack compared to the number of total possible rule-resource combinations in the conformance pack. This metric provides you with a high-level view of the compliance state of your conformance packs, and can be used to identify, investigate, and understand compliance deviations in your conformance packs.</p>"
+    },
     "ListDiscoveredResources":{
       "name":"ListDiscoveredResources",
       "http":{
@@ -1910,6 +1925,7 @@
       "max":100,
       "min":0
     },
+    "ComplianceScore":{"type":"string"},
     "ComplianceSummariesByResourceType":{
       "type":"list",
       "member":{"shape":"ComplianceSummaryByResourceType"}
@@ -2451,6 +2467,39 @@
       "max":5,
       "min":0
     },
+    "ConformancePackComplianceScore":{
+      "type":"structure",
+      "members":{
+        "Score":{
+          "shape":"ComplianceScore",
+          "documentation":"<p>Compliance score for the conformance pack.</p>"
+        },
+        "ConformancePackName":{
+          "shape":"ConformancePackName",
+          "documentation":"<p>The name of the conformance pack.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"LastUpdatedTime",
+          "documentation":"<p>The time that the conformance pack compliance score was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A compliance score is the percentage of the number of compliant rule-resource combinations in a conformance pack compared to the number of total possible rule-resource combinations in the conformance pack. This metric provides you with a high-level view of the compliance state of your conformance packs, and can be used to identify, investigate, and understand compliance deviations in your conformance packs.</p>"
+    },
+    "ConformancePackComplianceScores":{
+      "type":"list",
+      "member":{"shape":"ConformancePackComplianceScore"}
+    },
+    "ConformancePackComplianceScoresFilters":{
+      "type":"structure",
+      "required":["ConformancePackNames"],
+      "members":{
+        "ConformancePackNames":{
+          "shape":"ConformancePackNameFilter",
+          "documentation":"<p>The name of a conformance pack whose score should be included in the compliance score result.</p>"
+        }
+      },
+      "documentation":"<p>A list of filters to apply to the conformance pack compliance score result set.</p>"
+    },
     "ConformancePackComplianceSummary":{
       "type":"structure",
       "required":[
@@ -2623,6 +2672,12 @@
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z][-a-zA-Z0-9]*"
+    },
+    "ConformancePackNameFilter":{
+      "type":"list",
+      "member":{"shape":"ConformancePackName"},
+      "max":25,
+      "min":1
     },
     "ConformancePackNamesList":{
       "type":"list",
@@ -4830,6 +4885,7 @@
       "documentation":"<p>You cannot delete the delivery channel you specified because the configuration recorder is running.</p>",
       "exception":true
     },
+    "LastUpdatedTime":{"type":"timestamp"},
     "LaterTime":{"type":"timestamp"},
     "Limit":{
       "type":"integer",
@@ -4882,6 +4938,45 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        }
+      }
+    },
+    "ListConformancePackComplianceScoresRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"ConformancePackComplianceScoresFilters",
+          "documentation":"<p>Filters the results based on the <code>ConformancePackComplianceScoresFilters</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Determines the order in which conformance pack compliance scores are sorted. Either in ascending or descending order.</p>"
+        },
+        "SortBy":{
+          "shape":"SortBy",
+          "documentation":"<p>Sorts your conformance pack compliance scores in either ascending or descending order, depending on <code>SortOrder</code>.</p>"
+        },
+        "Limit":{
+          "shape":"PageSizeLimit",
+          "documentation":"<p>The maximum number of conformance pack compliance scores returned on each page.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> string in a prior request that you can use to get the paginated response for next set of conformance pack compliance scores.</p>"
+        }
+      }
+    },
+    "ListConformancePackComplianceScoresResponse":{
+      "type":"structure",
+      "required":["ConformancePackComplianceScores"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> string that you can use to get the next page of results in a paginated response.</p>"
+        },
+        "ConformancePackComplianceScores":{
+          "shape":"ConformancePackComplianceScores",
+          "documentation":"<p>A list of <code>ConformancePackComplianceScore</code> objects</p>"
         }
       }
     },
@@ -7042,6 +7137,17 @@
           "documentation":"<p>The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response. </p>"
         }
       }
+    },
+    "SortBy":{
+      "type":"string",
+      "enum":["SCORE"]
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "Source":{
       "type":"structure",

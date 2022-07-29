@@ -3867,6 +3867,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.40
+=======
+
+* api-change:``ec2``: Documentation updates for VM Import/Export.
+* api-change:``es``: This release adds support for gp3 EBS (Elastic Block Store) storage.
+* api-change:``lookoutvision``: This release introduces support for image segmentation models and updates CPU accelerator options for models hosted on edge devices.
+* api-change:``opensearch``: This release adds support for gp3 EBS (Elastic Block Store) storage.
+
+
+1.25.39
+=======
+
+* api-change:``auditmanager``: This release adds an exceeded quota exception to several APIs. We added a ServiceQuotaExceededException for the following operations: CreateAssessment, CreateControl, CreateAssessmentFramework, and UpdateAssessmentStatus.
+* api-change:``chime``: Chime VoiceConnector will now support ValidateE911Address which will allow customers to prevalidate their addresses included in their SIP invites for emergency calling
+* api-change:``config``: This release adds ListConformancePackComplianceScores API to support the new compliance score feature, which provides a percentage of the number of compliant rule-resource combinations in a conformance pack compared to the number of total possible rule-resource combinations in the conformance pack.
+* api-change:``globalaccelerator``: Global Accelerator now supports dual-stack accelerators, enabling support for IPv4 and IPv6 traffic.
+* api-change:``marketplace-catalog``: The SDK for the StartChangeSet API will now automatically set and use an idempotency token in the ClientRequestToken request parameter if the customer does not provide it.
+* api-change:``polly``: Amazon Polly adds new English and Hindi voice - Kajal. Kajal is available as Neural voice only.
+* api-change:``ssm``: Adding doc updates for OpsCenter support in Service Setting actions.
+* api-change:``workspaces``: Added CreateWorkspaceImage API to create a new WorkSpace image from an existing WorkSpace.
+
+
 1.25.38
 =======
 

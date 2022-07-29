@@ -188,6 +188,25 @@
       ],
       "documentation":"<p>Creates the specified WorkSpace bundle. For more information about creating WorkSpace bundles, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/create-custom-bundle.html\"> Create a Custom WorkSpaces Image and Bundle</a>.</p>"
     },
+    "CreateWorkspaceImage":{
+      "name":"CreateWorkspaceImage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateWorkspaceImageRequest"},
+      "output":{"shape":"CreateWorkspaceImageResult"},
+      "errors":[
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"InvalidResourceStateException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValuesException"}
+      ],
+      "documentation":"<p>Creates a new WorkSpace image from an existing WorkSpace.</p>"
+    },
     "CreateWorkspaces":{
       "name":"CreateWorkspaces",
       "http":{
@@ -1597,6 +1616,69 @@
         "WorkspaceBundle":{"shape":"WorkspaceBundle"}
       }
     },
+    "CreateWorkspaceImageRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Description",
+        "WorkspaceId"
+      ],
+      "members":{
+        "Name":{
+          "shape":"WorkspaceImageName",
+          "documentation":"<p>The name of the new WorkSpace image.</p>"
+        },
+        "Description":{
+          "shape":"WorkspaceImageDescription",
+          "documentation":"<p>The description of the new WorkSpace image.</p>"
+        },
+        "WorkspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the source WorkSpace</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags that you want to add to the new WorkSpace image. To add tags when you're creating the image, you must create an IAM policy that grants your IAM user permission to use <code>workspaces:CreateTags</code>.</p>"
+        }
+      }
+    },
+    "CreateWorkspaceImageResult":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"WorkspaceImageId",
+          "documentation":"<p>The identifier of the new WorkSpace image.</p>"
+        },
+        "Name":{
+          "shape":"WorkspaceImageName",
+          "documentation":"<p>The name of the image.</p>"
+        },
+        "Description":{
+          "shape":"WorkspaceImageDescription",
+          "documentation":"<p>The description of the image.</p>"
+        },
+        "OperatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p>The operating system that the image is running.</p>"
+        },
+        "State":{
+          "shape":"WorkspaceImageState",
+          "documentation":"<p>The availability status of the image.</p>"
+        },
+        "RequiredTenancy":{
+          "shape":"WorkspaceImageRequiredTenancy",
+          "documentation":"<p>Specifies whether the image is running on dedicated hardware. When Bring Your Own License (BYOL) is enabled, this value is set to DEDICATED. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.htm\"> Bring Your Own Windows Desktop Images.</a> </p>"
+        },
+        "Created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the image was created.</p>"
+        },
+        "OwnerAccountId":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The identifier of the AWS account that owns the image.</p>"
+        }
+      }
+    },
     "CreateWorkspacesRequest":{
       "type":"structure",
       "required":["Workspaces"],
@@ -1652,7 +1734,7 @@
       "members":{
         "LogoUrl":{
           "shape":"ClientUrl",
-          "documentation":"<p>The logo URL. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p>"
+          "documentation":"<p>The logo. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p>"
         },
         "SupportEmail":{
           "shape":"ClientEmail",
@@ -1668,7 +1750,7 @@
         },
         "LoginMessage":{
           "shape":"LoginMessage",
-          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.</p>"
         }
       },
       "documentation":"<p>Returns default client branding attributes that were imported. These attributes display on the client login screen.</p> <important> <p>Client branding attributes are public facing. Ensure that you don't include sensitive information.</p> </important>"
@@ -1694,7 +1776,7 @@
         },
         "LoginMessage":{
           "shape":"LoginMessage",
-          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.</p>"
         }
       },
       "documentation":"<p>The default client branding attributes to be imported. These attributes display on the client login screen.</p> <important> <p>Client branding attributes are public facing. Ensure that you do not include sensitive information.</p> </important>"
@@ -2654,7 +2736,7 @@
         },
         "LoginMessage":{
           "shape":"LoginMessage",
-          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.</p>"
         }
       },
       "documentation":"<p>The client branding attributes for iOS device types. These attributes are displayed on the iOS client login screen only.</p> <important> <p>Client branding attributes are public facing. Ensure you do not include sensitive information.</p> </important>"
@@ -2688,7 +2770,7 @@
         },
         "LoginMessage":{
           "shape":"LoginMessage",
-          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. </p>"
+          "documentation":"<p>The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.</p>"
         }
       },
       "documentation":"<p>The client branding attributes to import for iOS device types. These attributes are displayed on the iOS client login screen.</p> <important> <p>Client branding attributes are public facing. Ensure you do not include sensitive information.</p> </important>"

@@ -3028,7 +3028,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Adds a streaming configuration for the specified Amazon Chime Voice Connector. The streaming configuration specifies whether media streaming is enabled for sending to Indonesians. It also sets the retention period, in hours, for the Amazon Kinesis data.</p>"
+      "documentation":"<p>Adds a streaming configuration for the specified Amazon Chime Voice Connector. The streaming configuration specifies whether media streaming is enabled for sending to Kinesis. It also sets the retention period, in hours, for the Amazon Kinesis data.</p>"
     },
     "PutVoiceConnectorTermination":{
       "name":"PutVoiceConnectorTermination",
@@ -3814,6 +3814,26 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Updates details of the specified Amazon Chime Voice Connector group, such as the name and Amazon Chime Voice Connector priority ranking.</p>"
+    },
+    "ValidateE911Address":{
+      "name":"ValidateE911Address",
+      "http":{
+        "method":"POST",
+        "requestUri":"/emergency-calling/address",
+        "responseCode":202
+      },
+      "input":{"shape":"ValidateE911AddressRequest"},
+      "output":{"shape":"ValidateE911AddressResponse"},
+      "errors":[
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Validates an address to be used for 911 calls made with Amazon Chime Voice Connectors. You can use validated addresses in a Presence Information Data Format Location Object file that you include in SIP requests. That helps ensure that addresses are routed to the appropriate Public Safety Answering Point.</p>"
     }
   },
   "shapes":{
@@ -3913,6 +3933,52 @@
         "EnterpriseLWA",
         "EnterpriseOIDC"
       ]
+    },
+    "Address":{
+      "type":"structure",
+      "members":{
+        "streetName":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address street, such as <code>8th Avenue</code>.</p>"
+        },
+        "streetSuffix":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address suffix, such as the <code>N</code> in <code>8th Avenue N</code>.</p>"
+        },
+        "postDirectional":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>An address suffix location, such as the <code>S. Unit A</code> in <code>Central Park S. Unit A</code>.</p>"
+        },
+        "preDirectional":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>An address prefix location, such as the <code>N</code> in <code>N. Third St.</code>.</p>"
+        },
+        "streetNumber":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The numeric portion of an address.</p>"
+        },
+        "city":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The city of an address.</p>"
+        },
+        "state":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The state of an address.</p>"
+        },
+        "postalCode":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The postal code of an address.</p>"
+        },
+        "postalCodePlus4":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The Zip + 4 or postal code + 4 of an address.</p>"
+        },
+        "country":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The country of an address. </p>"
+        }
+      },
+      "documentation":"<p>A validated address.</p>"
     },
     "AlexaForBusinessMetadata":{
       "type":"structure",
@@ -4701,6 +4767,44 @@
     "CallingRegionList":{
       "type":"list",
       "member":{"shape":"CallingRegion"}
+    },
+    "CandidateAddress":{
+      "type":"structure",
+      "members":{
+        "streetInfo":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The street information of a candidate address</p>"
+        },
+        "streetNumber":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The numeric portion of a candidate address.</p>"
+        },
+        "city":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The city of a candidate address.</p>"
+        },
+        "state":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The state of a candidate address.</p>"
+        },
+        "postalCode":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The postal code of a candidate address.</p>"
+        },
+        "postalCodePlus4":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The Zip + 4 or postal code + 4 of a candidate address.</p>"
+        },
+        "country":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The country of a candidate address.</p>"
+        }
+      },
+      "documentation":"<p>A suggested address.</p>"
+    },
+    "CandidateAddressList":{
+      "type":"list",
+      "member":{"shape":"CandidateAddress"}
     },
     "Capability":{
       "type":"string",
@@ -9190,11 +9294,11 @@
       "members":{
         "EnableSIPLogs":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean that enables SIP message logs to CloudWatch logs.</p>"
+          "documentation":"<p>When true, enables SIP message logs for sending to Amazon CloudWatch Logs.</p>"
         },
         "EnableMediaMetricLogs":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean that enables logging of detailed media metrics for Voice Connectors to CloudWatch logs.</p>"
+          "documentation":"<p>Boolean that enables the logging of Voice Connector metrics to Cloudwatch.</p>"
         }
       },
       "documentation":"<p>The logging configuration associated with an Amazon Chime Voice Connector. Specifies whether SIP message logs are enabled for sending to Amazon CloudWatch Logs.</p>"
@@ -10826,6 +10930,11 @@
         }
       }
     },
+    "SensitiveNonEmptyString":{
+      "type":"string",
+      "pattern":".*\\S.*",
+      "sensitive":true
+    },
     "SensitiveString":{
       "type":"string",
       "sensitive":true
@@ -12376,6 +12485,74 @@
         "PrivateUser",
         "SharedDevice"
       ]
+    },
+    "ValidateE911AddressRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "StreetNumber",
+        "StreetInfo",
+        "City",
+        "State",
+        "Country",
+        "PostalCode"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The AWS account ID.</p>"
+        },
+        "StreetNumber":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address street number, such as <code>200</code> or <code>2121</code>.</p>"
+        },
+        "StreetInfo":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address street information, such as <code>8th Avenue</code>.</p>"
+        },
+        "City":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address city, such as <code>Portland</code>.</p>"
+        },
+        "State":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address state, such as <code>ME</code>.</p>"
+        },
+        "Country":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address country, such as <code>US</code>. </p>"
+        },
+        "PostalCode":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The address postal code, such as <code>04352</code>.</p>"
+        }
+      }
+    },
+    "ValidateE911AddressResponse":{
+      "type":"structure",
+      "members":{
+        "ValidationResult":{
+          "shape":"ValidationResult",
+          "documentation":"<p>Number indicating the result of address validation. <code>0</code> means the address was perfect as is and successfully validated. <code>1</code> means the address was corrected. <code>2</code> means the address sent was not close enough and was not validated.</p>"
+        },
+        "AddressExternalId":{
+          "shape":"String",
+          "documentation":"<p>The ID that represents the address.</p>"
+        },
+        "Address":{
+          "shape":"Address",
+          "documentation":"<p>The validated address.</p>"
+        },
+        "CandidateAddressList":{
+          "shape":"CandidateAddressList",
+          "documentation":"<p>The list of address suggestions.</p>"
+        }
+      }
+    },
+    "ValidationResult":{
+      "type":"integer",
+      "max":2,
+      "min":0
     },
     "VideoArtifactsConfiguration":{
       "type":"structure",

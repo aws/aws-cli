@@ -214,7 +214,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Detects anomalies in an image that you supply. </p> <p>The response from <code>DetectAnomalies</code> includes a boolean prediction that the image contains one or more anomalies and a confidence value for the prediction.</p> <note> <p>Before calling <code>DetectAnomalies</code>, you must first start your model with the <a>StartModel</a> operation. You are charged for the amount of time, in minutes, that a model runs and for the number of anomaly detection units that your model uses. If you are not using a model, use the <a>StopModel</a> operation to stop your model. </p> </note> <p>This operation requires permissions to perform the <code>lookoutvision:DetectAnomalies</code> operation.</p>"
+      "documentation":"<p>Detects anomalies in an image that you supply. </p> <p>The response from <code>DetectAnomalies</code> includes a boolean prediction that the image contains one or more anomalies and a confidence value for the prediction. If the model is an image segmentation model, the response also includes segmentation information for each type of anomaly found in the image.</p> <note> <p>Before calling <code>DetectAnomalies</code>, you must first start your model with the <a>StartModel</a> operation. You are charged for the amount of time, in minutes, that a model runs and for the number of anomaly detection units that your model uses. If you are not using a model, use the <a>StopModel</a> operation to stop your model. </p> </note> <p>For more information, see <i>Detecting anomalies in an image</i> in the Amazon Lookout for Vision developer guide.</p> <p>This operation requires permissions to perform the <code>lookoutvision:DetectAnomalies</code> operation.</p>"
     },
     "ListDatasetEntries":{
       "name":"ListDatasetEntries",
@@ -431,11 +431,40 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "Anomaly":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"AnomalyName",
+          "documentation":"<p>The name of an anomaly type found in an image. <code>Name</code> maps to an anomaly type in the training dataset, apart from the anomaly type <code>background</code>. The service automatically inserts the <code>background</code> anomaly type into the response from <code>DetectAnomalies</code>. </p>"
+        },
+        "PixelAnomaly":{
+          "shape":"PixelAnomaly",
+          "documentation":"<p>Information about the pixel mask that covers an anomaly type.</p>"
+        }
+      },
+      "documentation":"<p>Information about an anomaly type found on an image by an image segmentation model. For more information, see <a>DetectAnomalies</a>.</p>"
+    },
     "AnomalyClassFilter":{
       "type":"string",
       "max":10,
       "min":1,
       "pattern":"(normal|anomaly)"
+    },
+    "AnomalyList":{
+      "type":"list",
+      "member":{"shape":"Anomaly"}
+    },
+    "AnomalyMask":{
+      "type":"blob",
+      "max":5242880,
+      "min":1
+    },
+    "AnomalyName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]*"
     },
     "Boolean":{"type":"boolean"},
     "ClientToken":{
@@ -443,6 +472,12 @@
       "max":64,
       "min":1,
       "pattern":"^[a-zA-Z0-9-]+$"
+    },
+    "Color":{
+      "type":"string",
+      "max":7,
+      "min":7,
+      "pattern":"\\#[a-zA-Z0-9]{6}"
     },
     "CompilerOptions":{
       "type":"string",
@@ -1013,14 +1048,22 @@
         },
         "IsAnomalous":{
           "shape":"Boolean",
-          "documentation":"<p>True if the image contains an anomaly, otherwise false.</p>"
+          "documentation":"<p>True if Amazon Lookout for Vision classifies the image as containing an anomaly, otherwise false.</p>"
         },
         "Confidence":{
           "shape":"Float",
-          "documentation":"<p>The confidence that Amazon Lookout for Vision has in the accuracy of the prediction.</p>"
+          "documentation":"<p>The confidence that Lookout for Vision has in the accuracy of the classification in <code>IsAnomalous</code>.</p>"
+        },
+        "Anomalies":{
+          "shape":"AnomalyList",
+          "documentation":"<p>If the model is an image segmentation model, <code>Anomalies</code> contains a list of anomaly types found in the image. There is one entry for each type of anomaly found (even if multiple instances of an anomaly type exist on the image). The first element in the list is always an anomaly type representing the image background ('background') and shouldn't be considered an anomaly. Amazon Lookout for Vision automatically add the background anomaly type to the response, and you don't need to declare a background anomaly type in your dataset.</p> <p>If the list has one entry ('background'), no anomalies were found on the image.</p> <p/> <p>An image classification model doesn't return an <code>Anomalies</code> list. </p>"
+        },
+        "AnomalyMask":{
+          "shape":"AnomalyMask",
+          "documentation":"<p>If the model is an image segmentation model, <code>AnomalyMask</code> contains pixel masks that covers all anomaly types found on the image. Each anomaly type has a different mask color. To map a color to an anomaly type, see the <code>color</code> field of the <a>PixelAnomaly</a> object.</p> <p>An image classification model doesn't return an <code>Anomalies</code> list. </p>"
         }
       },
-      "documentation":"<p>The prediction results from a call to <a>DetectAnomalies</a>.</p>"
+      "documentation":"<p>The prediction results from a call to <a>DetectAnomalies</a>. <code>DetectAnomalyResult</code> includes classification information for the prediction (<code>IsAnomalous</code> and <code>Confidence</code>). If the model you use is an image segementation model, <code>DetectAnomalyResult</code> also includes segmentation information (<code>Anomalies</code> and <code>AnomalyMask</code>). Classification information is calculated separately from segmentation information and you shouldn't assume a relationship between them.</p>"
     },
     "ExceptionString":{"type":"string"},
     "Float":{"type":"float"},
@@ -1033,7 +1076,7 @@
       "members":{
         "CompilerOptions":{
           "shape":"CompilerOptions",
-          "documentation":"<p>Additional compiler options for the Greengrass component. Currently, only NVIDIA Graphics Processing Units (GPU) are supported. If you specify <code>TargetPlatform</code>, you must specify <code>CompilerOptions</code>. If you specify <code>TargetDevice</code>, don't specify <code>CompilerOptions</code>.</p> <p>For more information, see <i>Compiler options</i> in the Amazon Lookout for Vision Developer Guide. </p>"
+          "documentation":"<p>Additional compiler options for the Greengrass component. Currently, only NVIDIA Graphics Processing Units (GPU) and CPU accelerators are supported. If you specify <code>TargetDevice</code>, don't specify <code>CompilerOptions</code>.</p> <p>For more information, see <i>Compiler options</i> in the Amazon Lookout for Vision Developer Guide. </p>"
         },
         "TargetDevice":{
           "shape":"TargetDevice",
@@ -1696,6 +1739,20 @@
       "max":2048,
       "pattern":"^[a-zA-Z0-9\\/\\+\\=]{0,2048}$"
     },
+    "PixelAnomaly":{
+      "type":"structure",
+      "members":{
+        "TotalPercentageArea":{
+          "shape":"Float",
+          "documentation":"<p>The percentage area of the image that the anomaly type covers.</p>"
+        },
+        "Color":{
+          "shape":"Color",
+          "documentation":"<p>A hex color value for the mask that covers an anomaly type. Each anomaly type has a different mask color. The color maps to the color of the anomaly type used in the training dataset. </p>"
+        }
+      },
+      "documentation":"<p>Information about the pixels in an anomaly mask. For more information, see <a>Anomaly</a>. <code>PixelAnomaly</code> is only returned by image segmentation models.</p>"
+    },
     "ProjectArn":{"type":"string"},
     "ProjectDescription":{
       "type":"structure",
@@ -2069,8 +2126,7 @@
       "type":"structure",
       "required":[
         "Os",
-        "Arch",
-        "Accelerator"
+        "Arch"
       ],
       "members":{
         "Os":{
@@ -2083,7 +2139,7 @@
         },
         "Accelerator":{
           "shape":"TargetPlatformAccelerator",
-          "documentation":"<p>The target accelerator for the model. NVIDIA (Nvidia graphics processing unit) is the only accelerator that is currently supported. You must also specify the <code>gpu-code</code>, <code>trt-ver</code>, and <code>cuda-ver</code> compiler options. </p>"
+          "documentation":"<p>The target accelerator for the model. Currently, Amazon Lookout for Vision only supports NVIDIA (Nvidia graphics processing unit) and CPU accelerators. If you specify NVIDIA as an accelerator, you must also specify the <code>gpu-code</code>, <code>trt-ver</code>, and <code>cuda-ver</code> compiler options. If you don't specify an accelerator, Lookout for Vision uses the CPU for compilation and we highly recommend that you use the <a>GreengrassConfiguration$CompilerOptions</a> field. For example, you can use the following compiler options for CPU: </p> <ul> <li> <p> <code>mcpu</code>: CPU micro-architecture. For example, <code>{'mcpu': 'skylake-avx512'}</code> </p> </li> <li> <p> <code>mattr</code>: CPU flags. For example, <code>{'mattr': ['+neon', '+vfpv4']}</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The platform on which a model runs on an AWS IoT Greengrass core device.</p>"

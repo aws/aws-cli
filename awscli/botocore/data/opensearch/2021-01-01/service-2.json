@@ -2421,7 +2421,11 @@
         },
         "Iops":{
           "shape":"IntegerClass",
-          "documentation":"<p>The IOPD for a Provisioned IOPS EBS volume (SSD).</p>"
+          "documentation":"<p>The IOPS for Provisioned IOPS And GP3 EBS volume (SSD).</p>"
+        },
+        "Throughput":{
+          "shape":"IntegerClass",
+          "documentation":"<p>The Throughput for GP3 EBS volume (SSD).</p>"
         }
       },
       "documentation":"<p>Options to enable, disable, and specify the properties of EBS storage volumes.</p>"
@@ -3940,7 +3944,7 @@
     "StartTimestamp":{"type":"timestamp"},
     "StorageSubTypeName":{
       "type":"string",
-      "documentation":"<p> Sub-type of the given storage type. List of available sub-storage options: \"instance\" storageType has no storageSubType. \"ebs\" storageType has the following valid storageSubTypes: <ol> <li>standard</li> <li>gp2</li> <li>io1</li> </ol> See <code> <a>VolumeType</a> </code> for more information regarding each EBS storage option. </p>"
+      "documentation":"<p> Sub-type of the given storage type. List of available sub-storage options: \"instance\" storageType has no storageSubType. \"ebs\" storageType has the following valid storageSubTypes: <ol> <li>standard</li> <li>gp2</li> <li>gp3</li> <li>io1</li> </ol> See <code> <a>VolumeType</a> </code> for more information regarding each EBS storage option. </p>"
     },
     "StorageType":{
       "type":"structure",
@@ -3959,7 +3963,7 @@
       "members":{
         "LimitName":{
           "shape":"LimitName",
-          "documentation":"<p> Name of storage limits that are applicable for the given storage type. If <code> <a>StorageType</a> </code> is \"ebs\", the following storage options are applicable: <ol> <li>MinimumVolumeSize</li> Minimum amount of volume size that is applicable for the given storage type. Can be empty if not applicable. <li>MaximumVolumeSize</li> Maximum amount of volume size that is applicable for the given storage type. Can be empty if not applicable. <li>MaximumIops</li> Maximum amount of Iops that is applicable for given the storage type. Can be empty if not applicable. <li>MinimumIops</li> Minimum amount of Iops that is applicable for given the storage type. Can be empty if not applicable. </ol> </p>"
+          "documentation":"<p> Name of storage limits that are applicable for the given storage type. If <code> <a>StorageType</a> </code> is \"ebs\", the following storage options are applicable: <ol> <li>MinimumVolumeSize</li> Minimum amount of volume size that is applicable for the given storage type. Can be empty if not applicable. <li>MaximumVolumeSize</li> Maximum amount of volume size that is applicable for the given storage type. Can be empty if not applicable. <li>MaximumIops</li> Maximum amount of Iops that is applicable for given the storage type. Can be empty if not applicable. <li>MinimumIops</li> Minimum amount of Iops that is applicable for given the storage type. Can be empty if not applicable. <li>MaximumThroughput</li> Maximum amount of Throughput that is applicable for given the storage type. Can be empty if not applicable. <li>MinimumThroughput</li> Minimum amount of Throughput that is applicable for given the storage type. Can be empty if not applicable. </ol> </p>"
         },
         "LimitValues":{
           "shape":"LimitValueList",
@@ -4376,11 +4380,12 @@
     },
     "VolumeType":{
       "type":"string",
-      "documentation":"<p>The type of EBS volume, standard, gp2, or io1. See <a href=\"http://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs\" target=\"_blank\">Configuring EBS-based Storage</a> for more information. </p>",
+      "documentation":"<p>The type of EBS volume, standard, gp2, gp3 or io1. See <a href=\"http://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs\" target=\"_blank\">Configuring EBS-based Storage</a> for more information. </p>",
       "enum":[
         "standard",
         "gp2",
-        "io1"
+        "io1",
+        "gp3"
       ]
     },
     "ZoneAwarenessConfig":{

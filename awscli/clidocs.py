@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import re
 from botocore import xform_name
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
@@ -26,6 +27,11 @@ from awscli.utils import (
 )
 
 LOG = logging.getLogger(__name__)
+EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            'examples')
+GLOBAL_OPTIONS_FILE = os.path.join(EXAMPLES_DIR, 'global_options.rst')
+GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(EXAMPLES_DIR,
+                                            'global_synopsis.rst')
 
 
 class CLIDocumentEventHandler(object):
@@ -146,6 +152,8 @@ class CLIDocumentEventHandler(object):
 
     def doc_synopsis_end(self, help_command, **kwargs):
         doc = help_command.doc
+        # Append synopsis for global options.
+        doc.write_from_file(GLOBAL_OPTIONS_SYNOPSIS_FILE)
         doc.style.end_codeblock()
         # Reset the documented arg groups for other sections
         # that may document args (the detailed docs following
@@ -182,6 +190,11 @@ class CLIDocumentEventHandler(object):
             self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+    def doc_global_option(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Global Options')
+        doc.write_from_file(GLOBAL_OPTIONS_FILE)
 
     def doc_relateditems_start(self, help_command, **kwargs):
         if help_command.related_items:
@@ -297,20 +310,10 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.new_paragraph()
 
     def doc_options_start(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h2('Options')
+        pass
 
     def doc_option(self, arg_name, help_command, **kwargs):
-        doc = help_command.doc
-        argument = help_command.arg_table[arg_name]
-        doc.writeln('``%s`` (%s)' % (argument.cli_name,
-                                     argument.cli_type_name))
-        doc.include_doc_string(argument.documentation)
-        if argument.choices:
-            doc.style.start_ul()
-            for choice in argument.choices:
-                doc.style.li(choice)
-            doc.style.end_ul()
+        pass
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
@@ -346,6 +349,9 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         pass
 
     def doc_options_end(self, help_command, **kwargs):
+        pass
+
+    def doc_global_option(self, help_command, **kwargs):
         pass
 
     def doc_description(self, help_command, **kwargs):
@@ -384,17 +390,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Description')
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
-        self._add_top_level_args_reference(help_command)
         self._add_note_for_document_types_if_used(help_command)
 
-    def _add_top_level_args_reference(self, help_command):
-        help_command.doc.writeln('')
-        help_command.doc.write("See ")
-        help_command.doc.style.internal_link(
-            title="'aws help'",
-            page='/reference/index'
-        )
-        help_command.doc.writeln(' for descriptions of global parameters.')
 
     def _add_webapi_crosslink(self, help_command):
         doc = help_command.doc
@@ -592,9 +589,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             for member_name, member_shape in output_shape.members.items():
                 self._doc_member(doc, member_name, member_shape, stack=[])
 
-    def doc_options_end(self, help_command, **kwargs):
-        self._add_top_level_args_reference(help_command)
-
 
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     DESCRIPTION = (
@@ -729,3 +723,44 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
 
     def doc_subitems_start(self, help_command, **kwargs):
         pass
+
+
+class GlobalOptionsDocumenter:
+    """Documenter used to pre-generate global options docs."""
+
+    def __init__(self, help_command):
+        self._help_command = help_command
+
+    def _remove_multilines(self, s):
+        return re.sub(r'\n+', '\n', s)
+
+    def doc_global_options(self):
+        help_command = self._help_command
+        for arg in help_command.arg_table:
+            argument = help_command.arg_table.get(arg)
+            help_command.doc.writeln(
+                f"``{argument.cli_name}`` ({argument.cli_type_name})")
+            help_command.doc.style.indent()
+            help_command.doc.style.new_paragraph()
+            help_command.doc.include_doc_string(argument.documentation)
+            if argument.choices:
+                help_command.doc.style.start_ul()
+                for choice in argument.choices:
+                    help_command.doc.style.li(choice)
+                help_command.doc.style.end_ul()
+            help_command.doc.style.dedent()
+            help_command.doc.style.new_paragraph()
+        global_options = help_command.doc.getvalue().decode('utf-8')
+        return self._remove_multilines(global_options)
+
+    def doc_global_synopsis(self):
+        help_command = self._help_command
+        for arg in help_command.arg_table:
+            argument = help_command.arg_table.get(arg)
+            if argument.cli_type_name == 'boolean':
+                arg_synopsis = f"[{argument.cli_name}]"
+            else:
+                arg_synopsis = f"[{argument.cli_name} <value>]"
+            help_command.doc.writeln(arg_synopsis)
+        global_synopsis = help_command.doc.getvalue().decode('utf-8')
+        return self._remove_multilines(global_synopsis)

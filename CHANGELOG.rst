@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.44
+=======
+
+* api-change:``license-manager-user-subscriptions``: This release supports user based subscription for Microsoft Visual Studio Professional and Enterprise on EC2.
+* api-change:``personalize``: This release adds support for incremental bulk ingestion for the Personalize CreateDatasetImportJob API.
+
+
 1.25.43
 =======
 

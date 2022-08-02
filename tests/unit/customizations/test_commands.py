@@ -15,7 +15,6 @@ from awscli.testutils import mock, unittest
 from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
 from awscli.customizations.commands import BasicDocHandler
-from awscli.bcdoc.restdoc import ReSTDocument
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
 
@@ -144,45 +143,57 @@ class TestBasicDocHandler(unittest.TestCase):
             self.session, self.obj, self.command_table, self.arg_table
         )
 
-    def test_includes_global_args_ref_in_man_description(self):
-        help_command = self.create_help_command()
-        operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_description(help_command=help_command)
-        rendered = help_command.doc.getvalue()
-        rendered = rendered.decode('utf-8')
-        # The links aren't generated in the "man" mode.
-        self.assertIn(
-            "See 'aws help' for descriptions of global parameters", rendered
-        )
+    def create_arg_table(self):
+        return CLIDriver().create_help_command().arg_table
 
-    def test_includes_global_args_ref_in_html_description(self):
-        help_command = self.create_help_command()
-        help_command.doc.target = 'html'
+    def generate_global_option_docs(self, help_command):
         operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_description(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            "See :doc:`'aws help' </reference/index>` for descriptions of "
-            "global parameters", rendered
-        )
+        operation_handler.doc_global_option(help_command=help_command)
+        return help_command.doc.getvalue().decode('utf-8')
 
-    def test_includes_global_args_ref_in_man_options(self):
-        help_command = self.create_help_command()
+    def generate_global_synopsis_docs(self, help_command):
         operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_options_end(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        # The links aren't generated in the "man" mode.
-        self.assertIn(
-            "See 'aws help' for descriptions of global parameters", rendered
-        )
+        operation_handler.doc_synopsis_end(help_command=help_command)
+        return help_command.doc.getvalue().decode('utf-8')
 
-    def test_includes_global_args_ref_in_html_options(self):
+    def assert_global_args_documented(self, arg_table, content):
+        for arg in arg_table:
+            self.assertIn(arg_table.get(arg).cli_name, content)
+
+    def assert_global_args_not_documented(self, arg_table, content):
+        for arg in arg_table:
+            self.assertNotIn(arg_table.get(arg).cli_name, content)
+
+    def test_includes_global_options_when_command_table_empty(self):
         help_command = self.create_help_command()
-        help_command.doc.target = 'html'
-        operation_handler = BasicDocHandler(help_command)
-        operation_handler.doc_options_end(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            "See :doc:`'aws help' </reference/index>` for descriptions of "
-            "global parameters", rendered
-        )
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        rendered = self.generate_global_option_docs(help_command)
+        self.assert_global_args_documented(arg_table, rendered)
+
+    def test_excludes_global_options_when_command_table_not_empty(self):
+        help_command = self.create_help_command()
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        fake_command = FakeCommand(FakeSession())
+        fake_command.NAME = 'command'
+        help_command.command_table = {'command': fake_command}
+        rendered = self.generate_global_option_docs(help_command)
+        self.assert_global_args_not_documented(arg_table, rendered)
+
+    def test_includes_global_synopsis_when_command_table_empty(self):
+        help_command = self.create_help_command()
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        rendered = self.generate_global_synopsis_docs(help_command)
+        self.assert_global_args_documented(arg_table, rendered)
+
+    def test_excludes_global_synopsis_when_command_table_not_empty(self):
+        help_command = self.create_help_command()
+        arg_table = self.create_arg_table()
+        help_command.arg_table = arg_table
+        fake_command = FakeCommand(FakeSession())
+        fake_command.NAME = 'command'
+        help_command.command_table = {'command': fake_command}
+        rendered = self.generate_global_synopsis_docs(help_command)
+        self.assert_global_args_not_documented(arg_table, rendered)

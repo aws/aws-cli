@@ -703,6 +703,22 @@
       ],
       "documentation":"<p>Modifies the properties of the specified Amazon WorkSpaces clients.</p>"
     },
+    "ModifySamlProperties":{
+      "name":"ModifySamlProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifySamlPropertiesRequest"},
+      "output":{"shape":"ModifySamlPropertiesResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Modifies multiple properties related to SAML 2.0 authentication, including the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.</p>"
+    },
     "ModifySelfservicePermissions":{
       "name":"ModifySelfservicePermissions",
       "http":{
@@ -1816,6 +1832,17 @@
         }
       },
       "documentation":"<p>Describes the default values that are used to create WorkSpaces. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html\">Update Directory Details for Your WorkSpaces</a>.</p>"
+    },
+    "DeletableSamlPropertiesList":{
+      "type":"list",
+      "member":{"shape":"DeletableSamlProperty"}
+    },
+    "DeletableSamlProperty":{
+      "type":"string",
+      "enum":[
+        "SAML_PROPERTIES_USER_ACCESS_URL",
+        "SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME"
+      ]
     },
     "DeleteClientBrandingRequest":{
       "type":"structure",
@@ -2968,6 +2995,29 @@
       "members":{
       }
     },
+    "ModifySamlPropertiesRequest":{
+      "type":"structure",
+      "required":["ResourceId"],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The directory identifier for which you want to configure SAML properties.</p>"
+        },
+        "SamlProperties":{
+          "shape":"SamlProperties",
+          "documentation":"<p>The properties for configuring SAML 2.0 authentication.</p>"
+        },
+        "PropertiesToDelete":{
+          "shape":"DeletableSamlPropertiesList",
+          "documentation":"<p>The SAML properties to delete as part of your request.</p> <p>Specify one of the following options:</p> <ul> <li> <p> <code>SAML_PROPERTIES_USER_ACCESS_URL</code> to delete the user access URL.</p> </li> <li> <p> <code>SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME</code> to delete the relay state parameter name.</p> </li> </ul>"
+        }
+      }
+    },
+    "ModifySamlPropertiesResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "ModifySelfservicePermissionsRequest":{
       "type":"structure",
       "required":[
@@ -3382,6 +3432,38 @@
       ]
     },
     "RunningModeAutoStopTimeoutInMinutes":{"type":"integer"},
+    "SamlProperties":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SamlStatusEnum",
+          "documentation":"<p>Indicates the status of SAML 2.0 authentication. These statuses include the following.</p> <ul> <li> <p>If the setting is <code>DISABLED</code>, end users will be directed to login with their directory credentials.</p> </li> <li> <p>If the setting is <code>ENABLED</code>, end users will be directed to login via the user access URL. Users attempting to connect to WorkSpaces from a client application that does not support SAML 2.0 authentication will not be able to connect.</p> </li> <li> <p>If the setting is <code>ENABLED_WITH_DIRECTORY_LOGIN_FALLBACK</code>, end users will be directed to login via the user access URL on supported client applications, but will not prevent clients that do not support SAML 2.0 authentication from connecting as if SAML 2.0 authentication was disabled.</p> </li> </ul>"
+        },
+        "UserAccessUrl":{
+          "shape":"SamlUserAccessUrl",
+          "documentation":"<p>The SAML 2.0 identity provider (IdP) user access URL is the URL a user would navigate to in their web browser in order to federate from the IdP and directly access the application, without any SAML 2.0 service provider (SP) bindings.</p>"
+        },
+        "RelayStateParameterName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The relay state parameter name supported by the SAML 2.0 identity provider (IdP). When the end user is redirected to the user access URL from the WorkSpaces client application, this relay state parameter name is appended as a query parameter to the URL along with the relay state endpoint to return the user to the client application session.</p> <p>To use SAML 2.0 authentication with WorkSpaces, the IdP must support IdP-initiated deep linking for the relay state URL. Consult your IdP documentation for more information.</p>"
+        }
+      },
+      "documentation":"<p>Describes the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.</p>"
+    },
+    "SamlStatusEnum":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED",
+        "ENABLED_WITH_DIRECTORY_LOGIN_FALLBACK"
+      ]
+    },
+    "SamlUserAccessUrl":{
+      "type":"string",
+      "max":200,
+      "min":8,
+      "pattern":"^(http|https)\\://\\S+$"
+    },
     "SecurityGroupId":{
       "type":"string",
       "max":20,
@@ -4048,6 +4130,10 @@
         "SelfservicePermissions":{
           "shape":"SelfservicePermissions",
           "documentation":"<p>The default self-service permissions for WorkSpaces in the directory.</p>"
+        },
+        "SamlProperties":{
+          "shape":"SamlProperties",
+          "documentation":"<p>Describes the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.</p>"
         }
       },
       "documentation":"<p>Describes a directory that is used with Amazon WorkSpaces.</p>"

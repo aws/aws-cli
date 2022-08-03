@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.45
+=======
+
+* api-change:``cognito-idp``: Add a new exception type, ForbiddenException, that is returned when request is not allowed
+* api-change:``wafv2``: You can now associate an AWS WAF web ACL with an Amazon Cognito user pool.
+
+
 1.25.44
 =======
 

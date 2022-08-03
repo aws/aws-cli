@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.7.21
+======
+
+* api-change:``shield``: AWS Shield Advanced now supports filtering for ListProtections and ListProtectionGroups.
+* api-change:``personalize``: This release adds support for incremental bulk ingestion for the Personalize CreateDatasetImportJob API.
+* api-change:``fsx``: Documentation updates for Amazon FSx
+* api-change:``license-manager-user-subscriptions``: This release supports user based subscription for Microsoft Visual Studio Professional and Enterprise on EC2.
+* api-change:``config``: Documentation update for PutConfigRule and PutOrganizationConfigRule
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``workspaces``: This release introduces ModifySamlProperties, a new API that allows control of SAML properties associated with a WorkSpaces directory. The DescribeWorkspaceDirectories API will now additionally return SAML properties in its responses.
+
+
 2.7.20
 ======
 

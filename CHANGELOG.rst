@@ -3884,6 +3884,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.44
+=======
+
+* api-change:``license-manager-user-subscriptions``: This release supports user based subscription for Microsoft Visual Studio Professional and Enterprise on EC2.
+* api-change:``personalize``: This release adds support for incremental bulk ingestion for the Personalize CreateDatasetImportJob API.
+
+
+1.25.43
+=======
+
+* api-change:``config``: Documentation update for PutConfigRule and PutOrganizationConfigRule
+* api-change:``workspaces``: This release introduces ModifySamlProperties, a new API that allows control of SAML properties associated with a WorkSpaces directory. The DescribeWorkspaceDirectories API will now additionally return SAML properties in its responses.
+
+
+1.25.42
+=======
+
+* bugfix:TraceId: Rollback bugfix for obeying _X_AMZN_TRACE_ID env var
+
+
+1.25.41
+=======
+
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``fsx``: Documentation updates for Amazon FSx
+* api-change:``shield``: AWS Shield Advanced now supports filtering for ListProtections and ListProtectionGroups.
+
+
 1.25.40
 =======
 

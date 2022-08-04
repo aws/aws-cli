@@ -51,6 +51,7 @@ from botocore.exceptions import (
     ParamValidationError,
     UnsupportedTLSVersionWarning,
 )
+from botocore.regions import EndpointResolverBuiltins
 from botocore.signers import (
     add_generate_db_auth_token,
     add_generate_presigned_post,
@@ -58,6 +59,7 @@ from botocore.signers import (
 )
 from botocore.utils import (
     SAFE_CHARS,
+    ArnParser,
     conditionally_calculate_md5,
     hyphenize_service_id,
     is_global_accesspoint,
@@ -198,7 +200,7 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
         if auth_type == 'v4-unsigned-body':
             context['payload_signing_enabled'] = False
 
-        # S3 has customized signers "s3v4" and "s3v4a"
+        # s3 and s3-control have customized signers "s3v4" and "s3v4a".
         if signing_name in ('s3', 's3-outposts'):
             signature_version = f's3{signature_version}'
 
@@ -955,6 +957,103 @@ def remove_lex_v2_start_conversation(class_attributes, **kwargs):
         del class_attributes['start_conversation']
 
 
+def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
+    """Strips leading `{Bucket}/` from any operations that have it.
+
+    The original value is retained in a separate "authPath" field. This is
+    used in the HmacV1Auth signer. See HmacV1Auth.canonical_resource in
+    botocore/auth.py for details.
+
+    This change is applied to the operation model during the first time the
+    operation is invoked and then stays in effect for the lifetime of the
+    client object.
+
+    When the ruleset based endpoint resolver is in effect, both the endpoint
+    ruleset AND the service model place the bucket name in the final URL.
+    The result is an invalid URL. This handler modifies the operation model to
+    no longer place the bucket name. Previous versions of botocore fixed the
+    URL after the fact when necessary. Since the introduction of ruleset based
+    endpoint resolution, the problem exists in ALL URLs that contain a bucket
+    name and can therefore be addressed before the URL gets assembled.
+    """
+    req_uri = model.http['requestUri']
+    bucket_path = '/{Bucket}'
+    if req_uri.startswith(bucket_path):
+        model.http['requestUri'] = req_uri[len(bucket_path) :]
+        # If the request URI is ONLY a bucket, the auth_path must be
+        # terminated with a '/' character to generate a signature that the
+        # server will accept.
+        needs_slash = req_uri == bucket_path
+        model.http['authPath'] = f'{req_uri}/' if needs_slash else req_uri
+
+
+def remove_accid_host_prefix_from_model(params, model, context, **kwargs):
+    """Removes the `{AccountId}.` prefix from the operation model.
+
+    This change is applied to the operation model during the first time the
+    operation is invoked and then stays in effect for the lifetime of the
+    client object.
+
+    When the ruleset based endpoint resolver is in effect, both the endpoint
+    ruleset AND the service model place the {AccountId}. prefix in the URL.
+    The result is an invalid endpoint. This handler modifies the operation
+    model to remove the `endpoint.hostPrefix` field while leaving the
+    `RequiresAccountId` static context parameter in place.
+    """
+    has_ctx_param = any(
+        ctx_param.name == 'RequiresAccountId' and ctx_param.value is True
+        for ctx_param in model.static_context_parameters
+    )
+    if (
+        model.endpoint is not None
+        and model.endpoint.get('hostPrefix') == '{AccountId}.'
+        and has_ctx_param
+    ):
+        del model.endpoint['hostPrefix']
+
+
+def remove_arn_from_signing_path(request, **kwargs):
+    auth_path = request.auth_path
+    if isinstance(auth_path, str) and auth_path.startswith('/arn%3A'):
+        auth_path_parts = auth_path.split('/')
+        if len(auth_path_parts) > 1 and ArnParser.is_arn(
+            unquote(auth_path_parts[1])
+        ):
+            request.auth_path = '/'.join(['', *auth_path_parts[2:]])
+
+
+def customize_endpoint_resolver_builtins(
+    builtins, model, params, context, **kwargs
+):
+    """Modify builtin parameter values for endpoint resolver
+
+    Modifies the builtins dict in place. Changes are in effect for one call.
+    The corresponding event is emitted only if at least one builtin parameter
+    value is required for endpoint resolution for the operation.
+    """
+    bucket_name = params.get('Bucket')
+    bucket_is_arn = bucket_name is not None and ArnParser.is_arn(bucket_name)
+    # In some situations the host will return AuthorizationHeaderMalformed
+    # when the signing region of a sigv4 request is not the bucket's
+    # region (which is likely unknown by the user of GetBucketLocation).
+    # Avoid this by always using path-style addressing.
+    if model.name == 'GetBucketLocation':
+        builtins[EndpointResolverBuiltins.AWS_S3_FORCE_PATH_STYLE] = True
+    # All situations where the bucket name is an ARN are not compatible
+    # with path style addressing.
+    elif bucket_is_arn:
+        builtins[EndpointResolverBuiltins.AWS_S3_FORCE_PATH_STYLE] = False
+
+    if (
+        context.get('is_presign_request')
+        and context.get('use_global_endpoint')
+        and not builtins[EndpointResolverBuiltins.AWS_S3_FORCE_PATH_STYLE]
+        and not bucket_is_arn
+    ):
+        builtins[EndpointResolverBuiltins.AWS_REGION] = 'aws-global'
+        builtins[EndpointResolverBuiltins.AWS_S3_USE_GLOBAL_ENDPOINT] = True
+
+
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
 # automatically registered with that Session.
@@ -981,6 +1080,7 @@ BUILTIN_HANDLERS = [
     ('before-parameter-build', generate_idempotent_uuid),
 
     ('before-parameter-build.s3', validate_bucket_name),
+    ('before-parameter-build.s3', remove_bucket_from_url_paths_from_model),
 
     ('before-parameter-build.s3.ListObjects',
      set_list_objects_encoding_type_url),
@@ -996,8 +1096,10 @@ BUILTIN_HANDLERS = [
     ('before-parameter-build.s3.PutObject', validate_ascii_metadata),
     ('before-parameter-build.s3.CreateMultipartUpload',
      validate_ascii_metadata),
+    ('before-parameter-build.s3-control', remove_accid_host_prefix_from_model),
     ('docs.*.s3.CopyObject.complete-section', document_copy_source_form),
     ('docs.*.s3.UploadPartCopy.complete-section', document_copy_source_form),
+    ('before-endpoint-resolution.s3', customize_endpoint_resolver_builtins),
 
     ('before-call.s3', add_expect_header),
     ('before-call.glacier', add_glacier_version),
@@ -1036,6 +1138,7 @@ BUILTIN_HANDLERS = [
      base64_encode_user_data),
     ('before-parameter-build.route-53', fix_route53_ids),
     ('before-parameter-build.glacier', inject_account_id),
+    ('before-sign.s3', remove_arn_from_signing_path),
     ('after-call.s3.ListObjects', decode_list_object),
     ('after-call.s3.ListObjectsV2', decode_list_object_v2),
     ('after-call.s3.ListObjectVersions', decode_list_object_versions),

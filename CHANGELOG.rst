@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.46
+=======
+
+* api-change:``chime-sdk-meetings``: Adds support for Tags on Amazon Chime SDK WebRTC sessions
+* api-change:``config``: Add resourceType enums for Athena, GlobalAccelerator, Detective and EC2 types
+* api-change:``dms``: Documentation updates for Database Migration Service (DMS).
+* api-change:``iot``: The release is to support attach a provisioning template to CACert for JITP function,  Customer now doesn't have to hardcode a roleArn and templateBody during register a CACert to enable JITP.
+
+
 1.25.45
 =======
 

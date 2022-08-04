@@ -26,8 +26,14 @@ from botocore.endpoint_provider import (
     RuleSetStandardLibary,
     TreeRule,
 )
-from botocore.exceptions import EndpointResolutionError
+from botocore.exceptions import (
+    EndpointResolutionError,
+    MissingDependencyException,
+    UnknownSignatureVersionError,
+)
 from botocore.loaders import Loader
+from botocore.regions import EndpointRulesetResolver
+from tests import requires_crt
 
 REGION_TEMPLATE = "{Region}"
 REGION_REF = {"ref": "Region"}
@@ -343,3 +349,86 @@ def test_ruleset_unknown_parameter_type_raises(partitions):
             partitions=partitions,
         )
     assert "Unknown parameter type: list." in str(exc_info.value)
+
+
+@pytest.fixture()
+def empty_resolver():
+    return EndpointRulesetResolver(
+        endpoint_ruleset_data={
+            'version': '1.0',
+            'parameters': {},
+            'rules': [],
+        },
+        partition_data={},
+        service_model=None,
+        builtins={},
+        client_context=None,
+        event_emitter=None,
+        use_ssl=True,
+        requested_auth_scheme=None,
+    )
+
+
+def test_auth_schemes_conversion_sigv4(empty_resolver):
+    auth_schemes = [
+        {
+            'name': 'sigv4',
+            'signingName': 'dynamodb',
+            'signingRegion': 'my-region-1',
+            'disableDoubleEncoding': True,
+            'otherParameter': 'otherValue',
+        }
+    ]
+    at, sc = empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
+    assert at == 'v4'
+    assert sc == {
+        'region': 'my-region-1',
+        'signing_name': 'dynamodb',
+        'disableDoubleEncoding': True,
+    }
+
+
+@requires_crt()
+def test_auth_schemes_conversion_sigv4a_with_crt(monkeypatch, empty_resolver):
+    monkeypatch.setattr('botocore.regions.HAS_CRT', True)
+    auth_schemes = [
+        {'name': 'sigv4a', 'signingName': 's3', 'signingRegionSet': ['*']}
+    ]
+    at, sc = empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
+    assert at == 'v4a'
+    assert sc == {'region': '*', 'signing_name': 's3'}
+
+
+def test_auth_schemes_conversion_sigv4a_without_crt(
+    monkeypatch, empty_resolver
+):
+    monkeypatch.setattr('botocore.regions.HAS_CRT', False)
+    monkeypatch.setattr('botocore.regions.AUTH_TYPE_MAPS', {})
+    auth_schemes = [
+        {'name': 'sigv4a', 'signingName': 's3', 'signingRegionSet': ['*']}
+    ]
+    with pytest.raises(MissingDependencyException):
+        empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
+
+
+def test_auth_schemes_conversion_no_known_auth_types(empty_resolver):
+    auth_schemes = [
+        {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-2'},
+        {'name': 'bar', 'otherParamKey': 'otherParamVal'},
+    ]
+    with pytest.raises(UnknownSignatureVersionError):
+        empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
+
+
+def test_auth_schemes_conversion_first_authtype_unknown(
+    monkeypatch, empty_resolver
+):
+    monkeypatch.setattr('botocore.regions.HAS_CRT', False)
+    monkeypatch.setattr('botocore.regions.AUTH_TYPE_MAPS', {'bar': None})
+    auth_schemes = [
+        {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-1'},
+        {'name': 'bar', 'signingName': 's3', 'signingRegion': 'ap-south-2'},
+    ]
+    at, sc = empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
+    assert at == 'bar'
+    assert sc == {'region': 'ap-south-2', 'signing_name': 's3'}

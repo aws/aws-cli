@@ -1,0 +1,43 @@
+name: aws-cli
+base: core20
+version: "1.25.47+git"
+summary: Universal Command Line Interface for Amazon Web Services.
+description: |
+  The AWS CLI is an open source tool built on top of the AWS SDK for Python (Boto) that provides commands for interacting with AWS services. With minimal configuration, you can start using all of the functionality provided by the AWS Management Console from your favorite terminal program.
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+apps:
+  aws:
+    command: bin/aws
+
+parts:
+  aws:
+    plugin: python
+    build-packages:
+    # awscli
+    - libffi-dev
+    - musl-dev    
+    - rustc
+    - cargo
+    - libssl-dev
+    - asn1c
+    build-snaps:
+    - cmake
+    source: .
+    build-environment:
+    - CRYPTOGRAPHY_DONT_BUILD_RUST: "1"
+    override-build: |
+      # cmake
+      export PATH=/snap/cmake/current/bin/:$PATH
+
+      # aws
+      mkdir -p $HOME/.cargo
+      mount -t tmpfs none $HOME/.cargo
+      snapcraftctl build
+
+    filesets:
+      all:
+      - "*"
+    prime:
+    - $all

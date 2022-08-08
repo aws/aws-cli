@@ -1,0 +1,43 @@
+name: Snap build
+
+on:
+  push:
+  pull_request:
+    branches-ignore: [ master ]
+
+jobs:
+  build:
+    name: snap-build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture:
+        - linux/amd64
+        - linux/arm64
+        - linux/arm/v7
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build aws snap
+      if: success()
+      run: |
+        # Enable docker daemon support for --platform parameter
+        echo '{"experimental": true}' | sudo tee /etc/docker/daemon.json > /dev/null
+        sudo systemctl restart docker
+        # Configure qemu-user-static
+        docker run --rm --tty \
+          --security-opt apparmor:unconfined \
+          --cap-add SYS_ADMIN \
+          multiarch/qemu-user-static --reset -p yes
+        # Run snapcraft
+        docker run --rm --tty \
+          --security-opt apparmor:unconfined \
+          --cap-add SYS_ADMIN \
+          --device /dev/fuse \
+          --volume /sys \
+          --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \
+          --volume $GITHUB_WORKSPACE:$GITHUB_WORKSPACE \
+          --workdir $GITHUB_WORKSPACE \
+          --platform "${{ matrix.architecture }}" \
+          diddledan/snapcraft:core20 snapcraft snap --destructive-mode

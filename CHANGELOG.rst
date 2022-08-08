@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.25.47
+=======
+
+* api-change:``glue``: Add an option to run non-urgent or non-time sensitive Glue Jobs on spare capacity
+* api-change:``identitystore``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``iotwireless``: AWS IoT Wireless release support for sidewalk data reliability.
+* api-change:``pinpoint``: Adds support for Advance Quiet Time in Journeys. Adds RefreshOnSegmentUpdate and WaitForQuietTime to JourneyResponse.
+* api-change:``quicksight``: A series of documentation updates to the QuickSight API reference.
+* api-change:``sso-admin``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``sso-oidc``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``sso``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+
+
 1.25.46
 =======
 

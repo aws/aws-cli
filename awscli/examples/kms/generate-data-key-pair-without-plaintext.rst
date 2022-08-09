@@ -11,11 +11,10 @@ The KMS key you specify must be a symmetric encryption KMS key, that is, a KMS k
 NOTE: The values in the output of this example are truncated for display. ::
 
     aws kms generate-data-key-pair-without-plaintext \
-        --key-id --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
         --key-pair-spec ECC_NIST_P384
 
 Output::
-    
     {
         "PrivateKeyCiphertextBlob": "AQIDAHi6LtupRpdKl2aJTzkK6FbhOtQkMlQJJH3PdtHvS/y+hAFFxmiD134doUDzMGmfCEtcAAAHaTCCB2UGCSqGSIb3DQEHBqCCB1...",
         "PublicKey": "MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA3A3eGMyPrvSn7+LdlJE1oUoQV5HpEuHAVbdOyND+NmYDH/mL1OSIEuLrcdZ5hrMH4pk83r40l...",

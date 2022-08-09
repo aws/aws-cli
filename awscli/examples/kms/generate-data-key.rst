@@ -1,4 +1,4 @@
-**To generate a 256-bit symmetric data key**
+**Example 1: To generate a 256-bit symmetric data key**
 
 The following ``generate-data-key`` example requests a 256-bit symmetric data key for use outside of AWS. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. You can safely store the encrypted data key with the encrypted data. 
 
@@ -11,7 +11,6 @@ The KMS key you specify must be a symmetric encryption KMS key, that is, a KMS k
         --key-spec AES_256
 
 Output::
-
     {
         "Plaintext": "VdzKNHGzUAzJeRBVY+uUmofUGGiDzyB3+i9fVkh3piw=",
         "KeyId": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
@@ -21,9 +20,8 @@ Output::
 The ``Plaintext`` (plaintext data key) and the ``CiphertextBlob`` (encrypted data key) are returned in base64-encoded format. 
 
 For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys`__ in the *AWS Key Management Service Developer Guide*.
-
  
-**To generate a 512-bit symmetric data key**
+**Example 2: To generate a 512-bit symmetric data key**
 
 The following ``generate-data-key`` example requests a 512-bit symmetric data key for encryption and decryption. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. YOu can safely store the encrypted data key with the encrypted data. 
 
@@ -38,7 +36,6 @@ NOTE: The values in the output of this example are truncated for display. ::
         --number-of-bytes 512
 
 Output::
-    
     {
         "CiphertextBlob": "AQIBAHi6LtupRpdKl2aJTzkK6FbhOtQkMlQJJH3PdtHvS/y+hAEnX/QQNmMwDfg2korNMEc8AAACaDCCAmQGCSqGSIb3DQEHBqCCAlUwggJRAgEAMIICSgYJKoZ...",
         "Plaintext": "ty8Lr0Bk6OF07M2BWt6qbFdNB+G00ZLtf5MSEb4al3R2UKWGOp06njAwy2n72VRm2m7z/Pm9Wpbvttz6a4lSo9hgPvKhZ5y6RTm4OovEXiVfBveyX3DQxDzRSwbKDPk/...",

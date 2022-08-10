@@ -11,6 +11,7 @@ The KMS key you specify must be a symmetric encryption KMS key, that is, a KMS k
         --key-spec AES_256
 
 Output::
+
     {
         "Plaintext": "VdzKNHGzUAzJeRBVY+uUmofUGGiDzyB3+i9fVkh3piw=",
         "KeyId": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
@@ -36,6 +37,7 @@ NOTE: The values in the output of this example are truncated for display. ::
         --number-of-bytes 512
 
 Output::
+    
     {
         "CiphertextBlob": "AQIBAHi6LtupRpdKl2aJTzkK6FbhOtQkMlQJJH3PdtHvS/y+hAEnX/QQNmMwDfg2korNMEc8AAACaDCCAmQGCSqGSIb3DQEHBqCCAlUwggJRAgEAMIICSgYJKoZ...",
         "Plaintext": "ty8Lr0Bk6OF07M2BWt6qbFdNB+G00ZLtf5MSEb4al3R2UKWGOp06njAwy2n72VRm2m7z/Pm9Wpbvttz6a4lSo9hgPvKhZ5y6RTm4OovEXiVfBveyX3DQxDzRSwbKDPk/...",

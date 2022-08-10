@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.49
+=======
+
+* api-change:``dlm``: This release adds support for excluding specific data (non-boot) volumes from multi-volume snapshot sets created by snapshot lifecycle policies
+* api-change:``ec2``: This release adds support for excluding specific data (non-root) volumes from multi-volume snapshot sets created from instances.
+
+
 1.25.48
 =======
 

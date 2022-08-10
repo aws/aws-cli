@@ -5326,7 +5326,8 @@
         "CANCELLING",
         "CANCELLED",
         "SUCCEEDED",
-        "FAILED"
+        "FAILED",
+        "ERROR"
       ]
     },
     "Crawler":{
@@ -6154,6 +6155,10 @@
         "CodeGenConfigurationNodes":{
           "shape":"CodeGenConfigurationNodes",
           "documentation":"<p>The representation of a directed acyclic graph on which both the Glue Studio visual component and Glue Studio code generation is based.</p>"
+        },
+        "ExecutionClass":{
+          "shape":"ExecutionClass",
+          "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
         }
       }
     },
@@ -8243,6 +8248,14 @@
       "documentation":"<p>Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.</p>"
     },
     "EventQueueArn":{"type":"string"},
+    "ExecutionClass":{
+      "type":"string",
+      "enum":[
+        "FLEX",
+        "STANDARD"
+      ],
+      "max":16
+    },
     "ExecutionProperty":{
       "type":"structure",
       "members":{
@@ -11200,6 +11213,10 @@
         "CodeGenConfigurationNodes":{
           "shape":"CodeGenConfigurationNodes",
           "documentation":"<p>The representation of a directed acyclic graph on which both the Glue Studio visual component and Glue Studio code generation is based.</p>"
+        },
+        "ExecutionClass":{
+          "shape":"ExecutionClass",
+          "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
         }
       },
       "documentation":"<p>Specifies a job definition.</p>"
@@ -11392,6 +11409,10 @@
         "DPUSeconds":{
           "shape":"NullableDouble",
           "documentation":"<p>This field populates only for Auto Scaling job runs, and represents the total time each executor ran during the lifecycle of a job run in seconds, multiplied by a DPU factor (1 for <code>G.1X</code>, 2 for <code>G.2X</code>, or 0.25 for <code>G.025X</code> workers). This value may be different than the <code>executionEngineRuntime</code> * <code>MaxCapacity</code> as in the case of Auto Scaling jobs, as the number of executors running at a given time may be less than the <code>MaxCapacity</code>. Therefore, it is possible that the value of <code>DPUSeconds</code> is less than <code>executionEngineRuntime</code> * <code>MaxCapacity</code>.</p>"
+        },
+        "ExecutionClass":{
+          "shape":"ExecutionClass",
+          "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
         }
       },
       "documentation":"<p>Contains information about a job run.</p>"
@@ -11409,7 +11430,9 @@
         "STOPPED",
         "SUCCEEDED",
         "FAILED",
-        "TIMEOUT"
+        "TIMEOUT",
+        "ERROR",
+        "WAITING"
       ]
     },
     "JobUpdate":{
@@ -11488,6 +11511,10 @@
         "CodeGenConfigurationNodes":{
           "shape":"CodeGenConfigurationNodes",
           "documentation":"<p>The representation of a directed acyclic graph on which both the Glue Studio visual component and Glue Studio code generation is based.</p>"
+        },
+        "ExecutionClass":{
+          "shape":"ExecutionClass",
+          "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
         }
       },
       "documentation":"<p>Specifies information used to update an existing job definition. The previous job definition is completely overwritten by this information.</p>"
@@ -15654,6 +15681,10 @@
         "NumberOfWorkers":{
           "shape":"NullableInteger",
           "documentation":"<p>The number of workers of a defined <code>workerType</code> that are allocated when a job runs.</p>"
+        },
+        "ExecutionClass":{
+          "shape":"ExecutionClass",
+          "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
         }
       }
     },
@@ -17878,6 +17909,14 @@
         "RunningActions":{
           "shape":"IntegerValue",
           "documentation":"<p>Total number Actions in running state.</p>"
+        },
+        "ErroredActions":{
+          "shape":"IntegerValue",
+          "documentation":"<p>Indicates the count of job runs in the ERROR state in the workflow run.</p>"
+        },
+        "WaitingActions":{
+          "shape":"IntegerValue",
+          "documentation":"<p>Indicates the count of job runs in WAITING state in the workflow run.</p>"
         }
       },
       "documentation":"<p>Workflow run statistics provides statistics about the workflow run.</p>"

@@ -1814,6 +1814,11 @@
       },
       "documentation":"<p>The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.</p>"
     },
+    "AckModeRetryDurationSecs":{
+      "type":"integer",
+      "max":604800,
+      "min":0
+    },
     "AddGwMetadata":{"type":"boolean"},
     "AmazonId":{
       "type":"string",
@@ -3055,7 +3060,17 @@
       "max":15,
       "min":0
     },
+    "DrMaxBox":{
+      "type":"integer",
+      "max":15,
+      "min":0
+    },
     "DrMin":{
+      "type":"integer",
+      "max":15,
+      "min":0
+    },
+    "DrMinBox":{
       "type":"integer",
       "max":15,
       "min":0
@@ -3117,6 +3132,10 @@
         "ConnectionStatus":{
           "shape":"ConnectionStatusEventConfiguration",
           "documentation":"<p>Connection status event configuration for an event configuration item.</p>"
+        },
+        "MessageDeliveryStatus":{
+          "shape":"MessageDeliveryStatusEventConfiguration",
+          "documentation":"<p>Message delivery status event configuration for an event configuration item.</p>"
         }
       },
       "documentation":"<p>Object of all event configurations and the status of the event topics.</p>"
@@ -3367,6 +3386,10 @@
         "ConnectionStatus":{
           "shape":"ConnectionStatusResourceTypeEventConfiguration",
           "documentation":"<p>Resource type event configuration for the connection status event.</p>"
+        },
+        "MessageDeliveryStatus":{
+          "shape":"MessageDeliveryStatusResourceTypeEventConfiguration",
+          "documentation":"<p>Resource type event configuration object for the message delivery status event.</p>"
         }
       }
     },
@@ -3642,6 +3665,10 @@
         "ConnectionStatus":{
           "shape":"ConnectionStatusEventConfiguration",
           "documentation":"<p>Event configuration for the connection status event.</p>"
+        },
+        "MessageDeliveryStatus":{
+          "shape":"MessageDeliveryStatusEventConfiguration",
+          "documentation":"<p>Event configuration for the message delivery status event.</p>"
         }
       }
     },
@@ -5017,6 +5044,14 @@
         "AddGwMetadata":{
           "shape":"AddGwMetadata",
           "documentation":"<p>The AddGWMetaData value.</p>"
+        },
+        "DrMin":{
+          "shape":"DrMinBox",
+          "documentation":"<p>The DrMin value.</p>"
+        },
+        "DrMax":{
+          "shape":"DrMaxBox",
+          "documentation":"<p>The DrMax value.</p>"
         }
       },
       "documentation":"<p>LoRaWANServiceProfile object.</p>"
@@ -5128,6 +5163,24 @@
     "Message":{
       "type":"string",
       "max":2048
+    },
+    "MessageDeliveryStatusEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "Sidewalk":{"shape":"SidewalkEventNotificationConfigurations"},
+        "WirelessDeviceIdEventTopic":{
+          "shape":"EventNotificationTopicStatus",
+          "documentation":"<p>Enum to denote whether the wireless device id device registration state event topic is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Message delivery status event configuration object for enabling and disabling relevant topics.</p>"
+    },
+    "MessageDeliveryStatusResourceTypeEventConfiguration":{
+      "type":"structure",
+      "members":{
+        "Sidewalk":{"shape":"SidewalkResourceTypeEventConfiguration"}
+      },
+      "documentation":"<p>Message delivery status resource type event configuration object for enabling or disabling relevant topic.</p>"
     },
     "MessageId":{"type":"string"},
     "MessageType":{
@@ -5959,7 +6012,11 @@
           "shape":"Seq",
           "documentation":"<p>The sequence number.</p>"
         },
-        "MessageType":{"shape":"MessageType"}
+        "MessageType":{"shape":"MessageType"},
+        "AckModeRetryDurationSecs":{
+          "shape":"AckModeRetryDurationSecs",
+          "documentation":"<p>The duration of time in seconds for which you want to retry sending the ACK.</p>"
+        }
       },
       "documentation":"<p>Information about a Sidewalk router.</p>"
     },
@@ -6335,6 +6392,10 @@
         "ConnectionStatus":{
           "shape":"ConnectionStatusResourceTypeEventConfiguration",
           "documentation":"<p>Connection status resource type event configuration object for enabling and disabling wireless gateway topic.</p>"
+        },
+        "MessageDeliveryStatus":{
+          "shape":"MessageDeliveryStatusResourceTypeEventConfiguration",
+          "documentation":"<p>Message delivery status resource type event configuration object for enabling and disabling wireless device topic.</p>"
         }
       }
     },
@@ -6542,6 +6603,10 @@
         "ConnectionStatus":{
           "shape":"ConnectionStatusEventConfiguration",
           "documentation":"<p>Event configuration for the connection status event.</p>"
+        },
+        "MessageDeliveryStatus":{
+          "shape":"MessageDeliveryStatusEventConfiguration",
+          "documentation":"<p>Event configuration for the message delivery status event.</p>"
         }
       }
     },

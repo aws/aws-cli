@@ -2,6 +2,34 @@
 CHANGELOG
 =========
 
+2.7.22
+======
+
+* api-change:``sso-oidc``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``sagemaker``: Amazon SageMaker Automatic Model Tuning now supports specifying multiple alternate EC2 instance types to make tuning jobs more robust when the preferred instance type is not available due to insufficient capacity.
+* api-change:``ec2``: This release adds support for excluding specific data (non-root) volumes from multi-volume snapshot sets created from instances.
+* api-change:``backupstorage``: This is the first public release of AWS Backup Storage. We are exposing some previously-internal APIs for use by external services. These APIs are not meant to be used directly by customers.
+* api-change:``privatenetworks``: This is the initial SDK release for AWS Private 5G. AWS Private 5G is a managed service that makes it easy to deploy, operate, and scale your own private mobile network at your on-premises location.
+* api-change:``dlm``: This release adds support for excluding specific data (non-boot) volumes from multi-volume snapshot sets created by snapshot lifecycle policies
+* api-change:``sagemaker-a2i-runtime``: Fix bug with parsing ISO-8601 CreationTime in Java SDK in DescribeHumanLoop
+* api-change:``cognito-idp``: Add a new exception type, ForbiddenException, that is returned when request is not allowed
+* api-change:``glue``: Add an option to run non-urgent or non-time sensitive Glue Jobs on spare capacity
+* api-change:``pinpoint``: Adds support for Advance Quiet Time in Journeys. Adds RefreshOnSegmentUpdate and WaitForQuietTime to JourneyResponse.
+* api-change:``identitystore``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``chime-sdk-meetings``: Adds support for Tags on Amazon Chime SDK WebRTC sessions
+* api-change:``iotwireless``: AWS IoT Wireless release support for sidewalk data reliability.
+* api-change:``iot``: The release is to support attach a provisioning template to CACert for JITP function,  Customer now doesn't have to hardcode a roleArn and templateBody during register a CACert to enable JITP.
+* api-change:``config``: Add resourceType enums for Athena, GlobalAccelerator, Detective and EC2 types
+* api-change:``sso-admin``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``quicksight``: A series of documentation updates to the QuickSight API reference.
+* api-change:``glue``: Add support for Python 3.9 AWS Glue Python Shell jobs
+* api-change:``dms``: Documentation updates for Database Migration Service (DMS).
+* api-change:``sso``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``location``: Amazon Location Service now allows circular geofences in BatchPutGeofence, PutGeofence, and GetGeofence  APIs.
+* api-change:``wafv2``: You can now associate an AWS WAF web ACL with an Amazon Cognito user pool.
+
+
 2.7.21
 ======
 

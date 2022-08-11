@@ -5859,7 +5859,7 @@
         },
         "KernelGatewayImageConfig":{
           "shape":"KernelGatewayImageConfig",
-          "documentation":"<p>The KernelGatewayImageConfig.</p>"
+          "documentation":"<p>The KernelGatewayImageConfig. You can only specify one image kernel in the AppImageConfig API. This kernel will be shown to users before the image starts. Once the image runs, all kernels are visible in JupyterLab.</p>"
         }
       }
     },
@@ -14914,7 +14914,6 @@
         "AlgorithmSpecification",
         "RoleArn",
         "OutputDataConfig",
-        "ResourceConfig",
         "StoppingCondition"
       ],
       "members":{
@@ -14950,7 +14949,7 @@
         },
         "ResourceConfig":{
           "shape":"ResourceConfig",
-          "documentation":"<p>The resources, including the compute instances and storage volumes, to use for the training jobs that the tuning job launches.</p> <p>Storage volumes store model artifacts and incremental states. Training algorithms might also use storage volumes for scratch space. If you want SageMaker to use the storage volume to store the training data, choose <code>File</code> as the <code>TrainingInputMode</code> in the algorithm specification. For distributed training algorithms, specify an instance count greater than 1.</p>"
+          "documentation":"<p>The resources, including the compute instances and storage volumes, to use for the training jobs that the tuning job launches.</p> <p>Storage volumes store model artifacts and incremental states. Training algorithms might also use storage volumes for scratch space. If you want SageMaker to use the storage volume to store the training data, choose <code>File</code> as the <code>TrainingInputMode</code> in the algorithm specification. For distributed training algorithms, specify an instance count greater than 1.</p> <note> <p>If you want to use hyperparameter optimization with instance type flexibility, use <code>HyperParameterTuningResourceConfig</code> instead.</p> </note>"
         },
         "StoppingCondition":{
           "shape":"StoppingCondition",
@@ -14972,6 +14971,10 @@
         "RetryStrategy":{
           "shape":"RetryStrategy",
           "documentation":"<p>The number of times to retry the job when the job fails due to an <code>InternalServerError</code>.</p>"
+        },
+        "HyperParameterTuningResourceConfig":{
+          "shape":"HyperParameterTuningResourceConfig",
+          "documentation":"<p>The configuration for the hyperparameter tuning resources, including the compute instances and storage volumes, used for training jobs launched by the tuning job. By default, storage volumes hold model artifacts and incremental states. Choose <code>File</code> for <code>TrainingInputMode</code> in the <code>AlgorithmSpecification</code>parameter to additionally store training data in the storage volume (optional).</p>"
         }
       },
       "documentation":"<p>Defines the training jobs launched by a hyperparameter tuning job.</p>"
@@ -15052,6 +15055,39 @@
         }
       },
       "documentation":"<p>The container for the summary information about a training job.</p>"
+    },
+    "HyperParameterTuningAllocationStrategy":{
+      "type":"string",
+      "enum":["Prioritized"]
+    },
+    "HyperParameterTuningInstanceConfig":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "InstanceCount",
+        "VolumeSizeInGB"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"TrainingInstanceType",
+          "documentation":"<p>The instance type used for processing of hyperparameter optimization jobs. Choose from general purpose (no GPUs) instance types: ml.m5.xlarge, ml.m5.2xlarge, and ml.m5.4xlarge or compute optimized (no GPUs) instance types: ml.c5.xlarge and ml.c5.2xlarge. For more information about instance types, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebooks-available-instance-types.html\">instance type descriptions</a>.</p>"
+        },
+        "InstanceCount":{
+          "shape":"TrainingInstanceCount",
+          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/data-parallel-use-api.html\">SageMaker distributed training jobs</a> for more information.</p>"
+        },
+        "VolumeSizeInGB":{
+          "shape":"VolumeSizeInGB",
+          "documentation":"<p>The volume size in GB of the data to be processed for hyperparameter optimization (optional).</p>"
+        }
+      },
+      "documentation":"<p>The configuration for hyperparameter tuning resources for use in training jobs launched by the tuning job. These resources include compute instances and storage volumes. Specify one or more compute instance configurations and allocation strategies to select resources (optional).</p>"
+    },
+    "HyperParameterTuningInstanceConfigs":{
+      "type":"list",
+      "member":{"shape":"HyperParameterTuningInstanceConfig"},
+      "max":6,
+      "min":1
     },
     "HyperParameterTuningJobArn":{
       "type":"string",
@@ -15236,6 +15272,36 @@
         "IdenticalDataAndAlgorithm",
         "TransferLearning"
       ]
+    },
+    "HyperParameterTuningResourceConfig":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"TrainingInstanceType",
+          "documentation":"<p>The instance type used to run hyperparameter optimization tuning jobs. See <a href=\"https://docs.aws.amazon.com/notebooks-available-instance-types.html\"> descriptions of instance types</a> for more information.</p>"
+        },
+        "InstanceCount":{
+          "shape":"TrainingInstanceCount",
+          "documentation":"<p>The number of compute instances of type <code>InstanceType</code> to use. For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/data-parallel-use-api.html\">distributed training</a>, select a value greater than 1.</p>"
+        },
+        "VolumeSizeInGB":{
+          "shape":"OptionalVolumeSizeInGB",
+          "documentation":"<p>The volume size in GB for the storage volume to be used in processing hyperparameter optimization jobs (optional). These volumes store model artifacts, incremental states and optionally, scratch space for training algorithms. Do not provide a value for this parameter if a value for <code>InstanceConfigs</code> is also specified.</p> <p>Some instance types have a fixed total local storage size. If you select one of these instances for training, <code>VolumeSizeInGB</code> cannot be greater than this total size. For a list of instance types with local instance storage and their sizes, see <a href=\"https://aws.amazon.com/releasenotes/host-instance-storage-volumes-table/\">instance store volumes</a>.</p> <note> <p>SageMaker supports only the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html\">General Purpose SSD (gp2)</a> storage volume type.</p> </note>"
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>A key used by AWS Key Management Service to encrypt data on the storage volume attached to the compute instances used to run the training job. You can use either of the following formats to specify a key.</p> <p>KMS Key ID:</p> <p> <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> <p>Amazon Resource Name (ARN) of a AWS KMS key:</p> <p> <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> <p>Some instances use local storage, which use a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html\">hardware module to encrypt</a> storage volumes. If you choose one of these instance types, you cannot request a <code>VolumeKmsKeyId</code>. For a list of instance types that use local storage, see <a href=\"https://aws.amazon.com/releasenotes/host-instance-storage-volumes-table/\">instance store volumes</a>. For more information about AWS Key Management Service, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-security-kms-permissions.html\">AWS KMS encryption</a> for more information.</p>"
+        },
+        "AllocationStrategy":{
+          "shape":"HyperParameterTuningAllocationStrategy",
+          "documentation":"<p>The strategy that determines the order of preference for resources specified in <code>InstanceConfigs</code> used in hyperparameter optimization.</p>"
+        },
+        "InstanceConfigs":{
+          "shape":"HyperParameterTuningInstanceConfigs",
+          "documentation":"<p>A list containing the configuration(s) for one or more resources for processing hyperparameter jobs. These resources include compute instances and storage volumes to use in model training jobs launched by hyperparameter tuning jobs. The <code>AllocationStrategy</code> controls the order in which multiple configurations provided in <code>InstanceConfigs</code> are used.</p> <note> <p>If you only want to use a single InstanceConfig inside the <code>HyperParameterTuningResourceConfig</code> API, do not provide a value for <code>InstanceConfigs</code>. Instead, use <code>InstanceType</code>, <code>VolumeSizeInGB</code> and <code>InstanceCount</code>. If you use <code>InstanceConfigs</code>, do not provide values for <code>InstanceType</code>, <code>VolumeSizeInGB</code> or <code>InstanceCount</code>.</p> </note>"
+        }
+      },
+      "documentation":"<p>The configuration of resources, including compute instances and storage volumes for use in training jobs launched by hyperparameter tuning jobs. Specify one or more instance type and count and the allocation strategy for instance selection.</p> <note> <p>HyperParameterTuningResourceConfig supports all of the capabilities of ResourceConfig with added functionality for flexible instance management.</p> </note>"
     },
     "HyperParameterValue":{
       "type":"string",
@@ -27351,7 +27417,7 @@
         },
         "FeatureAdditions":{
           "shape":"FeatureAdditions",
-          "documentation":"<p>A list of the features that you're adding to the feature group.</p>"
+          "documentation":"<p>Updates the feature group. Updating a feature group is an asynchronous operation. When you get an HTTP 200 response, you've made a valid request. It takes some time after you've made a valid request for Feature Store to update the feature group.</p>"
         }
       }
     },
@@ -27678,7 +27744,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
+          "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>. In addition, the project must have tag update constraints set in order to include this parameter in the request. For more information, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/constraints-resourceupdate.html\">Amazon Web Services Service Catalog Tag Update Constraints</a>.</p>"
         }
       }
     },

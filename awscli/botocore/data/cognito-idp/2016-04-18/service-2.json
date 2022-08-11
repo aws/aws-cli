@@ -568,9 +568,10 @@
         {"shape":"NotAuthorizedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalErrorException"},
-        {"shape":"SoftwareTokenMFANotFoundException"}
+        {"shape":"SoftwareTokenMFANotFoundException"},
+        {"shape":"ForbiddenException"}
       ],
-      "documentation":"<p>Begins setup of time-based one-time password multi-factor authentication (TOTP MFA) for a user, with a unique private key that Amazon Cognito generates and returns in the API response. You can authorize an <code>AssociateSoftwareToken</code> request with either the user's access token, or a session string from a challenge response that you received from Amazon Cognito.</p> <note> <p>Amazon Cognito disassociates an existing software token when you verify the new token in a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifySoftwareToken.html\"> VerifySoftwareToken</a> API request. If you don't verify the software token and your user pool doesn't require MFA, the user can then authenticate with user name and password credentials alone. If your user pool requires TOTP MFA, Amazon Cognito generates an <code>MFA_SETUP</code> or <code>SOFTWARE_TOKEN_SETUP</code> challenge each time your user signs. Complete setup with <code>AssociateSoftwareToken</code> and <code>VerifySoftwareToken</code>.</p> <p>After you set up software token MFA for your user, Amazon Cognito generates a <code>SOFTWARE_TOKEN_MFA</code> challenge when they authenticate. Respond to this challenge with your user's TOTP.</p> </note>"
+      "documentation":"<p>Begins setup of time-based one-time password (TOTP) multi-factor authentication (MFA) for a user, with a unique private key that Amazon Cognito generates and returns in the API response. You can authorize an <code>AssociateSoftwareToken</code> request with either the user's access token, or a session string from a challenge response that you received from Amazon Cognito.</p> <note> <p>Amazon Cognito disassociates an existing software token when you verify the new token in a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifySoftwareToken.html\"> VerifySoftwareToken</a> API request. If you don't verify the software token and your user pool doesn't require MFA, the user can then authenticate with user name and password credentials alone. If your user pool requires TOTP MFA, Amazon Cognito generates an <code>MFA_SETUP</code> or <code>SOFTWARE_TOKEN_SETUP</code> challenge each time your user signs. Complete setup with <code>AssociateSoftwareToken</code> and <code>VerifySoftwareToken</code>.</p> <p>After you set up software token MFA for your user, Amazon Cognito generates a <code>SOFTWARE_TOKEN_MFA</code> challenge when they authenticate. Respond to this challenge with your user's TOTP.</p> </note>"
     },
     "ChangePassword":{
       "name":"ChangePassword",
@@ -590,7 +591,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Changes the password for a specified user in a user pool.</p>",
       "authtype":"none"
@@ -615,7 +617,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Confirms tracking of the device. This API call is the call that begins device tracking.</p>"
     },
@@ -642,7 +645,8 @@
         {"shape":"LimitExceededException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Allows a user to enter a confirmation code to reset a forgotten password.</p>",
       "authtype":"none"
@@ -669,7 +673,8 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"LimitExceededException"},
         {"shape":"UserNotFoundException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Confirms registration of a new user.</p>",
       "authtype":"none"
@@ -871,7 +876,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Allows a user to delete himself or herself.</p>",
       "authtype":"none"
@@ -892,7 +898,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Deletes the attributes for a user.</p>",
       "authtype":"none"
@@ -1082,7 +1089,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Forgets the specified device.</p>"
     },
@@ -1108,7 +1116,8 @@
         {"shape":"InvalidEmailRoleAccessPolicyException"},
         {"shape":"CodeDeliveryFailureException"},
         {"shape":"UserNotFoundException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Calling this API causes a message to be sent to the end user with a confirmation code that is required to change the user's password. For the <code>Username</code> parameter, you can use the username or user alias. The method used to send the confirmation code is sent according to the specified AccountRecoverySetting. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-recover-a-user-account.html\">Recovering User Accounts</a> in the <i>Amazon Cognito Developer Guide</i>. If neither a verified phone number nor a verified email exists, an <code>InvalidParameterException</code> is thrown. To use the confirmation code for resetting the password, call <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmForgotPassword.html\">ConfirmForgotPassword</a>. </p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1147,7 +1156,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Gets the device.</p>"
     },
@@ -1233,7 +1243,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Gets the user attributes and metadata for a user.</p>",
       "authtype":"none"
@@ -1262,7 +1273,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Generates a user attribute verification code for the specified attribute name. Sends a message to a user with a code that they must return in a VerifyUserAttribute request.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1299,7 +1311,8 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Signs out users from all devices. It also invalidates all refresh tokens that Amazon Cognito has issued to a user. The user's current access and ID tokens remain valid until their expiry. By default, access and ID tokens expire one hour after Amazon Cognito issues them. A user can still use a hosted UI cookie to retrieve new tokens for the duration of the cookie validity period of 1 hour.</p>"
     },
@@ -1325,7 +1338,8 @@
         {"shape":"UserNotConfirmedException"},
         {"shape":"InternalErrorException"},
         {"shape":"InvalidSmsRoleAccessPolicyException"},
-        {"shape":"InvalidSmsRoleTrustRelationshipException"}
+        {"shape":"InvalidSmsRoleTrustRelationshipException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Initiates sign-in for a user in the Amazon Cognito user directory. You can't sign in a user with a federated IdP with <code>InitiateAuth</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation.html\"> Adding user pool sign-in through a third party</a>.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1347,7 +1361,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Lists the sign-in devices that Amazon Cognito has registered to the current user.</p>"
     },
@@ -1525,7 +1540,8 @@
         {"shape":"InvalidEmailRoleAccessPolicyException"},
         {"shape":"CodeDeliveryFailureException"},
         {"shape":"UserNotFoundException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Resends the confirmation (for confirmation of registration) to a specific user in the user pool.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1558,7 +1574,8 @@
         {"shape":"InvalidSmsRoleTrustRelationshipException"},
         {"shape":"AliasExistsException"},
         {"shape":"InternalErrorException"},
-        {"shape":"SoftwareTokenMFANotFoundException"}
+        {"shape":"SoftwareTokenMFANotFoundException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Responds to the authentication challenge.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1577,7 +1594,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InvalidParameterException"},
         {"shape":"UnsupportedOperationException"},
-        {"shape":"UnsupportedTokenTypeException"}
+        {"shape":"UnsupportedTokenTypeException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Revokes all of the access tokens generated by the specified refresh token. After the token is revoked, you can't use the revoked token to access Amazon Cognito authenticated APIs.</p>"
     },
@@ -1633,7 +1651,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Set the user's multi-factor authentication (MFA) method preference, including which MFA factors are activated and if any are preferred. Only one factor can be set as preferred. The preferred MFA factor will be used to authenticate a user if multiple factors are activated. If multiple options are activated and no preference is set, a challenge to choose an MFA option will be returned during sign-in. If an MFA type is activated for a user, the user will be prompted for MFA during all sign-in attempts unless device tracking is turned on and the device has been trusted. If you want MFA to be applied selectively based on the assessed risk level of sign-in attempts, deactivate MFA for users and turn on Adaptive Authentication for the user pool.</p>"
     },
@@ -1671,7 +1690,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p> <i>This action is no longer supported.</i> You can use it to configure only SMS MFA. You can't use it to configure time-based one-time password (TOTP) software token MFA. To configure either type of MFA, use <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserMFAPreference.html\">SetUserMFAPreference</a> instead.</p>",
       "authtype":"none"
@@ -1698,7 +1718,8 @@
         {"shape":"InvalidSmsRoleAccessPolicyException"},
         {"shape":"InvalidSmsRoleTrustRelationshipException"},
         {"shape":"InvalidEmailRoleAccessPolicyException"},
-        {"shape":"CodeDeliveryFailureException"}
+        {"shape":"CodeDeliveryFailureException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Registers the user in the specified user pool and creates a user name, password, and user attributes.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1809,7 +1830,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Updates the device status.</p>"
     },
@@ -1891,7 +1913,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Allows a user to update a specific attribute (one at a time).</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
       "authtype":"none"
@@ -1977,7 +2000,8 @@
         {"shape":"EnableSoftwareTokenMFAException"},
         {"shape":"NotAuthorizedException"},
         {"shape":"SoftwareTokenMFANotFoundException"},
-        {"shape":"CodeMismatchException"}
+        {"shape":"CodeMismatchException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Use this API to register a user's entered time-based one-time password (TOTP) code and mark the user's software token MFA status as \"verified\" if successful. The request takes an access token or a session string, but not both.</p>"
     },
@@ -2001,7 +2025,8 @@
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
         {"shape":"InternalErrorException"},
-        {"shape":"AliasExistsException"}
+        {"shape":"AliasExistsException"},
+        {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Verifies the specified user attributes in the user pool.</p> <p> If your user pool requires verification before Amazon Cognito updates the attribute value, VerifyUserAttribute updates the affected attribute to its pending value. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UserAttributeUpdateSettingsType.html\"> UserAttributeUpdateSettingsType</a>. </p>",
       "authtype":"none"
@@ -3029,7 +3054,7 @@
       "members":{
         "message":{
           "shape":"MessageType",
-          "documentation":"<p>The message sent to the user when an alias exists.</p>"
+          "documentation":"<p>The message that Amazon Cognito sends to the user when the value of an alias attribute is already linked to another user profile.</p>"
         }
       },
       "documentation":"<p>This exception is thrown when a user tries to confirm the account with an email address or phone number that has already been supplied as an alias for a different user profile. This exception indicates that an account with this email address or phone already exists in a user pool that you've configured to use email address or phone number as a sign-in alias.</p>",
@@ -3095,7 +3120,7 @@
       "members":{
         "SecretCode":{
           "shape":"SecretCodeType",
-          "documentation":"<p>A unique generated shared secret code that is used in the time-based one-time password (TOTP) algorithm to generate a one-time code.</p>"
+          "documentation":"<p>A unique generated shared secret code that is used in the TOTP algorithm to generate a one-time code.</p>"
         },
         "Session":{
           "shape":"SessionType",
@@ -3537,11 +3562,11 @@
         },
         "ConfirmationCode":{
           "shape":"ConfirmationCodeType",
-          "documentation":"<p>The confirmation code sent by a user's request to retrieve a forgotten password. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ForgotPassword.html\">ForgotPassword</a>.</p>"
+          "documentation":"<p>The confirmation code from your user's request to reset their password. For more information, see <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ForgotPassword.html\">ForgotPassword</a>.</p>"
         },
         "Password":{
           "shape":"PasswordType",
-          "documentation":"<p>The password sent by a user's request to retrieve a forgotten password.</p>"
+          "documentation":"<p>The new password that your user wants to set.</p>"
         },
         "AnalyticsMetadata":{
           "shape":"AnalyticsMetadataType",
@@ -3848,11 +3873,11 @@
         },
         "ExplicitAuthFlows":{
           "shape":"ExplicitAuthFlowsListType",
-          "documentation":"<p>The authentication flows that are supported by the user pool clients. Flow names without the <code>ALLOW_</code> prefix are no longer supported, in favor of new names with the <code>ALLOW_</code> prefix.</p> <note> <p>Values with <code>ALLOW_</code> prefix must be used only along with the <code>ALLOW_</code> prefix.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>ALLOW_ADMIN_USER_PASSWORD_AUTH</code>: Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, Amazon Cognito receives the password in the request instead of using the Secure Remote Password (SRP) protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_CUSTOM_AUTH</code>: Enable Lambda trigger based authentication.</p> </li> <li> <p> <code>ALLOW_USER_PASSWORD_AUTH</code>: Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </li> <li> <p> <code>ALLOW_USER_SRP_AUTH</code>: Enable SRP-based authentication.</p> </li> <li> <p> <code>ALLOW_REFRESH_TOKEN_AUTH</code>: Enable authflow to refresh tokens.</p> </li> </ul> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your app client activates the <code>ALLOW_USER_SRP_AUTH</code> and <code>ALLOW_CUSTOM_AUTH</code> authentication flows.</p>"
+          "documentation":"<p>The authentication flows that are supported by the user pool clients. Flow names without the <code>ALLOW_</code> prefix are no longer supported, in favor of new names with the <code>ALLOW_</code> prefix.</p> <note> <p>Values with <code>ALLOW_</code> prefix must be used only along with the <code>ALLOW_</code> prefix.</p> </note> <p>Valid values include:</p> <dl> <dt>ALLOW_ADMIN_USER_PASSWORD_AUTH</dt> <dd> <p>Enable admin based user password authentication flow <code>ADMIN_USER_PASSWORD_AUTH</code>. This setting replaces the <code>ADMIN_NO_SRP_AUTH</code> setting. With this authentication flow, Amazon Cognito receives the password in the request instead of using the Secure Remote Password (SRP) protocol to verify passwords.</p> </dd> <dt>ALLOW_CUSTOM_AUTH</dt> <dd> <p>Enable Lambda trigger based authentication.</p> </dd> <dt>ALLOW_USER_PASSWORD_AUTH</dt> <dd> <p>Enable user password-based authentication. In this flow, Amazon Cognito receives the password in the request instead of using the SRP protocol to verify passwords.</p> </dd> <dt>ALLOW_USER_SRP_AUTH</dt> <dd> <p>Enable SRP-based authentication.</p> </dd> <dt>ALLOW_REFRESH_TOKEN_AUTH</dt> <dd> <p>Enable the authflow that refreshes tokens.</p> </dd> </dl> <p>If you don't specify a value for <code>ExplicitAuthFlows</code>, your user client supports <code>ALLOW_USER_SRP_AUTH</code> and <code>ALLOW_CUSTOM_AUTH</code>.</p>"
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
-          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
+          "documentation":"<p>A list of provider names for the identity providers (IdPs) that are supported on this client. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, and <code>LoginWithAmazon</code>. You can also specify the names that you configured for the SAML and OIDC IdPs in your user pool, for example <code>MySAMLIdP</code> or <code>MyOIDCIdP</code>.</p>"
         },
         "CallbackURLs":{
           "shape":"CallbackURLsListType",
@@ -3971,11 +3996,11 @@
         },
         "EmailVerificationMessage":{
           "shape":"EmailVerificationMessageType",
-          "documentation":"<p>A string representing the email verification message. EmailVerificationMessage is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is DEVELOPER. </p>"
+          "documentation":"<p>A string representing the email verification message. <code>EmailVerificationMessage</code> is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is DEVELOPER. </p>"
         },
         "EmailVerificationSubject":{
           "shape":"EmailVerificationSubjectType",
-          "documentation":"<p>A string representing the email verification subject. EmailVerificationSubject is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is DEVELOPER. </p>"
+          "documentation":"<p>A string representing the email verification subject. <code>EmailVerificationSubject</code> is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is DEVELOPER. </p>"
         },
         "VerificationMessageTemplate":{
           "shape":"VerificationMessageTemplateType",
@@ -3991,11 +4016,11 @@
         },
         "UserAttributeUpdateSettings":{
           "shape":"UserAttributeUpdateSettingsType",
-          "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to to email addresses and phone numbers</a>.</p>"
+          "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to email addresses and phone numbers</a>.</p>"
         },
         "DeviceConfiguration":{
           "shape":"DeviceConfigurationType",
-          "documentation":"<p>The device configuration.</p>"
+          "documentation":"<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>"
         },
         "EmailConfiguration":{
           "shape":"EmailConfigurationType",
@@ -4448,14 +4473,14 @@
       "members":{
         "ChallengeRequiredOnNewDevice":{
           "shape":"BooleanType",
-          "documentation":"<p>When true, device authentication can replace SMS and time-based one-time password (TOTP) factors for multi-factor authentication (MFA).</p> <note> <p>Users that sign in with devices that have not been confirmed or remembered will still have to provide a second factor, whether or not ChallengeRequiredOnNewDevice is true, when your user pool requires MFA.</p> </note>"
+          "documentation":"<p>When true, device authentication can replace SMS and time-based one-time password (TOTP) factors for multi-factor authentication (MFA).</p> <note> <p>Regardless of the value of this field, users that sign in with new devices that have not been confirmed or remembered must provide a second factor if your user pool requires MFA.</p> </note>"
         },
         "DeviceOnlyRememberedOnUserPrompt":{
           "shape":"BooleanType",
-          "documentation":"<p>When true, users can opt in to remembering their device. Your app code must use callback functions to return the user's choice.</p>"
+          "documentation":"<p>When true, Amazon Cognito doesn't remember newly-confirmed devices. Users who want to authenticate with their device can instead opt in to remembering their device. To collect a choice from your user, create an input prompt in your app and return the value that the user chooses in an <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html\">UpdateDeviceStatus</a> API request.</p>"
         }
       },
-      "documentation":"<p>The device tracking configuration for a user pool. A user pool with device tracking deactivated returns a null value.</p> <note> <p>When you provide values for any DeviceConfiguration field, you activate device tracking.</p> </note>"
+      "documentation":"<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>"
     },
     "DeviceKeyType":{
       "type":"string",
@@ -4801,6 +4826,17 @@
         "Invalid"
       ]
     },
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"MessageType",
+          "documentation":"<p>The message returned when WAF doesn't allow your request based on a web ACL that's associated with your user pool.</p>"
+        }
+      },
+      "documentation":"<p>This exception is thrown when WAF doesn't allow your request based on a web ACL that's associated with your user pool.</p>",
+      "exception":true
+    },
     "ForceAliasCreation":{"type":"boolean"},
     "ForgetDeviceRequest":{
       "type":"structure",
@@ -5058,15 +5094,15 @@
       "members":{
         "SmsMfaConfiguration":{
           "shape":"SmsMfaConfigType",
-          "documentation":"<p>The SMS text message multi-factor (MFA) configuration.</p>"
+          "documentation":"<p>The SMS text message multi-factor authentication (MFA) configuration.</p>"
         },
         "SoftwareTokenMfaConfiguration":{
           "shape":"SoftwareTokenMfaConfigType",
-          "documentation":"<p>The software token multi-factor (MFA) configuration.</p>"
+          "documentation":"<p>The software token multi-factor authentication (MFA) configuration.</p>"
         },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
-          "documentation":"<p>The multi-factor (MFA) configuration. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won't be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor activated.</p> </li> </ul>"
+          "documentation":"<p>The multi-factor authentication (MFA) configuration. Valid values include:</p> <ul> <li> <p> <code>OFF</code> MFA won't be used for any users.</p> </li> <li> <p> <code>ON</code> MFA is required for all users to sign in.</p> </li> <li> <p> <code>OPTIONAL</code> MFA will be required only for individual users who have an MFA factor activated.</p> </li> </ul>"
         }
       }
     },
@@ -6682,7 +6718,7 @@
         },
         "SoftwareTokenMfaSettings":{
           "shape":"SoftwareTokenMfaSettingsType",
-          "documentation":"<p>The time-based one-time password software token MFA settings.</p>"
+          "documentation":"<p>The time-based one-time password (TOTP) software token MFA settings.</p>"
         },
         "AccessToken":{
           "shape":"TokenModelType",
@@ -7451,7 +7487,7 @@
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
-          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
+          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
         },
         "CallbackURLs":{
           "shape":"CallbackURLsListType",
@@ -7581,7 +7617,7 @@
         },
         "UserAttributeUpdateSettings":{
           "shape":"UserAttributeUpdateSettingsType",
-          "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to to email addresses and phone numbers</a>.</p>"
+          "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to email addresses and phone numbers</a>.</p>"
         },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
@@ -7589,7 +7625,7 @@
         },
         "DeviceConfiguration":{
           "shape":"DeviceConfigurationType",
-          "documentation":"<p>Device configuration.</p>"
+          "documentation":"<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>"
         },
         "EmailConfiguration":{
           "shape":"EmailConfigurationType",
@@ -7632,7 +7668,7 @@
           "documentation":"<p>Requires that your user verifies their email address, phone number, or both before Amazon Cognito updates the value of that attribute. When you update a user attribute that has this option activated, Amazon Cognito sends a verification message to the new phone number or email address. Amazon Cognito doesn’t change the value of the attribute until your user responds to the verification message and confirms the new value.</p> <p>You can verify an updated email address or phone number with a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerifyUserAttribute.html\">VerifyUserAttribute</a> API request. You can also call the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserAttributes.html\">UpdateUserAttributes</a> or <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html\">AdminUpdateUserAttributes</a> API and set <code>email_verified</code> or <code>phone_number_verified</code> to true.</p> <p>When <code>AttributesRequireVerificationBeforeUpdate</code> is false, your user pool doesn't require that your users verify attribute changes before Amazon Cognito updates them. In a user pool where <code>AttributesRequireVerificationBeforeUpdate</code> is false, API operations that change attribute values can immediately update a user’s <code>email</code> or <code>phone_number</code> attribute.</p>"
         }
       },
-      "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to to email addresses and phone numbers</a>.</p>"
+      "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to email addresses and phone numbers</a>.</p>"
     },
     "UserContextDataType":{
       "type":"structure",
@@ -7887,7 +7923,7 @@
         },
         "SupportedIdentityProviders":{
           "shape":"SupportedIdentityProvidersListType",
-          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code> <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
+          "documentation":"<p>A list of provider names for the IdPs that this client supports. The following are supported: <code>COGNITO</code>, <code>Facebook</code>, <code>Google</code>, <code>SignInWithApple</code>, <code>LoginWithAmazon</code>, and the names of your own SAML and OIDC providers.</p>"
         },
         "CallbackURLs":{
           "shape":"CallbackURLsListType",
@@ -8083,7 +8119,7 @@
         },
         "UserAttributeUpdateSettings":{
           "shape":"UserAttributeUpdateSettingsType",
-          "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to to email addresses and phone numbers</a>.</p>"
+          "documentation":"<p>The settings for updates to user attributes. These settings include the property <code>AttributesRequireVerificationBeforeUpdate</code>, a user-pool setting that tells Amazon Cognito how to handle changes to the value of your users' email address and phone number attributes. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates\"> Verifying updates to email addresses and phone numbers</a>.</p>"
         },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
@@ -8091,7 +8127,7 @@
         },
         "DeviceConfiguration":{
           "shape":"DeviceConfigurationType",
-          "documentation":"<p>The device configuration.</p>"
+          "documentation":"<p>The device-remembering configuration for a user pool. A null value indicates that you have deactivated device remembering in your user pool.</p> <note> <p>When you provide a value for any <code>DeviceConfiguration</code> field, you activate the Amazon Cognito device-remembering feature.</p> </note>"
         },
         "EstimatedNumberOfUsers":{
           "shape":"IntegerType",

@@ -205,6 +205,20 @@
       ],
       "documentation":"<p> Lists the attendees for the specified Amazon Chime SDK meeting. For more information about the Amazon Chime SDK, see <a href=\"https://docs.aws.amazon.com/chime/latest/dg/meetings-sdk.html\">Using the Amazon Chime SDK</a> in the <i>Amazon Chime Developer Guide</i>. </p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the tags available for the specified resource.</p>"
+    },
     "StartMeetingTranscription":{
       "name":"StartMeetingTranscription",
       "http":{
@@ -246,6 +260,37 @@
       ],
       "documentation":"<p>Stops transcription for the specified <code>meetingId</code>.</p>"
     },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags?operation=tag-resource",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyTagsException"}
+      ],
+      "documentation":"<p>The resource that supports tags.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags?operation=untag-resource",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes the specified tags from the specified resources. When you specify a tag key, the action removes both that key and its associated value. The operation succeeds even if you attempt to remove tags from a resource that were already removed. Note the following:</p> <ul> <li> <p>To remove tags from a resource, you need the necessary permissions for the service that the resource belongs to as well as permissions for removing tags. For more information, see the documentation for the service whose resource you want to untag.</p> </li> <li> <p>You can only tag resources that are located in the specified AWS Region for the calling AWS account.</p> </li> </ul> <p> <b>Minimum permissions</b> </p> <p>In addition to the <code>tag:UntagResources</code> permission required by this operation, you must also have the remove tags permission defined by the service that created the resource. For example, to remove the tags from an Amazon EC2 instance using the <code>UntagResources</code> operation, you must have both of the following permissions:</p> <p> <code>tag:UntagResource</code> </p> <p> <code>ChimeSDKMeetings:DeleteTags</code> </p>"
+    },
     "UpdateAttendeeCapabilities":{
       "name":"UpdateAttendeeCapabilities",
       "http":{
@@ -266,6 +311,12 @@
     }
   },
   "shapes":{
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^arn:.*"
+    },
     "Arn":{
       "type":"string",
       "max":1024,
@@ -436,7 +487,10 @@
       "members":{
         "Code":{"shape":"String"},
         "Message":{"shape":"String"},
-        "RequestId":{"shape":"String"}
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request involved in the conflict.</p>"
+        }
       },
       "documentation":"<p>Multiple instances of the same request have been made simultaneously.</p>",
       "error":{"httpStatusCode":409},
@@ -553,6 +607,10 @@
         "TenantIds":{
           "shape":"TenantIdList",
           "documentation":"<p>A consistent and opaque identifier, created and maintained by the builder to represent a segment of their users.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Applies one or more tags to an Amazon Chime SDK meeting. Note the following:</p> <ul> <li> <p>Not all resources have tags. For a list of services with resources that support tagging using this operation, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html\">Services that support the Resource Groups Tagging API</a>. If the resource doesn't yet support this operation, the resource's service might support tagging using its own API operations. For more information, refer to the documentation for that service.</p> </li> <li> <p>Each resource can have up to 50 tags. For other limits, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html#tag-conventions\">Tag Naming and Usage Conventions</a> in the <i>AWS General Reference</i>.</p> </li> <li> <p>You can only tag resources that are located in the specified AWS Region for the AWS account.</p> </li> <li> <p>To add tags to a resource, you need the necessary permissions for the service that the resource belongs to as well as permissions for adding tags. For more information, see the documentation for each service.</p> </li> </ul> <important> <p>Do not store personally identifiable information (PII) or other confidential or sensitive information in tags. We use tags to provide you with billing and administration services. Tags are not intended to be used for private or sensitive data.</p> </important> <p> <b>Minimum permissions</b> </p> <p> In addition to the <code>tag:TagResources </code>permission required by this operation, you must also have the tagging permission defined by the service that created the resource. For example, to tag a <code>ChimeSDKMeetings</code> instance using the <code>TagResources</code> operation, you must have both of the following permissions:</p> <p> <code>tag:TagResources</code> </p> <p> <code>ChimeSDKMeetings:CreateTags</code> </p> <note> <p>Some services might have specific requirements for tagging some resources. For example, to tag an Amazon S3 bucket, you must also have the <code>s3:GetBucketTagging</code> permission. If the expected minimum permissions don't work, check the documentation for that service's tagging APIs for more information.</p> </note>"
         }
       }
     },
@@ -610,6 +668,10 @@
         "TenantIds":{
           "shape":"TenantIdList",
           "documentation":"<p>A consistent and opaque identifier, created and maintained by the builder to represent a segment of their users.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags in the request.</p>"
         }
       }
     },
@@ -904,6 +966,27 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource.</p>",
+          "location":"querystring",
+          "locationName":"arn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags requested for the specified resource.</p>"
+        }
+      }
+    },
     "MediaCapabilities":{
       "type":"string",
       "enum":[
@@ -990,6 +1073,10 @@
         "TenantIds":{
           "shape":"TenantIdList",
           "documentation":"<p>Array of strings.</p>"
+        },
+        "MeetingArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the meeting.</p>"
         }
       },
       "documentation":"<p>A meeting created using the Amazon Chime SDK.</p>"
@@ -1048,6 +1135,24 @@
       "max":64,
       "min":2
     },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"String"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that couldn't be found.</p>"
+        },
+        "ResourceName":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The name of the resource that couldn't be found.</p>"
+        }
+      },
+      "documentation":"<p>The resource that you want to tag couldn't be found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
     "ResultMax":{
       "type":"integer",
       "max":100,
@@ -1059,7 +1164,10 @@
       "members":{
         "Code":{"shape":"String"},
         "Message":{"shape":"String"},
-        "RequestId":{"shape":"String"}
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the failed request.</p>"
+        }
       },
       "documentation":"<p>The service encountered an unexpected error.</p>",
       "error":{"httpStatusCode":500},
@@ -1122,6 +1230,70 @@
       "type":"string",
       "max":4096
     },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag's key.</p>"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag's value.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair that you define.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z+-=._:/]+$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Lists the requested tags.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[\\s\\w+-=\\.:/@]*"
+    },
     "TenantId":{
       "type":"string",
       "max":256,
@@ -1139,10 +1311,31 @@
       "members":{
         "Code":{"shape":"String"},
         "Message":{"shape":"String"},
-        "RequestId":{"shape":"String"}
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request that exceeded the throttling limit.</p>"
+        }
       },
       "documentation":"<p>The number of customer requests exceeds the request rate limit.</p>",
       "error":{"httpStatusCode":429},
+      "exception":true
+    },
+    "TooManyTagsException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"String"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request that contains too many tags.</p>"
+        },
+        "ResourceName":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The name of the resource that received too many tags.</p>"
+        }
+      },
+      "documentation":"<p>Too many tags were added to the specified resource.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "TranscribeContentIdentificationType":{
@@ -1301,6 +1494,28 @@
       "documentation":"<p>The request was well-formed but was unable to be followed due to semantic errors.</p>",
       "error":{"httpStatusCode":422},
       "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource that you're removing tags from.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys being removed from the resources.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateAttendeeCapabilitiesRequest":{
       "type":"structure",

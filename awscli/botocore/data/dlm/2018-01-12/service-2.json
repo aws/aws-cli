@@ -153,7 +153,7 @@
           "documentation":"<p>The rule for copying shared snapshots across Regions.</p>"
         }
       },
-      "documentation":"<p>Specifies an action for an event-based policy.</p>"
+      "documentation":"<p> <b>[Event-based policies only]</b> Specifies an action for an event-based policy.</p>"
     },
     "ActionList":{
       "type":"list",
@@ -243,7 +243,7 @@
       "members":{
         "Location":{
           "shape":"LocationValues",
-          "documentation":"<p>Specifies the destination for snapshots created by the policy. To create snapshots in the same Region as the source resource, specify <code>CLOUD</code>. To create snapshots on the same Outpost as the source resource, specify <code>OUTPOST_LOCAL</code>. If you omit this parameter, <code>CLOUD</code> is used by default.</p> <p>If the policy targets resources in an Amazon Web Services Region, then you must create snapshots in the same Region as the source resource.</p> <p>If the policy targets resources on an Outpost, then you can create snapshots on the same Outpost as the source resource, or in the Region of that Outpost.</p>"
+          "documentation":"<p> <b>[Snapshot policies only]</b> Specifies the destination for snapshots created by the policy. To create snapshots in the same Region as the source resource, specify <code>CLOUD</code>. To create snapshots on the same Outpost as the source resource, specify <code>OUTPOST_LOCAL</code>. If you omit this parameter, <code>CLOUD</code> is used by default.</p> <p>If the policy targets resources in an Amazon Web Services Region, then you must create snapshots in the same Region as the source resource. If the policy targets resources on an Outpost, then you can create snapshots on the same Outpost as the source resource, or in the Region of that Outpost.</p>"
         },
         "Interval":{
           "shape":"Interval",
@@ -262,7 +262,7 @@
           "documentation":"<p>The schedule, as a Cron expression. The schedule interval must be between 1 hour and 1 year. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions\">Cron expressions</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>Specifies when to create snapshots of EBS volumes.</p> <p>You must specify either a Cron expression or an interval, interval unit, and start time. You cannot specify both.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies when the policy should create snapshots or AMIs.</p> <important> <p>You must specify either a Cron expression or an interval, interval unit, and start time. You cannot specify both.</p> </important>"
     },
     "CronExpression":{
       "type":"string",
@@ -287,7 +287,7 @@
         },
         "RetainRule":{"shape":"CrossRegionCopyRetainRule"}
       },
-      "documentation":"<p>Specifies a rule for copying shared snapshots across Regions.</p>"
+      "documentation":"<p> <b>[Event-based policies only]</b> Specifies a cross-Region copy action for event-based policies.</p> <note> <p>To specify a cross-Region copy rule for snapshot and AMI policies, use <a>CrossRegionCopyRule</a>.</p> </note>"
     },
     "CrossRegionCopyActionList":{
       "type":"list",
@@ -304,24 +304,24 @@
         },
         "IntervalUnit":{
           "shape":"RetentionIntervalUnitValues",
-          "documentation":"<p>The unit of time in which to measure the <b>Interval</b>.</p>"
+          "documentation":"<p>The unit of time in which to measure the <b>Interval</b>. For example, to deprecate a cross-Region AMI copy after 3 months, specify <code>Interval=3</code> and <code>IntervalUnit=MONTHS</code>.</p>"
         }
       },
-      "documentation":"<p>Specifies an AMI deprecation rule for cross-Region AMI copies created by a cross-Region copy rule.</p>"
+      "documentation":"<p> <b>[AMI policies only]</b> Specifies an AMI deprecation rule for cross-Region AMI copies created by an AMI policy.</p>"
     },
     "CrossRegionCopyRetainRule":{
       "type":"structure",
       "members":{
         "Interval":{
           "shape":"Interval",
-          "documentation":"<p>The amount of time to retain each snapshot. The maximum is 100 years. This is equivalent to 1200 months, 5200 weeks, or 36500 days.</p>"
+          "documentation":"<p>The amount of time to retain a cross-Region snapshot or AMI copy. The maximum is 100 years. This is equivalent to 1200 months, 5200 weeks, or 36500 days.</p>"
         },
         "IntervalUnit":{
           "shape":"RetentionIntervalUnitValues",
-          "documentation":"<p>The unit of time for time-based retention.</p>"
+          "documentation":"<p>The unit of time for time-based retention. For example, to retain a cross-Region copy for 3 months, specify <code>Interval=3</code> and <code>IntervalUnit=MONTHS</code>.</p>"
         }
       },
-      "documentation":"<p>Specifies the retention rule for cross-Region snapshot copies.</p>"
+      "documentation":"<p>Specifies a retention rule for cross-Region snapshot copies created by snapshot or event-based policies, or cross-Region AMI copies created by AMI policies. After the retention period expires, the cross-Region copy is deleted.</p>"
     },
     "CrossRegionCopyRule":{
       "type":"structure",
@@ -329,7 +329,7 @@
       "members":{
         "TargetRegion":{
           "shape":"TargetRegion",
-          "documentation":"<p>Avoid using this parameter when creating new policies. Instead, use <b>Target</b> to specify a target Region or a target Outpost for snapshot copies.</p> <p>For policies created before the <b>Target</b> parameter was introduced, this parameter indicates the target Region for snapshot copies.</p>"
+          "documentation":"<note> <p>Avoid using this parameter when creating new policies. Instead, use <b>Target</b> to specify a target Region or a target Outpost for snapshot copies.</p> <p>For policies created before the <b>Target</b> parameter was introduced, this parameter indicates the target Region for snapshot copies.</p> </note>"
         },
         "Target":{
           "shape":"Target",
@@ -345,18 +345,18 @@
         },
         "CopyTags":{
           "shape":"CopyTagsNullable",
-          "documentation":"<p>Indicates whether to copy all user-defined tags from the source snapshot to the cross-Region snapshot copy.</p>"
+          "documentation":"<p>Indicates whether to copy all user-defined tags from the source snapshot or AMI to the cross-Region copy.</p>"
         },
         "RetainRule":{
           "shape":"CrossRegionCopyRetainRule",
-          "documentation":"<p>The retention rule that indicates how long snapshot copies are to be retained in the destination Region.</p>"
+          "documentation":"<p>The retention rule that indicates how long the cross-Region snapshot or AMI copies are to be retained in the destination Region.</p>"
         },
         "DeprecateRule":{
           "shape":"CrossRegionCopyDeprecateRule",
-          "documentation":"<p>The AMI deprecation rule for cross-Region AMI copies created by the rule.</p>"
+          "documentation":"<p> <b>[AMI policies only]</b> The AMI deprecation rule for cross-Region AMI copies created by the rule.</p>"
         }
       },
-      "documentation":"<p>Specifies a rule for cross-Region snapshot copies.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies a cross-Region copy rule for snapshot and AMI policies.</p> <note> <p>To specify a cross-Region copy action for event-based polices, use <a>CrossRegionCopyAction</a>.</p> </note>"
     },
     "CrossRegionCopyRules":{
       "type":"list",
@@ -397,7 +397,7 @@
           "documentation":"<p>The unit of time in which to measure the <b>Interval</b>.</p>"
         }
       },
-      "documentation":"<p>Specifies an AMI deprecation rule for a schedule.</p>"
+      "documentation":"<p> <b>[AMI policies only]</b> Specifies an AMI deprecation rule for AMIs created by an AMI lifecycle policy.</p> <p>For age-based schedules, you must specify <b>Interval</b> and <b>IntervalUnit</b>. For count-based schedules, you must specify <b>Count</b>.</p>"
     },
     "DescriptionRegex":{
       "type":"string",
@@ -419,7 +419,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key to use for EBS encryption. If this parameter is not specified, the default KMS key for the account is used.</p>"
         }
       },
-      "documentation":"<p>Specifies the encryption settings for shared snapshots that are copied across Regions.</p>"
+      "documentation":"<p> <b>[Event-based policies only]</b> Specifies the encryption settings for cross-Region snapshot copies created by event-based policies.</p>"
     },
     "ErrorCode":{"type":"string"},
     "ErrorMessage":{"type":"string"},
@@ -444,7 +444,7 @@
           "documentation":"<p>The snapshot description that can trigger the policy. The description pattern is specified using a regular expression. The policy runs only if a snapshot with a description that matches the specified pattern is shared with your account.</p> <p>For example, specifying <code>^.*Created for policy: policy-1234567890abcdef0.*$</code> configures the policy to run only if snapshots created by policy <code>policy-1234567890abcdef0</code> are shared with your account.</p>"
         }
       },
-      "documentation":"<p>Specifies an event that triggers an event-based policy.</p>"
+      "documentation":"<p> <b>[Event-based policies only]</b> Specifies an event that activates an event-based policy.</p>"
     },
     "EventSource":{
       "type":"structure",
@@ -459,7 +459,7 @@
           "documentation":"<p>Information about the event.</p>"
         }
       },
-      "documentation":"<p>Specifies an event that triggers an event-based policy.</p>"
+      "documentation":"<p> <b>[Event-based policies only]</b> Specifies an event that activates an event-based policy.</p>"
     },
     "EventSourceValues":{
       "type":"string",
@@ -470,6 +470,12 @@
       "enum":["shareSnapshot"]
     },
     "ExcludeBootVolume":{"type":"boolean"},
+    "ExcludeDataVolumeTagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":0
+    },
     "ExecutionRoleArn":{
       "type":"string",
       "max":2048,
@@ -497,7 +503,7 @@
           "documentation":"<p>The Availability Zones in which to enable fast snapshot restore.</p>"
         }
       },
-      "documentation":"<p>Specifies a rule for enabling fast snapshot restore. You can enable fast snapshot restore based on either a count or a time interval.</p>"
+      "documentation":"<p> <b>[Snapshot policies only]</b> Specifies a rule for enabling fast snapshot restore for snapshots created by snaspshot policies. You can enable fast snapshot restore based on either a count or a time interval.</p>"
     },
     "GetLifecyclePoliciesRequest":{
       "type":"structure",
@@ -652,7 +658,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the policy.</p>"
         }
       },
-      "documentation":"<p>Detailed information about a lifecycle policy.</p>"
+      "documentation":"<p> <b>[All policy types]</b> Detailed information about a snapshot, AMI, or event-based lifecycle policy.</p>"
     },
     "LifecyclePolicySummary":{
       "type":"structure",
@@ -675,7 +681,7 @@
         },
         "PolicyType":{
           "shape":"PolicyTypeValues",
-          "documentation":"<p>The type of policy. <code>EBS_SNAPSHOT_MANAGEMENT</code> indicates that the policy manages the lifecycle of Amazon EBS snapshots. <code>IMAGE_MANAGEMENT</code> indicates that the policy manages the lifecycle of EBS-backed AMIs.</p>"
+          "documentation":"<p>The type of policy. <code>EBS_SNAPSHOT_MANAGEMENT</code> indicates that the policy manages the lifecycle of Amazon EBS snapshots. <code>IMAGE_MANAGEMENT</code> indicates that the policy manages the lifecycle of EBS-backed AMIs. <code>EVENT_BASED_POLICY</code> indicates that the policy automates cross-account snapshot copies for snapshots that are shared with your account.</p>"
         }
       },
       "documentation":"<p>Summary information about a lifecycle policy.</p>"
@@ -737,14 +743,18 @@
       "members":{
         "ExcludeBootVolume":{
           "shape":"ExcludeBootVolume",
-          "documentation":"<p>[EBS Snapshot Management – Instance policies only] Indicates whether to exclude the root volume from snapshots created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSnapshots.html\">CreateSnapshots</a>. The default is false.</p>"
+          "documentation":"<p> <b>[Snapshot policies that target instances only]</b> Indicates whether to exclude the root volume from multi-volume snapshot sets. The default is <code>false</code>. If you specify <code>true</code>, then the root volumes attached to targeted instances will be excluded from the multi-volume snapshot sets created by the policy.</p>"
         },
         "NoReboot":{
           "shape":"NoReboot",
-          "documentation":"<p>Applies to AMI lifecycle policies only. Indicates whether targeted instances are rebooted when the lifecycle policy runs. <code>true</code> indicates that targeted instances are not rebooted when the policy runs. <code>false</code> indicates that target instances are rebooted when the policy runs. The default is <code>true</code> (instances are not rebooted).</p>"
+          "documentation":"<p> <b>[AMI policies only]</b> Indicates whether targeted instances are rebooted when the lifecycle policy runs. <code>true</code> indicates that targeted instances are not rebooted when the policy runs. <code>false</code> indicates that target instances are rebooted when the policy runs. The default is <code>true</code> (instances are not rebooted).</p>"
+        },
+        "ExcludeDataVolumeTags":{
+          "shape":"ExcludeDataVolumeTagList",
+          "documentation":"<p> <b>[Snapshot policies that target instances only]</b> The tags used to identify data (non-root) volumes to exclude from multi-volume snapshot sets.</p> <p>If you create a snapshot lifecycle policy that targets instances and you specify tags for this parameter, then data volumes with the specified tags that are attached to targeted instances will be excluded from the multi-volume snapshot sets created by the policy.</p>"
         }
       },
-      "documentation":"<p>Specifies optional parameters to add to a policy. The set of valid parameters depends on the combination of policy type and resource type.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies optional parameters for snapshot and AMI policies. The set of valid parameters depends on the combination of policy type and target resource type.</p> <p>If you choose to exclude boot volumes and you specify tags that consequently exclude all of the additional data volumes attached to an instance, then Amazon DLM will not create any snapshots for the affected instance, and it will emit a <code>SnapshotsCreateFailed</code> Amazon CloudWatch metric. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-dlm-cw-metrics.html\">Monitor your policies using Amazon CloudWatch</a>.</p>"
     },
     "PolicyArn":{
       "type":"string",
@@ -763,38 +773,38 @@
       "members":{
         "PolicyType":{
           "shape":"PolicyTypeValues",
-          "documentation":"<p>The valid target resource types and actions a policy can manage. Specify <code>EBS_SNAPSHOT_MANAGEMENT</code> to create a lifecycle policy that manages the lifecycle of Amazon EBS snapshots. Specify <code>IMAGE_MANAGEMENT</code> to create a lifecycle policy that manages the lifecycle of EBS-backed AMIs. Specify <code>EVENT_BASED_POLICY </code> to create an event-based policy that performs specific actions when a defined event occurs in your Amazon Web Services account.</p> <p>The default is <code>EBS_SNAPSHOT_MANAGEMENT</code>.</p>"
+          "documentation":"<p> <b>[All policy types]</b> The valid target resource types and actions a policy can manage. Specify <code>EBS_SNAPSHOT_MANAGEMENT</code> to create a lifecycle policy that manages the lifecycle of Amazon EBS snapshots. Specify <code>IMAGE_MANAGEMENT</code> to create a lifecycle policy that manages the lifecycle of EBS-backed AMIs. Specify <code>EVENT_BASED_POLICY </code> to create an event-based policy that performs specific actions when a defined event occurs in your Amazon Web Services account.</p> <p>The default is <code>EBS_SNAPSHOT_MANAGEMENT</code>.</p>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypeValuesList",
-          "documentation":"<p>The target resource type for snapshot and AMI lifecycle policies. Use <code>VOLUME </code>to create snapshots of individual volumes or use <code>INSTANCE</code> to create multi-volume snapshots from the volumes for an instance.</p> <p>This parameter is required for snapshot and AMI policies only. If you are creating an event-based policy, omit this parameter.</p>"
+          "documentation":"<p> <b>[Snapshot policies only]</b> The target resource type for snapshot and AMI lifecycle policies. Use <code>VOLUME </code>to create snapshots of individual volumes or use <code>INSTANCE</code> to create multi-volume snapshots from the volumes for an instance.</p>"
         },
         "ResourceLocations":{
           "shape":"ResourceLocationList",
-          "documentation":"<p>The location of the resources to backup. If the source resources are located in an Amazon Web Services Region, specify <code>CLOUD</code>. If the source resources are located on an Outpost in your account, specify <code>OUTPOST</code>. </p> <p>If you specify <code>OUTPOST</code>, Amazon Data Lifecycle Manager backs up all resources of the specified type with matching target tags across all of the Outposts in your account.</p>"
+          "documentation":"<p> <b>[Snapshot and AMI policies only]</b> The location of the resources to backup. If the source resources are located in an Amazon Web Services Region, specify <code>CLOUD</code>. If the source resources are located on an Outpost in your account, specify <code>OUTPOST</code>.</p> <p>If you specify <code>OUTPOST</code>, Amazon Data Lifecycle Manager backs up all resources of the specified type with matching target tags across all of the Outposts in your account.</p>"
         },
         "TargetTags":{
           "shape":"TargetTagList",
-          "documentation":"<p>The single tag that identifies targeted resources for this policy.</p> <p>This parameter is required for snapshot and AMI policies only. If you are creating an event-based policy, omit this parameter.</p>"
+          "documentation":"<p> <b>[Snapshot and AMI policies only]</b> The single tag that identifies targeted resources for this policy.</p>"
         },
         "Schedules":{
           "shape":"ScheduleList",
-          "documentation":"<p>The schedules of policy-defined actions for snapshot and AMI lifecycle policies. A policy can have up to four schedules—one mandatory schedule and up to three optional schedules.</p> <p>This parameter is required for snapshot and AMI policies only. If you are creating an event-based policy, omit this parameter.</p>"
+          "documentation":"<p> <b>[Snapshot and AMI policies only]</b> The schedules of policy-defined actions for snapshot and AMI lifecycle policies. A policy can have up to four schedules—one mandatory schedule and up to three optional schedules.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
-          "documentation":"<p>A set of optional parameters for snapshot and AMI lifecycle policies. </p> <p>This parameter is required for snapshot and AMI policies only. If you are creating an event-based policy, omit this parameter.</p>"
+          "documentation":"<p> <b>[Snapshot and AMI policies only]</b> A set of optional parameters for snapshot and AMI lifecycle policies. </p> <note> <p>If you are modifying a policy that was created or previously modified using the Amazon Data Lifecycle Manager console, then you must include this parameter and specify either the default values or the new values that you require. You can't omit this parameter or set its values to null.</p> </note>"
         },
         "EventSource":{
           "shape":"EventSource",
-          "documentation":"<p>The event that triggers the event-based policy. </p> <p>This parameter is required for event-based policies only. If you are creating a snapshot or AMI policy, omit this parameter.</p>"
+          "documentation":"<p> <b>[Event-based policies only]</b> The event that activates the event-based policy.</p>"
         },
         "Actions":{
           "shape":"ActionList",
-          "documentation":"<p>The actions to be performed when the event-based policy is triggered. You can specify only one action per policy.</p> <p>This parameter is required for event-based policies only. If you are creating a snapshot or AMI policy, omit this parameter.</p>"
+          "documentation":"<p> <b>[Event-based policies only]</b> The actions to be performed when the event-based policy is activated. You can specify only one action per policy.</p>"
         }
       },
-      "documentation":"<p>Specifies the configuration of a lifecycle policy.</p>"
+      "documentation":"<p> <b>[All policy types]</b> Specifies the configuration of a lifecycle policy.</p>"
     },
     "PolicyId":{
       "type":"string",
@@ -874,7 +884,7 @@
           "documentation":"<p>The unit of time for time-based retention.</p>"
         }
       },
-      "documentation":"<p>Specifies the retention rule for a lifecycle policy. You can retain snapshots based on either a count or a time interval.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies a retention rule for snapshots created by snapshot policies or for AMIs created by AMI policies. You can retain snapshots based on either a count or a time interval.</p> <p>You must specify either <b>Count</b>, or <b>Interval</b> and <b>IntervalUnit</b>.</p>"
     },
     "RetentionIntervalUnitValues":{
       "type":"string",
@@ -902,7 +912,7 @@
         },
         "VariableTags":{
           "shape":"VariableTagsList",
-          "documentation":"<p>A collection of key/value pairs with values determined dynamically when the policy is executed. Keys may be any valid Amazon EC2 tag key. Values must be in one of the two following formats: <code>$(instance-id)</code> or <code>$(timestamp)</code>. Variable tags are only valid for EBS Snapshot Management – Instance policies.</p>"
+          "documentation":"<p> <b>[AMI policies and snapshot policies that target instances only]</b> A collection of key/value pairs with values determined dynamically when the policy is executed. Keys may be any valid Amazon EC2 tag key. Values must be in one of the two following formats: <code>$(instance-id)</code> or <code>$(timestamp)</code>. Variable tags are only valid for EBS Snapshot Management – Instance policies.</p>"
         },
         "CreateRule":{
           "shape":"CreateRule",
@@ -910,26 +920,26 @@
         },
         "RetainRule":{
           "shape":"RetainRule",
-          "documentation":"<p>The retention rule.</p>"
+          "documentation":"<p>The retention rule for snapshots or AMIs created by the policy.</p>"
         },
         "FastRestoreRule":{
           "shape":"FastRestoreRule",
-          "documentation":"<p>The rule for enabling fast snapshot restore.</p>"
+          "documentation":"<p> <b>[Snapshot policies only]</b> The rule for enabling fast snapshot restore.</p>"
         },
         "CrossRegionCopyRules":{
           "shape":"CrossRegionCopyRules",
-          "documentation":"<p>The rule for cross-Region snapshot copies.</p> <p>You can only specify cross-Region copy rules for policies that create snapshots in a Region. If the policy creates snapshots on an Outpost, then you cannot copy the snapshots to a Region or to an Outpost. If the policy creates snapshots in a Region, then snapshots can be copied to up to three Regions or Outposts.</p>"
+          "documentation":"<p>Specifies a rule for copying snapshots or AMIs across regions.</p> <note> <p>You can't specify cross-Region copy rules for policies that create snapshots on an Outpost. If the policy creates snapshots in a Region, then snapshots can be copied to up to three Regions or Outposts.</p> </note>"
         },
         "ShareRules":{
           "shape":"ShareRules",
-          "documentation":"<p>The rule for sharing snapshots with other Amazon Web Services accounts.</p>"
+          "documentation":"<p> <b>[Snapshot policies only]</b> The rule for sharing snapshots with other Amazon Web Services accounts.</p>"
         },
         "DeprecateRule":{
           "shape":"DeprecateRule",
-          "documentation":"<p>The AMI deprecation rule for the schedule.</p>"
+          "documentation":"<p> <b>[AMI policies only]</b> The AMI deprecation rule for the schedule.</p>"
         }
       },
-      "documentation":"<p>Specifies a backup schedule for a snapshot or AMI lifecycle policy.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies a schedule for a snapshot or AMI lifecycle policy.</p>"
     },
     "ScheduleList":{
       "type":"list",
@@ -967,7 +977,7 @@
           "documentation":"<p>The unit of time for the automatic unsharing interval.</p>"
         }
       },
-      "documentation":"<p>Specifies a rule for sharing snapshots across Amazon Web Services accounts.</p>"
+      "documentation":"<p> <b>[Snapshot policies only]</b> Specifies a rule for sharing snapshots across Amazon Web Services accounts.</p>"
     },
     "ShareRules":{
       "type":"list",

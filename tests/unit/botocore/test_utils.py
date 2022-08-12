@@ -546,14 +546,14 @@ class TestArgumentGenerator(unittest.TestCase):
 
     def test_generate_string_enum(self):
         enum_values = ['A', 'B', 'C']
-        model = {
-            'A': {'type': 'string', 'enum': enum_values}
-        }
-        shape = DenormalizedStructureBuilder().with_members(
-            model).build_model()
-        actual = self.arg_generator.generate_skeleton(shape)
-
-        self.assertIn(actual['A'], enum_values)
+        self.assert_skeleton_from_model_is(
+            model={
+                'A': {'type': 'string', 'enum': enum_values}
+            },
+            generated_skeleton={
+                'A': enum_values[0]
+            }
+        )
 
     def test_generate_scalars(self):
         self.assert_skeleton_from_model_is(

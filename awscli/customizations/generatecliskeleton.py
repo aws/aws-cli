@@ -54,7 +54,10 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             '``yaml-input`` it will print a sample input YAML that can be '
             'used with ``--cli-input-yaml``. If provided with the value '
             '``output``, it validates the command inputs and returns a '
-            'sample output JSON for that command.'
+            'sample output JSON for that command. '
+            'The generated JSON skeleton is not stable between versions '
+            'of the AWS CLI and there are no backwards compatibility '
+            'guarantees in the JSON skeleton generated.'
         ),
         'nargs': '?',
         'const': 'input',

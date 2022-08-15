@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import sys
 import signal
 import logging
@@ -645,13 +646,78 @@ class CLIOperationCaller(object):
             value is returned.
 
         """
-        client = self._session.create_client(
-            service_name, region_name=parsed_globals.region,
-            endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl)
-        response = self._make_client_call(
-            client, operation_name, parameters, parsed_globals)
-        self._display_response(operation_name, response, parsed_globals)
+        if None == parsed_globals.role:
+            if None == parsed_globals.cmd_regions:
+                client = self._session.create_client(
+                    service_name, region_name=parsed_globals.region,
+                    endpoint_url=parsed_globals.endpoint_url,
+                    verify=parsed_globals.verify_ssl)
+                response = self._make_client_call(
+                    client, operation_name, parameters, parsed_globals)
+                self._display_response(operation_name, response, parsed_globals, [])
+            else:
+                response = {}
+                for region in parsed_globals.cmd_regions.split(","):
+                    try:
+                        region_globals = copy.deepcopy(parsed_globals)
+                        region_globals.region=region
+                        client = self._session.create_client(
+                            service_name, region_name=region_globals.region,
+                            verify=region_globals.verify_ssl)
+                        response[region] = self._make_client_call(
+                            client, operation_name, parameters, region_globals)
+                    except Exception as e:
+                        print(e)
+                self._display_response(operation_name, response, parsed_globals,['region'])
+        else:
+            accounts = parsed_globals.accounts.split(",") if None != parsed_globals.accounts else self._list_accounts(parsed_globals)
+            response = {}
+            prefix = ['account'] if None == parsed_globals.cmd_regions else ['account','region']
+            for account in accounts:
+                #print(account)
+                session = parsed_globals.session if None != parsed_globals.session else "aws-cli-%s"%(account)
+                try:
+                    client = self._session.create_client(
+                        'sts', region_name=parsed_globals.region,
+                        endpoint_url=parsed_globals.endpoint_url,
+                        verify=parsed_globals.verify_ssl)
+                    session = getattr(client, xform_name('AssumeRole'))(
+                        ExternalId=parsed_globals.role_id,
+                        RoleSessionName=session,
+                        RoleArn='arn:aws:iam::%s:role/%s'%(account, parsed_globals.role)) if parsed_globals.role_id != None else getattr(client, xform_name('AssumeRole'))(
+                            RoleSessionName=session,
+                            RoleArn='arn:aws:iam::%s:role/%s'%(account, parsed_globals.role))
+                    if None == parsed_globals.cmd_regions:
+                        client = self._session.create_client(
+                            service_name, region_name=parsed_globals.region,
+                            endpoint_url=parsed_globals.endpoint_url,
+                            verify=parsed_globals.verify_ssl,
+                            aws_access_key_id=session['Credentials']['AccessKeyId'],
+                            aws_secret_access_key=session['Credentials']['SecretAccessKey'],
+                            aws_session_token=session['Credentials']['SessionToken'])
+                        response[account] = self._make_client_call(
+                            client, operation_name, parameters, parsed_globals)
+                    else:
+                        response[account] = {}
+                        for region in parsed_globals.cmd_regions.split(","):
+                            #print(region)
+                            try:
+                                region_globals = copy.deepcopy(parsed_globals)
+                                region_globals.region=region
+                                client = self._session.create_client(
+                                    service_name, region_name=region_globals.region,
+                                    verify=region_globals.verify_ssl,
+                                    aws_access_key_id=session['Credentials']['AccessKeyId'],
+                                    aws_secret_access_key=session['Credentials']['SecretAccessKey'],
+                                    aws_session_token=session['Credentials']['SessionToken'])
+                                response[account][region] = self._make_client_call(
+                                    client, operation_name, parameters, region_globals)
+                            except Exception as e:
+                                print(e)
+                except Exception as e:
+                    print(e)
+
+            self._display_response(operation_name, response, parsed_globals, prefix)
         return 0
 
     def _make_client_call(self, client, operation_name, parameters,
@@ -666,9 +732,22 @@ class CLIOperationCaller(object):
         return response
 
     def _display_response(self, command_name, response,
-                          parsed_globals):
+                          parsed_globals, prefix):
         output = parsed_globals.output
         if output is None:
             output = self._session.get_config_variable('output')
         formatter = get_formatter(output, parsed_globals)
-        formatter(command_name, response)
+        formatter(command_name, response, prefix=prefix)
+
+    def _list_accounts(self, parsed_globals):
+        client = self._session.create_client(
+            'organizations', region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=parsed_globals.verify_ssl)
+        paginator = client.get_paginator(xform_name('ListAccounts'))
+        response = paginator.paginate()
+        accounts = []
+        for itr in iter(response):
+            for account in itr['Accounts']:
+                accounts.append(account['Id'])
+        return accounts

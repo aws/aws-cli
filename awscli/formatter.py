@@ -57,7 +57,22 @@ class Formatter(object):
 
 
 class FullyBufferedFormatter(Formatter):
-    def __call__(self, command_name, response, stream=None):
+    def _unpack_response(self, response, prefix):
+        response_data = {}
+        if prefix != []:
+            for k in response:
+                response_data[k]=self._unpack_response(response[k], prefix[1:])
+        else:
+            if is_response_paginated(response):
+                response_data = response.build_full_result()
+            else:
+                response_data = response
+            self._remove_request_id(response_data)
+            if self._args.query is not None:
+                response_data = self._args.query.search(response_data)
+        return response_data
+
+    def __call__(self, command_name, response, stream=None, prefix=[]):
         if stream is None:
             # Retrieve stdout on invocation instead of at import time
             # so that if anything wraps stdout we'll pick up those changes
@@ -65,13 +80,7 @@ class FullyBufferedFormatter(Formatter):
             stream = self._get_default_stream()
         # I think the interfaces between non-paginated
         # and paginated responses can still be cleaned up.
-        if is_response_paginated(response):
-            response_data = response.build_full_result()
-        else:
-            response_data = response
-        self._remove_request_id(response_data)
-        if self._args.query is not None:
-            response_data = self._args.query.search(response_data)
+        response_data = self._unpack_response(response, prefix)
         try:
             self._format_response(command_name, response_data, stream)
         except IOError as e:
@@ -225,11 +234,17 @@ class TableFormatter(FullyBufferedFormatter):
 
 class TextFormatter(Formatter):
 
-    def __call__(self, command_name, response, stream=None):
+    def __call__(self, command_name, response, stream=None, prefix=[]):
         if stream is None:
             stream = self._get_default_stream()
         try:
-            if is_response_paginated(response):
+            if prefix != []:
+                for k in response:
+                    self._format_response(
+                        {prefix[0]: {prefix[0]: k }},
+                        stream)
+                    self(command_name, response[k], stream, prefix[1:])
+            elif is_response_paginated(response):
                 result_keys = response.result_keys
                 for i, page in enumerate(response):
                     if i > 0:

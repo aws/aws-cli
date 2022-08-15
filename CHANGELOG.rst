@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.7.23
+======
+
+* enhancement:``awscrt``: Update awscrt version range ceiling to 0.14.0
+
+
 2.7.22
 ======
 

@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.7.24
+======
+
+* api-change:``cloudfront``: Adds Http 3 support to distributions
+* api-change:``servicecatalog``: Documentation updates for Service Catalog
+* api-change:``personalize-runtime``: This release provides support for promotions in AWS Personalize runtime.
+* api-change:``chime-sdk-messaging``: The Amazon Chime SDK now supports channels with up to one million participants with elastic channels.
+* api-change:``sso``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``rds``: Adds support for RDS Custom to DBInstanceClass in ModifyDBInstance
+* api-change:``amp``: This release adds log APIs that allow customers to manage logging for their Amazon Managed Service for Prometheus workspaces.
+* api-change:``rekognition``: This release adds APIs which support copying an Amazon Rekognition Custom Labels model and managing project policies across AWS account.
+* api-change:``ivs``: Updates various list api MaxResults ranges
+* api-change:``identitystore``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``wisdom``: This release introduces a new API PutFeedback that allows submitting feedback to Wisdom on content relevance.
+
+
 2.7.23
 ======
 

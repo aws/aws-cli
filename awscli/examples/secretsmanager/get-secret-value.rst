@@ -1,6 +1,6 @@
 **Example 1: To retrieve the encrypted secret value of a secret**
 
-The following ``get-secret-value`` example gets the current secret value.::
+The following ``get-secret-value`` example gets the current secret value. ::
 
     aws secretsmanager get-secret-value \
         --secret-id MyTestSecret

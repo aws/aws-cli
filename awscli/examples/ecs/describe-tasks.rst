@@ -4,40 +4,14 @@ The following ``describe-tasks`` example retrieves the details of a task in a cl
 
     aws ecs describe-tasks \
         --cluster MyCluster \
-        --tasks arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE
+        --tasks arn:aws:ecs:us-east-1:123456789012:task/MyCluster/4d590253bb114126b7afa7b58EXAMPLE
 
 Output::
 
     {
-                "attachments": [
-                    {
-                        "id": "214eb5a9-45cd-4bf8-87bc-57fefEXAMPLE",
-                        "type": "ElasticNetworkInterface",
-                        "status": "ATTACHED",
-                        "details": [
-                            {
-                                "name": "subnetId",
-                                "value": "subnet-0d0eab1bb3EXAMPLE"
-                            },
-                            {
-                                "name": "networkInterfaceId",
-                                "value": "eni-064c7766daEXAMPLE"
-                            },
-                            {
-                                "name": "macAddress",
-                                "value": "0e:76:83:01:17:a9"
-                            },
-                            {
-                                "name": "privateDnsName",
-                                "value": "ip-10-0-1-41.ec2.internal"
-                            },
-                            {
-                                "name": "privateIPv4Address",
-                                "value": "10.0.1.41"
-                            }
-                        ]
-                    }
-                ],
+        "tasks": [
+            {
+                "attachments": [],
                 "attributes": [
                     {
                         "name": "ecs.cpu-architecture",
@@ -47,62 +21,61 @@ Output::
                 "availabilityZone": "us-east-1b",
                 "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/MyCluster",
                 "connectivity": "CONNECTED",
-                "connectivityAt": "2021-12-20T12:13:35.243000-05:00",
+                "connectivityAt": "2021-08-11T12:21:26.681000-04:00",
+                "containerInstanceArn": "arn:aws:ecs:us-east-1:123456789012:container-instance/test/025c7e2c5e054a6790a29fc1fEXAMPLE",
                 "containers": [
                     {
-                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE/9afef792-609b-43a5-bb6a-3efdbEXAMPLE",
-                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE",
-                        "name": "web",
-                        "image": "nginx",
-                        "runtimeId": "d789e94343414c25b9f6bd59eEXAMPLE-265927825",
+                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/MyCluster/4d590253bb114126b7afa7b58eea9221/a992d1cc-ea46-474a-b6e8-24688EXAMPLE",
+                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/4d590253bb114126b7afa7b58EXAMPLE",
+                        "name": "simple-app",
+                        "image": "httpd:2.4",
+                        "runtimeId": "91251eed27db90006ad67b1a08187290869f216557717dd5c39b37c94EXAMPLE",
                         "lastStatus": "RUNNING",
-                        "networkBindings": [],
-                        "networkInterfaces": [
+                        "networkBindings": [
                             {
-                                "attachmentId": "214eb5a9-45cd-4bf8-87bc-57fefEXAMPLE",
-                                "privateIpv4Address": "10.0.1.41"
+                                "bindIP": "0.0.0.0",
+                                "containerPort": 80,
+                                "hostPort": 80,
+                                "protocol": "tcp"
                             }
                         ],
+                        "networkInterfaces": [],
                         "healthStatus": "UNKNOWN",
-                        "cpu": "99",
-                        "memory": "100"
+                        "cpu": "10",
+                        "memory": "300"
                     }
                 ],
-                "cpu": "256",
-                "createdAt": "2021-12-20T12:13:20.226000-05:00",
+                "cpu": "10",
+                "createdAt": "2021-08-11T12:21:26.681000-04:00",
                 "desiredStatus": "RUNNING",
                 "enableExecuteCommand": false,
-                "group": "service:tdsevicetag",
+                "group": "service:testupdate",
                 "healthStatus": "UNKNOWN",
                 "lastStatus": "RUNNING",
-                "launchType": "FARGATE",
-                "memory": "512",
+                "launchType": "EC2",
+                "memory": "300",
                 "overrides": {
                     "containerOverrides": [
                         {
-                            "name": "web"
+                            "name": "simple-app"
                         }
                     ],
                     "inferenceAcceleratorOverrides": []
                 },
-                "platformVersion": "1.4.0",
-                "platformFamily": "Linux",
-                "pullStartedAt": "2021-12-20T12:13:44.611000-05:00",
-                "pullStoppedAt": "2021-12-20T12:13:48.251000-05:00",
-                "startedAt": "2021-12-20T12:13:49.326000-05:00",
-                "startedBy": "ecs-svc/988401040018EXAMPLE",
+                "pullStartedAt": "2021-08-11T12:21:28.234000-04:00",
+                "pullStoppedAt": "2021-08-11T12:21:33.793000-04:00",
+                "startedAt": "2021-08-11T12:21:34.945000-04:00",
+                "startedBy": "ecs-svc/968695068243EXAMPLE",
                 "tags": [],
-                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/d789e94343414c25b9f6bd59eEXAMPLE",
-                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/webserver:2",
-                "version": 3,
-                "ephemeralStorage": {
-                    "sizeInGiB": 20
-                }
+                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/MyCluster/4d590253bb114126b7afa7b58eea9221",
+                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/console-sample-app-static2:1",
+                "version": 2
             }
         ],
         "failures": []
     }
 
+For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.
 
 **Exampe 2: To describe multiple tasks**
 
@@ -110,7 +83,7 @@ The following ``describe-tasks`` example retrieves the details of multiple tasks
 
     aws ecs describe-tasks \
         --cluster MyCluster \
-        --tasks  "74de0355a10a4f979ac495c14EXAMPLE" "d789e94343414c25b9f6bd59eEXAMPLE"
+        --tasks "74de0355a10a4f979ac495c14EXAMPLE" "d789e94343414c25b9f6bd59eEXAMPLE"
 
 Output::
 

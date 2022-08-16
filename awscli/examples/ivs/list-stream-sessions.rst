@@ -3,9 +3,9 @@
 The following ``list-stream-sessions`` example reports summary information for streams for a specified channel ARN (Amazon Resource Name). ::
 
     aws ivs list-stream-sessions \
-        --channelArn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
-        --maxResults 25 \
-        --nextToken ""
+        --channel-arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
+        --max-results 25 \
+        --next-token ""
 
 Output::
 

@@ -12,7 +12,7 @@ Output::
                 "channelArn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
                 "state": "LIVE",
                 "health": "HEALTHY",
-                "streamID": "st-ABCDEfghij01234KLMN5678",
+                "streamId": "st-ABCDEfghij01234KLMN5678",
                 "viewerCount": 1
             }
         ]

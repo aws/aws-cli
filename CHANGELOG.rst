@@ -3930,6 +3930,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.53
+=======
+
+* api-change:``rekognition``: This release adds APIs which support copying an Amazon Rekognition Custom Labels model and managing project policies across AWS account.
+* api-change:``servicecatalog``: Documentation updates for Service Catalog
+
+
+1.25.52
+=======
+
+* api-change:``cloudfront``: Adds Http 3 support to distributions
+* api-change:``identitystore``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``sso``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``wisdom``: This release introduces a new API PutFeedback that allows submitting feedback to Wisdom on content relevance.
+
+
+1.25.51
+=======
+
+* api-change:``amp``: This release adds log APIs that allow customers to manage logging for their Amazon Managed Service for Prometheus workspaces.
+* api-change:``chime-sdk-messaging``: The Amazon Chime SDK now supports channels with up to one million participants with elastic channels.
+* api-change:``ivs``: Updates various list api MaxResults ranges
+* api-change:``personalize-runtime``: This release provides support for promotions in AWS Personalize runtime.
+* api-change:``rds``: Adds support for RDS Custom to DBInstanceClass in ModifyDBInstance
+
+
 1.25.50
 =======
 

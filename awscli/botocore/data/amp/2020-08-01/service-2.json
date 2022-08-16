@@ -33,6 +33,24 @@
       "documentation":"<p>Create an alert manager definition.</p>",
       "idempotent":true
     },
+    "CreateLoggingConfiguration":{
+      "name":"CreateLoggingConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/logging",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateLoggingConfigurationRequest"},
+      "output":{"shape":"CreateLoggingConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create logging configuration.</p>",
+      "idempotent":true
+    },
     "CreateRuleGroupsNamespace":{
       "name":"CreateRuleGroupsNamespace",
       "http":{
@@ -93,6 +111,24 @@
       "documentation":"<p>Deletes an alert manager definition.</p>",
       "idempotent":true
     },
+    "DeleteLoggingConfiguration":{
+      "name":"DeleteLoggingConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/logging",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteLoggingConfigurationRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete logging configuration.</p>",
+      "idempotent":true
+    },
     "DeleteRuleGroupsNamespace":{
       "name":"DeleteRuleGroupsNamespace",
       "http":{
@@ -148,6 +184,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes an alert manager definition.</p>"
+    },
+    "DescribeLoggingConfiguration":{
+      "name":"DescribeLoggingConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/logging",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeLoggingConfigurationRequest"},
+      "output":{"shape":"DescribeLoggingConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes logging configuration.</p>"
     },
     "DescribeRuleGroupsNamespace":{
       "name":"DescribeRuleGroupsNamespace",
@@ -317,6 +370,25 @@
       "documentation":"<p>Deletes tags from the specified resource.</p>",
       "idempotent":true
     },
+    "UpdateLoggingConfiguration":{
+      "name":"UpdateLoggingConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workspaces/{workspaceId}/logging",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateLoggingConfigurationRequest"},
+      "output":{"shape":"UpdateLoggingConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update logging configuration.</p>",
+      "idempotent":true
+    },
     "UpdateWorkspaceAlias":{
       "name":"UpdateWorkspaceAlias",
       "http":{
@@ -478,6 +550,42 @@
       },
       "documentation":"<p>Represents the output of a CreateAlertManagerDefinition operation.</p>"
     },
+    "CreateLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "logGroupArn",
+        "workspaceId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "logGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The ARN of the CW log group to which the vended log data will be published.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to vend logs to.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      },
+      "documentation":"<p>Represents the input of a CreateLoggingConfiguration operation.</p>"
+    },
+    "CreateLoggingConfigurationResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"LoggingConfigurationStatus",
+          "documentation":"<p>The status of the logging configuration.</p>"
+        }
+      },
+      "documentation":"<p>Represents the output of a CreateLoggingConfiguration operation.</p>"
+    },
     "CreateRuleGroupsNamespaceRequest":{
       "type":"structure",
       "required":[
@@ -605,6 +713,26 @@
       },
       "documentation":"<p>Represents the input of a DeleteAlertManagerDefinition operation.</p>"
     },
+    "DeleteLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to vend logs to.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      },
+      "documentation":"<p>Represents the input of a DeleteLoggingConfiguration operation.</p>"
+    },
     "DeleteRuleGroupsNamespaceRequest":{
       "type":"structure",
       "required":[
@@ -677,6 +805,30 @@
         }
       },
       "documentation":"<p>Represents the output of a DescribeAlertManagerDefinition operation.</p>"
+    },
+    "DescribeLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to vend logs to.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      },
+      "documentation":"<p>Represents the input of a DescribeLoggingConfiguration operation.</p>"
+    },
+    "DescribeLoggingConfigurationResponse":{
+      "type":"structure",
+      "required":["loggingConfiguration"],
+      "members":{
+        "loggingConfiguration":{
+          "shape":"LoggingConfigurationMetadata",
+          "documentation":"<p>Metadata object containing information about the logging configuration of a workspace.</p>"
+        }
+      },
+      "documentation":"<p>Represents the output of a DescribeLoggingConfiguration operation.</p>"
     },
     "DescribeRuleGroupsNamespaceRequest":{
       "type":"structure",
@@ -881,6 +1033,70 @@
         }
       },
       "documentation":"<p>Represents the output of a ListWorkspaces operation.</p>"
+    },
+    "LogGroupArn":{
+      "type":"string",
+      "pattern":"^arn:aws[a-z0-9-]*:logs:[a-z0-9-]+:\\d{12}:log-group:[A-Za-z0-9\\.\\-\\_\\#/]{1,512}\\:\\*$"
+    },
+    "LoggingConfigurationMetadata":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "logGroupArn",
+        "modifiedAt",
+        "status",
+        "workspace"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the logging configuration was created.</p>"
+        },
+        "logGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The ARN of the CW log group to which the vended log data will be published.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the logging configuration was modified.</p>"
+        },
+        "status":{
+          "shape":"LoggingConfigurationStatus",
+          "documentation":"<p>The status of the logging configuration.</p>"
+        },
+        "workspace":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The workspace where the logging configuration exists.</p>"
+        }
+      },
+      "documentation":"<p>Represents the properties of a logging configuration metadata.</p>"
+    },
+    "LoggingConfigurationStatus":{
+      "type":"structure",
+      "required":["statusCode"],
+      "members":{
+        "statusCode":{
+          "shape":"LoggingConfigurationStatusCode",
+          "documentation":"<p>Status code of the logging configuration.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for failure if any.</p>"
+        }
+      },
+      "documentation":"<p>Represents the status of a logging configuration.</p>"
+    },
+    "LoggingConfigurationStatusCode":{
+      "type":"string",
+      "documentation":"<p>State of a logging configuration.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "CREATION_FAILED",
+        "UPDATE_FAILED"
+      ]
     },
     "PaginationToken":{
       "type":"string",
@@ -1282,6 +1498,42 @@
       "type":"structure",
       "members":{
       }
+    },
+    "UpdateLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "logGroupArn",
+        "workspaceId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "logGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The ARN of the CW log group to which the vended log data will be published.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace to vend logs to.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      },
+      "documentation":"<p>Represents the input of an UpdateLoggingConfiguration operation.</p>"
+    },
+    "UpdateLoggingConfigurationResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"LoggingConfigurationStatus",
+          "documentation":"<p>The status of the logging configuration.</p>"
+        }
+      },
+      "documentation":"<p>Represents the output of an UpdateLoggingConfiguration operation.</p>"
     },
     "UpdateWorkspaceAliasRequest":{
       "type":"structure",

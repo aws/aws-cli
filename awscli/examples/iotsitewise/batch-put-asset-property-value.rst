@@ -10,7 +10,7 @@ Contents of ``batch-put-asset-property-value.json``::
     {
         "entries": [
             {
-                "entryId": "1575691200./company/windfarm/3/turbine/7/power",
+                "entryId": "1575691200/company/windfarm/3/turbine/7/power",
                 "propertyAlias": "/company/windfarm/3/turbine/7/power",
                 "propertyValues": [
                     {
@@ -25,7 +25,7 @@ Contents of ``batch-put-asset-property-value.json``::
                 ]
             },
             {
-                "entryId": "1575691200./company/windfarm/3/turbine/7/temperature",
+                "entryId": "1575691200/company/windfarm/3/turbine/7/temperature",
                 "propertyAlias": "/company/windfarm/3/turbine/7/temperature",
                 "propertyValues": [
                     {

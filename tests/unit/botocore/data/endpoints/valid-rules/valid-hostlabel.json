@@ -1,0 +1,55 @@
+{
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region",
+      "required": true,
+      "documentation": "The region to dispatch this request, eg. `us-east-1`."
+    }
+  },
+  "rules": [
+    {
+      "documentation": "Template the region into the URI when region is set",
+      "conditions": [
+        {
+          "fn": "isValidHostLabel",
+          "argv": [
+            {
+              "ref": "Region"
+            },
+            false
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "https://{Region}.amazonaws.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "Template the region into the URI when region is set",
+      "conditions": [
+        {
+          "fn": "isValidHostLabel",
+          "argv": [
+            {
+              "ref": "Region"
+            },
+            true
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "https://{Region}-subdomains.amazonaws.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "Region was not a valid host label",
+      "conditions": [],
+      "error": "Invalid hostlabel",
+      "type": "error"
+    }
+  ],
+  "version": "1.3"
+}

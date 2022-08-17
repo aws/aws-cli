@@ -92,6 +92,7 @@ S3_ACCELERATE_WHITELIST = ['dualstack']
 # Vendoring IPv6 validation regex patterns from urllib3
 # https://github.com/urllib3/urllib3/blob/7e856c0/src/urllib3/util/url.py
 IPV4_PAT = r"(?:[0-9]{1,3}\.){3}[0-9]{1,3}"
+IPV4_RE = re.compile("^" + IPV4_PAT + "$")
 HEX_PAT = "[0-9A-Fa-f]{1,4}"
 LS32_PAT = "(?:{hex}:{hex}|{ipv4})".format(hex=HEX_PAT, ipv4=IPV4_PAT)
 _subs = {"hex": HEX_PAT, "ls32": LS32_PAT}
@@ -1012,8 +1013,13 @@ class ArgumentGenerator(object):
 def is_valid_ipv6_endpoint_url(endpoint_url):
     if UNSAFE_URL_CHARS.intersection(endpoint_url):
         return False
-    netloc = urlparse(endpoint_url).netloc
-    return IPV6_ADDRZ_RE.match(netloc) is not None
+    hostname = f'[{urlparse(endpoint_url).hostname}]'
+    return IPV6_ADDRZ_RE.match(hostname) is not None
+
+def is_valid_ipv4_endpoint_url(endpoint_url):
+    hostname = urlparse(endpoint_url).hostname
+    return IPV4_RE.match(hostname) is not None
+
 
 def is_valid_endpoint_url(endpoint_url):
     """Verify the endpoint_url is valid.

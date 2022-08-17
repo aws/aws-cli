@@ -802,8 +802,7 @@ class TestCreateBucketInOtherRegion(TestS3BaseWithBucket):
             self.assert_status_code(response, 200)
 
     def test_bucket_in_other_region_using_http(self):
-        client = self.session.create_client(
-            's3', 'us-east-1', endpoint_url='http://s3.amazonaws.com/')
+        client = self.session.create_client('s3', 'us-east-1', use_ssl=False)
         with temporary_file('w') as f:
             f.write('foobarbaz' * 1024 * 1024)
             f.flush()

@@ -39,9 +39,9 @@ def test_old_model_continues_to_work():
     # client name.
     loader.search_paths.insert(0, TEST_MODELS_DIR)
 
-    # The model dir we copied was renamed to 'custom-lambda'
-    # to ensure we're loading our version of the model and not
-    # the built in one.
+    # The model dir we copied from botocore/data/acm was renamed to
+    # 'custom-acm' to ensure we're loading our version of the model and
+    # not the built in one.
     client = session.create_client(
         'custom-acm', region_name='us-west-2',
         aws_access_key_id='foo', aws_secret_access_key='bar',

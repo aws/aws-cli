@@ -19,6 +19,8 @@ import copy
 import os
 import json
 
+import pytest
+
 import botocore
 import botocore.session
 from botocore.compat import OrderedDict
@@ -961,12 +963,33 @@ class TestHandlers(BaseSessionTest):
             context=context, signing_name=signing_name)
         self.assertEqual(response, 'v4')
 
-    def test_set_operation_specific_signer_s3v4(self):
-        signing_name = 's3'
-        context = {'auth_type': 'v4'}
+    def test_set_operation_specific_signer_v4a(self):
+        signing_name = 'myservice'
+        context = {'auth_type': 'v4a'}
         response = handlers.set_operation_specific_signer(
-            context=context, signing_name=signing_name)
-        self.assertEqual(response, 's3v4')
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(response, 'v4a')
+        # for v4a, context gets updated in place
+        self.assertIsNotNone(context.get('signing'))
+        self.assertEqual(context['signing']['region'], '*')
+        self.assertEqual(context['signing']['signing_name'], signing_name)
+
+    def test_set_operation_specific_signer_v4a_existing_signing_context(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+            'signing': {'foo': 'bar', 'region': 'abc'},
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        # region has been updated
+        self.assertEqual(context['signing']['region'], '*')
+        # signing_name has been added
+        self.assertEqual(context['signing']['signing_name'], signing_name)
+        # foo remained untouched
+        self.assertEqual(context['signing']['foo'], 'bar')
 
     def test_set_operation_specific_signer_v4_unsinged_payload(self):
         signing_name = 'myservice'
@@ -978,11 +1001,33 @@ class TestHandlers(BaseSessionTest):
 
     def test_set_operation_specific_signer_s3v4_unsigned_payload(self):
         signing_name = 's3'
-        context = {'auth_type': 'v4-unsigned-body'}
+        context = {
+            'auth_type': 'v4-unsigned-body',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+                'disableDoubleEncoding': True,
+            },
+        }
         response = handlers.set_operation_specific_signer(
             context=context, signing_name=signing_name)
         self.assertEqual(response, 's3v4')
         self.assertEqual(context.get('payload_signing_enabled'), False)
+
+
+@pytest.mark.parametrize(
+    'auth_type, expected_response', [('v4', 's3v4'), ('v4a', 's3v4a')]
+)
+def test_set_operation_specific_signer_s3v4(auth_type, expected_response):
+    signing_name = 's3'
+    context = {
+        'auth_type': auth_type,
+        'signing': {'disableDoubleEncoding': True},
+    }
+    response = handlers.set_operation_specific_signer(
+        context=context, signing_name=signing_name
+    )
+    assert response == expected_response
 
 
 class TestConvertStringBodyToFileLikeObject(BaseSessionTest):
@@ -1096,7 +1141,9 @@ class TestSSEMD5(BaseMD5Test):
             event = 'before-parameter-build.s3.%s' % op
             params = {'SSECustomerKey': b'bar',
                       'SSECustomerAlgorithm': 'AES256'}
-            self.session.emit(event, params=params, model=mock.MagicMock())
+            self.session.emit(
+                event, params=params, model=mock.MagicMock(), context={}
+            )
             self.assertEqual(params['SSECustomerKey'], 'YmFy')
             self.assertEqual(params['SSECustomerKeyMD5'], 'Zm9v')
 
@@ -1104,7 +1151,9 @@ class TestSSEMD5(BaseMD5Test):
         event = 'before-parameter-build.s3.PutObject'
         params = {'SSECustomerKey': 'bar',
                   'SSECustomerAlgorithm': 'AES256'}
-        self.session.emit(event, params=params, model=mock.MagicMock())
+        self.session.emit(
+            event, params=params, model=mock.MagicMock(), context={}
+        )
         self.assertEqual(params['SSECustomerKey'], 'YmFy')
         self.assertEqual(params['SSECustomerKeyMD5'], 'Zm9v')
 
@@ -1113,7 +1162,9 @@ class TestSSEMD5(BaseMD5Test):
             event = 'before-parameter-build.s3.%s' % op
             params = {'CopySourceSSECustomerKey': b'bar',
                       'CopySourceSSECustomerAlgorithm': 'AES256'}
-            self.session.emit(event, params=params, model=mock.MagicMock())
+            self.session.emit(
+                event, params=params, model=mock.MagicMock(), context={}
+            )
             self.assertEqual(params['CopySourceSSECustomerKey'], 'YmFy')
             self.assertEqual(params['CopySourceSSECustomerKeyMD5'], 'Zm9v')
 
@@ -1121,7 +1172,9 @@ class TestSSEMD5(BaseMD5Test):
         event = 'before-parameter-build.s3.CopyObject'
         params = {'CopySourceSSECustomerKey': 'bar',
                   'CopySourceSSECustomerAlgorithm': 'AES256'}
-        self.session.emit(event, params=params, model=mock.MagicMock())
+        self.session.emit(
+            event, params=params, model=mock.MagicMock(), context={}
+        )
         self.assertEqual(params['CopySourceSSECustomerKey'], 'YmFy')
         self.assertEqual(params['CopySourceSSECustomerKeyMD5'], 'Zm9v')
 
@@ -1407,3 +1460,52 @@ class TestPrependToHost(unittest.TestCase):
         with self.assertRaises(ParamValidationError):
            self._prepend_to_host(
                'https://example.com/path', 'host#name')
+
+
+@pytest.mark.parametrize(
+    'auth_path_in, auth_path_expected',
+    [
+        # access points should be stripped
+        (
+            '/arn%3Aaws%3As3%3Aus-west-2%3A1234567890%3Aaccesspoint%2Fmy-ap/object.txt',
+            '/object.txt',
+        ),
+        (
+            '/arn%3Aaws%3As3%3Aus-west-2%3A1234567890%3Aaccesspoint%2Fmy-ap/foo/foo/foo/object.txt',
+            '/foo/foo/foo/object.txt',
+        ),
+        # regular bucket names should not be stripped
+        (
+            '/mybucket/object.txt',
+            '/mybucket/object.txt',
+        ),
+        (
+            '/mybucket/foo/foo/foo/object.txt',
+            '/mybucket/foo/foo/foo/object.txt',
+        ),
+        (
+            '/arn-is-a-valid-bucketname/object.txt',
+            '/arn-is-a-valid-bucketname/object.txt',
+        ),
+        # non-bucket cases
+        (
+            '',
+            '',
+        ),
+        (
+            None,
+            None,
+        ),
+        (
+            123,
+            123,
+        ),
+    ],
+)
+def test_remove_arn_from_signing_path(auth_path_in, auth_path_expected):
+    request = AWSRequest(method='GET', auth_path=auth_path_in)
+    # the handler modifies the request in place
+    handlers.remove_arn_from_signing_path(
+        request=request, some='other', kwarg='values'
+    )
+    assert request.auth_path == auth_path_expected

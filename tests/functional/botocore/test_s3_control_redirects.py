@@ -103,14 +103,14 @@ ACCESSPOINT_ARN_TEST_CASES = [
             },
         }
     },
-    #{
-    #    'arn': 'arn:aws-us-gov:s3-outposts:fips-us-gov-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint',
-    #    'region': 'fips-us-gov-east-1',
-    #    'config': {'s3': {'use_arn_region': True}},
-    #    'assertions': {
-    #        'exception': 'UnsupportedS3ArnError',
-    #    }
-    #},
+    {
+       'arn': 'arn:aws-us-gov:s3-outposts:fips-us-gov-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint',
+       'region': 'fips-us-gov-east-1',
+       'config': {'s3': {'use_arn_region': True}},
+       'assertions': {
+           'exception': 'UnsupportedS3ControlArnError',
+       }
+    },
     {
         'arn': 'arn:aws-us-gov:s3-outposts:us-gov-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint',
         'region': 'us-gov-east-1-fips',

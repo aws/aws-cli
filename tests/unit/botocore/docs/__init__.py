@@ -66,7 +66,33 @@ class BaseDocsTest(unittest.TestCase):
         with open(self.model_file, 'w') as f:
             json.dump(self.json_model, f)
 
+        myservice_endpoint_rule_set = {
+            "version": "1.3",
+            "parameters": {},
+            "rules": [
+                {
+                    "conditions": [],
+                    "endpoint": {
+                        "url": "https://example.com",
+                        "properties": {},
+                        "headers": {},
+                    },
+                    "type": "endpoint",
+                }
+            ],
+        }
+
+        def load_service_mock(*args, **kwargs):
+            if args[1] == "endpoint-rule-set-1":
+                return myservice_endpoint_rule_set
+            else:
+                return Loader(
+                    extra_search_paths=[self.root_dir]
+                ).load_service_model(*args, **kwargs)
+
         self.loader = Loader(extra_search_paths=[self.root_dir])
+        self.loader.load_service_model = mock.Mock()
+        self.loader.load_service_model.side_effect = load_service_mock
 
         endpoint_resolver = mock.Mock()
         endpoint_resolver.construct_endpoint.return_value = {

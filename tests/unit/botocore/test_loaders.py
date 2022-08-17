@@ -110,6 +110,23 @@ class TestLoader(BaseEnvVar):
         loaded = loader.load_data('baz')
         self.assertEqual(loaded, ['loaded data'])
 
+    @mock.patch('os.path.isdir', mock.Mock(return_value=True))
+    def test_load_data_with_path(self):
+        search_paths = ['foo', 'bar', 'baz']
+
+        class FakeLoader:
+            def load_file(self, name):
+                expected_ending = os.path.join('bar', 'abc')
+                if name.endswith(expected_ending):
+                    return ['loaded data']
+
+        loader = Loader(
+            extra_search_paths=search_paths, file_loader=FakeLoader()
+        )
+        loaded, path = loader.load_data_with_path('abc')
+        self.assertEqual(loaded, ['loaded data'])
+        self.assertEqual(path, os.path.join('bar', 'abc'))
+
     def test_data_not_found_raises_exception(self):
         class FakeLoader(object):
             def load_file(self, name):
@@ -119,6 +136,15 @@ class TestLoader(BaseEnvVar):
         loader = Loader(file_loader=FakeLoader())
         with self.assertRaises(DataNotFoundError):
             loader.load_data('baz')
+
+    def test_data_not_found_raises_exception_load_data_with_path(self):
+        class FakeLoader:
+            def load_file(self, name):
+                return None
+
+        loader = Loader(file_loader=FakeLoader())
+        with self.assertRaises(DataNotFoundError):
+            loader.load_data_with_path('baz')
 
     @mock.patch('os.path.isdir', mock.Mock(return_value=True))
     def test_error_raised_if_service_does_not_exist(self):
@@ -182,6 +208,13 @@ class TestLoader(BaseEnvVar):
         self.assertIn('foo', loader.search_paths)
         self.assertIn('bar', loader.search_paths)
         self.assertIn('baz', loader.search_paths)
+
+    def test_is_builtin_path(self):
+        loader = Loader()
+        path_in_builtins = os.path.join(loader.BUILTIN_DATA_PATH, "foo.txt")
+        path_elsewhere = __file__
+        self.assertTrue(loader.is_builtin_path(path_in_builtins))
+        self.assertFalse(loader.is_builtin_path(path_elsewhere))
 
 
 class TestMergeExtras(BaseEnvVar):

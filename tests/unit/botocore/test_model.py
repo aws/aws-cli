@@ -127,6 +127,43 @@ class TestServiceModel(unittest.TestCase):
         self.assertIn('ExceptionOne', error_shape_names)
         self.assertIn('ExceptionTwo', error_shape_names)
 
+    def test_client_context_params(self):
+        service_model = model.ServiceModel(
+            {
+                'metadata': {
+                    'protocol': 'query',
+                    'endpointPrefix': 'endpoint-prefix',
+                    'serviceId': 'MyServiceWithClientContextParams',
+                },
+                'documentation': 'Documentation value',
+                'operations': {},
+                'shapes': {},
+                'clientContextParams': {
+                    'stringClientContextParam': {
+                        'type': 'string',
+                        'documentation': 'str-valued',
+                    },
+                    'booleanClientContextParam': {
+                        'type': 'boolean',
+                        'documentation': 'bool-valued',
+                    },
+                },
+            }
+        )
+        self.assertEqual(len(service_model.client_context_parameters), 2)
+        client_ctx_param1 = service_model.client_context_parameters[0]
+        client_ctx_param2 = service_model.client_context_parameters[1]
+        self.assertEqual(client_ctx_param1.name, 'stringClientContextParam')
+        self.assertEqual(client_ctx_param1.type, 'string')
+        self.assertEqual(client_ctx_param1.documentation, 'str-valued')
+        self.assertEqual(client_ctx_param2.name, 'booleanClientContextParam')
+
+    def test_client_context_params_absent(self):
+        self.assertIsInstance(
+            self.service_model.client_context_parameters, list
+        )
+        self.assertEqual(len(self.service_model.client_context_parameters), 0)
+
 
 class TestOperationModelFromService(unittest.TestCase):
     def setUp(self):
@@ -194,7 +231,26 @@ class TestOperationModelFromService(unittest.TestCase):
                     },
                     'errors': [{'shape': 'NoSuchResourceException'}],
                     'documentation': 'Docs for NoBodyOperation',
-                }
+                },
+                'ContextParamOperation': {
+                    'http': {
+                        'method': 'POST',
+                        'requestUri': '/',
+                    },
+                    'name': 'ContextParamOperation',
+                    'input': {'shape': 'ContextParamOperationRequest'},
+                    'output': {'shape': 'OperationNameResponse'},
+                    'errors': [{'shape': 'NoSuchResourceException'}],
+                    'documentation': 'Docs for ContextParamOperation',
+                    'staticContextParams': {
+                        'stringStaticContextParam': {
+                            'value': 'Static Context Param Value',
+                        },
+                        'booleanStaticContextParam': {
+                            'value': True,
+                        },
+                    },
+                },
             },
             'shapes': {
                 'OperationNameRequest': {
@@ -238,6 +294,18 @@ class TestOperationModelFromService(unittest.TestCase):
                             'shape': 'stringType'
                         }
                     }
+                },
+                'ContextParamOperationRequest': {
+                    'type': 'structure',
+                    'members': {
+                        'ContextParamArg': {
+                            'shape': 'stringType',
+                            'contextParam': {
+                                'name': 'contextParamName',
+                            },
+                        }
+                    },
+                    'payload': 'ContextParamArg',
                 },
                 'NoSuchResourceException': {
                     'type': 'structure',
@@ -438,6 +506,37 @@ class TestOperationModelFromService(unittest.TestCase):
             http_checksum["responseAlgorithms"],
             ["crc32", "crc32c", "sha256", "sha1"],
         )
+
+    def test_context_parameter_present(self):
+        service_model = model.ServiceModel(self.model)
+        operation = service_model.operation_model('ContextParamOperation')
+        self.assertEqual(len(operation.context_parameters), 1)
+        context_param = operation.context_parameters[0]
+        self.assertEqual(context_param.name, 'contextParamName')
+        self.assertEqual(context_param.member_name, 'ContextParamArg')
+
+    def test_context_parameter_absent(self):
+        service_model = model.ServiceModel(self.model)
+        operation = service_model.operation_model('OperationTwo')
+        self.assertIsInstance(operation.context_parameters, list)
+        self.assertEqual(len(operation.context_parameters), 0)
+
+    def test_static_context_parameter_present(self):
+        service_model = model.ServiceModel(self.model)
+        operation = service_model.operation_model('ContextParamOperation')
+        self.assertEqual(len(operation.static_context_parameters), 2)
+        static_ctx_param1 = operation.static_context_parameters[0]
+        static_ctx_param2 = operation.static_context_parameters[1]
+        self.assertEqual(static_ctx_param1.name, 'stringStaticContextParam')
+        self.assertEqual(static_ctx_param1.value, 'Static Context Param Value')
+        self.assertEqual(static_ctx_param2.name, 'booleanStaticContextParam')
+        self.assertEqual(static_ctx_param2.value, True)
+
+    def test_static_context_parameter_abent(self):
+        service_model = model.ServiceModel(self.model)
+        operation = service_model.operation_model('OperationTwo')
+        self.assertIsInstance(operation.static_context_parameters, list)
+        self.assertEqual(len(operation.static_context_parameters), 0)
 
 
 class TestOperationModelEventStreamTypes(unittest.TestCase):

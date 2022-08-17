@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.25.55
+=======
+
+* bugfix:``configure``: Fix regression in not being able to set configuration values for new profile (fixes `#7199 <https://github.com/aws/aws-cli/issues/7199>`__)
+
+
 1.25.54
 =======
 

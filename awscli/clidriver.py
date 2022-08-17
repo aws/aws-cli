@@ -484,7 +484,7 @@ class ServiceOperation(object):
         event = 'before-building-argument-table-parser.%s.%s' % \
             (self._parent_name, self._name)
         self._emit(event, argument_table=self.arg_table, args=args,
-                   session=self._session)
+                   session=self._session, parsed_globals=parsed_globals)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)

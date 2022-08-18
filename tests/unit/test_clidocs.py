@@ -13,7 +13,7 @@
 import json
 
 from botocore.model import ShapeResolver, StructureShape, StringShape, \
-    ListShape, MapShape
+    ListShape, MapShape, Shape
 
 from awscli.testutils import mock, unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
@@ -22,6 +22,7 @@ from awscli.clidocs import OperationDocumentEventHandler, \
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand
+from awscli.arguments import CustomArgument
 
 
 class TestRecursiveShapes(unittest.TestCase):
@@ -405,6 +406,32 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             "See :doc:`'aws help' </reference/index>` for descriptions of "
             "global parameters", rendered
         )
+
+    def test_includes_streaming_blob_options(self):
+        help_command = self.create_help_command()
+        blob_shape = Shape('blob_shape', {'type': 'blob'})
+        blob_shape.serialization = {'streaming': True}
+        blob_arg = CustomArgument('blob_arg', argument_model=blob_shape)
+        help_command.arg_table = {'blob_arg': blob_arg}
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option(arg_name='blob_arg',
+                                     help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('streaming blob', rendered)
+
+    def test_streaming_blob_comes_after_docstring(self):
+        help_command = self.create_help_command()
+        blob_shape = Shape('blob_shape', {'type': 'blob'})
+        blob_shape.serialization = {'streaming': True}
+        blob_arg = CustomArgument(name='blob_arg',
+                                  argument_model=blob_shape,
+                                  help_text='FooBar')
+        help_command.arg_table = {'blob_arg': blob_arg}
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option(arg_name='blob_arg',
+                                     help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertRegex(rendered, r'FooBar[\s\S]*streaming blob')
 
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):

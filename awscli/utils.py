@@ -159,6 +159,11 @@ def is_streaming_blob_type(shape):
             shape.serialization.get('streaming', False))
 
 
+def is_tagged_union_type(shape):
+    """Check if the shape is a tagged union structure."""
+    return getattr(shape, 'is_tagged_union', False)
+
+
 def operation_uses_document_types(operation_model):
     """Check if document types are ever used in the operation"""
     recording_visitor = ShapeRecordingVisitor()

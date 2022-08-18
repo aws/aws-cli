@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.25.56
+=======
+
+* enhancement:Endpoints: Enforce SSL common name as default endpoint url
+* api-change:``chime-sdk-media-pipelines``: The Amazon Chime SDK now supports live streaming of real-time video from the Amazon Chime SDK sessions to streaming platforms such as Amazon IVS and Amazon Elemental MediaLive. We have also added support for concatenation to create a single media capture file.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``cognito-idp``: This change is being made simply to fix the public documentation based on the models. We have included the PasswordChange and ResendCode events, along with the Pass, Fail and InProgress status. We have removed the Success and Failure status which are never returned by our APIs.
+* api-change:``dynamodb``: This release adds support for importing data from S3 into a new DynamoDB table
+* api-change:``ec2``: This release adds support for VPN log options , a new feature allowing S2S VPN connections to send IKE activity logs to CloudWatch Logs
+* api-change:``networkmanager``: Add TransitGatewayPeeringAttachmentId property to TransitGatewayPeering Model
+
+
 1.25.55
 =======
 

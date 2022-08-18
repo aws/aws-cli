@@ -22,7 +22,7 @@ from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
 from awscli.utils import (
     find_service_and_method_in_event_name, is_document_type,
-    operation_uses_document_types
+    operation_uses_document_types, is_streaming_blob_type
 )
 
 LOG = logging.getLogger(__name__)
@@ -48,6 +48,8 @@ class CLIDocumentEventHandler(object):
             return 'JSON'
         if is_document_type(shape):
             return 'document'
+        if is_streaming_blob_type(shape):
+            return 'streaming blob'
         return default
 
     def _map_handlers(self, session, event_class, mapfn):
@@ -173,6 +175,8 @@ class CLIDocumentEventHandler(object):
             argument.argument_model, argument.cli_type_name)))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
+        if is_streaming_blob_type(argument.argument_model):
+            self._add_streaming_blob_note(doc)
         if hasattr(argument, 'argument_model'):
             self._document_enums(argument.argument_model, doc)
             self._document_nested_structure(argument.argument_model, doc)
@@ -263,6 +267,15 @@ class CLIDocumentEventHandler(object):
             self._doc_member(doc, '', member_shape.member, stack)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+    def _add_streaming_blob_note(self, doc):
+        doc.style.start_note()
+        msg = ("This argument is of type: streaming blob. "
+               "Its value must be the path to a file "
+               "(e.g. ``path/to/file``) and must **not** "
+               "be prefixed with ``file://`` or ``fileb://``")
+        doc.writeln(msg)
+        doc.style.end_note()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):

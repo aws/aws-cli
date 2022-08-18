@@ -374,6 +374,14 @@ The following example specifies the step inline. ::
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
 
+The following example uses a query (spark sql) of arg::
+
+    aws emr create-cluster \
+        --steps Type=SPARK,Name=SparkSubmit,ActionOnFailure=TERMINATE_CLUSTER,Args=[--class,com.seunggabi.SparkSubmit,s3://jar/batch.jar,\"SELECT * FROM prod.log WHERE date = '2022-01-01' LIMIT 10\"] \
+        --release-label emr-5.3.1 \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
+        --auto-terminate
+
 The following example uses a locally stored JSON configuration file named ``multiplefiles.json``. The JSON configuration specifies multiple files. To specify multiple files within a step, you must use a JSON configuration file to specify the step. JSON arguments must include options and values as their own items in the list. ::
 
     aws emr create-cluster \

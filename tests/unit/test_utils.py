@@ -22,8 +22,8 @@ from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.utils import (
     split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
     is_document_type, is_document_type_container, is_streaming_blob_type,
-    operation_uses_document_types, ShapeWalker, ShapeRecordingVisitor,
-    OutputStreamFactory
+    is_tagged_union_type, operation_uses_document_types, ShapeWalker,
+    ShapeRecordingVisitor, OutputStreamFactory
 )
 
 
@@ -433,3 +433,13 @@ class TestStreamingBlob:
         argument_model.type_name = 'string'
         argument_model.serialization = {}
         assert not is_streaming_blob_type(argument_model)
+
+
+@pytest.mark.usefixtures('argument_model')
+class TestTaggedUnion:
+    def test_shape_is_tagged_union(self, argument_model):
+        setattr(argument_model, 'is_tagged_union', True)
+        assert is_tagged_union_type(argument_model)
+    
+    def test_shape_is_not_tagged_union(self, argument_model):
+        assert not is_tagged_union_type(argument_model)

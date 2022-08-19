@@ -3946,6 +3946,38 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.56
+=======
+
+* enhancement:Endpoints: Enforce SSL common name as default endpoint url
+* api-change:``chime-sdk-media-pipelines``: The Amazon Chime SDK now supports live streaming of real-time video from the Amazon Chime SDK sessions to streaming platforms such as Amazon IVS and Amazon Elemental MediaLive. We have also added support for concatenation to create a single media capture file.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``cognito-idp``: This change is being made simply to fix the public documentation based on the models. We have included the PasswordChange and ResendCode events, along with the Pass, Fail and InProgress status. We have removed the Success and Failure status which are never returned by our APIs.
+* api-change:``dynamodb``: This release adds support for importing data from S3 into a new DynamoDB table
+* api-change:``ec2``: This release adds support for VPN log options , a new feature allowing S2S VPN connections to send IKE activity logs to CloudWatch Logs
+* api-change:``networkmanager``: Add TransitGatewayPeeringAttachmentId property to TransitGatewayPeering Model
+
+
+1.25.55
+=======
+
+* bugfix:``configure``: Fix regression in not being able to set configuration values for new profile (fixes `#7199 <https://github.com/aws/aws-cli/issues/7199>`__)
+
+
+1.25.54
+=======
+
+* enhancement:Endpoints: Enforce SSL common name as default endpoint url
+* api-change:``appmesh``: AWS App Mesh release to support Multiple Listener and Access Log Format feature
+* api-change:``connectcampaigns``: Updated exceptions for Amazon Connect Outbound Campaign api's.
+* api-change:``kendra``: This release adds Zendesk connector (which allows you to specify Zendesk SAAS platform as data source), Proxy Support for Sharepoint and Confluence Server (which allows you to specify the proxy configuration if proxy is required to connect to your Sharepoint/Confluence Server as data source).
+* api-change:``lakeformation``: This release adds a new API support "AssumeDecoratedRoleWithSAML" and also release updates the corresponding documentation.
+* api-change:``lambda``: Added support for customization of Consumer Group ID for MSK and Kafka Event Source Mappings.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``rds``: Adds support for Internet Protocol Version 6 (IPv6) for RDS Aurora database clusters.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager.
+
+
 1.25.53
 =======
 

@@ -2222,6 +2222,22 @@
       },
       "documentation":"<p>Contains information about code hooks that Amazon Lex calls during a conversation.</p>"
     },
+    "Condition":{
+      "type":"structure",
+      "required":["expressionString"],
+      "members":{
+        "expressionString":{
+          "shape":"ConditionExpression",
+          "documentation":"<p>The expression string that is evaluated. </p>"
+        }
+      },
+      "documentation":"<p>Provides an expression that evaluates to true or false. </p>"
+    },
+    "ConditionExpression":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ConditionKey":{
       "type":"string",
       "max":1024,
@@ -2249,6 +2265,59 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "ConditionalBranch":{
+      "type":"structure",
+      "required":[
+        "name",
+        "condition",
+        "nextStep"
+      ],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the branch. </p>"
+        },
+        "condition":{
+          "shape":"Condition",
+          "documentation":"<p>Contains the expression to evaluate. If the condition is true, the branch's actions are taken.</p>"
+        },
+        "nextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>The next step in the conversation.</p>"
+        },
+        "response":{"shape":"ResponseSpecification"}
+      },
+      "documentation":"<p>A set of actions that Amazon Lex should run if the condition is matched.</p>"
+    },
+    "ConditionalBranches":{
+      "type":"list",
+      "member":{"shape":"ConditionalBranch"},
+      "max":4,
+      "min":1
+    },
+    "ConditionalSpecification":{
+      "type":"structure",
+      "required":[
+        "active",
+        "conditionalBranches",
+        "defaultBranch"
+      ],
+      "members":{
+        "active":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Determines whether a conditional branch is active. When <code>active</code> is false, the conditions are not evaluated.</p>"
+        },
+        "conditionalBranches":{
+          "shape":"ConditionalBranches",
+          "documentation":"<p>A list of conditional branches. A conditional branch is made up of a condition, a response and a next step. The response and next step are executed when the condition is true.</p>"
+        },
+        "defaultBranch":{
+          "shape":"DefaultConditionalBranch",
+          "documentation":"<p>The conditional branch that should be followed when the conditions for other branches are not satisfied. A conditional branch is made up of a condition, a response and a next step.</p>"
+        }
+      },
+      "documentation":"<p>Provides a list of conditional branches. Branches are evaluated in the order that they are entered in the list. The first branch with a condition that evaluates to true is executed. The last branch in the list is the default branch. The default branch should not have any condition expression. The default branch is executed if no other branch has a matching condition.</p>"
     },
     "ConfidenceThreshold":{
       "type":"double",
@@ -2707,6 +2776,10 @@
           "documentation":"<p>The identifier of the language and locale where this intent is used. All of the bots, slot types, and slots used by the intent must have the same locale. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a>.</p>",
           "location":"uri",
           "locationName":"localeId"
+        },
+        "initialResponseSetting":{
+          "shape":"InitialResponseSetting",
+          "documentation":"<p>Configuration settings for the response that is sent to the user at the beginning of a conversation, before eliciting slot values.</p>"
         }
       }
     },
@@ -2776,6 +2849,10 @@
         "creationDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the intent was created.</p>"
+        },
+        "initialResponseSetting":{
+          "shape":"InitialResponseSetting",
+          "documentation":"<p>Configuration settings for the response that is sent to the user at the beginning of a conversation, before eliciting slot values.</p>"
         }
       }
     },
@@ -3202,6 +3279,17 @@
         }
       },
       "documentation":"<p>The object used for specifying the data range that the customer wants Amazon Lex to read through in the input transcripts.</p>"
+    },
+    "DefaultConditionalBranch":{
+      "type":"structure",
+      "members":{
+        "nextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>The next step in the conversation.</p>"
+        },
+        "response":{"shape":"ResponseSpecification"}
+      },
+      "documentation":"<p>A set of actions that Amazon Lex should run if none of the other conditions are met.</p>"
     },
     "DeleteBotAliasRequest":{
       "type":"structure",
@@ -4327,6 +4415,10 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the date and time that the intent was last updated.</p>"
+        },
+        "initialResponseSetting":{
+          "shape":"InitialResponseSetting",
+          "documentation":"<p/>"
         }
       }
     },
@@ -4548,6 +4640,66 @@
       "max":200,
       "min":0
     },
+    "DialogAction":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"DialogActionType",
+          "documentation":"<p>The action that the bot should execute. </p>"
+        },
+        "slotToElicit":{
+          "shape":"Name",
+          "documentation":"<p>If the dialog action is <code>ElicitSlot</code>, defines the slot to elicit from the user.</p>"
+        },
+        "suppressNextMessage":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>When true the next message for the intent is not used.</p>"
+        }
+      },
+      "documentation":"<p> Defines the action that the bot executes at runtime when the conversation reaches this step.</p>"
+    },
+    "DialogActionType":{
+      "type":"string",
+      "enum":[
+        "ElicitIntent",
+        "StartIntent",
+        "ElicitSlot",
+        "EvaluateConditional",
+        "InvokeDialogCodeHook",
+        "ConfirmIntent",
+        "FulfillIntent",
+        "CloseIntent",
+        "EndConversation"
+      ]
+    },
+    "DialogCodeHookInvocationSetting":{
+      "type":"structure",
+      "required":[
+        "enableCodeHookInvocation",
+        "active",
+        "postCodeHookSpecification"
+      ],
+      "members":{
+        "enableCodeHookInvocation":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether a Lambda function should be invoked for the dialog.</p>"
+        },
+        "active":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Determines whether a dialog code hook is used when the intent is activated.</p>"
+        },
+        "invocationLabel":{
+          "shape":"Name",
+          "documentation":"<p>A label that indicates the dialog step from which the dialog code hook is happening.</p>"
+        },
+        "postCodeHookSpecification":{
+          "shape":"PostDialogCodeHookInvocationSpecification",
+          "documentation":"<p>Contains the responses and actions that Amazon Lex takes after the Lambda function is complete.</p>"
+        }
+      },
+      "documentation":"<p> Settings that specify the dialog code hook that is called by Amazon Lex at a step of the conversation. </p>"
+    },
     "DialogCodeHookSettings":{
       "type":"structure",
       "required":["enabled"],
@@ -4558,6 +4710,18 @@
         }
       },
       "documentation":"<p>Settings that determine the Lambda function that Amazon Lex uses for processing user responses.</p>"
+    },
+    "DialogState":{
+      "type":"structure",
+      "members":{
+        "dialogAction":{"shape":"DialogAction"},
+        "intent":{"shape":"IntentOverride"},
+        "sessionAttributes":{
+          "shape":"StringMap",
+          "documentation":"<p>Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex and a client application.</p>"
+        }
+      },
+      "documentation":"<p>The current state of the conversation with the user.</p>"
     },
     "DraftBotVersion":{
       "type":"string",
@@ -4571,6 +4735,21 @@
         "Allow",
         "Deny"
       ]
+    },
+    "ElicitationCodeHookInvocationSetting":{
+      "type":"structure",
+      "required":["enableCodeHookInvocation"],
+      "members":{
+        "enableCodeHookInvocation":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether a Lambda function should be invoked for the dialog.</p>"
+        },
+        "invocationLabel":{
+          "shape":"Name",
+          "documentation":"<p>A label that indicates the dialog step from which the dialog code hook is happening.</p>"
+        }
+      },
+      "documentation":"<p>Settings that specify the dialog code hook that is called by Amazon Lex between eliciting slot values.</p>"
     },
     "EncryptionSetting":{
       "type":"structure",
@@ -4762,6 +4941,10 @@
         "fulfillmentUpdatesSpecification":{
           "shape":"FulfillmentUpdatesSpecification",
           "documentation":"<p>Provides settings for update messages sent to the user for long-running Lambda fulfillment functions. Fulfillment updates can be used only with streaming conversations.</p>"
+        },
+        "active":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Determines whether the fulfillment code hook is used. When <code>active</code> is false, the code hook doesn't run.</p>"
         }
       },
       "documentation":"<p>Determines if a Lambda function should be invoked for a specific intent.</p>"
@@ -5065,6 +5248,19 @@
       "min":5,
       "pattern":"^([0-9a-zA-Z_])+$"
     },
+    "InitialResponseSetting":{
+      "type":"structure",
+      "members":{
+        "initialResponse":{"shape":"ResponseSpecification"},
+        "nextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>The next step in the conversation.</p>"
+        },
+        "conditional":{"shape":"ConditionalSpecification"},
+        "codeHook":{"shape":"DialogCodeHookInvocationSetting"}
+      },
+      "documentation":"<p>Configuration setting for a response sent to the user before Amazon Lex starts eliciting slots.</p>"
+    },
     "InputContext":{
       "type":"structure",
       "required":["name"],
@@ -5084,7 +5280,6 @@
     },
     "IntentClosingSetting":{
       "type":"structure",
-      "required":["closingResponse"],
       "members":{
         "closingResponse":{
           "shape":"ResponseSpecification",
@@ -5093,16 +5288,21 @@
         "active":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Specifies whether an intent's closing response is used. When this field is false, the closing response isn't sent to the user. If the <code>active</code> field isn't specified, the default is true.</p>"
+        },
+        "nextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot executes after playing the intent's closing response.</p>"
+        },
+        "conditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches associated with the intent's closing response. These branches are executed when the <code>nextStep</code> attribute is set to <code>EvalutateConditional</code>.</p>"
         }
       },
       "documentation":"<p>Provides a statement the Amazon Lex conveys to the user when the intent is successfully fulfilled.</p>"
     },
     "IntentConfirmationSetting":{
       "type":"structure",
-      "required":[
-        "promptSpecification",
-        "declinationResponse"
-      ],
+      "required":["promptSpecification"],
       "members":{
         "promptSpecification":{
           "shape":"PromptSpecification",
@@ -5115,6 +5315,37 @@
         "active":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Specifies whether the intent's confirmation is sent to the user. When this field is false, confirmation and declination responses aren't sent. If the <code>active</code> field isn't specified, the default is true.</p>"
+        },
+        "confirmationResponse":{"shape":"ResponseSpecification"},
+        "confirmationNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot executes when the customer confirms the intent.</p>"
+        },
+        "confirmationConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the intent is closed.</p>"
+        },
+        "declinationNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot executes when the customer declines the intent.</p>"
+        },
+        "declinationConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the intent is declined.</p>"
+        },
+        "failureResponse":{"shape":"ResponseSpecification"},
+        "failureNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>The next step to take in the conversation if the confirmation step fails.</p>"
+        },
+        "failureConditional":{"shape":"ConditionalSpecification"},
+        "codeHook":{
+          "shape":"DialogCodeHookInvocationSetting",
+          "documentation":"<p>The <code>DialogCodeHookInvocationSetting</code> object associated with intent's confirmation step. The dialog code hook is triggered based on these invocation settings when the confirmation next step or declination next step or failure next step is <code>InvokeDialogCodeHook</code>. </p>"
+        },
+        "elicitationCodeHook":{
+          "shape":"ElicitationCodeHookInvocationSetting",
+          "documentation":"<p>The <code>DialogCodeHookInvocationSetting</code> used when the code hook is invoked during confirmation prompt retries.</p>"
         }
       },
       "documentation":"<p>Provides a prompt for making sure that the user is ready for the intent to be fulfilled.</p>"
@@ -5158,6 +5389,20 @@
       "member":{"shape":"IntentFilter"},
       "max":1,
       "min":1
+    },
+    "IntentOverride":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the intent. Only required when you're switching intents.</p>"
+        },
+        "slots":{
+          "shape":"SlotValueOverrideMap",
+          "documentation":"<p>A map of all of the slot value overrides for the intent. The name of the slot maps to the value of the slot. Slots that are not included in the map aren't overridden.,</p>"
+        }
+      },
+      "documentation":"<p>Override settings to configure the intent state.</p>"
     },
     "IntentSignature":{"type":"string"},
     "IntentSortAttribute":{
@@ -6241,6 +6486,10 @@
       "min":0
     },
     "NextToken":{"type":"string"},
+    "NonEmptyString":{
+      "type":"string",
+      "min":1
+    },
     "NumericalBotVersion":{
       "type":"string",
       "max":5,
@@ -6345,12 +6594,69 @@
       "type":"string",
       "min":2
     },
+    "PostDialogCodeHookInvocationSpecification":{
+      "type":"structure",
+      "members":{
+        "successResponse":{"shape":"ResponseSpecification"},
+        "successNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifics the next step the bot runs after the dialog code hook finishes successfully. </p>"
+        },
+        "successConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the dialog code hook finishes successfully.</p>"
+        },
+        "failureResponse":{"shape":"ResponseSpecification"},
+        "failureNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step the bot runs after the dialog code hook throws an exception or returns with the <code>State</code> field of the <code>Intent</code> object set to <code>Failed</code>.</p>"
+        },
+        "failureConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the dialog code hook throws an exception or returns with the <code>State</code> field of the <code>Intent</code> object set to <code>Failed</code>.</p>"
+        },
+        "timeoutResponse":{"shape":"ResponseSpecification"},
+        "timeoutNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot runs when the code hook times out.</p>"
+        },
+        "timeoutConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate if the code hook times out.</p>"
+        }
+      },
+      "documentation":"<p>Specifies next steps to run after the dialog code hook finishes.</p>"
+    },
     "PostFulfillmentStatusSpecification":{
       "type":"structure",
       "members":{
         "successResponse":{"shape":"ResponseSpecification"},
         "failureResponse":{"shape":"ResponseSpecification"},
-        "timeoutResponse":{"shape":"ResponseSpecification"}
+        "timeoutResponse":{"shape":"ResponseSpecification"},
+        "successNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step in the conversation that Amazon Lex invokes when the fulfillment code hook completes successfully.</p>"
+        },
+        "successConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the fulfillment code hook finishes successfully.</p>"
+        },
+        "failureNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step the bot runs after the fulfillment code hook throws an exception or returns with the <code>State</code> field of the <code>Intent</code> object set to <code>Failed</code>.</p>"
+        },
+        "failureConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the fulfillment code hook throws an exception or returns with the <code>State</code> field of the <code>Intent</code> object set to <code>Failed</code>.</p>"
+        },
+        "timeoutNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot runs when the fulfillment code hook times out.</p>"
+        },
+        "timeoutConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate if the fulfillment code hook times out.</p>"
+        }
       },
       "documentation":"<p>Provides a setting that determines whether the post-fulfillment response is sent to the user. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/streaming-progress.html#progress-complete\">https://docs.aws.amazon.com/lexv2/latest/dg/streaming-progress.html#progress-complete</a> </p>"
     },
@@ -6764,6 +7070,38 @@
       "min":60
     },
     "SkipResourceInUseCheck":{"type":"boolean"},
+    "SlotCaptureSetting":{
+      "type":"structure",
+      "members":{
+        "captureResponse":{"shape":"ResponseSpecification"},
+        "captureNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot runs when the slot value is captured before the code hook times out.</p>"
+        },
+        "captureConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate after the slot value is captured.</p>"
+        },
+        "failureResponse":{"shape":"ResponseSpecification"},
+        "failureNextStep":{
+          "shape":"DialogState",
+          "documentation":"<p>Specifies the next step that the bot runs when the slot value code is not recognized.</p>"
+        },
+        "failureConditional":{
+          "shape":"ConditionalSpecification",
+          "documentation":"<p>A list of conditional branches to evaluate when the slot value isn't captured.</p>"
+        },
+        "codeHook":{
+          "shape":"DialogCodeHookInvocationSetting",
+          "documentation":"<p>Code hook called after Amazon Lex successfully captures a slot value.</p>"
+        },
+        "elicitationCodeHook":{
+          "shape":"ElicitationCodeHookInvocationSetting",
+          "documentation":"<p>Code hook called when Amazon Lex doesn't capture a slot value.</p>"
+        }
+      },
+      "documentation":"<p>Settings used when Amazon Lex successfully captures a slot value from a user.</p>"
+    },
     "SlotConstraint":{
       "type":"string",
       "enum":[
@@ -6865,6 +7203,13 @@
         }
       },
       "documentation":"<p>Sets the priority that Amazon Lex should use when eliciting slot values from a user.</p>"
+    },
+    "SlotShape":{
+      "type":"string",
+      "enum":[
+        "Scalar",
+        "List"
+      ]
     },
     "SlotSortAttribute":{
       "type":"string",
@@ -7070,6 +7415,16 @@
       "max":10000,
       "min":1
     },
+    "SlotValue":{
+      "type":"structure",
+      "members":{
+        "interpretedValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The value that Amazon Lex determines for the slot. The actual value depends on the setting of the value selection strategy for the bot. You can choose to use the value entered by the user, or you can have Amazon Lex choose the first value in the <code>resolvedValues</code> list.</p>"
+        }
+      },
+      "documentation":"<p>The value to set in a slot.</p>"
+    },
     "SlotValueElicitationSetting":{
       "type":"structure",
       "required":["slotConstraint"],
@@ -7090,9 +7445,36 @@
           "shape":"SampleUtterancesList",
           "documentation":"<p>If you know a specific pattern that users might respond to an Amazon Lex request for a slot value, you can provide those utterances to improve accuracy. This is optional. In most cases, Amazon Lex is capable of understanding user utterances.</p>"
         },
-        "waitAndContinueSpecification":{"shape":"WaitAndContinueSpecification"}
+        "waitAndContinueSpecification":{"shape":"WaitAndContinueSpecification"},
+        "slotCaptureSetting":{
+          "shape":"SlotCaptureSetting",
+          "documentation":"<p>Specifies the settings that Amazon Lex uses when a slot value is successfully entered by a user.</p>"
+        }
       },
       "documentation":"<p>Settings that you can use for eliciting a slot value.</p>"
+    },
+    "SlotValueOverride":{
+      "type":"structure",
+      "members":{
+        "shape":{
+          "shape":"SlotShape",
+          "documentation":"<p>When the shape value is <code>List</code>, it indicates that the <code>values</code> field contains a list of slot values. When the value is <code>Scalar</code>, it indicates that the <code>value</code> field contains a single value.</p>"
+        },
+        "value":{
+          "shape":"SlotValue",
+          "documentation":"<p>The current value of the slot.</p>"
+        },
+        "values":{
+          "shape":"SlotValues",
+          "documentation":"<p>A list of one or more values that the user provided for the slot. For example, for a slot that elicits pizza toppings, the values might be \"pepperoni\" and \"pineapple.\"</p>"
+        }
+      },
+      "documentation":"<p>The slot values that Amazon Lex uses when it sets slot values in a dialog step.</p>"
+    },
+    "SlotValueOverrideMap":{
+      "type":"map",
+      "key":{"shape":"Name"},
+      "value":{"shape":"SlotValueOverride"}
     },
     "SlotValueRegexFilter":{
       "type":"structure",
@@ -7130,6 +7512,10 @@
         }
       },
       "documentation":"<p>Contains settings used by Amazon Lex to select a slot value.</p>"
+    },
+    "SlotValues":{
+      "type":"list",
+      "member":{"shape":"SlotValueOverride"}
     },
     "SortOrder":{
       "type":"string",
@@ -7299,6 +7685,12 @@
       "type":"integer",
       "max":900,
       "min":1
+    },
+    "String":{"type":"string"},
+    "StringMap":{
+      "type":"map",
+      "key":{"shape":"NonEmptyString"},
+      "value":{"shape":"String"}
     },
     "SynonymList":{
       "type":"list",
@@ -7938,6 +8330,10 @@
           "documentation":"<p>The identifier of the language and locale where this intent is used. The string must match one of the supported locales. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a>.</p>",
           "location":"uri",
           "locationName":"localeId"
+        },
+        "initialResponseSetting":{
+          "shape":"InitialResponseSetting",
+          "documentation":"<p/>"
         }
       }
     },
@@ -8015,6 +8411,10 @@
         "lastUpdatedDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of the last time that the intent was modified.</p>"
+        },
+        "initialResponseSetting":{
+          "shape":"InitialResponseSetting",
+          "documentation":"<p/>"
         }
       }
     },

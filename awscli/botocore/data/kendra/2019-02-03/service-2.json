@@ -1100,7 +1100,7 @@
       "members":{
         "KeyPath":{
           "shape":"S3ObjectKey",
-          "documentation":"<p>Path to the Amazon Web Services S3 bucket that contains the ACL files.</p>"
+          "documentation":"<p>Path to the Amazon S3 bucket that contains the ACL files.</p>"
         }
       },
       "documentation":"<p>Access Control List files for the documents in a data source. For the format of the file, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/s3-acl.html\">Access control for S3 data sources</a>.</p>"
@@ -1903,6 +1903,10 @@
         "ExclusionPatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
           "documentation":"<p>A list of regular expression patterns to exclude certain blog posts, pages, spaces, or attachments in your Confluence. Content that matches the patterns are excluded from the index. Content that doesn't match the patterns is included in the index. If content matches both an inclusion and exclusion pattern, the exclusion pattern takes precedence and the content isn't included in the index.</p>"
+        },
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>Configuration information to connect to your Confluence URL instance via a web proxy. You can use this option for Confluence Server.</p> <p>You must provide the website host name and port number. For example, the host name of <i>https://a.example.com/page1.html</i> is \"a.example.com\" and the port is 443, the standard port for HTTPS.</p> <p>Web proxy credentials are optional and you can use them to connect to a web proxy server that requires basic authentication of user name and password. To store web proxy credentials, you use a secret in Secrets Manager.</p> <p>It is recommended that you follow best security practices when configuring your web proxy. This includes setting up throttling, setting up logging and monitoring, and applying security patches on a regular basis. If you use your web proxy with multiple data sources, sync jobs that occur at the same time could strain the load on your proxy. It is recommended you prepare your proxy beforehand for any security and load requirements.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to Confluence as your data source.</p>"
@@ -2181,7 +2185,7 @@
       "members":{
         "Name":{
           "shape":"DataSourceName",
-          "documentation":"<p>A unique name for the data source connector. A data source name can't be changed without deleting and recreating the data source connector.</p>"
+          "documentation":"<p>A name for the data source connector.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
@@ -2194,6 +2198,10 @@
         "Configuration":{
           "shape":"DataSourceConfiguration",
           "documentation":"<p>Configuration information to connect to your data source repository.</p> <p>You can't specify the <code>Configuration</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>Configuration</code> parameter is required for all other data sources.</p>"
+        },
+        "VpcConfiguration":{
+          "shape":"DataSourceVpcConfiguration",
+          "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your data source. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/vpc-configuration.html\">Configuring a VPC</a>.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -2583,6 +2591,10 @@
         "AlfrescoConfiguration":{
           "shape":"AlfrescoConfiguration",
           "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p>"
+        },
+        "TemplateConfiguration":{
+          "shape":"TemplateConfiguration",
+          "documentation":"<p>Provides a template for the configuration information to connect to your data source.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information for an Amazon Kendra data source.</p>"
@@ -2849,7 +2861,8 @@
         "QUIP",
         "JIRA",
         "GITHUB",
-        "ALFRESCO"
+        "ALFRESCO",
+        "TEMPLATE"
       ]
     },
     "DataSourceVpcConfiguration":{
@@ -3147,7 +3160,7 @@
         },
         "Name":{
           "shape":"DataSourceName",
-          "documentation":"<p>The name that you gave the data source when it was created.</p>"
+          "documentation":"<p>The name for the data source.</p>"
         },
         "Type":{
           "shape":"DataSourceType",
@@ -3156,6 +3169,10 @@
         "Configuration":{
           "shape":"DataSourceConfiguration",
           "documentation":"<p>Configuration details for the data source. This shows how the data source is configured. The configuration options for a data source depend on the data source provider.</p>"
+        },
+        "VpcConfiguration":{
+          "shape":"DataSourceVpcConfiguration",
+          "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your data source. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/vpc-configuration.html\">Configuring a VPC</a>.</p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -6352,7 +6369,7 @@
         },
         "FolderIds":{
           "shape":"FolderIdList",
-          "documentation":"<p>The identifiers of the Quip folders you want to index.</p>"
+          "documentation":"<p>The identifiers of the Quip folders you want to index. You can find in your browser URL when you access your folder in Quip. For example, <i>https://quip-company.com/zlLuOVNSarTL/folder-name</i>.</p>"
         },
         "ThreadFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
@@ -7098,6 +7115,10 @@
         "AuthenticationType":{
           "shape":"SharePointOnlineAuthenticationType",
           "documentation":"<p>Whether you want to connect to SharePoint using basic authentication of user name and password, or OAuth authentication of user name, password, client ID, and client secret. You can use OAuth authentication for SharePoint Online.</p>"
+        },
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>Configuration information to connect to your Microsoft SharePoint site URLs via instance via a web proxy. You can use this option for SharePoint Server.</p> <p>You must provide the website host name and port number. For example, the host name of <i>https://a.example.com/page1.html</i> is \"a.example.com\" and the port is 443, the standard port for HTTPS.</p> <p>Web proxy credentials are optional and you can use them to connect to a web proxy server that requires basic authentication of user name and password. To store web proxy credentials, you use a secret in Secrets Manager.</p> <p>It is recommended that you follow best security practices when configuring your web proxy. This includes setting up throttling, setting up logging and monitoring, and applying security patches on a regular basis. If you use your web proxy with multiple data sources, sync jobs that occur at the same time could strain the load on your proxy. It is recommended you prepare your proxy beforehand for any security and load requirements.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to Microsoft SharePoint as your data source.</p>"
@@ -7587,6 +7608,23 @@
       "min":1,
       "pattern":"[A-Z0-9]*"
     },
+    "Template":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The template schema used for the data source.</p> <p>The following links to the template schema for data sources where templates are supported:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-zendesk.html#zendesk-template-schema\">Zendesk template schema</a> </p> </li> </ul>",
+      "document":true
+    },
+    "TemplateConfiguration":{
+      "type":"structure",
+      "members":{
+        "Template":{
+          "shape":"Template",
+          "documentation":"<p>The template schema used for the data source.</p> <p>The following links to the template schema for data sources where templates are supported:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-zendesk.html#zendesk-template-schema\">Zendesk template schema</a> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides a template for the configuration information to connect to your data source.</p>"
+    },
     "TenantDomain":{
       "type":"string",
       "max":256,
@@ -7793,7 +7831,7 @@
         },
         "Name":{
           "shape":"DataSourceName",
-          "documentation":"<p>A new name for the data source connector. You must first delete the data source and re-create it to change the name of the data source.</p>"
+          "documentation":"<p>A new name for the data source connector.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
@@ -7802,6 +7840,10 @@
         "Configuration":{
           "shape":"DataSourceConfiguration",
           "documentation":"<p>Configuration information you want to update for the data source connector.</p>"
+        },
+        "VpcConfiguration":{
+          "shape":"DataSourceVpcConfiguration",
+          "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your data source. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/vpc-configuration.html\">Configuring a VPC</a>.</p>"
         },
         "Description":{
           "shape":"Description",

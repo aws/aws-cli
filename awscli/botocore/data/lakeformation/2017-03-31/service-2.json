@@ -30,6 +30,23 @@
       ],
       "documentation":"<p>Attaches one or more LF-tags to an existing resource.</p>"
     },
+    "AssumeDecoratedRoleWithSAML":{
+      "name":"AssumeDecoratedRoleWithSAML",
+      "http":{
+        "method":"POST",
+        "requestUri":"/AssumeDecoratedRoleWithSAML"
+      },
+      "input":{"shape":"AssumeDecoratedRoleWithSAMLRequest"},
+      "output":{"shape":"AssumeDecoratedRoleWithSAMLResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Allows a caller to assume an IAM role decorated as the SAML user specified in the SAML assertion included in the request. This decoration allows Lake Formation to enforce access policies against the SAML users and groups. This API operation requires SAML federation setup in the caller’s account as it can only be called with valid SAML assertions. Lake Formation does not scope down the permission of the assumed role. All permissions attached to the role via the SAML federation setup will be included in the role session. </p> <p> This decorated role is expected to access data in Amazon S3 by getting temporary access from Lake Formation which is authorized via the virtual API <code>GetDataAccess</code>. Therefore, all SAML roles that can be assumed via <code>AssumeDecoratedRoleWithSAML</code> must at a minimum include <code>lakeformation:GetDataAccess</code> in their role policies. A typical IAM policy attached to such a role would look as follows: </p>"
+    },
     "BatchGrantPermissions":{
       "name":"BatchGrantPermissions",
       "http":{
@@ -164,7 +181,7 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified LF-tag key name. If the attribute key does not exist or the LF-tag does not exist, then the operation will not do anything. If the attribute key exists, then the operation checks if any resources are tagged with this attribute key, if yes, the API throws a 400 Exception with the message \"Delete not allowed\" as the LF-tag key is still attached with resources. You can consider untagging resources with this LF-tag key.</p>"
+      "documentation":"<p>Deletes the specified LF-tag given a key name. If the input parameter tag key was not found, then the operation will throw an exception. When you delete an LF-tag, the <code>LFTagPolicy</code> attached to the LF-tag becomes invalid. If the deleted LF-tag was still assigned to any resource, the tag policy attach to the deleted LF-tag will no longer be applied to the resource.</p>"
     },
     "DeleteObjectsOnCancel":{
       "name":"DeleteObjectsOnCancel",
@@ -856,6 +873,53 @@
       "documentation":"<p>A resource to be created or added already exists.</p>",
       "exception":true
     },
+    "AssumeDecoratedRoleWithSAMLRequest":{
+      "type":"structure",
+      "required":[
+        "SAMLAssertion",
+        "RoleArn",
+        "PrincipalArn"
+      ],
+      "members":{
+        "SAMLAssertion":{
+          "shape":"SAMLAssertionString",
+          "documentation":"<p>A SAML assertion consisting of an assertion statement for the user who needs temporary credentials. This must match the SAML assertion that was issued to IAM. This must be Base64 encoded.</p>"
+        },
+        "RoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The role that represents an IAM principal whose scope down policy allows it to call credential vending APIs such as <code>GetTemporaryTableCredentials</code>. The caller must also have iam:PassRole permission on this role. </p>"
+        },
+        "PrincipalArn":{
+          "shape":"IAMSAMLProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SAML provider in IAM that describes the IdP.</p>"
+        },
+        "DurationSeconds":{
+          "shape":"CredentialTimeoutDurationSecondInteger",
+          "documentation":"<p>The time period, between 900 and 43,200 seconds, for the timeout of the temporary credentials.</p>"
+        }
+      }
+    },
+    "AssumeDecoratedRoleWithSAMLResponse":{
+      "type":"structure",
+      "members":{
+        "AccessKeyId":{
+          "shape":"AccessKeyIdString",
+          "documentation":"<p>The access key ID for the temporary credentials. (The access key consists of an access key ID and a secret key).</p>"
+        },
+        "SecretAccessKey":{
+          "shape":"SecretAccessKeyString",
+          "documentation":"<p>The secret key for the temporary credentials. (The access key consists of an access key ID and a secret key).</p>"
+        },
+        "SessionToken":{
+          "shape":"SessionTokenString",
+          "documentation":"<p>The session token for the temporary credentials.</p>"
+        },
+        "Expiration":{
+          "shape":"ExpirationTimestamp",
+          "documentation":"<p>The date and time when the temporary credentials expire.</p>"
+        }
+      }
+    },
     "AuditContext":{
       "type":"structure",
       "members":{
@@ -1203,7 +1267,7 @@
     "DataLakePrincipalList":{
       "type":"list",
       "member":{"shape":"DataLakePrincipal"},
-      "max":10,
+      "max":30,
       "min":0
     },
     "DataLakePrincipalString":{
@@ -2060,6 +2124,10 @@
       "type":"string",
       "pattern":"arn:aws:iam::[0-9]*:role/.*"
     },
+    "IAMSAMLProviderArn":{
+      "type":"string",
+      "pattern":"arn:aws:iam::[0-9]*:saml-provider/.*"
+    },
     "Identifier":{
       "type":"string",
       "max":255,
@@ -2914,6 +2982,11 @@
         }
       },
       "documentation":"<p>A PartiQL predicate.</p>"
+    },
+    "SAMLAssertionString":{
+      "type":"string",
+      "max":100000,
+      "min":4
     },
     "SearchDatabasesByLFTagsRequest":{
       "type":"structure",

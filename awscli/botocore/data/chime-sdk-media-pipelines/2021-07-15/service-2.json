@@ -29,7 +29,47 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Creates a media capture pipeline.</p>"
+      "documentation":"<p>Creates a media pipeline.</p>"
+    },
+    "CreateMediaConcatenationPipeline":{
+      "name":"CreateMediaConcatenationPipeline",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sdk-media-concatenation-pipelines",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateMediaConcatenationPipelineRequest"},
+      "output":{"shape":"CreateMediaConcatenationPipelineResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates a media concatenation pipeline.</p>"
+    },
+    "CreateMediaLiveConnectorPipeline":{
+      "name":"CreateMediaLiveConnectorPipeline",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sdk-media-live-connector-pipelines",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateMediaLiveConnectorPipelineRequest"},
+      "output":{"shape":"CreateMediaLiveConnectorPipelineResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates a streaming media pipeline in an Amazon Chime SDK meeting.</p>"
     },
     "DeleteMediaCapturePipeline":{
       "name":"DeleteMediaCapturePipeline",
@@ -48,7 +88,26 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Deletes the media capture pipeline.</p>"
+      "documentation":"<p>Deletes the media pipeline.</p>"
+    },
+    "DeleteMediaPipeline":{
+      "name":"DeleteMediaPipeline",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/sdk-media-pipelines/{mediaPipelineId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMediaPipelineRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes the media pipeline.</p>"
     },
     "GetMediaCapturePipeline":{
       "name":"GetMediaCapturePipeline",
@@ -68,7 +127,27 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Gets an existing media capture pipeline.</p>"
+      "documentation":"<p>Gets an existing media pipeline.</p>"
+    },
+    "GetMediaPipeline":{
+      "name":"GetMediaPipeline",
+      "http":{
+        "method":"GET",
+        "requestUri":"/sdk-media-pipelines/{mediaPipelineId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMediaPipelineRequest"},
+      "output":{"shape":"GetMediaPipelineResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Gets an existing media pipeline.</p>"
     },
     "ListMediaCapturePipelines":{
       "name":"ListMediaCapturePipelines",
@@ -88,7 +167,27 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Returns a list of media capture pipelines.</p>"
+      "documentation":"<p>Returns a list of media pipelines.</p>"
+    },
+    "ListMediaPipelines":{
+      "name":"ListMediaPipelines",
+      "http":{
+        "method":"GET",
+        "requestUri":"/sdk-media-pipelines",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMediaPipelinesRequest"},
+      "output":{"shape":"ListMediaPipelinesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Returns a list of media pipelines.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -108,7 +207,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Lists the tags applied to an Amazon Chime SDK media capture pipeline.</p>"
+      "documentation":"<p>Lists the tags available for a media pipeline.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -128,7 +227,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Applies the specified tags to the specified Amazon Chime SDK media capture pipeline.</p>"
+      "documentation":"<p>The ARN of the media pipeline that you want to tag. Consists of he pipeline's endpoint region, resource ID, and pipeline ID.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -148,7 +247,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Removes the specified tags from the specified Amazon Chime SDK media capture pipeline.</p>"
+      "documentation":"<p>Removes any tags from a media pipeline.</p>"
     }
   },
   "shapes":{
@@ -164,6 +263,56 @@
       "min":1,
       "pattern":"^arn[\\/\\:\\-\\_\\.a-zA-Z0-9]+$",
       "sensitive":true
+    },
+    "ArtifactsConcatenationConfiguration":{
+      "type":"structure",
+      "required":[
+        "Audio",
+        "Video",
+        "Content",
+        "DataChannel",
+        "TranscriptionMessages",
+        "MeetingEvents",
+        "CompositedVideo"
+      ],
+      "members":{
+        "Audio":{
+          "shape":"AudioConcatenationConfiguration",
+          "documentation":"<p>The configuration for the audio artifacts concatenation.</p>"
+        },
+        "Video":{
+          "shape":"VideoConcatenationConfiguration",
+          "documentation":"<p>The configuration for the video artifacts concatenation.</p>"
+        },
+        "Content":{
+          "shape":"ContentConcatenationConfiguration",
+          "documentation":"<p>The configuration for the content artifacts concatenation.</p>"
+        },
+        "DataChannel":{
+          "shape":"DataChannelConcatenationConfiguration",
+          "documentation":"<p>The configuration for the data channel artifacts concatenation.</p>"
+        },
+        "TranscriptionMessages":{
+          "shape":"TranscriptionMessagesConcatenationConfiguration",
+          "documentation":"<p>The configuration for the transcription messages artifacts concatenation.</p>"
+        },
+        "MeetingEvents":{
+          "shape":"MeetingEventsConcatenationConfiguration",
+          "documentation":"<p>The configuration for the meeting events artifacts concatenation.</p>"
+        },
+        "CompositedVideo":{
+          "shape":"CompositedVideoConcatenationConfiguration",
+          "documentation":"<p>The configuration for the composited video artifacts concatenation.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the artifacts concatenation.</p>"
+    },
+    "ArtifactsConcatenationState":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
     },
     "ArtifactsConfiguration":{
       "type":"structure",
@@ -184,6 +333,10 @@
         "Content":{
           "shape":"ContentArtifactsConfiguration",
           "documentation":"<p>The configuration for the content artifacts.</p>"
+        },
+        "CompositedVideo":{
+          "shape":"CompositedVideoArtifactsConfiguration",
+          "documentation":"<p>Enables video compositing.</p>"
         }
       },
       "documentation":"<p>The configuration for the artifacts.</p>"
@@ -200,6 +353,10 @@
       "member":{"shape":"GuidString"},
       "min":1
     },
+    "AudioArtifactsConcatenationState":{
+      "type":"string",
+      "enum":["Enabled"]
+    },
     "AudioArtifactsConfiguration":{
       "type":"structure",
       "required":["MuxType"],
@@ -211,12 +368,35 @@
       },
       "documentation":"<p>The audio artifact configuration object.</p>"
     },
+    "AudioChannelsOption":{
+      "type":"string",
+      "enum":[
+        "Stereo",
+        "Mono"
+      ]
+    },
+    "AudioConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"AudioArtifactsConcatenationState",
+          "documentation":"<p>Enables the <i>name</i> object, where <i>name</i> is the name of the configuration object, such as <code>AudioConcatenation</code>.</p>"
+        }
+      },
+      "documentation":"<p>The audio artifact concatenation configuration object.</p>"
+    },
     "AudioMuxType":{
       "type":"string",
       "enum":[
         "AudioOnly",
-        "AudioWithActiveSpeakerVideo"
+        "AudioWithActiveSpeakerVideo",
+        "AudioWithCompositedVideo"
       ]
+    },
+    "AudioSampleRateOption":{
+      "type":"string",
+      "pattern":"44100|48000"
     },
     "BadRequestException":{
       "type":"structure",
@@ -232,19 +412,56 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "ChimeSdkMeetingConcatenationConfiguration":{
+      "type":"structure",
+      "required":["ArtifactsConfiguration"],
+      "members":{
+        "ArtifactsConfiguration":{
+          "shape":"ArtifactsConcatenationConfiguration",
+          "documentation":"<p>The configuration for the artifacts in an Amazon Chime SDK meeting concatenation.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object of the Amazon Chime SDK meeting concatenation for a specified media pipeline.</p>"
+    },
     "ChimeSdkMeetingConfiguration":{
       "type":"structure",
       "members":{
         "SourceConfiguration":{
           "shape":"SourceConfiguration",
-          "documentation":"<p>The source configuration for a specified media capture pipline.</p>"
+          "documentation":"<p>The source configuration for a specified media pipline.</p>"
         },
         "ArtifactsConfiguration":{
           "shape":"ArtifactsConfiguration",
           "documentation":"<p>The configuration for the artifacts in an Amazon Chime SDK meeting.</p>"
         }
       },
-      "documentation":"<p>The configuration object of the Amazon Chime SDK meeting for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+      "documentation":"<p>The configuration object of the Amazon Chime SDK meeting for a specified media pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+    },
+    "ChimeSdkMeetingLiveConnectorConfiguration":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "MuxType"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The configuration object's Chime SDK meeting ARN.</p>"
+        },
+        "MuxType":{
+          "shape":"LiveConnectorMuxType",
+          "documentation":"<p>The configuration object's multiplex type.</p>"
+        },
+        "CompositedVideo":{
+          "shape":"CompositedVideoArtifactsConfiguration",
+          "documentation":"<p>The media pipeline's composited video.</p>"
+        },
+        "SourceConfiguration":{
+          "shape":"SourceConfiguration",
+          "documentation":"<p>The source configuration settings of the media pipeline's configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The media pipeline's configuration object.</p>"
     },
     "ClientRequestToken":{
       "type":"string",
@@ -252,6 +469,92 @@
       "min":2,
       "pattern":"[-_a-zA-Z0-9]*",
       "sensitive":true
+    },
+    "CompositedVideoArtifactsConfiguration":{
+      "type":"structure",
+      "required":["GridViewConfiguration"],
+      "members":{
+        "Layout":{
+          "shape":"LayoutOption",
+          "documentation":"<p>The layout setting, such as <code>GridView</code> in the configuration object.</p>"
+        },
+        "Resolution":{
+          "shape":"ResolutionOption",
+          "documentation":"<p>The video resolution setting in the configuration object. Default: HD at 1280 x 720. FHD resolution: 1920 x 1080.</p>"
+        },
+        "GridViewConfiguration":{
+          "shape":"GridViewConfiguration",
+          "documentation":"<p>The <code>GridView</code> configuration setting.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for the composited video artifacts.</p>"
+    },
+    "CompositedVideoConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsConcatenationState",
+          "documentation":"<p>Enables or disables the configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The composited video configuration object for a specified media pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+    },
+    "ConcatenationSink":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "S3BucketSinkConfiguration"
+      ],
+      "members":{
+        "Type":{
+          "shape":"ConcatenationSinkType",
+          "documentation":"<p>The type of data sink in the configuration object.</p>"
+        },
+        "S3BucketSinkConfiguration":{
+          "shape":"S3BucketSinkConfiguration",
+          "documentation":"<p>The configuration settings for an Amazon S3 bucket sink.</p>"
+        }
+      },
+      "documentation":"<p>The data sink of the configuration object.</p>"
+    },
+    "ConcatenationSinkList":{
+      "type":"list",
+      "member":{"shape":"ConcatenationSink"},
+      "max":1,
+      "min":1
+    },
+    "ConcatenationSinkType":{
+      "type":"string",
+      "enum":["S3Bucket"]
+    },
+    "ConcatenationSource":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "MediaCapturePipelineSourceConfiguration"
+      ],
+      "members":{
+        "Type":{
+          "shape":"ConcatenationSourceType",
+          "documentation":"<p>The type of concatenation source in a configuration object.</p>"
+        },
+        "MediaCapturePipelineSourceConfiguration":{
+          "shape":"MediaCapturePipelineSourceConfiguration",
+          "documentation":"<p>The concatenation settings for the media pipeline in a configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The source type and media pipeline configuration settings in a configuration object.</p>"
+    },
+    "ConcatenationSourceList":{
+      "type":"list",
+      "member":{"shape":"ConcatenationSource"},
+      "max":1,
+      "min":1
+    },
+    "ConcatenationSourceType":{
+      "type":"string",
+      "enum":["MediaCapturePipeline"]
     },
     "ContentArtifactsConfiguration":{
       "type":"structure",
@@ -268,9 +571,28 @@
       },
       "documentation":"<p>The content artifact object.</p>"
     },
+    "ContentConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsConcatenationState",
+          "documentation":"<p>Enables or disables the configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The composited content configuration object for a specified media pipeline. </p>"
+    },
     "ContentMuxType":{
       "type":"string",
       "enum":["ContentOnly"]
+    },
+    "ContentShareLayoutOption":{
+      "type":"string",
+      "enum":[
+        "PresenterOnly",
+        "Horizontal",
+        "Vertical"
+      ]
     },
     "CreateMediaCapturePipelineRequest":{
       "type":"structure",
@@ -291,7 +613,7 @@
         },
         "SinkType":{
           "shape":"MediaPipelineSinkType",
-          "documentation":"<p>Destination type to which the media artifacts are saved. You must use an S3 bucket. </p>"
+          "documentation":"<p>Destination type to which the media artifacts are saved. You must use an S3 bucket.</p>"
         },
         "SinkArn":{
           "shape":"Arn",
@@ -299,16 +621,16 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>The token assigned to the client making the pipeline request.</p>",
+          "documentation":"<p>The unique identifier for the client request. The token makes the API request idempotent. Use a unique token for each media pipeline request.</p>",
           "idempotencyToken":true
         },
         "ChimeSdkMeetingConfiguration":{
           "shape":"ChimeSdkMeetingConfiguration",
-          "documentation":"<p>The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+          "documentation":"<p>The configuration for a specified media pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The list of tags.</p>"
+          "documentation":"<p>The tag key-value pairs.</p>"
         }
       }
     },
@@ -317,9 +639,90 @@
       "members":{
         "MediaCapturePipeline":{
           "shape":"MediaCapturePipeline",
-          "documentation":"<p>A media capture pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media capture pipeline object.</p>"
+          "documentation":"<p>A media pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media pipeline object.</p>"
         }
       }
+    },
+    "CreateMediaConcatenationPipelineRequest":{
+      "type":"structure",
+      "required":[
+        "Sources",
+        "Sinks"
+      ],
+      "members":{
+        "Sources":{
+          "shape":"ConcatenationSourceList",
+          "documentation":"<p>An object that specifies the sources for the media concatenation pipeline.</p>"
+        },
+        "Sinks":{
+          "shape":"ConcatenationSinkList",
+          "documentation":"<p>An object that specifies the data sinks for the media concatenation pipeline.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The unique identifier for the client request. The token makes the API request idempotent. Use a unique token for each media concatenation pipeline request.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the media concatenation pipeline.</p>"
+        }
+      }
+    },
+    "CreateMediaConcatenationPipelineResponse":{
+      "type":"structure",
+      "members":{
+        "MediaConcatenationPipeline":{
+          "shape":"MediaConcatenationPipeline",
+          "documentation":"<p>A media concatenation pipeline object, the ID, source type, <code>MediaPipelineARN</code>, and sink of a media concatenation pipeline object.</p>"
+        }
+      }
+    },
+    "CreateMediaLiveConnectorPipelineRequest":{
+      "type":"structure",
+      "required":[
+        "Sources",
+        "Sinks"
+      ],
+      "members":{
+        "Sources":{
+          "shape":"LiveConnectorSourceList",
+          "documentation":"<p>The media pipeline's data sources.</p>"
+        },
+        "Sinks":{
+          "shape":"LiveConnectorSinkList",
+          "documentation":"<p>The media pipeline's data sinks.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The token assigned to the client making the request.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the media pipeline.</p>"
+        }
+      }
+    },
+    "CreateMediaLiveConnectorPipelineResponse":{
+      "type":"structure",
+      "members":{
+        "MediaLiveConnectorPipeline":{
+          "shape":"MediaLiveConnectorPipeline",
+          "documentation":"<p>The new media pipeline.</p>"
+        }
+      }
+    },
+    "DataChannelConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsConcatenationState",
+          "documentation":"<p>Enables or disables the configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The content configuration object's data channel.</p>"
     },
     "DeleteMediaCapturePipelineRequest":{
       "type":"structure",
@@ -327,7 +730,19 @@
       "members":{
         "MediaPipelineId":{
           "shape":"GuidString",
-          "documentation":"<p>The ID of the media capture pipeline being deleted. </p>",
+          "documentation":"<p>The ID of the media pipeline being deleted. </p>",
+          "location":"uri",
+          "locationName":"mediaPipelineId"
+        }
+      }
+    },
+    "DeleteMediaPipelineRequest":{
+      "type":"structure",
+      "required":["MediaPipelineId"],
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the media pipeline to delete.</p>",
           "location":"uri",
           "locationName":"mediaPipelineId"
         }
@@ -387,9 +802,45 @@
       "members":{
         "MediaCapturePipeline":{
           "shape":"MediaCapturePipeline",
-          "documentation":"<p>The media capture pipeline object.</p>"
+          "documentation":"<p>The media pipeline object.</p>"
         }
       }
+    },
+    "GetMediaPipelineRequest":{
+      "type":"structure",
+      "required":["MediaPipelineId"],
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the pipeline that you want to get.</p>",
+          "location":"uri",
+          "locationName":"mediaPipelineId"
+        }
+      }
+    },
+    "GetMediaPipelineResponse":{
+      "type":"structure",
+      "members":{
+        "MediaPipeline":{
+          "shape":"MediaPipeline",
+          "documentation":"<p>The media pipeline object.</p>"
+        }
+      }
+    },
+    "GridViewConfiguration":{
+      "type":"structure",
+      "required":["ContentShareLayout"],
+      "members":{
+        "ContentShareLayout":{
+          "shape":"ContentShareLayoutOption",
+          "documentation":"<p>Defines the layout of the video tiles when content sharing is enabled.</p>"
+        },
+        "PresenterOnlyConfiguration":{
+          "shape":"PresenterOnlyConfiguration",
+          "documentation":"<p>Defines the configuration options for a presenter only video tile.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the type of grid layout.</p>"
     },
     "GuidString":{
       "type":"string",
@@ -400,6 +851,10 @@
     "Iso8601Timestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "LayoutOption":{
+      "type":"string",
+      "enum":["GridView"]
     },
     "ListMediaCapturePipelinesRequest":{
       "type":"structure",
@@ -423,7 +878,37 @@
       "members":{
         "MediaCapturePipelines":{
           "shape":"MediaCapturePipelineSummaryList",
-          "documentation":"<p>The media capture pipeline objects in the list.</p>"
+          "documentation":"<p>The media pipeline objects in the list.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token used to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListMediaPipelinesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token used to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"ResultMax",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid Range: 1 - 99.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListMediaPipelinesResponse":{
+      "type":"structure",
+      "members":{
+        "MediaPipelines":{
+          "shape":"MediaPipelineList",
+          "documentation":"<p>The media pipeline objects in the list.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -437,7 +922,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The resource ARN.</p>",
+          "documentation":"<p>The ARN of the media pipeline associated with any tags. The ARN consists of the pipeline's region, resource ID, and pipeline ID.</p>",
           "location":"querystring",
           "locationName":"arn"
         }
@@ -448,20 +933,102 @@
       "members":{
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tag key-value pairs.</p>"
+          "documentation":"<p>The tags associated with the specified media pipeline.</p>"
         }
       }
+    },
+    "LiveConnectorMuxType":{
+      "type":"string",
+      "enum":[
+        "AudioWithCompositedVideo",
+        "AudioWithActiveSpeakerVideo"
+      ]
+    },
+    "LiveConnectorRTMPConfiguration":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The URL of the RTMP configuration.</p>"
+        },
+        "AudioChannels":{
+          "shape":"AudioChannelsOption",
+          "documentation":"<p>The audio channels set for the RTMP configuration</p>"
+        },
+        "AudioSampleRate":{
+          "shape":"AudioSampleRateOption",
+          "documentation":"<p>The audio sample rate set for the RTMP configuration. Default: 48000.</p>"
+        }
+      },
+      "documentation":"<p>The media pipeline's RTMP configuration object.</p>"
+    },
+    "LiveConnectorSinkConfiguration":{
+      "type":"structure",
+      "required":[
+        "SinkType",
+        "RTMPConfiguration"
+      ],
+      "members":{
+        "SinkType":{
+          "shape":"LiveConnectorSinkType",
+          "documentation":"<p>The sink configuration's sink type.</p>"
+        },
+        "RTMPConfiguration":{
+          "shape":"LiveConnectorRTMPConfiguration",
+          "documentation":"<p>The sink configuration's RTMP configuration setttings.</p>"
+        }
+      },
+      "documentation":"<p>The media pipeline's sink configuration settings.</p>"
+    },
+    "LiveConnectorSinkList":{
+      "type":"list",
+      "member":{"shape":"LiveConnectorSinkConfiguration"},
+      "max":1,
+      "min":1
+    },
+    "LiveConnectorSinkType":{
+      "type":"string",
+      "enum":["RTMP"]
+    },
+    "LiveConnectorSourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "SourceType",
+        "ChimeSdkMeetingLiveConnectorConfiguration"
+      ],
+      "members":{
+        "SourceType":{
+          "shape":"LiveConnectorSourceType",
+          "documentation":"<p>The source configuration's media source type.</p>"
+        },
+        "ChimeSdkMeetingLiveConnectorConfiguration":{
+          "shape":"ChimeSdkMeetingLiveConnectorConfiguration",
+          "documentation":"<p>The configuration settings of the connector pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The data source configuration object of a streaming media pipeline.</p>"
+    },
+    "LiveConnectorSourceList":{
+      "type":"list",
+      "member":{"shape":"LiveConnectorSourceConfiguration"},
+      "max":1,
+      "min":1
+    },
+    "LiveConnectorSourceType":{
+      "type":"string",
+      "enum":["ChimeSdkMeeting"]
     },
     "MediaCapturePipeline":{
       "type":"structure",
       "members":{
         "MediaPipelineId":{
           "shape":"GuidString",
-          "documentation":"<p>The ID of a media capture pipeline.</p>"
+          "documentation":"<p>The ID of a media pipeline.</p>"
         },
         "MediaPipelineArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of a media capture pipeline.</p>"
+          "documentation":"<p>The ARN of the media capture pipeline</p>"
         },
         "SourceType":{
           "shape":"MediaPipelineSourceType",
@@ -473,7 +1040,7 @@
         },
         "Status":{
           "shape":"MediaPipelineStatus",
-          "documentation":"<p>The status of the media capture pipeline.</p>"
+          "documentation":"<p>The status of the media pipeline.</p>"
         },
         "SinkType":{
           "shape":"MediaPipelineSinkType",
@@ -485,36 +1052,144 @@
         },
         "CreatedTimestamp":{
           "shape":"Iso8601Timestamp",
-          "documentation":"<p>The time at which the capture pipeline was created, in ISO 8601 format.</p>"
+          "documentation":"<p>The time at which the pipeline was created, in ISO 8601 format.</p>"
         },
         "UpdatedTimestamp":{
           "shape":"Iso8601Timestamp",
-          "documentation":"<p>The time at which the capture pipeline was updated, in ISO 8601 format.</p>"
+          "documentation":"<p>The time at which the pipeline was updated, in ISO 8601 format.</p>"
         },
         "ChimeSdkMeetingConfiguration":{
           "shape":"ChimeSdkMeetingConfiguration",
-          "documentation":"<p>The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+          "documentation":"<p>The configuration for a specified media pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
         }
       },
-      "documentation":"<p>A media capture pipeline object consisting of an ID, source type, source ARN, a sink type, a sink ARN, and a configuration object.</p>"
+      "documentation":"<p>A media pipeline object consisting of an ID, source type, source ARN, a sink type, a sink ARN, and a configuration object.</p>"
+    },
+    "MediaCapturePipelineSourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "MediaPipelineArn",
+        "ChimeSdkMeetingConfiguration"
+      ],
+      "members":{
+        "MediaPipelineArn":{
+          "shape":"Arn",
+          "documentation":"<p>The media pipeline ARN in the configuration object of a media capture pipeline.</p>"
+        },
+        "ChimeSdkMeetingConfiguration":{
+          "shape":"ChimeSdkMeetingConcatenationConfiguration",
+          "documentation":"<p>The meeting configuration settings in a media capture pipeline configuration object. </p>"
+        }
+      },
+      "documentation":"<p>The source configuration object of a media capture pipeline.</p>"
     },
     "MediaCapturePipelineSummary":{
       "type":"structure",
       "members":{
         "MediaPipelineId":{
           "shape":"GuidString",
-          "documentation":"<p>The ID of a media capture pipeline.</p>"
+          "documentation":"<p>The ID of the media pipeline in the summary.</p>"
         },
         "MediaPipelineArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of a media capture pipeline.</p>"
+          "documentation":"<p>The ARN of the media pipeline in the summary.</p>"
         }
       },
-      "documentation":"<p>A summary of a media capture pipeline.</p>"
+      "documentation":"<p>The summary data of a media capture pipeline.</p>"
     },
     "MediaCapturePipelineSummaryList":{
       "type":"list",
       "member":{"shape":"MediaCapturePipelineSummary"}
+    },
+    "MediaConcatenationPipeline":{
+      "type":"structure",
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the media pipeline being concatenated.</p>"
+        },
+        "MediaPipelineArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the media pipeline that you specify in the <code>SourceConfiguration</code> object.</p>"
+        },
+        "Sources":{
+          "shape":"ConcatenationSourceList",
+          "documentation":"<p>The data sources being concatnated.</p>"
+        },
+        "Sinks":{
+          "shape":"ConcatenationSinkList",
+          "documentation":"<p>The data sinks of the concatenation pipeline.</p>"
+        },
+        "Status":{
+          "shape":"MediaPipelineStatus",
+          "documentation":"<p>The status of the concatenation pipeline.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the concatenation pipeline was created.</p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the concatenation pipeline was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Concatenates audio and video data from one or more data streams.</p>"
+    },
+    "MediaLiveConnectorPipeline":{
+      "type":"structure",
+      "members":{
+        "Sources":{
+          "shape":"LiveConnectorSourceList",
+          "documentation":"<p>The connector pipeline's data sources.</p>"
+        },
+        "Sinks":{
+          "shape":"LiveConnectorSinkList",
+          "documentation":"<p>The connector pipeline's data sinks.</p>"
+        },
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The connector pipeline's ID.</p>"
+        },
+        "MediaPipelineArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The connector pipeline's ARN.</p>"
+        },
+        "Status":{
+          "shape":"MediaPipelineStatus",
+          "documentation":"<p>The connector pipeline's status.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>Thetime at which the connector pipeline was created.</p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the connector pipeline was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The connector pipeline.</p>"
+    },
+    "MediaPipeline":{
+      "type":"structure",
+      "members":{
+        "MediaCapturePipeline":{
+          "shape":"MediaCapturePipeline",
+          "documentation":"<p>A pipeline that enables users to capture audio and video.</p>"
+        },
+        "MediaLiveConnectorPipeline":{
+          "shape":"MediaLiveConnectorPipeline",
+          "documentation":"<p>The connector pipeline of the media pipeline.</p>"
+        },
+        "MediaConcatenationPipeline":{
+          "shape":"MediaConcatenationPipeline",
+          "documentation":"<p>The media concatenation pipeline in a media pipeline.</p>"
+        }
+      },
+      "documentation":"<p>A pipeline consisting of a media capture, media concatenation, or live-streaming pipeline.</p>"
+    },
+    "MediaPipelineList":{
+      "type":"list",
+      "member":{"shape":"MediaPipelineSummary"}
     },
     "MediaPipelineSinkType":{
       "type":"string",
@@ -534,6 +1209,31 @@
         "Stopped"
       ]
     },
+    "MediaPipelineSummary":{
+      "type":"structure",
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the media pipeline in the summary.</p>"
+        },
+        "MediaPipelineArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the media pipeline in the summary.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the media pipeline.</p>"
+    },
+    "MeetingEventsConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsConcatenationState",
+          "documentation":"<p>Enables or disables the configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object for an event concatenation pipeline.</p>"
+    },
     "NotFoundException":{
       "type":"structure",
       "members":{
@@ -547,6 +1247,32 @@
       "documentation":"<p>One or more of the resources in the request does not exist in the system.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "PresenterOnlyConfiguration":{
+      "type":"structure",
+      "members":{
+        "PresenterPosition":{
+          "shape":"PresenterPosition",
+          "documentation":"<p>Defines the position of the presenter video tile. Default: <code>TopRight</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for a presenter only video tile.</p>"
+    },
+    "PresenterPosition":{
+      "type":"string",
+      "enum":[
+        "TopLeft",
+        "TopRight",
+        "BottomLeft",
+        "BottomRight"
+      ]
+    },
+    "ResolutionOption":{
+      "type":"string",
+      "enum":[
+        "HD",
+        "FHD"
+      ]
     },
     "ResourceLimitExceededException":{
       "type":"structure",
@@ -567,19 +1293,36 @@
       "max":100,
       "min":1
     },
+    "S3BucketSinkConfiguration":{
+      "type":"structure",
+      "required":["Destination"],
+      "members":{
+        "Destination":{
+          "shape":"Arn",
+          "documentation":"<p>The destination URL of the S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the S3 bucket.</p>"
+    },
     "SelectedVideoStreams":{
       "type":"structure",
       "members":{
         "AttendeeIds":{
           "shape":"AttendeeIdList",
-          "documentation":"<p>The attendee IDs of the streams selected for a media capture pipeline. </p>"
+          "documentation":"<p>The attendee IDs of the streams selected for a media pipeline. </p>"
         },
         "ExternalUserIds":{
           "shape":"ExternalUserIdList",
-          "documentation":"<p>The external user IDs of the streams selected for a media capture pipeline.</p>"
+          "documentation":"<p>The external user IDs of the streams selected for a media pipeline.</p>"
         }
       },
-      "documentation":"<p>The video streams to capture for a specified media capture pipeline. The total number of video streams can't exceed 25.</p>"
+      "documentation":"<p>The video streams for a specified media pipeline. The total number of video streams can't exceed 25.</p>"
+    },
+    "SensitiveString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
     },
     "ServiceFailureException":{
       "type":"structure",
@@ -616,10 +1359,10 @@
       "members":{
         "SelectedVideoStreams":{
           "shape":"SelectedVideoStreams",
-          "documentation":"<p>The selected video streams to capture for a specified media capture pipeline. The number of video streams can't exceed 25.</p>"
+          "documentation":"<p>The selected video streams for a specified media pipeline. The number of video streams can't exceed 25.</p>"
         }
       },
-      "documentation":"<p>Source configuration for a specified media capture pipeline.</p>"
+      "documentation":"<p>Source configuration for a specified media pipeline.</p>"
     },
     "String":{
       "type":"string",
@@ -635,14 +1378,14 @@
       "members":{
         "Key":{
           "shape":"TagKey",
-          "documentation":"<p>The key of the tag.</p>"
+          "documentation":"<p>The key half of a tag.</p>"
         },
         "Value":{
           "shape":"TagValue",
-          "documentation":"<p>The value of the tag.</p>"
+          "documentation":"<p>The value half of a tag.</p>"
         }
       },
-      "documentation":"<p>Describes a tag applied to a resource.</p>"
+      "documentation":"<p>A key/value pair that grants users access to meeting resources.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -670,11 +1413,11 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The resource ARN.</p>"
+          "documentation":"<p>The ARN of the media pipeline associated with any tags. The ARN consists of the pipeline's endpoint region, resource ID, and pipeline ID.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tag key-value pairs.</p>"
+          "documentation":"<p>The tags associated with the specified media pipeline.</p>"
         }
       }
     },
@@ -702,6 +1445,17 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "TranscriptionMessagesConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsConcatenationState",
+          "documentation":"<p>Enables or disables the configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object for concatenating transcription messages.</p>"
+    },
     "UnauthorizedClientException":{
       "type":"structure",
       "members":{
@@ -725,11 +1479,11 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The resource ARN.</p>"
+          "documentation":"<p>The ARN of the pipeline that you want to untag.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>The tag keys.</p>"
+          "documentation":"<p>The key/value pairs in the tag that you want to remove.</p>"
         }
       }
     },
@@ -753,10 +1507,21 @@
       },
       "documentation":"<p>The video artifact configuration object.</p>"
     },
+    "VideoConcatenationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"ArtifactsConcatenationState",
+          "documentation":"<p>Enables or disables the configuration object.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object of a video contacatentation pipeline.</p>"
+    },
     "VideoMuxType":{
       "type":"string",
       "enum":["VideoOnly"]
     }
   },
-  "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines and capture audio, video, events, and data messages from Amazon Chime SDK meetings. For more information about media pipleines, see <a href=\"https://docs.aws.amazon.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amzon Chime SDK media pipelines</a>. </p>"
+  "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines that capture, concatenate, or stream your Amazon Chime SDK meetings. For more information about media pipleines, see <a href=\"http://amazonaws.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amazon Chime SDK media pipelines</a>. </p>"
 }

@@ -9768,6 +9768,46 @@
         "locationName":"item"
       }
     },
+    "CloudWatchLogGroupArn":{"type":"string"},
+    "CloudWatchLogOptions":{
+      "type":"structure",
+      "members":{
+        "LogEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Status of VPN tunnel logging feature. Default value is <code>False</code>.</p> <p>Valid values: <code>True</code> | <code>False</code> </p>",
+          "locationName":"logEnabled"
+        },
+        "LogGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch log group to send logs to.</p>",
+          "locationName":"logGroupArn"
+        },
+        "LogOutputFormat":{
+          "shape":"String",
+          "documentation":"<p>Configured log format. Default format is <code>json</code>.</p> <p>Valid values: <code>json</code> | <code>text</code> </p>",
+          "locationName":"logOutputFormat"
+        }
+      },
+      "documentation":"<p>Options for sending VPN tunnel logs to CloudWatch.</p>"
+    },
+    "CloudWatchLogOptionsSpecification":{
+      "type":"structure",
+      "members":{
+        "LogEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable or disable VPN tunnel logging feature. Default value is <code>False</code>.</p> <p>Valid values: <code>True</code> | <code>False</code> </p>"
+        },
+        "LogGroupArn":{
+          "shape":"CloudWatchLogGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch log group to send logs to.</p>"
+        },
+        "LogOutputFormat":{
+          "shape":"String",
+          "documentation":"<p>Set log format. Default format is <code>json</code>.</p> <p>Valid values: <code>json</code> | <code>text</code> </p>"
+        }
+      },
+      "documentation":"<p>Options for sending VPN tunnel logs to CloudWatch.</p>"
+    },
     "CoipAddressUsage":{
       "type":"structure",
       "members":{
@@ -37685,6 +37725,10 @@
         "StartupAction":{
           "shape":"String",
           "documentation":"<p>The action to take when the establishing the tunnel for the VPN connection. By default, your customer gateway device must initiate the IKE negotiation and bring up the tunnel. Specify <code>start</code> for Amazon Web Services to initiate the IKE negotiation.</p> <p>Valid Values: <code>add</code> | <code>start</code> </p> <p>Default: <code>add</code> </p>"
+        },
+        "LogOptions":{
+          "shape":"VpnTunnelLogOptionsSpecification",
+          "documentation":"<p>Options for logging VPN tunnel activity.</p>"
         }
       },
       "documentation":"<p>The Amazon Web Services Site-to-Site VPN tunnel options to modify.</p>"
@@ -50102,6 +50146,11 @@
           "shape":"String",
           "documentation":"<p>The action to take when the establishing the VPN tunnels for a VPN connection.</p>",
           "locationName":"startupAction"
+        },
+        "LogOptions":{
+          "shape":"VpnTunnelLogOptions",
+          "documentation":"<p>Options for logging VPN tunnel activity.</p>",
+          "locationName":"logOptions"
         }
       },
       "documentation":"<p>The VPN tunnel options.</p>"
@@ -52117,6 +52166,27 @@
       "type":"string",
       "enum":["Static"]
     },
+    "VpnTunnelLogOptions":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogOptions":{
+          "shape":"CloudWatchLogOptions",
+          "documentation":"<p>Options for sending VPN tunnel logs to CloudWatch.</p>",
+          "locationName":"cloudWatchLogOptions"
+        }
+      },
+      "documentation":"<p>Options for logging VPN tunnel activity.</p>"
+    },
+    "VpnTunnelLogOptionsSpecification":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogOptions":{
+          "shape":"CloudWatchLogOptionsSpecification",
+          "documentation":"<p>Options for sending VPN tunnel logs to CloudWatch.</p>"
+        }
+      },
+      "documentation":"<p>Options for logging VPN tunnel activity.</p>"
+    },
     "VpnTunnelOptionsSpecification":{
       "type":"structure",
       "members":{
@@ -52198,6 +52268,10 @@
         "StartupAction":{
           "shape":"String",
           "documentation":"<p>The action to take when the establishing the tunnel for the VPN connection. By default, your customer gateway device must initiate the IKE negotiation and bring up the tunnel. Specify <code>start</code> for Amazon Web Services to initiate the IKE negotiation.</p> <p>Valid Values: <code>add</code> | <code>start</code> </p> <p>Default: <code>add</code> </p>"
+        },
+        "LogOptions":{
+          "shape":"VpnTunnelLogOptionsSpecification",
+          "documentation":"<p>Options for logging VPN tunnel activity.</p>"
         }
       },
       "documentation":"<p>The tunnel options for a single VPN tunnel.</p>"

@@ -280,6 +280,19 @@
       "endpointdiscovery":{
       }
     },
+    "DescribeImport":{
+      "name":"DescribeImport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeImportInput"},
+      "output":{"shape":"DescribeImportOutput"},
+      "errors":[
+        {"shape":"ImportNotFoundException"}
+      ],
+      "documentation":"<p> Represents the properties of the import. </p>"
+    },
     "DescribeKinesisStreamingDestination":{
       "name":"DescribeKinesisStreamingDestination",
       "http":{
@@ -468,6 +481,21 @@
       "endpointdiscovery":{
       }
     },
+    "ImportTable":{
+      "name":"ImportTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportTableInput"},
+      "output":{"shape":"ImportTableOutput"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ImportConflictException"}
+      ],
+      "documentation":"<p> Imports table data from an S3 bucket. </p>"
+    },
     "ListBackups":{
       "name":"ListBackups",
       "http":{
@@ -525,6 +553,19 @@
       "documentation":"<p>Lists all global tables that have a replica in the specified Region.</p> <note> <p>This operation only applies to <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables.V1.html\">Version 2017.11.29</a> of global tables.</p> </note>",
       "endpointdiscovery":{
       }
+    },
+    "ListImports":{
+      "name":"ListImports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListImportsInput"},
+      "output":{"shape":"ListImportsOutput"},
+      "errors":[
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Lists completed imports within the past 90 days. </p>"
     },
     "ListTables":{
       "name":"ListTables",
@@ -1396,7 +1437,7 @@
         },
         "Message":{
           "shape":"String",
-          "documentation":"<p> The error message associated with the PartiQL batch resposne. </p>"
+          "documentation":"<p> The error message associated with the PartiQL batch response. </p>"
         }
       },
       "documentation":"<p> An error associated with a statement in a PartiQL batch that was run. </p>"
@@ -1574,7 +1615,15 @@
       "max":36,
       "min":1
     },
-    "ClientToken":{"type":"string"},
+    "ClientToken":{
+      "type":"string",
+      "pattern":"^[^\\$]+$"
+    },
+    "CloudWatchLogGroupArn":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "Code":{"type":"string"},
     "ComparisonOperator":{
       "type":"string",
@@ -1962,6 +2011,38 @@
       },
       "documentation":"<p>Represents the output of a <code>CreateTable</code> operation.</p>"
     },
+    "CsvDelimiter":{
+      "type":"string",
+      "max":1,
+      "min":1,
+      "pattern":"[,;:|\\t ]"
+    },
+    "CsvHeader":{
+      "type":"string",
+      "max":65536,
+      "min":1,
+      "pattern":"[\\x20-\\x21\\x23-\\x2B\\x2D-\\x7E]*"
+    },
+    "CsvHeaderList":{
+      "type":"list",
+      "member":{"shape":"CsvHeader"},
+      "max":255,
+      "min":1
+    },
+    "CsvOptions":{
+      "type":"structure",
+      "members":{
+        "Delimiter":{
+          "shape":"CsvDelimiter",
+          "documentation":"<p> The delimiter used for separating items in the CSV file being imported. </p>"
+        },
+        "HeaderList":{
+          "shape":"CsvHeaderList",
+          "documentation":"<p> List of the headers used to specify a common header for all source CSV files being imported. If this field is specified then the first line of each CSV file is treated as data instead of the header. If this field is not specified the the first line of each CSV file is treated as the header. </p>"
+        }
+      },
+      "documentation":"<p> Processing options for the CSV file being imported. </p>"
+    },
     "Date":{"type":"timestamp"},
     "Delete":{
       "type":"structure",
@@ -2303,6 +2384,26 @@
         }
       }
     },
+    "DescribeImportInput":{
+      "type":"structure",
+      "required":["ImportArn"],
+      "members":{
+        "ImportArn":{
+          "shape":"ImportArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) associated with the table you're importing to. </p>"
+        }
+      }
+    },
+    "DescribeImportOutput":{
+      "type":"structure",
+      "required":["ImportTableDescription"],
+      "members":{
+        "ImportTableDescription":{
+          "shape":"ImportTableDescription",
+          "documentation":"<p> Represents the properties of the table created for the import, and parameters of the import. The import parameters include import status, how many items were processed, and how many errors were encountered. </p>"
+        }
+      }
+    },
     "DescribeKinesisStreamingDestinationInput":{
       "type":"structure",
       "required":["TableName"],
@@ -2453,6 +2554,10 @@
     "Endpoints":{
       "type":"list",
       "member":{"shape":"Endpoint"}
+    },
+    "ErrorCount":{
+      "type":"long",
+      "min":0
     },
     "ErrorMessage":{"type":"string"},
     "ExceptionDescription":{"type":"string"},
@@ -2718,7 +2823,7 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Providing a <code>ClientToken</code> makes the call to <code>ExportTableToPointInTimeInput</code> idempotent, meaning that multiple identical calls have the same effect as one single call.</p> <p>A client token is valid for 8 hours after the first request that uses it is completed. After 8 hours, any request with the same client token is treated as a new request. Do not resubmit the same request with the same client token for more than 8 hours, or the result might not be idempotent.</p> <p>If you submit a request with the same client token but a change in other parameters within the 8-hour idempotency window, DynamoDB returns an <code>IdempotentParameterMismatch</code> exception.</p>",
+          "documentation":"<p>Providing a <code>ClientToken</code> makes the call to <code>ExportTableToPointInTimeInput</code> idempotent, meaning that multiple identical calls have the same effect as one single call.</p> <p>A client token is valid for 8 hours after the first request that uses it is completed. After 8 hours, any request with the same client token is treated as a new request. Do not resubmit the same request with the same client token for more than 8 hours, or the result might not be idempotent.</p> <p>If you submit a request with the same client token but a change in other parameters within the 8-hour idempotency window, DynamoDB returns an <code>ImportConflictException</code>.</p>",
           "idempotencyToken":true
         },
         "S3Bucket":{
@@ -3109,6 +3214,218 @@
       "documentation":"<p>DynamoDB rejected the request because you retried a request with a different payload but with an idempotent token that was already used.</p>",
       "exception":true
     },
+    "ImportArn":{
+      "type":"string",
+      "max":1024,
+      "min":37
+    },
+    "ImportConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> There was a conflict when importing from the specified S3 source. This can occur when the current import conflicts with a previous import request that had the same client token. </p>",
+      "exception":true
+    },
+    "ImportEndTime":{"type":"timestamp"},
+    "ImportNextToken":{
+      "type":"string",
+      "max":1024,
+      "min":112,
+      "pattern":"([0-9a-f]{16})+"
+    },
+    "ImportNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> The specified import was not found. </p>",
+      "exception":true
+    },
+    "ImportStartTime":{"type":"timestamp"},
+    "ImportStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "CANCELLING",
+        "CANCELLED",
+        "FAILED"
+      ]
+    },
+    "ImportSummary":{
+      "type":"structure",
+      "members":{
+        "ImportArn":{
+          "shape":"ImportArn",
+          "documentation":"<p> The Amazon Resource Number (ARN) corresponding to the import request. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> The status of the import operation. </p>"
+        },
+        "TableArn":{
+          "shape":"TableArn",
+          "documentation":"<p> The Amazon Resource Number (ARN) of the table being imported into. </p>"
+        },
+        "S3BucketSource":{
+          "shape":"S3BucketSource",
+          "documentation":"<p> The path and S3 bucket of the source file that is being imported. This includes the S3Bucket (required), S3KeyPrefix (optional) and S3BucketOwner (optional if the bucket is owned by the requester). </p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"CloudWatchLogGroupArn",
+          "documentation":"<p> The Amazon Resource Number (ARN) of the Cloudwatch Log Group associated with this import task. </p>"
+        },
+        "InputFormat":{
+          "shape":"InputFormat",
+          "documentation":"<p> The format of the source data. Valid values are <code>CSV</code>, <code>DYNAMODB_JSON</code> or <code>ION</code>.</p>"
+        },
+        "StartTime":{
+          "shape":"ImportStartTime",
+          "documentation":"<p> The time at which this import task began. </p>"
+        },
+        "EndTime":{
+          "shape":"ImportEndTime",
+          "documentation":"<p> The time at which this import task ended. (Does this include the successful complete creation of the table it was imported to?) </p>"
+        }
+      },
+      "documentation":"<p> Summary information about the source file for the import. </p>"
+    },
+    "ImportSummaryList":{
+      "type":"list",
+      "member":{"shape":"ImportSummary"}
+    },
+    "ImportTableDescription":{
+      "type":"structure",
+      "members":{
+        "ImportArn":{
+          "shape":"ImportArn",
+          "documentation":"<p> The Amazon Resource Number (ARN) corresponding to the import request. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> The status of the import. </p>"
+        },
+        "TableArn":{
+          "shape":"TableArn",
+          "documentation":"<p> The Amazon Resource Number (ARN) of the table being imported into. </p>"
+        },
+        "TableId":{
+          "shape":"TableId",
+          "documentation":"<p> The table id corresponding to the table created by import table process. </p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> The client token that was provided for the import task. Reusing the client token on retry makes a call to <code>ImportTable</code> idempotent. </p>"
+        },
+        "S3BucketSource":{
+          "shape":"S3BucketSource",
+          "documentation":"<p> Values for the S3 bucket the source file is imported from. Includes bucket name (required), key prefix (optional) and bucket account owner ID (optional). </p>"
+        },
+        "ErrorCount":{
+          "shape":"ErrorCount",
+          "documentation":"<p> The number of errors occurred on importing the source file into the target table. </p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"CloudWatchLogGroupArn",
+          "documentation":"<p> The Amazon Resource Number (ARN) of the Cloudwatch Log Group associated with the target table. </p>"
+        },
+        "InputFormat":{
+          "shape":"InputFormat",
+          "documentation":"<p> The format of the source data going into the target table. </p>"
+        },
+        "InputFormatOptions":{
+          "shape":"InputFormatOptions",
+          "documentation":"<p> The format options for the data that was imported into the target table. There is one value, CsvOption. </p>"
+        },
+        "InputCompressionType":{
+          "shape":"InputCompressionType",
+          "documentation":"<p> The compression options for the data that has been imported into the target table. The values are NONE, GZIP, or ZSTD. </p>"
+        },
+        "TableCreationParameters":{
+          "shape":"TableCreationParameters",
+          "documentation":"<p> The parameters for the new table that is being imported into. </p>"
+        },
+        "StartTime":{
+          "shape":"ImportStartTime",
+          "documentation":"<p> The time when this import task started. </p>"
+        },
+        "EndTime":{
+          "shape":"ImportEndTime",
+          "documentation":"<p> The time at which the creation of the table associated with this import task completed. </p>"
+        },
+        "ProcessedSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p> The total size of data processed from the source file, in Bytes. </p>"
+        },
+        "ProcessedItemCount":{
+          "shape":"ProcessedItemCount",
+          "documentation":"<p> The total number of items processed from the source file. </p>"
+        },
+        "ImportedItemCount":{
+          "shape":"ImportedItemCount",
+          "documentation":"<p> The number of items successfully imported into the new table. </p>"
+        },
+        "FailureCode":{
+          "shape":"FailureCode",
+          "documentation":"<p> The error code corresponding to the failure that the import job ran into during execution. </p>"
+        },
+        "FailureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p> The error message corresponding to the failure that the import job ran into during execution. </p>"
+        }
+      },
+      "documentation":"<p> Represents the properties of the table being imported into. </p>"
+    },
+    "ImportTableInput":{
+      "type":"structure",
+      "required":[
+        "S3BucketSource",
+        "InputFormat",
+        "TableCreationParameters"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Providing a <code>ClientToken</code> makes the call to <code>ImportTableInput</code> idempotent, meaning that multiple identical calls have the same effect as one single call.</p> <p>A client token is valid for 8 hours after the first request that uses it is completed. After 8 hours, any request with the same client token is treated as a new request. Do not resubmit the same request with the same client token for more than 8 hours, or the result might not be idempotent.</p> <p>If you submit a request with the same client token but a change in other parameters within the 8-hour idempotency window, DynamoDB returns an <code>IdempotentParameterMismatch</code> exception.</p>",
+          "idempotencyToken":true
+        },
+        "S3BucketSource":{
+          "shape":"S3BucketSource",
+          "documentation":"<p> The S3 bucket that provides the source for the import. </p>"
+        },
+        "InputFormat":{
+          "shape":"InputFormat",
+          "documentation":"<p> The format of the source data. Valid values for <code>ImportFormat</code> are <code>CSV</code>, <code>DYNAMODB_JSON</code> or <code>ION</code>. </p>"
+        },
+        "InputFormatOptions":{
+          "shape":"InputFormatOptions",
+          "documentation":"<p> Additional properties that specify how the input is formatted, </p>"
+        },
+        "InputCompressionType":{
+          "shape":"InputCompressionType",
+          "documentation":"<p> Type of compression to be used on the input coming from the imported table. </p>"
+        },
+        "TableCreationParameters":{
+          "shape":"TableCreationParameters",
+          "documentation":"<p>Parameters for the table to import the data into. </p>"
+        }
+      }
+    },
+    "ImportTableOutput":{
+      "type":"structure",
+      "required":["ImportTableDescription"],
+      "members":{
+        "ImportTableDescription":{
+          "shape":"ImportTableDescription",
+          "documentation":"<p> Represents the properties of the table created for the import, and parameters of the import. The import parameters include import status, how many items were processed, and how many errors were encountered. </p>"
+        }
+      }
+    },
+    "ImportedItemCount":{
+      "type":"long",
+      "min":0
+    },
     "IndexName":{
       "type":"string",
       "max":255,
@@ -3131,6 +3448,32 @@
         "DELETING",
         "ACTIVE"
       ]
+    },
+    "InputCompressionType":{
+      "type":"string",
+      "enum":[
+        "GZIP",
+        "ZSTD",
+        "NONE"
+      ]
+    },
+    "InputFormat":{
+      "type":"string",
+      "enum":[
+        "DYNAMODB_JSON",
+        "ION",
+        "CSV"
+      ]
+    },
+    "InputFormatOptions":{
+      "type":"structure",
+      "members":{
+        "Csv":{
+          "shape":"CsvOptions",
+          "documentation":"<p> The options for imported source files in CSV format. The values are Delimiter and HeaderList. </p>"
+        }
+      },
+      "documentation":"<p> The format options for the data that was imported into the target table. There is one value, CsvOption.</p>"
     },
     "Integer":{"type":"integer"},
     "IntegerObject":{"type":"integer"},
@@ -3525,6 +3868,41 @@
         }
       }
     },
+    "ListImportsInput":{
+      "type":"structure",
+      "members":{
+        "TableArn":{
+          "shape":"TableArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) associated with the table that was imported to. </p>"
+        },
+        "PageSize":{
+          "shape":"ListImportsMaxLimit",
+          "documentation":"<p> The number of <code>ImportSummary </code>objects returned in a single page. </p>"
+        },
+        "NextToken":{
+          "shape":"ImportNextToken",
+          "documentation":"<p> An optional string that, if supplied, must be copied from the output of a previous call to <code>ListImports</code>. When provided in this manner, the API fetches the next page of results. </p>"
+        }
+      }
+    },
+    "ListImportsMaxLimit":{
+      "type":"integer",
+      "max":25,
+      "min":1
+    },
+    "ListImportsOutput":{
+      "type":"structure",
+      "members":{
+        "ImportSummaryList":{
+          "shape":"ImportSummaryList",
+          "documentation":"<p> A list of <code>ImportSummary</code> objects. </p>"
+        },
+        "NextToken":{
+          "shape":"ImportNextToken",
+          "documentation":"<p> If this value is returned, there are additional results to be displayed. To retrieve them, call <code>ListImports</code> again, with <code>NextToken</code> set to this value. </p>"
+        }
+      }
+    },
     "ListTablesInput":{
       "type":"structure",
       "members":{
@@ -3793,6 +4171,10 @@
       "type":"list",
       "member":{"shape":"AttributeValue"},
       "min":1
+    },
+    "ProcessedItemCount":{
+      "type":"long",
+      "min":0
     },
     "Projection":{
       "type":"structure",
@@ -4675,9 +5057,38 @@
         "NONE"
       ]
     },
-    "S3Bucket":{"type":"string"},
-    "S3BucketOwner":{"type":"string"},
-    "S3Prefix":{"type":"string"},
+    "S3Bucket":{
+      "type":"string",
+      "max":255,
+      "pattern":"^[a-z0-9A-Z]+[\\.\\-\\w]*[a-z0-9A-Z]+$"
+    },
+    "S3BucketOwner":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "S3BucketSource":{
+      "type":"structure",
+      "required":["S3Bucket"],
+      "members":{
+        "S3BucketOwner":{
+          "shape":"S3BucketOwner",
+          "documentation":"<p> The account number of the S3 bucket that is being imported from. If the bucket is owned by the requester this is optional. </p>"
+        },
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p> The S3 bucket that is being imported from. </p>"
+        },
+        "S3KeyPrefix":{
+          "shape":"S3Prefix",
+          "documentation":"<p> The key prefix shared by all S3 Objects that are being imported. </p>"
+        }
+      },
+      "documentation":"<p> The S3 bucket that is being imported from. </p>"
+    },
+    "S3Prefix":{
+      "type":"string",
+      "max":1024
+    },
     "S3SseAlgorithm":{
       "type":"string",
       "enum":[
@@ -5034,6 +5445,39 @@
       "documentation":"<p>Contains details of the table class.</p>"
     },
     "TableCreationDateTime":{"type":"timestamp"},
+    "TableCreationParameters":{
+      "type":"structure",
+      "required":[
+        "TableName",
+        "AttributeDefinitions",
+        "KeySchema"
+      ],
+      "members":{
+        "TableName":{
+          "shape":"TableName",
+          "documentation":"<p> The name of the table created as part of the import operation. </p>"
+        },
+        "AttributeDefinitions":{
+          "shape":"AttributeDefinitions",
+          "documentation":"<p> The attributes of the table created as part of the import operation. </p>"
+        },
+        "KeySchema":{
+          "shape":"KeySchema",
+          "documentation":"<p> The primary key and option sort key of the table created as part of the import operation. </p>"
+        },
+        "BillingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p> The billing mode for provisioning the table created as part of the import operation. </p>"
+        },
+        "ProvisionedThroughput":{"shape":"ProvisionedThroughput"},
+        "SSESpecification":{"shape":"SSESpecification"},
+        "GlobalSecondaryIndexes":{
+          "shape":"GlobalSecondaryIndexList",
+          "documentation":"<p> The Global Secondary Indexes (GSI) of the table to be created as part of the import operation. </p>"
+        }
+      },
+      "documentation":"<p> The parameters for the table created as part of the import operation. </p>"
+    },
     "TableDescription":{
       "type":"structure",
       "members":{

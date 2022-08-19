@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.25.57
+=======
+
+* enhancement:docs: Differentiate between regular and streaming blobs and generate a usage note when a parameter is of streaming blob type.
+* enhancement:docs: Improve AWS CLI docs to include global options available to service commands.
+* api-change:``connect``: This release adds SearchSecurityProfiles API which can be used to search for Security Profile resources within a Connect Instance.
+* api-change:``ivschat``: Documentation Change for IVS Chat API Reference - Doc-only update to change text/description for tags field.
+* api-change:``kendra``: This release adds support for a new authentication type - Personal Access Token (PAT) for confluence server.
+* api-change:``lookoutmetrics``: This release is to make GetDataQualityMetrics API publicly available.
+
+
 1.25.56
 =======
 

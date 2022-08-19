@@ -193,4 +193,3 @@ def awscli_initialize(event_handlers):
     register_wizard_commands(event_handlers)
     register_sso_commands(event_handlers)
     register_dynamodb_paginator_fix(event_handlers)
-    register_override_ssl_common_name(event_handlers)

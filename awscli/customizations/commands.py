@@ -135,7 +135,7 @@ class BasicCommand(CLICommand):
         event = 'before-building-argument-table-parser.%s' % \
             ".".join(self.lineage_names)
         self._session.emit(event, argument_table=self._arg_table, args=args,
-                           session=self._session)
+                           session=self._session, parsed_globals=parsed_globals)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 

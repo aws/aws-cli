@@ -24,7 +24,7 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.27.55',
+    'botocore==1.27.56',
     'docutils>=0.10,<0.17',
     's3transfer>=0.6.0,<0.7.0',
     'PyYAML>=3.10,<5.5',
@@ -44,10 +44,10 @@ setup_options = dict(
              'bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],
     packages=find_packages(exclude=['tests*']),
-    package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
-                             'examples/*/*.txt', 'examples/*/*/*.txt',
-                             'examples/*/*/*.rst', 'topics/*.rst',
-                             'topics/*.json']},
+    package_data={'awscli': ['data/*.json', 'examples/*.rst',
+                             'examples/*/*.rst', 'examples/*/*.txt',
+                             'examples/*/*/*.txt', 'examples/*/*/*.rst',
+                             'topics/*.rst', 'topics/*.json']},
     install_requires=install_requires,
     extras_require={},
     license="Apache License 2.0",

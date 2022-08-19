@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import signal
 import platform
+import pytest
 import subprocess
 import os
 
@@ -20,10 +21,15 @@ import botocore.model
 from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.utils import (
     split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
-    is_document_type, is_document_type_container,
+    is_document_type, is_document_type_container, is_streaming_blob_type,
     operation_uses_document_types, ShapeWalker, ShapeRecordingVisitor,
     OutputStreamFactory
 )
+
+
+@pytest.fixture()
+def argument_model():
+    return botocore.model.Shape('argument', {'type': 'string'})
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -409,3 +415,21 @@ class TestShapeWalker(BaseShapeTest):
         }
         self.walker.walk(self.get_shape_model('Recursive'), self.visitor)
         self.assert_visited_shapes(['Recursive'])
+
+
+@pytest.mark.usefixtures('argument_model')
+class TestStreamingBlob:
+    def test_blob_is_streaming(self, argument_model):
+        argument_model.type_name = 'blob'
+        argument_model.serialization = {'streaming': True}
+        assert is_streaming_blob_type(argument_model)
+
+    def test_blob_is_not_streaming(self, argument_model):
+        argument_model.type_name = 'blob'
+        argument_model.serialization = {}
+        assert not is_streaming_blob_type(argument_model)
+
+    def test_non_blob_is_not_streaming(self, argument_model):
+        argument_model.type_name = 'string'
+        argument_model.serialization = {}
+        assert not is_streaming_blob_type(argument_model)

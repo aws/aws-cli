@@ -102,6 +102,11 @@ class ReSTDocument(object):
             start, end = self._last_doc_string
             del self._writes[start:end]
 
+    def write_from_file(self, filename):
+        with open(filename, 'r') as f:
+            for line in f.readlines():
+                self.writeln(line.strip())
+
 
 class DocumentStructure(ReSTDocument):
     def __init__(self, name, section_names=None, target='man', context=None):

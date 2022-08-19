@@ -351,6 +351,24 @@
       ],
       "documentation":"<p>Returns a list of the dashboards for your account. If you include <code>DashboardNamePrefix</code>, only those dashboards with names starting with the prefix are listed. Otherwise, all dashboards in your account are listed. </p> <p> <code>ListDashboards</code> returns up to 1000 results on one page. If there are more than 1000 dashboards, you can call <code>ListDashboards</code> again and include the value you received for <code>NextToken</code> in the first call, to receive the next 1000 results.</p>"
     },
+    "ListManagedInsightRules":{
+      "name":"ListManagedInsightRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListManagedInsightRulesInput"},
+      "output":{
+        "shape":"ListManagedInsightRulesOutput",
+        "resultWrapper":"ListManagedInsightRulesResult"
+      },
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingRequiredParameterException"},
+        {"shape":"InvalidNextToken"}
+      ],
+      "documentation":"<p> Returns a list that contains the number of managed Contributor Insights rules in your account. </p>"
+    },
     "ListMetricStreams":{
       "name":"ListMetricStreams",
       "http":{
@@ -471,6 +489,23 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Creates a Contributor Insights rule. Rules evaluate log events in a CloudWatch Logs log group, enabling you to find contributor data for the log events in that log group. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html\">Using Contributor Insights to Analyze High-Cardinality Data</a>.</p> <p>If you create a rule, delete it, and then re-create it with the same name, historical data from the first time the rule was created might not be available.</p>"
+    },
+    "PutManagedInsightRules":{
+      "name":"PutManagedInsightRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutManagedInsightRulesInput"},
+      "output":{
+        "shape":"PutManagedInsightRulesOutput",
+        "resultWrapper":"PutManagedInsightRulesResult"
+      },
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingRequiredParameterException"}
+      ],
+      "documentation":"<p> Creates a managed Contributor Insights rule for a specified Amazon Web Services resource. When you enable a managed rule, you create a Contributor Insights rule that collects data from Amazon Web Services services. You cannot edit these rules with <code>PutInsightRule</code>. The rules can be enabled, disabled, and deleted using <code>EnableInsightRules</code>, <code>DisableInsightRules</code>, and <code>DeleteInsightRules</code>. If a previously created managed rule is currently disabled, a subsequent call to this API will re-enable it. Use <code>ListManagedInsightRules</code> to describe all available rules. </p>"
     },
     "PutMetricAlarm":{
       "name":"PutMetricAlarm",
@@ -1825,7 +1860,7 @@
         },
         "OutputFormat":{
           "shape":"MetricStreamOutputFormat",
-          "documentation":"<p>The output format for the stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>. For more information about metric stream output formats, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-formats.html\"> Metric streams output formats</a>.</p>"
+          "documentation":"<p>The output format for the stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>. For more information about metric stream output formats, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-formats.html\">Metric streams output formats</a>.</p>"
         },
         "StatisticsConfigurations":{
           "shape":"MetricStreamStatisticsConfigurations",
@@ -1898,6 +1933,10 @@
         "Definition":{
           "shape":"InsightRuleDefinition",
           "documentation":"<p>The definition of the rule, as a JSON object. The definition contains the keywords used to define contributors, the value to aggregate on if this rule returns a sum instead of a count, and the filters. For details on the valid syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html\">Contributor Insights Rule Syntax</a>.</p>"
+        },
+        "ManagedRule":{
+          "shape":"InsightRuleIsManaged",
+          "documentation":"<p> An optional built-in rule that Amazon Web Services manages. </p>"
         }
       },
       "documentation":"<p>This structure contains the definition for a Contributor Insights rule. For more information about this rule, see<a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html\"> Using Constributor Insights to analyze high-cardinality data</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
@@ -1968,6 +2007,7 @@
       "min":1,
       "pattern":"[\\x00-\\x7F]+"
     },
+    "InsightRuleIsManaged":{"type":"boolean"},
     "InsightRuleMaxResults":{
       "type":"integer",
       "max":500,
@@ -2203,6 +2243,37 @@
         }
       }
     },
+    "ListManagedInsightRulesInput":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p> The ARN of an Amazon Web Services resource that has managed Contributor Insights rules. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> Include this value to get the next set of rules if the value was returned by the previous operation. </p>"
+        },
+        "MaxResults":{
+          "shape":"InsightRuleMaxResults",
+          "documentation":"<p> The maximum number of results to return in one operation. If you omit this parameter, the default number is used. The default number is <code>100</code>. </p>"
+        }
+      }
+    },
+    "ListManagedInsightRulesOutput":{
+      "type":"structure",
+      "members":{
+        "ManagedRules":{
+          "shape":"ManagedRuleDescriptions",
+          "documentation":"<p> The managed rules that are available for the specified Amazon Web Services resource. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> Include this value to get the next set of rules if the value was returned by the previous operation. </p>"
+        }
+      }
+    },
     "ListMetricStreamsInput":{
       "type":"structure",
       "members":{
@@ -2294,6 +2365,72 @@
           "documentation":"<p>The list of tag keys and values associated with the resource you specified.</p>"
         }
       }
+    },
+    "ManagedRule":{
+      "type":"structure",
+      "required":[
+        "TemplateName",
+        "ResourceARN"
+      ],
+      "members":{
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p> The template name for the managed Contributor Insights rule, as returned by <code>ListManagedInsightRules</code>. </p>"
+        },
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p> The ARN of an Amazon Web Services resource that has managed Contributor Insights rules. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> A list of key-value pairs that you can associate with a managed Contributor Insights rule. You can associate as many as 50 tags with a rule. Tags can help you organize and categorize your resources. You also can use them to scope user permissions by granting a user permission to access or change only the resources that have certain tag values. To associate tags with a rule, you must have the <code>cloudwatch:TagResource</code> permission in addition to the <code>cloudwatch:PutInsightRule</code> permission. If you are using this operation to update an existing Contributor Insights rule, any tags that you specify in this parameter are ignored. To change the tags of an existing rule, use <code>TagResource</code>. </p>"
+        }
+      },
+      "documentation":"<p> Contains the information that's required to enable a managed Contributor Insights rule for an Amazon Web Services resource. </p>"
+    },
+    "ManagedRuleDescription":{
+      "type":"structure",
+      "members":{
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p> The template name for the managed rule. Used to enable managed rules using <code>PutManagedInsightRules</code>. </p>"
+        },
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p> If a managed rule is enabled, this is the ARN for the related Amazon Web Services resource. </p>"
+        },
+        "RuleState":{
+          "shape":"ManagedRuleState",
+          "documentation":"<p> Describes the state of a managed rule. If present, it contains information about the Contributor Insights rule that contains information about the related Amazon Web Services resource. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about managed Contributor Insights rules, as returned by <code>ListManagedInsightRules</code>. </p>"
+    },
+    "ManagedRuleDescriptions":{
+      "type":"list",
+      "member":{"shape":"ManagedRuleDescription"}
+    },
+    "ManagedRuleState":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "State"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"InsightRuleName",
+          "documentation":"<p> The name of the Contributor Insights rule that contains data for the specified Amazon Web Services resource. </p>"
+        },
+        "State":{
+          "shape":"InsightRuleState",
+          "documentation":"<p> Indicates whether the rule is enabled or disabled. </p>"
+        }
+      },
+      "documentation":"<p> The status of a managed Contributor Insights rule. </p>"
+    },
+    "ManagedRules":{
+      "type":"list",
+      "member":{"shape":"ManagedRule"}
     },
     "MaxRecords":{
       "type":"integer",
@@ -2598,7 +2735,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>Array of numbers representing the values for the metric during the period. Each unique value is listed just once in this array, and the corresponding number in the <code>Counts</code> array specifies the number of times that value occurred during the period. You can include up to 500 unique values in each <code>PutMetricData</code> action that specifies a <code>Values</code> array.</p> <p>Although the <code>Values</code> array accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>"
+          "documentation":"<p>Array of numbers representing the values for the metric during the period. Each unique value is listed just once in this array, and the corresponding number in the <code>Counts</code> array specifies the number of times that value occurred during the period. You can include up to 150 unique values in each <code>PutMetricData</code> action that specifies a <code>Values</code> array.</p> <p>Although the <code>Values</code> array accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>"
         },
         "Counts":{
           "shape":"Counts",
@@ -2998,6 +3135,25 @@
     "PutInsightRuleOutput":{
       "type":"structure",
       "members":{
+      }
+    },
+    "PutManagedInsightRulesInput":{
+      "type":"structure",
+      "required":["ManagedRules"],
+      "members":{
+        "ManagedRules":{
+          "shape":"ManagedRules",
+          "documentation":"<p> A list of <code>ManagedRules</code> to enable. </p>"
+        }
+      }
+    },
+    "PutManagedInsightRulesOutput":{
+      "type":"structure",
+      "members":{
+        "Failures":{
+          "shape":"BatchFailures",
+          "documentation":"<p> An array that lists the rules that could not be enabled. </p>"
+        }
       }
     },
     "PutMetricAlarmInput":{
@@ -3487,6 +3643,12 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TemplateName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[0-9A-Za-z][\\-\\.\\_0-9A-Za-z]{0,126}[0-9A-Za-z]"
     },
     "Threshold":{"type":"double"},
     "Timestamp":{"type":"timestamp"},

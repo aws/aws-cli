@@ -863,7 +863,7 @@
         },
         "ipPreference":{
           "shape":"IpPreference",
-          "documentation":"<p>The IP version to use to control traffic within the mesh.</p>"
+          "documentation":"<p>The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.</p>"
         },
         "namespaceName":{
           "shape":"AwsCloudMapName",
@@ -1922,7 +1922,7 @@
         },
         "ipPreference":{
           "shape":"IpPreference",
-          "documentation":"<p>The IP version to use to control traffic within the mesh.</p>"
+          "documentation":"<p>The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.</p>"
         },
         "responseType":{
           "shape":"DnsResponseType",
@@ -1984,6 +1984,10 @@
       "type":"structure",
       "required":["path"],
       "members":{
+        "format":{
+          "shape":"LoggingFormat",
+          "documentation":"<p>The specified format for the logs. The format is either <code>json_format</code> or <code>text_format</code>.</p>"
+        },
         "path":{
           "shape":"FilePath",
           "documentation":"<p>The file path to write access logs to. You can use <code>/dev/stdout</code> to send access logs to standard out and configure your Envoy container to use a log driver, such as <code>awslogs</code>, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.</p> <pre><code> &lt;note&gt; &lt;p&gt;The Envoy process must have write permissions to the path that you specify here. Otherwise, Envoy fails to bootstrap properly.&lt;/p&gt; &lt;/note&gt; </code></pre>"
@@ -2175,6 +2179,10 @@
       "type":"structure",
       "required":["virtualService"],
       "members":{
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The port number of the gateway route target.</p>"
+        },
         "virtualService":{
           "shape":"GatewayRouteVirtualService",
           "documentation":"<p>An object that represents a virtual service gateway route target.</p>"
@@ -2236,6 +2244,10 @@
         "metadata":{
           "shape":"GrpcGatewayRouteMetadataList",
           "documentation":"<p>The gateway route metadata to be matched on.</p>"
+        },
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The port number to match from the request.</p>"
         },
         "serviceName":{
           "shape":"ServiceName",
@@ -2396,6 +2408,10 @@
         "methodName":{
           "shape":"MethodName",
           "documentation":"<p>The method name to match from the request. If you specify a name, you must also specify a <code>serviceName</code>.</p>"
+        },
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The port number to match on.</p>"
         },
         "serviceName":{
           "shape":"ServiceName",
@@ -2643,6 +2659,10 @@
           "shape":"HttpPathMatch",
           "documentation":"<p>The path to match on.</p>"
         },
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The port number to match on.</p>"
+        },
         "prefix":{
           "shape":"String",
           "documentation":"<p>Specifies the path to match requests with. This parameter must always start with <code>/</code>, which by itself matches all requests to the virtual service name. You can also match for path-based routing of requests. For example, if your virtual service name is <code>my-service.local</code> and you want the route to match requests to <code>my-service.local/metrics</code>, your prefix should be <code>/metrics</code>.</p>"
@@ -2874,6 +2894,10 @@
           "shape":"HttpPathMatch",
           "documentation":"<p>The client request path to match on.</p>"
         },
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The port number to match on.</p>"
+        },
         "prefix":{
           "shape":"String",
           "documentation":"<p>Specifies the path to match requests with. This parameter must always start with <code>/</code>, which by itself matches all requests to the virtual service name. You can also match for path-based routing of requests. For example, if your virtual service name is <code>my-service.local</code> and you want the route to match requests to <code>my-service.local/metrics</code>, your prefix should be <code>/metrics</code>.</p>"
@@ -2929,6 +2953,38 @@
         "IPv4_ONLY",
         "IPv6_ONLY"
       ]
+    },
+    "JsonFormat":{
+      "type":"list",
+      "member":{"shape":"JsonFormatRef"}
+    },
+    "JsonFormatRef":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"JsonKey",
+          "documentation":"<p>The specified key for the JSON.</p>"
+        },
+        "value":{
+          "shape":"JsonValue",
+          "documentation":"<p>The specified value for the JSON.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the key value pairs for the JSON.</p>"
+    },
+    "JsonKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "JsonValue":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "LimitExceededException":{
       "type":"structure",
@@ -3378,6 +3434,12 @@
       },
       "documentation":"<p>An object that represents a listener for a virtual node.</p>"
     },
+    "ListenerPort":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
     "ListenerTimeout":{
       "type":"structure",
       "members":{
@@ -3533,6 +3595,21 @@
         }
       },
       "documentation":"<p>An object that represents the logging information for a virtual node.</p>"
+    },
+    "LoggingFormat":{
+      "type":"structure",
+      "members":{
+        "json":{
+          "shape":"JsonFormat",
+          "documentation":"<p/>"
+        },
+        "text":{
+          "shape":"TextFormat",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p>An object that represents the format for the logs.</p>",
+      "union":true
     },
     "Long":{
       "type":"long",
@@ -4156,6 +4233,10 @@
           "shape":"TcpRouteAction",
           "documentation":"<p>The action to take if a match is determined.</p>"
         },
+        "match":{
+          "shape":"TcpRouteMatch",
+          "documentation":"<p>An object that represents the criteria for determining a request match.</p>"
+        },
         "timeout":{
           "shape":"TcpTimeout",
           "documentation":"<p>An object that represents types of timeouts. </p>"
@@ -4174,6 +4255,16 @@
       },
       "documentation":"<p>An object that represents the action to take if a match is determined.</p>"
     },
+    "TcpRouteMatch":{
+      "type":"structure",
+      "members":{
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The port number to match on.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the TCP route to match.</p>"
+    },
     "TcpTimeout":{
       "type":"structure",
       "members":{
@@ -4184,6 +4275,11 @@
       },
       "documentation":"<p>An object that represents types of timeouts. </p>"
     },
+    "TextFormat":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
     "Timestamp":{"type":"timestamp"},
     "TlsValidationContext":{
       "type":"structure",
@@ -4191,7 +4287,7 @@
       "members":{
         "subjectAlternativeNames":{
           "shape":"SubjectAlternativeNames",
-          "documentation":"<p>A reference to an object that represents the SANs for a Transport Layer Security (TLS) validation context.</p>"
+          "documentation":"<p>A reference to an object that represents the SANs for a Transport Layer Security (TLS) validation context. If you don't specify SANs on the <i>terminating</i> mesh endpoint, the Envoy proxy for that node doesn't verify the SAN on a peer client certificate. If you don't specify SANs on the <i>originating</i> mesh endpoint, the SAN on the certificate provided by the terminating endpoint must match the mesh endpoint service discovery configuration. Since SPIRE vended certificates have a SPIFFE ID as a name, you must set the SAN since the name doesn't match the service discovery name.</p>"
         },
         "trust":{
           "shape":"TlsValidationContextTrust",
@@ -4773,6 +4869,10 @@
       "type":"structure",
       "required":["path"],
       "members":{
+        "format":{
+          "shape":"LoggingFormat",
+          "documentation":"<p>The specified format for the virtual gateway access logs. It can be either <code>json_format</code> or <code>text_format</code>.</p>"
+        },
         "path":{
           "shape":"FilePath",
           "documentation":"<p>The file path to write access logs to. You can use <code>/dev/stdout</code> to send access logs to standard out and configure your Envoy container to use a log driver, such as <code>awslogs</code>, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.</p>"
@@ -5711,6 +5811,10 @@
         "weight"
       ],
       "members":{
+        "port":{
+          "shape":"ListenerPort",
+          "documentation":"<p>The targeted port of the weighted object.</p>"
+        },
         "virtualNode":{
           "shape":"ResourceName",
           "documentation":"<p>The virtual node to associate with the weighted target.</p>"

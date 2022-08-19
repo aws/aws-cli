@@ -144,7 +144,7 @@
         {"shape":"DecryptionFailure"},
         {"shape":"InternalServiceError"}
       ],
-      "documentation":"<p>Retrieves the contents of the encrypted fields <code>SecretString</code> or <code>SecretBinary</code> from the specified version of a secret, whichever contains content.</p> <p>We recommend that you cache your secret values by using client-side caching. Caching secrets improves speed and reduces your costs. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets.html\">Cache secrets for your applications</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:GetSecretValue</code>. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key <code>aws/secretsmanager</code>, then you also need <code>kms:Decrypt</code> permissions for that key. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p>"
+      "documentation":"<p>Retrieves the contents of the encrypted fields <code>SecretString</code> or <code>SecretBinary</code> from the specified version of a secret, whichever contains content.</p> <p>We recommend that you cache your secret values by using client-side caching. Caching secrets improves speed and reduces your costs. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets.html\">Cache secrets for your applications</a>.</p> <p>To retrieve the previous version of a secret, use <code>VersionStage</code> and specify AWSPREVIOUS. To revert to the previous version of a secret, call <a href=\"https://docs.aws.amazon.com/cli/latest/reference/secretsmanager/update-secret-version-stage.html\">UpdateSecretVersionStage</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:GetSecretValue</code>. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key <code>aws/secretsmanager</code>, then you also need <code>kms:Decrypt</code> permissions for that key. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p>"
     },
     "ListSecretVersionIds":{
       "name":"ListSecretVersionIds",
@@ -345,7 +345,7 @@
         {"shape":"PreconditionNotMetException"},
         {"shape":"DecryptionFailure"}
       ],
-      "documentation":"<p>Modifies the details of a secret, including metadata and the secret value. To change the secret value, you can also use <a>PutSecretValue</a>.</p> <p>To change the rotation configuration of a secret, use <a>RotateSecret</a> instead.</p> <p>We recommend you avoid calling <code>UpdateSecret</code> at a sustained rate of more than once every 10 minutes. When you call <code>UpdateSecret</code> to update the secret value, Secrets Manager creates a new version of the secret. Secrets Manager removes outdated versions when there are more than 100, but it does not remove versions created less than 24 hours ago. If you update the secret value more than once every 10 minutes, you create more versions than Secrets Manager removes, and you will reach the quota for secret versions.</p> <p>If you include <code>SecretString</code> or <code>SecretBinary</code> to create a new secret version, Secrets Manager automatically attaches the staging label <code>AWSCURRENT</code> to the new version. </p> <p>If you call this operation with a <code>ClientRequestToken</code> that matches an existing version's <code>VersionId</code>, the operation results in an error. You can't modify an existing version, you can only create a new version. To remove a version, remove all staging labels from it. See <a>UpdateSecretVersionStage</a>.</p> <p>If you don't specify an KMS encryption key, Secrets Manager uses the Amazon Web Services managed key <code>aws/secretsmanager</code>. If this key doesn't already exist in your account, then Secrets Manager creates it for you automatically. All users and roles in the Amazon Web Services account automatically have access to use <code>aws/secretsmanager</code>. Creating <code>aws/secretsmanager</code> can result in a one-time significant delay in returning the result. </p> <p>If the secret is in a different Amazon Web Services account from the credentials calling the API, then you can't use <code>aws/secretsmanager</code> to encrypt the secret, and you must create and use a customer managed key. </p> <p> <b>Required permissions: </b> <code>secretsmanager:UpdateSecret</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. If you use a customer managed key, you must also have <code>kms:GenerateDataKey</code> and <code>kms:Decrypt</code> permissions on the key. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/security-encryption.html\"> Secret encryption and decryption</a>.</p>"
+      "documentation":"<p>Modifies the details of a secret, including metadata and the secret value. To change the secret value, you can also use <a>PutSecretValue</a>.</p> <p>To change the rotation configuration of a secret, use <a>RotateSecret</a> instead.</p> <p>We recommend you avoid calling <code>UpdateSecret</code> at a sustained rate of more than once every 10 minutes. When you call <code>UpdateSecret</code> to update the secret value, Secrets Manager creates a new version of the secret. Secrets Manager removes outdated versions when there are more than 100, but it does not remove versions created less than 24 hours ago. If you update the secret value more than once every 10 minutes, you create more versions than Secrets Manager removes, and you will reach the quota for secret versions.</p> <p>If you include <code>SecretString</code> or <code>SecretBinary</code> to create a new secret version, Secrets Manager automatically attaches the staging label <code>AWSCURRENT</code> to the new version. </p> <p>If you call this operation with a <code>ClientRequestToken</code> that matches an existing version's <code>VersionId</code>, the operation results in an error. You can't modify an existing version, you can only create a new version. To remove a version, remove all staging labels from it. See <a>UpdateSecretVersionStage</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:UpdateSecret</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. If you use a customer managed key, you must also have <code>kms:GenerateDataKey</code> and <code>kms:Decrypt</code> permissions on the key. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/security-encryption.html\"> Secret encryption and decryption</a>.</p>"
     },
     "UpdateSecretVersionStage":{
       "name":"UpdateSecretVersionStage",
@@ -445,7 +445,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyIdType",
-          "documentation":"<p>The ARN, key ID, or alias of the KMS key that Secrets Manager uses to encrypt the secret value in the secret.</p> <p>To use a KMS key in a different account, use the key ARN or the alias ARN.</p> <p>If you don't specify this value, then Secrets Manager uses the key <code>aws/secretsmanager</code>. If that key doesn't yet exist, then Secrets Manager creates it for you automatically the first time it encrypts the secret value.</p> <p>If the secret is in a different Amazon Web Services account from the credentials calling the API, then you can't use <code>aws/secretsmanager</code> to encrypt the secret, and you must create and use a customer managed KMS key. </p>"
+          "documentation":"<p>The ARN, key ID, or alias of the KMS key that Secrets Manager uses to encrypt the secret value in the secret. An alias is always prefixed by <code>alias/</code>, for example <code>alias/aws/secretsmanager</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/alias-about.html\">About aliases</a>.</p> <p>To use a KMS key in a different account, use the key ARN or the alias ARN.</p> <p>If you don't specify this value, then Secrets Manager uses the key <code>aws/secretsmanager</code>. If that key doesn't yet exist, then Secrets Manager creates it for you automatically the first time it encrypts the secret value.</p> <p>If the secret is in a different Amazon Web Services account from the credentials calling the API, then you can't use <code>aws/secretsmanager</code> to encrypt the secret, and you must create and use a customer managed KMS key. </p>"
         },
         "SecretBinary":{
           "shape":"SecretBinaryType",
@@ -589,7 +589,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyIdType",
-          "documentation":"<p>The ARN of the KMS key that Secrets Manager uses to encrypt the secret value. If the secret is encrypted with the Amazon Web Services managed key <code>aws/secretsmanager</code>, this field is omitted.</p>"
+          "documentation":"<p>The key ID or alias ARN of the KMS key that Secrets Manager uses to encrypt the secret value. If the secret is encrypted with the Amazon Web Services managed key <code>aws/secretsmanager</code>, this field is omitted. Secrets created using the console use an KMS key ID.</p>"
         },
         "RotationEnabled":{
           "shape":"RotationEnabledType",
@@ -616,7 +616,7 @@
         },
         "LastAccessedDate":{
           "shape":"LastAccessedDateType",
-          "documentation":"<p>The last date that the secret value was retrieved. This value does not include the time. This field is omitted if the secret has never been retrieved.</p>",
+          "documentation":"<p>The date that the secret was last accessed in the Region. This field is omitted if the secret has never been retrieved in the Region.</p>",
           "box":true
         },
         "DeletedDate":{
@@ -634,7 +634,7 @@
         },
         "OwningService":{
           "shape":"OwningServiceType",
-          "documentation":"<p>The name of the service that created this secret.</p>"
+          "documentation":"<p>The ID of the service that created this secret. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/service-linked-secrets.html\">Secrets managed by other Amazon Web Services services</a>.</p>"
         },
         "CreatedDate":{
           "shape":"TimestampType",
@@ -883,7 +883,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>A parameter value is not valid for the current state of the resource.</p> <p>Possible causes:</p> <ul> <li> <p>The secret is scheduled for deletion.</p> </li> <li> <p>You tried to enable rotation on a secret that doesn't already have a Lambda function ARN configured and you didn't include such an ARN as a parameter in this call. </p> </li> </ul>",
+      "documentation":"<p>A parameter value is not valid for the current state of the resource.</p> <p>Possible causes:</p> <ul> <li> <p>The secret is scheduled for deletion.</p> </li> <li> <p>You tried to enable rotation on a secret that doesn't already have a Lambda function ARN configured and you didn't include such an ARN as a parameter in this call. </p> </li> <li> <p>The secret is managed by another service, and you must use that service to update it. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/service-linked-secrets.html\">Secrets managed by other Amazon Web Services services</a>.</p> </li> </ul>",
       "exception":true
     },
     "KmsKeyIdListType":{
@@ -1244,7 +1244,7 @@
         },
         "LastAccessedDate":{
           "shape":"LastAccessedDateType",
-          "documentation":"<p>The date that you last accessed the secret in the Region. </p>"
+          "documentation":"<p>The date that the secret was last accessed in the Region. This field is omitted if the secret has never been retrieved in the Region.</p>"
         }
       },
       "documentation":"<p>A replication object consisting of a <code>RegionReplicationStatus</code> object and includes a Region, KMSKeyId, status, and status message.</p>"
@@ -1426,7 +1426,7 @@
         },
         "LastAccessedDate":{
           "shape":"LastAccessedDateType",
-          "documentation":"<p>The last date that this secret was accessed. This value is truncated to midnight of the date and therefore shows only the date, not the time.</p>",
+          "documentation":"<p>The date that the secret was last accessed in the Region. This field is omitted if the secret has never been retrieved in the Region.</p>",
           "box":true
         },
         "DeletedDate":{
@@ -1650,7 +1650,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyIdType",
-          "documentation":"<p>The ARN, key ID, or alias of the KMS key that Secrets Manager uses to encrypt new secret versions as well as any existing versions the staging labels <code>AWSCURRENT</code>, <code>AWSPENDING</code>, or <code>AWSPREVIOUS</code>. For more information about versions and staging labels, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version\">Concepts: Version</a>.</p> <important> <p>You can only use the Amazon Web Services managed key <code>aws/secretsmanager</code> if you call this operation using credentials from the same Amazon Web Services account that owns the secret. If the secret is in a different account, then you must use a customer managed key and provide the ARN of that KMS key in this field. The user making the call must have permissions to both the secret and the KMS key in their respective accounts.</p> </important>"
+          "documentation":"<p>The ARN, key ID, or alias of the KMS key that Secrets Manager uses to encrypt new secret versions as well as any existing versions with the staging labels <code>AWSCURRENT</code>, <code>AWSPENDING</code>, or <code>AWSPREVIOUS</code>. For more information about versions and staging labels, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/getting-started.html#term_version\">Concepts: Version</a>.</p> <p>A key alias is always prefixed by <code>alias/</code>, for example <code>alias/aws/secretsmanager</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/alias-about.html\">About aliases</a>.</p> <p>If you set this to an empty string, Secrets Manager uses the Amazon Web Services managed key <code>aws/secretsmanager</code>. If this key doesn't already exist in your account, then Secrets Manager creates it for you automatically. All users and roles in the Amazon Web Services account automatically have access to use <code>aws/secretsmanager</code>. Creating <code>aws/secretsmanager</code> can result in a one-time significant delay in returning the result. </p> <important> <p>You can only use the Amazon Web Services managed key <code>aws/secretsmanager</code> if you call this operation using credentials from the same Amazon Web Services account that owns the secret. If the secret is in a different account, then you must use a customer managed key and provide the ARN of that KMS key in this field. The user making the call must have permissions to both the secret and the KMS key in their respective accounts.</p> </important>"
         },
         "SecretBinary":{
           "shape":"SecretBinaryType",

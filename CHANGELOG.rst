@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.25.58
+=======
+
+* api-change:``docdb``: Update document for volume clone
+* api-change:``ec2``: R6a instances are powered by 3rd generation AMD EPYC (Milan) processors delivering all-core turbo frequency of 3.6 GHz. C6id, M6id, and R6id instances are powered by 3rd generation Intel Xeon Scalable processor (Ice Lake) delivering all-core turbo frequency of 3.5 GHz.
+* api-change:``forecast``: releasing What-If Analysis APIs and update ARN regex pattern to be more strict in accordance with security recommendation
+* api-change:``forecastquery``: releasing What-If Analysis APIs
+* api-change:``iotsitewise``: Enable non-unique asset names under different hierarchies
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``securityhub``: Added new resource details objects to ASFF, including resources for AwsBackupBackupVault, AwsBackupBackupPlan and AwsBackupRecoveryPoint. Added FixAvailable, FixedInVersion and Remediation  to Vulnerability.
+* api-change:``support-app``: This is the initial SDK release for the AWS Support App in Slack.
+
+
 1.25.57
 =======
 

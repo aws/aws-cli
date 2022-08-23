@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -10,9 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
-import tempfile
-
 from awscli.testutils import (
     mock,
     unittest,
@@ -26,7 +23,6 @@ from awscli.customizations.configure.configure import ConfigureCommand
 class TestConfigureCommand(BaseAWSCommandParamsTest):
     def setUp(self):
         super().setUp()
-        self.tempdir = tempfile.mkdtemp()
         self.files = FileCreator()
         self.config_filename = self.files.full_path("configure")
         self.environ["AWS_CONFIG_FILE"] = self.config_filename
@@ -34,9 +30,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
 
     def tearDown(self):
         super().tearDown()
-        if os.path.isfile(self.config_filename):
-            os.remove(self.config_filename)
-        os.rmdir(os.path.dirname(self.config_filename))
+        self.files.remove_all()
 
     def set_config_file_contents(self, contents):
         self.files.create_file(self.config_filename, contents)
@@ -163,7 +157,8 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure set endpoint http://www.example.com",
         )
         self.assertEqual(
-            "[default]\n" "endpoint = http://www.example.com\n",
+            "[default]\n"
+            "endpoint = http://www.example.com\n",
             self.get_config_file_contents(),
         )
 
@@ -385,7 +380,3 @@ class TestConfigureHasArgTable(unittest.TestCase):
         m = mock.Mock()
         command = ConfigureCommand(m)
         self.assertEqual(command.arg_table, {})
-
-
-if __name__ == "__main__":
-    unittest.main()

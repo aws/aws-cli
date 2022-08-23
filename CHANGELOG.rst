@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.59
+=======
+
+* api-change:``rds``: RDS for Oracle supports Oracle Data Guard switchover and read replica backups.
+* api-change:``sso-admin``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+
+
 1.25.58
 =======
 

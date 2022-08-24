@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.7.26
+======
+
+* api-change:``sso-admin``: Documentation updates to reflect service rename - AWS IAM Identity Center (successor to AWS Single Sign-On)
+* api-change:``ec2``: R6a instances are powered by 3rd generation AMD EPYC (Milan) processors delivering all-core turbo frequency of 3.6 GHz. C6id, M6id, and R6id instances are powered by 3rd generation Intel Xeon Scalable processor (Ice Lake) delivering all-core turbo frequency of 3.5 GHz.
+* api-change:``forecastquery``: releasing What-If Analysis APIs
+* api-change:``rds``: RDS for Oracle supports Oracle Data Guard switchover and read replica backups.
+* api-change:``connect``: This release adds SearchSecurityProfiles API which can be used to search for Security Profile resources within a Connect Instance.
+* api-change:``kendra``: This release adds support for a new authentication type - Personal Access Token (PAT) for confluence server.
+* api-change:``forecast``: releasing What-If Analysis APIs and update ARN regex pattern to be more strict in accordance with security recommendation
+* api-change:``lookoutmetrics``: This release is to make GetDataQualityMetrics API publicly available.
+* api-change:``support-app``: This is the initial SDK release for the AWS Support App in Slack.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* enhancement:docs: Improve AWS CLI docs to include global options available to service commands.
+* api-change:``securityhub``: Added new resource details objects to ASFF, including resources for AwsBackupBackupVault, AwsBackupBackupPlan and AwsBackupRecoveryPoint. Added FixAvailable, FixedInVersion and Remediation  to Vulnerability.
+* api-change:``docdb``: Update document for volume clone
+* api-change:``iotsitewise``: Enable non-unique asset names under different hierarchies
+* api-change:``ivschat``: Documentation Change for IVS Chat API Reference - Doc-only update to change text/description for tags field.
+* enhancement:docs: Differentiate between regular and streaming blobs and generate a usage note when a parameter is of streaming blob type.
+
+
 2.7.25
 ======
 

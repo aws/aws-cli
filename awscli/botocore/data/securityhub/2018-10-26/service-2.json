@@ -1637,7 +1637,7 @@
         },
         "HealthCheckType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The service to use for the health checks.</p>"
+          "documentation":"<p>The service to use for the health checks. Valid values are <code>EC2</code> or <code>ELB</code>.</p>"
         },
         "HealthCheckGracePeriod":{
           "shape":"Integer",
@@ -1703,7 +1703,7 @@
       "members":{
         "OnDemandAllocationStrategy":{
           "shape":"NonEmptyString",
-          "documentation":"<p>How to allocate instance types to fulfill On-Demand capacity.</p>"
+          "documentation":"<p>How to allocate instance types to fulfill On-Demand capacity. The valid value is <code>prioritized</code>.</p>"
         },
         "OnDemandBaseCapacity":{
           "shape":"Integer",
@@ -1715,7 +1715,7 @@
         },
         "SpotAllocationStrategy":{
           "shape":"NonEmptyString",
-          "documentation":"<p>How to allocate instances across Spot Instance pools.</p>"
+          "documentation":"<p>How to allocate instances across Spot Instance pools. Valid values are as follows:</p> <ul> <li> <p> <code>lowest-price</code> </p> </li> <li> <p> <code>capacity-optimized</code> </p> </li> <li> <p> <code>capacity-optimized-prioritized</code> </p> </li> </ul>"
         },
         "SpotInstancePools":{
           "shape":"Integer",
@@ -1825,7 +1825,7 @@
         },
         "VolumeType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The volume type.</p>"
+          "documentation":"<p>The volume type. Valid values are as follows:</p> <ul> <li> <p> <code>gp2</code> </p> </li> <li> <p> <code>gp3</code> </p> </li> <li> <p> <code>io1</code> </p> </li> <li> <p> <code>sc1</code> </p> </li> <li> <p> <code>st1</code> </p> </li> <li> <p> <code>standard</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Parameters that are used to automatically set up EBS volumes when an instance is launched.</p>"
@@ -1943,6 +1943,314 @@
         }
       },
       "documentation":"<p>The metadata options for the instances.</p>"
+    },
+    "AwsBackupBackupPlanAdvancedBackupSettingsDetails":{
+      "type":"structure",
+      "members":{
+        "BackupOptions":{
+          "shape":"FieldMap",
+          "documentation":"<p>Specifies the backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs. Valid values are as follows:</p> <ul> <li> <p>Set to <code>WindowsVSS: enabled</code> to enable the WindowsVSS backup option and create a Windows VSS backup.</p> </li> <li> <p>Set to <code>WindowsVSS: disabled</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> </li> </ul>"
+        },
+        "ResourceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of a resource type. The only supported resource type is Amazon EC2 instances with Windows VSS.</p> <p>The only valid value is <code>EC2</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides a list of backup options for each resource type. </p>"
+    },
+    "AwsBackupBackupPlanAdvancedBackupSettingsList":{
+      "type":"list",
+      "member":{"shape":"AwsBackupBackupPlanAdvancedBackupSettingsDetails"}
+    },
+    "AwsBackupBackupPlanBackupPlanDetails":{
+      "type":"structure",
+      "members":{
+        "BackupPlanName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The display name of a backup plan. </p>"
+        },
+        "AdvancedBackupSettings":{
+          "shape":"AwsBackupBackupPlanAdvancedBackupSettingsList",
+          "documentation":"<p>A list of backup options for each resource type. </p>"
+        },
+        "BackupPlanRule":{
+          "shape":"AwsBackupBackupPlanRuleList",
+          "documentation":"<p>An array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources. </p>"
+        }
+      },
+      "documentation":"<p>Provides details about an Backup backup plan and an array of <code>BackupRule</code> objects, each of which specifies a backup rule. </p>"
+    },
+    "AwsBackupBackupPlanDetails":{
+      "type":"structure",
+      "members":{
+        "BackupPlan":{
+          "shape":"AwsBackupBackupPlanBackupPlanDetails",
+          "documentation":"<p>Uniquely identifies the backup plan to be associated with the selection of resources. </p>"
+        },
+        "BackupPlanArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the backup plan. </p>"
+        },
+        "BackupPlanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A unique ID for the backup plan. </p>"
+        },
+        "VersionId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Unique, randomly generated, Unicode, UTF-8 encoded strings. Version IDs cannot be edited. </p>"
+        }
+      },
+      "documentation":"<p>Provides details about an Backup backup plan and an array of <code>BackupRule</code> objects, each of which specifies a backup rule. </p>"
+    },
+    "AwsBackupBackupPlanLifecycleDetails":{
+      "type":"structure",
+      "members":{
+        "DeleteAfterDays":{
+          "shape":"Long",
+          "documentation":"<p>Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>. </p>"
+        },
+        "MoveToColdStorageAfterDays":{
+          "shape":"Long",
+          "documentation":"<p>Specifies the number of days after creation that a recovery point is moved to cold storage. </p>"
+        }
+      },
+      "documentation":"<p>Provides lifecycle details for the backup plan. A lifecycle defines when a backup is transitioned to cold storage and when it expires. </p>"
+    },
+    "AwsBackupBackupPlanRuleCopyActionsDetails":{
+      "type":"structure",
+      "members":{
+        "DestinationBackupVaultArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. </p>"
+        },
+        "Lifecycle":{
+          "shape":"AwsBackupBackupPlanLifecycleDetails",
+          "documentation":"<p>Defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. If you do not specify a lifecycle, Backup applies the lifecycle policy of the source backup to the destination backup.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days.</p>"
+        }
+      },
+      "documentation":"<p>An array of <code>CopyAction</code> objects, which contains the details of the copy operation. </p>"
+    },
+    "AwsBackupBackupPlanRuleCopyActionsList":{
+      "type":"list",
+      "member":{"shape":"AwsBackupBackupPlanRuleCopyActionsDetails"}
+    },
+    "AwsBackupBackupPlanRuleDetails":{
+      "type":"structure",
+      "members":{
+        "TargetBackupVault":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the Amazon Web Services account used to create them and the Amazon Web Services Region where they are created. They consist of letters, numbers, and hyphens. </p>"
+        },
+        "StartWindowMinutes":{
+          "shape":"Long",
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. </p>"
+        },
+        "ScheduleExpression":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A cron expression in UTC specifying when Backup initiates a backup job. </p>"
+        },
+        "RuleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A display name for a backup rule. Must contain 1 to 50 alphanumeric or '-_.' characters. </p>"
+        },
+        "RuleId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Uniquely identifies a rule that is used to schedule the backup of a selection of resources. </p>"
+        },
+        "EnableContinuousBackup":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Backup creates continuous backups capable of point-in-time restore (PITR). </p>"
+        },
+        "CompletionWindowMinutes":{
+          "shape":"Long",
+          "documentation":"<p>A value in minutes after a backup job is successfully started before it must be completed, or it is canceled by Backup. </p>"
+        },
+        "CopyActions":{
+          "shape":"AwsBackupBackupPlanRuleCopyActionsList",
+          "documentation":"<p>An array of <code>CopyAction</code> objects, which contains the details of the copy operation. </p>"
+        },
+        "Lifecycle":{
+          "shape":"AwsBackupBackupPlanLifecycleDetails",
+          "documentation":"<p>Defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. If you do not specify a lifecycle, Backup applies the lifecycle policy of the source backup to the destination backup.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about an array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources. </p>"
+    },
+    "AwsBackupBackupPlanRuleList":{
+      "type":"list",
+      "member":{"shape":"AwsBackupBackupPlanRuleDetails"}
+    },
+    "AwsBackupBackupVaultDetails":{
+      "type":"structure",
+      "members":{
+        "BackupVaultArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault. </p>"
+        },
+        "BackupVaultName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the Amazon Web Services account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens. </p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique ARN associated with the server-side encryption key. You can specify a key to encrypt your backups from services that support full Backup management. If you do not specify a key, Backup creates an KMS key for you by default. </p>"
+        },
+        "Notifications":{
+          "shape":"AwsBackupBackupVaultNotificationsDetails",
+          "documentation":"<p>The Amazon SNS event notifications for the specified backup vault. </p>"
+        },
+        "AccessPolicy":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A resource-based policy that is used to manage access permissions on the target backup vault. </p>"
+        }
+      },
+      "documentation":"<p>Provides details about an Backup backup vault. In Backup, a backup vault is a container that stores and organizes your backups. </p>"
+    },
+    "AwsBackupBackupVaultNotificationsDetails":{
+      "type":"structure",
+      "members":{
+        "BackupVaultEvents":{
+          "shape":"NonEmptyStringList",
+          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault. The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED | BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED | COPY_JOB_SUCCESSFUL | COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED | RESTORE_JOB_COMPLETED | RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED | S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul>"
+        },
+        "SnsTopicArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An ARN that uniquely identifies the Amazon SNS topic for a backup vault’s events. </p>"
+        }
+      },
+      "documentation":"<p>Provides details about the Amazon SNS event notifications for the specified backup vault. </p>"
+    },
+    "AwsBackupRecoveryPointCalculatedLifecycleDetails":{
+      "type":"structure",
+      "members":{
+        "DeleteAt":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>. </p>"
+        },
+        "MoveToColdStorageAt":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the number of days after creation that a recovery point is moved to cold storage. </p>"
+        }
+      },
+      "documentation":"<p>Specifies how long in days before a recovery point transitions to cold storage or is deleted. </p>"
+    },
+    "AwsBackupRecoveryPointCreatedByDetails":{
+      "type":"structure",
+      "members":{
+        "BackupPlanArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup plan. </p>"
+        },
+        "BackupPlanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Uniquely identifies a backup plan. </p>"
+        },
+        "BackupPlanVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited. </p>"
+        },
+        "BackupRuleId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Uniquely identifies a rule used to schedule the backup of a selection of resources. </p>"
+        }
+      },
+      "documentation":"<p>Contains information about the backup plan and rule that Backup used to initiate the recovery point backup. </p>"
+    },
+    "AwsBackupRecoveryPointDetails":{
+      "type":"structure",
+      "members":{
+        "BackupSizeInBytes":{
+          "shape":"Long",
+          "documentation":"<p>The size, in bytes, of a backup. </p>"
+        },
+        "BackupVaultArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault. </p>"
+        },
+        "BackupVaultName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the Amazon Web Services account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens. </p>"
+        },
+        "CalculatedLifecycle":{
+          "shape":"AwsBackupRecoveryPointCalculatedLifecycleDetails",
+          "documentation":"<p>A <code>CalculatedLifecycle</code> object containing <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps. </p>"
+        },
+        "CompletionDate":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The date and time that a job to create a recovery point is completed, in Unix format and UTC. The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM. </p>"
+        },
+        "CreatedBy":{
+          "shape":"AwsBackupRecoveryPointCreatedByDetails",
+          "documentation":"<p>Contains identifying information about the creation of a recovery point, including the <code>BackupPlanArn</code>, <code>BackupPlanId</code>, <code>BackupPlanVersion</code>, and <code>BackupRuleId</code> of the backup plan that is used to create it. </p>"
+        },
+        "CreationDate":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The date and time a recovery point is created, in Unix format and UTC. The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM. </p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN for the server-side encryption key that is used to protect your backups. </p>"
+        },
+        "IamRoleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the IAM role ARN used to create the target recovery point </p>"
+        },
+        "IsEncrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that is returned as <code>TRUE</code> if the specified recovery point is encrypted, or <code>FALSE</code> if the recovery point is not encrypted. </p>"
+        },
+        "LastRestoreTime":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The date and time that a recovery point was last restored, in Unix format and UTC. The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM. </p>"
+        },
+        "Lifecycle":{
+          "shape":"AwsBackupRecoveryPointLifecycleDetails",
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define </p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An ARN that uniquely identifies a recovery point. </p>"
+        },
+        "ResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An ARN that uniquely identifies a resource. The format of the ARN depends on the resource type. </p>"
+        },
+        "ResourceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of Amazon Web Services resource saved as a recovery point, such as an Amazon EBS volume or an Amazon RDS database. </p>"
+        },
+        "SourceBackupVaultArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN for the backup vault where the recovery point was originally copied from. If the recovery point is restored to the same account, this value will be null. </p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A status code specifying the state of the recovery point. Valid values are as follows:</p> <ul> <li> <p> <code>COMPLETED</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>EXPIRED</code> </p> </li> <li> <p> <code>PARTIAL</code> </p> </li> </ul>"
+        },
+        "StatusMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A message explaining the reason of the recovery point deletion failure. </p>"
+        },
+        "StorageClass":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the storage class of the recovery point. Valid values are as follows:</p> <ul> <li> <p> <code>COLD</code> </p> </li> <li> <p> <code>DELETED</code> </p> </li> <li> <p> <code>WARM</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about the recovery points stored in an Backup backup vault. A backup, or recovery point, represents the content of a resource at a specified time. </p>"
+    },
+    "AwsBackupRecoveryPointLifecycleDetails":{
+      "type":"structure",
+      "members":{
+        "DeleteAfterDays":{
+          "shape":"Long",
+          "documentation":"<p>Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>. </p>"
+        },
+        "MoveToColdStorageAfterDays":{
+          "shape":"Long",
+          "documentation":"<p>Specifies the number of days after creation that a recovery point is moved to cold storage. </p>"
+        }
+      },
+      "documentation":"<p>Contains an array of Transition objects specifying how long in days before a recovery point transitions to cold storage or is deleted. </p>"
     },
     "AwsCertificateManagerCertificateDetails":{
       "type":"structure",
@@ -2131,7 +2439,7 @@
         },
         "RenewalStatusReason":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The reason that a renewal request was unsuccessful.</p> <p>Valid values: <code>NO_AVAILABLE_CONTACTS</code> | <code>ADDITIONAL_VERIFICATION_REQUIRED</code> | <code>DOMAIN_NOT_ALLOWED</code> | <code>INVALID_PUBLIC_DOMAIN</code> | <code>DOMAIN_VALIDATION_DENIED</code> | <code>CAA_ERROR</code> | <code>PCA_LIMIT_EXCEEDED</code> | <code>PCA_INVALID_ARN</code> | <code>PCA_INVALID_STATE</code> | <code>PCA_REQUEST_FAILED</code> | <code>PCA_NAME_CONSTRAINTS_VALIDATION</code> | <code>PCA_RESOURCE_NOT_FOUND</code> | <code>PCA_INVALID_ARGS</code> | <code>PCA_INVALID_DURATION</code> | <code>PCA_ACCESS_DENIED</code> | <code>SLR_NOT_FOUND</code> | <code>OTHER</code> </p>"
+          "documentation":"<p>The reason that a renewal request was unsuccessful. This attribute is used only when <code>RenewalStatus</code> is <code>FAILED</code>.</p> <p>Valid values: <code>NO_AVAILABLE_CONTACTS</code> | <code>ADDITIONAL_VERIFICATION_REQUIRED</code> | <code>DOMAIN_NOT_ALLOWED</code> | <code>INVALID_PUBLIC_DOMAIN</code> | <code>DOMAIN_VALIDATION_DENIED</code> | <code>CAA_ERROR</code> | <code>PCA_LIMIT_EXCEEDED</code> | <code>PCA_INVALID_ARN</code> | <code>PCA_INVALID_STATE</code> | <code>PCA_REQUEST_FAILED</code> | <code>PCA_NAME_CONSTRAINTS_VALIDATION</code> | <code>PCA_RESOURCE_NOT_FOUND</code> | <code>PCA_INVALID_ARGS</code> | <code>PCA_INVALID_DURATION</code> | <code>PCA_ACCESS_DENIED</code> | <code>SLR_NOT_FOUND</code> | <code>OTHER</code> </p>"
         },
         "UpdatedAt":{
           "shape":"NonEmptyString",
@@ -3107,7 +3415,7 @@
         },
         "TableStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current status of the table.</p>"
+          "documentation":"<p>The current status of the table. Valid values are as follows:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ARCHIVED</code> </p> </li> <li> <p> <code>ARCHIVING</code> </p> </li> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_CREDENTIALS</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Provides details about a DynamoDB table.</p>"
@@ -3133,7 +3441,7 @@
         },
         "IndexStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current status of the index.</p>"
+          "documentation":"<p>The current status of the index.</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> </ul>"
         },
         "ItemCount":{
           "shape":"Integer",
@@ -3167,7 +3475,7 @@
         },
         "KeyType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of key used for the key schema attribute.</p>"
+          "documentation":"<p>The type of key used for the key schema attribute. Valid values are <code>HASH</code> or <code>RANGE</code>.</p>"
         }
       },
       "documentation":"<p>A component of the key schema for the DynamoDB table, a global secondary index, or a local secondary index.</p>"
@@ -3211,7 +3519,7 @@
         },
         "ProjectionType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The types of attributes that are projected into the index.</p>"
+          "documentation":"<p>The types of attributes that are projected into the index. Valid values are as follows:</p> <ul> <li> <p> <code>ALL</code> </p> </li> <li> <p> <code>INCLUDE</code> </p> </li> <li> <p> <code>KEYS_ONLY</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>For global and local secondary indexes, identifies the attributes that are copied from the table into the index.</p>"
@@ -3273,7 +3581,7 @@
         },
         "ReplicaStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current status of the replica.</p>"
+          "documentation":"<p>The current status of the replica. Valid values are as follows:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>CREATION_FAILED</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> </ul>"
         },
         "ReplicaStatusDescription":{
           "shape":"NonEmptyString",
@@ -3899,7 +4207,7 @@
         },
         "State":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current state of the subnet.</p>"
+          "documentation":"<p>The current state of the subnet. Valid values are <code>available</code> or <code>pending</code>.</p>"
         },
         "SubnetArn":{
           "shape":"NonEmptyString",
@@ -3991,7 +4299,7 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The attachment state of the volume.</p>"
+          "documentation":"<p>The attachment state of the volume. Valid values are as follows:</p> <ul> <li> <p> <code>attaching</code> </p> </li> <li> <p> <code>attached</code> </p> </li> <li> <p> <code>busy</code> </p> </li> <li> <p> <code>detaching</code> </p> </li> <li> <p> <code>detached</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>An attachment to an Amazon EC2 volume.</p>"
@@ -4025,7 +4333,7 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The volume state.</p>"
+          "documentation":"<p>The volume state. Valid values are as follows:</p> <ul> <li> <p> <code>available</code> </p> </li> <li> <p> <code>creating</code> </p> </li> <li> <p> <code>deleted</code> </p> </li> <li> <p> <code>deleting</code> </p> </li> <li> <p> <code>error</code> </p> </li> <li> <p> <code>in-use</code> </p> </li> </ul>"
         },
         "KmsKeyId":{
           "shape":"NonEmptyString",
@@ -4067,7 +4375,7 @@
         },
         "State":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current state of the VPC.</p>"
+          "documentation":"<p>The current state of the VPC. Valid values are <code>available</code> or <code>pending</code>.</p>"
         }
       },
       "documentation":"<p>Details about an EC2 VPC.</p>"
@@ -4113,7 +4421,7 @@
         },
         "ServiceState":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current state of the service.</p>"
+          "documentation":"<p>The current state of the service. Valid values are as follows:</p> <ul> <li> <p> <code>Available</code> </p> </li> <li> <p> <code>Deleted</code> </p> </li> <li> <p> <code>Deleting</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>Pending</code> </p> </li> </ul>"
         },
         "ServiceType":{
           "shape":"AwsEc2VpcEndpointServiceServiceTypeList",
@@ -4219,7 +4527,7 @@
         },
         "State":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current state of the VPN connection.</p>"
+          "documentation":"<p>The current state of the VPN connection. Valid values are as follows:</p> <ul> <li> <p> <code>available</code> </p> </li> <li> <p> <code>deleted</code> </p> </li> <li> <p> <code>deleting</code> </p> </li> <li> <p> <code>pending</code> </p> </li> </ul>"
         },
         "CustomerGatewayId":{
           "shape":"NonEmptyString",
@@ -4387,7 +4695,7 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The status of the VPN tunnel.</p>"
+          "documentation":"<p>The status of the VPN tunnel. Valid values are <code>DOWN</code> or <code>UP</code>.</p>"
         },
         "StatusMessage":{
           "shape":"NonEmptyString",
@@ -4413,7 +4721,7 @@
         },
         "Architecture":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The architecture of the image.</p>"
+          "documentation":"<p>The architecture of the image. Valid values are as follows:</p> <ul> <li> <p> <code>arm64</code> </p> </li> <li> <p> <code>i386</code> </p> </li> <li> <p> <code>x86_64</code> </p> </li> </ul>"
         },
         "ImageDigest":{
           "shape":"NonEmptyString",
@@ -4443,7 +4751,7 @@
         },
         "ImageTagMutability":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The tag mutability setting for the repository.</p>"
+          "documentation":"<p>The tag mutability setting for the repository. Valid values are <code>IMMUTABLE</code> or <code>MUTABLE</code>.</p>"
         },
         "LifecyclePolicy":{
           "shape":"AwsEcrRepositoryLifecyclePolicyDetails",
@@ -4489,11 +4797,11 @@
       "members":{
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the setting.</p>"
+          "documentation":"<p>The name of the setting. The valid value is <code>containerInsights</code>.</p>"
         },
         "Value":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The value of the setting.</p>"
+          "documentation":"<p>The value of the setting. Valid values are <code>disabled</code> or <code>enabled</code>.</p>"
         }
       },
       "documentation":"<p>Indicates whether to enable CloudWatch Container Insights for the ECS cluster.</p>"
@@ -4929,7 +5237,7 @@
       "members":{
         "Condition":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The dependency condition of the dependent container. Indicates the required status of the dependent container before the current container can start.</p>"
+          "documentation":"<p>The dependency condition of the dependent container. Indicates the required status of the dependent container before the current container can start. Valid values are as follows:</p> <ul> <li> <p> <code>COMPLETE</code> </p> </li> <li> <p> <code>HEALTHY</code> </p> </li> <li> <p> <code>SUCCESS</code> </p> </li> <li> <p> <code>START</code> </p> </li> </ul>"
         },
         "ContainerName":{
           "shape":"NonEmptyString",
@@ -5123,7 +5431,7 @@
       "members":{
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of environment file.</p>"
+          "documentation":"<p>The type of environment file. The valid value is <code>s3</code>.</p>"
         },
         "Value":{
           "shape":"NonEmptyString",
@@ -5167,7 +5475,7 @@
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The log router to use. </p>"
+          "documentation":"<p>The log router to use. Valid values are <code>fluentbit</code> or <code>fluentd</code>.</p>"
         }
       },
       "documentation":"<p>The FireLens configuration for the container. The configuration specifies and configures a log router for container logs.</p>"
@@ -5203,11 +5511,11 @@
       "members":{
         "Add":{
           "shape":"NonEmptyStringList",
-          "documentation":"<p>The Linux capabilities for the container that are added to the default configuration provided by Docker.</p>"
+          "documentation":"<p>The Linux capabilities for the container that are added to the default configuration provided by Docker. Valid values are as follows:</p> <p>Valid values: <code>\"ALL\"</code> | <code>\"AUDIT_CONTROL\"</code> |<code> \"AUDIT_WRITE\"</code> | <code>\"BLOCK_SUSPEND\"</code> | <code>\"CHOWN\"</code> | <code>\"DAC_OVERRIDE\"</code> | <code>\"DAC_READ_SEARCH\"</code> | <code>\"FOWNER\"</code> | <code>\"FSETID\"</code> | <code>\"IPC_LOCK\"</code> | <code>\"IPC_OWNER\"</code> | <code>\"KILL\"</code> | <code>\"LEASE\"</code> | <code>\"LINUX_IMMUTABLE\"</code> | <code>\"MAC_ADMIN\"</code> |<code> \"MAC_OVERRIDE\"</code> | <code>\"MKNOD\"</code> | <code>\"NET_ADMIN\"</code> | <code>\"NET_BIND_SERVICE\"</code> | <code>\"NET_BROADCAST\"</code> | <code>\"NET_RAW\"</code> | <code>\"SETFCAP\"</code> | <code>\"SETGID\"</code> | <code>\"SETPCAP\"</code> | <code>\"SETUID\"</code> | <code>\"SYS_ADMIN\"</code> | <code>\"SYS_BOOT\"</code> | <code>\"SYS_CHROOT\"</code> | <code>\"SYS_MODULE\"</code> | <code>\"SYS_NICE\"</code> | <code>\"SYS_PACCT\"</code> | <code>\"SYS_PTRACE\"</code> | <code>\"SYS_RAWIO\"</code> | <code>\"SYS_RESOURCE\"</code> | <code>\"SYS_TIME\"</code> | <code>\"SYS_TTY_CONFIG\"</code> | <code>\"SYSLOG\"</code> | <code>\"WAKE_ALARM\"</code> </p>"
         },
         "Drop":{
           "shape":"NonEmptyStringList",
-          "documentation":"<p>The Linux capabilities for the container that are dropped from the default configuration provided by Docker.</p>"
+          "documentation":"<p>The Linux capabilities for the container that are dropped from the default configuration provided by Docker.</p> <p>Valid values: <code>\"ALL\"</code> | <code>\"AUDIT_CONTROL\"</code> |<code> \"AUDIT_WRITE\"</code> | <code>\"BLOCK_SUSPEND\"</code> | <code>\"CHOWN\"</code> | <code>\"DAC_OVERRIDE\"</code> | <code>\"DAC_READ_SEARCH\"</code> | <code>\"FOWNER\"</code> | <code>\"FSETID\"</code> | <code>\"IPC_LOCK\"</code> | <code>\"IPC_OWNER\"</code> | <code>\"KILL\"</code> | <code>\"LEASE\"</code> | <code>\"LINUX_IMMUTABLE\"</code> | <code>\"MAC_ADMIN\"</code> |<code> \"MAC_OVERRIDE\"</code> | <code>\"MKNOD\"</code> | <code>\"NET_ADMIN\"</code> | <code>\"NET_BIND_SERVICE\"</code> | <code>\"NET_BROADCAST\"</code> | <code>\"NET_RAW\"</code> | <code>\"SETFCAP\"</code> | <code>\"SETGID\"</code> | <code>\"SETPCAP\"</code> | <code>\"SETUID\"</code> | <code>\"SYS_ADMIN\"</code> | <code>\"SYS_BOOT\"</code> | <code>\"SYS_CHROOT\"</code> | <code>\"SYS_MODULE\"</code> | <code>\"SYS_NICE\"</code> | <code>\"SYS_PACCT\"</code> | <code>\"SYS_PTRACE\"</code> | <code>\"SYS_RAWIO\"</code> | <code>\"SYS_RESOURCE\"</code> | <code>\"SYS_TIME\"</code> | <code>\"SYS_TTY_CONFIG\"</code> | <code>\"SYSLOG\"</code> | <code>\"WAKE_ALARM\"</code> </p>"
         }
       },
       "documentation":"<p>The Linux capabilities for the container that are added to or dropped from the default configuration provided by Docker.</p>"
@@ -5277,7 +5585,7 @@
         },
         "MountOptions":{
           "shape":"NonEmptyStringList",
-          "documentation":"<p>The list of tmpfs volume mount options.</p>"
+          "documentation":"<p>The list of tmpfs volume mount options.</p> <p>Valid values: <code>\"defaults\"</code> | <code>\"ro\"</code> | <code>\"rw\"</code> | <code>\"suid\"</code> | <code>\"nosuid\"</code> | <code>\"dev\"</code> | <code>\"nodev\"</code> |<code> \"exec\"</code> | <code>\"noexec\"</code> | <code>\"sync\"</code> | <code>\"async\"</code> | <code>\"dirsync\"</code> | <code>\"remount\"</code> | <code>\"mand\"</code> | <code>\"nomand\"</code> | <code>\"atime\"</code> | <code>\"noatime\"</code> | <code>\"diratime\"</code> | <code>\"nodiratime\"</code> | <code>\"bind\"</code> | <code>\"rbind\"</code> | <code>\"unbindable\"</code> | <code>\"runbindable\"</code> | <code>\"private\"</code> | <code>\"rprivate\"</code> | <code>\"shared\"</code> | <code>\"rshared\"</code> | <code>\"slave\"</code> | <code>\"rslave\"</code> | <code>\"relatime\"</code> | <code>\"norelatime\"</code> | <code>\"strictatime\"</code> | <code>\"nostrictatime\"</code> |<code> \"mode\"</code> | <code>\"uid\"</code> | <code>\"gid\"</code> | <code>\"nr_inodes\"</code> |<code> \"nr_blocks\"</code> | <code>\"mpol\"</code> </p>"
         },
         "Size":{
           "shape":"Integer",
@@ -5299,7 +5607,7 @@
       "members":{
         "LogDriver":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The log driver to use for the container.</p>"
+          "documentation":"<p>The log driver to use for the container.</p> <p>Valid values on Fargate are as follows:</p> <ul> <li> <p> <code>awsfirelens</code> </p> </li> <li> <p> <code>awslogs</code> </p> </li> <li> <p> <code>splunk</code> </p> </li> </ul> <p>Valid values on Amazon EC2 are as follows:</p> <ul> <li> <p> <code>awsfirelens</code> </p> </li> <li> <p> <code>awslogs</code> </p> </li> <li> <p> <code>fluentd</code> </p> </li> <li> <p> <code>gelf</code> </p> </li> <li> <p> <code>journald</code> </p> </li> <li> <p> <code>json-file</code> </p> </li> <li> <p> <code>logentries</code> </p> </li> <li> <p> <code>splunk</code> </p> </li> <li> <p> <code>syslog</code> </p> </li> </ul>"
         },
         "Options":{
           "shape":"FieldMap",
@@ -5389,7 +5697,7 @@
       "members":{
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of resource to assign to a container.</p>"
+          "documentation":"<p>The type of resource to assign to a container. Valid values are <code>GPU</code> or <code>InferenceAccelerator</code>.</p>"
         },
         "Value":{
           "shape":"NonEmptyString",
@@ -5447,7 +5755,7 @@
         },
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of the ulimit.</p>"
+          "documentation":"<p>The type of the ulimit. Valid values are as follows:</p> <ul> <li> <p> <code>core</code> </p> </li> <li> <p> <code>cpu</code> </p> </li> <li> <p> <code>data</code> </p> </li> <li> <p> <code>fsize</code> </p> </li> <li> <p> <code>locks</code> </p> </li> <li> <p> <code>memlock</code> </p> </li> <li> <p> <code>msgqueue</code> </p> </li> <li> <p> <code>nice</code> </p> </li> <li> <p> <code>nofile</code> </p> </li> <li> <p> <code>nproc</code> </p> </li> <li> <p> <code>rss</code> </p> </li> <li> <p> <code>rtprio</code> </p> </li> <li> <p> <code>rttime</code> </p> </li> <li> <p> <code>sigpending</code> </p> </li> <li> <p> <code>stack</code> </p> </li> </ul>"
         },
         "SoftLimit":{
           "shape":"Integer",
@@ -5487,7 +5795,7 @@
         },
         "Cpu":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The number of CPU units used by the task.</p>"
+          "documentation":"<p>The number of CPU units used by the task.Valid values are as follows:</p> <ul> <li> <p> <code>256 (.25 vCPU)</code> </p> </li> <li> <p> <code>512 (.5 vCPU)</code> </p> </li> <li> <p> <code>1024 (1 vCPU)</code> </p> </li> <li> <p> <code>2048 (2 vCPU)</code> </p> </li> <li> <p> <code>4096 (4 vCPU)</code> </p> </li> </ul>"
         },
         "ExecutionRoleArn":{
           "shape":"NonEmptyString",
@@ -5503,19 +5811,19 @@
         },
         "IpcMode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The IPC resource namespace to use for the containers in the task.</p>"
+          "documentation":"<p>The inter-process communication (IPC) resource namespace to use for the containers in the task. Valid values are as follows:</p> <ul> <li> <p> <code>host</code> </p> </li> <li> <p> <code>none</code> </p> </li> <li> <p> <code>task</code> </p> </li> </ul>"
         },
         "Memory":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The amount (in MiB) of memory used by the task.</p>"
+          "documentation":"<p>The amount (in MiB) of memory used by the task. </p> <p>For tasks that are hosted on Amazon EC2, you can provide a task-level memory value or a container-level memory value. For tasks that are hosted on Fargate, you must use one of the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size\">specified values</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>, which determines your range of supported values for the <code>Cpu</code> and <code>Memory</code> parameters.</p>"
         },
         "NetworkMode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Docker networking mode to use for the containers in the task.</p>"
+          "documentation":"<p>The Docker networking mode to use for the containers in the task. Valid values are as follows:</p> <ul> <li> <p> <code>awsvpc</code> </p> </li> <li> <p> <code>bridge</code> </p> </li> <li> <p> <code>host</code> </p> </li> <li> <p> <code>none</code> </p> </li> </ul>"
         },
         "PidMode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The process namespace to use for the containers in the task.</p>"
+          "documentation":"<p>The process namespace to use for the containers in the task. Valid values are <code>host</code> or <code>task</code>.</p>"
         },
         "PlacementConstraints":{
           "shape":"AwsEcsTaskDefinitionPlacementConstraintsList",
@@ -5655,7 +5963,7 @@
         },
         "Scope":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The scope for the Docker volume that determines its lifecycle. Docker volumes that are scoped to a task are provisioned automatically when the task starts and destroyed when the task stops. Docker volumes that are shared persist after the task stops.</p>"
+          "documentation":"<p>The scope for the Docker volume that determines its lifecycle. Docker volumes that are scoped to a task are provisioned automatically when the task starts and destroyed when the task stops. Docker volumes that are shared persist after the task stops. Valid values are <code>shared</code> or <code>task</code>.</p>"
         }
       },
       "documentation":"<p>Information about a Docker volume.</p>"
@@ -5877,7 +6185,7 @@
         },
         "ClusterStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The status of the cluster.</p>"
+          "documentation":"<p>The status of the cluster. Valid values are as follows:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>FAILED</code> </p> </li> <li> <p> <code>PENDING</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> </ul>"
         },
         "Endpoint":{
           "shape":"NonEmptyString",
@@ -5915,7 +6223,7 @@
         },
         "Types":{
           "shape":"NonEmptyStringList",
-          "documentation":"<p>A list of logging types.</p>"
+          "documentation":"<p>A list of logging types. Valid values are as follows:</p> <ul> <li> <p> <code>api</code> </p> </li> <li> <p> <code>audit</code> </p> </li> <li> <p> <code>authenticator</code> </p> </li> <li> <p> <code>controllerManager</code> </p> </li> <li> <p> <code>scheduler</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Details for a cluster logging configuration.</p>"
@@ -6005,7 +6313,7 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current operational status of the environment.</p>"
+          "documentation":"<p>The current operational status of the environment. Valid values are as follows:</p> <ul> <li> <p> <code>Aborting</code> </p> </li> <li> <p> <code>Launching</code> </p> </li> <li> <p> <code>LinkingFrom</code> </p> </li> <li> <p> <code>LinkingTo</code> </p> </li> <li> <p> <code>Ready</code> </p> </li> <li> <p> <code>Terminated</code> </p> </li> <li> <p> <code>Terminating</code> </p> </li> <li> <p> <code>Updating</code> </p> </li> </ul>"
         },
         "Tier":{
           "shape":"AwsElasticBeanstalkEnvironmentTier",
@@ -6067,11 +6375,11 @@
       "members":{
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the environment tier.</p>"
+          "documentation":"<p>The name of the environment tier. Valid values are <code>WebServer</code> or <code>Worker</code>.</p>"
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of environment tier.</p>"
+          "documentation":"<p>The type of environment tier. Valid values are <code>Standard</code> or <code>SQS/HTTP</code>.</p>"
         },
         "Version":{
           "shape":"NonEmptyString",
@@ -6165,7 +6473,7 @@
         },
         "DedicatedMasterType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The hardware configuration of the computer that hosts the dedicated master node. For example, <code>m3.medium.elasticsearch</code>. If this attribute is specified, then <code>DedicatedMasterEnabled</code> must be <code>true</code>.</p>"
+          "documentation":"<p>The hardware configuration of the computer that hosts the dedicated master node. A sample value is <code>m3.medium.elasticsearch</code>. If this attribute is specified, then <code>DedicatedMasterEnabled</code> must be <code>true</code>.</p> <p>For a list of valid values, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html\">Supported instance types in Amazon OpenSearch Service</a> in the <i>Amazon OpenSearch Service Developer Guide</i>.</p>"
         },
         "InstanceCount":{
           "shape":"Integer",
@@ -6173,7 +6481,7 @@
         },
         "InstanceType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The instance type for your data nodes. For example, <code>m3.medium.elasticsearch</code>.</p>"
+          "documentation":"<p>The instance type for your data nodes. For example, <code>m3.medium.elasticsearch</code>.</p> <p>For a list of valid values, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html\">Supported instance types in Amazon OpenSearch Service</a> in the <i>Amazon OpenSearch Service Developer Guide</i>.</p>"
         },
         "ZoneAwarenessConfig":{
           "shape":"AwsElasticsearchDomainElasticsearchClusterConfigZoneAwarenessConfigDetails",
@@ -6278,7 +6586,7 @@
         },
         "UpdateStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The status of the service software update.</p>"
+          "documentation":"<p>The status of the service software update. Valid values are as follows:</p> <ul> <li> <p> <code>COMPLETED</code> </p> </li> <li> <p> <code>ELIGIBLE</code> </p> </li> <li> <p> <code>IN_PROGRESS</code> </p> </li> <li> <p> <code>NOT_ELIGIBLE</code> </p> </li> <li> <p> <code>PENDING_UPDATE</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Information about the state of the domain relative to the latest service software.</p>"
@@ -7214,7 +7522,7 @@
         },
         "KeyState":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The state of the KMS key.</p>"
+          "documentation":"<p>The state of the KMS key. Valid values are as follows:</p> <ul> <li> <p> <code>Disabled</code> </p> </li> <li> <p> <code>Enabled</code> </p> </li> <li> <p> <code>PendingDeletion</code> </p> </li> <li> <p> <code>PendingImport</code> </p> </li> <li> <p> <code>Unavailable</code> </p> </li> </ul>"
         },
         "Origin":{
           "shape":"NonEmptyString",
@@ -7619,7 +7927,7 @@
         },
         "InstanceType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The instance type for your data nodes. </p>"
+          "documentation":"<p>The instance type for your data nodes.</p> <p>For a list of valid values, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html\">Supported instance types in Amazon OpenSearch Service</a> in the <i>Amazon OpenSearch Service Developer Guide</i>.</p>"
         },
         "WarmType":{
           "shape":"NonEmptyString",
@@ -7641,7 +7949,7 @@
       "members":{
         "AvailabilityZoneCount":{
           "shape":"Integer",
-          "documentation":"<p>The number of Availability Zones that the domain uses. Valid values are 2 and 3. The default is 2.</p>"
+          "documentation":"<p>The number of Availability Zones that the domain uses. Valid values are <code>2</code> or <code>3</code>. The default is <code>2</code>.</p>"
         }
       },
       "documentation":"<p>Configuration options for zone awareness.</p>"
@@ -7841,7 +8149,7 @@
         },
         "UpdateStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The status of the service software update.</p>"
+          "documentation":"<p>The status of the service software update. Valid values are as follows:</p> <ul> <li> <p> <code>COMPLETED</code> </p> </li> <li> <p> <code>ELIGIBLE</code> </p> </li> <li> <p> <code>IN_PROGRESS</code> </p> </li> <li> <p> <code>NOT_ELIGIBLE</code> </p> </li> <li> <p> <code>PENDING_UPDATE</code> </p> </li> </ul>"
         },
         "OptionalDeployment":{
           "shape":"Boolean",
@@ -7873,7 +8181,7 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The status of the association between the IAM role and the DB cluster.</p>"
+          "documentation":"<p>The status of the association between the IAM role and the DB cluster. Valid values are as follows:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>INVALID</code> </p> </li> <li> <p> <code>PENDING</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>An IAM role that is associated with the Amazon RDS DB cluster.</p>"
@@ -7923,7 +8231,7 @@
         },
         "Engine":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the database engine to use for this DB cluster.</p>"
+          "documentation":"<p>The name of the database engine to use for this DB cluster. Valid values are as follows:</p> <ul> <li> <p> <code>aurora</code> </p> </li> <li> <p> <code>aurora-mysql</code> </p> </li> <li> <p> <code>aurora-postgresql</code> </p> </li> </ul>"
         },
         "EngineVersion":{
           "shape":"NonEmptyString",
@@ -7983,7 +8291,7 @@
         },
         "EngineMode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The database engine mode of the DB cluster.</p>"
+          "documentation":"<p>The database engine mode of the DB cluster.Valid values are as follows:</p> <ul> <li> <p> <code>global</code> </p> </li> <li> <p> <code>multimaster</code> </p> </li> <li> <p> <code>parallelquery</code> </p> </li> <li> <p> <code>provisioned</code> </p> </li> <li> <p> <code>serverless</code> </p> </li> </ul>"
         },
         "DeletionProtection":{
           "shape":"Boolean",
@@ -7995,7 +8303,7 @@
         },
         "ActivityStreamStatus":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The status of the database activity stream.</p>"
+          "documentation":"<p>The status of the database activity stream. Valid values are as follows:</p> <ul> <li> <p> <code>started</code> </p> </li> <li> <p> <code>starting</code> </p> </li> <li> <p> <code>stopped</code> </p> </li> <li> <p> <code>stopping</code> </p> </li> </ul>"
         },
         "CopyTagsToSnapshot":{
           "shape":"Boolean",
@@ -8580,7 +8888,7 @@
       "members":{
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the processor feature.</p>"
+          "documentation":"<p>The name of the processor feature. Valid values are <code>coreCount</code> or <code>threadsPerCore</code>.</p>"
         },
         "Value":{
           "shape":"NonEmptyString",
@@ -8688,7 +8996,7 @@
         },
         "Engine":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the database engine to use for this DB instance.</p>"
+          "documentation":"<p>The name of the database engine to use for this DB instance. Valid values are as follows:</p> <ul> <li> <p> <code>aurora</code> </p> </li> <li> <p> <code>aurora-mysql</code> </p> </li> <li> <p> <code>aurora-postgresql</code> </p> </li> <li> <p> <code>c</code> </p> </li> <li> <p> <code>mariadb</code> </p> </li> <li> <p> <code>mysql</code> </p> </li> <li> <p> <code>oracle-ee</code> </p> </li> <li> <p> <code>oracle-se</code> </p> </li> <li> <p> <code>oracle-se1</code> </p> </li> <li> <p> <code>oracle-se2</code> </p> </li> <li> <p> <code>sqlserver-ee</code> </p> </li> <li> <p> <code>sqlserver-ex</code> </p> </li> <li> <p> <code>sqlserver-se</code> </p> </li> <li> <p> <code>sqlserver-web</code> </p> </li> </ul>"
         },
         "AllocatedStorage":{
           "shape":"Integer",
@@ -8752,7 +9060,7 @@
         },
         "StorageType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The storage type associated with the DB snapshot.</p>"
+          "documentation":"<p>The storage type associated with the DB snapshot. Valid values are as follows:</p> <ul> <li> <p> <code>gp2</code> </p> </li> <li> <p> <code>io1</code> </p> </li> <li> <p> <code>standard</code> </p> </li> </ul>"
         },
         "TdeCredentialArn":{
           "shape":"NonEmptyString",
@@ -9568,7 +9876,7 @@
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Whether to use <code>AND</code> or <code>OR</code> to join the operands.</p>"
+          "documentation":"<p>Whether to use <code>AND</code> or <code>OR</code> to join the operands. Valid values are <code>LifecycleAndOperator</code> or <code>LifecycleOrOperator</code>.</p>"
         }
       },
       "documentation":"<p>The configuration for the filter.</p>"
@@ -9586,7 +9894,7 @@
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of filter value.</p>"
+          "documentation":"<p>The type of filter value. Valid values are <code>LifecyclePrefixPredicate</code> or <code>LifecycleTagPredicate</code>.</p>"
         }
       },
       "documentation":"<p>A value to use for the filter.</p>"
@@ -9658,7 +9966,7 @@
         },
         "StorageClass":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The storage class to transition the object to.</p>"
+          "documentation":"<p>The storage class to transition the object to. Valid values are as follows:</p> <ul> <li> <p> <code>DEEP_ARCHIVE</code> </p> </li> <li> <p> <code>GLACIER</code> </p> </li> <li> <p> <code>INTELLIGENT_TIERING</code> </p> </li> <li> <p> <code>ONEZONE_IA</code> </p> </li> <li> <p> <code>STANDARD_IA</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>A rule for when objects transition to specific storage classes.</p>"
@@ -9676,7 +9984,7 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The versioning status of the S3 bucket.</p>"
+          "documentation":"<p>The versioning status of the S3 bucket. Valid values are <code>Enabled</code> or <code>Suspended</code>.</p>"
         }
       },
       "documentation":"<p>Describes the versioning state of an S3 bucket.</p>"
@@ -9776,7 +10084,7 @@
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates the type of notification. Notifications can be generated using Lambda functions, Amazon SQS queues or Amazon SNS topics.</p>"
+          "documentation":"<p>Indicates the type of notification. Notifications can be generated using Lambda functions, Amazon SQS queues, or Amazon SNS topics, with corresponding valid values as follows:</p> <ul> <li> <p> <code>LambdaConfiguration</code> </p> </li> <li> <p> <code>QueueConfiguration</code> </p> </li> <li> <p> <code>TopicConfiguration</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Details for an S3 bucket notification configuration.</p>"
@@ -9839,7 +10147,7 @@
       "members":{
         "SSEAlgorithm":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Server-side encryption algorithm to use for the default encryption.</p>"
+          "documentation":"<p>Server-side encryption algorithm to use for the default encryption. Valid values are <code>aws: kms</code> or <code>AES256</code>.</p>"
         },
         "KMSMasterKeyID":{
           "shape":"NonEmptyString",
@@ -9903,7 +10211,7 @@
         },
         "Protocol":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The protocol to use when redirecting requests. By default, uses the same protocol as the original request.</p>"
+          "documentation":"<p>The protocol to use when redirecting requests. By default, this field uses the same protocol as the original request. Valid values are <code>http</code> or <code>https</code>.</p>"
         }
       },
       "documentation":"<p>The redirect behavior for requests to the website.</p>"
@@ -10224,7 +10532,7 @@
           "documentation":"<p>Indicates whether the finding is a sample finding.</p>"
         }
       },
-      "documentation":"<p>Provides consistent format for the contents of the Security Hub-aggregated findings. <code>AwsSecurityFinding</code> format enables you to share findings between Amazon Web Services security services and third-party solutions, and security standards checks.</p> <note> <p>A finding is a potential security issue generated either by Amazon Web Services services or by the integrated third-party solutions and standards checks.</p> </note>"
+      "documentation":"<p>Provides a consistent format for Security Hub findings. <code>AwsSecurityFinding</code> format allows you to share findings between Amazon Web Services security services and third-party solutions.</p> <note> <p>A finding is a potential security issue generated either by Amazon Web Services services or by the integrated third-party solutions and standards checks.</p> </note>"
     },
     "AwsSecurityFindingFilters":{
       "type":"structure",
@@ -10741,7 +11049,7 @@
       "members":{
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current patch compliance status.</p> <p>The possible status values are:</p> <ul> <li> <p> <code>COMPLIANT</code> </p> </li> <li> <p> <code>NON_COMPLIANT</code> </p> </li> <li> <p> <code>UNSPECIFIED_DATA</code> </p> </li> </ul>"
+          "documentation":"<p>The current patch compliance status. Valid values are as follows:</p> <ul> <li> <p> <code>COMPLIANT</code> </p> </li> <li> <p> <code>NON_COMPLIANT</code> </p> </li> <li> <p> <code>UNSPECIFIED_DATA</code> </p> </li> </ul>"
         },
         "CompliantCriticalCount":{
           "shape":"Integer",
@@ -10797,7 +11105,7 @@
         },
         "OverallSeverity":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The highest severity for the patches.</p>"
+          "documentation":"<p>The highest severity for the patches. Valid values are as follows:</p> <ul> <li> <p> <code>CRITICAL</code> </p> </li> <li> <p> <code>HIGH</code> </p> </li> <li> <p> <code>MEDIUM</code> </p> </li> <li> <p> <code>LOW</code> </p> </li> <li> <p> <code>INFORMATIONAL</code> </p> </li> <li> <p> <code>UNSPECIFIED</code> </p> </li> </ul>"
         },
         "NonCompliantMediumCount":{
           "shape":"Integer",
@@ -10877,7 +11185,7 @@
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of predicate.</p>"
+          "documentation":"<p>The type of predicate. Valid values are as follows:</p> <ul> <li> <p> <code>ByteMatch</code> </p> </li> <li> <p> <code>GeoMatch</code> </p> </li> <li> <p> <code>IPMatch</code> </p> </li> <li> <p> <code>RegexMatch</code> </p> </li> <li> <p> <code>SizeConstraint</code> </p> </li> <li> <p> <code>SqlInjectionMatch</code> </p> </li> <li> <p> <code>XssMatch</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>A match predicate. A predicate might look for characteristics such as specific IP addresses, geographic locations, or sizes.</p>"
@@ -10929,7 +11237,7 @@
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of predicate.</p>"
+          "documentation":"<p>The type of predicate. Valid values are as follows:</p> <ul> <li> <p> <code>ByteMatch</code> </p> </li> <li> <p> <code>GeoMatch</code> </p> </li> <li> <p> <code>IPMatch</code> </p> </li> <li> <p> <code>RegexMatch</code> </p> </li> <li> <p> <code>SizeConstraint</code> </p> </li> <li> <p> <code>SqlInjectionMatch</code> </p> </li> <li> <p> <code>XssMatch</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Details for a match predicate. A predicate might look for characteristics such as specific IP addresses, geographic locations, or sizes.</p>"
@@ -11283,11 +11591,11 @@
         },
         "Status":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The current status of the encryption configuration. When <code>Status</code> is <code>UPDATING</code>, X-Ray might use both the old and new encryption.</p>"
+          "documentation":"<p>The current status of the encryption configuration. Valid values are <code>ACTIVE</code> or <code>UPDATING</code>.</p> <p>When <code>Status</code> is equal to <code>UPDATING</code>, X-Ray might use both the old and new encryption.</p>"
         },
         "Type":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The type of encryption. <code>KMS</code> indicates that the encryption uses KMS keys. <code>NONE</code> indicates to use the default encryption.</p>"
+          "documentation":"<p>The type of encryption. <code>KMS</code> indicates that the encryption uses KMS keys. <code>NONE</code> indicates the default encryption.</p>"
         }
       },
       "documentation":"<p>Information about the encryption configuration for X-Ray.</p>"
@@ -11441,7 +11749,7 @@
         },
         "ErrorCode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The code associated with the error. Possible values are:</p> <ul> <li> <p> <code>ConcurrentUpdateError</code> - Another process or request attempted to update the finding while this request was being processed</p> </li> <li> <p> <code>DuplicatedFindingIdentifier</code> - The request included two or more findings with the same <code>FindingIdentifier</code> </p> </li> <li> <p> <code>FindingNotFound</code> - The <code>FindingIdentifier</code> included in the request did not match an existing finding</p> </li> <li> <p> <code>FindingSizeExceeded</code> - The finding size was greater than the permissible value of 240 KB</p> </li> <li> <p> <code>InternalFailure</code> - An internal service failure occurred when updating the finding</p> </li> <li> <p> <code>InvalidInput</code> - The finding update contained an invalid value that did not satisfy the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html\">Amazon Web Services Security Finding Format</a> syntax</p> </li> </ul>"
+          "documentation":"<p>The code associated with the error. Possible values are:</p> <ul> <li> <p> <code>ConcurrentUpdateError</code> - Another request attempted to update the finding while this request was being processed. This error may also occur if you call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> and <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> at the same time.</p> </li> <li> <p> <code>DuplicatedFindingIdentifier</code> - The request included two or more findings with the same <code>FindingIdentifier</code>.</p> </li> <li> <p> <code>FindingNotFound</code> - The <code>FindingIdentifier</code> included in the request did not match an existing finding.</p> </li> <li> <p> <code>FindingSizeExceeded</code> - The finding size was greater than the permissible value of 240 KB.</p> </li> <li> <p> <code>InternalFailure</code> - An internal service failure occurred when updating the finding.</p> </li> <li> <p> <code>InvalidInput</code> - The finding update contained an invalid value that did not satisfy the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html\">Amazon Web Services Security Finding Format</a> syntax.</p> </li> </ul>"
         },
         "ErrorMessage":{
           "shape":"NonEmptyString",
@@ -13002,7 +13310,7 @@
         },
         "CidrBlockState":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Information about the state of the CIDR block.</p>"
+          "documentation":"<p>Information about the state of the CIDR block. Valid values are as follows:</p> <ul> <li> <p> <code>associating</code> </p> </li> <li> <p> <code>associated</code> </p> </li> <li> <p> <code>disassociating</code> </p> </li> <li> <p> <code>disassociated</code> </p> </li> <li> <p> <code>failed</code> </p> </li> <li> <p> <code>failing</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>An IPV6 CIDR block association.</p>"
@@ -14297,6 +14605,18 @@
         "AwsEcsTask":{
           "shape":"AwsEcsTaskDetails",
           "documentation":"<p>Details about a task in a cluster. </p>"
+        },
+        "AwsBackupBackupVault":{
+          "shape":"AwsBackupBackupVaultDetails",
+          "documentation":"<p>Provides details about an Backup backup vault. </p>"
+        },
+        "AwsBackupBackupPlan":{
+          "shape":"AwsBackupBackupPlanDetails",
+          "documentation":"<p>Provides details about an Backup backup plan. </p>"
+        },
+        "AwsBackupRecoveryPoint":{
+          "shape":"AwsBackupRecoveryPointDetails",
+          "documentation":"<p>Provides details about an Backup backup, or recovery point. </p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"
@@ -14813,6 +15133,14 @@
         "FilePath":{
           "shape":"NonEmptyString",
           "documentation":"<p>The file system path to the package manager inventory file.</p>"
+        },
+        "FixedInVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The version of the software package in which the vulnerability has been resolved. </p>"
+        },
+        "Remediation":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Describes the actions a customer can take to resolve the vulnerability in the software package. </p>"
         }
       },
       "documentation":"<p>Information about a software package.</p>"
@@ -15547,9 +15875,21 @@
         "ReferenceUrls":{
           "shape":"StringList",
           "documentation":"<p>A list of URLs that provide additional information about the vulnerability.</p>"
+        },
+        "FixAvailable":{
+          "shape":"VulnerabilityFixAvailable",
+          "documentation":"<p>Specifies if all vulnerable packages in a finding have a value for <code>FixedInVersion</code> and <code>Remediation</code>. This field is evaluated for each vulnerability <code>Id</code> based on the number of vulnerable packages that have a value for both <code>FixedInVersion</code> and <code>Remediation</code>. Valid values are as follows:</p> <ul> <li> <p> <code>YES</code> if all vulnerable packages have a value for both <code>FixedInVersion</code> and <code>Remediation</code> </p> </li> <li> <p> <code>NO</code> if no vulnerable packages have a value for <code>FixedInVersion</code> and <code>Remediation</code> </p> </li> <li> <p> <code>PARTIAL</code> otherwise</p> </li> </ul>"
         }
       },
       "documentation":"<p>A vulnerability associated with a finding.</p>"
+    },
+    "VulnerabilityFixAvailable":{
+      "type":"string",
+      "enum":[
+        "YES",
+        "NO",
+        "PARTIAL"
+      ]
     },
     "VulnerabilityList":{
       "type":"list",

@@ -159,7 +159,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a data source that you want to use with an Amazon Kendra index. </p> <p>You specify a name, data source connector type and description for your data source. You also specify configuration information for the data source connector.</p> <p> <code>CreateDataSource</code> is a synchronous operation. The operation returns 200 if the data source was successfully created. Otherwise, an exception is raised.</p> <p>Amazon S3 and <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-custom.html\">custom</a> data sources are the only supported data sources in the Amazon Web Services GovCloud (US-West) region.</p> <p>For an example of creating an index and data source using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html\">Getting started with Python SDK</a>. For an example of creating an index and data source using the Java SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html\">Getting started with Java SDK</a>.</p>"
+      "documentation":"<p>Creates a data source connector that you want to use with an Amazon Kendra index.</p> <p>You specify a name, data source connector type and description for your data source. You also specify configuration information for the data source connector.</p> <p> <code>CreateDataSource</code> is a synchronous operation. The operation returns 200 if the data source was successfully created. Otherwise, an exception is raised.</p> <p>Amazon S3 and <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-custom.html\">custom</a> data sources are the only supported data sources in the Amazon Web Services GovCloud (US-West) region.</p> <p>For an example of creating an index and data source using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html\">Getting started with Python SDK</a>. For an example of creating an index and data source using the Java SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html\">Getting started with Java SDK</a>.</p>"
     },
     "CreateExperience":{
       "name":"CreateExperience",
@@ -289,7 +289,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an Amazon Kendra data source. An exception is not thrown if the data source is already being deleted. While the data source is being deleted, the <code>Status</code> field returned by a call to the <code>DescribeDataSource</code> API is set to <code>DELETING</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/delete-data-source.html\">Deleting Data Sources</a>.</p>"
+      "documentation":"<p>Deletes an Amazon Kendra data source connector. An exception is not thrown if the data source is already being deleted. While the data source is being deleted, the <code>Status</code> field returned by a call to the <code>DescribeDataSource</code> API is set to <code>DELETING</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/delete-data-source.html\">Deleting Data Sources</a>.</p>"
     },
     "DeleteExperience":{
       "name":"DeleteExperience",
@@ -426,7 +426,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Gets information about an Amazon Kendra data source.</p>"
+      "documentation":"<p>Gets information about an Amazon Kendra data source connector.</p>"
     },
     "DescribeExperience":{
       "name":"DescribeExperience",
@@ -649,7 +649,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Gets statistics about synchronizing Amazon Kendra with a data source.</p>"
+      "documentation":"<p>Gets statistics about synchronizing a data source connector.</p>"
     },
     "ListDataSources":{
       "name":"ListDataSources",
@@ -666,7 +666,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the data sources that you have created.</p>"
+      "documentation":"<p>Lists the data source connectors that you have created.</p>"
     },
     "ListEntityPersonas":{
       "name":"ListEntityPersonas",
@@ -875,7 +875,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts a synchronization job for a data source. If a synchronization job is already in progress, Amazon Kendra returns a <code>ResourceInUseException</code> exception.</p>"
+      "documentation":"<p>Starts a synchronization job for a data source connector. If a synchronization job is already in progress, Amazon Kendra returns a <code>ResourceInUseException</code> exception.</p>"
     },
     "StopDataSourceSyncJob":{
       "name":"StopDataSourceSyncJob",
@@ -978,7 +978,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing Amazon Kendra data source.</p>"
+      "documentation":"<p>Updates an existing Amazon Kendra data source connector.</p>"
     },
     "UpdateExperience":{
       "name":"UpdateExperience",
@@ -1188,7 +1188,7 @@
         },
         "SslCertificateS3Path":{
           "shape":"S3Path",
-          "documentation":"<p>The path to the SSL certificate stored in an Amazon S3 bucket. You use this to connect to Alfresco.</p>"
+          "documentation":"<p>The path to the SSL certificate stored in an Amazon S3 bucket. You use this to connect to Alfresco if you require a secure SSL connection.</p> <p>You can simply generate a self-signed X509 certificate on any computer using OpenSSL. For an example of using OpenSSL to create an X509 certificate, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html\">Create and sign an X509 certificate</a>.</p>"
         },
         "CrawlSystemFolders":{
           "shape":"Boolean",
@@ -1808,6 +1808,13 @@
       },
       "documentation":"<p>Maps attributes or field names of Confluence attachments to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Confluence fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Confuence data source field names must exist in your Confluence custom metadata.</p>"
     },
+    "ConfluenceAuthenticationType":{
+      "type":"string",
+      "enum":[
+        "HTTP_BASIC",
+        "PAT"
+      ]
+    },
     "ConfluenceBlogConfiguration":{
       "type":"structure",
       "members":{
@@ -1870,7 +1877,7 @@
         },
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the user name and password required to connect to the Confluence instance. If you use Confluence cloud, you use a generated API token as the password. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-confluence.html\">Using a Confluence data source</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Manager secret that contains the user name and password required to connect to the Confluence instance. If you use Confluence Cloud, you use a generated API token as the password. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-confluence.html\">Using a Confluence data source</a>.</p> <p>You can also provide authentication credentials in the form of a personal access token. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-confluence.html#confluence-authentication\">Authentication for a Confluence data source</a>.</p>"
         },
         "Version":{
           "shape":"ConfluenceVersion",
@@ -1907,6 +1914,10 @@
         "ProxyConfiguration":{
           "shape":"ProxyConfiguration",
           "documentation":"<p>Configuration information to connect to your Confluence URL instance via a web proxy. You can use this option for Confluence Server.</p> <p>You must provide the website host name and port number. For example, the host name of <i>https://a.example.com/page1.html</i> is \"a.example.com\" and the port is 443, the standard port for HTTPS.</p> <p>Web proxy credentials are optional and you can use them to connect to a web proxy server that requires basic authentication of user name and password. To store web proxy credentials, you use a secret in Secrets Manager.</p> <p>It is recommended that you follow best security practices when configuring your web proxy. This includes setting up throttling, setting up logging and monitoring, and applying security patches on a regular basis. If you use your web proxy with multiple data sources, sync jobs that occur at the same time could strain the load on your proxy. It is recommended you prepare your proxy beforehand for any security and load requirements.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"ConfluenceAuthenticationType",
+          "documentation":"<p>Whether you want to connect to Confluence using basic authentication of user name and password, or a personal access token. You can use a personal access token for Confluence Server.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to Confluence as your data source.</p>"
@@ -2213,7 +2224,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source connector. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM Roles for Amazon Kendra</a>.</p> <p>You can't specify the <code>RoleArn</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>RoleArn</code> parameter is required for all other data sources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source and required resources. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM roles for Amazon Kendra</a>.</p> <p>You can't specify the <code>RoleArn</code> parameter when the <code>Type</code> parameter is set to <code>CUSTOM</code>. If you do, you receive a <code>ValidationException</code> exception.</p> <p>The <code>RoleArn</code> parameter is required for all other data sources.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2971,11 +2982,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source you want to delete.</p>"
+          "documentation":"<p>The identifier of the data source connector you want to delete.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index used with the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         }
       }
     },
@@ -3139,11 +3150,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source.</p>"
+          "documentation":"<p>The identifier of the data source connector.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index used with the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         }
       }
     },
@@ -3152,23 +3163,23 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source.</p>"
+          "documentation":"<p>The identifier of the data source connector.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         },
         "Name":{
           "shape":"DataSourceName",
-          "documentation":"<p>The name for the data source.</p>"
+          "documentation":"<p>The name for the data source connector.</p>"
         },
         "Type":{
           "shape":"DataSourceType",
-          "documentation":"<p>The type of the data source.</p>"
+          "documentation":"<p>The type of the data source. For example, <code>SHAREPOINT</code>.</p>"
         },
         "Configuration":{
           "shape":"DataSourceConfiguration",
-          "documentation":"<p>Configuration details for the data source. This shows how the data source is configured. The configuration options for a data source depend on the data source provider.</p>"
+          "documentation":"<p>Configuration details for the data source connector. This shows how the data source is configured. The configuration options for a data source depend on the data source provider.</p>"
         },
         "VpcConfiguration":{
           "shape":"DataSourceVpcConfiguration",
@@ -3176,19 +3187,19 @@
         },
         "CreatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix timestamp of when the data source was created.</p>"
+          "documentation":"<p>The Unix timestamp of when the data source connector was created.</p>"
         },
         "UpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix timestamp of when the data source was last updated.</p>"
+          "documentation":"<p>The Unix timestamp of when the data source connector was last updated.</p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description for the data source.</p>"
+          "documentation":"<p>The description for the data source connector.</p>"
         },
         "Status":{
           "shape":"DataSourceStatus",
-          "documentation":"<p>The current status of the data source. When the status is <code>ACTIVE</code> the data source is ready to use. When the status is <code>FAILED</code>, the <code>ErrorMessage</code> field contains the reason that the data source failed.</p>"
+          "documentation":"<p>The current status of the data source connector. When the status is <code>ACTIVE</code> the data source is ready to use. When the status is <code>FAILED</code>, the <code>ErrorMessage</code> field contains the reason that the data source failed.</p>"
         },
         "Schedule":{
           "shape":"ScanSchedule",
@@ -3196,7 +3207,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the role that enables the data source to access its resources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role with permission to access the data source and required resources.</p>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
@@ -5317,11 +5328,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source.</p>"
+          "documentation":"<p>The identifier of the data source connector.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index used with the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5333,11 +5344,11 @@
         },
         "StartTimeFilter":{
           "shape":"TimeRange",
-          "documentation":"<p>When specified, the synchronization jobs returned in the list are limited to jobs between the specified dates. </p>"
+          "documentation":"<p>When specified, the synchronization jobs returned in the list are limited to jobs between the specified dates.</p>"
         },
         "StatusFilter":{
           "shape":"DataSourceSyncJobStatus",
-          "documentation":"<p>When specified, only returns synchronization jobs with the <code>Status</code> field equal to the specified status.</p>"
+          "documentation":"<p>Only returns synchronization jobs with the <code>Status</code> field equal to the specified status.</p>"
         }
       }
     },
@@ -5346,7 +5357,7 @@
       "members":{
         "History":{
           "shape":"DataSourceSyncJobHistoryList",
-          "documentation":"<p>A history of synchronization jobs for the data source.</p>"
+          "documentation":"<p>A history of synchronization jobs for the data source connector.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5360,15 +5371,15 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index used with one or more data sources.</p>"
+          "documentation":"<p>The identifier of the index used with one or more data source connectors.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous response was incomplete (because there is more data to retrieve), Amazon Kendra returns a pagination token in the response. You can use this pagination token to retrieve the next set of data sources (<code>DataSourceSummaryItems</code>). </p>"
+          "documentation":"<p>If the previous response was incomplete (because there is more data to retrieve), Amazon Kendra returns a pagination token in the response. You can use this pagination token to retrieve the next set of data source connectors (<code>DataSourceSummaryItems</code>). </p>"
         },
         "MaxResults":{
           "shape":"MaxResultsIntegerForListDataSourcesRequest",
-          "documentation":"<p>The maximum number of data sources to return.</p>"
+          "documentation":"<p>The maximum number of data source connectors to return.</p>"
         }
       }
     },
@@ -5377,11 +5388,11 @@
       "members":{
         "SummaryItems":{
           "shape":"DataSourceSummaryList",
-          "documentation":"<p>An array of summary information for one or more data sources.</p>"
+          "documentation":"<p>An array of summary information for one or more data source connector.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the response is truncated, Amazon Kendra returns this token that you can use in the subsequent request to retrieve the next set of data sources. </p>"
+          "documentation":"<p>If the response is truncated, Amazon Kendra returns this token that you can use in the subsequent request to retrieve the next set of data source connectors.</p>"
         }
       }
     },
@@ -5850,7 +5861,7 @@
         },
         "SslCertificateS3Path":{
           "shape":"S3Path",
-          "documentation":"<p>The path to the SSL certificate stored in an Amazon S3 bucket. You use this to connect to GitHub. </p>"
+          "documentation":"<p>The path to the SSL certificate stored in an Amazon S3 bucket. You use this to connect to GitHub if you require a secure SSL connection.</p> <p>You can simply generate a self-signed X509 certificate on any computer using OpenSSL. For an example of using OpenSSL to create an X509 certificate, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html\">Create and sign an X509 certificate</a>.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to GitHub Enterprise Server (on premises).</p>"
@@ -6349,7 +6360,7 @@
       "members":{
         "Domain":{
           "shape":"Domain",
-          "documentation":"<p>The Quip site domain.</p>"
+          "documentation":"<p>The Quip site domain. For example, <i>https://quip-company.quipdomain.com/browse</i>. The domain in this example is \"quipdomain\".</p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
@@ -6369,7 +6380,7 @@
         },
         "FolderIds":{
           "shape":"FolderIdList",
-          "documentation":"<p>The identifiers of the Quip folders you want to index. You can find in your browser URL when you access your folder in Quip. For example, <i>https://quip-company.com/zlLuOVNSarTL/folder-name</i>.</p>"
+          "documentation":"<p>The identifiers of the Quip folders you want to index. You can find the folder ID in your browser URL when you access your folder in Quip. For example, <i>https://quip-company.quipdomain.com/zlLuOVNSarTL/folder-name</i>. The folder ID in this example is \"zlLuOVNSarTL\".</p>"
         },
         "ThreadFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
@@ -7070,7 +7081,7 @@
         },
         "Urls":{
           "shape":"SharePointUrlList",
-          "documentation":"<p>The Microsoft SharePoint site URLs for the documents you want to indext.</p>"
+          "documentation":"<p>The Microsoft SharePoint site URLs for the documents you want to index.</p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
@@ -7110,7 +7121,7 @@
         },
         "SslCertificateS3Path":{
           "shape":"S3Path",
-          "documentation":"<p>The path to the SSL certificate stored in an Amazon S3 bucket. You use this to connect to SharePoint.</p>"
+          "documentation":"<p>The path to the SSL certificate stored in an Amazon S3 bucket. You use this to connect to SharePoint Server if you require a secure SSL connection.</p> <p>You can simply generate a self-signed X509 certificate on any computer using OpenSSL. For an example of using OpenSSL to create an X509 certificate, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html\">Create and sign an X509 certificate</a>.</p>"
         },
         "AuthenticationType":{
           "shape":"SharePointOnlineAuthenticationType",
@@ -7359,11 +7370,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source to synchronize.</p>"
+          "documentation":"<p>The identifier of the data source connector to synchronize.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         }
       }
     },
@@ -7407,11 +7418,11 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source for which to stop the synchronization jobs.</p>"
+          "documentation":"<p>The identifier of the data source connector for which to stop the synchronization jobs.</p>"
         },
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index that contains the data source.</p>"
+          "documentation":"<p>The identifier of the index used with the data source connector.</p>"
         }
       }
     },
@@ -7827,7 +7838,7 @@
       "members":{
         "Id":{
           "shape":"DataSourceId",
-          "documentation":"<p>The identifier of the data source you want to update.</p>"
+          "documentation":"<p>The identifier of the data source connector you want to update.</p>"
         },
         "Name":{
           "shape":"DataSourceName",
@@ -7855,7 +7866,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM Roles for Amazon Kendra</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a role with permission to access the data source and required resources. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM roles for Amazon Kendra</a>.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",

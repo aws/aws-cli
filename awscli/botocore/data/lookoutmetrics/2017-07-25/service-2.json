@@ -260,6 +260,23 @@
       ],
       "documentation":"<p>Returns details about a group of anomalous metrics.</p>"
     },
+    "GetDataQualityMetrics":{
+      "name":"GetDataQualityMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetDataQualityMetrics"
+      },
+      "input":{"shape":"GetDataQualityMetricsRequest"},
+      "output":{"shape":"GetDataQualityMetricsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns details about the requested data quality metrics.</p>"
+    },
     "GetFeedback":{
       "name":"GetFeedback",
       "http":{
@@ -731,6 +748,24 @@
         }
       },
       "documentation":"<p>Contains information about a detector's configuration.</p>"
+    },
+    "AnomalyDetectorDataQualityMetric":{
+      "type":"structure",
+      "members":{
+        "StartTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the data quality metrics collection.</p>"
+        },
+        "MetricSetDataQualityMetricList":{
+          "shape":"MetricSetDataQualityMetricList",
+          "documentation":"<p>An array of <code>DataQualityMetricList</code> objects. Each object in the array contains information about a data quality metric.</p>"
+        }
+      },
+      "documentation":"<p>Aggregated details about the data quality metrics collected for the <code>AnomalyDetectorArn</code> provided in the <a>GetDataQualityMetrics</a> object.</p>"
+    },
+    "AnomalyDetectorDataQualityMetricList":{
+      "type":"list",
+      "member":{"shape":"AnomalyDetectorDataQualityMetric"}
     },
     "AnomalyDetectorDescription":{
       "type":"string",
@@ -1271,7 +1306,7 @@
         },
         "Offset":{
           "shape":"Offset",
-          "documentation":"<p>After an interval ends, the amount of seconds that the detector waits before importing data. Offset is only supported for S3 and Redshift datasources.</p>",
+          "documentation":"<p>After an interval ends, the amount of seconds that the detector waits before importing data. Offset is only supported for S3, Redshift, Athena and datasources.</p>",
           "box":true
         },
         "TimestampColumn":{
@@ -1340,6 +1375,53 @@
       "documentation":"<p>Contains information about how a source CSV data file should be analyzed.</p>"
     },
     "DataItem":{"type":"string"},
+    "DataQualityMetric":{
+      "type":"structure",
+      "members":{
+        "MetricType":{
+          "shape":"DataQualityMetricType",
+          "documentation":"<p>The name of the data quality metric.</p>"
+        },
+        "MetricDescription":{
+          "shape":"DataQualityMetricDescription",
+          "documentation":"<p>A description of the data quality metric.</p>"
+        },
+        "RelatedColumnName":{
+          "shape":"RelatedColumnName",
+          "documentation":"<p>The column that is being monitored.</p>"
+        },
+        "MetricValue":{
+          "shape":"Double",
+          "documentation":"<p>The value of the data quality metric.</p>"
+        }
+      },
+      "documentation":"<p>An array that describes a data quality metric. Each <code>DataQualityMetric</code> object contains the data quality metric name, its value, a description of the metric, and the affected column.</p>"
+    },
+    "DataQualityMetricDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "DataQualityMetricList":{
+      "type":"list",
+      "member":{"shape":"DataQualityMetric"}
+    },
+    "DataQualityMetricType":{
+      "type":"string",
+      "enum":[
+        "COLUMN_COMPLETENESS",
+        "DIMENSION_UNIQUENESS",
+        "TIME_SERIES_COUNT",
+        "ROWS_PROCESSED",
+        "ROWS_PARTIAL_COMPLIANCE",
+        "INVALID_ROWS_COMPLIANCE",
+        "BACKTEST_TRAINING_DATA_START_TIME_STAMP",
+        "BACKTEST_TRAINING_DATA_END_TIME_STAMP",
+        "BACKTEST_INFERENCE_DATA_START_TIME_STAMP",
+        "BACKTEST_INFERENCE_DATA_END_TIME_STAMP"
+      ]
+    },
     "DatabaseHost":{
       "type":"string",
       "max":253,
@@ -1555,7 +1637,7 @@
         },
         "Offset":{
           "shape":"Offset",
-          "documentation":"<p>The offset in seconds. Only supported for S3 and Redshift datasources.</p>",
+          "documentation":"<p>After an interval ends, the amount of seconds that the detector waits before importing data. Offset is only supported for S3, Redshift, Athena and datasources.</p>",
           "box":true
         },
         "MetricList":{
@@ -1814,6 +1896,7 @@
       "max":10,
       "min":1
     },
+    "Double":{"type":"double"},
     "ErrorMessage":{
       "type":"string",
       "max":256
@@ -1892,6 +1975,29 @@
         "AnomalyGroup":{
           "shape":"AnomalyGroup",
           "documentation":"<p>Details about the anomaly group.</p>"
+        }
+      }
+    },
+    "GetDataQualityMetricsRequest":{
+      "type":"structure",
+      "required":["AnomalyDetectorArn"],
+      "members":{
+        "AnomalyDetectorArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the anomaly detector that you want to investigate.</p>"
+        },
+        "MetricSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a specific data quality metric set.</p>"
+        }
+      }
+    },
+    "GetDataQualityMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "AnomalyDetectorDataQualityMetricList":{
+          "shape":"AnomalyDetectorDataQualityMetricList",
+          "documentation":"<p>A list of the data quality metrics for the <code>AnomalyDetectorArn</code> that you requested.</p>"
         }
       }
     },
@@ -2401,6 +2507,24 @@
       "max":5,
       "min":1
     },
+    "MetricSetDataQualityMetric":{
+      "type":"structure",
+      "members":{
+        "MetricSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data quality metric array.</p>"
+        },
+        "DataQualityMetricList":{
+          "shape":"DataQualityMetricList",
+          "documentation":"<p>The array of data quality metrics contained in the data quality metric set.</p>"
+        }
+      },
+      "documentation":"<p>An array of <code>DataQualityMetric</code> objects that describes one or more data quality metrics.</p>"
+    },
+    "MetricSetDataQualityMetricList":{
+      "type":"list",
+      "member":{"shape":"MetricSetDataQualityMetric"}
+    },
     "MetricSetDescription":{
       "type":"string",
       "max":256,
@@ -2639,6 +2763,12 @@
         }
       },
       "documentation":"<p>Provides information about the Amazon Redshift database configuration.</p>"
+    },
+    "RelatedColumnName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
     },
     "RelationshipType":{
       "type":"string",
@@ -3079,7 +3209,7 @@
         },
         "Offset":{
           "shape":"Offset",
-          "documentation":"<p>After an interval ends, the amount of seconds that the detector waits before importing data. Offset is only supported for S3 and Redshift datasources.</p>",
+          "documentation":"<p>After an interval ends, the amount of seconds that the detector waits before importing data. Offset is only supported for S3, Redshift, Athena and datasources.</p>",
           "box":true
         },
         "TimestampColumn":{

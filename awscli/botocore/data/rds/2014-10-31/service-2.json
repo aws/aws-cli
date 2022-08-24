@@ -2531,6 +2531,23 @@
         {"shape":"InvalidDBInstanceStateFault"}
       ],
       "documentation":"<p>Stops automated backup replication for a DB instance.</p> <p>This command doesn't apply to RDS Custom, Aurora MySQL, and Aurora PostgreSQL.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html\"> Replicating Automated Backups to Another Amazon Web Services Region</a> in the <i>Amazon RDS User Guide.</i> </p>"
+    },
+    "SwitchoverReadReplica":{
+      "name":"SwitchoverReadReplica",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SwitchoverReadReplicaMessage"},
+      "output":{
+        "shape":"SwitchoverReadReplicaResult",
+        "resultWrapper":"SwitchoverReadReplicaResult"
+      },
+      "errors":[
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"}
+      ],
+      "documentation":"<p>Switches over an Oracle standby database in an Oracle Data Guard environment, making it the new primary database. Issue this command in the AWS Region that hosts the current standby database.</p>"
     }
   },
   "shapes":{
@@ -6767,6 +6784,10 @@
         "OriginalSnapshotCreateTime":{
           "shape":"TStamp",
           "documentation":"<p>Specifies the time of the CreateDBSnapshot operation in Coordinated Universal Time (UTC). Doesn't change when the snapshot is copied.</p>"
+        },
+        "SnapshotDatabaseTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The timestamp of the most recent transaction applied to the database that you're backing up. Thus, if you restore a snapshot, SnapshotDatabaseTime is the most recent transaction in the restored DB instance. In contrast, originalSnapshotCreateTime specifies the system time that the snapshot completed.</p> <p>If you back up a read replica, you can determine the replica lag by comparing SnapshotDatabaseTime with originalSnapshotCreateTime. For example, if originalSnapshotCreateTime is two hours later than SnapshotDatabaseTime, then the replica lag is two hours. *** REVIEWERS 7/27: Switchover</p>"
         },
         "SnapshotTarget":{
           "shape":"String",
@@ -13423,6 +13444,22 @@
       "member":{
         "shape":"Timezone",
         "locationName":"Timezone"
+      }
+    },
+    "SwitchoverReadReplicaMessage":{
+      "type":"structure",
+      "required":["DBInstanceIdentifier"],
+      "members":{
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The DB instance identifier of the current standby database. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identiﬁer of an existing Oracle read replica DB instance.</p> </li> </ul>"
+        }
+      }
+    },
+    "SwitchoverReadReplicaResult":{
+      "type":"structure",
+      "members":{
+        "DBInstance":{"shape":"DBInstance"}
       }
     },
     "TStamp":{"type":"timestamp"},

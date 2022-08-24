@@ -12,3 +12,7 @@
 [--ca-bundle <value>]
 [--cli-read-timeout <value>]
 [--cli-connect-timeout <value>]
+[--cli-binary-format <value>]
+[--no-cli-pager]
+[--cli-auto-prompt]
+[--no-cli-auto-prompt]

@@ -25,6 +25,10 @@
   
   *   table
   
+  *   yaml
+  
+  *   yaml-stream
+  
   
 ``--query`` (string)
   
@@ -69,4 +73,26 @@
 ``--cli-connect-timeout`` (int)
   
   The maximum socket connect time in seconds. If the value is set to 0, the socket connect will be blocking and not timeout. The default value is 60 seconds.
+  
+``--cli-binary-format`` (string)
+  
+  The formatting style to be used for binary blobs. The default format is base64. The base64 format expects binary blobs to be provided as a base64 encoded string. The raw-in-base64-out format preserves compatibility with AWS CLI V1 behavior and binary values must be passed literally. When providing contents from a file that map to a binary blob ``fileb://`` will always be treated as binary and use the file contents directly regardless of the ``cli-binary-format`` setting. When using ``file://`` the file contents will need to properly formatted for the configured ``cli-binary-format``.
+  
+  
+  *   base64
+  
+  *   raw-in-base64-out
+  
+  
+``--no-cli-pager`` (boolean)
+  
+  Disable cli pager for output.
+  
+``--cli-auto-prompt`` (boolean)
+  
+  Automatically prompt for CLI input parameters.
+  
+``--no-cli-auto-prompt`` (boolean)
+  
+  Disable automatically prompt for CLI input parameters.
   

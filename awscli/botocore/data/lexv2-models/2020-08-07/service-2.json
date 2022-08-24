@@ -999,6 +999,27 @@
       ],
       "documentation":"<p>Starts importing a bot, bot locale, or custom vocabulary from a zip archive that you uploaded to an S3 bucket.</p>"
     },
+    "StopBotRecommendation":{
+      "name":"StopBotRecommendation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/{botRecommendationId}/stopbotrecommendation",
+        "responseCode":202
+      },
+      "input":{"shape":"StopBotRecommendationRequest"},
+      "output":{"shape":"StopBotRecommendationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"PreconditionFailedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Stop an already running Bot Recommendation request.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -1825,7 +1846,9 @@
         "Downloading",
         "Updating",
         "Available",
-        "Failed"
+        "Failed",
+        "Stopping",
+        "Stopped"
       ]
     },
     "BotRecommendationSummary":{
@@ -7685,6 +7708,66 @@
       "type":"integer",
       "max":900,
       "min":1
+    },
+    "StopBotRecommendationRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId",
+        "botRecommendationId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot containing the bot recommendation to be stopped.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot containing the bot recommendation.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The identifier of the language and locale of the bot recommendation to stop. The string must match one of the supported locales. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a> </p>",
+          "location":"uri",
+          "locationName":"localeId"
+        },
+        "botRecommendationId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot recommendation to be stopped.</p>",
+          "location":"uri",
+          "locationName":"botRecommendationId"
+        }
+      }
+    },
+    "StopBotRecommendationResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot containing the bot recommendation that is being stopped.</p>"
+        },
+        "botVersion":{
+          "shape":"DraftBotVersion",
+          "documentation":"<p>The version of the bot containing the recommendation that is being stopped.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The identifier of the language and locale of the bot response to stop. The string must match one of the supported locales. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a> </p>"
+        },
+        "botRecommendationStatus":{
+          "shape":"BotRecommendationStatus",
+          "documentation":"<p>The status of the bot recommendation. If the status is Failed, then the reasons for the failure are listed in the failureReasons field.</p>"
+        },
+        "botRecommendationId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot recommendation that is being stopped.</p>"
+        }
+      }
     },
     "String":{"type":"string"},
     "StringMap":{

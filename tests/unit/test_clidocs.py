@@ -19,10 +19,10 @@ from botocore.model import ShapeResolver, StructureShape, StringShape, \
 from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
-    TopicDocumentEventHandler
+    TopicDocumentEventHandler, GlobalOptionsDocumenter
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
-    TopicHelpCommand
+    TopicHelpCommand, HelpCommand
 from awscli.arguments import CustomArgument
 
 
@@ -366,48 +366,6 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             '<https://docs.aws.amazon.com/goto/'
             'WebAPI/service-1-2-3/myoperation>`_', rendered)
 
-    def test_includes_global_args_ref_in_man_description(self):
-        help_command = self.create_help_command()
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_description(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        # The links aren't generated in the "man" mode.
-        self.assertIn(
-            "See 'aws help' for descriptions of global parameters", rendered
-        )
-
-    def test_includes_global_args_ref_in_html_description(self):
-        help_command = self.create_help_command()
-        help_command.doc.target = 'html'
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_description(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            "See :doc:`'aws help' </reference/index>` for descriptions of "
-            "global parameters", rendered
-        )
-
-    def test_includes_global_args_ref_in_man_options(self):
-        help_command = self.create_help_command()
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_options_end(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        # The links aren't generated in the "man" mode.
-        self.assertIn(
-            "See 'aws help' for descriptions of global parameters", rendered
-        )
-
-    def test_includes_global_args_ref_in_html_options(self):
-        help_command = self.create_help_command()
-        help_command.doc.target = 'html'
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_options_end(help_command=help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            "See :doc:`'aws help' </reference/index>` for descriptions of "
-            "global parameters", rendered
-        )
-
     def test_includes_streaming_blob_options(self):
         help_command = self.create_help_command()
         blob_shape = Shape('blob_shape', {'type': 'blob'})
@@ -641,3 +599,43 @@ class TestTopicDocumentEventHandler(TestTopicDocumentEventHandlerBase):
         self.doc_handler.doc_description(self.cmd)
         contents = self.cmd.doc.getvalue().decode('utf-8')
         self.assertIn(ref_body, contents)
+
+
+class TestGlobalOptionsDocumenter(unittest.TestCase):
+    def create_help_command(self):
+        types = ['blob', 'integer', 'boolean', 'string']
+        arg_table = {}
+        for t in types:
+            name = f'{t}_type'
+            help_text = f'This arg type is {t}'
+            choices = ['A', 'B', 'C'] if t == 'string' else []
+            arg_table[name] = CustomArgument(name=name,
+                                             cli_type_name=t,
+                                             help_text=help_text,
+                                             choices=choices)
+        help_command = mock.Mock(spec=HelpCommand)
+        help_command.arg_table = arg_table
+        help_command.doc = ReSTDocument()
+        return help_command
+
+    def create_documenter(self):
+        return GlobalOptionsDocumenter(self.create_help_command())
+
+    def test_doc_global_options(self):
+        documenter = self.create_documenter()
+        options = documenter.doc_global_options()
+        self.assertIn('``--string_type`` (string)', options)
+        self.assertIn('``--integer_type`` (integer)', options)
+        self.assertIn('``--boolean_type`` (boolean)', options)
+        self.assertIn('``--blob_type`` (blob)', options)
+        self.assertIn('*   A', options)
+        self.assertIn('*   B', options)
+        self.assertIn('*   C', options)
+
+    def test_doc_global_synopsis(self):
+        documenter = self.create_documenter()
+        synopsis = documenter.doc_global_synopsis()
+        self.assertIn('[--string_type <value>]', synopsis)
+        self.assertIn('[--integer_type <value>]', synopsis)
+        self.assertIn('[--boolean_type]', synopsis)
+        self.assertIn('[--blob_type <value>]', synopsis)

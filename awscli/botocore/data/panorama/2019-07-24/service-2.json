@@ -1312,6 +1312,10 @@
           "shape":"Description",
           "documentation":"<p>The device's description.</p>"
         },
+        "DeviceAggregatedStatus":{
+          "shape":"DeviceAggregatedStatus",
+          "documentation":"<p>A device's aggregated status. Including the device's connection status, provisioning status, and lease status.</p>"
+        },
         "DeviceConnectionStatus":{
           "shape":"DeviceConnectionStatus",
           "documentation":"<p>The device's connection status.</p>"
@@ -1323,6 +1327,10 @@
         "LatestAlternateSoftware":{
           "shape":"LatestAlternateSoftware",
           "documentation":"<p>The most recent beta software release.</p>"
+        },
+        "LatestDeviceJob":{
+          "shape":"LatestDeviceJob",
+          "documentation":"<p>A device's latest job. Includes the target image version, and the job status.</p>"
         },
         "LatestSoftware":{
           "shape":"LatestSoftware",
@@ -1760,6 +1768,18 @@
           "shape":"CreatedTime",
           "documentation":"<p>When the device was created.</p>"
         },
+        "CurrentSoftware":{
+          "shape":"CurrentSoftware",
+          "documentation":"<p>A device's current software.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description for the device.</p>"
+        },
+        "DeviceAggregatedStatus":{
+          "shape":"DeviceAggregatedStatus",
+          "documentation":"<p>A device's aggregated status. Including the device's connection status, provisioning status, and lease status.</p>"
+        },
         "DeviceId":{
           "shape":"DeviceId",
           "documentation":"<p>The device's ID.</p>"
@@ -1767,6 +1787,10 @@
         "LastUpdatedTime":{
           "shape":"LastUpdatedTime",
           "documentation":"<p>When the device was updated.</p>"
+        },
+        "LatestDeviceJob":{
+          "shape":"LatestDeviceJob",
+          "documentation":"<p>A device's latest job. Includes the target image version, and the update job status.</p>"
         },
         "LeaseExpirationTime":{
           "shape":"LeaseExpirationTime",
@@ -1779,9 +1803,31 @@
         "ProvisioningStatus":{
           "shape":"DeviceStatus",
           "documentation":"<p>The device's provisioning status.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The device's tags.</p>"
+        },
+        "Type":{
+          "shape":"DeviceType",
+          "documentation":"<p>The device's type.</p>"
         }
       },
       "documentation":"<p>A device.</p>"
+    },
+    "DeviceAggregatedStatus":{
+      "type":"string",
+      "enum":[
+        "ERROR",
+        "AWAITING_PROVISIONING",
+        "PENDING",
+        "FAILED",
+        "DELETING",
+        "ONLINE",
+        "OFFLINE",
+        "LEASE_EXPIRED",
+        "UPDATE_NEEDED"
+      ]
     },
     "DeviceArn":{
       "type":"string",
@@ -2037,6 +2083,20 @@
       "max":255,
       "min":1
     },
+    "LatestDeviceJob":{
+      "type":"structure",
+      "members":{
+        "ImageVersion":{
+          "shape":"ImageVersion",
+          "documentation":"<p>The target version of the device software.</p>"
+        },
+        "Status":{
+          "shape":"UpdateProgress",
+          "documentation":"<p>Status of the latest device job.</p>"
+        }
+      },
+      "documentation":"<p>Returns information about the latest device job.</p>"
+    },
     "LatestSoftware":{
       "type":"string",
       "max":255,
@@ -2198,17 +2258,41 @@
     "ListDevicesRequest":{
       "type":"structure",
       "members":{
+        "DeviceAggregatedStatusFilter":{
+          "shape":"DeviceAggregatedStatus",
+          "documentation":"<p>Filter based on a device's status.</p>",
+          "location":"querystring",
+          "locationName":"DeviceAggregatedStatusFilter"
+        },
         "MaxResults":{
           "shape":"MaxSize25",
           "documentation":"<p>The maximum number of devices to return in one page of results.</p>",
           "location":"querystring",
           "locationName":"MaxResults"
         },
+        "NameFilter":{
+          "shape":"NameFilter",
+          "documentation":"<p>Filter based on device's name. Prefixes supported.</p>",
+          "location":"querystring",
+          "locationName":"NameFilter"
+        },
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
           "location":"querystring",
           "locationName":"NextToken"
+        },
+        "SortBy":{
+          "shape":"ListDevicesSortBy",
+          "documentation":"<p>The target column to be sorted on. Default column sort is CREATED_TIME.</p>",
+          "location":"querystring",
+          "locationName":"SortBy"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order for the returned list. SortOrder is DESCENDING by default based on CREATED_TIME. Otherwise, SortOrder is ASCENDING.</p>",
+          "location":"querystring",
+          "locationName":"SortOrder"
         }
       }
     },
@@ -2225,6 +2309,15 @@
           "documentation":"<p>A pagination token that's included if more results are available.</p>"
         }
       }
+    },
+    "ListDevicesSortBy":{
+      "type":"string",
+      "enum":[
+        "DEVICE_ID",
+        "CREATED_TIME",
+        "NAME",
+        "DEVICE_AGGREGATED_STATUS"
+      ]
     },
     "ListNodeFromTemplateJobsRequest":{
       "type":"structure",
@@ -2446,6 +2539,7 @@
       "max":25,
       "min":0
     },
+    "NameFilter":{"type":"string"},
     "NetworkConnectionStatus":{
       "type":"string",
       "enum":[
@@ -3307,6 +3401,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "StaticIpConnectionInfo":{
       "type":"structure",

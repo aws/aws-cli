@@ -82,6 +82,9 @@
         {"shape":"DistributionAlreadyExists"},
         {"shape":"InvalidOrigin"},
         {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
+        {"shape":"IllegalOriginAccessConfiguration"},
+        {"shape":"TooManyDistributionsAssociatedToOriginAccessControl"},
         {"shape":"AccessDenied"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
@@ -136,7 +139,8 @@
         {"shape":"TooManyKeyGroupsAssociatedToDistribution"},
         {"shape":"TrustedKeyGroupDoesNotExist"},
         {"shape":"NoSuchRealtimeLogConfig"},
-        {"shape":"RealtimeLogConfigOwnerMismatch"}
+        {"shape":"RealtimeLogConfigOwnerMismatch"},
+        {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
       "documentation":"<p>Creates a new web distribution. You create a CloudFront distribution to tell CloudFront where you want content to be delivered from, and the details about how to track and manage content delivery. Send a <code>POST</code> request to the <code>/<i>CloudFront API version</i>/distribution</code>/<code>distribution ID</code> resource.</p> <important> <p>When you update a distribution, there are more required fields than when you create a distribution. When you update your distribution by using <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a>, follow the steps included in the documentation to get the current configuration and then make your updates. This helps to make sure that you include all of the required fields. To view a summary, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-overview-required-fields.html\">Required Fields for Create Distribution and Update Distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> </important>"
     },
@@ -154,6 +158,7 @@
         {"shape":"DistributionAlreadyExists"},
         {"shape":"InvalidOrigin"},
         {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
         {"shape":"AccessDenied"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
@@ -209,7 +214,8 @@
         {"shape":"TooManyKeyGroupsAssociatedToDistribution"},
         {"shape":"TrustedKeyGroupDoesNotExist"},
         {"shape":"NoSuchRealtimeLogConfig"},
-        {"shape":"RealtimeLogConfigOwnerMismatch"}
+        {"shape":"RealtimeLogConfigOwnerMismatch"},
+        {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
       "documentation":"<p>Create a new distribution with tags.</p>"
     },
@@ -318,16 +324,33 @@
       "name":"CreateMonitoringSubscription2020_05_31",
       "http":{
         "method":"POST",
-        "requestUri":"/2020-05-31/distributions/{DistributionId}/monitoring-subscription"
+        "requestUri":"/2020-05-31/distributions/{DistributionId}/monitoring-subscription/"
       },
       "input":{"shape":"CreateMonitoringSubscriptionRequest"},
       "output":{"shape":"CreateMonitoringSubscriptionResult"},
       "errors":[
         {"shape":"AccessDenied"},
         {"shape":"NoSuchDistribution"},
+        {"shape":"MonitoringSubscriptionAlreadyExists"},
         {"shape":"UnsupportedOperation"}
       ],
       "documentation":"<p>Enables additional CloudWatch metrics for the specified CloudFront distribution. The additional metrics incur an additional cost.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/viewing-cloudfront-metrics.html#monitoring-console.distributions-additional\">Viewing additional CloudFront distribution metrics</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
+    "CreateOriginAccessControl":{
+      "name":"CreateOriginAccessControl2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/origin-access-control",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateOriginAccessControlRequest"},
+      "output":{"shape":"CreateOriginAccessControlResult"},
+      "errors":[
+        {"shape":"OriginAccessControlAlreadyExists"},
+        {"shape":"TooManyOriginAccessControls"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Creates a new origin access control in CloudFront. After you create an origin access control, you can add it to an origin in a CloudFront distribution so that CloudFront sends authenticated (signed) requests to the origin.</p> <p>For an Amazon S3 origin, this makes it possible to block public access to the Amazon S3 bucket so that viewers (users) can access the content in the bucket only through CloudFront.</p> <p>For more information about using a CloudFront origin access control, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html\">Restricting access to an Amazon S3 origin</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
     "CreateOriginRequestPolicy":{
       "name":"CreateOriginRequestPolicy2020_05_31",
@@ -421,6 +444,7 @@
         {"shape":"StreamingDistributionAlreadyExists"},
         {"shape":"InvalidOrigin"},
         {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
         {"shape":"AccessDenied"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
@@ -446,6 +470,7 @@
         {"shape":"StreamingDistributionAlreadyExists"},
         {"shape":"InvalidOrigin"},
         {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
         {"shape":"AccessDenied"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
@@ -581,16 +606,34 @@
       "name":"DeleteMonitoringSubscription2020_05_31",
       "http":{
         "method":"DELETE",
-        "requestUri":"/2020-05-31/distributions/{DistributionId}/monitoring-subscription"
+        "requestUri":"/2020-05-31/distributions/{DistributionId}/monitoring-subscription/"
       },
       "input":{"shape":"DeleteMonitoringSubscriptionRequest"},
       "output":{"shape":"DeleteMonitoringSubscriptionResult"},
       "errors":[
         {"shape":"AccessDenied"},
         {"shape":"NoSuchDistribution"},
+        {"shape":"NoSuchMonitoringSubscription"},
         {"shape":"UnsupportedOperation"}
       ],
       "documentation":"<p>Disables additional CloudWatch metrics for the specified CloudFront distribution.</p>"
+    },
+    "DeleteOriginAccessControl":{
+      "name":"DeleteOriginAccessControl2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/origin-access-control/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteOriginAccessControlRequest"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidIfMatchVersion"},
+        {"shape":"NoSuchOriginAccessControl"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"OriginAccessControlInUse"}
+      ],
+      "documentation":"<p>Deletes a CloudFront origin access control.</p> <p>You cannot delete an origin access control if it's in use. First, update all distributions to remove the origin access control from all origins, then delete the origin access control.</p>"
     },
     "DeleteOriginRequestPolicy":{
       "name":"DeleteOriginRequestPolicy2020_05_31",
@@ -895,16 +938,45 @@
       "name":"GetMonitoringSubscription2020_05_31",
       "http":{
         "method":"GET",
-        "requestUri":"/2020-05-31/distributions/{DistributionId}/monitoring-subscription"
+        "requestUri":"/2020-05-31/distributions/{DistributionId}/monitoring-subscription/"
       },
       "input":{"shape":"GetMonitoringSubscriptionRequest"},
       "output":{"shape":"GetMonitoringSubscriptionResult"},
       "errors":[
         {"shape":"AccessDenied"},
         {"shape":"NoSuchDistribution"},
+        {"shape":"NoSuchMonitoringSubscription"},
         {"shape":"UnsupportedOperation"}
       ],
       "documentation":"<p>Gets information about whether additional CloudWatch metrics are enabled for the specified CloudFront distribution.</p>"
+    },
+    "GetOriginAccessControl":{
+      "name":"GetOriginAccessControl2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/origin-access-control/{Id}"
+      },
+      "input":{"shape":"GetOriginAccessControlRequest"},
+      "output":{"shape":"GetOriginAccessControlResult"},
+      "errors":[
+        {"shape":"NoSuchOriginAccessControl"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets a CloudFront origin access control.</p>"
+    },
+    "GetOriginAccessControlConfig":{
+      "name":"GetOriginAccessControlConfig2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/origin-access-control/{Id}/config"
+      },
+      "input":{"shape":"GetOriginAccessControlConfigRequest"},
+      "output":{"shape":"GetOriginAccessControlConfigResult"},
+      "errors":[
+        {"shape":"NoSuchOriginAccessControl"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets a CloudFront origin access control.</p>"
     },
     "GetOriginRequestPolicy":{
       "name":"GetOriginRequestPolicy2020_05_31",
@@ -1251,6 +1323,19 @@
       ],
       "documentation":"<p>Gets a list of key groups.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
     },
+    "ListOriginAccessControls":{
+      "name":"ListOriginAccessControls2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/origin-access-control"
+      },
+      "input":{"shape":"ListOriginAccessControlsRequest"},
+      "output":{"shape":"ListOriginAccessControlsResult"},
+      "errors":[
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Gets the list of CloudFront origin access controls in this Amazon Web Services account.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send another request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the next request.</p>"
+    },
     "ListOriginRequestPolicies":{
       "name":"ListOriginRequestPolicies2020_05_31",
       "http":{
@@ -1474,6 +1559,7 @@
         {"shape":"InvalidResponseCode"},
         {"shape":"InvalidArgument"},
         {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
         {"shape":"InvalidViewerCertificate"},
@@ -1518,7 +1604,9 @@
         {"shape":"TooManyKeyGroupsAssociatedToDistribution"},
         {"shape":"TrustedKeyGroupDoesNotExist"},
         {"shape":"NoSuchRealtimeLogConfig"},
-        {"shape":"RealtimeLogConfigOwnerMismatch"}
+        {"shape":"RealtimeLogConfigOwnerMismatch"},
+        {"shape":"IllegalOriginAccessConfiguration"},
+        {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
       "documentation":"<p>Updates the configuration for a web distribution. </p> <important> <p>When you update a distribution, there are more required fields than when you create a distribution. When you update your distribution by using this API action, follow the steps here to get the current configuration and then make your updates, to make sure that you include all of the required fields. To view a summary, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-overview-required-fields.html\">Required Fields for Create Distribution and Update Distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> </important> <p>The update process includes getting the current distribution configuration, updating the XML document that is returned to make your changes, and then submitting an <code>UpdateDistribution</code> request to make the updates.</p> <p>For information about updating a distribution using the CloudFront console instead, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-creating-console.html\">Creating a Distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p> <b>To update a web distribution using the CloudFront API</b> </p> <ol> <li> <p>Submit a <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistributionConfig.html\">GetDistributionConfig</a> request to get the current configuration and an <code>Etag</code> header for the distribution.</p> <note> <p>If you update the distribution again, you must get a new <code>Etag</code> header.</p> </note> </li> <li> <p>Update the XML document that was returned in the response to your <code>GetDistributionConfig</code> request to include your changes. </p> <important> <p>When you edit the XML file, be aware of the following:</p> <ul> <li> <p>You must strip out the ETag parameter that is returned.</p> </li> <li> <p>Additional fields are required when you update a distribution. There may be fields included in the XML file for features that you haven't configured for your distribution. This is expected and required to successfully update the distribution.</p> </li> <li> <p>You can't change the value of <code>CallerReference</code>. If you try to change this value, CloudFront returns an <code>IllegalUpdate</code> error. </p> </li> <li> <p>The new configuration replaces the existing configuration; the values that you specify in an <code>UpdateDistribution</code> request are not merged into your existing configuration. When you add, delete, or replace values in an element that allows multiple values (for example, <code>CNAME</code>), you must specify all of the values that you want to appear in the updated distribution. In addition, you must update the corresponding <code>Quantity</code> element.</p> </li> </ul> </important> </li> <li> <p>Submit an <code>UpdateDistribution</code> request to update the configuration for your distribution:</p> <ul> <li> <p>In the request body, include the XML document that you updated in Step 2. The request body must include an XML document with a <code>DistributionConfig</code> element.</p> </li> <li> <p>Set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GetDistributionConfig</code> request in Step 1.</p> </li> </ul> </li> <li> <p>Review the response to the <code>UpdateDistribution</code> request to confirm that the configuration was successfully updated.</p> </li> <li> <p>Optional: Submit a <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html\">GetDistribution</a> request to confirm that your changes have propagated. When propagation is complete, the value of <code>Status</code> is <code>Deployed</code>.</p> </li> </ol>"
     },
@@ -1608,6 +1696,25 @@
         {"shape":"TooManyPublicKeysInKeyGroup"}
       ],
       "documentation":"<p>Updates a key group.</p> <p>When you update a key group, all the fields are updated with the values provided in the request. You cannot update some fields independent of others. To update a key group:</p> <ol> <li> <p>Get the current key group with <code>GetKeyGroup</code> or <code>GetKeyGroupConfig</code>.</p> </li> <li> <p>Locally modify the fields in the key group that you want to update. For example, add or remove public key IDs.</p> </li> <li> <p>Call <code>UpdateKeyGroup</code> with the entire key group object, including the fields that you modified and those that you didn’t.</p> </li> </ol>"
+    },
+    "UpdateOriginAccessControl":{
+      "name":"UpdateOriginAccessControl2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/origin-access-control/{Id}/config"
+      },
+      "input":{"shape":"UpdateOriginAccessControlRequest"},
+      "output":{"shape":"UpdateOriginAccessControlResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"IllegalUpdate"},
+        {"shape":"InvalidIfMatchVersion"},
+        {"shape":"OriginAccessControlAlreadyExists"},
+        {"shape":"NoSuchOriginAccessControl"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Updates a CloudFront origin access control.</p>"
     },
     "UpdateOriginRequestPolicy":{
       "name":"UpdateOriginRequestPolicy2020_05_31",
@@ -1711,6 +1818,7 @@
         {"shape":"TooManyStreamingDistributionCNAMEs"},
         {"shape":"InvalidArgument"},
         {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
         {"shape":"InconsistentQuantities"}
@@ -2888,6 +2996,41 @@
       },
       "payload":"MonitoringSubscription"
     },
+    "CreateOriginAccessControlRequest":{
+      "type":"structure",
+      "required":["OriginAccessControlConfig"],
+      "members":{
+        "OriginAccessControlConfig":{
+          "shape":"OriginAccessControlConfig",
+          "documentation":"<p>Contains the origin access control.</p>",
+          "locationName":"OriginAccessControlConfig",
+          "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+        }
+      },
+      "payload":"OriginAccessControlConfig"
+    },
+    "CreateOriginAccessControlResult":{
+      "type":"structure",
+      "members":{
+        "OriginAccessControl":{
+          "shape":"OriginAccessControl",
+          "documentation":"<p>Contains an origin access control.</p>"
+        },
+        "Location":{
+          "shape":"string",
+          "documentation":"<p>The URL of the origin access control.</p>",
+          "location":"header",
+          "locationName":"Location"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the origin access control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"OriginAccessControl"
+    },
     "CreateOriginRequestPolicyRequest":{
       "type":"structure",
       "required":["OriginRequestPolicyConfig"],
@@ -3427,6 +3570,24 @@
     "DeleteMonitoringSubscriptionResult":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteOriginAccessControlRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the origin access control that you are deleting.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the origin access control that you are deleting.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
       }
     },
     "DeleteOriginRequestPolicyRequest":{
@@ -4999,6 +5160,62 @@
       },
       "payload":"MonitoringSubscription"
     },
+    "GetOriginAccessControlConfigRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the origin access control.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetOriginAccessControlConfigResult":{
+      "type":"structure",
+      "members":{
+        "OriginAccessControlConfig":{
+          "shape":"OriginAccessControlConfig",
+          "documentation":"<p>Contains an origin access control.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the origin access control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"OriginAccessControlConfig"
+    },
+    "GetOriginAccessControlRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the origin access control.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetOriginAccessControlResult":{
+      "type":"structure",
+      "members":{
+        "OriginAccessControl":{
+          "shape":"OriginAccessControl",
+          "documentation":"<p>Contains an origin access control.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the origin access control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"OriginAccessControl"
+    },
     "GetOriginRequestPolicyConfigRequest":{
       "type":"structure",
       "required":["Id"],
@@ -5306,6 +5523,15 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "IllegalOriginAccessConfiguration":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>An origin cannot contain both an origin access control (OAC) and an origin access identity (OAI).</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "IllegalUpdate":{
       "type":"structure",
       "members":{
@@ -5339,6 +5565,15 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>The default root object file name is too big or contains an invalid character.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "InvalidDomainNameForOriginAccessControl":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>An origin access control is associated with an origin whose domain name is not supported.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -5429,6 +5664,15 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>The Amazon S3 origin server specified does not refer to a valid Amazon S3 bucket.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "InvalidOriginAccessControl":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The origin access control is not valid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -6339,6 +6583,33 @@
       },
       "payload":"KeyGroupList"
     },
+    "ListOriginAccessControlsRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list of origin access controls. The response includes the items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of origin access controls that you want in the response.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListOriginAccessControlsResult":{
+      "type":"structure",
+      "members":{
+        "OriginAccessControlList":{
+          "shape":"OriginAccessControlList",
+          "documentation":"<p>A list of origin access controls.</p>"
+        }
+      },
+      "payload":"OriginAccessControlList"
+    },
     "ListOriginRequestPoliciesRequest":{
       "type":"structure",
       "members":{
@@ -6598,6 +6869,15 @@
       },
       "documentation":"<p>A monitoring subscription. This structure contains information about whether additional CloudWatch metrics are enabled for a given CloudFront distribution.</p>"
     },
+    "MonitoringSubscriptionAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>A monitoring subscription already exists for the specified distribution.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "NoSuchCachePolicy":{
       "type":"structure",
       "members":{
@@ -6661,12 +6941,30 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "NoSuchMonitoringSubscription":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>A monitoring subscription does not exist for the specified distribution.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
     "NoSuchOrigin":{
       "type":"structure",
       "members":{
         "Message":{"shape":"string"}
       },
       "documentation":"<p>No origin exists with the specified <code>Origin Id</code>. </p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "NoSuchOriginAccessControl":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The origin access control does not exist.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
@@ -6766,9 +7064,176 @@
         "OriginShield":{
           "shape":"OriginShield",
           "documentation":"<p>CloudFront Origin Shield. Using Origin Shield can help reduce the load on your origin.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html\">Using Origin Shield</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+        },
+        "OriginAccessControlId":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of an origin access control for this origin.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html\">Restricting access to an Amazon S3 origin</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>An origin.</p> <p>An origin is the location where content is stored, and from which CloudFront gets content to serve to viewers. To specify an origin:</p> <ul> <li> <p>Use <code>S3OriginConfig</code> to specify an Amazon S3 bucket that is not configured with static website hosting.</p> </li> <li> <p>Use <code>CustomOriginConfig</code> to specify all other kinds of origins, including:</p> <ul> <li> <p>An Amazon S3 bucket that is configured with static website hosting</p> </li> <li> <p>An Elastic Load Balancing load balancer</p> </li> <li> <p>An AWS Elemental MediaPackage endpoint</p> </li> <li> <p>An AWS Elemental MediaStore container</p> </li> <li> <p>Any other HTTP server, running on an Amazon EC2 instance or any other kind of host</p> </li> </ul> </li> </ul> <p>For the current maximum number of origins that you can specify per distribution, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions\">General Quotas on Web Distributions</a> in the <i>Amazon CloudFront Developer Guide</i> (quotas were formerly referred to as limits).</p>"
+    },
+    "OriginAccessControl":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the origin access control.</p>"
+        },
+        "OriginAccessControlConfig":{
+          "shape":"OriginAccessControlConfig",
+          "documentation":"<p>The origin access control.</p>"
+        }
+      },
+      "documentation":"<p>A CloudFront origin access control.</p>"
+    },
+    "OriginAccessControlAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>An origin access control with the specified parameters already exists.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "OriginAccessControlConfig":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Description",
+        "SigningProtocol",
+        "SigningBehavior",
+        "OriginAccessControlOriginType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>A name to identify the origin access control.</p>"
+        },
+        "Description":{
+          "shape":"string",
+          "documentation":"<p>A description of the origin access control.</p>"
+        },
+        "SigningProtocol":{
+          "shape":"OriginAccessControlSigningProtocols",
+          "documentation":"<p>The signing protocol of the origin access control, which determines how CloudFront signs (authenticates) requests. The only valid value is <code>sigv4</code>.</p>"
+        },
+        "SigningBehavior":{
+          "shape":"OriginAccessControlSigningBehaviors",
+          "documentation":"<p>Specifies which requests CloudFront signs (adds authentication information to). Specify <code>always</code> for the most common use case. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#oac-advanced-settings\">origin access control advanced settings</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>This field can have one of the following values:</p> <ul> <li> <p> <code>always</code> – CloudFront signs all origin requests, overwriting the <code>Authorization</code> header from the viewer request if one exists.</p> </li> <li> <p> <code>never</code> – CloudFront doesn't sign any origin requests. This value turns off origin access control for all origins in all distributions that use this origin access control.</p> </li> <li> <p> <code>no-override</code> – If the viewer request doesn't contain the <code>Authorization</code> header, then CloudFront signs the origin request. If the viewer request contains the <code>Authorization</code> header, then CloudFront doesn't sign the origin request and instead passes along the <code>Authorization</code> header from the viewer request. <b>WARNING: To pass along the <code>Authorization</code> header from the viewer request, you <i>must</i> add the <code>Authorization</code> header to an <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html\">origin request policy</a> for all cache behaviors that use origins associated with this origin access control.</b> </p> </li> </ul>"
+        },
+        "OriginAccessControlOriginType":{
+          "shape":"OriginAccessControlOriginTypes",
+          "documentation":"<p>The type of origin that this origin access control is for. The only valid value is <code>s3</code>.</p>"
+        }
+      },
+      "documentation":"<p>A CloudFront origin access control.</p>"
+    },
+    "OriginAccessControlInUse":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>Cannot delete the origin access control because it's in use by one or more distributions.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "OriginAccessControlList":{
+      "type":"structure",
+      "required":[
+        "Marker",
+        "MaxItems",
+        "IsTruncated",
+        "Quantity"
+      ],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>Marker</code> field that was provided in the request.</p>"
+        },
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>If there are more items in the list than are in this response, this element is present. It contains the value to use in the <code>Marker</code> field of another request to continue listing origin access controls.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of origin access controls requested.</p>"
+        },
+        "IsTruncated":{
+          "shape":"boolean",
+          "documentation":"<p>If there are more items in the list than are in this response, this value is <code>true</code>.</p>"
+        },
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The number of origin access controls returned in the response.</p>"
+        },
+        "Items":{
+          "shape":"OriginAccessControlSummaryList",
+          "documentation":"<p>Contains the origin access controls in the list.</p>"
+        }
+      },
+      "documentation":"<p>A list of CloudFront origin access controls.</p>"
+    },
+    "OriginAccessControlOriginTypes":{
+      "type":"string",
+      "enum":["s3"]
+    },
+    "OriginAccessControlSigningBehaviors":{
+      "type":"string",
+      "enum":[
+        "never",
+        "always",
+        "no-override"
+      ]
+    },
+    "OriginAccessControlSigningProtocols":{
+      "type":"string",
+      "enum":["sigv4"]
+    },
+    "OriginAccessControlSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Description",
+        "Name",
+        "SigningProtocol",
+        "SigningBehavior",
+        "OriginAccessControlOriginType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the origin access control.</p>"
+        },
+        "Description":{
+          "shape":"string",
+          "documentation":"<p>A description of the origin access control.</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>A unique name that identifies the origin access control.</p>"
+        },
+        "SigningProtocol":{
+          "shape":"OriginAccessControlSigningProtocols",
+          "documentation":"<p>The signing protocol of the origin access control. The signing protocol determines how CloudFront signs (authenticates) requests. The only valid value is <code>sigv4</code>.</p>"
+        },
+        "SigningBehavior":{
+          "shape":"OriginAccessControlSigningBehaviors",
+          "documentation":"<p>A value that specifies which requests CloudFront signs (adds authentication information to). This field can have one of the following values:</p> <ul> <li> <p> <code>never</code> – CloudFront doesn't sign any origin requests.</p> </li> <li> <p> <code>always</code> – CloudFront signs all origin requests, overwriting the <code>Authorization</code> header from the viewer request if necessary.</p> </li> <li> <p> <code>no-override</code> – If the viewer request doesn't contain the <code>Authorization</code> header, CloudFront signs the origin request. If the viewer request contains the <code>Authorization</code> header, CloudFront doesn't sign the origin request, but instead passes along the <code>Authorization</code> header that it received in the viewer request.</p> </li> </ul>"
+        },
+        "OriginAccessControlOriginType":{
+          "shape":"OriginAccessControlOriginTypes",
+          "documentation":"<p>The type of origin that this origin access control is for. The only valid value is <code>s3</code>.</p>"
+        }
+      },
+      "documentation":"<p>A CloudFront origin access control.</p>"
+    },
+    "OriginAccessControlSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"OriginAccessControlSummary",
+        "locationName":"OriginAccessControlSummary"
+      }
     },
     "OriginCustomHeader":{
       "type":"structure",
@@ -7782,13 +8247,13 @@
           "shape":"ResponseHeadersPolicySecurityHeadersConfig",
           "documentation":"<p>A configuration for a set of security-related HTTP response headers.</p>"
         },
-        "CustomHeadersConfig":{
-          "shape":"ResponseHeadersPolicyCustomHeadersConfig",
-          "documentation":"<p>A configuration for a set of custom HTTP response headers.</p>"
-        },
         "ServerTimingHeadersConfig":{
           "shape":"ResponseHeadersPolicyServerTimingHeadersConfig",
           "documentation":"<p>A configuration for enabling the <code>Server-Timing</code> header in HTTP responses sent from CloudFront.</p>"
+        },
+        "CustomHeadersConfig":{
+          "shape":"ResponseHeadersPolicyCustomHeadersConfig",
+          "documentation":"<p>A configuration for a set of custom HTTP response headers.</p>"
         }
       },
       "documentation":"<p>A response headers policy configuration.</p> <p>A response headers policy configuration contains metadata about the response headers policy, and configurations for sets of HTTP response headers and their values. CloudFront adds the headers in the policy to HTTP responses that it sends for requests that match a cache behavior associated with the policy.</p>"
@@ -8763,6 +9228,15 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "TooManyDistributionsAssociatedToOriginAccessControl":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The maximum number of distributions have been associated with the specified origin access control.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html\">Quotas</a> (formerly known as limits) in the <i>Amazon CloudFront Developer Guide</i>.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "TooManyDistributionsAssociatedToOriginRequestPolicy":{
       "type":"structure",
       "members":{
@@ -8940,6 +9414,15 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>Your request contains more Lambda@Edge function associations than are allowed per distribution.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "TooManyOriginAccessControls":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The number of origin access controls in your Amazon Web Services account exceeds the maximum allowed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html\">Quotas</a> (formerly known as limits) in the <i>Amazon CloudFront Developer Guide</i>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -9484,6 +9967,50 @@
         }
       },
       "payload":"KeyGroup"
+    },
+    "UpdateOriginAccessControlRequest":{
+      "type":"structure",
+      "required":[
+        "OriginAccessControlConfig",
+        "Id"
+      ],
+      "members":{
+        "OriginAccessControlConfig":{
+          "shape":"OriginAccessControlConfig",
+          "documentation":"<p>An origin access control.</p>",
+          "locationName":"OriginAccessControlConfig",
+          "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+        },
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the origin access control that you are updating.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the origin access control that you are updating.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      },
+      "payload":"OriginAccessControlConfig"
+    },
+    "UpdateOriginAccessControlResult":{
+      "type":"structure",
+      "members":{
+        "OriginAccessControl":{
+          "shape":"OriginAccessControl",
+          "documentation":"<p>The origin access control after it has been updated.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The new version of the origin access control after it has been updated.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"OriginAccessControl"
     },
     "UpdateOriginRequestPolicyRequest":{
       "type":"structure",

@@ -1046,7 +1046,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"MaxNumberOfConformancePacksExceededException"}
       ],
-      "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across Amazon Web Services Organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the Config Developer Guide.</p> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>You must specify either the <code>TemplateS3Uri</code> or the <code>TemplateBody</code> parameter, but not both. If you provide both Config uses the <code>TemplateS3Uri</code> parameter and ignores the <code>TemplateBody</code> parameter.</p> </note>"
+      "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across Amazon Web Services Organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the Config Developer Guide.</p> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>You must specify one and only one of the<code>TemplateS3Uri</code>, <code>TemplateBody</code> or <code>TemplateSSMDocumentDetails</code> parameters.</p> </note>"
     },
     "PutDeliveryChannel":{
       "name":"PutDeliveryChannel",
@@ -2572,11 +2572,15 @@
         },
         "LastUpdateRequestedTime":{
           "shape":"Date",
-          "documentation":"<p>Last time when conformation pack update was requested. </p>"
+          "documentation":"<p>The last time a conformation pack update was requested. </p>"
         },
         "CreatedBy":{
           "shape":"StringWithCharLimit256",
-          "documentation":"<p>Amazon Web Services service that created the conformance pack.</p>"
+          "documentation":"<p>The Amazon Web Services service that created the conformance pack.</p>"
+        },
+        "TemplateSSMDocumentDetails":{
+          "shape":"TemplateSSMDocumentDetails",
+          "documentation":"<p>An object that contains the name or Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.</p>"
         }
       },
       "documentation":"<p>Returns details of a conformance pack. A conformance pack is a collection of Config rules and remediation actions that can be easily deployed in an account and a region.</p>"
@@ -4783,7 +4787,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>Indicates one of the following errors:</p> <ul> <li> <p>For PutConfigRule, the rule cannot be created because the IAM role assigned to Config lacks permissions to perform the config:Put* action.</p> </li> <li> <p>For PutConfigRule, the Lambda function cannot be invoked. Check the function ARN, and check the function's permissions.</p> </li> <li> <p>For PutOrganizationConfigRule, organization Config rule cannot be created because you do not have permissions to call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>For PutConformancePack and PutOrganizationConformancePack, a conformance pack cannot be created because you do not have permissions: </p> <ul> <li> <p>To call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>To read Amazon S3 bucket.</p> </li> </ul> </li> </ul>",
+      "documentation":"<p>Indicates one of the following errors:</p> <ul> <li> <p>For PutConfigRule, the rule cannot be created because the IAM role assigned to Config lacks permissions to perform the config:Put* action.</p> </li> <li> <p>For PutConfigRule, the Lambda function cannot be invoked. Check the function ARN, and check the function's permissions.</p> </li> <li> <p>For PutOrganizationConfigRule, organization Config rule cannot be created because you do not have permissions to call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>For PutConformancePack and PutOrganizationConformancePack, a conformance pack cannot be created because you do not have permissions: </p> <ul> <li> <p>To call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>To read Amazon S3 bucket or call SSM:GetDocument.</p> </li> </ul> </li> </ul>",
       "exception":true
     },
     "Integer":{"type":"integer"},
@@ -6005,15 +6009,15 @@
       "members":{
         "ConformancePackName":{
           "shape":"ConformancePackName",
-          "documentation":"<p>Name of the conformance pack you want to create.</p>"
+          "documentation":"<p>The unique name of the conformance pack you want to deploy.</p>"
         },
         "TemplateS3Uri":{
           "shape":"TemplateS3Uri",
-          "documentation":"<p>Location of file containing the template body (<code>s3://bucketname/prefix</code>). The uri must point to the conformance pack template (max size: 300 KB) that is located in an Amazon S3 bucket in the same region as the conformance pack. </p> <note> <p>You must have access to read Amazon S3 bucket.</p> </note>"
+          "documentation":"<p>The location of the file containing the template body (<code>s3://bucketname/prefix</code>). The uri must point to a conformance pack template (max size: 300 KB) that is located in an Amazon S3 bucket in the same region as the conformance pack. </p> <note> <p>You must have access to read Amazon S3 bucket.</p> </note>"
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>A string containing full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can only use a YAML template with two resource types: Config rule (<code>AWS::Config::ConfigRule</code>) and a remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>"
+          "documentation":"<p>A string containing the full conformance pack template body. The structure containing the template body has a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can only use a YAML template with two resource types: Config rule (<code>AWS::Config::ConfigRule</code>) and remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>"
         },
         "DeliveryS3Bucket":{
           "shape":"DeliveryS3Bucket",
@@ -6026,6 +6030,10 @@
         "ConformancePackInputParameters":{
           "shape":"ConformancePackInputParameters",
           "documentation":"<p>A list of <code>ConformancePackInputParameter</code> objects.</p>"
+        },
+        "TemplateSSMDocumentDetails":{
+          "shape":"TemplateSSMDocumentDetails",
+          "documentation":"<p>An object of type <code>TemplateSSMDocumentDetails</code>, which contains the name or the Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.</p>"
         }
       }
     },
@@ -7041,6 +7049,14 @@
       "max":50,
       "min":0
     },
+    "SSMDocumentName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_\\-.:/]{3,200}$"
+    },
+    "SSMDocumentVersion":{
+      "type":"string",
+      "pattern":"([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"
+    },
     "SchemaVersionId":{
       "type":"string",
       "max":128,
@@ -7502,6 +7518,21 @@
       "max":1024,
       "min":1,
       "pattern":"s3://.*"
+    },
+    "TemplateSSMDocumentDetails":{
+      "type":"structure",
+      "required":["DocumentName"],
+      "members":{
+        "DocumentName":{
+          "shape":"SSMDocumentName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the SSM document to use to create a conformance pack. If you use the Document Name, Config checks only your account and region for the SSM document. If you want to use an SSM document from another region or account, you must provide the ARN.</p>"
+        },
+        "DocumentVersion":{
+          "shape":"SSMDocumentVersion",
+          "documentation":"<p>The version of the SSM document to use to create a conformance pack. By default, Config uses the latest version.</p> <note> <p>This field is optional.</p> </note>"
+        }
+      },
+      "documentation":"<p>This API allows you to create a conformance pack template with an Amazon Web Services Systems Manager document (SSM document). To deploy a conformance pack using an SSM document, you first create an SSM document with conformance pack content, and then provide the <code>DocumentName</code> (and optionally <code>DocumentVersion</code>) in the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html\">PutConformancePack API</a>.</p> <p>The <code>TemplateSSMDocumentDetails</code> object contains the name of the SSM document and the version of the SSM document.</p>"
     },
     "TooManyTagsException":{
       "type":"structure",

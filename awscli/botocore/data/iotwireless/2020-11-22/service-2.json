@@ -2027,6 +2027,36 @@
         "critical"
       ]
     },
+    "Beaconing":{
+      "type":"structure",
+      "members":{
+        "DataRate":{
+          "shape":"BeaconingDataRate",
+          "documentation":"<p>The data rate for gateways that are sending the beacons.</p>"
+        },
+        "Frequencies":{
+          "shape":"BeaconingFrequencies",
+          "documentation":"<p>The frequency list for the gateways to send the beacons.</p>"
+        }
+      },
+      "documentation":"<p>Beaconing parameters for configuring the wireless gateways.</p>"
+    },
+    "BeaconingDataRate":{
+      "type":"integer",
+      "max":15,
+      "min":0
+    },
+    "BeaconingFrequencies":{
+      "type":"list",
+      "member":{"shape":"BeaconingFrequency"},
+      "max":10,
+      "min":0
+    },
+    "BeaconingFrequency":{
+      "type":"integer",
+      "max":1000000000,
+      "min":100000000
+    },
     "CancelMulticastGroupSessionRequest":{
       "type":"structure",
       "required":["Id"],
@@ -2127,7 +2157,7 @@
         },
         "WirelessGatewayIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless gateway ID connection status event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless gateway ID connection status event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Connection status event configuration object for enabling or disabling topic.</p>"
@@ -2822,7 +2852,7 @@
         },
         "WirelessDeviceIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless device id device registration state event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device ID device registration state event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Device registration state event configuration object for enabling and disabling relevant topics.</p>"
@@ -3032,6 +3062,19 @@
       "max":256
     },
     "Double":{"type":"double"},
+    "DownlinkFrequency":{
+      "type":"integer",
+      "max":1000000000,
+      "min":100000000
+    },
+    "DownlinkMode":{
+      "type":"string",
+      "enum":[
+        "SEQUENTIAL",
+        "CONCURRENT",
+        "USING_UPLINK_GATEWAY"
+      ]
+    },
     "DownlinkQueueMessage":{
       "type":"structure",
       "members":{
@@ -3284,6 +3327,28 @@
     "GatewayEui":{
       "type":"string",
       "pattern":"^(([0-9A-Fa-f]{2}-){7}|([0-9A-Fa-f]{2}:){7}|([0-9A-Fa-f]{2}\\s){7}|([0-9A-Fa-f]{2}){7})([0-9A-Fa-f]{2})$"
+    },
+    "GatewayList":{
+      "type":"list",
+      "member":{"shape":"GatewayListItem"}
+    },
+    "GatewayListItem":{
+      "type":"structure",
+      "required":[
+        "GatewayId",
+        "DownlinkFrequency"
+      ],
+      "members":{
+        "GatewayId":{
+          "shape":"WirelessGatewayId",
+          "documentation":"<p>The ID of the wireless gateways that you want to add to the list of gateways when sending downlink messages.</p>"
+        },
+        "DownlinkFrequency":{
+          "shape":"DownlinkFrequency",
+          "documentation":"<p>The frequency to use for the gateways when sending a downlink message to the wireless device.</p>"
+        }
+      },
+      "documentation":"<p>Gateway list item object that specifies the frequency and list of gateways for which the downlink message should be sent.</p>"
     },
     "GenAppKey":{
       "type":"string",
@@ -4122,7 +4187,7 @@
         },
         "WirelessDeviceIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless device id join event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device ID join event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Join event configuration object for enabling or disabling topic.</p>"
@@ -4640,7 +4705,7 @@
       "members":{
         "GatewayEuiEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the gateway EUI connection status event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the gateway EUI connection status event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Object for LoRaWAN connection status resource type event configuration.</p>"
@@ -4650,7 +4715,7 @@
       "members":{
         "WirelessGatewayEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless gateway connection status event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless gateway connection status event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Object for LoRaWAN connection status resource type event configuration.</p>"
@@ -4830,7 +4895,11 @@
         },
         "JoinEuiFilters":{"shape":"JoinEuiFilters"},
         "NetIdFilters":{"shape":"NetIdFilters"},
-        "SubBands":{"shape":"SubBands"}
+        "SubBands":{"shape":"SubBands"},
+        "Beaconing":{
+          "shape":"Beaconing",
+          "documentation":"<p>Beaconing object information, which consists of the data rate and frequency parameters.</p>"
+        }
       },
       "documentation":"<p>LoRaWANGateway object.</p>"
     },
@@ -4971,7 +5040,7 @@
       "members":{
         "DevEuiEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the Dev EUI join event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the Dev EUI join event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Object for LoRaWAN join resource type event configuration.</p>"
@@ -4981,7 +5050,7 @@
       "members":{
         "WirelessDeviceEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless device join event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device join event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Object for LoRaWAN join resource type event configuration.</p>"
@@ -5034,7 +5103,11 @@
     "LoRaWANSendDataToDevice":{
       "type":"structure",
       "members":{
-        "FPort":{"shape":"FPort"}
+        "FPort":{"shape":"FPort"},
+        "ParticipatingGateways":{
+          "shape":"ParticipatingGateways",
+          "documentation":"<p>Choose the gateways that you want to use for the downlink data traffic when the wireless device is running in class B or class C mode.</p>"
+        }
       },
       "documentation":"<p>LoRaWAN router info.</p>"
     },
@@ -5170,7 +5243,7 @@
         "Sidewalk":{"shape":"SidewalkEventNotificationConfigurations"},
         "WirelessDeviceIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless device id device registration state event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device ID device registration state event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Message delivery status event configuration object for enabling and disabling relevant topics.</p>"
@@ -5369,6 +5442,29 @@
       "max":32,
       "min":1
     },
+    "ParticipatingGateways":{
+      "type":"structure",
+      "required":[
+        "DownlinkMode",
+        "GatewayList",
+        "TransmissionInterval"
+      ],
+      "members":{
+        "DownlinkMode":{
+          "shape":"DownlinkMode",
+          "documentation":"<p>Indicates whether to send the downlink message in sequential mode or concurrent mode, or to use only the chosen gateways from the previous uplink message transmission.</p>"
+        },
+        "GatewayList":{
+          "shape":"GatewayList",
+          "documentation":"<p>The list of gateways that you want to use for sending the downlink data traffic.</p>"
+        },
+        "TransmissionInterval":{
+          "shape":"TransmissionInterval",
+          "documentation":"<p>The duration of time for which AWS IoT Core for LoRaWAN will wait before transmitting the payload to the next gateway.</p>"
+        }
+      },
+      "documentation":"<p>Specify the list of gateways to which you want to send downlink data traffic when the wireless device is running in class B or class C mode.</p>"
+    },
     "PartnerAccountArn":{"type":"string"},
     "PartnerAccountId":{
       "type":"string",
@@ -5512,7 +5608,7 @@
         },
         "WirelessDeviceIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless device id proximity event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device ID proximity event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Proximity event configuration object for enabling and disabling relevant topics.</p>"
@@ -5959,7 +6055,7 @@
       "members":{
         "AmazonIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether amazon id event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the Amazon ID event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p> <code>SidewalkEventNotificationConfigurations</code> object, which is the event configuration object for Sidewalk-related event topics.</p>"
@@ -6000,7 +6096,7 @@
       "members":{
         "WirelessDeviceEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Enum to denote whether the wireless device join event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device join event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Sidewalk resource type event configuration object for enabling or disabling topic.</p>"
@@ -6270,6 +6366,11 @@
         "LogLevel":{"shape":"LogLevel"}
       },
       "documentation":"<p>Trace content for your wireless gateway and wireless device resources.</p>"
+    },
+    "TransmissionInterval":{
+      "type":"integer",
+      "max":604800,
+      "min":1
     },
     "TransmitMode":{
       "type":"integer",

@@ -14,7 +14,7 @@ import json
 
 import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape, \
-    ListShape, MapShape, Shape
+    ListShape, MapShape, Shape, DenormalizedStructureBuilder
 
 from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
@@ -150,6 +150,15 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         operation_model.service_model.operation_names = []
         help_command.obj = operation_model
         return help_command
+
+    def create_tagged_union_shape(self):
+        shape_model = {
+            'type': 'structure',
+            'union': True,
+            'members': {}
+        }
+        tagged_union = StructureShape('tagged_union', shape_model)
+        return tagged_union
 
     def get_help_docs_for_argument(self, shape):
         arg_table = {'arg-name': mock.Mock(argument_model=shape)}
@@ -391,6 +400,50 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
                                      help_command=help_command)
         rendered = help_command.doc.getvalue().decode('utf-8')
         self.assertRegex(rendered, r'FooBar[\s\S]*streaming blob')
+
+    def test_includes_tagged_union_options(self):
+        help_command = self.create_help_command()
+        tagged_union = self.create_tagged_union_shape()
+        arg = CustomArgument(name='tagged_union',
+                             argument_model=tagged_union)
+        help_command.arg_table = {'tagged_union': arg}
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option(arg_name='tagged_union',
+                                     help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('(tagged union structure)', rendered)
+
+    def test_tagged_union_comes_after_docstring_options(self):
+        help_command = self.create_help_command()
+        tagged_union = self.create_tagged_union_shape()
+        arg = CustomArgument(name='tagged_union',
+                             argument_model=tagged_union,
+                             help_text='FooBar')
+        help_command.arg_table = {'tagged_union': arg}
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option(arg_name='tagged_union',
+                                     help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertRegex(rendered, r'FooBar[\s\S]*Tagged Union')
+
+    def test_tagged_union_comes_after_docstring_output(self):
+        help_command = self.create_help_command()
+        tagged_union = self.create_tagged_union_shape()
+        tagged_union.documentation = "FooBar"
+        shape = DenormalizedStructureBuilder().with_members({
+            'foo': {
+                'type': 'structure',
+                'union': True,
+                'documentation': 'FooBar',
+                'members': {}
+            }
+        }).build_model()
+        help_command.obj.output_shape = shape
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_output(help_command=help_command,
+                                     event_name='foobar')
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertRegex(rendered, r'FooBar[\s\S]*Tagged Union')
 
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):

@@ -23,7 +23,8 @@ from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
 from awscli.utils import (
     find_service_and_method_in_event_name, is_document_type,
-    operation_uses_document_types, is_streaming_blob_type
+    operation_uses_document_types, is_streaming_blob_type,
+    is_tagged_union_type
 )
 
 LOG = logging.getLogger(__name__)
@@ -56,6 +57,8 @@ class CLIDocumentEventHandler(object):
             return 'document'
         if is_streaming_blob_type(shape):
             return 'streaming blob'
+        if is_tagged_union_type(shape):
+            return 'tagged union structure'
         return default
 
     def _map_handlers(self, session, event_class, mapfn):
@@ -185,6 +188,8 @@ class CLIDocumentEventHandler(object):
         doc.include_doc_string(argument.documentation)
         if is_streaming_blob_type(argument.argument_model):
             self._add_streaming_blob_note(doc)
+        if is_tagged_union_type(argument.argument_model):
+            self._add_tagged_union_note(argument.argument_model, doc)
         if hasattr(argument, 'argument_model'):
             self._document_enums(argument.argument_model, doc)
             self._document_nested_structure(argument.argument_model, doc)
@@ -264,6 +269,8 @@ class CLIDocumentEventHandler(object):
         doc.style.indent()
         doc.style.new_paragraph()
         doc.include_doc_string(docs)
+        if is_tagged_union_type(member_shape):
+            self._add_tagged_union_note(member_shape, doc)
         doc.style.new_paragraph()
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
@@ -287,6 +294,16 @@ class CLIDocumentEventHandler(object):
                "Its value must be the path to a file "
                "(e.g. ``path/to/file``) and must **not** "
                "be prefixed with ``file://`` or ``fileb://``")
+        doc.writeln(msg)
+        doc.style.end_note()
+
+    def _add_tagged_union_note(self, shape, doc):
+        doc.style.start_note()
+        members_str = ", ".join(
+            [f'``{key}``' for key in shape.members.keys()]
+        )
+        msg = ("This is a Tagged Union structure. Only one of the "
+               f"following top level keys can be set: {members_str}.")
         doc.writeln(msg)
         doc.style.end_note()
 

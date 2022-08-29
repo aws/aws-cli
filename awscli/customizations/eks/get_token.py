@@ -85,7 +85,11 @@ class GetTokenCommand(BasicCommand):
         {
             'name': 'role-arn',
             'help_text': (
-                "Assume this role for credentials when signing the token."
+                "Assume this role for credentials when signing the token. "
+                "Use this optional parameter when the credentials for signing "
+                "the token differ from that of the current role session. "
+                "Using this parameter results in new role session credentials "
+                "that are used to sign the token."
             ),
             'required': False,
         },

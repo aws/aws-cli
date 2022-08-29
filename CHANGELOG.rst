@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.63
+=======
+
+* api-change:``fsx``: Documentation updates for Amazon FSx for NetApp ONTAP.
+* api-change:``voice-id``: Amazon Connect Voice ID now detects voice spoofing.  When a prospective fraudster tries to spoof caller audio using audio playback or synthesized speech, Voice ID will return a risk score and outcome to indicate the how likely it is that the voice is spoofed.
+
+
 1.25.62
 =======
 

@@ -28,7 +28,7 @@ from awscli.compat import is_windows
 from awscli.utils import (
     split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
     is_document_type, is_document_type_container, is_streaming_blob_type,
-    is_tagged_union_type, is_tagoperation_uses_document_types, dump_yaml_to_str,
+    is_tagged_union_type, operation_uses_document_types, dump_yaml_to_str,
     ShapeWalker, ShapeRecordingVisitor, OutputStreamFactory, LazyPager
 )
 from awscli.utils import InstanceMetadataRegionFetcher

@@ -17,6 +17,7 @@ from awscli.testutils import (
     create_clidriver,
     FileCreator,
 )
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.customizations.configure.configure import ConfigureCommand
 
 
@@ -36,6 +37,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         self.files.create_file(self.config_filename, contents)
         # Reset the session to pick up the new config file.
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def get_config_file_contents(self):
         with open(self.config_filename, "r") as f:
@@ -58,7 +60,6 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         self.assertRegex(stdout, r"region\s+us-west-2\s+config-file")
 
     def test_get_command(self):
-        self.driver = create_clidriver()
         self.set_config_file_contents(
             "\n"
             "[default]\n"
@@ -127,22 +128,6 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "--profile default",
         )
         self.assertEqual(stdout.strip(), "testing_access_key")
-
-    def test_get_fq_for_non_profile_configs(self):
-        self.set_config_file_contents(
-            "\n"
-            "[default]\n"
-            "aws_access_key_id=default_access_key\n"
-            "\n"
-            "[profile testing]\n"
-            "aws_access_key_id=testing_access_key\n"
-            "[preview]\n"
-            "emr=true"
-        )
-        stdout, _, _ = self.run_cmd(
-            "configure get preview.emr --profile default",
-        )
-        self.assertEqual(stdout.strip(), "true")
 
     def test_set_with_config_file_no_exist(self):
         self.run_cmd("configure set region us-west-1")
@@ -245,14 +230,6 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             self.get_config_file_contents(),
         )
 
-    def test_set_with_fq_single_dot(self):
-        self.run_cmd("configure set preview.cloudsearch true")
-        self.assertEqual(
-            "[preview]\n"
-            "cloudsearch = true\n",
-            self.get_config_file_contents()
-        )
-
     def test_set_with_fq_double_dot(self):
         self.run_cmd(
             "configure set profile.testing.region us-west-2",
@@ -260,20 +237,6 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         self.assertEqual(
             "[profile testing]\n"
             "region = us-west-2\n",
-            self.get_config_file_contents(),
-        )
-
-    def test_set_with_commented_out_field(self):
-        self.set_config_file_contents(
-            "#[preview]\n"
-            ";cloudsearch = true\n"
-        )
-        self.run_cmd("configure set preview.cloudsearch true")
-        self.assertEqual(
-            "#[preview]\n"
-            ";cloudsearch = true\n"
-            "[preview]\n"
-            "cloudsearch = true\n",
             self.get_config_file_contents(),
         )
 
@@ -357,22 +320,6 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "configure get default.bad.doesnotexist", expected_rc=1
         )
         self.assertEqual(stdout, "")
-
-    def test_can_handle_empty_section(self):
-        self.set_config_file_contents("[default]\n")
-        self.run_cmd(
-            "configure set preview.cloudfront true",
-        )
-        self.run_cmd(
-            "configure set region us-west-2",
-        )
-        self.assertEqual(
-            "[default]\n"
-            "region = us-west-2\n"
-            "[preview]\n"
-            "cloudfront = true\n",
-            self.get_config_file_contents(),
-        )
 
 
 class TestConfigureHasArgTable(unittest.TestCase):

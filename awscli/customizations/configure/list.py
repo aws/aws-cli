@@ -44,8 +44,10 @@ class ConfigureListCommand(BasicCommand):
         '\n'
     )
 
-    def __init__(self, session, stream=sys.stdout):
+    def __init__(self, session, stream=None):
         super(ConfigureListCommand, self).__init__(session)
+        if stream is None:
+            stream = sys.stdout
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):

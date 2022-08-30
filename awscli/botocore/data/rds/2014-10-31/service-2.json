@@ -2547,7 +2547,7 @@
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"InvalidDBInstanceStateFault"}
       ],
-      "documentation":"<p>Switches over an Oracle standby database in an Oracle Data Guard environment, making it the new primary database. Issue this command in the AWS Region that hosts the current standby database.</p>"
+      "documentation":"<p>Switches over an Oracle standby database in an Oracle Data Guard environment, making it the new primary database. Issue this command in the Region that hosts the current standby database.</p>"
     }
   },
   "shapes":{
@@ -3318,7 +3318,7 @@
         },
         "KMSKeyId":{
           "shape":"KmsKeyIdOrArn",
-          "documentation":"<p>The Amazon Web Services KMS key identifier for an encrypted CEV. A symmetric KMS key is required for RDS Custom, but optional for Amazon RDS.</p> <p>If you have an existing symmetric KMS key in your account, you can use it with RDS Custom. No further action is necessary. If you don't already have a symmetric KMS key in your account, follow the instructions in <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html#create-symmetric-cmk\"> Creating symmetric KMS keys</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> <p>You can choose the same symmetric key when you create a CEV and a DB instance, or choose different keys.</p>"
+          "documentation":"<p>The Amazon Web Services KMS key identifier for an encrypted CEV. A symmetric encryption KMS key is required for RDS Custom, but optional for Amazon RDS.</p> <p>If you have an existing symmetric encryption KMS key in your account, you can use it with RDS Custom. No further action is necessary. If you don't already have a symmetric encryption KMS key in your account, follow the instructions in <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html#create-symmetric-cmk\"> Creating a symmetric encryption KMS key</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> <p>You can choose the same symmetric encryption key when you create a CEV and a DB instance, or choose different keys.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -6787,7 +6787,7 @@
         },
         "SnapshotDatabaseTime":{
           "shape":"TStamp",
-          "documentation":"<p>The timestamp of the most recent transaction applied to the database that you're backing up. Thus, if you restore a snapshot, SnapshotDatabaseTime is the most recent transaction in the restored DB instance. In contrast, originalSnapshotCreateTime specifies the system time that the snapshot completed.</p> <p>If you back up a read replica, you can determine the replica lag by comparing SnapshotDatabaseTime with originalSnapshotCreateTime. For example, if originalSnapshotCreateTime is two hours later than SnapshotDatabaseTime, then the replica lag is two hours. *** REVIEWERS 7/27: Switchover</p>"
+          "documentation":"<p>The timestamp of the most recent transaction applied to the database that you're backing up. Thus, if you restore a snapshot, SnapshotDatabaseTime is the most recent transaction in the restored DB instance. In contrast, originalSnapshotCreateTime specifies the system time that the snapshot completed.</p> <p>If you back up a read replica, you can determine the replica lag by comparing SnapshotDatabaseTime with originalSnapshotCreateTime. For example, if originalSnapshotCreateTime is two hours later than SnapshotDatabaseTime, then the replica lag is two hours.</p>"
         },
         "SnapshotTarget":{
           "shape":"String",
@@ -9976,7 +9976,7 @@
         },
         "DBInstanceClass":{
           "shape":"String",
-          "documentation":"<p>The new compute and memory capacity of the DB instance, for example db.m4.large. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i>. For RDS Custom, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits.html#custom-reqs-limits.instances\">DB instance class support for RDS Custom for Oracle</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html#custom-reqs-limits.instancesMS\">DB instance class support for RDS Custom for SQL Server</a>.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless <code>ApplyImmediately</code> is enabled for this request. </p> <p>Default: Uses existing setting</p>"
+          "documentation":"<p>The new compute and memory capacity of the DB instance, for example db.m4.large. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB instance classes</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html\">Aurora DB instance classes</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless <code>ApplyImmediately</code> is enabled for this request.</p> <p>This setting doesn't apply to RDS Custom for Oracle.</p> <p>Default: Uses existing setting</p>"
         },
         "DBSubnetGroupName":{
           "shape":"String",

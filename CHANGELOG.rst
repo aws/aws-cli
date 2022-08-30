@@ -4005,6 +4005,21 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.63
+=======
+
+* api-change:``fsx``: Documentation updates for Amazon FSx for NetApp ONTAP.
+* api-change:``voice-id``: Amazon Connect Voice ID now detects voice spoofing.  When a prospective fraudster tries to spoof caller audio using audio playback or synthesized speech, Voice ID will return a risk score and outcome to indicate the how likely it is that the voice is spoofed.
+
+
+1.25.62
+=======
+
+* enhancement:docs: Generate a usage note for Tagged Union structures.
+* api-change:``mediapackage``: This release adds Ads AdTriggers and AdsOnDeliveryRestrictions to describe calls for CMAF endpoints on MediaPackage.
+* api-change:``rds``: Removes support for RDS Custom from DBInstanceClass in ModifyDBInstance
+
+
 1.25.61
 =======
 

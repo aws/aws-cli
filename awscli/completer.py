@@ -143,4 +143,4 @@ if __name__ == '__main__':
     else:
         print('usage: %s <cmdline> <point>' % sys.argv[0])
         sys.exit(1)
-    print(complete(cmdline, point))
+    complete(cmdline, point)

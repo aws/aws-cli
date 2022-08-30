@@ -220,7 +220,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Gets the recipe for a version of a component. Core devices can call this operation to identify the artifacts and requirements to install a component.</p>"
+      "documentation":"<p>Gets the recipe for a version of a component.</p>"
     },
     "GetComponentVersionArtifact":{
       "name":"GetComponentVersionArtifact",
@@ -269,7 +269,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves metadata for a Greengrass core device.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> </ul> </note>"
+      "documentation":"<p>Retrieves metadata for a Greengrass core device.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> <li> <p>For IoT Greengrass Core v2.7.0, the core device sends status updates upon local deployment and cloud deployment</p> </li> </ul> </note>"
     },
     "GetDeployment":{
       "name":"GetDeployment",
@@ -368,7 +368,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves a paginated list of Greengrass core devices.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> </ul> </note>"
+      "documentation":"<p>Retrieves a paginated list of Greengrass core devices.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> <li> <p>For IoT Greengrass Core v2.7.0, the core device sends status updates upon local deployment and cloud deployment</p> </li> </ul> </note>"
     },
     "ListDeployments":{
       "name":"ListDeployments",
@@ -418,7 +418,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves a paginated list of the components that a Greengrass core device runs. This list doesn't include components that are deployed from local deployments or components that are deployed as dependencies of other components.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> </ul> </note>"
+      "documentation":"<p>Retrieves a paginated list of the components that a Greengrass core device runs. By default, this list doesn't include components that are deployed as dependencies of other components. To include dependencies in the response, set the <code>topologyFilter</code> parameter to <code>ALL</code>.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> <li> <p>For IoT Greengrass Core v2.7.0, the core device sends status updates upon local deployment and cloud deployment</p> </li> </ul> </note>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -877,7 +877,7 @@
         },
         "attributes":{
           "shape":"PlatformAttributesMap",
-          "documentation":"<p>A dictionary of attributes for the platform. The IoT Greengrass Core software defines the <code>os</code> and <code>platform</code> by default. You can specify additional platform attributes for a core device when you deploy the Greengrass nucleus component. For more information, see the <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html\">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.</p>"
+          "documentation":"<p>A dictionary of attributes for the platform. The IoT Greengrass Core software defines the <code>os</code> and <code>architecture</code> by default. You can specify additional platform attributes for a core device when you deploy the Greengrass nucleus component. For more information, see the <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html\">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains information about a platform that a component supports.</p>"
@@ -1101,7 +1101,7 @@
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the target IoT thing or thing group.</p>"
         },
         "deploymentName":{
-          "shape":"NonEmptyString",
+          "shape":"DeploymentNameString",
           "documentation":"<p>The name of the deployment.</p>"
         },
         "components":{
@@ -1290,6 +1290,11 @@
       "member":{"shape":"Deployment"}
     },
     "DeploymentName":{"type":"string"},
+    "DeploymentNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "DeploymentPolicies":{
       "type":"structure",
       "members":{
@@ -1765,6 +1770,10 @@
         "isRoot":{
           "shape":"IsRoot",
           "documentation":"<p>Whether or not the component is a root component.</p>"
+        },
+        "lastStatusChangeTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The status of how current the data is.</p> <p>This response is based off of component state changes. The status reflects component disruptions and deployments. If a component only sees a configuration update during a deployment, it might not undergo a state change and this status would not be updated.</p>"
         }
       },
       "documentation":"<p>Contains information about a component on a Greengrass core device.</p>"
@@ -1785,6 +1794,13 @@
     "InstalledComponentList":{
       "type":"list",
       "member":{"shape":"InstalledComponent"}
+    },
+    "InstalledComponentTopologyFilter":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "ROOT"
+      ]
     },
     "InternalServerException":{
       "type":"structure",
@@ -2119,16 +2135,12 @@
         "rw"
       ]
     },
-    "LambdaFunctionARNWithVersionNumber":{
-      "type":"string",
-      "pattern":"arn:[^:]*:lambda:[^:]+:[0-9]+:function:[a-zA-Z0-9-_]+:[0-9]+"
-    },
     "LambdaFunctionRecipeSource":{
       "type":"structure",
       "required":["lambdaArn"],
       "members":{
         "lambdaArn":{
-          "shape":"LambdaFunctionARNWithVersionNumber",
+          "shape":"NonEmptyString",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the Lambda function. The ARN must include the version of the function to import. You can't use version aliases like <code>$LATEST</code>.</p>"
         },
         "componentName":{
@@ -2485,6 +2497,13 @@
           "box":true,
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "topologyFilter":{
+          "shape":"InstalledComponentTopologyFilter",
+          "documentation":"<p>The filter for the list of components. Choose from the following options:</p> <ul> <li> <p> <code>ALL</code> – The list includes all components installed on the core device.</p> </li> <li> <p> <code>ROOT</code> – The list includes only <i>root</i> components, which are components that you specify in a deployment. When you choose this option, the list doesn't include components that the core device installs as dependencies of other components.</p> </li> </ul> <p>Default: <code>ROOT</code> </p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"topologyFilter"
         }
       }
     },
@@ -2493,7 +2512,7 @@
       "members":{
         "installedComponents":{
           "shape":"InstalledComponentList",
-          "documentation":"<p>A list that summarizes each component on the core device.</p>"
+          "documentation":"<p>A list that summarizes each component on the core device.</p> <note> <p>Accuracy of the <code>lastStatusChangeTimestamp</code> response depends on Greengrass nucleus v2.7.0. It performs best on Greengrass nucleus v2.7.0 and can be inaccurate on earlier versions.</p> </note>"
         },
         "nextToken":{
           "shape":"NextTokenString",

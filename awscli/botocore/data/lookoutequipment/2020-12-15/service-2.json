@@ -50,6 +50,43 @@
       ],
       "documentation":"<p> Creates a scheduled inference. Scheduling an inference is setting up a continuous real-time inference plan to analyze new measurement data. When setting up the schedule, you provide an S3 bucket location for the input data, assign it a delimiter between separate entries in the data, set an offset delay if desired, and set the frequency of inferencing. You must also provide an S3 bucket location for the output data. </p>"
     },
+    "CreateLabel":{
+      "name":"CreateLabel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLabelRequest"},
+      "output":{"shape":"CreateLabelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Creates a label for an event. </p>"
+    },
+    "CreateLabelGroup":{
+      "name":"CreateLabelGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLabelGroupRequest"},
+      "output":{"shape":"CreateLabelGroupResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Creates a group of labels. </p>"
+    },
     "CreateModel":{
       "name":"CreateModel",
       "http":{
@@ -101,6 +138,38 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an inference scheduler that has been set up. Already processed output results are not affected. </p>"
+    },
+    "DeleteLabel":{
+      "name":"DeleteLabel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLabelRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p> Deletes a label. </p>"
+    },
+    "DeleteLabelGroup":{
+      "name":"DeleteLabelGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLabelGroupRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p> Deletes a group of labels. </p>"
     },
     "DeleteModel":{
       "name":"DeleteModel",
@@ -168,6 +237,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Specifies information about the inference scheduler being used, including name, model, status, and associated metadata </p>"
+    },
+    "DescribeLabel":{
+      "name":"DescribeLabel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLabelRequest"},
+      "output":{"shape":"DescribeLabelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Returns the name of the label. </p>"
+    },
+    "DescribeLabelGroup":{
+      "name":"DescribeLabelGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLabelGroupRequest"},
+      "output":{"shape":"DescribeLabelGroupResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Returns information about the label group. </p>"
     },
     "DescribeModel":{
       "name":"DescribeModel",
@@ -267,6 +370,38 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of all inference schedulers currently available for your account. </p>"
+    },
+    "ListLabelGroups":{
+      "name":"ListLabelGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListLabelGroupsRequest"},
+      "output":{"shape":"ListLabelGroupsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Returns a list of the label groups. </p>"
+    },
+    "ListLabels":{
+      "name":"ListLabels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListLabelsRequest"},
+      "output":{"shape":"ListLabelsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Provides a list of labels. </p>"
     },
     "ListModels":{
       "name":"ListModels",
@@ -424,6 +559,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an inference scheduler. </p>"
+    },
+    "UpdateLabelGroup":{
+      "name":"UpdateLabelGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLabelGroupRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Updates the label group. </p>"
     }
   },
   "shapes":{
@@ -462,6 +614,12 @@
         }
       },
       "documentation":"<p> Entity that comprises information on categorical values in data. </p>"
+    },
+    "Comments":{
+      "type":"string",
+      "max":2560,
+      "min":1,
+      "pattern":"[\\P{M}\\p{M}]{1,2560}"
     },
     "ComponentName":{
       "type":"string",
@@ -571,11 +729,11 @@
         },
         "DataDelayOffsetInMinutes":{
           "shape":"DataDelayOffsetInMinutes",
-          "documentation":"<p>A period of time (in minutes) by which inference on the data is delayed after the data starts. For instance, if you select an offset delay time of five minutes, inference will not begin on the data until the first data measurement after the five minute mark. For example, if five minutes is selected, the inference scheduler will wake up at the configured frequency with the additional five minute delay time to check the customer S3 bucket. The customer can upload data at the same frequency and they don't need to stop and restart the scheduler when uploading new data. </p>"
+          "documentation":"<p>The interval (in minutes) of planned delay at the start of each inference segment. For example, if inference is set to run every ten minutes, the delay is set to five minutes and the time is 09:08. The inference scheduler will wake up at the configured interval (which, without a delay configured, would be 09:10) plus the additional five minute delay time (so 09:15) to check your Amazon S3 bucket. The delay provides a buffer for you to upload data at the same frequency, so that you don't have to stop and restart the scheduler when uploading new data.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lookout-for-equipment/latest/ug/understanding-inference-process.html\">Understanding the inference process</a>.</p>"
         },
         "DataUploadFrequency":{
           "shape":"DataUploadFrequency",
-          "documentation":"<p> How often data is uploaded to the source S3 bucket for the input data. The value chosen is the length of time between data uploads. For instance, if you select 5 minutes, Amazon Lookout for Equipment will upload the real-time data to the source bucket once every 5 minutes. This frequency also determines how often Amazon Lookout for Equipment starts a scheduled inference on your data. In this example, it starts once every 5 minutes. </p>"
+          "documentation":"<p> How often data is uploaded to the source Amazon S3 bucket for the input data. The value chosen is the length of time between data uploads. For instance, if you select 5 minutes, Amazon Lookout for Equipment will upload the real-time data to the source bucket once every 5 minutes. This frequency also determines how often Amazon Lookout for Equipment runs inference on your data.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lookout-for-equipment/latest/ug/understanding-inference-process.html\">Understanding the inference process</a>.</p>"
         },
         "DataInputConfiguration":{
           "shape":"InferenceInputConfiguration",
@@ -618,6 +776,99 @@
         "Status":{
           "shape":"InferenceSchedulerStatus",
           "documentation":"<p>Indicates the status of the <code>CreateInferenceScheduler</code> operation. </p>"
+        }
+      }
+    },
+    "CreateLabelGroupRequest":{
+      "type":"structure",
+      "required":[
+        "LabelGroupName",
+        "ClientToken"
+      ],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> Names a group of labels.</p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data. </p>"
+        },
+        "FaultCodes":{
+          "shape":"FaultCodes",
+          "documentation":"<p> The acceptable fault codes (indicating the type of anomaly associated with the label) that can be used with this label group.</p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotenceToken",
+          "documentation":"<p> A unique identifier for the request to create a label group. If you do not set the client request token, Lookout for Equipment generates one. </p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> Tags that provide metadata about the label group you are creating. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        }
+      }
+    },
+    "CreateLabelGroupResponse":{
+      "type":"structure",
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group that you have created. Data in this field will be retained for service usage. Follow best practices for the security of your data. </p>"
+        },
+        "LabelGroupArn":{
+          "shape":"LabelGroupArn",
+          "documentation":"<p> The ARN of the label group that you have created. </p>"
+        }
+      }
+    },
+    "CreateLabelRequest":{
+      "type":"structure",
+      "required":[
+        "LabelGroupName",
+        "StartTime",
+        "EndTime",
+        "Rating",
+        "ClientToken"
+      ],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of a group of labels. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data. </p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The start time of the labeled event. </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The end time of the labeled event. </p>"
+        },
+        "Rating":{
+          "shape":"LabelRating",
+          "documentation":"<p> Indicates whether a labeled event represents an anomaly. </p>"
+        },
+        "FaultCode":{
+          "shape":"FaultCode",
+          "documentation":"<p> Provides additional information about the label. The fault code must be defined in the FaultCodes attribute of the label group.</p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data. </p>"
+        },
+        "Notes":{
+          "shape":"Comments",
+          "documentation":"<p> Metadata providing additional information about the label. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        },
+        "Equipment":{
+          "shape":"Equipment",
+          "documentation":"<p> Indicates that a label pertains to a particular piece of equipment. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotenceToken",
+          "documentation":"<p> A unique identifier for the request to create a label. If you do not set the client request token, Lookout for Equipment generates one. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateLabelResponse":{
+      "type":"structure",
+      "members":{
+        "LabelId":{
+          "shape":"LabelId",
+          "documentation":"<p> The ID of the label that you have created. </p>"
         }
       }
     },
@@ -876,6 +1127,33 @@
         }
       }
     },
+    "DeleteLabelGroupRequest":{
+      "type":"structure",
+      "required":["LabelGroupName"],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group that you want to delete. Data in this field will be retained for service usage. Follow best practices for the security of your data. </p>"
+        }
+      }
+    },
+    "DeleteLabelRequest":{
+      "type":"structure",
+      "required":[
+        "LabelGroupName",
+        "LabelId"
+      ],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group that contains the label that you want to delete. Data in this field will be retained for service usage. Follow best practices for the security of your data. </p>"
+        },
+        "LabelId":{
+          "shape":"LabelId",
+          "documentation":"<p> The ID of the label that you want to delete. </p>"
+        }
+      }
+    },
     "DeleteModelRequest":{
       "type":"structure",
       "required":["ModelName"],
@@ -1082,6 +1360,107 @@
         "ServerSideKmsKeyId":{
           "shape":"KmsKeyArn",
           "documentation":"<p>Provides the identifier of the KMS key used to encrypt inference scheduler data by Amazon Lookout for Equipment. </p>"
+        },
+        "LatestInferenceResult":{
+          "shape":"LatestInferenceResult",
+          "documentation":"<p>Indicates whether the latest execution for the inference scheduler was Anomalous (anomalous events found) or Normal (no anomalous events found).</p>"
+        }
+      }
+    },
+    "DescribeLabelGroupRequest":{
+      "type":"structure",
+      "required":["LabelGroupName"],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> Returns the name of the label group. </p>"
+        }
+      }
+    },
+    "DescribeLabelGroupResponse":{
+      "type":"structure",
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group. </p>"
+        },
+        "LabelGroupArn":{
+          "shape":"LabelGroupArn",
+          "documentation":"<p> The ARN of the label group. </p>"
+        },
+        "FaultCodes":{
+          "shape":"FaultCodes",
+          "documentation":"<p> Codes indicating the type of anomaly associated with the labels in the lagbel group. </p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the label group was created. </p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the label group was updated. </p>"
+        }
+      }
+    },
+    "DescribeLabelRequest":{
+      "type":"structure",
+      "required":[
+        "LabelGroupName",
+        "LabelId"
+      ],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> Returns the name of the group containing the label. </p>"
+        },
+        "LabelId":{
+          "shape":"LabelId",
+          "documentation":"<p> Returns the ID of the label. </p>"
+        }
+      }
+    },
+    "DescribeLabelResponse":{
+      "type":"structure",
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the requested label group. </p>"
+        },
+        "LabelGroupArn":{
+          "shape":"LabelGroupArn",
+          "documentation":"<p> The ARN of the requested label group. </p>"
+        },
+        "LabelId":{
+          "shape":"LabelId",
+          "documentation":"<p> The ID of the requested label. </p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The start time of the requested label. </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The end time of the requested label. </p>"
+        },
+        "Rating":{
+          "shape":"LabelRating",
+          "documentation":"<p> Indicates whether a labeled event represents an anomaly. </p>"
+        },
+        "FaultCode":{
+          "shape":"FaultCode",
+          "documentation":"<p> Indicates the type of anomaly associated with the label. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        },
+        "Notes":{
+          "shape":"Comments",
+          "documentation":"<p>Metadata providing additional information about the label.</p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        },
+        "Equipment":{
+          "shape":"Equipment",
+          "documentation":"<p> Indicates that a label pertains to a particular piece of equipment. </p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the label was created. </p>"
         }
       }
     },
@@ -1197,8 +1576,26 @@
       },
       "documentation":"<p> Entity that comprises information abount duplicate timestamps in the dataset. </p>"
     },
+    "Equipment":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"[\\P{M}\\p{M}]{1,200}"
+    },
     "EventDurationInSeconds":{
       "type":"long",
+      "min":0
+    },
+    "FaultCode":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[\\P{M}\\p{M}]{1,100}"
+    },
+    "FaultCodes":{
+      "type":"list",
+      "member":{"shape":"FaultCode"},
+      "max":50,
       "min":0
     },
     "FileNameTimestampFormat":{
@@ -1456,6 +1853,10 @@
         "DataUploadFrequency":{
           "shape":"DataUploadFrequency",
           "documentation":"<p>How often data is uploaded to the source S3 bucket for the input data. This value is the length of time between data uploads. For instance, if you select 5 minutes, Amazon Lookout for Equipment will upload the real-time data to the source bucket once every 5 minutes. This frequency also determines how often Amazon Lookout for Equipment starts a scheduled inference on your data. In this example, it starts once every 5 minutes. </p>"
+        },
+        "LatestInferenceResult":{
+          "shape":"LatestInferenceResult",
+          "documentation":"<p>Indicates whether the latest execution for the inference scheduler was Anomalous (anomalous events found) or Normal (no anomalous events found).</p>"
         }
       },
       "documentation":"<p>Contains information about the specific inference scheduler, including data delay offset, model name and ARN, status, and so on. </p>"
@@ -1588,13 +1989,113 @@
       "min":1,
       "pattern":"arn:aws[a-z\\-]*:kms:[a-z0-9\\-]*:\\d{12}:[\\w\\-\\/]+"
     },
+    "LabelGroupArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:lookoutequipment:[a-zA-Z0-9\\-]*:[0-9]{12}:label-group\\/.+"
+    },
+    "LabelGroupName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z_-]{1,200}$"
+    },
+    "LabelGroupSummaries":{
+      "type":"list",
+      "member":{"shape":"LabelGroupSummary"}
+    },
+    "LabelGroupSummary":{
+      "type":"structure",
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group. </p>"
+        },
+        "LabelGroupArn":{
+          "shape":"LabelGroupArn",
+          "documentation":"<p> The ARN of the label group. </p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the label group was created. </p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the label group was updated. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about the label group. </p>"
+    },
+    "LabelId":{
+      "type":"string",
+      "max":32,
+      "pattern":"[A-Fa-f0-9]{0,32}"
+    },
+    "LabelRating":{
+      "type":"string",
+      "enum":[
+        "ANOMALY",
+        "NO_ANOMALY",
+        "NEUTRAL"
+      ]
+    },
+    "LabelSummaries":{
+      "type":"list",
+      "member":{"shape":"LabelSummary"}
+    },
+    "LabelSummary":{
+      "type":"structure",
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group. </p>"
+        },
+        "LabelId":{
+          "shape":"LabelId",
+          "documentation":"<p> The ID of the label. </p>"
+        },
+        "LabelGroupArn":{
+          "shape":"LabelGroupArn",
+          "documentation":"<p> The ARN of the label group. </p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp indicating the start of the label. </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp indicating the end of the label. </p>"
+        },
+        "Rating":{
+          "shape":"LabelRating",
+          "documentation":"<p> Indicates whether a labeled event represents an anomaly. </p>"
+        },
+        "FaultCode":{
+          "shape":"FaultCode",
+          "documentation":"<p> Indicates the type of anomaly associated with the label. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
+        },
+        "Equipment":{
+          "shape":"Equipment",
+          "documentation":"<p> Indicates that a label pertains to a particular piece of equipment. </p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the label was created. </p>"
+        }
+      },
+      "documentation":"<p> Information about the label. </p>"
+    },
     "LabelsInputConfiguration":{
       "type":"structure",
-      "required":["S3InputConfiguration"],
       "members":{
         "S3InputConfiguration":{
           "shape":"LabelsS3InputConfiguration",
           "documentation":"<p>Contains location information for the S3 location being used for label data. </p>"
+        },
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group to be used for label data. </p>"
         }
       },
       "documentation":"<p>Contains the configuration information for the S3 location being used to hold label data. </p>"
@@ -1633,6 +2134,13 @@
       },
       "documentation":"<p> Entity that comprises information on large gaps between consecutive timestamps in data. </p>"
     },
+    "LatestInferenceResult":{
+      "type":"string",
+      "enum":[
+        "ANOMALOUS",
+        "NORMAL"
+      ]
+    },
     "ListDataIngestionJobsRequest":{
       "type":"structure",
       "members":{
@@ -1642,7 +2150,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p> An opaque pagination token indicating where to continue the listing of data ingestion jobs. </p>"
+          "documentation":"<p>An opaque pagination token indicating where to continue the listing of data ingestion jobs. </p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -1719,11 +2227,11 @@
         },
         "IntervalStartTime":{
           "shape":"Timestamp",
-          "documentation":"<p> Lookout for Equipment will return all the inference events with start time equal to or greater than the start time given.</p>"
+          "documentation":"<p> Lookout for Equipment will return all the inference events with an end time equal to or greater than the start time given.</p>"
         },
         "IntervalEndTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Lookout for Equipment will return all the inference events with end time equal to or less than the end time given.</p>"
+          "documentation":"<p>Returns all the inference events with an end start time equal to or greater than less than the end time given</p>"
         }
       }
     },
@@ -1817,6 +2325,83 @@
         }
       }
     },
+    "ListLabelGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "LabelGroupNameBeginsWith":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The beginning of the name of the label groups to be listed. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> An opaque pagination token indicating where to continue the listing of label groups. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> Specifies the maximum number of label groups to list. </p>"
+        }
+      }
+    },
+    "ListLabelGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> An opaque pagination token indicating where to continue the listing of label groups. </p>"
+        },
+        "LabelGroupSummaries":{
+          "shape":"LabelGroupSummaries",
+          "documentation":"<p> A summary of the label groups. </p>"
+        }
+      }
+    },
+    "ListLabelsRequest":{
+      "type":"structure",
+      "required":["LabelGroupName"],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> Retruns the name of the label group. </p>"
+        },
+        "IntervalStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Returns all the labels with a end time equal to or later than the start time given. </p>"
+        },
+        "IntervalEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Returns all labels with a start time earlier than the end time given. </p>"
+        },
+        "FaultCode":{
+          "shape":"FaultCode",
+          "documentation":"<p> Returns labels with a particular fault code. </p>"
+        },
+        "Equipment":{
+          "shape":"Equipment",
+          "documentation":"<p> Lists the labels that pertain to a particular piece of equipment. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> An opaque pagination token indicating where to continue the listing of label groups. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> Specifies the maximum number of labels to list. </p>"
+        }
+      }
+    },
+    "ListLabelsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> An opaque pagination token indicating where to continue the listing of datasets. </p>"
+        },
+        "LabelSummaries":{
+          "shape":"LabelSummaries",
+          "documentation":"<p> A summary of the items in the label group. </p>"
+        }
+      }
+    },
     "ListModelsRequest":{
       "type":"structure",
       "members":{
@@ -1874,11 +2459,11 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p> Specifies the maximum number of sensors for which to retrieve statistics. </p>"
+          "documentation":"<p>Specifies the maximum number of sensors for which to retrieve statistics. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p> An opaque pagination token indicating where to continue the listing of sensor statistics. </p>"
+          "documentation":"<p>An opaque pagination token indicating where to continue the listing of sensor statistics. </p>"
         }
       }
     },
@@ -1887,11 +2472,11 @@
       "members":{
         "SensorStatisticsSummaries":{
           "shape":"SensorStatisticsSummaries",
-          "documentation":"<p> Provides ingestion-based statistics regarding the specified sensor with respect to various validation types, such as whether data exists, the number and percentage of missing values, and the number and percentage of duplicate timestamps. </p>"
+          "documentation":"<p>Provides ingestion-based statistics regarding the specified sensor with respect to various validation types, such as whether data exists, the number and percentage of missing values, and the number and percentage of duplicate timestamps. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p> An opaque pagination token indicating where to continue the listing of sensor statistics. </p>"
+          "documentation":"<p>An opaque pagination token indicating where to continue the listing of sensor statistics. </p>"
         }
       }
     },
@@ -2462,6 +3047,20 @@
         "RoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of a role with permission to access the data source for the inference scheduler. </p>"
+        }
+      }
+    },
+    "UpdateLabelGroupRequest":{
+      "type":"structure",
+      "required":["LabelGroupName"],
+      "members":{
+        "LabelGroupName":{
+          "shape":"LabelGroupName",
+          "documentation":"<p> The name of the label group to be updated. </p>"
+        },
+        "FaultCodes":{
+          "shape":"FaultCodes",
+          "documentation":"<p> Updates the code indicating the type of anomaly associated with the label. </p> <p>Data in this field will be retained for service usage. Follow best practices for the security of your data.</p>"
         }
       }
     },

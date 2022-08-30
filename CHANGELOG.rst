@@ -4005,6 +4005,17 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.64
+=======
+
+* api-change:``greengrassv2``: Adds topologyFilter to ListInstalledComponentsRequest which allows filtration of components by ROOT or ALL (including root and dependency components). Adds lastStatusChangeTimestamp to ListInstalledComponents response to show the last time a component changed state on a device.
+* api-change:``identitystore``: Documentation updates for the Identity Store CLI Reference.
+* api-change:``lookoutequipment``: This release adds new apis for providing labels.
+* api-change:``macie2``: This release of the Amazon Macie API adds support for using allow lists to define specific text and text patterns to ignore when inspecting data sources for sensitive data.
+* api-change:``sso-admin``: Documentation updates for the AWS IAM Identity Center CLI Reference.
+* api-change:``sso``: Documentation updates for the AWS IAM Identity Center Portal CLI Reference.
+
+
 1.25.63
 =======
 

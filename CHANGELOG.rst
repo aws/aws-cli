@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.7.28
+======
+
+* enhancement:docs: Generate a usage note for Tagged Union structures.
+* api-change:``rds``: Removes support for RDS Custom from DBInstanceClass in ModifyDBInstance
+* api-change:``greengrassv2``: Adds topologyFilter to ListInstalledComponentsRequest which allows filtration of components by ROOT or ALL (including root and dependency components). Adds lastStatusChangeTimestamp to ListInstalledComponents response to show the last time a component changed state on a device.
+* api-change:``macie2``: This release of the Amazon Macie API adds support for using allow lists to define specific text and text patterns to ignore when inspecting data sources for sensitive data.
+* api-change:``voice-id``: Amazon Connect Voice ID now detects voice spoofing.  When a prospective fraudster tries to spoof caller audio using audio playback or synthesized speech, Voice ID will return a risk score and outcome to indicate the how likely it is that the voice is spoofed.
+* api-change:``sso-admin``: Documentation updates for the AWS IAM Identity Center CLI Reference.
+* api-change:``sso``: Documentation updates for the AWS IAM Identity Center Portal CLI Reference.
+* api-change:``identitystore``: Documentation updates for the Identity Store CLI Reference.
+* api-change:``fsx``: Documentation updates for Amazon FSx for NetApp ONTAP.
+* api-change:``lookoutequipment``: This release adds new apis for providing labels.
+* api-change:``mediapackage``: This release adds Ads AdTriggers and AdsOnDeliveryRestrictions to describe calls for CMAF endpoints on MediaPackage.
+
+
 2.7.27
 ======
 

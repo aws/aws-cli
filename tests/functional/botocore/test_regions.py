@@ -560,3 +560,15 @@ class TestEndpointResolution(BaseSessionTest):
         self.assertTrue(
             stubber.requests[0].url.startswith('https://iam.amazonaws.com/')
         )
+
+
+@pytest.mark.parametrize("is_builtin", [True, False])
+def test_endpoint_resolver_knows_its_datasource(is_builtin):
+    # The information whether or not the endpoints.json file was loaded from
+    # the builtin data directory or not should be passed from Loader to
+    # EndpointResolver.
+    session = _get_patched_session()
+    loader = session.get_component('data_loader')
+    with mock.patch.object(loader, 'is_builtin_path', return_value=is_builtin):
+        resolver = session._get_internal_component('endpoint_resolver')
+        assert resolver.uses_builtin_data == is_builtin

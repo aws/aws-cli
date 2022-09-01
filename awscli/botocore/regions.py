@@ -94,13 +94,19 @@ class EndpointResolver(BaseEndpointResolver):
 
     _UNSUPPORTED_DUALSTACK_PARTITIONS = ['aws-iso', 'aws-iso-b']
 
-    def __init__(self, endpoint_data):
+    def __init__(self, endpoint_data, uses_builtin_data=False):
         """
+        :type endpoint_data: dict
         :param endpoint_data: A dict of partition data.
+
+        :type uses_builtin_data: boolean
+        :param uses_builtin_data: Whether the endpoint data originates in the
+            package's data directory.
         """
         if 'partitions' not in endpoint_data:
             raise ValueError('Missing "partitions" in endpoint data')
         self._endpoint_data = endpoint_data
+        self.uses_builtin_data = uses_builtin_data
 
     def get_service_endpoints_data(self, service_name, partition_name='aws'):
         for partition in self._endpoint_data['partitions']:

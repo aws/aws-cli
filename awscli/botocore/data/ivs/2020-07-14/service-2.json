@@ -779,6 +779,10 @@
           "shape":"RecordingConfigurationName",
           "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
         },
+        "recordingReconnectWindowSeconds":{
+          "shape":"RecordingReconnectWindowSeconds",
+          "documentation":"<p>If a broadcast disconnects and then reconnects within the specified interval, the multiple streams will be considered a single broadcast and merged together. Default: 0.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
@@ -1398,6 +1402,10 @@
           "shape":"RecordingConfigurationName",
           "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
         },
+        "recordingReconnectWindowSeconds":{
+          "shape":"RecordingReconnectWindowSeconds",
+          "documentation":"<p>If a broadcast disconnects and then reconnects within the specified interval, the multiple streams will be considered a single broadcast and merged together. Default: 0.</p>"
+        },
         "state":{
           "shape":"RecordingConfigurationState",
           "documentation":"<p>Indicates the current state of the recording configuration. When the state is <code>ACTIVE</code>, the configuration is ready for recording a channel stream.</p>"
@@ -1474,6 +1482,11 @@
         "DISABLED",
         "INTERVAL"
       ]
+    },
+    "RecordingReconnectWindowSeconds":{
+      "type":"integer",
+      "max":300,
+      "min":0
     },
     "ResourceArn":{
       "type":"string",

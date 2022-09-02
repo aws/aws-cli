@@ -12829,6 +12829,10 @@
         "RStudioServerProDomainSettings":{
           "shape":"RStudioServerProDomainSettings",
           "documentation":"<p>A collection of settings that configure the <code>RStudioServerPro</code> Domain-level app.</p>"
+        },
+        "ExecutionRoleIdentityConfig":{
+          "shape":"ExecutionRoleIdentityConfig",
+          "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\"> <code>sts:SourceIdentity</code> key</a>.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to the <code>SageMaker Domain</code>. These settings are specified through the <code>CreateDomain</code> API call.</p>"
@@ -12839,6 +12843,10 @@
         "RStudioServerProDomainSettingsForUpdate":{
           "shape":"RStudioServerProDomainSettingsForUpdate",
           "documentation":"<p>A collection of <code>RStudioServerPro</code> Domain-level app settings to update.</p>"
+        },
+        "ExecutionRoleIdentityConfig":{
+          "shape":"ExecutionRoleIdentityConfig",
+          "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\"> <code>sts:SourceIdentity</code> key</a>. This configuration can only be modified if there are no apps in the <code>InService</code> or <code>Pending</code> state.</p>"
         }
       },
       "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
@@ -13697,6 +13705,13 @@
       "type":"string",
       "max":1024,
       "pattern":"[\\S\\s]*"
+    },
+    "ExecutionRoleIdentityConfig":{
+      "type":"string",
+      "enum":[
+        "USER_PROFILE_NAME",
+        "DISABLED"
+      ]
     },
     "ExecutionStatus":{
       "type":"string",

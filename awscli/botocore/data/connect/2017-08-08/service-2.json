@@ -717,7 +717,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <p>Contact information remains available in Amazon Connect for 24 months, and then it is deleted.</p> </important>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <p>Contact information remains available in Amazon Connect for 24 months, and then it is deleted.</p> <p>Only data from November 12, 2021, and later is returned by this API.</p> </important>"
     },
     "DescribeContactFlow":{
       "name":"DescribeContactFlow",
@@ -1266,7 +1266,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. </p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. Use this API to returns both Amazon Lex V1 and V2 bots.</p>"
     },
     "ListContactFlowModules":{
       "name":"ListContactFlowModules",
@@ -1449,7 +1449,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all the Amazon Lex bots currently associated with the instance.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all the Amazon Lex V1 bots currently associated with the instance. To return both Amazon Lex V1 and V2 bots, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListBots.html\">ListBots</a> API. </p>"
     },
     "ListPhoneNumbers":{
       "name":"ListPhoneNumbers",
@@ -1788,6 +1788,40 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Searches for available phone numbers that you can claim to your Amazon Connect instance.</p>"
+    },
+    "SearchQueues":{
+      "name":"SearchQueues",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-queues"
+      },
+      "input":{"shape":"SearchQueuesRequest"},
+      "output":{"shape":"SearchQueuesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Searches queues in an Amazon Connect instance, with optional filtering.</p>"
+    },
+    "SearchRoutingProfiles":{
+      "name":"SearchRoutingProfiles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-routing-profiles"
+      },
+      "input":{"shape":"SearchRoutingProfilesRequest"},
+      "output":{"shape":"SearchRoutingProfilesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Searches routing profiles in an Amazon Connect instance, with optional filtering.</p>"
     },
     "SearchSecurityProfiles":{
       "name":"SearchSecurityProfiles",
@@ -4145,7 +4179,7 @@
         },
         "Permissions":{
           "shape":"PermissionsList",
-          "documentation":"<p>Permissions assigned to the security profile.</p>"
+          "documentation":"<p>Permissions assigned to the security profile. For a list of valid permissions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html\">List of security profile permissions</a>. </p>"
         },
         "InstanceId":{
           "shape":"InstanceId",
@@ -7942,7 +7976,7 @@
       "members":{
         "Permissions":{
           "shape":"PermissionsList",
-          "documentation":"<p>The permissions granted to the security profile.</p>"
+          "documentation":"<p>The permissions granted to the security profile. For a complete list of valid permissions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html\">List of security profile permissions</a>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -8183,6 +8217,7 @@
         }
       }
     },
+    "Long":{"type":"long"},
     "MaxResult10":{
       "type":"integer",
       "max":10,
@@ -8942,6 +8977,40 @@
       },
       "documentation":"<p>Contains information about a queue resource for which metrics are returned.</p>"
     },
+    "QueueSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"QueueSearchCriteria"}
+    },
+    "QueueSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"QueueSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an OR condition.</p>"
+        },
+        "AndConditions":{
+          "shape":"QueueSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an AND condition.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"},
+        "QueueTypeCondition":{
+          "shape":"SearchableQueueType",
+          "documentation":"<p>The type of queue.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria to be used to return queues.</p>"
+    },
+    "QueueSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{"shape":"ControlPlaneTagFilter"}
+      },
+      "documentation":"<p>Filters to be applied to search results.</p>"
+    },
+    "QueueSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"Queue"}
+    },
     "QueueStatus":{
       "type":"string",
       "enum":[
@@ -9346,6 +9415,14 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "NumberOfAssociatedQueues":{
+          "shape":"Long",
+          "documentation":"<p>The number of associated queues in routing profile.</p>"
+        },
+        "NumberOfAssociatedUsers":{
+          "shape":"Long",
+          "documentation":"<p>The number of associated users in routing profile.</p>"
         }
       },
       "documentation":"<p>Contains information about a routing profile.</p>"
@@ -9356,6 +9433,10 @@
       "min":1
     },
     "RoutingProfileId":{"type":"string"},
+    "RoutingProfileList":{
+      "type":"list",
+      "member":{"shape":"RoutingProfile"}
+    },
     "RoutingProfileName":{
       "type":"string",
       "max":127,
@@ -9470,6 +9551,32 @@
       },
       "documentation":"<p>Information about the routing profile assigned to the user.</p>"
     },
+    "RoutingProfileSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"RoutingProfileSearchCriteria"}
+    },
+    "RoutingProfileSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"RoutingProfileSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an OR condition.</p>"
+        },
+        "AndConditions":{
+          "shape":"RoutingProfileSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an AND condition.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"}
+      },
+      "documentation":"<p>The search criteria to be used to return routing profiles.</p>"
+    },
+    "RoutingProfileSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{"shape":"ControlPlaneTagFilter"}
+      },
+      "documentation":"<p>Filters to be applied to search results.</p>"
+    },
     "RoutingProfileSummary":{
       "type":"structure",
       "members":{
@@ -9559,6 +9666,94 @@
         "AvailableNumbersList":{
           "shape":"AvailableNumbersList",
           "documentation":"<p>A list of available phone numbers that you can claim for your Amazon Connect instance.</p>"
+        }
+      }
+    },
+    "SearchQueuesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"QueueSearchFilter",
+          "documentation":"<p>Filters to be applied to search results.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"QueueSearchCriteria",
+          "documentation":"<p>The search criteria to be used to return queues.</p>"
+        }
+      }
+    },
+    "SearchQueuesResponse":{
+      "type":"structure",
+      "members":{
+        "Queues":{
+          "shape":"QueueSearchSummaryList",
+          "documentation":"<p>Information about the queues.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total number of queues which matched your search query.</p>"
+        }
+      }
+    },
+    "SearchRoutingProfilesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"RoutingProfileSearchFilter",
+          "documentation":"<p>Filters to be applied to search results.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"RoutingProfileSearchCriteria",
+          "documentation":"<p>The search criteria to be used to return routing profiles.</p>"
+        }
+      }
+    },
+    "SearchRoutingProfilesResponse":{
+      "type":"structure",
+      "members":{
+        "RoutingProfiles":{
+          "shape":"RoutingProfileList",
+          "documentation":"<p>Information about the routing profiles.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total number of routing profiles which matched your search query.</p>"
         }
       }
     },
@@ -9690,6 +9885,10 @@
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
+    },
+    "SearchableQueueType":{
+      "type":"string",
+      "enum":["STANDARD"]
     },
     "SecurityKey":{
       "type":"structure",
@@ -10787,7 +10986,7 @@
         },
         "Name":{
           "shape":"ContactFlowName",
-          "documentation":"<p>TThe name of the flow.</p>"
+          "documentation":"<p>The name of the flow.</p>"
         },
         "Description":{
           "shape":"ContactFlowDescription",
@@ -11410,7 +11609,7 @@
         },
         "Permissions":{
           "shape":"PermissionsList",
-          "documentation":"<p>The permissions granted to a security profile.</p>"
+          "documentation":"<p>The permissions granted to a security profile. For a list of valid permissions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html\">List of security profile permissions</a>.</p>"
         },
         "SecurityProfileId":{
           "shape":"SecurityProfileId",
@@ -11973,7 +12172,7 @@
           "documentation":"<p>A leaf node condition which can be used to specify a hierarchy group condition.</p>"
         }
       },
-      "documentation":"<p>The search criteria to be used to return users.</p>"
+      "documentation":"<p>The search criteria to be used to return users.</p> <note> <p>The <code>Username</code>, <code>Firstname</code>, and <code>Lastname</code> fields support \"contains\" queries with a minimum of 2 characters and a maximum of 25 characters. Any queries with character lengths outside of this range result in empty results. </p> </note>"
     },
     "UserSearchFilter":{
       "type":"structure",

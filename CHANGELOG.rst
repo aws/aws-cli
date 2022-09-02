@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.67
+=======
+
+* api-change:``cognito-idp``: This release adds a new "AuthSessionValidity" field to the UserPoolClient in Cognito. Application admins can configure this value for their users' authentication duration, which is currently fixed at 3 minutes, up to 15 minutes. Setting this field will also apply to the SMS MFA authentication flow.
+* api-change:``connect``: This release adds search APIs for Routing Profiles and Queues, which can be used to search for those resources within a Connect Instance.
+* api-change:``mediapackage``: Added support for AES_CTR encryption to CMAF origin endpoints
+* api-change:``sagemaker``: This release enables administrators to attribute user activity and API calls from Studio notebooks, Data Wrangler and Canvas to specific users even when users share the same execution IAM role.  ExecutionRoleIdentityConfig at Sagemaker domain level enables this feature.
+
+
 1.25.66
 =======
 

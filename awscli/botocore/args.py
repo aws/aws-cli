@@ -42,7 +42,7 @@ class ClientArgsCreator(object):
 
     def get_client_args(self, service_model, region_name, is_secure,
                         endpoint_url, verify, credentials, scoped_config,
-                        client_config, endpoint_bridge):
+                        client_config, endpoint_bridge, auth_token=None):
         final_args = self.compute_client_args(
             service_model, client_config, endpoint_bridge, region_name,
             endpoint_url, is_secure, scoped_config)
@@ -64,7 +64,7 @@ class ClientArgsCreator(object):
             service_model.service_id, signing_region,
             endpoint_config['signing_name'],
             endpoint_config['signature_version'],
-            credentials, event_emitter
+            credentials, event_emitter, auth_token
         )
 
         config_kwargs['s3'] = s3_config

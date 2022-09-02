@@ -3151,8 +3151,10 @@ class TestSSOTokenFetcher(unittest.TestCase):
 class TestSSOTokenLoader(unittest.TestCase):
     def setUp(self):
         super(TestSSOTokenLoader, self).setUp()
+        self.session_name = 'admin'
         self.start_url = 'https://d-abc123.awsapps.com/start'
         self.cache_key = '40a89917e3175433e361b710a9d43528d7f1890a'
+        self.session_cache_key = 'd033e22ae348aeb5660fc2140aec35850c4da997'
         self.access_token = 'totally.a.token'
         self.cached_token = {
             'accessToken': self.access_token,
@@ -3164,7 +3166,7 @@ class TestSSOTokenLoader(unittest.TestCase):
     def test_can_load_token_exists(self):
         self.cache[self.cache_key] = self.cached_token
         access_token = self.loader(self.start_url)
-        self.assertEqual(self.access_token, access_token)
+        self.assertEqual(self.cached_token, access_token)
 
     def test_can_handle_does_not_exist(self):
         with self.assertRaises(SSOTokenLoadError):
@@ -3174,6 +3176,31 @@ class TestSSOTokenLoader(unittest.TestCase):
         self.cache[self.cache_key] = {}
         with self.assertRaises(SSOTokenLoadError):
             access_token = self.loader(self.start_url)
+
+    def test_can_save_token(self):
+        self.loader.save_token(self.start_url, self.cached_token)
+        access_token = self.loader(self.start_url)
+        self.assertEqual(self.cached_token, access_token)
+
+    def test_can_save_token_sso_session(self):
+        self.loader.save_token(
+            self.start_url,
+            self.cached_token,
+            session_name=self.session_name,
+        )
+        access_token = self.loader(
+            self.start_url,
+            session_name=self.session_name,
+        )
+        self.assertEqual(self.cached_token, access_token)
+
+    def test_can_load_token_exists_sso_session_name(self):
+        self.cache[self.session_cache_key] = self.cached_token
+        access_token = self.loader(
+            self.start_url,
+            session_name=self.session_name,
+        )
+        self.assertEqual(self.cached_token, access_token)
 
 
 class TestOriginalLDLibraryPath(unittest.TestCase):

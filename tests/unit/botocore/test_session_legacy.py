@@ -514,7 +514,7 @@ class TestCreateClient(BaseSessionTest):
         client_creator.return_value.create_client.assert_called_with(
             service_name=mock.ANY, region_name=mock.ANY, is_secure=mock.ANY,
             endpoint_url=mock.ANY, verify=mock.ANY, credentials=mock.ANY,
-            scoped_config=mock.ANY, client_config=config)
+            scoped_config=mock.ANY, client_config=config, auth_token=mock.ANY)
 
     @mock.patch('botocore.client.ClientCreator')
     def test_create_client_with_default_client_config(self, client_creator):
@@ -525,7 +525,7 @@ class TestCreateClient(BaseSessionTest):
         client_creator.return_value.create_client.assert_called_with(
             service_name=mock.ANY, region_name=mock.ANY, is_secure=mock.ANY,
             endpoint_url=mock.ANY, verify=mock.ANY, credentials=mock.ANY,
-            scoped_config=mock.ANY, client_config=config)
+            scoped_config=mock.ANY, client_config=config, auth_token=mock.ANY)
 
     @mock.patch('botocore.client.ClientCreator')
     def test_create_client_with_merging_client_configs(self, client_creator):

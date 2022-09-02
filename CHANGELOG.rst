@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.7.29
+======
+
+* api-change:``sagemaker``: SageMaker Inference Recommender now accepts Inference Recommender fields: Domain, Task, Framework, SamplePayloadUrl, SupportedContentTypes, SupportedInstanceTypes, directly in our CreateInferenceRecommendationsJob API through ContainerConfig
+* api-change:``rds-data``: Documentation updates for RDS Data API
+* api-change:``route53``: Documentation updates for Amazon Route 53.
+* api-change:``controltower``: This release contains the first SDK for AWS Control Tower. It introduces  a new set of APIs: EnableControl, DisableControl, GetControlOperation, and ListEnabledControls.
+* api-change:``ivs``: IVS Merge Fragmented Streams. This release adds support for recordingReconnectWindow field in IVS recordingConfigurations. For more information see https://docs.aws.amazon.com/ivs/latest/APIReference/Welcome.html
+* api-change:``codeguru-reviewer``: Documentation updates to fix formatting issues in CLI and SDK documentation.
+* api-change:``cloudfront``: Update API documentation for CloudFront origin access control (OAC)
+* api-change:``iotthingsgraph``: This release deprecates all APIs of the ThingsGraph service
+* api-change:``identitystore``: Expand IdentityStore API to support Create, Read, Update, Delete and Get operations for User, Group and GroupMembership resources.
+
+
 2.7.28
 ======
 

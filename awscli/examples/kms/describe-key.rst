@@ -28,7 +28,7 @@ Output::
             ],
             "MultiRegion": false
         }
-    }    
+    }
 
 For more information, see `Viewing keys <https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html>`__ in the *AWS Key Management Service Developer Guide*.
 

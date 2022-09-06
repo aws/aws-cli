@@ -235,4 +235,4 @@ The following ``create-key`` example creates a creates a KMS key in the specifie
             "MultiRegion": false,
             "Origin": "AWS_CLOUDHSM"
         }
-    }   
+    }

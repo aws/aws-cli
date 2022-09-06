@@ -4035,6 +4035,13 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.68
+=======
+
+* api-change:``identitystore``: Documentation updates for the Identity Store CLI Reference.
+* api-change:``sagemaker``: This release adds HyperParameterTuningJob type in Search API.
+
+
 1.25.67
 =======
 

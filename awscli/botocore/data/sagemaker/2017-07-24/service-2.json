@@ -15178,6 +15178,55 @@
       "type":"list",
       "member":{"shape":"HyperParameterTuningJobObjective"}
     },
+    "HyperParameterTuningJobSearchEntity":{
+      "type":"structure",
+      "members":{
+        "HyperParameterTuningJobName":{
+          "shape":"HyperParameterTuningJobName",
+          "documentation":"<p>The name of a hyperparameter tuning job.</p>"
+        },
+        "HyperParameterTuningJobArn":{
+          "shape":"HyperParameterTuningJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a hyperparameter tuning job.</p>"
+        },
+        "HyperParameterTuningJobConfig":{"shape":"HyperParameterTuningJobConfig"},
+        "TrainingJobDefinition":{"shape":"HyperParameterTrainingJobDefinition"},
+        "TrainingJobDefinitions":{
+          "shape":"HyperParameterTrainingJobDefinitions",
+          "documentation":"<p>The job definitions included in a hyperparameter tuning job.</p>"
+        },
+        "HyperParameterTuningJobStatus":{
+          "shape":"HyperParameterTuningJobStatus",
+          "documentation":"<p>The status of a hyperparameter tuning job.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that a hyperparameter tuning job was created.</p>"
+        },
+        "HyperParameterTuningEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that a hyperparameter tuning job ended.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that a hyperparameter tuning job was last modified.</p>"
+        },
+        "TrainingJobStatusCounters":{"shape":"TrainingJobStatusCounters"},
+        "ObjectiveStatusCounters":{"shape":"ObjectiveStatusCounters"},
+        "BestTrainingJob":{"shape":"HyperParameterTrainingJobSummary"},
+        "OverallBestTrainingJob":{"shape":"HyperParameterTrainingJobSummary"},
+        "WarmStartConfig":{"shape":"HyperParameterTuningJobWarmStartConfig"},
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The error that was created when a hyperparameter tuning job failed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with a hyperparameter tuning job. For more information see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
+        }
+      },
+      "documentation":"<p>An entity having characteristics over which a user can search for a hyperparameter tuning job.</p>"
+    },
     "HyperParameterTuningJobSortByOptions":{
       "type":"string",
       "enum":[
@@ -24426,7 +24475,8 @@
         "PipelineExecution",
         "FeatureGroup",
         "Project",
-        "FeatureMetadata"
+        "FeatureMetadata",
+        "HyperParameterTuningJob"
       ]
     },
     "ResponseMIMEType":{
@@ -24700,6 +24750,10 @@
         "FeatureMetadata":{
           "shape":"FeatureMetadata",
           "documentation":"<p>The feature metadata used to search through the features.</p>"
+        },
+        "HyperParameterTuningJob":{
+          "shape":"HyperParameterTuningJobSearchEntity",
+          "documentation":"<p>The properties of a hyperparameter tuning job.</p>"
         }
       },
       "documentation":"<p>A single resource returned as part of the <a>Search</a> API response.</p>"

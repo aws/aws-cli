@@ -62,7 +62,7 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
         's3transfer',
     ]
     _TARGET_FINDERS = [
-        'pyimod03_importers.FrozenImporter',  # Pyinstaller injected finder
+        'pyimod02_importers.FrozenImporter',  # Pyinstaller injected finder
         '_frozen_importlib_external.PathFinder'  # Built-in path finder
     ]
 

@@ -31,7 +31,7 @@ def fake_builtin_path_finder():
 @pytest.fixture()
 def fake_pyinstaller_finder():
     class FrozenImporter:
-        __module__ = 'pyimod03_importers'
+        __module__ = 'pyimod02_importers'
     return FrozenImporter()
 
 

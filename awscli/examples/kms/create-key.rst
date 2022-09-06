@@ -184,7 +184,7 @@ The following ``create-key`` example creates a creates a KMS key with no key mat
 
 Output::
 
-   {
+    {
         "KeyMetadata": {
             "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
             "AWSAccountId": "111122223333",
@@ -213,6 +213,8 @@ The following ``create-key`` example creates a creates a KMS key in the specifie
     aws kms create-key \
         --origin AWS_CLOUDHSM \
         --custom-key-store-id cks-1234567890abcdef0
+
+Output::
 
     {
         "KeyMetadata": {

@@ -63,7 +63,7 @@ Output::
                 "RSASSA_PSS_SHA_384",
                 "RSASSA_PSS_SHA_512"
             ],
-            "MultiRegion": false,
+            "MultiRegion": false
         }
     }    
     

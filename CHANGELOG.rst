@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.25.69
+=======
+
+* api-change:``dataexchange``: Documentation updates for AWS Data Exchange.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``eks``: Adds support for EKS Addons ResolveConflicts "preserve" flag. Also adds new update failed status for EKS Addons.
+* api-change:``fsx``: Documentation update for Amazon FSx.
+* api-change:``inspector2``: This release adds new fields like fixAvailable, fixedInVersion and remediation to the finding model. The requirement to have vulnerablePackages in the finding model has also been removed. The documentation has been updated to reflect these changes.
+* api-change:``iotsitewise``: Allow specifying units in Asset Properties
+* api-change:``sagemaker``: SageMaker Hosting now allows customization on ML instance storage volume size, model data download timeout and inference container startup ping health check timeout for each ProductionVariant in CreateEndpointConfig API.
+* api-change:``sns``: Amazon SNS introduces the Data Protection Policy APIs, which enable customers to attach a data protection policy to an SNS topic. This allows topic owners to enable the new message data protection feature to audit and block sensitive data that is exchanged through their topics.
+
+
 1.25.68
 =======
 

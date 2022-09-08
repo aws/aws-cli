@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.25.70
+=======
+
+* api-change:``ec2``: This release adds support to send VPC Flow Logs to kinesis-data-firehose as new destination type
+* api-change:``emr-containers``: EMR on EKS now allows running Spark SQL using the newly introduced Spark SQL Job Driver in the Start Job Run API
+* api-change:``lookoutmetrics``: Release dimension value filtering feature to allow customers to define dimension filters for including only a subset of their dataset to be used by LookoutMetrics.
+* api-change:``medialive``: This change exposes API settings which allow Dolby Atmos and Dolby Vision to be used when running a channel using Elemental Media Live
+* api-change:``route53``: Amazon Route 53 now supports the Middle East (UAE) Region (me-central-1) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+* api-change:``sagemaker``: This release adds Mode to AutoMLJobConfig.
+* api-change:``ssm``: This release adds support for Systems Manager State Manager Association tagging.
+
+
 1.25.69
 =======
 

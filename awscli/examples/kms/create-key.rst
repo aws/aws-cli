@@ -1,4 +1,4 @@
-**To create a customer managed KMS key in AWS KMS**
+**Example 1: To create a customer managed KMS key in AWS KMS**
 
 The following ``create-key`` example creates a symmetric encryption KMS key.
 
@@ -30,10 +30,10 @@ Output::
             "CreationDate": 1502910355.475,
             "Arn": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
             "AWSAccountId": "111122223333",
-            "MultiRegion": false
+            "MultiRegion": false,
             "EncryptionAlgorithms": [
                 "SYMMETRIC_DEFAULT"
-            ],
+            ]
         }
     }
 
@@ -52,25 +52,25 @@ The following ``create-key`` example creates a KMS key that contains an asymmetr
 Output::
 
     {
-      "KeyMetadata": {
-        "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-        "AWSAccountId": "111122223333",
-        "CreationDate": "2021-04-05T14:04:55-07:00",
-        "CustomerMasterKeySpec": "RSA_4096",
-        "Description": "",
-        "Enabled": true,
-        "EncryptionAlgorithms": [
-          "RSAES_OAEP_SHA_1",
-          "RSAES_OAEP_SHA_256"
-        ],
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyManager": "CUSTOMER",
-        "KeySpec": "RSA_4096",
-        "KeyState": "Enabled",
-        "KeyUsage": "ENCRYPT_DECRYPT",
-        "MultiRegion": false,
-        "Origin": "AWS_KMS"
-      }
+        "KeyMetadata": {
+            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "111122223333",
+            "CreationDate": "2021-04-05T14:04:55-07:00",
+            "CustomerMasterKeySpec": "RSA_4096",
+            "Description": "",
+            "Enabled": true,
+            "EncryptionAlgorithms": [
+                "RSAES_OAEP_SHA_1",
+                "RSAES_OAEP_SHA_256"
+            ],
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "RSA_4096",
+            "KeyState": "Enabled",
+            "KeyUsage": "ENCRYPT_DECRYPT",
+            "MultiRegion": false,
+            "Origin": "AWS_KMS"
+        }
     }
 
 For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
@@ -85,26 +85,26 @@ To create an HMAC KMS key that contains an asymmetric elliptic curve (ECC) key p
 
 Output::
 
-     {
-      "KeyMetadata": {
-        "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-        "AWSAccountId": "111122223333",
-        "CreationDate": "2019-12-02T07:48:55-07:00",
-        "CustomerMasterKeySpec": "ECC_NIST_P521",
-        "Description": "",
-        "Enabled": true,
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyManager": "CUSTOMER",
-        "KeySpec": "ECC_NIST_P521",
-        "KeyState": "Enabled",
-        "KeyUsage": "SIGN_VERIFY",
-        "MultiRegion": false,
-        "Origin": "AWS_KMS",
-        "SigningAlgorithms": [
-          "ECDSA_SHA_512"
-        ]
-      }
-    }       
+    {
+        "KeyMetadata": {
+            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "111122223333",
+            "CreationDate": "2019-12-02T07:48:55-07:00",
+            "CustomerMasterKeySpec": "ECC_NIST_P521",
+            "Description": "",
+            "Enabled": true,
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "ECC_NIST_P521",
+            "KeyState": "Enabled",
+            "KeyUsage": "SIGN_VERIFY",
+            "MultiRegion": false,
+            "Origin": "AWS_KMS",
+            "SigningAlgorithms": [
+                "ECDSA_SHA_512"
+            ]
+        }
+    }
 
 **Example 4: To create an HMAC KMS key**
 
@@ -117,24 +117,24 @@ The following ``create-key`` example creates a 384-bit symmetric HMAC KMS key. T
 Output::
 
     {
-      "KeyMetadata": {
-        "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-        "AWSAccountId": "111122223333",
-        "CreationDate": "2022-04-05T14:04:55-07:00",
-        "CustomerMasterKeySpec": "HMAC_384",
-        "Description": "",
-        "Enabled": true,
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyManager": "CUSTOMER",
-        "KeySpec": "HMAC_384",
-        "KeyState": "Enabled",
-        "KeyUsage": "GENERATE_VERIFY_MAC",
-        "MacAlgorithms": [
-          "HMAC_SHA_384"
-        ],
-        "MultiRegion": false,
-        "Origin": "AWS_KMS"
-      }
+        "KeyMetadata": {
+            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "111122223333",
+            "CreationDate": "2022-04-05T14:04:55-07:00",
+            "CustomerMasterKeySpec": "HMAC_384",
+            "Description": "",
+            "Enabled": true,
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "HMAC_384",
+            "KeyState": "Enabled",
+            "KeyUsage": "GENERATE_VERIFY_MAC",
+            "MacAlgorithms": [
+                "HMAC_SHA_384"
+            ],
+            "MultiRegion": false,
+            "Origin": "AWS_KMS"
+        }
     }
 
 **Example 4: To create a multi-Region primary KMS key**
@@ -147,32 +147,32 @@ The following ``create-key`` example creates a multi-Region primary symmetric en
 Output::
 
     {
-      "KeyMetadata": {
-        "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
-        "AWSAccountId": "111122223333",
-        "CreationDate": "2021-09-02T016:15:21-09:00",
-        "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
-        "Description": "",
-        "Enabled": true,
-        "EncryptionAlgorithms": [
-          "SYMMETRIC_DEFAULT"
-        ],
-        "KeyId": "mrk-1234abcd12ab34cd56ef12345678990ab",
-        "KeyManager": "CUSTOMER",
-        "KeySpec": "SYMMETRIC_DEFAULT",
-        "KeyState": "Enabled",
-        "KeyUsage": "ENCRYPT_DECRYPT",
-        "MultiRegion": true,
-        "MultiRegionConfiguration": {
-          "MultiRegionKeyType": "PRIMARY",
-          "PrimaryKey": {
+        "KeyMetadata": {
             "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
-            "Region": "us-west-2"
-          },
-          "ReplicaKeys": []
-        },
-        "Origin": "AWS_KMS"
-      }
+            "AWSAccountId": "111122223333",
+            "CreationDate": "2021-09-02T016:15:21-09:00",
+            "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
+            "Description": "",
+            "Enabled": true,
+            "EncryptionAlgorithms": [
+                "SYMMETRIC_DEFAULT"
+            ],
+            "KeyId": "mrk-1234abcd12ab34cd56ef12345678990ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "SYMMETRIC_DEFAULT",
+            "KeyState": "Enabled",
+            "KeyUsage": "ENCRYPT_DECRYPT",
+            "MultiRegion": true,
+            "MultiRegionConfiguration": {
+                "MultiRegionKeyType": "PRIMARY",
+                "PrimaryKey": {
+                    "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
+                    "Region": "us-west-2"
+                },
+                "ReplicaKeys": []
+            },
+            "Origin": "AWS_KMS"
+        }
     }
 
 **Example 5: To create a KMS key for imported key material**
@@ -184,25 +184,25 @@ The following ``create-key`` example creates a creates a KMS key with no key mat
 
 Output::
 
-   {
-      "KeyMetadata": {
-        "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-        "AWSAccountId": "111122223333",
-        "CreationDate": "2019-12-02T07:48:55-07:00",
-        "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
-        "Description": "",
-        "Enabled": false,
-        "EncryptionAlgorithms": [
-          "SYMMETRIC_DEFAULT"
-        ],
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyManager": "CUSTOMER",
-        "KeySpec": "SYMMETRIC_DEFAULT",
-        "KeyState": "PendingImport",
-        "KeyUsage": "ENCRYPT_DECRYPT",
-        "MultiRegion": false,
-        "Origin": "EXTERNAL"
-      }
+    {
+        "KeyMetadata": {
+            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "111122223333",
+            "CreationDate": "2019-12-02T07:48:55-07:00",
+            "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
+            "Description": "",
+            "Enabled": false,
+            "EncryptionAlgorithms": [
+                "SYMMETRIC_DEFAULT"
+            ],
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "SYMMETRIC_DEFAULT",
+            "KeyState": "PendingImport",
+            "KeyUsage": "ENCRYPT_DECRYPT",
+            "MultiRegion": false,
+            "Origin": "EXTERNAL"
+        }
     }
 
 
@@ -217,24 +217,24 @@ The following ``create-key`` example creates a creates a KMS key in the specifie
 Output::
 
     {
-      "KeyMetadata": {
-        "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-        "AWSAccountId": "111122223333",
-        "CloudHsmClusterId": "cluster-1a23b4cdefg",
-        "CreationDate": "2019-12-02T07:48:55-07:00",
-        "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
-        "CustomKeyStoreId": "cks-1234567890abcdef0",
-        "Description": "",
-        "Enabled": true,
-        "EncryptionAlgorithms": [
-          "SYMMETRIC_DEFAULT"
-        ],
-        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyManager": "CUSTOMER",
-        "KeySpec": "SYMMETRIC_DEFAULT",
-        "KeyState": "Enabled",
-        "KeyUsage": "ENCRYPT_DECRYPT",
-        "MultiRegion": false,
-        "Origin": "AWS_CLOUDHSM"
-      }
+        "KeyMetadata": {
+            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "111122223333",
+            "CloudHsmClusterId": "cluster-1a23b4cdefg",
+            "CreationDate": "2019-12-02T07:48:55-07:00",
+            "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
+            "CustomKeyStoreId": "cks-1234567890abcdef0",
+            "Description": "",
+            "Enabled": true,
+            "EncryptionAlgorithms": [
+                "SYMMETRIC_DEFAULT"
+            ],
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "SYMMETRIC_DEFAULT",
+            "KeyState": "Enabled",
+            "KeyUsage": "ENCRYPT_DECRYPT",
+            "MultiRegion": false,
+            "Origin": "AWS_CLOUDHSM"
+        }
     }

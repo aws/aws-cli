@@ -429,7 +429,7 @@
         },
         "certificateArn":{
           "shape":"ACMCertArn",
-          "documentation":"<p>The certificate ARN provided by users for the managed endpoint. This fiedd is under deprecation and will be removed in future releases.</p>",
+          "documentation":"<p>The certificate ARN provided by users for the managed endpoint. This field is under deprecation and will be removed in future releases.</p>",
           "deprecated":true,
           "deprecatedMessage":"Customer provided certificate-arn is deprecated and would be removed in future."
         },
@@ -783,7 +783,7 @@
       "type":"string",
       "max":10280,
       "min":1,
-      "pattern":"(?!\\s*$)(^[^';|\\u0026\\u003C\\u003E*?`$(){}\\[\\]!#\\\\]*$)",
+      "pattern":".*\\S.*",
       "sensitive":true
     },
     "EntryPointArguments":{
@@ -794,7 +794,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(?!\\s*$)(^[^';|\\u0026\\u003C\\u003E*?`$(){}\\[\\]!#\\\\]*$)",
+      "pattern":".*\\S.*",
       "sensitive":true
     },
     "FailureReason":{
@@ -834,6 +834,10 @@
         "sparkSubmitJobDriver":{
           "shape":"SparkSubmitJobDriver",
           "documentation":"<p>The job driver parameters specified for spark submit.</p>"
+        },
+        "sparkSqlJobDriver":{
+          "shape":"SparkSqlJobDriver",
+          "documentation":"<p>The job driver for job type.</p>"
         }
       },
       "documentation":"<p>Specify the driver that the job runs on.</p>"
@@ -1232,6 +1236,27 @@
       "max":100,
       "sensitive":true
     },
+    "SparkSqlJobDriver":{
+      "type":"structure",
+      "members":{
+        "entryPoint":{
+          "shape":"EntryPointPath",
+          "documentation":"<p>The SQL file to be executed.</p>"
+        },
+        "sparkSqlParameters":{
+          "shape":"SparkSqlParameters",
+          "documentation":"<p>The Spark parameters to be included in the Spark SQL command.</p>"
+        }
+      },
+      "documentation":"<p>The job driver for job type.</p>"
+    },
+    "SparkSqlParameters":{
+      "type":"string",
+      "max":102400,
+      "min":1,
+      "pattern":".*\\S.*",
+      "sensitive":true
+    },
     "SparkSubmitJobDriver":{
       "type":"structure",
       "required":["entryPoint"],
@@ -1255,7 +1280,7 @@
       "type":"string",
       "max":102400,
       "min":1,
-      "pattern":"(?!\\s*$)(^[^';|\\u0026\\u003C\\u003E*?`$(){}\\[\\]!#\\\\]*$)",
+      "pattern":".*\\S.*",
       "sensitive":true
     },
     "StartJobRunRequest":{

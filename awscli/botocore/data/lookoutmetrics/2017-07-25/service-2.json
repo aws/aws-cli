@@ -1332,6 +1332,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/lookoutmetrics/latest/dev/detectors-tags.html\">tags</a> to apply to the dataset.</p>"
+        },
+        "DimensionFilterList":{
+          "shape":"MetricSetDimensionFilterList",
+          "documentation":"<p>A list of filters that specify which data is kept for anomaly detection.</p>"
         }
       }
     },
@@ -1663,6 +1667,10 @@
         "MetricSource":{
           "shape":"MetricSource",
           "documentation":"<p>Contains information about the dataset's source data.</p>"
+        },
+        "DimensionFilterList":{
+          "shape":"MetricSetDimensionFilterList",
+          "documentation":"<p>The dimensions and their values that were used to filter the dataset.</p>"
         }
       }
     },
@@ -1937,6 +1945,29 @@
         }
       },
       "documentation":"<p>Contains information about a source file's formatting.</p>"
+    },
+    "Filter":{
+      "type":"structure",
+      "members":{
+        "DimensionValue":{
+          "shape":"DimensionValue",
+          "documentation":"<p>The value that you want to include in the filter.</p>"
+        },
+        "FilterOperation":{
+          "shape":"FilterOperation",
+          "documentation":"<p>The condition to apply.</p>"
+        }
+      },
+      "documentation":"<p>Describes a filter for choosing a subset of dimension values. Each filter consists of the dimension that you want to include and the condition statement. The condition statement is specified in the <code>FilterOperation</code> object.</p>"
+    },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"Filter"},
+      "min":1
+    },
+    "FilterOperation":{
+      "type":"string",
+      "enum":["EQUALS"]
     },
     "FlowName":{
       "type":"string",
@@ -2530,6 +2561,24 @@
       "max":256,
       "min":1,
       "pattern":".*\\S.*"
+    },
+    "MetricSetDimensionFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ColumnName",
+          "documentation":"<p>The dimension that you want to filter on.</p>"
+        },
+        "FilterList":{
+          "shape":"FilterList",
+          "documentation":"<p>The list of filters that you are applying.</p>"
+        }
+      },
+      "documentation":"<p>Describes a list of filters for choosing a subset of dimension values. Each filter consists of the dimension and one of its values that you want to include. When multiple dimensions or values are specified, the dimensions are joined with an AND operation and the values are joined with an OR operation. </p>"
+    },
+    "MetricSetDimensionFilterList":{
+      "type":"list",
+      "member":{"shape":"MetricSetDimensionFilter"}
     },
     "MetricSetName":{
       "type":"string",
@@ -3224,7 +3273,11 @@
           "shape":"Frequency",
           "documentation":"<p>The dataset's interval.</p>"
         },
-        "MetricSource":{"shape":"MetricSource"}
+        "MetricSource":{"shape":"MetricSource"},
+        "DimensionFilterList":{
+          "shape":"MetricSetDimensionFilterList",
+          "documentation":"<p>Describes a list of filters for choosing specific dimensions and specific values. Each filter consists of the dimension and one of its values that you want to include. When multiple dimensions or values are specified, the dimensions are joined with an AND operation and the values are joined with an OR operation.</p>"
+        }
       }
     },
     "UpdateMetricSetResponse":{

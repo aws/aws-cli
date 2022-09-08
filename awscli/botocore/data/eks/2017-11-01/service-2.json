@@ -734,7 +734,8 @@
         "UPDATING",
         "DELETING",
         "DELETE_FAILED",
-        "DEGRADED"
+        "DEGRADED",
+        "UPDATE_FAILED"
       ]
     },
     "AddonVersionInfo":{
@@ -1101,7 +1102,7 @@
         },
         "resolveConflicts":{
           "shape":"ResolveConflicts",
-          "documentation":"<p>How to resolve parameter value conflicts when migrating an existing add-on to an Amazon EKS add-on.</p>"
+          "documentation":"<p>How to resolve field value conflicts for an Amazon EKS add-on. Conflicts are handled based on the value you choose:</p> <ul> <li> <p> <b>None</b> – If the self-managed version of the add-on is installed on your cluster, Amazon EKS doesn't change the value. Creation of the add-on might fail.</p> </li> <li> <p> <b>Overwrite</b> – If the self-managed version of the add-on is installed on your cluster and the Amazon EKS default value is different than the existing value, Amazon EKS changes the value to the Amazon EKS default value.</p> </li> <li> <p> <b>Preserve</b> – Not supported. You can set this value when updating an add-on though. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateAddon.html\">UpdateAddon</a>.</p> </li> </ul> <p>If you don't currently have the self-managed version of the add-on installed on your cluster, the Amazon EKS add-on is installed. Amazon EKS sets all values to default values, regardless of the option that you specify.</p>"
         },
         "clientRequestToken":{
           "shape":"String",
@@ -2005,18 +2006,18 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the launch template.</p>"
+          "documentation":"<p>The name of the launch template.</p> <p>You must specify either the launch template name or the launch template ID in the request, but not both.</p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the launch template to use. If no version is specified, then the template's default version is used.</p>"
+          "documentation":"<p>The launch template version number, <code>$Latest</code>, or <code>$Default</code>.</p> <p>If the value is <code>$Latest</code>, Amazon EKS uses the latest version of the launch template.</p> <p>If the value is <code>$Default</code>, Amazon EKS uses the default version of the launch template.</p> <p>Default: The default version of the launch template.</p>"
         },
         "id":{
           "shape":"String",
-          "documentation":"<p>The ID of the launch template.</p>"
+          "documentation":"<p>The ID of the launch template.</p> <p>You must specify either the launch template ID or the launch template name in the request, but not both.</p>"
         }
       },
-      "documentation":"<p>An object representing a node group launch template specification. The launch template cannot include <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html\"> <code>SubnetId</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html\"> <code>IamInstanceProfile</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\"> <code>RequestSpotInstances</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_HibernationOptionsRequest.html\"> <code>HibernationOptions</code> </a>, or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_TerminateInstances.html\"> <code>TerminateInstances</code> </a>, or the node group deployment or update will fail. For more information about launch templates, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateLaunchTemplate.html\"> <code>CreateLaunchTemplate</code> </a> in the Amazon EC2 API Reference. For more information about using launch templates with Amazon EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Launch template support</a> in the <i>Amazon EKS User Guide</i>.</p> <p>Specify either <code>name</code> or <code>id</code>, but not both.</p>"
+      "documentation":"<p>An object representing a node group launch template specification. The launch template can't include <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html\"> <code>SubnetId</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html\"> <code>IamInstanceProfile</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\"> <code>RequestSpotInstances</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_HibernationOptionsRequest.html\"> <code>HibernationOptions</code> </a>, or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_TerminateInstances.html\"> <code>TerminateInstances</code> </a>, or the node group deployment or update will fail. For more information about launch templates, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateLaunchTemplate.html\"> <code>CreateLaunchTemplate</code> </a> in the Amazon EC2 API Reference. For more information about using launch templates with Amazon EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Launch template support</a> in the <i>Amazon EKS User Guide</i>.</p> <p>You must specify either the launch template ID or the launch template name in the request, but not both.</p>"
     },
     "ListAddonsRequest":{
       "type":"structure",
@@ -2721,7 +2722,8 @@
       "type":"string",
       "enum":[
         "OVERWRITE",
-        "NONE"
+        "NONE",
+        "PRESERVE"
       ]
     },
     "ResourceInUseException":{
@@ -3008,7 +3010,7 @@
         },
         "resolveConflicts":{
           "shape":"ResolveConflicts",
-          "documentation":"<p>How to resolve parameter value conflicts when applying the new version of the add-on to the cluster.</p>"
+          "documentation":"<p>How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Conflicts are handled based on the option you choose:</p> <ul> <li> <p> <b>None</b> – Amazon EKS doesn't change the value. The update might fail.</p> </li> <li> <p> <b>Overwrite</b> – Amazon EKS overwrites the changed value back to the Amazon EKS default value.</p> </li> <li> <p> <b>Preserve</b> – Amazon EKS preserves the value. If you choose this option, we recommend that you test any field and value changes on a non-production cluster before updating the add-on on your production cluster.</p> </li> </ul>"
         },
         "clientRequestToken":{
           "shape":"String",

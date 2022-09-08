@@ -111,7 +111,8 @@
         {"shape":"InvalidParameters"},
         {"shape":"InvalidTarget"},
         {"shape":"InvalidSchedule"},
-        {"shape":"InvalidTargetMaps"}
+        {"shape":"InvalidTargetMaps"},
+        {"shape":"InvalidTag"}
       ],
       "documentation":"<p>A State Manager association defines the state that you want to maintain on your managed nodes. For example, an association can specify that anti-virus software must be installed and running on your managed nodes, or that certain ports must be closed. For static targets, the association specifies a schedule for when the configuration is reapplied. For dynamic targets, such as an Amazon Web Services resource group or an Amazon Web Services autoscaling group, State Manager, a capability of Amazon Web Services Systems Manager applies the configuration when new managed nodes are added to the group. The association also specifies actions to take when applying the configuration. For example, an association for anti-virus software might run once a day. If the software isn't installed, then State Manager installs it. If the software is installed, but the service isn't running, then the association might instruct State Manager to start the service. </p>"
     },
@@ -4491,6 +4492,11 @@
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Adds or overwrites one or more tags for a State Manager association. <i>Tags</i> are metadata that you can assign to your Amazon Web Services resources. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. </p>",
+          "box":true
         }
       }
     },
@@ -4524,7 +4530,7 @@
         },
         "Name":{
           "shape":"DocumentName",
-          "documentation":"<p>A name for the SSM document.</p> <important> <p>You can't use the following strings as document name prefixes. These are reserved by Amazon Web Services for use as document name prefixes:</p> <ul> <li> <p> <code>aws-</code> </p> </li> <li> <p> <code>amazon</code> </p> </li> <li> <p> <code>amzn</code> </p> </li> </ul> </important>"
+          "documentation":"<p>A name for the SSM document.</p> <important> <p>You can't use the following strings as document name prefixes. These are reserved by Amazon Web Services for use as document name prefixes:</p> <ul> <li> <p> <code>aws</code> </p> </li> <li> <p> <code>amazon</code> </p> </li> <li> <p> <code>amzn</code> </p> </li> </ul> </important>"
         },
         "DisplayName":{
           "shape":"DocumentDisplayName",
@@ -5620,7 +5626,7 @@
         },
         "Filters":{
           "shape":"InstanceInformationStringFilterList",
-          "documentation":"<p>One or more filters. Use a filter to return a more specific list of managed nodes. You can filter based on tags applied to EC2 instances. Use this <code>Filters</code> data type instead of <code>InstanceInformationFilterList</code>, which is deprecated.</p>"
+          "documentation":"<p>One or more filters. Use a filter to return a more specific list of managed nodes. You can filter based on tags applied to your managed nodes. Use this <code>Filters</code> data type instead of <code>InstanceInformationFilterList</code>, which is deprecated.</p>"
         },
         "MaxResults":{
           "shape":"MaxResultsEC2Compatible",
@@ -8582,7 +8588,7 @@
       "members":{
         "Key":{
           "shape":"InstanceInformationStringFilterKey",
-          "documentation":"<p>The filter key name to describe your managed nodes. For example:</p> <p>\"InstanceIds\"|\"AgentVersion\"|\"PingStatus\"|\"PlatformTypes\"|\"ActivationIds\"|\"IamRole\"|\"ResourceType\"|\"AssociationStatus\"|\"Tag Key\"</p> <important> <p> <code>Tag key</code> isn't a valid filter. You must specify either <code>tag-key</code> or <code>tag:keyname</code> and a string. Here are some valid examples: tag-key, tag:123, tag:al!, tag:Windows. Here are some <i>invalid</i> examples: tag-keys, Tag Key, tag:, tagKey, abc:keyname.</p> </important>"
+          "documentation":"<p>The filter key name to describe your managed nodes. For example:</p> <p>\"InstanceIds\" | \"AgentVersion\" | \"PingStatus\" | \"PlatformTypes\" | \"ActivationIds\" | \"IamRole\" | \"ResourceType\" | \"AssociationStatus\" | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <important> <p> <code>Tag Key</code> isn't a valid filter. You must specify either <code>tag-key</code> or <code>tag:{keyname}</code> and a string. Here are some valid examples: <code>tag-key</code>, <code>tag:123</code>, <code>tag:al!</code>, <code>tag:Windows</code>. Here are some <i>invalid</i> examples: <code>tag-keys</code>, <code>Tag Key</code>, <code>tag:</code>, <code>tagKey</code>, <code>abc:keyname</code>.</p> </important>"
         },
         "Values":{
           "shape":"InstanceInformationFilterValueSet",
@@ -9139,6 +9145,14 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The schedule is invalid. Verify your cron or rate expression and try again.</p>",
+      "exception":true
+    },
+    "InvalidTag":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified tag key or value is not valid.</p>",
       "exception":true
     },
     "InvalidTarget":{
@@ -13971,7 +13985,8 @@
         "PatchBaseline",
         "OpsItem",
         "OpsMetadata",
-        "Automation"
+        "Automation",
+        "Association"
       ]
     },
     "ResponseCode":{"type":"integer"},
@@ -14270,7 +14285,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The ARN of the Identity and Access Management (IAM) service role to use to publish Amazon Simple Notification Service (Amazon SNS) notifications for Run Command commands.</p>"
+          "documentation":"<p>The ARN of the Identity and Access Management (IAM) service role to use to publish Amazon Simple Notification Service (Amazon SNS) notifications for Run Command commands.</p> <p>This role must provide the <code>sns:Publish</code> permission for your notification topic. For information about creating and using this service role, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/monitoring-sns-notifications.html\">Monitoring Systems Manager status changes using Amazon SNS notifications</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "NotificationConfig":{
           "shape":"NotificationConfig",
@@ -14775,7 +14790,7 @@
         },
         "TokenValue":{
           "shape":"TokenValue",
-          "documentation":"<p>An encrypted token value containing session and caller information. Used to authenticate the connection to the managed node.</p>"
+          "documentation":"<p>An encrypted token value containing session and caller information. This token is used to authenticate the connection to the managed node, and is valid only long enough to ensure the connection is successful. Never share your session's token.</p>"
         },
         "StreamUrl":{
           "shape":"StreamUrl",

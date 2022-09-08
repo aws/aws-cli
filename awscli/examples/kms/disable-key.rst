@@ -2,7 +2,7 @@
 
 The following example uses the ``disable-key`` command to disable a customer managed KMS key. To re-enable the KMS key, use the ``enable-key`` command. ::
 
-    aws kms enable-key \
+    aws kms disable-key \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab
 
 This command produces no output.

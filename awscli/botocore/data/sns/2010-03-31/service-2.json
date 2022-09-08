@@ -216,6 +216,26 @@
       ],
       "documentation":"<p>Deletes a topic and all its subscriptions. Deleting a topic might prevent some messages previously sent to the topic from being delivered to subscribers. This action is idempotent, so deleting a topic that does not exist does not result in an error.</p>"
     },
+    "GetDataProtectionPolicy":{
+      "name":"GetDataProtectionPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataProtectionPolicyInput"},
+      "output":{
+        "shape":"GetDataProtectionPolicyResponse",
+        "resultWrapper":"GetDataProtectionPolicyResult"
+      },
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AuthorizationErrorException"},
+        {"shape":"InvalidSecurityException"}
+      ],
+      "documentation":"<p>Retrieves the specified inline <code>DataProtectionPolicy</code> document that is stored in the specified Amazon SNS topic. </p>"
+    },
     "GetEndpointAttributes":{
       "name":"GetEndpointAttributes",
       "http":{
@@ -545,7 +565,8 @@
         {"shape":"KMSOptInRequired"},
         {"shape":"KMSThrottlingException"},
         {"shape":"KMSAccessDeniedException"},
-        {"shape":"InvalidSecurityException"}
+        {"shape":"InvalidSecurityException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Sends a message to an Amazon SNS topic, a text message (SMS message) directly to a phone number, or a message to a mobile platform endpoint (when you specify the <code>TargetArn</code>).</p> <p>If you send a message to a topic, Amazon SNS delivers the message to each endpoint that is subscribed to the topic. The format of the message depends on the notification protocol for each subscribed endpoint.</p> <p>When a <code>messageId</code> is returned, the message is saved and Amazon SNS immediately delivers it to subscribers.</p> <p>To use the <code>Publish</code> action for publishing a message to a mobile endpoint, such as an app on a Kindle device or mobile phone, you must specify the EndpointArn for the TargetArn parameter. The EndpointArn is returned when making a call with the <code>CreatePlatformEndpoint</code> action. </p> <p>For more information about formatting messages, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/mobile-push-send-custommessage.html\">Send Custom Platform-Specific Payloads in Messages to Mobile Devices</a>. </p> <important> <p>You can publish messages only to topics and endpoints in the same Amazon Web Services Region.</p> </important>"
     },
@@ -579,9 +600,26 @@
         {"shape":"KMSOptInRequired"},
         {"shape":"KMSThrottlingException"},
         {"shape":"KMSAccessDeniedException"},
-        {"shape":"InvalidSecurityException"}
+        {"shape":"InvalidSecurityException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Publishes up to ten messages to the specified topic. This is a batch version of <code>Publish</code>. For FIFO topics, multiple messages within a single batch are published in the order they are sent, and messages are deduplicated within the batch and across batches for 5 minutes.</p> <p>The result of publishing each message is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of <code>200</code>.</p> <p>The maximum allowed individual message size and the maximum total payload size (the sum of the individual lengths of all of the batched messages) are both 256 KB (262,144 bytes). </p> <p>Some actions take lists of parameters. These lists are specified using the <code>param.n</code> notation. Values of <code>n</code> are integers starting from 1. For example, a parameter list with two elements looks like this: </p> <p>&amp;AttributeName.1=first</p> <p>&amp;AttributeName.2=second</p> <p>If you send a batch message to a topic, Amazon SNS publishes the batch message to each endpoint that is subscribed to the topic. The format of the batch message depends on the notification protocol for each subscribed endpoint.</p> <p>When a <code>messageId</code> is returned, the batch message is saved and Amazon SNS immediately delivers the message to subscribers.</p>"
+    },
+    "PutDataProtectionPolicy":{
+      "name":"PutDataProtectionPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDataProtectionPolicyInput"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AuthorizationErrorException"},
+        {"shape":"InvalidSecurityException"}
+      ],
+      "documentation":"<p>Adds or updates an inline policy document that is stored in the specified Amazon SNS topic.</p>"
     },
     "RemovePermission":{
       "name":"RemovePermission",
@@ -1060,6 +1098,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The list of tags to add to a new topic.</p> <note> <p>To be able to tag a topic on creation, you must have the <code>sns:CreateTopic</code> and <code>sns:TagResource</code> permissions.</p> </note>"
+        },
+        "DataProtectionPolicy":{
+          "shape":"attributeValue",
+          "documentation":"<p>The body of the policy document you want to use for this topic.</p> <p>You can only add one policy per topic.</p> <p>The policy must be in JSON string format.</p> <p>Length Constraints: Maximum length of 30,720.</p>"
         }
       },
       "documentation":"<p>Input for CreateTopic action.</p>"
@@ -1180,6 +1222,25 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "GetDataProtectionPolicyInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"topicARN",
+          "documentation":"<p>The ARN of the topic whose <code>DataProtectionPolicy</code> you want to get.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the Amazon Web Services General Reference.</p>"
+        }
+      }
+    },
+    "GetDataProtectionPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "DataProtectionPolicy":{
+          "shape":"attributeValue",
+          "documentation":"<p>Retrieves the <code>DataProtectionPolicy</code> in JSON string format.</p>"
+        }
+      }
     },
     "GetEndpointAttributesInput":{
       "type":"structure",
@@ -2042,6 +2103,23 @@
         }
       },
       "documentation":"<p>Response for Publish action.</p>"
+    },
+    "PutDataProtectionPolicyInput":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "DataProtectionPolicy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"topicARN",
+          "documentation":"<p>The ARN of the topic whose <code>DataProtectionPolicy</code> you want to add or update.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the Amazon Web Services General Reference.</p>"
+        },
+        "DataProtectionPolicy":{
+          "shape":"attributeValue",
+          "documentation":"<p>The JSON serialization of the topic's <code>DataProtectionPolicy</code>.</p> <p>The <code>DataProtectionPolicy</code> must be in JSON string format.</p> <p>Length Constraints: Maximum length of 30,720.</p>"
+        }
+      }
     },
     "RemovePermissionInput":{
       "type":"structure",

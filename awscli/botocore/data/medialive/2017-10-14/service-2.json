@@ -3175,6 +3175,10 @@
           "shape": "Ac3Settings",
           "locationName": "ac3Settings"
         },
+        "Eac3AtmosSettings": {
+          "shape": "Eac3AtmosSettings",
+          "locationName": "eac3AtmosSettings"
+        },
         "Eac3Settings": {
           "shape": "Eac3Settings",
           "locationName": "eac3Settings"
@@ -6546,6 +6550,12 @@
         "UPDATING"
       ]
     },
+    "DolbyVision81Settings": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Dolby Vision Profile 8.1 Settings"
+    },
     "DvbNitSettings": {
       "type": "structure",
       "members": {
@@ -6795,6 +6805,80 @@
         }
       },
       "documentation": "DVB Time and Date Table (SDT)"
+    },
+    "Eac3AtmosCodingMode": {
+      "type": "string",
+      "documentation": "Eac3 Atmos Coding Mode",
+      "enum": [
+        "CODING_MODE_5_1_4",
+        "CODING_MODE_7_1_4",
+        "CODING_MODE_9_1_6"
+      ]
+    },
+    "Eac3AtmosDrcLine": {
+      "type": "string",
+      "documentation": "Eac3 Atmos Drc Line",
+      "enum": [
+        "FILM_LIGHT",
+        "FILM_STANDARD",
+        "MUSIC_LIGHT",
+        "MUSIC_STANDARD",
+        "NONE",
+        "SPEECH"
+      ]
+    },
+    "Eac3AtmosDrcRf": {
+      "type": "string",
+      "documentation": "Eac3 Atmos Drc Rf",
+      "enum": [
+        "FILM_LIGHT",
+        "FILM_STANDARD",
+        "MUSIC_LIGHT",
+        "MUSIC_STANDARD",
+        "NONE",
+        "SPEECH"
+      ]
+    },
+    "Eac3AtmosSettings": {
+      "type": "structure",
+      "members": {
+        "Bitrate": {
+          "shape": "__double",
+          "locationName": "bitrate",
+          "documentation": "Average bitrate in bits/second. Valid bitrates depend on the coding mode.\n//  * @affectsRightSizing true"
+        },
+        "CodingMode": {
+          "shape": "Eac3AtmosCodingMode",
+          "locationName": "codingMode",
+          "documentation": "Dolby Digital Plus with Dolby Atmos coding mode. Determines number of channels."
+        },
+        "Dialnorm": {
+          "shape": "__integerMin1Max31",
+          "locationName": "dialnorm",
+          "documentation": "Sets the dialnorm for the output. Default 23."
+        },
+        "DrcLine": {
+          "shape": "Eac3AtmosDrcLine",
+          "locationName": "drcLine",
+          "documentation": "Sets the Dolby dynamic range compression profile."
+        },
+        "DrcRf": {
+          "shape": "Eac3AtmosDrcRf",
+          "locationName": "drcRf",
+          "documentation": "Sets the profile for heavy Dolby dynamic range compression, ensures that the instantaneous signal peaks do not exceed specified levels."
+        },
+        "HeightTrim": {
+          "shape": "__double",
+          "locationName": "heightTrim",
+          "documentation": "Height dimensional trim. Sets the maximum amount to attenuate the height channels when the downstream player isn??t configured to handle Dolby Digital Plus with Dolby Atmos and must remix the channels."
+        },
+        "SurroundTrim": {
+          "shape": "__double",
+          "locationName": "surroundTrim",
+          "documentation": "Surround dimensional trim. Sets the maximum amount to attenuate the surround channels when the downstream player isn't configured to handle Dolby Digital Plus with Dolby Atmos and must remix the channels."
+        }
+      },
+      "documentation": "Eac3 Atmos Settings"
     },
     "Eac3AttenuationControl": {
       "type": "string",
@@ -8031,6 +8115,10 @@
         "ColorSpacePassthroughSettings": {
           "shape": "ColorSpacePassthroughSettings",
           "locationName": "colorSpacePassthroughSettings"
+        },
+        "DolbyVision81Settings": {
+          "shape": "DolbyVision81Settings",
+          "locationName": "dolbyVision81Settings"
         },
         "Hdr10Settings": {
           "shape": "Hdr10Settings",

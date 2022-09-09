@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.7.31
+======
+
+* api-change:``route53``: Amazon Route 53 now supports the Middle East (UAE) Region (me-central-1) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+* api-change:``lookoutmetrics``: Release dimension value filtering feature to allow customers to define dimension filters for including only a subset of their dataset to be used by LookoutMetrics.
+* api-change:``sagemaker``: This release adds Mode to AutoMLJobConfig.
+* api-change:``ec2``: This release adds support to send VPC Flow Logs to kinesis-data-firehose as new destination type
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``inspector2``: This release adds new fields like fixAvailable, fixedInVersion and remediation to the finding model. The requirement to have vulnerablePackages in the finding model has also been removed. The documentation has been updated to reflect these changes.
+* api-change:``sns``: Amazon SNS introduces the Data Protection Policy APIs, which enable customers to attach a data protection policy to an SNS topic. This allows topic owners to enable the new message data protection feature to audit and block sensitive data that is exchanged through their topics.
+* api-change:``emr-containers``: EMR on EKS now allows running Spark SQL using the newly introduced Spark SQL Job Driver in the Start Job Run API
+* api-change:``sagemaker``: SageMaker Hosting now allows customization on ML instance storage volume size, model data download timeout and inference container startup ping health check timeout for each ProductionVariant in CreateEndpointConfig API.
+* api-change:``iotsitewise``: Allow specifying units in Asset Properties
+* api-change:``dataexchange``: Documentation updates for AWS Data Exchange.
+* api-change:``fsx``: Documentation update for Amazon FSx.
+* api-change:``eks``: Adds support for EKS Addons ResolveConflicts "preserve" flag. Also adds new update failed status for EKS Addons.
+* api-change:``ssm``: This release adds support for Systems Manager State Manager Association tagging.
+* api-change:``medialive``: This change exposes API settings which allow Dolby Atmos and Dolby Vision to be used when running a channel using Elemental Media Live
+
+
 2.7.30
 ======
 

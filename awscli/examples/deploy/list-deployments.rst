@@ -1,6 +1,6 @@
 **To get information about deployments**
 
-The follwoing ``list-deployments`` example displays information about all deployments that are associated with the specified application and deployment group. ::
+The following ``list-deployments`` example displays information about all deployments that are associated with the specified application and deployment group. ::
 
     aws deploy list-deployments \
         --application-name WordPress_App \

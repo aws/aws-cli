@@ -4067,6 +4067,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.72
+=======
+
+* api-change:``eks``: Adding support for local Amazon EKS clusters on Outposts
+
+
+1.25.71
+=======
+
+* api-change:``cloudtrail``: This release adds CloudTrail getChannel and listChannels APIs to allow customer to view the ServiceLinkedChannel configurations.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``pi``: Increases the maximum values of two RDS Performance Insights APIs. The maximum value of the Limit parameter of DimensionGroup is 25. The MaxResult maximum is now 25 for the following APIs: DescribeDimensionKeys, GetResourceMetrics, ListAvailableResourceDimensions, and ListAvailableResourceMetrics.
+* api-change:``redshift``: This release updates documentation for AQUA features and other description updates.
+
+
 1.25.70
 =======
 

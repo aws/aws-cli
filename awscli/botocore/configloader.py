@@ -251,6 +251,7 @@ def build_profile_map(parsed_ini_config):
     """
     parsed_config = copy.deepcopy(parsed_ini_config)
     profiles = {}
+    sso_sessions = {}
     final_config = {}
     for key, values in parsed_config.items():
         if key.startswith("profile"):
@@ -260,6 +261,13 @@ def build_profile_map(parsed_ini_config):
                 continue
             if len(parts) == 2:
                 profiles[parts[1]] = values
+        elif key.startswith("sso-session"):
+            try:
+                parts = shlex.split(key)
+            except ValueError:
+                continue
+            if len(parts) == 2:
+                sso_sessions[parts[1]] = values
         elif key == 'default':
             # default section is special and is considered a profile
             # name but we don't require you use 'profile "default"'
@@ -268,4 +276,5 @@ def build_profile_map(parsed_ini_config):
         else:
             final_config[key] = values
     final_config['profiles'] = profiles
+    final_config['sso_sessions'] = sso_sessions
     return final_config

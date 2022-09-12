@@ -2850,7 +2850,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
         self.sso_region = 'us-west-2'
         # The token cache key is the sha1 of the start url
         self.token_cache_key = '40a89917e3175433e361b710a9d43528d7f1890a'
-        self.client_id_key = 'botocore-client-id-us-west-2'
+        self.client_id_key = 'd75f79f67bab3f92a2b1450471c0c2574de0dca4'
         # This is just an arbitrary point in time that we can pin to
         self.now = datetime.datetime(2008, 9, 23, 12, 26, 40, tzinfo=tzutc())
         self.now_timestamp = 1222172800
@@ -2924,7 +2924,15 @@ class TestSSOTokenFetcher(unittest.TestCase):
             self.authorization_expected_params,
         )
 
-    def _add_create_token_response(self):
+    def _add_create_token_responses(self):
+        # In the standard flow we'll try to create the token once in the
+        # case it's already been pre-authorized. Raise at least one pending
+        # exception to simulate this.
+        self.stubber.add_client_error(
+            'create_token',
+            service_error_code='AuthorizationPendingException',
+            expected_params=self.token_expected_params,
+        )
         self.stubber.add_response(
             'create_token',
             self.token_response,
@@ -2934,7 +2942,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
     def _add_basic_device_auth_flow_responses(self):
         self._add_register_client_response()
         self._add_start_device_authorization_response()
-        self._add_create_token_response()
+        self._add_create_token_responses()
 
     def test_basic_fetch_token(self):
         self._add_basic_device_auth_flow_responses()
@@ -2964,6 +2972,9 @@ class TestSSOTokenFetcher(unittest.TestCase):
             'startUrl': self.start_url,
             'accessToken': 'foo.token.string',
             'expiresAt': self._expires_at(28800),
+            'clientId': expected_client_id['clientId'],
+            'clientSecret': expected_client_id['clientSecret'],
+            'registrationExpiresAt': expected_client_id['expiresAt'],
         }
         self.assertEqual(self.cache[self.token_cache_key], expected_token)
 
@@ -2984,7 +2995,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
             clientId='bar-client-id',
             clientSecret='bar-client-secret',
         )
-        self._add_create_token_response()
+        self._add_create_token_responses()
 
         with self.stubber:
             token = self.sso_token_fetcher.fetch_token(self.start_url)
@@ -3042,6 +3053,9 @@ class TestSSOTokenFetcher(unittest.TestCase):
             'startUrl': self.start_url,
             'accessToken': 'foo.token.string',
             'expiresAt': self._expires_at(28800),
+            'clientId': expected_client_id['clientId'],
+            'clientSecret': expected_client_id['clientSecret'],
+            'registrationExpiresAt': expected_client_id['expiresAt'],
         }
         self.assertEqual(self.cache[self.token_cache_key], expected_token)
 
@@ -3053,7 +3067,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
             service_error_code='AuthorizationPendingException',
             expected_params=self.token_expected_params,
         )
-        self._add_create_token_response()
+        self._add_create_token_responses()
 
         with self.stubber:
             token = self.sso_token_fetcher.fetch_token(self.start_url)
@@ -3068,7 +3082,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
             service_error_code='SlowDownException',
             expected_params=self.token_expected_params,
         )
-        self._add_create_token_response()
+        self._add_create_token_responses()
 
         with self.stubber:
             token = self.sso_token_fetcher.fetch_token(self.start_url)
@@ -3087,7 +3101,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
             service_error_code='AuthorizationPendingException',
             expected_params=self.token_expected_params,
         )
-        self._add_create_token_response()
+        self._add_create_token_responses()
         with self.stubber:
             token = self.sso_token_fetcher.fetch_token(self.start_url)
         self.assertEqual(token.get('accessToken'), 'foo.token.string')
@@ -3151,8 +3165,10 @@ class TestSSOTokenFetcher(unittest.TestCase):
 class TestSSOTokenLoader(unittest.TestCase):
     def setUp(self):
         super(TestSSOTokenLoader, self).setUp()
+        self.session_name = 'admin'
         self.start_url = 'https://d-abc123.awsapps.com/start'
         self.cache_key = '40a89917e3175433e361b710a9d43528d7f1890a'
+        self.session_cache_key = 'd033e22ae348aeb5660fc2140aec35850c4da997'
         self.access_token = 'totally.a.token'
         self.cached_token = {
             'accessToken': self.access_token,
@@ -3164,7 +3180,7 @@ class TestSSOTokenLoader(unittest.TestCase):
     def test_can_load_token_exists(self):
         self.cache[self.cache_key] = self.cached_token
         access_token = self.loader(self.start_url)
-        self.assertEqual(self.access_token, access_token)
+        self.assertEqual(self.cached_token, access_token)
 
     def test_can_handle_does_not_exist(self):
         with self.assertRaises(SSOTokenLoadError):
@@ -3174,6 +3190,31 @@ class TestSSOTokenLoader(unittest.TestCase):
         self.cache[self.cache_key] = {}
         with self.assertRaises(SSOTokenLoadError):
             access_token = self.loader(self.start_url)
+
+    def test_can_save_token(self):
+        self.loader.save_token(self.start_url, self.cached_token)
+        access_token = self.loader(self.start_url)
+        self.assertEqual(self.cached_token, access_token)
+
+    def test_can_save_token_sso_session(self):
+        self.loader.save_token(
+            self.start_url,
+            self.cached_token,
+            session_name=self.session_name,
+        )
+        access_token = self.loader(
+            self.start_url,
+            session_name=self.session_name,
+        )
+        self.assertEqual(self.cached_token, access_token)
+
+    def test_can_load_token_exists_sso_session_name(self):
+        self.cache[self.session_cache_key] = self.cached_token
+        access_token = self.loader(
+            self.start_url,
+            session_name=self.session_name,
+        )
+        self.assertEqual(self.cached_token, access_token)
 
 
 class TestOriginalLDLibraryPath(unittest.TestCase):

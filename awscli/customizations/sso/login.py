@@ -10,19 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.sso.utils import (
-    do_sso_login, PrintOnlyHandler, LOGIN_ARGS,
+    do_sso_login, PrintOnlyHandler, LOGIN_ARGS, BaseSSOCommand,
 )
 from awscli.customizations.utils import uni_print
-from awscli.customizations.exceptions import ConfigurationError
 
 
-class InvalidSSOConfigError(ConfigurationError):
-    pass
-
-
-class LoginCommand(BasicCommand):
+class LoginCommand(BaseSSOCommand):
     NAME = 'login'
     DESCRIPTION = (
         'Retrieves and caches an AWS SSO access token to exchange for AWS '
@@ -34,10 +28,6 @@ class LoginCommand(BasicCommand):
         'be authenticated against the same SSO Start URL.'
     )
     ARG_TABLE = LOGIN_ARGS
-    _REQUIRED_SSO_CONFIG_VARS = [
-        'sso_start_url',
-        'sso_region',
-    ]
 
     def _run_main(self, parsed_args, parsed_globals):
         sso_config = self._get_sso_config()
@@ -49,25 +39,10 @@ class LoginCommand(BasicCommand):
             sso_region=sso_config['sso_region'],
             start_url=sso_config['sso_start_url'],
             on_pending_authorization=on_pending_authorization,
-            force_refresh=True
+            force_refresh=True,
+            session_name=sso_config.get('session_name'),
+            registration_scopes=sso_config.get('registration_scopes'),
         )
         success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % sso_config['sso_start_url'])
         return 0
-
-    def _get_sso_config(self):
-        scoped_config = self._session.get_scoped_config()
-        sso_config = {}
-        missing_vars = []
-        for config_var in self._REQUIRED_SSO_CONFIG_VARS:
-            if config_var not in scoped_config:
-                missing_vars.append(config_var)
-            else:
-                sso_config[config_var] = scoped_config[config_var]
-        if missing_vars:
-            raise InvalidSSOConfigError(
-                'Missing the following required SSO configuration values: %s. '
-                'To make sure this profile is properly configured to use SSO, '
-                'please run: aws configure sso' % ', '.join(missing_vars)
-            )
-        return sso_config

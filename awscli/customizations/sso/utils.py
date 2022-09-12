@@ -20,8 +20,10 @@ from botocore.utils import SSOTokenFetcher
 from botocore.utils import original_ld_library_path
 from botocore.credentials import JSONFileCache
 
+from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
+from awscli.customizations.exceptions import ConfigurationError
 
 LOG = logging.getLogger(__name__)
 
@@ -53,7 +55,8 @@ def _sso_json_dumps(obj):
 
 
 def do_sso_login(session, sso_region, start_url, token_cache=None,
-                 on_pending_authorization=None, force_refresh=False):
+                 on_pending_authorization=None, force_refresh=False,
+                 registration_scopes=None, session_name=None):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
     if on_pending_authorization is None:
@@ -68,7 +71,9 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
     )
     return token_fetcher.fetch_token(
         start_url=start_url,
-        force_refresh=force_refresh
+        session_name=session_name,
+        force_refresh=force_refresh,
+        registration_scopes=registration_scopes,
     )
 
 
@@ -131,3 +136,84 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
                 return self._open_browser(verificationUriComplete)
             except Exception:
                 LOG.debug('Failed to open browser:', exc_info=True)
+
+
+class InvalidSSOConfigError(ConfigurationError):
+    pass
+
+
+class BaseSSOCommand(BasicCommand):
+    _REQUIRED_SSO_CONFIG_VARS = [
+        'sso_start_url',
+        'sso_region',
+    ]
+
+    def _get_sso_config(self):
+        scoped_config = self._session.get_scoped_config()
+        sso_session_config = self._get_sso_session_config(scoped_config)
+        if sso_session_config:
+            return sso_session_config
+        return self._get_legacy_sso_config(scoped_config)
+
+    def _get_sso_session_config(self, scoped_config):
+        if 'sso_session' not in scoped_config:
+            return None
+
+        for config_var in self._REQUIRED_SSO_CONFIG_VARS:
+            if config_var in scoped_config:
+                raise InvalidSSOConfigError(
+                    'Inline SSO configuration and sso_session cannot be '
+                    'configured on the same profile.'
+                )
+
+        session_name = scoped_config['sso_session']
+        full_config = self._session.full_config
+        if session_name not in full_config.get('sso_sessions', {}):
+            raise InvalidSSOConfigError(
+                f'The specified sso-session does not exist: "{session_name}"'
+            )
+        session_config = full_config['sso_sessions'][session_name]
+        sso_config, missing = self._get_required_config_vars(session_config)
+        sso_config['session_name'] = session_name
+
+        scopes_var = 'sso_registration_scopes'
+        if scopes_var in session_config:
+            raw_scopes = session_config[scopes_var]
+            parsed_scopes = self._parse_registration_scopes(raw_scopes)
+            sso_config['registration_scopes'] = parsed_scopes
+
+        if missing:
+            error_msg = (
+                'Missing the following required SSO configuration values: %s. '
+            ) % ', '.join(missing)
+            raise InvalidSSOConfigError(error_msg)
+
+        return sso_config
+
+    def _parse_registration_scopes(self, raw_scopes):
+        parsed_scopes = []
+        for scope in raw_scopes.split(','):
+            scope = scope.strip()
+            if scope:
+                parsed_scopes.append(scope)
+        return parsed_scopes
+
+    def _get_legacy_sso_config(self, scoped_config):
+        sso_config, missing = self._get_required_config_vars(scoped_config)
+        if missing:
+            raise InvalidSSOConfigError(
+                'Missing the following required SSO configuration values: %s. '
+                'To make sure this profile is properly configured to use SSO, '
+                'please run: aws configure sso' % ', '.join(missing)
+            )
+        return sso_config
+
+    def _get_required_config_vars(self, config):
+        sso_config = {}
+        missing_vars = []
+        for config_var in self._REQUIRED_SSO_CONFIG_VARS:
+            if config_var not in config:
+                missing_vars.append(config_var)
+            else:
+                sso_config[config_var] = config[config_var]
+        return sso_config, missing_vars

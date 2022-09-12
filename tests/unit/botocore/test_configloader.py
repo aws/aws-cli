@@ -175,6 +175,17 @@ class TestConfigLoader(BaseEnvVar):
         self.assertIn('default', loaded_config['profiles'])
         self.assertIn('personal', loaded_config['profiles'])
 
+    def test_sso_session_config(self):
+        filename = path('aws_sso_session_config')
+        loaded_config = load_config(filename)
+        self.assertIn('profiles', loaded_config)
+        self.assertIn('default', loaded_config['profiles'])
+        self.assertIn('sso_sessions', loaded_config)
+        self.assertIn('sso', loaded_config['sso_sessions'])
+        sso_config = loaded_config['sso_sessions']['sso']
+        self.assertEqual(sso_config['sso_region'], 'us-east-1')
+        self.assertEqual(sso_config['sso_start_url'], 'https://example.com')
+
 
 if __name__ == "__main__":
     unittest.main()

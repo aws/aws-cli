@@ -142,6 +142,26 @@ class NoCredentialsError(BotoCoreError):
     fmt = 'Unable to locate credentials'
 
 
+class NoAuthTokenError(BotoCoreError):
+    """
+    No authorization token could be found.
+    """
+
+    fmt = 'Unable to locate authorization token'
+
+
+class TokenRetrievalError(BotoCoreError):
+    """
+    Error attempting to retrieve a token from a remote source.
+
+    :ivar provider: The name of the token provider.
+    :ivar error_msg: The msg explaining why the token could not be retrieved.
+
+    """
+
+    fmt = 'Error when retrieving token from {provider}: {error_msg}'
+
+
 class PartialCredentialsError(BotoCoreError):
     """
     Only partial credentials were found.
@@ -645,7 +665,10 @@ class MissingServiceIdError(UndefinedModelAttributeError):
 
 
 class SSOError(BotoCoreError):
-    fmt = "An unspecified error happened when resolving SSO credentials"
+    fmt = (
+        "An unspecified error happened when resolving AWS credentials or an "
+        "access token from SSO."
+    )
 
 
 class PendingAuthorizationExpiredError(SSOError):

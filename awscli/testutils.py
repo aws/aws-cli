@@ -353,6 +353,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         self.http_response = AWSResponse(None, 200, {}, None)
+        self.error_http_response = AWSResponse(None, 400, {}, None)
         self.parsed_response = {}
         self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
@@ -397,7 +398,10 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         http_response = self.http_response
         if self.http_responses is not None:
             http_response = self.http_responses.pop(0)
-        return http_response, self.parsed_responses.pop(0)
+        parsed_response = self.parsed_responses.pop(0)
+        if 'Error' in parsed_response and 'Code' in parsed_response['Error']:
+            http_response = self.error_http_response
+        return http_response, parsed_response
 
     def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
                               stderr_contains=None, ignore_params=None):

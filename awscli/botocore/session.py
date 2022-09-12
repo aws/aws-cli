@@ -27,6 +27,7 @@ import warnings
 import botocore.client
 import botocore.configloader
 import botocore.credentials
+import botocore.tokens
 from botocore import (
     UNSIGNED,
     __version__,
@@ -116,6 +117,7 @@ class Session(object):
         self._profile = None
         self._config = None
         self._credentials = None
+        self._auth_token = None
         self._profile_map = None
         # This is a dict that stores per session specific config variable
         # overrides via set_config_variable().
@@ -133,6 +135,7 @@ class Session(object):
 
     def _register_components(self):
         self._register_credential_provider()
+        self._register_token_provider()
         self._register_data_loader()
         self._register_endpoint_resolver()
         self._register_event_emitter()
@@ -143,6 +146,14 @@ class Session(object):
 
     def _register_event_emitter(self):
         self._components.register_component('event_emitter', self._events)
+
+    def _register_token_provider(self):
+        self._components.lazy_register_component(
+            'token_provider', self._create_token_resolver
+        )
+
+    def _create_token_resolver(self):
+        return botocore.tokens.create_token_resolver(self)
 
     def _register_credential_provider(self):
         self._components.lazy_register_component(
@@ -431,6 +442,19 @@ class Session(object):
             self._credentials = self._components.get_component(
                 'credential_provider').load_credentials()
         return self._credentials
+
+    def get_auth_token(self):
+        """
+        Return the :class:`botocore.tokens.AuthToken` object associated with
+        this session. If the authorization token has not yet been loaded, this
+        will attempt to load it. If it has already been loaded, this will
+        return the cached authorization token.
+
+        """
+        if self._auth_token is None:
+            provider = self._components.get_component('token_provider')
+            self._auth_token = provider.load_token()
+        return self._auth_token
 
     def user_agent(self, truncate=False):
         """
@@ -811,6 +835,7 @@ class Session(object):
                                                  aws_secret_access_key))
         else:
             credentials = self.get_credentials()
+        auth_token = self.get_auth_token()
         endpoint_resolver = self._get_internal_component('endpoint_resolver')
         exceptions_factory = self._get_internal_component('exceptions_factory')
         config_store = self.get_component('config_store')
@@ -821,7 +846,7 @@ class Session(object):
             service_name=service_name, region_name=region_name,
             is_secure=use_ssl, endpoint_url=endpoint_url, verify=verify,
             credentials=credentials, scoped_config=self.get_scoped_config(),
-            client_config=config)
+            client_config=config, auth_token=auth_token)
         monitor = self._get_internal_component('monitor')
         if monitor is not None:
             monitor.register(client.meta.events)

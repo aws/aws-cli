@@ -10,46 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import datetime
 import hashlib
 import json
 import os
 import re
-import time
 
-from dateutil.tz import tzutc
-
-from awscli.testutils import mock
 from tests.functional.sso import BaseSSOTest
-from awscli.customizations.sso.utils import OpenBrowserHandler
 
 
 class TestLoginCommand(BaseSSOTest):
     _TIMESTAMP_FORMAT_PATTERN = re.compile(
         r'\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ'
     )
-
-    def setUp(self):
-        super(TestLoginCommand, self).setUp()
-        self.token_cache_dir = self.files.full_path('token-cache')
-        self.token_cache_dir_patch = mock.patch(
-            'awscli.customizations.sso.utils.SSO_TOKEN_DIR',
-            self.token_cache_dir
-        )
-        self.token_cache_dir_patch.start()
-        self.open_browser_mock = mock.Mock(spec=OpenBrowserHandler)
-        self.open_browser_patch = mock.patch(
-            'awscli.customizations.sso.utils.OpenBrowserHandler',
-            self.open_browser_mock,
-        )
-        self.open_browser_patch.start()
-        self.expires_in = 28800
-        self.expiration_time = time.time() + 1000
-
-    def tearDown(self):
-        super(TestLoginCommand, self).tearDown()
-        self.token_cache_dir_patch.stop()
-        self.open_browser_patch.stop()
 
     def add_oidc_workflow_responses(self, access_token,
                                     include_register_response=True):
@@ -63,7 +35,13 @@ class TestLoginCommand(BaseSSOTest):
                 'verificationUri': 'https://sso.fake/device',
                 'verificationUriComplete': 'https://sso.verify',
             },
-            # CreateToken response
+            # CreateToken responses
+            {
+                'Error': {
+                    'Code': 'AuthorizationPendingException',
+                    'Message': 'Authorization is still pending',
+                }
+            },
             {
                 'expiresIn': self.expires_in,
                 'tokenType': 'Bearer',
@@ -81,22 +59,30 @@ class TestLoginCommand(BaseSSOTest):
             )
         self.parsed_responses = responses
 
-    def assert_used_expected_sso_region(self, expected_region):
-        self.assertIn(expected_region, self.last_request_dict['url'])
-
-    def assert_cache_contains_token(self, start_url, expected_token):
+    def assert_cache_contains_token(
+        self,
+        start_url,
+        expected_token,
+        session_name=None,
+    ):
         cached_files = os.listdir(self.token_cache_dir)
         # The registration and cached access token
         self.assertEqual(len(cached_files), 2)
-        cached_token_filename = self._get_cached_token_filename(start_url)
+        cached_token_filename = self._get_cached_token_filename(
+            start_url,
+            session_name,
+        )
         self.assertIn(cached_token_filename, cached_files)
         self.assertEqual(
             self._get_cached_response(cached_token_filename)['accessToken'],
             expected_token
         )
 
-    def _get_cached_token_filename(self, start_url):
-        return hashlib.sha1(start_url.encode('utf-8')).hexdigest() + '.json'
+    def _get_cached_token_filename(self, start_url, session_name):
+        to_hash = start_url
+        if session_name:
+            to_hash = session_name
+        return hashlib.sha1(to_hash.encode('utf-8')).hexdigest() + '.json'
 
     def _get_cached_response(self, token_filename):
         token_path = os.path.join(self.token_cache_dir, token_filename)
@@ -105,7 +91,7 @@ class TestLoginCommand(BaseSSOTest):
             return cached_response
 
     def assert_cache_token_expiration_time_format_is_correct(self):
-        token_filename = self._get_cached_token_filename(self.start_url)
+        token_filename = self._get_cached_token_filename(self.start_url, None)
         token_path = os.path.join(self.token_cache_dir, token_filename)
         with open(token_path, 'r') as f:
             cached_response = json.loads(f.read())
@@ -196,3 +182,68 @@ class TestLoginCommand(BaseSSOTest):
             expected_token=self.access_token
         )
         self.assert_cache_token_expiration_time_format_is_correct()
+
+    def test_login_sso_session(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_workflow_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+
+    def test_login_sso_session_with_scopes(self):
+        self.registration_scopes = ['sso:foo', 'sso:bar']
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_workflow_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+        operation, params = self.operations_called[0]
+        self.assertEqual(operation.name, 'RegisterClient')
+        self.assertEqual(params.get('scopes'), self.registration_scopes)
+
+    def test_login_sso_session_and_legacy_config_errors(self):
+        content = self.get_legacy_config()
+        content += (
+            f'sso_session=test\n'
+            f'[sso-session test]\n'
+            f'sso_start_url={self.start_url}\n'
+            f'sso_region={self.sso_region}\n'
+        )
+        self.set_config_file_content(content=content)
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
+        self.assertIn(
+            'cannot be configured on the same profile',
+            stderr
+        )
+
+    def test_login_sso_session_missing_config(self):
+        content = (
+            f'[default]\n'
+            f'sso_session=test\n'
+            f'[sso-session test]\n'
+        )
+        self.set_config_file_content(content=content)
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
+        self.assertIn(
+            'SSO configuration values: sso_start_url, sso_region',
+            stderr
+        )
+
+    def test_login_sso_session_missing(self):
+        content = (
+            f'[default]\n'
+            f'sso_session=test\n'
+        )
+        self.set_config_file_content(content=content)
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
+        self.assertIn('sso-session does not exist: "test"', stderr)

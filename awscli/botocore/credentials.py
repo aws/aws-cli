@@ -2046,10 +2046,11 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
         )
         client = self._client_creator('sso', config=config)
 
+        token_dict = self._token_loader(self._start_url)
         kwargs = {
             'roleName': self._role_name,
             'accountId': self._account_id,
-            'accessToken': self._token_loader(self._start_url),
+            'accessToken': token_dict['accessToken'],
         }
         try:
             response = client.get_role_credentials(**kwargs)
@@ -2100,7 +2101,9 @@ class SSOProvider(CredentialProvider):
         profile_name = self._profile_name
         profile_config = profiles.get(self._profile_name, {})
 
-        if all(c not in profile_config for c in self._SSO_CONFIG_VARS):
+        # Role name & Account ID indicate the cred provider should be used
+        sso_cred_vars = ('sso_role_name', 'sso_account_id')
+        if all(c not in profile_config for c in sso_cred_vars):
             return None
 
         config = {}

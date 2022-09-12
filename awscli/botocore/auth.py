@@ -33,7 +33,7 @@ from botocore.compat import (
     urlsplit,
     urlunsplit,
 )
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoAuthTokenError, NoCredentialsError
 from botocore.utils import normalize_url_path, percent_encode_sequence
 
 logger = logging.getLogger(__name__)
@@ -88,9 +88,20 @@ def _get_body_as_dict(request):
 
 class BaseSigner(object):
     REQUIRES_REGION = False
+    REQUIRES_TOKEN = False
 
     def add_auth(self, request):
         raise NotImplementedError("add_auth")
+
+
+class TokenSigner(BaseSigner):
+    REQUIRES_TOKEN = True
+    """
+    Signers that expect an authorization token to perform the authorization
+    """
+
+    def __init__(self, auth_token):
+        self.auth_token = auth_token
 
 
 class SigV2Auth(BaseSigner):
@@ -638,6 +649,24 @@ class S3SigV4PostAuth(SigV4Auth):
         request.context['s3-presign-post-policy'] = policy
 
 
+class BearerAuth(TokenSigner):
+    """
+    Performs bearer token authorization by placing the bearer token in the
+    Authorization header as specified by Section 2.1 of RFC 6750.
+
+    https://datatracker.ietf.org/doc/html/rfc6750#section-2.1
+    """
+
+    def add_auth(self, request):
+        if self.auth_token is None:
+            raise NoAuthTokenError()
+
+        auth_header = f'Bearer {self.auth_token.token}'
+        if 'Authorization' in request.headers:
+            del request.headers['Authorization']
+        request.headers['Authorization'] = auth_header
+
+
 # NOTE: This import is at the bottom because it resolves an import error when
 # the botocore.crt.auth module imports functions/classes defined above from
 # this module. In the future, we should isolate those functions/classes into
@@ -657,6 +686,6 @@ AUTH_TYPE_MAPS = {
     's3v4-query': S3SigV4QueryAuth,
     's3v4-presign-post': S3SigV4PostAuth,
     's3v4a': botocore.crt.auth.CrtS3SigV4AsymAuth,
-    's3v4a-query': botocore.crt.auth.CrtS3SigV4AsymQueryAuth
-
+    's3v4a-query': botocore.crt.auth.CrtS3SigV4AsymQueryAuth,
+    'bearer': BearerAuth,
 }

@@ -637,7 +637,7 @@
         },
         "health":{
           "shape":"AddonHealth",
-          "documentation":"<p>An object that represents the health of the add-on.</p>"
+          "documentation":"<p>An object representing the health of the add-on.</p>"
         },
         "addonArn":{
           "shape":"String",
@@ -667,7 +667,7 @@
       "members":{
         "issues":{
           "shape":"AddonIssueList",
-          "documentation":"<p>An object that represents the add-on's health issues.</p>"
+          "documentation":"<p>An object representing the health issues for an add-on.</p>"
         }
       },
       "documentation":"<p>The health of the add-on.</p>"
@@ -685,7 +685,7 @@
         },
         "addonVersions":{
           "shape":"AddonVersionInfoList",
-          "documentation":"<p>An object that represents information about available add-on versions and compatible Kubernetes versions.</p>"
+          "documentation":"<p>An object representing information about available add-on versions and compatible Kubernetes versions.</p>"
         }
       },
       "documentation":"<p>Information about an add-on.</p>"
@@ -751,7 +751,7 @@
         },
         "compatibilities":{
           "shape":"Compatibilities",
-          "documentation":"<p>An object that represents the compatibilities of a version.</p>"
+          "documentation":"<p>An object representing the compatibilities of a version.</p>"
         }
       },
       "documentation":"<p>Information about an add-on version.</p>"
@@ -809,7 +809,7 @@
         },
         "oidc":{
           "shape":"OidcIdentityProviderConfigRequest",
-          "documentation":"<p>An object that represents an OpenID Connect (OIDC) identity provider configuration.</p>"
+          "documentation":"<p>An object representing an OpenID Connect (OIDC) identity provider configuration.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -974,9 +974,64 @@
         "connectorConfig":{
           "shape":"ConnectorConfigResponse",
           "documentation":"<p>The configuration used to connect to a cluster for registration.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of your local Amazon EKS cluster on an Amazon Web Services Outpost. This property isn't available for an Amazon EKS cluster on the Amazon Web Services cloud.</p>"
+        },
+        "health":{
+          "shape":"ClusterHealth",
+          "documentation":"<p>An object representing the health of your local Amazon EKS cluster on an Amazon Web Services Outpost. This object isn't available for clusters on the Amazon Web Services cloud.</p>"
+        },
+        "outpostConfig":{
+          "shape":"OutpostConfigResponse",
+          "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This object isn't available for clusters on the Amazon Web Services cloud.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
+    },
+    "ClusterHealth":{
+      "type":"structure",
+      "members":{
+        "issues":{
+          "shape":"ClusterIssueList",
+          "documentation":"<p>An object representing the health issues of your local Amazon EKS cluster on an Amazon Web Services Outpost.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the health of your local Amazon EKS cluster on an Amazon Web Services Outpost. You can't use this API with an Amazon EKS cluster on the Amazon Web Services cloud. </p>"
+    },
+    "ClusterIssue":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"ClusterIssueCode",
+          "documentation":"<p>The error code of the issue.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the issue.</p>"
+        },
+        "resourceIds":{
+          "shape":"StringList",
+          "documentation":"<p>The resource IDs that the issue relates to.</p>"
+        }
+      },
+      "documentation":"<p>An issue with your local Amazon EKS cluster on an Amazon Web Services Outpost. You can't use this API with an Amazon EKS cluster on the Amazon Web Services cloud.</p>"
+    },
+    "ClusterIssueCode":{
+      "type":"string",
+      "enum":[
+        "AccessDenied",
+        "ClusterUnreachable",
+        "ConfigurationConflict",
+        "InternalFailure",
+        "ResourceLimitExceeded",
+        "ResourceNotFound"
+      ]
+    },
+    "ClusterIssueList":{
+      "type":"list",
+      "member":{"shape":"ClusterIssue"}
     },
     "ClusterName":{
       "type":"string",
@@ -1135,7 +1190,7 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The desired Kubernetes version for your cluster. If you don't specify a value here, the latest version available in Amazon EKS is used.</p>"
+          "documentation":"<p>The desired Kubernetes version for your cluster. If you don't specify a value here, the default version available in Amazon EKS is used.</p> <note> <p>The default version might not be the latest version available.</p> </note>"
         },
         "roleArn":{
           "shape":"String",
@@ -1165,6 +1220,10 @@
         "encryptionConfig":{
           "shape":"EncryptionConfigList",
           "documentation":"<p>The encryption configuration for the cluster.</p>"
+        },
+        "outpostConfig":{
+          "shape":"OutpostConfigRequest",
+          "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a local cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/create-cluster-outpost.html\">Creating an Amazon EKS cluster on an Amazon Web Services Outpost</a> in the <i>Amazon EKS User Guide</i>. This object isn't available for creating Amazon EKS clusters on the Amazon Web Services cloud.</p>"
         }
       }
     },
@@ -1595,7 +1654,7 @@
         },
         "identityProviderConfig":{
           "shape":"IdentityProviderConfig",
-          "documentation":"<p>An object that represents an identity provider configuration.</p>"
+          "documentation":"<p>An object representing an identity provider configuration.</p>"
         }
       }
     },
@@ -1695,7 +1754,7 @@
         },
         "identityProviderConfig":{
           "shape":"IdentityProviderConfig",
-          "documentation":"<p>An object that represents an identity provider configuration.</p>"
+          "documentation":"<p>An object representing an identity provider configuration.</p>"
         },
         "clientRequestToken":{
           "shape":"String",
@@ -1887,7 +1946,7 @@
       "members":{
         "oidc":{
           "shape":"OidcIdentityProviderConfig",
-          "documentation":"<p>An object that represents an OpenID Connect (OIDC) identity provider configuration.</p>"
+          "documentation":"<p>An object representing an OpenID Connect (OIDC) identity provider configuration.</p>"
         }
       },
       "documentation":"<p>The full description of your identity configuration.</p>"
@@ -2611,7 +2670,7 @@
           "documentation":"<p>The status of the OIDC identity provider.</p>"
         }
       },
-      "documentation":"<p>An object that represents the configuration for an OpenID Connect (OIDC) identity provider. </p>"
+      "documentation":"<p>An object representing the configuration for an OpenID Connect (OIDC) identity provider. </p>"
     },
     "OidcIdentityProviderConfigRequest":{
       "type":"structure",
@@ -2655,6 +2714,42 @@
         }
       },
       "documentation":"<p>An object representing an OpenID Connect (OIDC) configuration. Before associating an OIDC identity provider to your cluster, review the considerations in <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/authenticate-oidc-identity-provider.html\">Authenticating users for your cluster from an OpenID Connect identity provider</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
+    "OutpostConfigRequest":{
+      "type":"structure",
+      "required":[
+        "outpostArns",
+        "controlPlaneInstanceType"
+      ],
+      "members":{
+        "outpostArns":{
+          "shape":"StringList",
+          "documentation":"<p>The ARN of the Outpost that you want to use for your local Amazon EKS cluster on Outposts. Only a single Outpost ARN is supported.</p>"
+        },
+        "controlPlaneInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation.</p> <p>Choose an instance type based on the number of nodes that your cluster will have. If your cluster will have:</p> <ul> <li> <p>1–20 nodes, then we recommend specifying a <code>large</code> instance type.</p> </li> <li> <p>21–100 nodes, then we recommend specifying an <code>xlarge</code> instance type.</p> </li> <li> <p>101–250 nodes, then we recommend specifying a <code>2xlarge</code> instance type.</p> </li> </ul> <p>For a list of the available Amazon EC2 instance types, see Compute and storage in <a href=\"http://aws.amazon.com/outposts/rack/features/\">Outposts rack features</a>. The control plane is not automatically scaled by Amazon EKS.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/create-cluster-outpost.html\">Creating a local Amazon EKS cluster on an Amazon Web Services Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
+    },
+    "OutpostConfigResponse":{
+      "type":"structure",
+      "required":[
+        "outpostArns",
+        "controlPlaneInstanceType"
+      ],
+      "members":{
+        "outpostArns":{
+          "shape":"StringList",
+          "documentation":"<p>The ARN of the Outpost that you specified for use with your local Amazon EKS cluster on Outposts.</p>"
+        },
+        "controlPlaneInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type used for the control plane. The instance type is the same for all control plane instances.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
     },
     "PercentCapacity":{
       "type":"integer",

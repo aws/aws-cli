@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.25.72
+=======
+
+* api-change:``eks``: Adding support for local Amazon EKS clusters on Outposts
+
+
 1.25.71
 =======
 

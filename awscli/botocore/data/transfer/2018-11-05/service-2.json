@@ -195,6 +195,22 @@
       ],
       "documentation":"<p>Deletes the agreement that's specified in the provided <code>ConnectorId</code>.</p>"
     },
+    "DeleteHostKey":{
+      "name":"DeleteHostKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteHostKeyRequest"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the host key that's specified in the <code>HoskKeyId</code> parameter.</p>"
+    },
     "DeleteProfile":{
       "name":"DeleteProfile",
       "http":{
@@ -353,6 +369,22 @@
       ],
       "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p>"
     },
+    "DescribeHostKey":{
+      "name":"DescribeHostKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeHostKeyRequest"},
+      "output":{"shape":"DescribeHostKeyResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the details of the host key that's specified by the <code>HostKeyId</code> and <code>ServerId</code>.</p>"
+    },
     "DescribeProfile":{
       "name":"DescribeProfile",
       "http":{
@@ -448,6 +480,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p>"
+    },
+    "ImportHostKey":{
+      "name":"ImportHostKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportHostKeyRequest"},
+      "output":{"shape":"ImportHostKeyResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Adds a host key to the server specified by the <code>ServerId</code> parameter.</p>"
     },
     "ImportSshPublicKey":{
       "name":"ImportSshPublicKey",
@@ -551,6 +601,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all executions for the specified workflow.</p>"
+    },
+    "ListHostKeys":{
+      "name":"ListHostKeys",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListHostKeysRequest"},
+      "output":{"shape":"ListHostKeysResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of host keys for the server specified by the <code>ServerId</code> paramter.</p>"
     },
     "ListProfiles":{
       "name":"ListProfiles",
@@ -829,6 +896,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates some of the parameters for an existing connector. Provide the <code>ConnectorId</code> for the connector that you want to update, along with the new values for the parameters to update.</p>"
+    },
+    "UpdateHostKey":{
+      "name":"UpdateHostKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHostKeyRequest"},
+      "output":{"shape":"UpdateHostKeyResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the description for the host key specified by the specified by the <code>ServerId</code> and <code>HostKeyId</code> parameters.</p>"
     },
     "UpdateProfile":{
       "name":"UpdateProfile",
@@ -1532,6 +1616,23 @@
         }
       }
     },
+    "DeleteHostKeyRequest":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeyId"
+      ],
+      "members":{
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Provide the ID of the server that contains the host key that you are deleting.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p>The ID of the host key that you are deleting.</p>"
+        }
+      }
+    },
     "DeleteProfileRequest":{
       "type":"structure",
       "required":["ProfileId"],
@@ -1747,6 +1848,33 @@
         "Execution":{
           "shape":"DescribedExecution",
           "documentation":"<p>The structure that contains the details of the workflow' execution.</p>"
+        }
+      }
+    },
+    "DescribeHostKeyRequest":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeyId"
+      ],
+      "members":{
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Provide the ID of the server that contains the host key that you want described.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p>Provide the ID of the host key that you want described.</p>"
+        }
+      }
+    },
+    "DescribeHostKeyResponse":{
+      "type":"structure",
+      "required":["HostKey"],
+      "members":{
+        "HostKey":{
+          "shape":"DescribedHostKey",
+          "documentation":"<p>Returns the details for the specified host key.</p>"
         }
       }
     },
@@ -2074,6 +2202,41 @@
         }
       },
       "documentation":"<p>The details for an execution object.</p>"
+    },
+    "DescribedHostKey":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) for the host key.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p>A unique identifier for the host key.</p>"
+        },
+        "HostKeyFingerprint":{
+          "shape":"HostKeyFingerprint",
+          "documentation":"<p>The public key fingerprint, which is a short sequence of bytes used to identify the longer public key.</p>"
+        },
+        "Description":{
+          "shape":"HostKeyDescription",
+          "documentation":"<p>The text description for this host key.</p>"
+        },
+        "Type":{
+          "shape":"HostKeyType",
+          "documentation":"<p>The encryption algorithm used for the host key. The <code>Type</code> is one of the following values:</p> <ul> <li> <p>ssh-rsa</p> </li> <li> <p>ssh-ed25519</p> </li> <li> <p>ecdsa-sha2-nistp256 </p> </li> <li> <p>ecdsa-sha2-nistp384</p> </li> <li> <p>ecdsa-sha2-nistp521</p> </li> </ul>"
+        },
+        "DateImported":{
+          "shape":"DateImported",
+          "documentation":"<p>The date on which the host key was added to the server.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for host keys.</p>"
+        }
+      },
+      "documentation":"<p>The details for a server host key.</p>"
     },
     "DescribedProfile":{
       "type":"structure",
@@ -2549,7 +2712,20 @@
       "max":4096,
       "sensitive":true
     },
+    "HostKeyDescription":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"^[\\p{Print}]*$"
+    },
     "HostKeyFingerprint":{"type":"string"},
+    "HostKeyId":{
+      "type":"string",
+      "max":25,
+      "min":25,
+      "pattern":"^hostkey-[0-9a-f]{17}$"
+    },
+    "HostKeyType":{"type":"string"},
     "IdentityProviderDetails":{
       "type":"structure",
       "members":{
@@ -2630,6 +2806,48 @@
         "CertificateId":{
           "shape":"CertificateId",
           "documentation":"<p>An array of identifiers for the imported certificates. You use this identifier for working with profiles and partner profiles.</p>"
+        }
+      }
+    },
+    "ImportHostKeyRequest":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeyBody"
+      ],
+      "members":{
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Provide the ID of the server that contains the host key that you are importing.</p>"
+        },
+        "HostKeyBody":{
+          "shape":"HostKey",
+          "documentation":"<p>The public key portion of an SSH key pair.</p> <p>Transfer Family accepts RSA, ECDSA, and ED25519 keys.</p>"
+        },
+        "Description":{
+          "shape":"HostKeyDescription",
+          "documentation":"<p>Enter a text description to identify this host key.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for host keys.</p>"
+        }
+      }
+    },
+    "ImportHostKeyResponse":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeyId"
+      ],
+      "members":{
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Returns the server ID that contains the imported key.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p>Returns the host key ID for the imported key.</p>"
         }
       }
     },
@@ -2881,6 +3099,45 @@
         "Executions":{
           "shape":"ListedExecutions",
           "documentation":"<p>Returns the details for each execution.</p> <ul> <li> <p> <b>NextToken</b>: returned from a call to several APIs, you can use pass it to a subsequent command to continue listing additional executions.</p> </li> <li> <p> <b>StartTime</b>: timestamp indicating when the execution began.</p> </li> <li> <p> <b>Executions</b>: details of the execution, including the execution ID, initial file location, and Service metadata.</p> </li> <li> <p> <b>Status</b>: one of the following values: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>EXCEPTION</code>, <code>HANDLING_EXEPTION</code>. </p> </li> </ul>"
+        }
+      }
+    },
+    "ListHostKeysRequest":{
+      "type":"structure",
+      "required":["ServerId"],
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of host keys to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When there are additional results that were not returned, a <code>NextToken</code> parameter is returned. You can use that value for a subsequent call to <code>ListHostKeys</code> to continue listing results.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Provide the ID of the server that contains the host keys that you want to view.</p>"
+        }
+      }
+    },
+    "ListHostKeysResponse":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeys"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns a token that you can use to call <code>ListHostKeys</code> again and receive additional results, if there are any.</p>"
+        },
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Returns the server ID that contains the listed host keys.</p>"
+        },
+        "HostKeys":{
+          "shape":"ListedHostKeys",
+          "documentation":"<p>Returns an array, where each item contains the details of a host key.</p>"
         }
       }
     },
@@ -3223,6 +3480,41 @@
     "ListedExecutions":{
       "type":"list",
       "member":{"shape":"ListedExecution"}
+    },
+    "ListedHostKey":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>Specifies the unique Amazon Resource Name (ARN) of the host key.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p/>"
+        },
+        "Fingerprint":{
+          "shape":"HostKeyFingerprint",
+          "documentation":"<p>The public key fingerprint, which is a short sequence of bytes used to identify the longer public key.</p>"
+        },
+        "Description":{
+          "shape":"HostKeyDescription",
+          "documentation":"<p>The current description for the host key. You can change it by calling the <code>UpdateHostKey</code> operation and providing a new description.</p>"
+        },
+        "Type":{
+          "shape":"HostKeyType",
+          "documentation":"<p>The encryption algorithm used for the host key. The <code>Type</code> is one of the following values:</p> <ul> <li> <p>ssh-rsa</p> </li> <li> <p>ssh-ed25519</p> </li> <li> <p>ecdsa-sha2-nistp256 </p> </li> <li> <p>ecdsa-sha2-nistp384</p> </li> <li> <p>ecdsa-sha2-nistp521</p> </li> </ul>"
+        },
+        "DateImported":{
+          "shape":"DateImported",
+          "documentation":"<p>The date on which the host key was added to the server.</p>"
+        }
+      },
+      "documentation":"<p>Returns properties of the host key that is specified.</p>"
+    },
+    "ListedHostKeys":{
+      "type":"list",
+      "member":{"shape":"ListedHostKey"}
     },
     "ListedProfile":{
       "type":"structure",
@@ -4239,6 +4531,45 @@
         "ConnectorId":{
           "shape":"ConnectorId",
           "documentation":"<p>Returns the identifier of the connector object that you are updating.</p>"
+        }
+      }
+    },
+    "UpdateHostKeyRequest":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeyId",
+        "Description"
+      ],
+      "members":{
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Provide the ID of the server that contains the host key that you are updating.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p>Provide the ID of the host key that you are updating.</p>"
+        },
+        "Description":{
+          "shape":"HostKeyDescription",
+          "documentation":"<p>Provide an updated description for the host key.</p>"
+        }
+      }
+    },
+    "UpdateHostKeyResponse":{
+      "type":"structure",
+      "required":[
+        "ServerId",
+        "HostKeyId"
+      ],
+      "members":{
+        "ServerId":{
+          "shape":"ServerId",
+          "documentation":"<p>Returns the server ID for the server that contains the updated host key.</p>"
+        },
+        "HostKeyId":{
+          "shape":"HostKeyId",
+          "documentation":"<p>Returns the host key ID for the updated host key.</p>"
         }
       }
     },

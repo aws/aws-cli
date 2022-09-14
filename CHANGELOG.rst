@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.7.32
+======
+
+* api-change:``eks``: Adding support for local Amazon EKS clusters on Outposts
+* api-change:``drs``: Fixed the data type of lagDuration that is returned in Describe Source Server API
+* api-change:``pi``: Increases the maximum values of two RDS Performance Insights APIs. The maximum value of the Limit parameter of DimensionGroup is 25. The MaxResult maximum is now 25 for the following APIs: DescribeDimensionKeys, GetResourceMetrics, ListAvailableResourceDimensions, and ListAvailableResourceMetrics.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``kendra``: This release enables our customer to choose the option of Sharepoint 2019 for the on-premise Sharepoint connector.
+* api-change:``redshift``: This release updates documentation for AQUA features and other description updates.
+* enhancement:Identity: Add support for bearer authentication.
+* api-change:``cloudtrail``: This release adds CloudTrail getChannel and listChannels APIs to allow customer to view the ServiceLinkedChannel configurations.
+* api-change:``customer-profiles``: Added isUnstructured in response for Customer Profiles Integration APIs
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``ec2``: Two new features for local gateway route tables: support for static routes targeting Elastic Network Interfaces and direct VPC routing.
+* api-change:``evidently``: This release adds support for the client-side evaluation - powered by AWS AppConfig feature.
+* api-change:``transfer``: This release introduces the ability to have multiple server host keys for any of your Transfer Family servers that use the SFTP protocol.
+
+
 2.7.31
 ======
 

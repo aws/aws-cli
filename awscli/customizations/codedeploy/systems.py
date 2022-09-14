@@ -60,6 +60,7 @@ class Windows(System):
         process = subprocess.Popen(
             [
                 'powershell.exe',
+                '-NoProfile',
                 '-Command', 'Stop-Service',
                 '-Name', 'codedeployagent'
             ],
@@ -89,6 +90,7 @@ class Windows(System):
         )
         subprocess.check_call([
             'powershell.exe',
+            '-NoProfile',
             '-Command', 'Restart-Service',
             '-Name', 'codedeployagent'
         ])
@@ -96,6 +98,7 @@ class Windows(System):
         process = subprocess.Popen(
             [
                 'powershell.exe',
+                '-NoProfile',
                 '-Command', 'Get-Service',
                 '-Name', 'codedeployagent'
             ],
@@ -112,6 +115,7 @@ class Windows(System):
         process = subprocess.Popen(
             [
                 'powershell.exe',
+                '-NoProfile',
                 '-Command', 'Stop-Service',
                 '-Name', 'codedeployagent'
             ],

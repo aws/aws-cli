@@ -30,6 +30,24 @@
       "documentation":"<p>Creates a new component for an Amplify app.</p>",
       "idempotent":true
     },
+    "CreateForm":{
+      "name":"CreateForm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app/{appId}/environment/{environmentName}/forms",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateFormRequest"},
+      "output":{"shape":"CreateFormResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a new form for an Amplify app.</p>",
+      "idempotent":true
+    },
     "CreateTheme":{
       "name":"CreateTheme",
       "http":{
@@ -62,6 +80,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes a component from an Amplify app.</p>",
+      "idempotent":true
+    },
+    "DeleteForm":{
+      "name":"DeleteForm",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app/{appId}/environment/{environmentName}/forms/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteFormRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a form from an Amplify app.</p>",
       "idempotent":true
     },
     "DeleteTheme":{
@@ -109,6 +143,21 @@
       ],
       "documentation":"<p>Exports component configurations to code that is ready to integrate into an Amplify app.</p>"
     },
+    "ExportForms":{
+      "name":"ExportForms",
+      "http":{
+        "method":"GET",
+        "requestUri":"/export/app/{appId}/environment/{environmentName}/forms",
+        "responseCode":200
+      },
+      "input":{"shape":"ExportFormsRequest"},
+      "output":{"shape":"ExportFormsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Exports form configurations to code that is ready to integrate into an Amplify app.</p>"
+    },
     "ExportThemes":{
       "name":"ExportThemes",
       "http":{
@@ -139,6 +188,37 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns an existing component for an Amplify app.</p>"
+    },
+    "GetForm":{
+      "name":"GetForm",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/forms/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFormRequest"},
+      "output":{"shape":"GetFormResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns an existing form for an Amplify app.</p>"
+    },
+    "GetMetadata":{
+      "name":"GetMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMetadataRequest"},
+      "output":{"shape":"GetMetadataResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Returns existing metadata for an Amplify app.</p>"
     },
     "GetTheme":{
       "name":"GetTheme",
@@ -171,6 +251,21 @@
       ],
       "documentation":"<p>Retrieves a list of components for a specified Amplify app and backend environment.</p>"
     },
+    "ListForms":{
+      "name":"ListForms",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/forms",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFormsRequest"},
+      "output":{"shape":"ListFormsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a list of forms for a specified Amplify app and backend environment.</p>"
+    },
     "ListThemes":{
       "name":"ListThemes",
       "http":{
@@ -185,6 +280,20 @@
         {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>Retrieves a list of themes for a specified Amplify app and backend environment.</p>"
+    },
+    "PutMetadataFlag":{
+      "name":"PutMetadataFlag",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app/{appId}/environment/{environmentName}/metadata/features/{featureName}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutMetadataFlagRequest"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Stores the metadata information about a feature on a form or view.</p>"
     },
     "RefreshToken":{
       "name":"RefreshToken",
@@ -215,6 +324,23 @@
         {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>Updates an existing component.</p>",
+      "idempotent":true
+    },
+    "UpdateForm":{
+      "name":"UpdateForm",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/app/{appId}/environment/{environmentName}/forms/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFormRequest"},
+      "output":{"shape":"UpdateFormResponse"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates an existing form.</p>",
       "idempotent":true
     },
     "UpdateTheme":{
@@ -278,10 +404,7 @@
       },
       "documentation":"<p>Represents the event action configuration for an element of a <code>Component</code> or <code>ComponentChild</code>. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components. <code>ActionParameters</code> defines the action that is performed when an event occurs on the component.</p>"
     },
-    "Boolean":{
-      "type":"boolean",
-      "box":true
-    },
+    "Boolean":{"type":"boolean"},
     "Component":{
       "type":"structure",
       "required":[
@@ -417,6 +540,10 @@
         "predicates":{
           "shape":"PredicateList",
           "documentation":"<p>A list of predicates for binding a component's properties to data.</p>"
+        },
+        "slotName":{
+          "shape":"String",
+          "documentation":"<p>The name of a component slot.</p>"
         },
         "userAttribute":{
           "shape":"String",
@@ -602,7 +729,8 @@
         },
         "configured":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the user configured the property in Amplify Studio after importing it.</p>"
+          "documentation":"<p>Specifies whether the user configured the property in Amplify Studio after importing it.</p>",
+          "box":true
         },
         "defaultValue":{
           "shape":"String",
@@ -829,6 +957,101 @@
       },
       "payload":"entity"
     },
+    "CreateFormData":{
+      "type":"structure",
+      "required":[
+        "dataType",
+        "fields",
+        "formActionType",
+        "name",
+        "schemaVersion",
+        "sectionalElements",
+        "style"
+      ],
+      "members":{
+        "cta":{
+          "shape":"FormCTA",
+          "documentation":"<p>The <code>FormCTA</code> object that stores the call to action configuration for the form.</p>"
+        },
+        "dataType":{
+          "shape":"FormDataTypeConfig",
+          "documentation":"<p>The type of data source to use to create the form.</p>"
+        },
+        "fields":{
+          "shape":"FieldsMap",
+          "documentation":"<p>The configuration information for the form's fields.</p>"
+        },
+        "formActionType":{
+          "shape":"FormActionType",
+          "documentation":"<p>Specifies whether to perform a create or update action on the form.</p>"
+        },
+        "name":{
+          "shape":"FormName",
+          "documentation":"<p>The name of the form.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the form.</p>"
+        },
+        "sectionalElements":{
+          "shape":"SectionalElementMap",
+          "documentation":"<p>The configuration information for the visual helper elements for the form. These elements are not associated with any data.</p>"
+        },
+        "style":{
+          "shape":"FormStyle",
+          "documentation":"<p>The configuration for the form's style.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the form data.</p>"
+        }
+      },
+      "documentation":"<p>Represents all of the information that is required to create a form.</p>"
+    },
+    "CreateFormRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "formToCreate"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app to associate with the form.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "formToCreate":{
+          "shape":"CreateFormData",
+          "documentation":"<p>Represents the configuration of the form to create.</p>"
+        }
+      },
+      "payload":"formToCreate"
+    },
+    "CreateFormResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"Form",
+          "documentation":"<p>Describes the configuration of the new form.</p>"
+        }
+      },
+      "payload":"entity"
+    },
     "CreateThemeData":{
       "type":"structure",
       "required":[
@@ -927,6 +1150,34 @@
         }
       }
     },
+    "DeleteFormRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the form to delete.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the form to delete.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
     "DeleteThemeRequest":{
       "type":"structure",
       "required":[
@@ -1007,7 +1258,8 @@
         },
         "expiresIn":{
           "shape":"Integer",
-          "documentation":"<p>The date and time when the new access token expires.</p>"
+          "documentation":"<p>The date and time when the new access token expires.</p>",
+          "box":true
         },
         "refreshToken":{
           "shape":"SensitiveString",
@@ -1056,6 +1308,47 @@
         }
       }
     },
+    "ExportFormsRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app to export forms to.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ExportFormsResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"FormList",
+          "documentation":"<p>Represents the configuration of the exported forms.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
     "ExportThemesRequest":{
       "type":"structure",
       "required":[
@@ -1097,6 +1390,232 @@
         }
       }
     },
+    "FeaturesMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "FieldConfig":{
+      "type":"structure",
+      "members":{
+        "excluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to hide a field.</p>",
+          "box":true
+        },
+        "inputType":{
+          "shape":"FieldInputConfig",
+          "documentation":"<p>Describes the configuration for the default input value to display for a field.</p>"
+        },
+        "label":{
+          "shape":"String",
+          "documentation":"<p>The label for the field.</p>"
+        },
+        "position":{
+          "shape":"FieldPosition",
+          "documentation":"<p>Specifies the field position.</p>"
+        },
+        "validations":{
+          "shape":"ValidationsList",
+          "documentation":"<p>The validations to perform on the value in the field.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration information for a field in a table.</p>"
+    },
+    "FieldInputConfig":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "defaultChecked":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether a field has a default value.</p>",
+          "box":true
+        },
+        "defaultCountryCode":{
+          "shape":"String",
+          "documentation":"<p>The default country code for a phone number.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value for the field.</p>"
+        },
+        "descriptiveText":{
+          "shape":"String",
+          "documentation":"<p>The text to display to describe the field.</p>"
+        },
+        "maxValue":{
+          "shape":"Float",
+          "documentation":"<p>The maximum value to display for the field.</p>",
+          "box":true
+        },
+        "minValue":{
+          "shape":"Float",
+          "documentation":"<p>The minimum value to display for the field.</p>",
+          "box":true
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "placeholder":{
+          "shape":"String",
+          "documentation":"<p>The text to display as a placeholder for the field.</p>"
+        },
+        "readOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies a read only field.</p>",
+          "box":true
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies a field that requires input.</p>",
+          "box":true
+        },
+        "step":{
+          "shape":"Float",
+          "documentation":"<p>The stepping increment for a numeric value in a field.</p>",
+          "box":true
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The input type for the field. </p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value for the field.</p>"
+        },
+        "valueMappings":{
+          "shape":"ValueMappings",
+          "documentation":"<p>The information to use to customize the input fields with data at runtime.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for the default input values to display for a field.</p>"
+    },
+    "FieldPosition":{
+      "type":"structure",
+      "members":{
+        "below":{
+          "shape":"String",
+          "documentation":"<p>The field position is below the field specified by the string.</p>"
+        },
+        "fixed":{
+          "shape":"FixedPosition",
+          "documentation":"<p>The field position is fixed and doesn't change in relation to other fields.</p>"
+        },
+        "rightOf":{
+          "shape":"String",
+          "documentation":"<p>The field position is to the right of the field specified by the string.</p>"
+        }
+      },
+      "documentation":"<p>Describes the field position.</p>",
+      "union":true
+    },
+    "FieldValidationConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "numValues":{
+          "shape":"NumValues",
+          "documentation":"<p>The validation to perform on a number value.</p>"
+        },
+        "strValues":{
+          "shape":"StrValues",
+          "documentation":"<p>The validation to perform on a string value.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The validation to perform on an object type.<code/> </p>"
+        },
+        "validationMessage":{
+          "shape":"String",
+          "documentation":"<p>The validation message to display.</p>"
+        }
+      },
+      "documentation":"<p>Describes the validation configuration for a field.</p>"
+    },
+    "FieldsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"FieldConfig"}
+    },
+    "FixedPosition":{
+      "type":"string",
+      "enum":["first"]
+    },
+    "Float":{"type":"float"},
+    "Form":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "dataType",
+        "environmentName",
+        "fields",
+        "formActionType",
+        "id",
+        "name",
+        "schemaVersion",
+        "sectionalElements",
+        "style"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app associated with the form.</p>"
+        },
+        "cta":{
+          "shape":"FormCTA",
+          "documentation":"<p>Stores the call to action configuration for the form.</p>"
+        },
+        "dataType":{
+          "shape":"FormDataTypeConfig",
+          "documentation":"<p>The type of data source to use to create the form.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
+        },
+        "fields":{
+          "shape":"FieldsMap",
+          "documentation":"<p>Stores the information about the form's fields.</p>"
+        },
+        "formActionType":{
+          "shape":"FormActionType",
+          "documentation":"<p>The operation to perform on the specified form.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the form.</p>"
+        },
+        "name":{
+          "shape":"FormName",
+          "documentation":"<p>The name of the form.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the form when it was imported.</p>"
+        },
+        "sectionalElements":{
+          "shape":"SectionalElementMap",
+          "documentation":"<p>Stores the visual helper elements for the form that are not associated with any data.</p>"
+        },
+        "style":{
+          "shape":"FormStyle",
+          "documentation":"<p>Stores the configuration for the form's style.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the form.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration settings for a <code>Form</code> user interface (UI) element for an Amplify app. A form is a component you can add to your project by specifying a data source as the default configuration for the form.</p>"
+    },
+    "FormActionType":{
+      "type":"string",
+      "enum":[
+        "create",
+        "update"
+      ]
+    },
     "FormBindingElement":{
       "type":"structure",
       "required":[
@@ -1119,6 +1638,174 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"FormBindingElement"}
+    },
+    "FormButton":{
+      "type":"structure",
+      "members":{
+        "children":{
+          "shape":"String",
+          "documentation":"<p>Describes the button's properties.</p>"
+        },
+        "excluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the button is visible on the form.</p>",
+          "box":true
+        },
+        "position":{
+          "shape":"FieldPosition",
+          "documentation":"<p>The position of the button.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for a button UI element that is a part of a form.</p>"
+    },
+    "FormButtonsPosition":{
+      "type":"string",
+      "enum":[
+        "top",
+        "bottom",
+        "top_and_bottom"
+      ]
+    },
+    "FormCTA":{
+      "type":"structure",
+      "members":{
+        "cancel":{
+          "shape":"FormButton",
+          "documentation":"<p>Displays a cancel button.</p>"
+        },
+        "clear":{
+          "shape":"FormButton",
+          "documentation":"<p>Displays a clear button.</p>"
+        },
+        "position":{
+          "shape":"FormButtonsPosition",
+          "documentation":"<p>The position of the button.</p>"
+        },
+        "submit":{
+          "shape":"FormButton",
+          "documentation":"<p>Displays a submit button.</p>"
+        }
+      },
+      "documentation":"<p>Describes the call to action button configuration for the form..</p>"
+    },
+    "FormDataSourceType":{
+      "type":"string",
+      "enum":[
+        "DataStore",
+        "Custom"
+      ]
+    },
+    "FormDataTypeConfig":{
+      "type":"structure",
+      "required":[
+        "dataSourceType",
+        "dataTypeName"
+      ],
+      "members":{
+        "dataSourceType":{
+          "shape":"FormDataSourceType",
+          "documentation":"<p>The data source type, either an Amplify DataStore model or a custom data type.</p>"
+        },
+        "dataTypeName":{
+          "shape":"String",
+          "documentation":"<p>The unique name of the data type you are using as the data source for the form.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data type configuration for the data source associated with a form.</p>"
+    },
+    "FormInputValueProperty":{
+      "type":"structure",
+      "members":{
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value to assign to the input field.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for an input field on a form. Use <code>FormInputValueProperty</code> to specify the values to render or bind by default.</p>"
+    },
+    "FormList":{
+      "type":"list",
+      "member":{"shape":"Form"}
+    },
+    "FormName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "FormStyle":{
+      "type":"structure",
+      "members":{
+        "horizontalGap":{
+          "shape":"FormStyleConfig",
+          "documentation":"<p>The spacing for the horizontal gap.</p>"
+        },
+        "outerPadding":{
+          "shape":"FormStyleConfig",
+          "documentation":"<p>The size of the outer padding for the form.</p>"
+        },
+        "verticalGap":{
+          "shape":"FormStyleConfig",
+          "documentation":"<p>The spacing for the vertical gap.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for the form's style.</p>"
+    },
+    "FormStyleConfig":{
+      "type":"structure",
+      "members":{
+        "tokenReference":{
+          "shape":"String",
+          "documentation":"<p>A reference to a design token to use to bind the form's style properties to an existing theme.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the style setting.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration settings for the form's style properties.</p>",
+      "union":true
+    },
+    "FormSummary":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "dataType",
+        "environmentName",
+        "formActionType",
+        "id",
+        "name"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the app associated with the form summary.</p>"
+        },
+        "dataType":{
+          "shape":"FormDataTypeConfig",
+          "documentation":"<p>The form's data source type.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>"
+        },
+        "formActionType":{
+          "shape":"FormActionType",
+          "documentation":"<p>The type of operation to perform on the form.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the form.</p>"
+        },
+        "name":{
+          "shape":"FormName",
+          "documentation":"<p>The name of the form.</p>"
+        }
+      },
+      "documentation":"<p>Describes the basic information about a form.</p>"
+    },
+    "FormSummaryList":{
+      "type":"list",
+      "member":{"shape":"FormSummary"}
     },
     "GetComponentRequest":{
       "type":"structure",
@@ -1157,6 +1844,75 @@
         }
       },
       "payload":"component"
+    },
+    "GetFormRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the form.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetFormResponse":{
+      "type":"structure",
+      "members":{
+        "form":{
+          "shape":"Form",
+          "documentation":"<p>Represents the configuration settings for the form.</p>"
+        }
+      },
+      "payload":"form"
+    },
+    "GetMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        }
+      }
+    },
+    "GetMetadataResponse":{
+      "type":"structure",
+      "required":["features"],
+      "members":{
+        "features":{
+          "shape":"FeaturesMap",
+          "documentation":"<p>Represents the configuration settings for the features metadata.</p>"
+        }
+      }
     },
     "GetThemeRequest":{
       "type":"structure",
@@ -1200,10 +1956,7 @@
       "type":"list",
       "member":{"shape":"String"}
     },
-    "Integer":{
-      "type":"integer",
-      "box":true
-    },
+    "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -1253,6 +2006,7 @@
         "maxResults":{
           "shape":"ListComponentsLimit",
           "documentation":"<p>The maximum number of components to retrieve.</p>",
+          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -1271,6 +2025,59 @@
         "entities":{
           "shape":"ComponentSummaryList",
           "documentation":"<p>The list of components for the Amplify app.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
+    "ListFormsLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListFormsRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "maxResults":{
+          "shape":"ListFormsLimit",
+          "documentation":"<p>The maximum number of forms to retrieve.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListFormsResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"FormSummaryList",
+          "documentation":"<p>The list of forms for the Amplify app.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -1305,6 +2112,7 @@
         "maxResults":{
           "shape":"ListThemesLimit",
           "documentation":"<p>The maximum number of theme results to return in the response.</p>",
+          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -1353,6 +2161,10 @@
       },
       "documentation":"<p>Represents the state configuration when an action modifies a property of another element within the same component.</p>"
     },
+    "NumValues":{
+      "type":"list",
+      "member":{"shape":"Integer"}
+    },
     "Predicate":{
       "type":"structure",
       "members":{
@@ -1382,6 +2194,51 @@
     "PredicateList":{
       "type":"list",
       "member":{"shape":"Predicate"}
+    },
+    "PutMetadataFlagBody":{
+      "type":"structure",
+      "required":["newValue"],
+      "members":{
+        "newValue":{
+          "shape":"String",
+          "documentation":"<p>The new information to store.</p>"
+        }
+      },
+      "documentation":"<p>Stores the metadata information about a feature on a form or view.</p>"
+    },
+    "PutMetadataFlagRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "body",
+        "environmentName",
+        "featureName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "body":{
+          "shape":"PutMetadataFlagBody",
+          "documentation":"<p>The metadata information to store.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "featureName":{
+          "shape":"String",
+          "documentation":"<p>The name of the feature associated with the metadata.</p>",
+          "location":"uri",
+          "locationName":"featureName"
+        }
+      },
+      "payload":"body"
     },
     "RefreshTokenRequest":{
       "type":"structure",
@@ -1427,7 +2284,8 @@
         },
         "expiresIn":{
           "shape":"Integer",
-          "documentation":"<p>The date and time when the new access token expires.</p>"
+          "documentation":"<p>The date and time when the new access token expires.</p>",
+          "box":true
         }
       }
     },
@@ -1454,6 +2312,39 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SectionalElement":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "level":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the size of the font for a <code>Heading</code> sectional element. Valid values are <code>1 | 2 | 3 | 4 | 5 | 6</code>.</p>",
+          "box":true
+        },
+        "orientation":{
+          "shape":"String",
+          "documentation":"<p>Specifies the orientation for a <code>Divider</code> sectional element. Valid values are <code>horizontal</code> or <code>vertical</code>.</p>"
+        },
+        "position":{
+          "shape":"FieldPosition",
+          "documentation":"<p>Specifies the position of the text in a field for a <code>Text</code> sectional element.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The text for a <code>Text</code> sectional element.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type of sectional element. Valid values are <code>Heading</code>, <code>Text</code>, and <code>Divider</code>.</p>"
+        }
+      },
+      "documentation":"<p>Stores the configuration information for a visual helper element for a form. A sectional element can be a header, a text block, or a divider. These elements are static and not associated with any data.</p>"
+    },
+    "SectionalElementMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"SectionalElement"}
     },
     "SensitiveString":{
       "type":"string",
@@ -1499,6 +2390,10 @@
     "SortPropertyList":{
       "type":"list",
       "member":{"shape":"SortProperty"}
+    },
+    "StrValues":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "String":{"type":"string"},
     "SyntheticTimestamp_date_time":{
@@ -1648,6 +2543,18 @@
       "type":"string",
       "enum":["figma"]
     },
+    "UnauthorizedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have permission to perform this operation.</p>",
+      "error":{
+        "httpStatusCode":401,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "UpdateComponentData":{
       "type":"structure",
       "members":{
@@ -1753,6 +2660,95 @@
       },
       "payload":"entity"
     },
+    "UpdateFormData":{
+      "type":"structure",
+      "members":{
+        "cta":{
+          "shape":"FormCTA",
+          "documentation":"<p>The <code>FormCTA</code> object that stores the call to action configuration for the form.</p>"
+        },
+        "dataType":{
+          "shape":"FormDataTypeConfig",
+          "documentation":"<p>The type of data source to use to create the form.</p>"
+        },
+        "fields":{
+          "shape":"FieldsMap",
+          "documentation":"<p>The configuration information for the form's fields.</p>"
+        },
+        "formActionType":{
+          "shape":"FormActionType",
+          "documentation":"<p>Specifies whether to perform a create or update action on the form.</p>"
+        },
+        "name":{
+          "shape":"FormName",
+          "documentation":"<p>The name of the form.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the form.</p>"
+        },
+        "sectionalElements":{
+          "shape":"SectionalElementMap",
+          "documentation":"<p>The configuration information for the visual helper elements for the form. These elements are not associated with any data.</p>"
+        },
+        "style":{
+          "shape":"FormStyle",
+          "documentation":"<p>The configuration for the form's style.</p>"
+        }
+      },
+      "documentation":"<p>Updates and saves all of the information about a form, based on form ID.</p>"
+    },
+    "UpdateFormRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id",
+        "updatedForm"
+      ],
+      "members":{
+        "appId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID for the form.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "updatedForm":{
+          "shape":"UpdateFormData",
+          "documentation":"<p>The request accepts the following data in JSON format.</p>"
+        }
+      },
+      "payload":"updatedForm"
+    },
+    "UpdateFormResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"Form",
+          "documentation":"<p>Describes the configuration of the updated form.</p>"
+        }
+      },
+      "payload":"entity"
+    },
     "UpdateThemeData":{
       "type":"structure",
       "required":["values"],
@@ -1827,7 +2823,41 @@
       },
       "payload":"entity"
     },
-    "Uuid":{"type":"string"}
+    "Uuid":{"type":"string"},
+    "ValidationsList":{
+      "type":"list",
+      "member":{"shape":"FieldValidationConfiguration"}
+    },
+    "ValueMapping":{
+      "type":"structure",
+      "required":["value"],
+      "members":{
+        "displayValue":{
+          "shape":"FormInputValueProperty",
+          "documentation":"<p>The value to display for the complex object.</p>"
+        },
+        "value":{
+          "shape":"FormInputValueProperty",
+          "documentation":"<p>The complex object.</p>"
+        }
+      },
+      "documentation":"<p>Associates a complex object with a display value. Use <code>ValueMapping</code> to store how to represent complex objects when they are displayed.</p>"
+    },
+    "ValueMappingList":{
+      "type":"list",
+      "member":{"shape":"ValueMapping"}
+    },
+    "ValueMappings":{
+      "type":"structure",
+      "required":["values"],
+      "members":{
+        "values":{
+          "shape":"ValueMappingList",
+          "documentation":"<p>The value and display value pairs.</p>"
+        }
+      },
+      "documentation":"<p>Represents the data binding configuration for a value map.</p>"
+    }
   },
   "documentation":"<p>The Amplify UI Builder API provides a programmatic interface for creating and configuring user interface (UI) component libraries and themes for use in your Amplify applications. You can then connect these UI components to an application's backend Amazon Web Services resources.</p> <p>You can also use the Amplify Studio visual designer to create UI components and model data for an app. For more information, see <a href=\"https://docs.amplify.aws/console/adminui/intro\">Introduction</a> in the <i>Amplify Docs</i>.</p> <p>The Amplify Framework is a comprehensive set of SDKs, libraries, tools, and documentation for client app development. For more information, see the <a href=\"https://docs.amplify.aws/\">Amplify Framework</a>. For more information about deploying an Amplify application to Amazon Web Services, see the <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html\">Amplify User Guide</a>.</p>"
 }

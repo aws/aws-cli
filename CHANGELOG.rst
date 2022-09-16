@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.76
+=======
+
+* api-change:``codestar-notifications``: This release adds tag based access control for the UntagResource API.
+* api-change:``ecs``: This release supports new task definition sizes.
+
+
 1.25.75
 =======
 

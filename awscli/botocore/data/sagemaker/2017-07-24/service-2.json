@@ -97,7 +97,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a running app for the specified UserProfile. Supported apps are <code>JupyterServer</code> and <code>KernelGateway</code>. This operation is automatically invoked by Amazon SageMaker Studio upon access to the associated Domain, and when new kernel configurations are selected by the user. A user may have multiple Apps active simultaneously.</p>"
+      "documentation":"<p>Creates a running app for the specified UserProfile. This operation is automatically invoked by Amazon SageMaker Studio upon access to the associated Domain, and when new kernel configurations are selected by the user. A user may have multiple Apps active simultaneously.</p>"
     },
     "CreateAppImageConfig":{
       "name":"CreateAppImageConfig",
@@ -5903,7 +5903,7 @@
         },
         "AppType":{
           "shape":"AppType",
-          "documentation":"<p>The type of app. Supported apps are <code>JupyterServer</code> and <code>KernelGateway</code>. <code>TensorBoard</code> is not supported.</p>"
+          "documentation":"<p>The type of app.</p>"
         },
         "AppName":{
           "shape":"AppName",
@@ -12844,7 +12844,7 @@
         },
         "ExecutionRoleIdentityConfig":{
           "shape":"ExecutionRoleIdentityConfig",
-          "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\"> <code>sts:SourceIdentity</code> key</a>.</p>"
+          "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\">sts:SourceIdentity key</a>.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to the <code>SageMaker Domain</code>. These settings are specified through the <code>CreateDomain</code> API call.</p>"
@@ -12858,7 +12858,7 @@
         },
         "ExecutionRoleIdentityConfig":{
           "shape":"ExecutionRoleIdentityConfig",
-          "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\"> <code>sts:SourceIdentity</code> key</a>. This configuration can only be modified if there are no apps in the <code>InService</code> or <code>Pending</code> state.</p>"
+          "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\">sts:SourceIdentity key</a>. This configuration can only be modified if there are no apps in the <code>InService</code> or <code>Pending</code> state.</p>"
         }
       },
       "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
@@ -14799,7 +14799,7 @@
         },
         "MaxConcurrentTaskCount":{
           "shape":"MaxConcurrentTaskCount",
-          "documentation":"<p>Defines the maximum number of data objects that can be labeled by human workers at the same time. Also referred to as batch size. Each object may have more than one worker at one time. The default value is 1000 objects.</p>"
+          "documentation":"<p>Defines the maximum number of data objects that can be labeled by human workers at the same time. Also referred to as batch size. Each object may have more than one worker at one time. The default value is 1000 objects. To increase the maximum value to 5000 objects, contact Amazon Web Services Support.</p>"
         },
         "AnnotationConsolidationConfig":{
           "shape":"AnnotationConsolidationConfig",
@@ -15130,7 +15130,11 @@
       "members":{
         "Strategy":{
           "shape":"HyperParameterTuningJobStrategyType",
-          "documentation":"<p>Specifies how hyperparameter tuning chooses the combinations of hyperparameter values to use for the training job it launches. To use the Bayesian search strategy, set this to <code>Bayesian</code>. To randomly search, set it to <code>Random</code>. For information about search strategies, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html\">How Hyperparameter Tuning Works</a>.</p>"
+          "documentation":"<p>Specifies how hyperparameter tuning chooses the combinations of hyperparameter values to use for the training job it launches. For information about search strategies, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html\">How Hyperparameter Tuning Works</a>.</p>"
+        },
+        "StrategyConfig":{
+          "shape":"HyperParameterTuningJobStrategyConfig",
+          "documentation":"<p>The configuration for the <code>Hyperband</code> optimization strategy. This parameter should be provided only if <code>Hyperband</code> is selected as the strategy for <code>HyperParameterTuningJobConfig</code>.</p>"
         },
         "HyperParameterTuningJobObjective":{
           "shape":"HyperParameterTuningJobObjective",
@@ -15146,7 +15150,7 @@
         },
         "TrainingJobEarlyStoppingType":{
           "shape":"TrainingJobEarlyStoppingType",
-          "documentation":"<p>Specifies whether to use early stopping for training jobs launched by the hyperparameter tuning job. This can be one of the following values (the default value is <code>OFF</code>):</p> <dl> <dt>OFF</dt> <dd> <p>Training jobs launched by the hyperparameter tuning job do not use early stopping.</p> </dd> <dt>AUTO</dt> <dd> <p>SageMaker stops training jobs launched by the hyperparameter tuning job when they are unlikely to perform better than previously completed training jobs. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-early-stopping.html\">Stop Training Jobs Early</a>.</p> </dd> </dl>"
+          "documentation":"<p>Specifies whether to use early stopping for training jobs launched by the hyperparameter tuning job. Because the <code>Hyperband</code> strategy has its own advanced internal early stopping mechanism, <code>TrainingJobEarlyStoppingType</code> must be <code>OFF</code> to use <code>Hyperband</code>. This parameter can take on one of the following values (the default value is <code>OFF</code>):</p> <dl> <dt>OFF</dt> <dd> <p>Training jobs launched by the hyperparameter tuning job do not use early stopping.</p> </dd> <dt>AUTO</dt> <dd> <p>SageMaker stops training jobs launched by the hyperparameter tuning job when they are unlikely to perform better than previously completed training jobs. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-early-stopping.html\">Stop Training Jobs Early</a>.</p> </dd> </dl>"
         },
         "TuningJobCompletionCriteria":{
           "shape":"TuningJobCompletionCriteria",
@@ -15257,12 +15261,23 @@
         "Stopping"
       ]
     },
+    "HyperParameterTuningJobStrategyConfig":{
+      "type":"structure",
+      "members":{
+        "HyperbandStrategyConfig":{
+          "shape":"HyperbandStrategyConfig",
+          "documentation":"<p>The configuration for the object that specifies the <code>Hyperband</code> strategy. This parameter is only supported for the <code>Hyperband</code> selection for <code>Strategy</code> within the <code>HyperParameterTuningJobConfig</code> API.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a training job launched by a hyperparameter tuning job. Choose <code>Bayesian</code> for Bayesian optimization, and <code>Random</code> for random search optimization. For more advanced use cases, use <code>Hyperband</code>, which evaluates objective metrics for training jobs after every epoch. For more information about strategies, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html\">How Hyperparameter Tuning Works</a>.</p>"
+    },
     "HyperParameterTuningJobStrategyType":{
       "type":"string",
       "documentation":"<p>The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model. Currently, the only supported value is <code>Bayesian</code>.</p>",
       "enum":[
         "Bayesian",
-        "Random"
+        "Random",
+        "Hyperband"
       ]
     },
     "HyperParameterTuningJobSummaries":{
@@ -15295,7 +15310,7 @@
         },
         "Strategy":{
           "shape":"HyperParameterTuningJobStrategyType",
-          "documentation":"<p>Specifies the search strategy hyperparameter tuning uses to choose which hyperparameters to use for each iteration. Currently, the only valid value is Bayesian.</p>"
+          "documentation":"<p>Specifies the search strategy hyperparameter tuning uses to choose which hyperparameters to evaluate at each iteration.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -15390,6 +15405,28 @@
       "value":{"shape":"HyperParameterValue"},
       "max":100,
       "min":0
+    },
+    "HyperbandStrategyConfig":{
+      "type":"structure",
+      "members":{
+        "MinResource":{
+          "shape":"HyperbandStrategyMinResource",
+          "documentation":"<p>The minimum number of resources (such as epochs) that can be used by a training job launched by a hyperparameter tuning job. If the value for <code>MinResource</code> has not been reached, the training job will not be stopped by <code>Hyperband</code>.</p>"
+        },
+        "MaxResource":{
+          "shape":"HyperbandStrategyMaxResource",
+          "documentation":"<p>The maximum number of resources (such as epochs) that can be used by a training job launched by a hyperparameter tuning job. Once a job reaches the <code>MaxResource</code> value, it is stopped. If a value for <code>MaxResource</code> is not provided, and <code>Hyperband</code> is selected as the hyperparameter tuning strategy, <code>HyperbandTrainingJ</code> attempts to infer <code>MaxResource</code> from the following keys (if present) in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-StaticHyperParameters\">StaticsHyperParameters</a>:</p> <ul> <li> <p> <code>epochs</code> </p> </li> <li> <p> <code>numepochs</code> </p> </li> <li> <p> <code>n-epochs</code> </p> </li> <li> <p> <code>n_epochs</code> </p> </li> <li> <p> <code>num_epochs</code> </p> </li> </ul> <p>If <code>HyperbandStrategyConfig</code> is unable to infer a value for <code>MaxResource</code>, it generates a validation error. The maximum value is 20,000 epochs. All metrics that correspond to an objective metric are used to derive <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-early-stopping.html\">early stopping decisions</a>. For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/distributed-training.html\">distributive</a> training jobs, ensure that duplicate metrics are not printed in the logs across the individual nodes in a training job. If multiple nodes are publishing duplicate or incorrect metrics, training jobs may make an incorrect stopping decision and stop the job prematurely. </p>"
+        }
+      },
+      "documentation":"<p>The configuration for <code>Hyperband</code>, a multi-fidelity based hyperparameter tuning strategy. <code>Hyperband</code> uses the final and intermediate results of a training job to dynamically allocate resources to utilized hyperparameter configurations while automatically stopping under-performing configurations. This parameter should be provided only if <code>Hyperband</code> is selected as the <code>StrategyConfig</code> under the <code>HyperParameterTuningJobConfig</code> API.</p>"
+    },
+    "HyperbandStrategyMaxResource":{
+      "type":"integer",
+      "min":1
+    },
+    "HyperbandStrategyMinResource":{
+      "type":"integer",
+      "min":1
     },
     "IdempotencyToken":{
       "type":"string",
@@ -19641,7 +19678,7 @@
     },
     "MaxConcurrentTaskCount":{
       "type":"integer",
-      "max":1000,
+      "max":5000,
       "min":1
     },
     "MaxConcurrentTransforms":{

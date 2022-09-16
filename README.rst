@@ -19,7 +19,7 @@ The aws-cli package works on Python versions:
    We recommend that all customers regularly monitor the
    `Amazon Web Services Security Bulletins website`_ for any important security bulletins related to
    aws-cli.
-   
+
  Jump to:
 
 -  `Installation <#installation>`__
@@ -402,9 +402,9 @@ the services or their limitations, you may find the `Amazon Web Services
 Discussion Forums <https://forums.aws.amazon.com/>`__ helpful.
 
 
-------------
+--------------
 More Resources
-------------
+--------------
 
 -  `Changelog <https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst>`__
 -  `AWS CLI

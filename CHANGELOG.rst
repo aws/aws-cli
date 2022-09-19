@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.77
+=======
+
+* api-change:``cloudtrail``: This release includes support for importing existing trails into CloudTrail Lake.
+* api-change:``ec2``: This release adds CapacityAllocations field to DescribeCapacityReservations
+* api-change:``mediaconnect``: This change allows the customer to use the SRT Caller protocol as part of their flows
+* api-change:``rds``: This release adds support for Amazon RDS Proxy with SQL Server compatibility.
+
+
 1.25.76
 =======
 

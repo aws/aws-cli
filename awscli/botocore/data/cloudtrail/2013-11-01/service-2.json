@@ -138,6 +138,7 @@
         {"shape":"EventDataStoreARNInvalidException"},
         {"shape":"EventDataStoreNotFoundException"},
         {"shape":"EventDataStoreTerminationProtectedException"},
+        {"shape":"EventDataStoreHasOngoingImportException"},
         {"shape":"InvalidParameterException"},
         {"shape":"OperationNotPermittedException"},
         {"shape":"UnsupportedOperationException"},
@@ -252,8 +253,24 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Describes the settings for the event selectors that you configured for your trail. The information returned for your event selectors includes the following:</p> <ul> <li> <p>If your event selector includes read-only events, write-only events, or all events. This applies to both management events and data events.</p> </li> <li> <p>If your event selector includes management events.</p> </li> <li> <p>If your event selector includes data events, the resources on which you are logging data events.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-and-data-events-with-cloudtrail.html\">Logging Data and Management Events for Trails </a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Describes the settings for the event selectors that you configured for your trail. The information returned for your event selectors includes the following:</p> <ul> <li> <p>If your event selector includes read-only events, write-only events, or all events. This applies to both management events and data events.</p> </li> <li> <p>If your event selector includes management events.</p> </li> <li> <p>If your event selector includes data events, the resources on which you are logging data events.</p> </li> </ul> <p>For more information about logging management and data events, see the following topics in the <i>CloudTrail User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events for trails </a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails </a> </p> </li> </ul>",
       "idempotent":true
+    },
+    "GetImport":{
+      "name":"GetImport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImportRequest"},
+      "output":{"shape":"GetImportResponse"},
+      "errors":[
+        {"shape":"ImportNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p> Returns information for the specified import. </p>"
     },
     "GetInsightSelectors":{
       "name":"GetInsightSelectors",
@@ -359,6 +376,40 @@
         {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Returns information about all event data stores in the account, in the current region.</p>",
+      "idempotent":true
+    },
+    "ListImportFailures":{
+      "name":"ListImportFailures",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListImportFailuresRequest"},
+      "output":{"shape":"ListImportFailuresResponse"},
+      "errors":[
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p> Returns a list of failures for the specified import. </p>",
+      "idempotent":true
+    },
+    "ListImports":{
+      "name":"ListImports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListImportsRequest"},
+      "output":{"shape":"ListImportsResponse"},
+      "errors":[
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p> Returns information on all imports, or a select set of imports by <code>ImportStatus</code> or <code>Destination</code>. </p>",
       "idempotent":true
     },
     "ListPublicKeys":{
@@ -476,7 +527,7 @@
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Configures an event selector or advanced event selectors for your trail. Use event selectors or advanced event selectors to specify management and data event settings for your trail. By default, trails created without specific event selectors are configured to log all read and write management events, and no data events.</p> <p>When an event occurs in your account, CloudTrail evaluates the event selectors or advanced event selectors in all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>Example</p> <ol> <li> <p>You create an event selector for a trail and specify that you want write-only events.</p> </li> <li> <p>The EC2 <code>GetConsoleOutput</code> and <code>RunInstances</code> API operations occur in your account.</p> </li> <li> <p>CloudTrail evaluates whether the events match your event selectors.</p> </li> <li> <p>The <code>RunInstances</code> is a write-only event and it matches your event selector. The trail logs the event.</p> </li> <li> <p>The <code>GetConsoleOutput</code> is a read-only event that doesn't match your event selector. The trail doesn't log the event. </p> </li> </ol> <p>The <code>PutEventSelectors</code> operation must be called from the region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> exception is thrown.</p> <p>You can configure up to five event selectors for each trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-and-data-events-with-cloudtrail.html\">Logging data and management events for trails </a> and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Quotas in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p> <p>You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Configures an event selector or advanced event selectors for your trail. Use event selectors or advanced event selectors to specify management and data event settings for your trail. By default, trails created without specific event selectors are configured to log all read and write management events, and no data events.</p> <p>When an event occurs in your account, CloudTrail evaluates the event selectors or advanced event selectors in all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>Example</p> <ol> <li> <p>You create an event selector for a trail and specify that you want write-only events.</p> </li> <li> <p>The EC2 <code>GetConsoleOutput</code> and <code>RunInstances</code> API operations occur in your account.</p> </li> <li> <p>CloudTrail evaluates whether the events match your event selectors.</p> </li> <li> <p>The <code>RunInstances</code> is a write-only event and it matches your event selector. The trail logs the event.</p> </li> <li> <p>The <code>GetConsoleOutput</code> is a read-only event that doesn't match your event selector. The trail doesn't log the event. </p> </li> </ol> <p>The <code>PutEventSelectors</code> operation must be called from the region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> exception is thrown.</p> <p>You can configure up to five event selectors for each trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events for trails </a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails </a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Quotas in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p> <p>You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "PutInsightSelectors":{
@@ -550,6 +601,31 @@
       ],
       "documentation":"<p>Restores a deleted event data store specified by <code>EventDataStore</code>, which accepts an event data store ARN. You can only restore a deleted event data store within the seven-day wait period after deletion. Restoring an event data store can take several minutes, depending on the size of the event data store.</p>"
     },
+    "StartImport":{
+      "name":"StartImport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartImportRequest"},
+      "output":{"shape":"StartImportResponse"},
+      "errors":[
+        {"shape":"AccountHasOngoingImportException"},
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidEventDataStoreStatusException"},
+        {"shape":"InvalidEventDataStoreCategoryException"},
+        {"shape":"InactiveEventDataStoreException"},
+        {"shape":"InvalidImportSourceException"},
+        {"shape":"ImportNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p> Starts an import of logged trail events from a source S3 bucket to a destination event data store. </p> <p> When you start a new import, the <code>Destinations</code> and <code>ImportSource</code> parameters are required. Before starting a new import, disable any access control lists (ACLs) attached to the source S3 bucket. For more information about disabling ACLs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html\">Controlling ownership of objects and disabling ACLs for your bucket</a>. </p> <p> When you retry an import, the <code>ImportID</code> parameter is required. </p>"
+    },
     "StartLogging":{
       "name":"StartLogging",
       "http":{
@@ -591,6 +667,22 @@
       "documentation":"<p>Starts a CloudTrail Lake query. The required <code>QueryStatement</code> parameter provides your SQL query, enclosed in single quotation marks.</p>",
       "idempotent":true
     },
+    "StopImport":{
+      "name":"StopImport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopImportRequest"},
+      "output":{"shape":"StopImportResponse"},
+      "errors":[
+        {"shape":"ImportNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p> Stops a specified import. </p>"
+    },
     "StopLogging":{
       "name":"StopLogging",
       "http":{
@@ -622,6 +714,7 @@
       "errors":[
         {"shape":"EventDataStoreARNInvalidException"},
         {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"EventDataStoreHasOngoingImportException"},
         {"shape":"InactiveEventDataStoreException"},
         {"shape":"InvalidParameterException"},
         {"shape":"OperationNotPermittedException"},
@@ -678,6 +771,13 @@
     }
   },
   "shapes":{
+    "AccountHasOngoingImportException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> This exception is thrown when you start a new import and a previous import is still in progress. </p>",
+      "exception":true
+    },
     "AddTagsRequest":{
       "type":"structure",
       "required":[
@@ -1076,7 +1176,7 @@
         },
         "Values":{
           "shape":"DataResourceValues",
-          "documentation":"<p>An array of Amazon Resource Name (ARN) strings or partial ARN strings for the specified objects.</p> <ul> <li> <p>To log data events for all objects in all S3 buckets in your Amazon Web Services account, specify the prefix as <code>arn:aws:s3:::</code>.</p> <note> <p>This also enables logging of data event activity performed by any user or role in your Amazon Web Services account, even if that activity is performed on a bucket that belongs to another Amazon Web Services account.</p> </note> </li> <li> <p>To log data events for all objects in an S3 bucket, specify the bucket and an empty object prefix such as <code>arn:aws:s3:::bucket-1/</code>. The trail logs data events for all objects in this S3 bucket.</p> </li> <li> <p>To log data events for specific objects, specify the S3 bucket and object prefix such as <code>arn:aws:s3:::bucket-1/example-images</code>. The trail logs data events for objects in this S3 bucket that match the prefix.</p> </li> <li> <p>To log data events for all Lambda functions in your Amazon Web Services account, specify the prefix as <code>arn:aws:lambda</code>.</p> <note> <p>This also enables logging of <code>Invoke</code> activity performed by any user or role in your Amazon Web Services account, even if that activity is performed on a function that belongs to another Amazon Web Services account. </p> </note> </li> <li> <p>To log data events for a specific Lambda function, specify the function ARN.</p> <note> <p>Lambda function ARNs are exact. For example, if you specify a function ARN <i>arn:aws:lambda:us-west-2:111111111111:function:helloworld</i>, data events will only be logged for <i>arn:aws:lambda:us-west-2:111111111111:function:helloworld</i>. They will not be logged for <i>arn:aws:lambda:us-west-2:111111111111:function:helloworld2</i>.</p> </note> </li> <li> <p>To log data events for all DynamoDB tables in your Amazon Web Services account, specify the prefix as <code>arn:aws:dynamodb</code>.</p> </li> </ul>"
+          "documentation":"<p>An array of Amazon Resource Name (ARN) strings or partial ARN strings for the specified objects.</p> <ul> <li> <p>To log data events for all objects in all S3 buckets in your Amazon Web Services account, specify the prefix as <code>arn:aws:s3</code>.</p> <note> <p>This also enables logging of data event activity performed by any user or role in your Amazon Web Services account, even if that activity is performed on a bucket that belongs to another Amazon Web Services account.</p> </note> </li> <li> <p>To log data events for all objects in an S3 bucket, specify the bucket and an empty object prefix such as <code>arn:aws:s3:::bucket-1/</code>. The trail logs data events for all objects in this S3 bucket.</p> </li> <li> <p>To log data events for specific objects, specify the S3 bucket and object prefix such as <code>arn:aws:s3:::bucket-1/example-images</code>. The trail logs data events for objects in this S3 bucket that match the prefix.</p> </li> <li> <p>To log data events for all Lambda functions in your Amazon Web Services account, specify the prefix as <code>arn:aws:lambda</code>.</p> <note> <p>This also enables logging of <code>Invoke</code> activity performed by any user or role in your Amazon Web Services account, even if that activity is performed on a function that belongs to another Amazon Web Services account. </p> </note> </li> <li> <p>To log data events for a specific Lambda function, specify the function ARN.</p> <note> <p>Lambda function ARNs are exact. For example, if you specify a function ARN <i>arn:aws:lambda:us-west-2:111111111111:function:helloworld</i>, data events will only be logged for <i>arn:aws:lambda:us-west-2:111111111111:function:helloworld</i>. They will not be logged for <i>arn:aws:lambda:us-west-2:111111111111:function:helloworld2</i>.</p> </note> </li> <li> <p>To log data events for all DynamoDB tables in your Amazon Web Services account, specify the prefix as <code>arn:aws:dynamodb</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The Amazon S3 buckets, Lambda functions, or Amazon DynamoDB tables that you specify in your event selectors for your trail to log data events. Data events provide information about the resource operations performed on or within a resource itself. These are also known as data plane operations. You can specify up to 250 data resources for a trail.</p> <note> <p>The total number of allowed data resources is 250. This number can be distributed between 1 and 5 event selectors, but the total cannot exceed 250 across all selectors.</p> <p>If you are using advanced event selectors, the maximum total number of values for all conditions, across all advanced event selectors for the trail, is 500.</p> </note> <p>The following example demonstrates how logging works when you configure logging of all data events for an S3 bucket named <code>bucket-1</code>. In this example, the CloudTrail user specified an empty prefix, and the option to log both <code>Read</code> and <code>Write</code> data events.</p> <ol> <li> <p>A user uploads an image file to <code>bucket-1</code>.</p> </li> <li> <p>The <code>PutObject</code> API operation is an Amazon S3 object-level API. It is recorded as a data event in CloudTrail. Because the CloudTrail user specified an S3 bucket with an empty prefix, events that occur on any object in that bucket are logged. The trail processes and logs the event.</p> </li> <li> <p>A user uploads an object to an Amazon S3 bucket named <code>arn:aws:s3:::bucket-2</code>.</p> </li> <li> <p>The <code>PutObject</code> API operation occurred for an object in an S3 bucket that the CloudTrail user didn't specify for the trail. The trail doesn’t log the event.</p> </li> </ol> <p>The following example demonstrates how logging works when you configure logging of Lambda data events for a Lambda function named <i>MyLambdaFunction</i>, but not for all Lambda functions.</p> <ol> <li> <p>A user runs a script that includes a call to the <i>MyLambdaFunction</i> function and the <i>MyOtherLambdaFunction</i> function.</p> </li> <li> <p>The <code>Invoke</code> API operation on <i>MyLambdaFunction</i> is an Lambda API. It is recorded as a data event in CloudTrail. Because the CloudTrail user specified logging data events for <i>MyLambdaFunction</i>, any invocations of that function are logged. The trail processes and logs the event.</p> </li> <li> <p>The <code>Invoke</code> API operation on <i>MyOtherLambdaFunction</i> is an Lambda API. Because the CloudTrail user did not specify logging data events for all Lambda functions, the <code>Invoke</code> operation for <i>MyOtherLambdaFunction</i> does not match the function specified for the trail. The trail doesn’t log the event. </p> </li> </ol>"
@@ -1353,6 +1453,13 @@
       "min":3,
       "pattern":"^[a-zA-Z0-9._/\\-:]+$"
     },
+    "EventDataStoreHasOngoingImportException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> This exception is thrown when you try to update or delete an event data store that currently has an import in progress. </p>",
+      "exception":true
+    },
     "EventDataStoreMaxLimitExceededException":{
       "type":"structure",
       "members":{
@@ -1401,11 +1508,11 @@
         },
         "IncludeManagementEvents":{
           "shape":"Boolean",
-          "documentation":"<p>Specify if you want your event selector to include management events for your trail.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-and-data-events-with-cloudtrail.html#logging-management-events\">Management Events</a> in the <i>CloudTrail User Guide</i>.</p> <p>By default, the value is <code>true</code>.</p> <p>The first copy of management events is free. You are charged for additional copies of management events that you are logging on any subsequent trail in the same region. For more information about CloudTrail pricing, see <a href=\"http://aws.amazon.com/cloudtrail/pricing/\">CloudTrail Pricing</a>.</p>"
+          "documentation":"<p>Specify if you want your event selector to include management events for your trail.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Management Events</a> in the <i>CloudTrail User Guide</i>.</p> <p>By default, the value is <code>true</code>.</p> <p>The first copy of management events is free. You are charged for additional copies of management events that you are logging on any subsequent trail in the same region. For more information about CloudTrail pricing, see <a href=\"http://aws.amazon.com/cloudtrail/pricing/\">CloudTrail Pricing</a>.</p>"
         },
         "DataResources":{
           "shape":"DataResources",
-          "documentation":"<p>CloudTrail supports data event logging for Amazon S3 objects, Lambda functions, and Amazon DynamoDB tables with basic event selectors. You can specify up to 250 resources for an individual event selector, but the total number of data resources cannot exceed 250 across all event selectors in a trail. This limit does not apply if you configure resource logging for all data events.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-and-data-events-with-cloudtrail.html#logging-data-events\">Data Events</a> and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Limits in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p>"
+          "documentation":"<p>CloudTrail supports data event logging for Amazon S3 objects, Lambda functions, and Amazon DynamoDB tables with basic event selectors. You can specify up to 250 resources for an individual event selector, but the total number of data resources cannot exceed 250 across all event selectors in a trail. This limit does not apply if you configure resource logging for all data events.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Data Events</a> and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Limits in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p>"
         },
         "ExcludeManagementEventSources":{
           "shape":"ExcludeManagementEventSources",
@@ -1540,6 +1647,57 @@
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
           "documentation":"<p> The advanced event selectors that are configured for the trail. </p>"
+        }
+      }
+    },
+    "GetImportRequest":{
+      "type":"structure",
+      "required":["ImportId"],
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID for the import. </p>"
+        }
+      }
+    },
+    "GetImportResponse":{
+      "type":"structure",
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the import. </p>"
+        },
+        "Destinations":{
+          "shape":"ImportDestinations",
+          "documentation":"<p> The destination event data store. </p>"
+        },
+        "ImportSource":{
+          "shape":"ImportSource",
+          "documentation":"<p> The source S3 bucket. </p>"
+        },
+        "StartEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Used with <code>EndEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "EndEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Used with <code>StartEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> The status of the import. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of the import's creation. </p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of when the import was updated. </p>"
+        },
+        "ImportStatistics":{
+          "shape":"ImportStatistics",
+          "documentation":"<p> Provides statistics for the import. </p>"
         }
       }
     },
@@ -1717,6 +1875,134 @@
       },
       "documentation":"<p>Returns the objects or data listed below if successful. Otherwise, returns an error.</p>"
     },
+    "ImportDestinations":{
+      "type":"list",
+      "member":{"shape":"EventDataStoreArn"},
+      "max":1,
+      "min":1
+    },
+    "ImportFailureList":{
+      "type":"list",
+      "member":{"shape":"ImportFailureListItem"}
+    },
+    "ImportFailureListItem":{
+      "type":"structure",
+      "members":{
+        "Location":{
+          "shape":"String",
+          "documentation":"<p> The location of the failure in the S3 bucket. </p>"
+        },
+        "Status":{
+          "shape":"ImportFailureStatus",
+          "documentation":"<p> The status of the import. </p>"
+        },
+        "ErrorType":{
+          "shape":"String",
+          "documentation":"<p> The type of import error. </p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p> Provides the reason the import failed. </p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Date",
+          "documentation":"<p> When the import was last updated. </p>"
+        }
+      },
+      "documentation":"<p> Provides information about an import failure. </p>"
+    },
+    "ImportFailureStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "RETRY",
+        "SUCCEEDED"
+      ]
+    },
+    "ImportNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> The specified import was not found. </p>",
+      "exception":true
+    },
+    "ImportSource":{
+      "type":"structure",
+      "required":["S3"],
+      "members":{
+        "S3":{
+          "shape":"S3ImportSource",
+          "documentation":"<p> The source S3 bucket. </p>"
+        }
+      },
+      "documentation":"<p> The import source. </p>"
+    },
+    "ImportStatistics":{
+      "type":"structure",
+      "members":{
+        "PrefixesFound":{
+          "shape":"Long",
+          "documentation":"<p> The number of S3 prefixes found for the import. </p>"
+        },
+        "PrefixesCompleted":{
+          "shape":"Long",
+          "documentation":"<p> The number of S3 prefixes that completed import. </p>"
+        },
+        "FilesCompleted":{
+          "shape":"Long",
+          "documentation":"<p>The number of files that completed import.</p>"
+        },
+        "EventsCompleted":{
+          "shape":"Long",
+          "documentation":"<p> The number of trail events imported. </p>"
+        },
+        "FailedEntries":{
+          "shape":"Long",
+          "documentation":"<p> The number of failed entries. </p>"
+        }
+      },
+      "documentation":"<p> Provides statistics for the specified <code>ImportID</code>. </p>"
+    },
+    "ImportStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZING",
+        "IN_PROGRESS",
+        "FAILED",
+        "STOPPED",
+        "COMPLETED"
+      ]
+    },
+    "ImportsList":{
+      "type":"list",
+      "member":{"shape":"ImportsListItem"}
+    },
+    "ImportsListItem":{
+      "type":"structure",
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the import. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> The status of the import. </p>"
+        },
+        "Destinations":{
+          "shape":"ImportDestinations",
+          "documentation":"<p> The destination event data store. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of the import's creation. </p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of the import's last update. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about an import that was returned by a lookup request. </p>"
+    },
     "InactiveEventDataStoreException":{
       "type":"structure",
       "members":{
@@ -1816,6 +2102,13 @@
       "documentation":"<p>Occurs if an event category that is not valid is specified as a value of <code>EventCategory</code>.</p>",
       "exception":true
     },
+    "InvalidEventDataStoreCategoryException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> This exception is thrown when the event data store category is not valid for the import. </p>",
+      "exception":true
+    },
     "InvalidEventDataStoreStatusException":{
       "type":"structure",
       "members":{
@@ -1835,6 +2128,13 @@
       "members":{
       },
       "documentation":"<p>This exception is thrown when an operation is called on a trail from a region other than the region in which the trail was created.</p>",
+      "exception":true
+    },
+    "InvalidImportSourceException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> This exception is thrown when the provided source S3 bucket is not valid for import. </p>",
       "exception":true
     },
     "InvalidInsightSelectorsException":{
@@ -2030,6 +2330,81 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>A token you can use to get the next page of results.</p>"
+        }
+      }
+    },
+    "ListImportFailuresMaxResultsCount":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "ListImportFailuresRequest":{
+      "type":"structure",
+      "required":["ImportId"],
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the import. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListImportFailuresMaxResultsCount",
+          "documentation":"<p> The maximum number of failures to display on a single page. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> A token you can use to get the next page of import failures. </p>"
+        }
+      }
+    },
+    "ListImportFailuresResponse":{
+      "type":"structure",
+      "members":{
+        "Failures":{
+          "shape":"ImportFailureList",
+          "documentation":"<p> Contains information about the import failures. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> A token you can use to get the next page of results. </p>"
+        }
+      }
+    },
+    "ListImportsMaxResultsCount":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "ListImportsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListImportsMaxResultsCount",
+          "documentation":"<p> The maximum number of imports to display on a single page. </p>"
+        },
+        "Destination":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p> The destination event data store. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> The status of the import. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> A token you can use to get the next page of import results. </p>"
+        }
+      }
+    },
+    "ListImportsResponse":{
+      "type":"structure",
+      "members":{
+        "Imports":{
+          "shape":"ImportsList",
+          "documentation":"<p> The list of returned imports. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> A token you can use to get the next page of import results. </p>"
         }
       }
     },
@@ -2670,6 +3045,29 @@
       "documentation":"<p>This exception is thrown when the specified S3 bucket does not exist.</p>",
       "exception":true
     },
+    "S3ImportSource":{
+      "type":"structure",
+      "required":[
+        "S3LocationUri",
+        "S3BucketRegion",
+        "S3BucketAccessRoleArn"
+      ],
+      "members":{
+        "S3LocationUri":{
+          "shape":"String",
+          "documentation":"<p> The URI for the source S3 bucket. </p>"
+        },
+        "S3BucketRegion":{
+          "shape":"String",
+          "documentation":"<p> The region associated with the source S3 bucket. </p>"
+        },
+        "S3BucketAccessRoleArn":{
+          "shape":"String",
+          "documentation":"<p> The IAM ARN role used to access the source S3 bucket. </p>"
+        }
+      },
+      "documentation":"<p> The settings for the source S3 bucket. </p>"
+    },
     "SelectorField":{
       "type":"string",
       "max":1000,
@@ -2701,6 +3099,68 @@
         }
       },
       "documentation":"<p> Contains configuration information about the service-linked channel. </p>"
+    },
+    "StartImportRequest":{
+      "type":"structure",
+      "members":{
+        "Destinations":{
+          "shape":"ImportDestinations",
+          "documentation":"<p> The destination event data store. Use this parameter for a new import. </p>"
+        },
+        "ImportSource":{
+          "shape":"ImportSource",
+          "documentation":"<p> The source S3 bucket for the import. Use this parameter for a new import. </p>"
+        },
+        "StartEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Use with <code>EndEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "EndEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Use with <code>StartEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the import. Use this parameter when you are retrying an import. </p>"
+        }
+      }
+    },
+    "StartImportResponse":{
+      "type":"structure",
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the import. </p>"
+        },
+        "Destinations":{
+          "shape":"ImportDestinations",
+          "documentation":"<p> The destination event data store. </p>"
+        },
+        "ImportSource":{
+          "shape":"ImportSource",
+          "documentation":"<p> The source S3 bucket. </p>"
+        },
+        "StartEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Used with <code>EndEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "EndEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Used with <code>StartEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> Shows the status of the import after a <code>StartImport</code> request. An import finishes with a status of <code>COMPLETED</code> if there were no failures, or <code>FAILED</code> if there were failures. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp for the import's creation. </p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of the import's last update, if applicable. </p>"
+        }
+      }
     },
     "StartLoggingRequest":{
       "type":"structure",
@@ -2735,6 +3195,57 @@
         "QueryId":{
           "shape":"UUID",
           "documentation":"<p>The ID of the started query.</p>"
+        }
+      }
+    },
+    "StopImportRequest":{
+      "type":"structure",
+      "required":["ImportId"],
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the import. </p>"
+        }
+      }
+    },
+    "StopImportResponse":{
+      "type":"structure",
+      "members":{
+        "ImportId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID for the import. </p>"
+        },
+        "ImportSource":{
+          "shape":"ImportSource",
+          "documentation":"<p> The source S3 bucket. </p>"
+        },
+        "Destinations":{
+          "shape":"ImportDestinations",
+          "documentation":"<p> The destination event data store. </p>"
+        },
+        "ImportStatus":{
+          "shape":"ImportStatus",
+          "documentation":"<p> The status of the import. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of the import's creation. </p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Date",
+          "documentation":"<p> The timestamp of the import's last update. </p>"
+        },
+        "StartEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Used with <code>EndEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "EndEventTime":{
+          "shape":"Date",
+          "documentation":"<p> Used with <code>StartEventTime</code> to bound a <code>StartImport</code> request, and limit imported trail events to only those events logged within a specified time period. </p>"
+        },
+        "ImportStatistics":{
+          "shape":"ImportStatistics",
+          "documentation":"<p> Returns information on the stopped import. </p>"
         }
       }
     },
@@ -2944,7 +3455,7 @@
         },
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
-          "documentation":"<p>The advanced event selectors used to select events for the event data store.</p>"
+          "documentation":"<p>The advanced event selectors used to select events for the event data store. You can configure up to five advanced event selectors for each event data store.</p>"
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",

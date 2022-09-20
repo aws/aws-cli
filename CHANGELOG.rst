@@ -4095,6 +4095,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.78
+=======
+
+* api-change:``ec2``: This release adds support for blocked paths to Amazon VPC Reachability Analyzer.
+
+
+1.25.77
+=======
+
+* api-change:``cloudtrail``: This release includes support for importing existing trails into CloudTrail Lake.
+* api-change:``ec2``: This release adds CapacityAllocations field to DescribeCapacityReservations
+* api-change:``mediaconnect``: This change allows the customer to use the SRT Caller protocol as part of their flows
+* api-change:``rds``: This release adds support for Amazon RDS Proxy with SQL Server compatibility.
+
+
+1.25.76
+=======
+
+* api-change:``codestar-notifications``: This release adds tag based access control for the UntagResource API.
+* api-change:``ecs``: This release supports new task definition sizes.
+
+
 1.25.75
 =======
 

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.7.34
+======
+
+* api-change:``rds``: This release adds support for Amazon RDS Proxy with SQL Server compatibility.
+* api-change:``codestar-notifications``: This release adds tag based access control for the UntagResource API.
+* api-change:``ec2``: This release adds support for blocked paths to Amazon VPC Reachability Analyzer.
+* enhancement:Dockerfile: This update pulls the base Amazon Linux image from ECR Public rather than Docker Hub.
+* api-change:``cloudtrail``: This release includes support for importing existing trails into CloudTrail Lake.
+* api-change:``mediaconnect``: This change allows the customer to use the SRT Caller protocol as part of their flows
+* api-change:``ec2``: This release adds CapacityAllocations field to DescribeCapacityReservations
+* api-change:``ecs``: This release supports new task definition sizes.
+
+
 2.7.33
 ======
 

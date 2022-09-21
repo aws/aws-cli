@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.79
+=======
+
+* enhancement:Python: Add support for Python 3.11
+* api-change:``comprehend``: Amazon Comprehend now supports synchronous mode for targeted sentiment API operations.
+* api-change:``s3control``: S3 on Outposts launches support for object versioning for Outposts buckets. With S3 Versioning, you can preserve, retrieve, and restore every version of every object stored in your buckets. You can recover from both unintended user actions and application failures.
+* api-change:``sagemaker``: SageMaker now allows customization on Canvas Application settings, including enabling/disabling time-series forecasting and specifying an Amazon Forecast execution role at both the Domain and UserProfile levels.
+
+
 1.25.78
 =======
 

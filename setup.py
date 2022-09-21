@@ -24,7 +24,7 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.27.77',
+    'botocore==1.27.78',
     'docutils>=0.10,<0.17',
     's3transfer>=0.6.0,<0.7.0',
     'PyYAML>=3.10,<5.5',
@@ -61,6 +61,7 @@ setup_options = dict(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     project_urls={
         'Source': 'https://github.com/aws/aws-cli',

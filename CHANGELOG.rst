@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.25.80
+=======
+
+* api-change:``backup-gateway``: Changes include: new GetVirtualMachineApi to fetch a single user's VM, improving ListVirtualMachines to fetch filtered VMs as well as all VMs, and improving GetGatewayApi to now also return the gateway's MaintenanceStartTime.
+* api-change:``devicefarm``: This release adds the support for VPC-ENI based connectivity for private devices on AWS Device Farm.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``glue``: Added support for S3 Event Notifications for Catalog Target Crawlers.
+* api-change:``identitystore``: Documentation updates for the Identity Store CLI Reference.
+
+
 1.25.79
 =======
 

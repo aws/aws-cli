@@ -4108,6 +4108,25 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.80
+=======
+
+* api-change:``backup-gateway``: Changes include: new GetVirtualMachineApi to fetch a single user's VM, improving ListVirtualMachines to fetch filtered VMs as well as all VMs, and improving GetGatewayApi to now also return the gateway's MaintenanceStartTime.
+* api-change:``devicefarm``: This release adds the support for VPC-ENI based connectivity for private devices on AWS Device Farm.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``glue``: Added support for S3 Event Notifications for Catalog Target Crawlers.
+* api-change:``identitystore``: Documentation updates for the Identity Store CLI Reference.
+
+
+1.25.79
+=======
+
+* enhancement:Python: Add support for Python 3.11
+* api-change:``comprehend``: Amazon Comprehend now supports synchronous mode for targeted sentiment API operations.
+* api-change:``s3control``: S3 on Outposts launches support for object versioning for Outposts buckets. With S3 Versioning, you can preserve, retrieve, and restore every version of every object stored in your buckets. You can recover from both unintended user actions and application failures.
+* api-change:``sagemaker``: SageMaker now allows customization on Canvas Application settings, including enabling/disabling time-series forecasting and specifying an Amazon Forecast execution role at both the Domain and UserProfile levels.
+
+
 1.25.78
 =======
 

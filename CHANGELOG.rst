@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.25.81
+=======
+
+* api-change:``apprunner``: AWS App Runner adds a Node.js 16 runtime.
+* api-change:``ec2``: Letting external AWS customers provide ImageId as a Launch Template override in FleetLaunchTemplateOverridesRequest
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``lightsail``: This release adds Instance Metadata Service (IMDS) support for Lightsail instances.
+* api-change:``nimble``: Amazon Nimble Studio adds support for on-demand Amazon Elastic Compute Cloud (EC2) G3 and G5 instances, allowing customers to utilize additional GPU instance types for their creative projects.
+* api-change:``ssm``: This release adds new SSM document types ConformancePackTemplate and CloudFormation
+* api-change:``wafv2``: Add the default specification for ResourceType in ListResourcesForWebACL.
+
+
 1.25.80
 =======
 

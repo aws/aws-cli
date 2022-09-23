@@ -675,7 +675,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a user profile. A user profile represents a single user within a domain, and is the main way to reference a \"person\" for the purposes of sharing, reporting, and other user-oriented features. This entity is created when a user onboards to Amazon SageMaker Studio. If an administrator invites a person by email or imports them from Amazon Web Services SSO, a user profile is automatically created. A user profile is the primary holder of settings for an individual user and has a reference to the user's private Amazon Elastic File System (EFS) home directory. </p>"
+      "documentation":"<p>Creates a user profile. A user profile represents a single user within a domain, and is the main way to reference a \"person\" for the purposes of sharing, reporting, and other user-oriented features. This entity is created when a user onboards to Amazon SageMaker Studio. If an administrator invites a person by email or imports them from IAM Identity Center, a user profile is automatically created. A user profile is the primary holder of settings for an individual user and has a reference to the user's private Amazon Elastic File System (EFS) home directory. </p>"
     },
     "CreateWorkforce":{
       "name":"CreateWorkforce",
@@ -831,7 +831,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Used to delete a domain. If you onboarded with IAM mode, you will need to delete your domain to onboard again using Amazon Web Services SSO. Use with caution. All of the members of the domain will lose access to their EFS volume, including data, notebooks, and other artifacts. </p>"
+      "documentation":"<p>Used to delete a domain. If you onboarded with IAM mode, you will need to delete your domain to onboard again using IAM Identity Center. Use with caution. All of the members of the domain will lose access to their EFS volume, including data, notebooks, and other artifacts. </p>"
     },
     "DeleteEdgeDeploymentPlan":{
       "name":"DeleteEdgeDeploymentPlan",
@@ -4208,7 +4208,7 @@
       "members":{
         "FeatureSpecificationS3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>A URL to the Amazon S3 data source containing selected features from the input data source to run an Autopilot job (optional). This file should be in json format as shown below: </p> <p> <code>{ \"FeatureAttributeNames\":[\"col1\", \"col2\", ...] }</code>.</p> <p>The key name <code>FeatureAttributeNames</code> is fixed. The values listed in <code>[\"col1\", \"col2\", ...]</code> is case sensitive and should be a list of strings containing unique values that are a subset of the column names in the input data. The list of columns provided must not include the target column.</p>"
+          "documentation":"<p>A URL to the Amazon S3 data source containing selected features from the input data source to run an Autopilot job. You can input <code>FeatureAttributeNames</code> (optional) in JSON format as shown below: </p> <p> <code>{ \"FeatureAttributeNames\":[\"col1\", \"col2\", ...] }</code>.</p> <p>You can also specify the data type of the feature (optional) in the format shown below:</p> <p> <code>{ \"FeatureDataTypes\":{\"col1\":\"numeric\", \"col2\":\"categorical\" ... } }</code> </p> <note> <p>These column keys may not include the target column.</p> </note> <p>In ensembling mode, Autopilot will only support the following data types: <code>numeric</code>, <code>categorical</code>, <code>text</code> and <code>datetime</code>. In HPO mode, Autopilot can support <code>numeric</code>, <code>categorical</code>, <code>text</code>, <code>datetime</code> and <code>sequence</code>.</p> <p>If only <code>FeatureDataTypes</code> is provided, the column keys (<code>col1</code>, <code>col2</code>,..) should be a subset of the column names in the input data. </p> <p>If both <code>FeatureDataTypes</code> and <code>FeatureAttributeNames</code> are provided, then the column keys should be a subset of the column names provided in <code>FeatureAttributeNames</code>. </p> <p>The key name <code>FeatureAttributeNames</code> is fixed. The values listed in <code>[\"col1\", \"col2\", ...]</code> is case sensitive and should be a list of strings containing unique values that are a subset of the column names in the input data. The list of columns provided must not include the target column.</p>"
         }
       },
       "documentation":"<p>Stores the config information for how a candidate is generated (optional).</p>"
@@ -4934,6 +4934,16 @@
     "CandidateSteps":{
       "type":"list",
       "member":{"shape":"AutoMLCandidateStep"}
+    },
+    "CanvasAppSettings":{
+      "type":"structure",
+      "members":{
+        "TimeSeriesForecastingSettings":{
+          "shape":"TimeSeriesForecastingSettings",
+          "documentation":"<p>Time series forecast settings for the Canvas app.</p>"
+        }
+      },
+      "documentation":"<p>The SageMaker Canvas app settings.</p>"
     },
     "CapacitySize":{
       "type":"structure",
@@ -7874,11 +7884,11 @@
         },
         "SingleSignOnUserIdentifier":{
           "shape":"SingleSignOnUserIdentifier",
-          "documentation":"<p>A specifier for the type of value specified in SingleSignOnUserValue. Currently, the only supported value is \"UserName\". If the Domain's AuthMode is Amazon Web Services SSO, this field is required. If the Domain's AuthMode is not Amazon Web Services SSO, this field cannot be specified. </p>"
+          "documentation":"<p>A specifier for the type of value specified in SingleSignOnUserValue. Currently, the only supported value is \"UserName\". If the Domain's AuthMode is IAM Identity Center, this field is required. If the Domain's AuthMode is not IAM Identity Center, this field cannot be specified. </p>"
         },
         "SingleSignOnUserValue":{
           "shape":"String256",
-          "documentation":"<p>The username of the associated Amazon Web Services Single Sign-On User for this UserProfile. If the Domain's AuthMode is Amazon Web Services SSO, this field is required, and must match a valid username of a user in your directory. If the Domain's AuthMode is not Amazon Web Services SSO, this field cannot be specified. </p>"
+          "documentation":"<p>The username of the associated Amazon Web Services Single Sign-On User for this UserProfile. If the Domain's AuthMode is IAM Identity Center, this field is required, and must match a valid username of a user in your directory. If the Domain's AuthMode is not IAM Identity Center, this field cannot be specified. </p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -9874,7 +9884,7 @@
         },
         "SingleSignOnManagedApplicationInstanceId":{
           "shape":"String256",
-          "documentation":"<p>The Amazon Web Services SSO managed application instance ID.</p>"
+          "documentation":"<p>The IAM Identity Center managed application instance ID.</p>"
         },
         "Status":{
           "shape":"DomainStatus",
@@ -12345,11 +12355,11 @@
         },
         "SingleSignOnUserIdentifier":{
           "shape":"SingleSignOnUserIdentifier",
-          "documentation":"<p>The Amazon Web Services SSO user identifier.</p>"
+          "documentation":"<p>The IAM Identity Center user identifier.</p>"
         },
         "SingleSignOnUserValue":{
           "shape":"String256",
-          "documentation":"<p>The Amazon Web Services SSO user value.</p>"
+          "documentation":"<p>The IAM Identity Center user value.</p>"
         },
         "UserSettings":{
           "shape":"UserSettings",
@@ -14174,6 +14184,13 @@
       "max":25,
       "min":0
     },
+    "FeatureStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "FeatureType":{
       "type":"string",
       "enum":[
@@ -15241,7 +15258,7 @@
           "documentation":"<p>The tags associated with a hyperparameter tuning job. For more information see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
         }
       },
-      "documentation":"<p>An entity having characteristics over which a user can search for a hyperparameter tuning job.</p>"
+      "documentation":"<p>An entity returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SearchRecord.html\">SearchRecord</a> API containing the properties of a hyperparameter tuning job.</p>"
     },
     "HyperParameterTuningJobSortByOptions":{
       "type":"string",
@@ -25962,6 +25979,20 @@
       "max":128,
       "pattern":"[a-zA-Z0-9:_-]+"
     },
+    "TimeSeriesForecastingSettings":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Describes whether time series forecasting is enabled or disabled in the Canvas app.</p>"
+        },
+        "AmazonForecastRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role that Canvas passes to Amazon Forecast for time series forecasting. By default, Canvas uses the execution role specified in the <code>UserProfile</code> that launches the Canvas app. If an execution role is not specified in the <code>UserProfile</code>, Canvas uses the execution role specified in the Domain that owns the <code>UserProfile</code>. To allow time series forecasting, this IAM role should have the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/security-iam-awsmanpol-canvas.html#security-iam-awsmanpol-AmazonSageMakerCanvasForecastAccess\"> AmazonSageMakerCanvasForecastAccess</a> policy attached and <code>forecast.amazonaws.com</code> added in the trust relationship as a service principal.</p>"
+        }
+      },
+      "documentation":"<p>Time series forecast settings for the SageMaker Canvas app.</p>"
+    },
     "Timestamp":{"type":"timestamp"},
     "TrafficDurationInSeconds":{
       "type":"integer",
@@ -28283,6 +28314,10 @@
         "RSessionAppSettings":{
           "shape":"RSessionAppSettings",
           "documentation":"<p>A collection of settings that configure the <code>RSessionGateway</code> app.</p>"
+        },
+        "CanvasAppSettings":{
+          "shape":"CanvasAppSettings",
+          "documentation":"<p>The Canvas app settings.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to users of Amazon SageMaker Studio. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"

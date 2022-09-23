@@ -296,7 +296,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the attribute name and value of the group that you specified in the search. We only support <code>DisplayName</code> as a valid filter attribute path currently, and filter is required. This API returns minimum attributes, including <code>GroupId</code> and group <code>DisplayName</code> in the response.</p>"
+      "documentation":"<p>Lists all groups in the identity store. Returns a paginated list of complete <code>Group</code> objects. Filtering for a <code>Group</code> by the <code>DisplayName</code> attribute is deprecated. Instead, use the <code>GetGroupId</code> API action.</p>"
     },
     "ListUsers":{
       "name":"ListUsers",
@@ -313,7 +313,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the attribute name and value of the user that you specified in the search. We only support <code>UserName</code> as a valid filter attribute path currently, and filter is required. This API returns minimum attributes, including <code>UserId</code> and <code>UserName</code> in the response.</p>"
+      "documentation":"<p>Lists all users in the identity store. Returns a paginated list of complete <code>User</code> objects. Filtering for a <code>User</code> by the <code>UserName</code> attribute is deprecated. Instead, use the <code>GetUserId</code> API action.</p>"
     },
     "UpdateGroup":{
       "name":"UpdateGroup",
@@ -423,7 +423,7 @@
           "documentation":"<p>An entity attribute that's unique to a specific entity.</p>"
         }
       },
-      "documentation":"<p>A unique identifier for a user or group that is not the its primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the group or a unique attribute. For example, a unique <code>GroupDisplayName</code>.</p>",
+      "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For example, a unique <code>GroupDisplayName</code>.</p>",
       "union":true
     },
     "AttributeOperation":{
@@ -773,7 +773,7 @@
         },
         "DisplayName":{
           "shape":"GroupDisplayName",
-          "documentation":"<p>The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. The characters <code>&lt;&gt;;:%</code> are excluded. This value is specified at the time that the group is created and stored as an attribute of the group object in the identity store.</p>"
+          "documentation":"<p>The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time that the group is created and stored as an attribute of the group object in the identity store.</p>"
         },
         "ExternalIds":{
           "shape":"ExternalIds",
@@ -979,7 +979,7 @@
         },
         "AlternateIdentifier":{
           "shape":"AlternateIdentifier",
-          "documentation":"<p>A unique identifier for an identity resource that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the group or a unique attribute. For example, a unique <code>GroupDisplayName</code>.</p>"
+          "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For example, a unique <code>GroupDisplayName</code>.</p>"
         }
       }
     },
@@ -1052,7 +1052,7 @@
         },
         "AlternateIdentifier":{
           "shape":"AlternateIdentifier",
-          "documentation":"<p>A unique identifier for an identity resource that is not the primary identifier.</p>"
+          "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For example, a unique <code>UserDisplayName</code>.</p>"
         }
       }
     },
@@ -1086,7 +1086,7 @@
         },
         "DisplayName":{
           "shape":"GroupDisplayName",
-          "documentation":"<p>The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. The characters <code>&lt;&gt;;:%</code> are excluded. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.</p>"
+          "documentation":"<p>The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.</p>"
         },
         "ExternalIds":{
           "shape":"ExternalIds",

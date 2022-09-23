@@ -1278,7 +1278,7 @@
         },
         "skipAppResign":{
           "shape":"SkipAppResign",
-          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"http://aws.amazon.com/device-farm/faqs/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
       "documentation":"<p>A container for account-level settings in AWS Device Farm.</p>"
@@ -1612,6 +1612,10 @@
         "defaultJobTimeoutMinutes":{
           "shape":"JobTimeoutMinutes",
           "documentation":"<p>Sets the execution timeout value (in minutes) for a project. All test runs in this project use the specified execution timeout value unless overridden when scheduling a run.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
         }
       },
       "documentation":"<p>Represents a request to the create project operation.</p>"
@@ -1693,7 +1697,7 @@
         },
         "skipAppResign":{
           "shape":"Boolean",
-          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information on how Device Farm modifies your uploads during tests, see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> </p>"
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information on how Device Farm modifies your uploads during tests, see <a href=\"http://aws.amazon.com/device-farm/faqs/\">Do you modify my app?</a> </p>"
         }
       },
       "documentation":"<p>Creates and submits a request to start a remote access session.</p>"
@@ -2372,7 +2376,7 @@
         },
         "skipAppResign":{
           "shape":"SkipAppResign",
-          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"http://aws.amazon.com/device-farm/faqs/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
       "documentation":"<p>Represents configuration information about a test run, such as the execution timeout (in minutes).</p>"
@@ -4098,6 +4102,10 @@
         "created":{
           "shape":"DateTime",
           "documentation":"<p>When the project was created.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
         }
       },
       "documentation":"<p>Represents an operating-system neutral workspace for running and managing tests.</p>"
@@ -4272,7 +4280,11 @@
         },
         "skipAppResign":{
           "shape":"SkipAppResign",
-          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"http://aws.amazon.com/device-farm/faqs/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
         }
       },
       "documentation":"<p>Represents information about the remote access session.</p>"
@@ -4493,7 +4505,7 @@
         },
         "skipAppResign":{
           "shape":"SkipAppResign",
-          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm does not sign your app again. For public devices, Device Farm always signs your apps again.</p> <p>For more information about how Device Farm re-signs your apps, see <a href=\"http://aws.amazon.com/device-farm/faqs/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         },
         "testSpecArn":{
           "shape":"AmazonResourceName",
@@ -4502,6 +4514,10 @@
         "deviceSelectionResult":{
           "shape":"DeviceSelectionResult",
           "documentation":"<p>The results of a device filter used to select the devices for a test run.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
         }
       },
       "documentation":"<p>Represents a test run on a set of devices with a given app package, test parameters, and so on.</p>"
@@ -4675,6 +4691,12 @@
       },
       "documentation":"<p>Represents test settings. This data structure is passed in as the test parameter to ScheduleRun. For an example of the JSON request syntax, see <a>ScheduleRun</a>.</p>"
     },
+    "SecurityGroupId":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"^sg-[0-9a-fA-F]{8,}$"
+    },
     "SecurityGroupIds":{
       "type":"list",
       "member":{"shape":"NonEmptyString"},
@@ -4775,6 +4797,12 @@
       "documentation":"<p>Represents the results of your stop run attempt.</p>"
     },
     "String":{"type":"string"},
+    "SubnetId":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"^subnet-[0-9a-fA-F]{8,}$"
+    },
     "SubnetIds":{
       "type":"list",
       "member":{"shape":"NonEmptyString"},
@@ -5427,6 +5455,10 @@
         "defaultJobTimeoutMinutes":{
           "shape":"JobTimeoutMinutes",
           "documentation":"<p>The number of minutes a test run in the project executes before it times out.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
         }
       },
       "documentation":"<p>Represents a request to the update project operation.</p>"
@@ -5686,7 +5718,42 @@
       "max":2048,
       "min":0
     },
-    "VideoCapture":{"type":"boolean"}
+    "VideoCapture":{"type":"boolean"},
+    "VpcConfig":{
+      "type":"structure",
+      "required":[
+        "securityGroupIds",
+        "subnetIds",
+        "vpcId"
+      ],
+      "members":{
+        "securityGroupIds":{
+          "shape":"VpcSecurityGroupIds",
+          "documentation":"<p>An array of one or more security groups IDs in your Amazon VPC.</p>"
+        },
+        "subnetIds":{
+          "shape":"VpcSubnetIds",
+          "documentation":"<p>An array of one or more subnet IDs in your Amazon VPC.</p>"
+        },
+        "vpcId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the Amazon VPC.</p>"
+        }
+      },
+      "documentation":"<p>Contains the VPC configuration data necessary to interface with AWS Device Farm's services.</p>"
+    },
+    "VpcSecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":1
+    },
+    "VpcSubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":8,
+      "min":1
+    }
   },
   "documentation":"<p>Welcome to the AWS Device Farm API documentation, which contains APIs for:</p> <ul> <li> <p>Testing on desktop browsers</p> <p> Device Farm makes it possible for you to test your web applications on desktop browsers using Selenium. The APIs for desktop browser testing contain <code>TestGrid</code> in their names. For more information, see <a href=\"https://docs.aws.amazon.com/devicefarm/latest/testgrid/\">Testing Web Applications on Selenium with Device Farm</a>.</p> </li> <li> <p>Testing on real mobile devices</p> <p>Device Farm makes it possible for you to test apps on physical phones, tablets, and other devices in the cloud. For more information, see the <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/\">Device Farm Developer Guide</a>.</p> </li> </ul>"
 }

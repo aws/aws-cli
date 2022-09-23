@@ -24,7 +24,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Associates a backup gateway with your server. After you complete the association process, you can back up and restore your VMs through the gateway.</p>"
     },
@@ -38,7 +39,8 @@
       "output":{"shape":"CreateGatewayOutput"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates a backup gateway. After you create a gateway, you can associate it with a server using the <code>AssociateGatewayToServer</code> operation.</p>"
     },
@@ -53,7 +55,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a backup gateway.</p>",
       "idempotent":true
@@ -70,7 +73,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a hypervisor.</p>",
       "idempotent":true
@@ -87,7 +91,8 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Disassociates a backup gateway from the specified server. After the disassociation process finishes, the gateway can no longer access the virtual machines on the server.</p>"
     },
@@ -102,9 +107,26 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the gateway.</p>"
+    },
+    "GetVirtualMachine":{
+      "name":"GetVirtualMachine",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetVirtualMachineInput"},
+      "output":{"shape":"GetVirtualMachineOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the virtual machine.</p>"
     },
     "ImportHypervisorConfiguration":{
       "name":"ImportHypervisorConfiguration",
@@ -117,7 +139,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Connect to a hypervisor by importing its configuration.</p>"
     },
@@ -131,7 +154,8 @@
       "output":{"shape":"ListGatewaysOutput"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists backup gateways owned by an Amazon Web Services account in an Amazon Web Services Region. The returned list is ordered by gateway Amazon Resource Name (ARN).</p>"
     },
@@ -145,7 +169,8 @@
       "output":{"shape":"ListHypervisorsOutput"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists your hypervisors.</p>"
     },
@@ -160,7 +185,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the tags applied to the resource identified by its Amazon Resource Name (ARN).</p>"
     },
@@ -174,7 +200,8 @@
       "output":{"shape":"ListVirtualMachinesOutput"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists your virtual machines.</p>"
     },
@@ -190,7 +217,8 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Set the maintenance start time for a gateway.</p>"
     },
@@ -205,7 +233,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Tag the resource.</p>"
     },
@@ -221,7 +250,8 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Tests your hypervisor configuration to validate that backup gateway can connect with the hypervisor and its resources.</p>"
     },
@@ -236,7 +266,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Removes tags from the resource.</p>"
     },
@@ -252,7 +283,8 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates a gateway's name. Specify which gateway to update using the Amazon Resource Name (ARN) of the gateway in your request.</p>"
     },
@@ -267,7 +299,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates the gateway virtual machine (VM) software. The request immediately triggers the software update.</p> <note> <p>When you make this request, you get a <code>200 OK</code> success response immediately. However, it might take some time for the update to complete.</p> </note>"
     },
@@ -283,7 +316,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates a hypervisor metadata, including its host, username, and password. Specify which hypervisor to update using the Amazon Resource Name (ARN) of the hypervisor in your request.</p>"
     }
@@ -506,6 +540,10 @@
           "shape":"Time",
           "documentation":"<p>Details showing the last time Backup gateway communicated with the cloud, in Unix format and UTC time.</p>"
         },
+        "MaintenanceStartTime":{
+          "shape":"MaintenanceStartTime",
+          "documentation":"<p>Returns your gateway's weekly maintenance start time including the day and time of the week. Note that values are in terms of the gateway's time zone. Can be weekly or monthly.</p>"
+        },
         "NextUpdateAvailabilityTime":{
           "shape":"Time",
           "documentation":"<p>Details showing the next update availability time of the gateway.</p>"
@@ -541,6 +579,25 @@
         "Gateway":{
           "shape":"GatewayDetails",
           "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the gateway.</p>"
+        }
+      }
+    },
+    "GetVirtualMachineInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the virtual machine.</p>"
+        }
+      }
+    },
+    "GetVirtualMachineOutput":{
+      "type":"structure",
+      "members":{
+        "VirtualMachine":{
+          "shape":"VirtualMachineDetails",
+          "documentation":"<p>This object contains the basic attributes of <code>VirtualMachine</code> contained by the output of <code>GetVirtualMachine</code> </p>"
         }
       }
     },
@@ -739,6 +796,10 @@
     "ListVirtualMachinesInput":{
       "type":"structure",
       "members":{
+        "HypervisorArn":{
+          "shape":"ServerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hypervisor connected to your virtual machine.</p>"
+        },
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of virtual machines to list.</p>"
@@ -761,6 +822,32 @@
           "documentation":"<p>A list of your <code>VirtualMachine</code> objects, ordered by their Amazon Resource Names (ARNs).</p>"
         }
       }
+    },
+    "MaintenanceStartTime":{
+      "type":"structure",
+      "required":[
+        "HourOfDay",
+        "MinuteOfHour"
+      ],
+      "members":{
+        "DayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month and 28 represents the last day of the month.</p>"
+        },
+        "DayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>An ordinal number between 0 and 6 that represents the day of the week, where 0 represents Sunday and 6 represents Saturday. The day of week is in the time zone of the gateway.</p>"
+        },
+        "HourOfDay":{
+          "shape":"HourOfDay",
+          "documentation":"<p>The hour component of the maintenance start time represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.</p>"
+        },
+        "MinuteOfHour":{
+          "shape":"MinuteOfHour",
+          "documentation":"<p>The minute component of the maintenance start time represented as <i>mm</i>, where <i>mm</i> is the minute (0 to 59). The minute of the hour is in the time zone of the gateway.</p>"
+        }
+      },
+      "documentation":"<p>This is your gateway's weekly maintenance start time including the day and time of the week. Note that values are in terms of the gateway's time zone. Can be weekly or monthly.</p>"
     },
     "MaxResults":{
       "type":"integer",
@@ -955,6 +1042,19 @@
       "members":{
       }
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["ErrorCode"],
+      "members":{
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>Error: TPS has been limited to protect against intentional or unintentional high request volumes.</p>"
+        },
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>TPS has been limited to protect against intentional or unintentional high request volumes.</p>",
+      "exception":true
+    },
     "Time":{"type":"timestamp"},
     "UntagResourceInput":{
       "type":"structure",
@@ -1107,6 +1207,36 @@
         }
       },
       "documentation":"<p>A virtual machine that is on a hypervisor.</p>"
+    },
+    "VirtualMachineDetails":{
+      "type":"structure",
+      "members":{
+        "HostName":{
+          "shape":"Name",
+          "documentation":"<p>The host name of the virtual machine.</p>"
+        },
+        "HypervisorId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the virtual machine's hypervisor.</p>"
+        },
+        "LastBackupDate":{
+          "shape":"Time",
+          "documentation":"<p>The most recent date a virtual machine was backed up, in Unix format and UTC time.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the virtual machine.</p>"
+        },
+        "Path":{
+          "shape":"Path",
+          "documentation":"<p>The path of the virtual machine.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the virtual machine. For example, <code>arn:aws:backup-gateway:us-west-1:0000000000000:vm/vm-0000ABCDEFGIJKL</code>.</p>"
+        }
+      },
+      "documentation":"<p>Your <code>VirtualMachine</code> objects, ordered by their Amazon Resource Names (ARNs).</p>"
     },
     "VirtualMachines":{
       "type":"list",

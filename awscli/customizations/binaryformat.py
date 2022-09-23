@@ -56,7 +56,7 @@ class Base64DecodeVisitor(ModelVisitor):
         if shape.type_name != 'blob' or not isinstance(value, six.text_type):
             return
         try:
-            parent[name] = base64.b64decode(value)
+            parent[name] = base64.b64decode(value, validate=True)
         except (binascii.Error, TypeError):
             raise InvalidBase64Error('Invalid base64: "%s"' % value)
 

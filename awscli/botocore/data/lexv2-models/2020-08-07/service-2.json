@@ -1338,6 +1338,24 @@
       "type":"list",
       "member":{"shape":"AggregatedUtterancesSummary"}
     },
+    "AllowedInputTypes":{
+      "type":"structure",
+      "required":[
+        "allowAudioInput",
+        "allowDTMFInput"
+      ],
+      "members":{
+        "allowAudioInput":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether audio input is allowed.</p>"
+        },
+        "allowDTMFInput":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether DTMF input is allowed.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the allowed input types.</p>"
+    },
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
@@ -1398,6 +1416,25 @@
       "max":250,
       "min":1
     },
+    "AudioAndDTMFInputSpecification":{
+      "type":"structure",
+      "required":["startTimeoutMs"],
+      "members":{
+        "startTimeoutMs":{
+          "shape":"TimeInMilliSeconds",
+          "documentation":"<p>Time for which a bot waits before assuming that the customer isn't going to speak or press a key. This timeout is shared between Audio and DTMF inputs.</p>"
+        },
+        "audioSpecification":{
+          "shape":"AudioSpecification",
+          "documentation":"<p>Specifies the settings on audio input.</p>"
+        },
+        "dtmfSpecification":{
+          "shape":"DTMFSpecification",
+          "documentation":"<p>Specifies the settings on DTMF input.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the audio and DTMF input specification.</p>"
+    },
     "AudioLogDestination":{
       "type":"structure",
       "required":["s3Bucket"],
@@ -1433,6 +1470,24 @@
     "AudioRecognitionStrategy":{
       "type":"string",
       "enum":["UseSlotValuesAsCustomVocabulary"]
+    },
+    "AudioSpecification":{
+      "type":"structure",
+      "required":[
+        "maxLengthMs",
+        "endTimeoutMs"
+      ],
+      "members":{
+        "maxLengthMs":{
+          "shape":"TimeInMilliSeconds",
+          "documentation":"<p>Time for how long Amazon Lex waits before speech input is truncated and the speech is returned to application.</p>"
+        },
+        "endTimeoutMs":{
+          "shape":"TimeInMilliSeconds",
+          "documentation":"<p>Time for which a bot waits after the customer stops speaking to assume the utterance is finished.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the audio input specifications.</p>"
     },
     "Boolean":{"type":"boolean"},
     "BotAliasHistoryEvent":{
@@ -3299,6 +3354,38 @@
         "Importing",
         "Creating"
       ]
+    },
+    "DTMFCharacter":{
+      "type":"string",
+      "pattern":"^[A-D0-9#*]{1}$"
+    },
+    "DTMFSpecification":{
+      "type":"structure",
+      "required":[
+        "maxLength",
+        "endTimeoutMs",
+        "deletionCharacter",
+        "endCharacter"
+      ],
+      "members":{
+        "maxLength":{
+          "shape":"MaxUtteranceDigits",
+          "documentation":"<p>The maximum number of DTMF digits allowed in an utterance.</p>"
+        },
+        "endTimeoutMs":{
+          "shape":"TimeInMilliSeconds",
+          "documentation":"<p>How long the bot should wait after the last DTMF character input before assuming that the input has concluded.</p>"
+        },
+        "deletionCharacter":{
+          "shape":"DTMFCharacter",
+          "documentation":"<p>The DTMF character that clears the accumulated DTMF digits and immediately ends the input.</p>"
+        },
+        "endCharacter":{
+          "shape":"DTMFCharacter",
+          "documentation":"<p>The DTMF character that immediately ends input. If the user does not press this character, the input ends after the end timeout.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the DTMF input specifications.</p>"
     },
     "DataPrivacy":{
       "type":"structure",
@@ -6455,6 +6542,11 @@
       "max":1000,
       "min":1
     },
+    "MaxUtteranceDigits":{
+      "type":"integer",
+      "max":1024,
+      "min":1
+    },
     "MergeStrategy":{
       "type":"string",
       "enum":[
@@ -6760,6 +6852,46 @@
       "max":100,
       "min":0
     },
+    "PromptAttempt":{
+      "type":"string",
+      "documentation":"<p>The attempt name of attempts of a prompt.</p>",
+      "enum":[
+        "Initial",
+        "Retry1",
+        "Retry2",
+        "Retry3",
+        "Retry4",
+        "Retry5"
+      ]
+    },
+    "PromptAttemptSpecification":{
+      "type":"structure",
+      "required":["allowedInputTypes"],
+      "members":{
+        "allowInterrupt":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the user can interrupt a speech prompt attempt from the bot.</p>"
+        },
+        "allowedInputTypes":{
+          "shape":"AllowedInputTypes",
+          "documentation":"<p>Indicates the allowed input types of the prompt attempt.</p>"
+        },
+        "audioAndDTMFInputSpecification":{
+          "shape":"AudioAndDTMFInputSpecification",
+          "documentation":"<p>Specifies the settings on audio and DTMF input.</p>"
+        },
+        "textInputSpecification":{
+          "shape":"TextInputSpecification",
+          "documentation":"<p>Specifies the settings on text input.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the settings on a prompt attempt.</p>"
+    },
+    "PromptAttemptsSpecificationMap":{
+      "type":"map",
+      "key":{"shape":"PromptAttempt"},
+      "value":{"shape":"PromptAttemptSpecification"}
+    },
     "PromptMaxRetries":{
       "type":"integer",
       "max":5,
@@ -6787,6 +6919,10 @@
         "messageSelectionStrategy":{
           "shape":"MessageSelectionStrategy",
           "documentation":"<p>Indicates how a message is selected from a message group among retries.</p>"
+        },
+        "promptAttemptsSpecification":{
+          "shape":"PromptAttemptsSpecificationMap",
+          "documentation":"<p>Specifies the advanced settings on each attempt of the prompt.</p>"
         }
       },
       "documentation":"<p>Specifies a list of message groups that Amazon Lex sends to a user to elicit a response.</p>"
@@ -7833,7 +7969,7 @@
       "type":"string",
       "max":640,
       "min":0,
-      "pattern":"[0-9A-Za-z_\\s\\(\\)]+"
+      "pattern":"[0-9A-Za-z_\\-\\s\\(\\)]+"
     },
     "SubSlotSetting":{
       "type":"structure",
@@ -7947,6 +8083,17 @@
       "max":256,
       "min":0
     },
+    "TextInputSpecification":{
+      "type":"structure",
+      "required":["startTimeoutMs"],
+      "members":{
+        "startTimeoutMs":{
+          "shape":"TimeInMilliSeconds",
+          "documentation":"<p>Time for which a bot waits before re-prompting a customer for text input.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the text input specifications.</p>"
+    },
     "TextLogDestination":{
       "type":"structure",
       "required":["cloudWatch"],
@@ -8000,6 +8147,10 @@
         "Days",
         "Weeks"
       ]
+    },
+    "TimeInMilliSeconds":{
+      "type":"integer",
+      "min":1
     },
     "TimeValue":{
       "type":"integer",

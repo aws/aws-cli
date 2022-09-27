@@ -2267,6 +2267,68 @@
       "max":10
     },
     "AggregatorSchemaOnly":{"type":"boolean"},
+    "Alarm":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"AlarmName",
+          "documentation":"<p>The name of your CloudWatch alarm.</p>"
+        }
+      },
+      "documentation":"<p>A CloudWatch alarm you apply to an automation or command.</p>"
+    },
+    "AlarmConfiguration":{
+      "type":"structure",
+      "required":["Alarms"],
+      "members":{
+        "IgnorePollAlarmFailure":{
+          "shape":"Boolean",
+          "documentation":"<p>If you specify <code>true</code> for this value, your automation or command continue to run even if we can't gather information about the state of your CloudWatch alarm. The default value is <code>false</code>.</p>"
+        },
+        "Alarms":{
+          "shape":"AlarmList",
+          "documentation":"<p>The name of the CloudWatch alarm specified in the configuration.</p>"
+        }
+      },
+      "documentation":"<p>The details for the CloudWatch alarm you want to apply to an automation or command.</p>"
+    },
+    "AlarmList":{
+      "type":"list",
+      "member":{"shape":"Alarm"},
+      "max":1,
+      "min":1
+    },
+    "AlarmName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(?!\\s*$).+"
+    },
+    "AlarmStateInformation":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Name":{
+          "shape":"AlarmName",
+          "documentation":"<p>The name of your CloudWatch alarm.</p>"
+        },
+        "State":{
+          "shape":"ExternalAlarmState",
+          "documentation":"<p>The state of your CloudWatch alarm.</p>"
+        }
+      },
+      "documentation":"<p>The details about the state of your CloudWatch alarm.</p>"
+    },
+    "AlarmStateInformationList":{
+      "type":"list",
+      "member":{"shape":"AlarmStateInformation"},
+      "max":1,
+      "min":1
+    },
     "AllowedPattern":{
       "type":"string",
       "max":1024,
@@ -2510,6 +2572,11 @@
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
+        },
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"},
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarm that was invoked during the association.</p>"
         }
       },
       "documentation":"<p>Describes the parameters for a document.</p>"
@@ -2560,6 +2627,11 @@
         "ResourceCountByStatus":{
           "shape":"ResourceCountByStatus",
           "documentation":"<p>An aggregate status of the resources in the execution based on the status type.</p>"
+        },
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"},
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarms that were invoked by the association.</p>"
         }
       },
       "documentation":"<p>Includes information about the specified association.</p>"
@@ -3196,6 +3268,14 @@
           "shape":"ProgressCounters",
           "documentation":"<p>An aggregate of step execution statuses displayed in the Amazon Web Services Systems Manager console for a multi-Region and multi-account Automation execution.</p>"
         },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm applied to your automation.</p>"
+        },
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarm that was invoked by the automation.</p>"
+        },
         "AutomationSubtype":{
           "shape":"AutomationSubtype",
           "documentation":"<p>The subtype of the Automation operation. Currently, the only supported value is <code>ChangeRequest</code>.</p>"
@@ -3378,6 +3458,14 @@
         "AutomationType":{
           "shape":"AutomationType",
           "documentation":"<p>Use this filter with <a>DescribeAutomationExecutions</a>. Specify either Local or CrossAccount. CrossAccount is an Automation that runs in multiple Amazon Web Services Regions and Amazon Web Services accounts. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html\">Running Automation workflows in multiple Amazon Web Services Regions and accounts</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm applied to your automation.</p>"
+        },
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarm that was invoked by the automation.</p>"
         },
         "AutomationSubtype":{
           "shape":"AutomationSubtype",
@@ -3744,6 +3832,14 @@
         "TimeoutSeconds":{
           "shape":"TimeoutSeconds",
           "documentation":"<p>The <code>TimeoutSeconds</code> value specified for a command.</p>"
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm applied to your command.</p>"
+        },
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarm that was invoked by the command.</p>"
         }
       },
       "documentation":"<p>Describes a command request.</p>"
@@ -4398,7 +4494,8 @@
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
-        }
+        },
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"}
       },
       "documentation":"<p>Describes the association of a Amazon Web Services Systems Manager document (SSM document) and a managed node.</p>"
     },
@@ -4495,9 +4592,10 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Adds or overwrites one or more tags for a State Manager association. <i>Tags</i> are metadata that you can assign to your Amazon Web Services resources. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. </p>",
+          "documentation":"<p>Optional metadata that you assign to a resource. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment. For example, you might want to tag an association to identify the type of resource to which it applies, the environment, or the purpose of the association.</p>",
           "box":true
-        }
+        },
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"}
       }
     },
     "CreateAssociationResult":{
@@ -6925,7 +7023,9 @@
         "ChangeCalendar",
         "Automation.ChangeTemplate",
         "ProblemAnalysis",
-        "ProblemAnalysisTemplate"
+        "ProblemAnalysisTemplate",
+        "CloudFormation",
+        "ConformancePackTemplate"
       ]
     },
     "DocumentVersion":{
@@ -7069,6 +7169,13 @@
       "pattern":"[\\w+=,.@/-]+"
     },
     "ExpirationDate":{"type":"timestamp"},
+    "ExternalAlarmState":{
+      "type":"string",
+      "enum":[
+        "UNKNOWN",
+        "ALARM"
+      ]
+    },
     "FailedCreateAssociation":{
       "type":"structure",
       "members":{
@@ -7704,6 +7811,14 @@
         "EndTime":{
           "shape":"DateTime",
           "documentation":"<p>The time the task execution completed.</p>"
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm you applied to your maintenance window task.</p>"
+        },
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarms that were invoked by the maintenance window task.</p>"
         }
       }
     },
@@ -7863,6 +7978,10 @@
           "shape":"MaintenanceWindowTaskCutoffBehavior",
           "documentation":"<p>The action to take on tasks when the maintenance window cutoff time is reached. <code>CONTINUE_TASK</code> means that tasks continue to run. For Automation, Lambda, Step Functions tasks, <code>CANCEL_TASK</code> means that currently running task invocations continue, but no new task invocations are started. For Run Command tasks, <code>CANCEL_TASK</code> means the system attempts to stop the task by sending a <code>CancelCommand</code> operation.</p>",
           "box":true
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm you applied to your maintenance window task.</p>"
         }
       }
     },
@@ -9152,7 +9271,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The specified tag key or value is not valid.</p>",
+      "documentation":"<p>The tag key or value isn't valid.</p>",
       "exception":true
     },
     "InvalidTarget":{
@@ -10416,6 +10535,14 @@
         "TaskType":{
           "shape":"MaintenanceWindowTaskType",
           "documentation":"<p>The type of task that ran.</p>"
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm applied to your maintenance window task.</p>"
+        },
+        "TriggeredAlarms":{
+          "shape":"AlarmStateInformationList",
+          "documentation":"<p>The CloudWatch alarm that was invoked by the maintenance window task.</p>"
         }
       },
       "documentation":"<p>Information about a task execution performed as part of a maintenance window execution.</p>"
@@ -10846,6 +10973,10 @@
           "shape":"MaintenanceWindowTaskCutoffBehavior",
           "documentation":"<p>The specification for whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached. </p>",
           "box":true
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm applied to your maintenance window task.</p>"
         }
       },
       "documentation":"<p>Information about a task defined for a maintenance window.</p>"
@@ -13470,6 +13601,10 @@
           "shape":"MaintenanceWindowTaskCutoffBehavior",
           "documentation":"<p>Indicates whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached. </p> <ul> <li> <p> <code>CONTINUE_TASK</code>: When the cutoff time is reached, any tasks that are running continue. The default value.</p> </li> <li> <p> <code>CANCEL_TASK</code>:</p> <ul> <li> <p>For Automation, Lambda, Step Functions tasks: When the cutoff time is reached, any task invocations that are already running continue, but no new task invocations are started.</p> </li> <li> <p>For Run Command tasks: When the cutoff time is reached, the system sends a <a>CancelCommand</a> operation that attempts to cancel the command associated with the task. However, there is no guarantee that the command will be terminated and the underlying process stopped.</p> </li> </ul> <p>The status for tasks that are not completed is <code>TIMED_OUT</code>.</p> </li> </ul>",
           "box":true
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The CloudWatch alarm you want to apply to your maintenance window task.</p>"
         }
       }
     },
@@ -14294,6 +14429,10 @@
         "CloudWatchOutputConfig":{
           "shape":"CloudWatchOutputConfig",
           "documentation":"<p>Enables Amazon Web Services Systems Manager to send Run Command output to Amazon CloudWatch Logs. Run Command is a capability of Amazon Web Services Systems Manager.</p>"
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The CloudWatch alarm you want to apply to your command.</p>"
         }
       }
     },
@@ -14684,6 +14823,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Optional metadata that you assign to a resource. You can specify a maximum of five tags for an automation. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment. For example, you might want to tag an automation to identify an environment or operating system. In this case, you could specify the following key-value pairs:</p> <ul> <li> <p> <code>Key=environment,Value=test</code> </p> </li> <li> <p> <code>Key=OS,Value=Windows</code> </p> </li> </ul> <note> <p>To add tags to an existing automation, use the <a>AddTagsToResource</a> operation.</p> </note>"
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The CloudWatch alarm you want to apply to your automation.</p>"
         }
       }
     },
@@ -15404,7 +15547,8 @@
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
-        }
+        },
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"}
       }
     },
     "UpdateAssociationResult":{
@@ -15803,6 +15947,10 @@
           "shape":"MaintenanceWindowTaskCutoffBehavior",
           "documentation":"<p>Indicates whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached. </p> <ul> <li> <p> <code>CONTINUE_TASK</code>: When the cutoff time is reached, any tasks that are running continue. The default value.</p> </li> <li> <p> <code>CANCEL_TASK</code>:</p> <ul> <li> <p>For Automation, Lambda, Step Functions tasks: When the cutoff time is reached, any task invocations that are already running continue, but no new task invocations are started.</p> </li> <li> <p>For Run Command tasks: When the cutoff time is reached, the system sends a <a>CancelCommand</a> operation that attempts to cancel the command associated with the task. However, there is no guarantee that the command will be terminated and the underlying process stopped.</p> </li> </ul> <p>The status for tasks that are not completed is <code>TIMED_OUT</code>.</p> </li> </ul>",
           "box":true
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The CloudWatch alarm you want to apply to your maintenance window task.</p>"
         }
       }
     },
@@ -15865,6 +16013,10 @@
           "shape":"MaintenanceWindowTaskCutoffBehavior",
           "documentation":"<p>The specification for whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached. </p>",
           "box":true
+        },
+        "AlarmConfiguration":{
+          "shape":"AlarmConfiguration",
+          "documentation":"<p>The details for the CloudWatch alarm you applied to your maintenance window task.</p>"
         }
       }
     },

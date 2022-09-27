@@ -799,7 +799,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Repairs the Amazon Web Services SSO configuration for a given studio.</p> <p>If the studio has a valid Amazon Web Services SSO configuration currently associated with it, this operation will fail with a validation error.</p> <p>If the studio does not have a valid Amazon Web Services SSO configuration currently associated with it, then a new Amazon Web Services SSO application is created for the studio and the studio is changed to the READY state.</p> <p>After the Amazon Web Services SSO application is repaired, you must use the Amazon Nimble Studio console to add administrators and users to your studio.</p>",
+      "documentation":"<p>Repairs the IAM Identity Center configuration for a given studio.</p> <p>If the studio has a valid IAM Identity Center configuration currently associated with it, this operation will fail with a validation error.</p> <p>If the studio does not have a valid IAM Identity Center configuration currently associated with it, then a new IAM Identity Center application is created for the studio and the studio is changed to the READY state.</p> <p>After the IAM Identity Center application is repaired, you must use the Amazon Nimble Studio console to add administrators and users to your studio.</p>",
       "idempotent":true
     },
     "StopStreamingSession":{
@@ -983,7 +983,7 @@
         },
         "studioId":{
           "shape":"String",
-          "documentation":"<p>A collection of EULA IDs.</p>",
+          "documentation":"<p>The studio ID.</p>",
           "location":"uri",
           "locationName":"studioId"
         }
@@ -1478,7 +1478,7 @@
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>The principal ID. This currently supports a Amazon Web Services SSO UserId. </p>",
+          "documentation":"<p>The principal ID. This currently supports a IAM Identity Center UserId. </p>",
           "location":"uri",
           "locationName":"principalId"
         },
@@ -1659,7 +1659,7 @@
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>The principal ID. This currently supports a Amazon Web Services SSO UserId. </p>",
+          "documentation":"<p>The principal ID. This currently supports a IAM Identity Center UserId. </p>",
           "location":"uri",
           "locationName":"principalId"
         },
@@ -1932,7 +1932,7 @@
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>The principal ID. This currently supports a Amazon Web Services SSO UserId. </p>",
+          "documentation":"<p>The principal ID. This currently supports a IAM Identity Center UserId. </p>",
           "location":"uri",
           "locationName":"principalId"
         },
@@ -2119,7 +2119,7 @@
       "members":{
         "principalId":{
           "shape":"String",
-          "documentation":"<p>The principal ID. This currently supports a Amazon Web Services SSO UserId. </p>",
+          "documentation":"<p>The principal ID. This currently supports a IAM Identity Center UserId. </p>",
           "location":"uri",
           "locationName":"principalId"
         },
@@ -2474,7 +2474,9 @@
         "LAUNCH_PROFILE_WITH_STREAM_SESSIONS_NOT_DELETED",
         "ENCRYPTION_KEY_ACCESS_DENIED",
         "ENCRYPTION_KEY_NOT_FOUND",
-        "INVALID_SUBNETS_PROVIDED"
+        "INVALID_SUBNETS_PROVIDED",
+        "INVALID_INSTANCE_TYPES_PROVIDED",
+        "INVALID_SUBNETS_COMBINATION"
       ]
     },
     "LaunchProfileStudioComponentIdList":{
@@ -2672,7 +2674,7 @@
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>The principal ID. This currently supports a Amazon Web Services SSO UserId. </p>",
+          "documentation":"<p>The principal ID. This currently supports a IAM Identity Center UserId. </p>",
           "location":"querystring",
           "locationName":"principalId"
         },
@@ -3523,7 +3525,14 @@
         "g4dn.4xlarge",
         "g4dn.8xlarge",
         "g4dn.12xlarge",
-        "g4dn.16xlarge"
+        "g4dn.16xlarge",
+        "g3.4xlarge",
+        "g3s.xlarge",
+        "g5.xlarge",
+        "g5.2xlarge",
+        "g5.4xlarge",
+        "g5.8xlarge",
+        "g5.16xlarge"
       ]
     },
     "StreamingInstanceTypeList":{
@@ -3794,7 +3803,7 @@
         },
         "ssoClientId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services SSO application client ID used to integrate with Amazon Web Services SSO to enable Amazon Web Services SSO users to log in to Nimble Studio portal.</p>"
+          "documentation":"<p>The IAM Identity Center application client ID used to integrate with IAM Identity Center to enable IAM Identity Center users to log in to Nimble Studio portal.</p>"
         },
         "state":{
           "shape":"StudioState",
@@ -3837,7 +3846,7 @@
           "documentation":"<p>The IAM role that studio users assume when logging in to the Nimble Studio portal.</p>"
         }
       },
-      "documentation":"<p>Represents a studio resource.</p> <p>A studio is the core resource used with Nimble Studio. You must create a studio first, before any other resource type can be created. All other resources you create and manage in Nimble Studio are contained within a studio.</p> <p>When creating a studio, you must provides two IAM roles for use with the Nimble Studio portal. These roles are assumed by your users when they log in to the Nimble Studio portal via Amazon Web Services SSO and your identity source.</p> <p>The user role must have the AmazonNimbleStudio-StudioUser managed policy attached for the portal to function properly.</p> <p>The admin role must have the AmazonNimbleStudio-StudioAdmin managed policy attached for the portal to function properly.</p> <p>Your studio roles must trust the identity.nimble.amazonaws.com service principal to function properly.</p>"
+      "documentation":"<p>Represents a studio resource.</p> <p>A studio is the core resource used with Nimble Studio. You must create a studio first, before any other resource type can be created. All other resources you create and manage in Nimble Studio are contained within a studio.</p> <p>When creating a studio, you must provides two IAM roles for use with the Nimble Studio portal. These roles are assumed by your users when they log in to the Nimble Studio portal via IAM Identity Center and your identity source.</p> <p>The user role must have the AmazonNimbleStudio-StudioUser managed policy attached for the portal to function properly.</p> <p>The admin role must have the AmazonNimbleStudio-StudioAdmin managed policy attached for the portal to function properly.</p> <p>Your studio roles must trust the identity.nimble.amazonaws.com service principal to function properly.</p>"
     },
     "StudioComponent":{
       "type":"structure",
@@ -4186,7 +4195,7 @@
           "documentation":"<p>The Active Directory Security Identifier for this user, if available.</p>"
         }
       },
-      "documentation":"<p>A studio member is an association of a user from your studio identity source to elevated permissions that they are granted in the studio.</p> <p>When you add a user to your studio using the Nimble Studio console, they are given access to the studio's AWS SSO application and are given access to log in to the Nimble Studio portal. These users have the permissions provided by the studio's user IAM role and do not appear in the studio membership collection. Only studio admins appear in studio membership.</p> <p>When you add a user to studio membership with the persona ADMIN, upon logging in to the Nimble Studio portal, they are granted permissions specified by the Studio's Admin IAM role.</p>"
+      "documentation":"<p>A studio member is an association of a user from your studio identity source to elevated permissions that they are granted in the studio.</p> <p>When you add a user to your studio using the Nimble Studio console, they are given access to the studio's IAM Identity Center application and are given access to log in to the Nimble Studio portal. These users have the permissions provided by the studio's user IAM role and do not appear in the studio membership collection. Only studio admins appear in studio membership.</p> <p>When you add a user to studio membership with the persona ADMIN, upon logging in to the Nimble Studio portal, they are granted permissions specified by the Studio's Admin IAM role.</p>"
     },
     "StudioMembershipList":{
       "type":"list",
@@ -4349,7 +4358,7 @@
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>The principal ID. This currently supports a Amazon Web Services SSO UserId. </p>",
+          "documentation":"<p>The principal ID. This currently supports a IAM Identity Center UserId. </p>",
           "location":"uri",
           "locationName":"principalId"
         },

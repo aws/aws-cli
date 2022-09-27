@@ -632,6 +632,25 @@
       "documentation":"<p>Retrieves a vector data tile from the map resource. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level. </p> <p>The origin (0, 0) is the top left of the map. Increasing the zoom level by 1 doubles both the X and Y dimensions, so a tile containing data for the entire world at (0/0/0) will be split into 4 tiles at zoom 1 (1/0/0, 1/0/1, 1/1/0, 1/1/1).</p>",
       "endpoint":{"hostPrefix":"maps."}
     },
+    "GetPlace":{
+      "name":"GetPlace",
+      "http":{
+        "method":"GET",
+        "requestUri":"/places/v0/indexes/{IndexName}/places/{PlaceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPlaceRequest"},
+      "output":{"shape":"GetPlaceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Finds a place by its unique ID. A <code>PlaceId</code> is returned by other search operations.</p> <note> <p>A PlaceId is valid only if all of the following are the same in the original search request and the call to <code>GetPlace</code>.</p> <ul> <li> <p>Customer AWS account</p> </li> <li> <p>AWS Region</p> </li> <li> <p>Data provider specified in the place index resource</p> </li> </ul> </note>",
+      "endpoint":{"hostPrefix":"places."}
+    },
     "ListDevicePositions":{
       "name":"ListDevicePositions",
       "http":{
@@ -1957,7 +1976,7 @@
           "documentation":"<p>The timestamp for when the map resource was created in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.</p>"
         },
         "MapArn":{
-          "shape":"Arn",
+          "shape":"GeoArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:maps/ExampleMap</code> </p> </li> </ul>"
         },
         "MapName":{
@@ -2336,7 +2355,7 @@
           "documentation":"<p>The optional description for the map resource.</p>"
         },
         "MapArn":{
-          "shape":"Arn",
+          "shape":"GeoArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:maps/ExampleMap</code> </p> </li> </ul>"
         },
         "MapName":{
@@ -2664,6 +2683,12 @@
       "type":"double",
       "box":true
     },
+    "GeoArn":{
+      "type":"string",
+      "max":1600,
+      "min":0,
+      "pattern":"^arn(:[a-z0-9]+([.-][a-z0-9]+)*):geo(:([a-z0-9]+([.-][a-z0-9]+)*))(:[0-9]+):((\\*)|([-a-z]+[/][*-._\\w]+))$"
+    },
     "GeofenceGeometry":{
       "type":"structure",
       "members":{
@@ -2900,7 +2925,7 @@
       "members":{
         "FileName":{
           "shape":"GetMapSpritesRequestFileNameString",
-          "documentation":"<p>The name of the sprite ﬁle. Use the following ﬁle names for the sprite sheet:</p> <ul> <li> <p> <code>sprites.png</code> </p> </li> <li> <p> <code>sprites@2x.png</code> for high pixel density displays</p> </li> </ul> <p>For the JSON document contain image offsets. Use the following ﬁle names:</p> <ul> <li> <p> <code>sprites.json</code> </p> </li> <li> <p> <code>sprites@2x.json</code> for high pixel density displays</p> </li> </ul>",
+          "documentation":"<p>The name of the sprite ﬁle. Use the following ﬁle names for the sprite sheet:</p> <ul> <li> <p> <code>sprites.png</code> </p> </li> <li> <p> <code>sprites@2x.png</code> for high pixel density displays</p> </li> </ul> <p>For the JSON document containing image offsets. Use the following ﬁle names:</p> <ul> <li> <p> <code>sprites.json</code> </p> </li> <li> <p> <code>sprites@2x.json</code> for high pixel density displays</p> </li> </ul>",
           "location":"uri",
           "locationName":"FileName"
         },
@@ -3022,6 +3047,43 @@
         }
       },
       "payload":"Blob"
+    },
+    "GetPlaceRequest":{
+      "type":"structure",
+      "required":[
+        "IndexName",
+        "PlaceId"
+      ],
+      "members":{
+        "IndexName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the place index resource that you want to use for the search.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        },
+        "Language":{
+          "shape":"LanguageTag",
+          "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we'll use the Greek language. You search for a location around Athens, Greece, with the <code>language</code> parameter set to <code>en</code>. The <code>city</code> in the results will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the <code>city</code> in the results will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>",
+          "location":"querystring",
+          "locationName":"language"
+        },
+        "PlaceId":{
+          "shape":"PlaceId",
+          "documentation":"<p>The identifier of the place to find.</p>",
+          "location":"uri",
+          "locationName":"PlaceId"
+        }
+      }
+    },
+    "GetPlaceResponse":{
+      "type":"structure",
+      "required":["Place"],
+      "members":{
+        "Place":{
+          "shape":"Place",
+          "documentation":"<p>Details about the result, such as its address and position.</p>"
+        }
+      }
     },
     "Id":{
       "type":"string",
@@ -3801,6 +3863,14 @@
         "TimeZone":{
           "shape":"TimeZone",
           "documentation":"<p>The time zone in which the <code>Place</code> is located. Returned only when using Here as the selected partner.</p>"
+        },
+        "UnitNumber":{
+          "shape":"String",
+          "documentation":"<p>For addresses with multiple units, the unit identifier. Can include numbers and letters, for example <code>3B</code> or <code>Unit 123</code>.</p> <note> <p>Returned only for a place index that uses Esri as a data provider. Is not returned for <code>SearchPlaceIndexForPosition</code>.</p> </note>"
+        },
+        "UnitType":{
+          "shape":"String",
+          "documentation":"<p>For addresses with a <code>UnitNumber</code>, the type of unit. For example, <code>Apartment</code>.</p>"
         }
       },
       "documentation":"<p>Contains details about addresses or points of interest that match the search criteria.</p> <p>Not all details are included with all responses. Some details may only be returned by specific data partners.</p>"
@@ -3815,6 +3885,7 @@
       },
       "documentation":"<p>Places uses a point geometry to specify a location or a Place.</p>"
     },
+    "PlaceId":{"type":"string"},
     "PlaceIndexSearchResultLimit":{
       "type":"integer",
       "max":50,
@@ -4029,6 +4100,10 @@
         "Place":{
           "shape":"Place",
           "documentation":"<p>Details about the search result, such as its address and position.</p>"
+        },
+        "PlaceId":{
+          "shape":"PlaceId",
+          "documentation":"<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForPosition</code> operations, the <code>PlaceId</code> is returned only by place indexes that use HERE as a data provider.</p> </note>"
         }
       },
       "documentation":"<p>Contains a search result from a position search query that is run on a place index resource.</p>"
@@ -4046,6 +4121,10 @@
       "type":"structure",
       "required":["Text"],
       "members":{
+        "PlaceId":{
+          "shape":"PlaceId",
+          "documentation":"<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForSuggestions</code> operations, the <code>PlaceId</code> is returned by place indexes that use HERE or Esri as data providers.</p> </note>"
+        },
         "Text":{
           "shape":"String",
           "documentation":"<p>The text of the place suggestion, typically formatted as an address string.</p>"
@@ -4068,6 +4147,10 @@
         "Place":{
           "shape":"Place",
           "documentation":"<p>Details about the search result, such as its address and position.</p>"
+        },
+        "PlaceId":{
+          "shape":"PlaceId",
+          "documentation":"<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForText</code> operations, the <code>PlaceId</code> is returned only by place indexes that use HERE as a data provider.</p> </note>"
         },
         "Relevance":{
           "shape":"SearchForTextResultRelevanceDouble",
@@ -4705,7 +4788,7 @@
       ],
       "members":{
         "MapArn":{
-          "shape":"Arn",
+          "shape":"GeoArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the updated map resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:maps/ExampleMap</code> </p> </li> </ul>"
         },
         "MapName":{

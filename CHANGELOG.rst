@@ -4121,6 +4121,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.83
+=======
+
+* api-change:``ce``: This release is to support retroactive Cost Categories. The new field will enable you to retroactively apply new and existing cost category rules to previous months.
+* api-change:``kendra``: My AWS Service (placeholder) - Amazon Kendra now provides a data source connector for DropBox. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-dropbox.html
+* api-change:``location``: This release adds place IDs, which are unique identifiers of places, along with a new GetPlace operation, which can be used with place IDs to find a place again later. UnitNumber and UnitType are also added as new properties of places.
+
+
+1.25.82
+=======
+
+* api-change:``cur``: This release adds two new support regions(me-central-1/eu-south-2) for OSG.
+* api-change:``iotfleetwise``: General availability (GA) for AWS IoT Fleetwise. It adds AWS IoT Fleetwise to AWS SDK. For more information, see https://docs.aws.amazon.com/iot-fleetwise/latest/APIReference/Welcome.html.
+* api-change:``ssm``: This release includes support for applying a CloudWatch alarm to Systems Manager capabilities like Automation, Run Command, State Manager, and Maintenance Windows.
+
+
+1.25.81
+=======
+
+* api-change:``apprunner``: AWS App Runner adds a Node.js 16 runtime.
+* api-change:``ec2``: Letting external AWS customers provide ImageId as a Launch Template override in FleetLaunchTemplateOverridesRequest
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``lightsail``: This release adds Instance Metadata Service (IMDS) support for Lightsail instances.
+* api-change:``nimble``: Amazon Nimble Studio adds support for on-demand Amazon Elastic Compute Cloud (EC2) G3 and G5 instances, allowing customers to utilize additional GPU instance types for their creative projects.
+* api-change:``ssm``: This release adds new SSM document types ConformancePackTemplate and CloudFormation
+* api-change:``wafv2``: Add the default specification for ResourceType in ListResourcesForWebACL.
+
+
 1.25.80
 =======
 

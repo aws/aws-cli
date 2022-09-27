@@ -1,8 +1,56 @@
 [build-system]
-requires = ["setuptools>=40.6.0,<59.0.0", "wheel<=0.37.0"]
-build-backend = "backends.pep517"
-backend-path = ["."]
+requires = [
+"flit_core>=3.7.1,<3.7.2",
+]
+build-backend = "pep517"
+backend-path = ["backends"]
 
+[project]
+name = "awscli"
+description = "Universal Command Line Environment for AWS."
+authors = [
+  {name = "Amazon Web Services"},
+]
+license = { file = "LICENSE.txt" }
+readme = "README.rst"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Natural Language :: English",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "colorama>=0.2.5,<0.4.4",
+    "docutils>=0.10,<0.16",
+    "cryptography>=3.3.2,<37.0.0",
+    "ruamel.yaml>=0.15.0,<=0.17.21",
+    "wcwidth<0.2.0",
+    "prompt-toolkit>=3.0.24,<3.0.29",
+    "distro>=1.5.0,<1.6.0",
+    "awscrt>=0.12.4,<=0.14.0",
+    "python-dateutil>=2.1,<3.0.0",
+    "jmespath>=0.7.1,<1.1.0",
+    "urllib3>=1.25.4,<1.27",
+]
+dynamic = ["version"]
+
+[project.urls]
+homepage = "http://aws.amazon.com/cli/"
+
+[tool.awscli.sdist]
+include = [
+    "backends/**/*.py",
+    "bin/*",
+    "CHANGELOG.rst",
+]
+# end of cli sdist tool section
 
 [tool.pytest.ini_options]
 # We set error warning filters in order to enforce that particular
@@ -24,3 +72,6 @@ filterwarnings = [
     # these filters.
     'default:The distutils\.sysconfig module is deprecated:DeprecationWarning'
 ]
+
+[tool.black]
+line-length = 80

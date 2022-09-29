@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.25.84
+=======
+
+* api-change:``acm``: This update returns additional certificate details such as certificate SANs and allows sorting in the ListCertificates API.
+* api-change:``ec2``: u-3tb1 instances are powered by Intel Xeon Platinum 8176M (Skylake) processors and are purpose-built to run large in-memory databases.
+* api-change:``emr-serverless``: This release adds API support to debug Amazon EMR Serverless jobs in real-time with live application UIs
+* api-change:``fsx``: This release adds support for Amazon File Cache.
+* api-change:``migrationhuborchestrator``: Introducing AWS MigrationHubOrchestrator. This is the first public release of AWS MigrationHubOrchestrator.
+* api-change:``polly``: Added support for the new Cantonese voice - Hiujin. Hiujin is available as a Neural voice only.
+* api-change:``proton``: This release adds an option to delete pipeline provisioning repositories using the UpdateAccountSettings API
+* api-change:``sagemaker``: SageMaker Training Managed Warm Pools let you retain provisioned infrastructure to reduce latency for repetitive training workloads.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``translate``: This release enables customers to access control rights on Translate resources like Parallel Data and Custom Terminology using Tag Based Authorization.
+* api-change:``workspaces``: This release includes diagnostic log uploading feature. If it is enabled, the log files of WorkSpaces Windows client will be sent to Amazon WorkSpaces automatically for troubleshooting. You can use modifyClientProperty api to enable/disable this feature.
+
+
 1.25.83
 =======
 

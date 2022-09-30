@@ -3097,7 +3097,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Update a model training job to request a new Debugger profiling configuration.</p>"
+      "documentation":"<p>Update a model training job to request a new Debugger profiling configuration or to change warm pool retention length.</p>"
     },
     "UpdateTrial":{
       "name":"UpdateTrial",
@@ -12068,6 +12068,10 @@
         "Environment":{
           "shape":"TrainingEnvironmentMap",
           "documentation":"<p>The environment variables to set in the Docker container.</p>"
+        },
+        "WarmPoolStatus":{
+          "shape":"WarmPoolStatus",
+          "documentation":"<p>The status of the warm pool associated with the training job.</p>"
         }
       }
     },
@@ -16126,6 +16130,11 @@
       },
       "documentation":"<p>The JupyterServer app settings.</p>"
     },
+    "KeepAlivePeriodInSeconds":{
+      "type":"integer",
+      "max":3600,
+      "min":0
+    },
     "KernelDisplayName":{
       "type":"string",
       "max":1024
@@ -19358,6 +19367,10 @@
         "SortOrder":{
           "shape":"SortOrder",
           "documentation":"<p>The sort order for results. The default is <code>Ascending</code>.</p>"
+        },
+        "WarmPoolStatusEquals":{
+          "shape":"WarmPoolResourceStatus",
+          "documentation":"<p>A filter that retrieves only training jobs with a specific warm pool status.</p>"
         }
       }
     },
@@ -24471,9 +24484,24 @@
         "InstanceGroups":{
           "shape":"InstanceGroups",
           "documentation":"<p>The configuration of a heterogeneous cluster in JSON format.</p>"
+        },
+        "KeepAlivePeriodInSeconds":{
+          "shape":"KeepAlivePeriodInSeconds",
+          "documentation":"<p>The duration of time in seconds to retain configured resources in a warm pool for subsequent training jobs.</p>"
         }
       },
       "documentation":"<p>Describes the resources, including ML compute instances and ML storage volumes, to use for model training. </p>"
+    },
+    "ResourceConfigForUpdate":{
+      "type":"structure",
+      "required":["KeepAlivePeriodInSeconds"],
+      "members":{
+        "KeepAlivePeriodInSeconds":{
+          "shape":"KeepAlivePeriodInSeconds",
+          "documentation":"<p>The <code>KeepAlivePeriodInSeconds</code> value specified in the <code>ResourceConfig</code> to update.</p>"
+        }
+      },
+      "documentation":"<p>The <code>ResourceConfig</code> to update <code>KeepAlivePeriodInSeconds</code>. Other fields in the <code>ResourceConfig</code> cannot be updated.</p>"
     },
     "ResourceId":{
       "type":"string",
@@ -24531,6 +24559,10 @@
       "max":255,
       "min":1,
       "pattern":".+"
+    },
+    "ResourceRetainedBillableTimeInSeconds":{
+      "type":"integer",
+      "min":0
     },
     "ResourceSpec":{
       "type":"structure",
@@ -26424,6 +26456,10 @@
         "TrainingJobStatus":{
           "shape":"TrainingJobStatus",
           "documentation":"<p>The status of the training job.</p>"
+        },
+        "WarmPoolStatus":{
+          "shape":"WarmPoolStatus",
+          "documentation":"<p>The status of the warm pool associated with the training job.</p>"
         }
       },
       "documentation":"<p>Provides summary information about a training job.</p>"
@@ -28009,6 +28045,10 @@
         "ProfilerRuleConfigurations":{
           "shape":"ProfilerRuleConfigurations",
           "documentation":"<p>Configuration information for Debugger rules for profiling system and framework metrics.</p>"
+        },
+        "ResourceConfig":{
+          "shape":"ResourceConfigForUpdate",
+          "documentation":"<p>The training job <code>ResourceConfig</code> to update warm pool retention length.</p>"
         }
       }
     },
@@ -28446,6 +28486,34 @@
       "type":"integer",
       "max":3600,
       "min":0
+    },
+    "WarmPoolResourceStatus":{
+      "type":"string",
+      "enum":[
+        "Available",
+        "Terminated",
+        "Reused",
+        "InUse"
+      ]
+    },
+    "WarmPoolStatus":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"WarmPoolResourceStatus",
+          "documentation":"<p>The status of the warm pool.</p> <ul> <li> <p> <code>InUse</code>: The warm pool is in use for the training job.</p> </li> <li> <p> <code>Available</code>: The warm pool is available to reuse for a matching training job.</p> </li> <li> <p> <code>Reused</code>: The warm pool moved to a matching training job for reuse.</p> </li> <li> <p> <code>Terminated</code>: The warm pool is no longer available. Warm pools are unavailable if they are terminated by a user, terminated for a patch update, or terminated for exceeding the specified <code>KeepAlivePeriodInSeconds</code>.</p> </li> </ul>"
+        },
+        "ResourceRetainedBillableTimeInSeconds":{
+          "shape":"ResourceRetainedBillableTimeInSeconds",
+          "documentation":"<p>The billable time in seconds used by the warm pool. Billable time refers to the absolute wall-clock time.</p> <p>Multiply <code>ResourceRetainedBillableTimeInSeconds</code> by the number of instances (<code>InstanceCount</code>) in your training cluster to get the total compute time SageMaker bills you if you run warm pool training. The formula is as follows: <code>ResourceRetainedBillableTimeInSeconds * InstanceCount</code>.</p>"
+        },
+        "ReusedByJob":{
+          "shape":"TrainingJobName",
+          "documentation":"<p>The name of the matching training job that reused the warm pool.</p>"
+        }
+      },
+      "documentation":"<p>Status and billing information about the warm pool.</p>"
     },
     "Workforce":{
       "type":"structure",

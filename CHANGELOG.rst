@@ -2,6 +2,36 @@
 CHANGELOG
 =========
 
+2.8.0
+=====
+
+* feature:packaging: Removed setup.cfg and setup.py in favor of pyproject.toml. Build backend changed from setuptools/wheel to flit_core (`#7287 <https://github.com/aws/aws-cli/issues/7287>`__).
+* api-change:``location``: This release adds place IDs, which are unique identifiers of places, along with a new GetPlace operation, which can be used with place IDs to find a place again later. UnitNumber and UnitType are also added as new properties of places.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``acm``: This update returns additional certificate details such as certificate SANs and allows sorting in the ListCertificates API.
+* api-change:``proton``: This release adds an option to delete pipeline provisioning repositories using the UpdateAccountSettings API
+* api-change:``ec2``: Letting external AWS customers provide ImageId as a Launch Template override in FleetLaunchTemplateOverridesRequest
+* api-change:``wafv2``: Add the default specification for ResourceType in ListResourcesForWebACL.
+* api-change:``nimble``: Amazon Nimble Studio adds support for on-demand Amazon Elastic Compute Cloud (EC2) G3 and G5 instances, allowing customers to utilize additional GPU instance types for their creative projects.
+* api-change:``migrationhuborchestrator``: Introducing AWS MigrationHubOrchestrator. This is the first public release of AWS MigrationHubOrchestrator.
+* api-change:``apprunner``: AWS App Runner adds a Node.js 16 runtime.
+* api-change:``workspaces``: This release includes diagnostic log uploading feature. If it is enabled, the log files of WorkSpaces Windows client will be sent to Amazon WorkSpaces automatically for troubleshooting. You can use modifyClientProperty api to enable/disable this feature.
+* api-change:``fsx``: This release adds support for Amazon File Cache.
+* api-change:``lightsail``: This release adds Instance Metadata Service (IMDS) support for Lightsail instances.
+* api-change:``sagemaker``: SageMaker Training Managed Warm Pools let you retain provisioned infrastructure to reduce latency for repetitive training workloads.
+* api-change:``translate``: This release enables customers to access control rights on Translate resources like Parallel Data and Custom Terminology using Tag Based Authorization.
+* api-change:``cur``: This release adds two new support regions(me-central-1/eu-south-2) for OSG.
+* api-change:``ssm``: This release adds new SSM document types ConformancePackTemplate and CloudFormation
+* api-change:``ec2``: u-3tb1 instances are powered by Intel Xeon Platinum 8176M (Skylake) processors and are purpose-built to run large in-memory databases.
+* api-change:``ssm``: This release includes support for applying a CloudWatch alarm to Systems Manager capabilities like Automation, Run Command, State Manager, and Maintenance Windows.
+* api-change:``polly``: Added support for the new Cantonese voice - Hiujin. Hiujin is available as a Neural voice only.
+* api-change:``kendra``: My AWS Service (placeholder) - Amazon Kendra now provides a data source connector for DropBox. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-dropbox.html
+* api-change:``ce``: This release is to support retroactive Cost Categories. The new field will enable you to retroactively apply new and existing cost category rules to previous months.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``iotfleetwise``: General availability (GA) for AWS IoT Fleetwise. It adds AWS IoT Fleetwise to AWS SDK. For more information, see https://docs.aws.amazon.com/iot-fleetwise/latest/APIReference/Welcome.html.
+* api-change:``emr-serverless``: This release adds API support to debug Amazon EMR Serverless jobs in real-time with live application UIs
+
+
 2.7.35
 ======
 

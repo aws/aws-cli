@@ -22,7 +22,7 @@ Output::
         }
     }
 
-For more information, see `AssociateRepository<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_AssociateRepository.html>`__ in the *Amazon DevOps Guru API Reference*.
+For more information, see `Create a Bitbucket repository association in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-bitbucket-association.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.
 
 **Example 2: To create a GitHub Enterprise repository association**
 
@@ -48,7 +48,7 @@ Output::
         }
     }
 
-For more information, see `AssociateRepository<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_AssociateRepository.html>`__ in the *Amazon DevOps Guru API Reference*
+For more information, see `Create a GitHub Enterprise Server repository association in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-github-enterprise-association.html>`__ in the *Amazon Codeguru Reviewer User Guide*.
 
 **Example 3: To create an AWS CodeCommit repository association**
 
@@ -73,4 +73,4 @@ Output::
         }
     }
 
-For more information, see `AssociateRepository<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_AssociateRepository.html>`__ in the *Amazon DevOps Guru API Reference*
+For more information, see `Create an AWS CodeCommit repository association in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-codecommit-association.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

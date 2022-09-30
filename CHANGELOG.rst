@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.25.85
+=======
+
+* api-change:``codedeploy``: This release allows you to override the alarm configurations when creating a deployment.
+* api-change:``devops-guru``: This release adds filter feature on AddNotificationChannel API, enable customer to configure the SNS notification messages by Severity or MessageTypes
+* api-change:``dlm``: This release adds support for archival of single-volume snapshots created by Amazon Data Lifecycle Manager policies
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``sagemaker``: A new parameter called ExplainerConfig is added to CreateEndpointConfig API to enable SageMaker Clarify online explainability feature.
+* api-change:``sso-oidc``: Documentation updates for the IAM Identity Center OIDC CLI Reference.
+
+
 1.25.84
 =======
 

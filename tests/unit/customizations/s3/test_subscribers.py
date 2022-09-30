@@ -592,10 +592,12 @@ class PutObjectTaggingException(Exception):
 class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
     def setUp(self):
         super(TestSetTagsSubscriber, self).setUp()
+        self.source_client = mock.Mock()
         self.subscriber = SetTagsSubscriber(
             client=self.client,
             transfer_config=self.transfer_config,
             cli_params=self.cli_params,
+            source_client=self.source_client,
         )
         self.tagging_response = {
             'TagSet': [
@@ -625,28 +627,29 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
     def test_sets_tags_for_mp_copy(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = self.tagging_response
+        self.source_client.get_object_tagging.return_value = \
+            self.tagging_response
         self.subscriber.on_queued(self.future)
-        self.client.get_object_tagging.assert_called_with(
+        self.source_client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
         self.assert_extra_args(self.future, {'Tagging': self.url_encoded_tags})
 
     def test_does_not_set_tags_if_not_present(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = {'TagSet': []}
+        self.source_client.get_object_tagging.return_value = {'TagSet': []}
         self.subscriber.on_queued(self.future)
-        self.client.get_object_tagging.assert_called_with(
+        self.source_client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
         self.assert_extra_args(self.future, {})
 
     def test_sets_tags_using_put_object_tagging_if_over_size_limit(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = \
             self.tagging_response_over_limit
         self.subscriber.on_queued(self.future)
-        self.client.get_object_tagging.assert_called_with(
+        self.source_client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
         self.assert_extra_args(self.future, {})
@@ -658,7 +661,7 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
     def test_does_not_call_put_object_tagging_if_transfer_fails(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = \
             self.tagging_response_over_limit
         self.subscriber.on_queued(self.future)
         self.future.set_exception(Exception())
@@ -667,7 +670,7 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
     def test_put_object_tagging_propagates_error_and_cleans_up_if_fails(self):
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = \
             self.tagging_response_over_limit
         self.subscriber.on_queued(self.future)
 
@@ -689,7 +692,7 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
     def test_add_extra_params_to_delete_object_call(self):
         self.cli_params['request_payer'] = 'requester'
         self.set_size_for_mp_copy(self.future)
-        self.client.get_object_tagging.return_value = \
+        self.source_client.get_object_tagging.return_value = \
             self.tagging_response_over_limit
         self.subscriber.on_queued(self.future)
 

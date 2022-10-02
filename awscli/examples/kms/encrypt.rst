@@ -1,4 +1,4 @@
-**Example 1: To encrypt the contents of a file on Linux or MacOS**
+**Example 1: To encrypt the contents of a file on Linux or macOS**
 
 The following ``encrypt`` command demonstrates the recommended way to encrypt data with the AWS CLI. ::
 
@@ -33,7 +33,7 @@ The command does several things:
 
 **Example 2: Using the AWS CLI to encrypt data on Windows**
 
-The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and MacOS. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples. ::
+The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and macOS. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples. ::
 
     aws kms encrypt \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \

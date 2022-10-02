@@ -99,7 +99,7 @@ class PagingHelpRenderer(object):
 class PosixHelpRenderer(PagingHelpRenderer):
     """
     Render help content on a Posix-like system.  This includes
-    Linux and MacOS X.
+    Linux and macOS.
     """
 
     PAGER = 'less -R'

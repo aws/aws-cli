@@ -22,7 +22,7 @@ Output::
 
 For more information about using asymmetric KMS keys in AWS KMS, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
 
-**Example 2: To save a digital signature in a file (Linux and macOs)**
+**Example 2: To save a digital signature in a file (Linux and macOS)**
 
 The following ``sign`` example generates a cryptographic signature for a short message stored in a local file. The command also gets the Signature property from the response, Base64-decodes it and saves it in the ExampleSignature file. You can use the signature file in a ``verify`` command that verifies the signature.
 

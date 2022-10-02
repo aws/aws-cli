@@ -1,4 +1,4 @@
-**Example 1: To generate a 256-bit random byte string (Linux or macOs)**
+**Example 1: To generate a 256-bit random byte string (Linux or macOS)**
 
 The following ``generate-random`` example generates a 256-bit (32-byte), base64-encoded random byte string. The example decodes the byte string and saves it in the `random` file. 
 

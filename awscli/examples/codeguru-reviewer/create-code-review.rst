@@ -30,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `CreateCodeReview<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CreateCodeReview.html>`__ in the *Amazon CodeGuru Reviewer API Reference*
+For more information, see `Create code reviews in Amazon CodeGuru Reviewer <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/create-code-reviews.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

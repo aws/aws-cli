@@ -310,17 +310,17 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
             region = self.region
         return f'{bucket}.s3.{region}.amazonaws.com'
 
-    def add_botocore_head_object_response(self):
+    def add_botocore_head_object_response(self, size=100):
         self.cli_runner.add_response(
             HTTPResponse(
                 headers={
-                    'Content-Length': '100',
+                    'Content-Length': str(size),
                     'Last-Modified': 'Thu, 11 Feb 2021 04:24:23 GMT',
                 }
             )
         )
 
-    def add_botocore_list_objects_response(self, keys):
+    def add_botocore_list_objects_response(self, keys, size=100):
         xml_body = (
             '<?xml version="1.0" ?>'
             '<ListBucketResult xmlns='
@@ -332,7 +332,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
                 '<Contents>'
                 '<LastModified>2015-12-08T18:26:43.000Z</LastModified>'
                 f'<Key>{key}</Key>'
-                '<Size>100</Size>'
+                f'<Size>{size}</Size>'
                 '</Contents>'
             )
         xml_body += '</ListBucketResult>'
@@ -352,6 +352,54 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
         )
 
     def add_botocore_delete_object_response(self):
+        self.cli_runner.add_response(HTTPResponse())
+
+    def add_botocore_create_multipart_upload_response(self):
+        self.cli_runner.add_response(
+            HTTPResponse(
+                body=(
+                    '<InitiateMultipartUploadResult>'
+                    '  <Bucket>bucket</Bucket>'
+                    '  <Key>key</Key>'
+                    '  <UploadId>upload-id</UploadId>'
+                    '</InitiateMultipartUploadResult>'
+                )
+            )
+        )
+
+    def add_botocore_upload_part_copy_response(self):
+        self.cli_runner.add_response(
+            HTTPResponse(
+                body=(
+                    '<CopyPartResult>'
+                    '  <LastModified>2022-09-30T17:20:13.000Z</LastModified>'
+                    '  <ETag>&quot;etag&quot;</ETag>'
+                    '</CopyPartResult>'
+                )
+            )
+        )
+
+    def add_botocore_complete_multipart_upload_response(self):
+        self.cli_runner.add_response(
+            HTTPResponse(
+                body=(
+                    '<CompleteMultipartUploadResult>'
+                    '</CompleteMultipartUploadResult>'
+                )
+            )
+        )
+
+    def add_botocore_get_object_tagging_response(self, tags=None):
+        tag_set_xml = '<TagSet>'
+        if tags:
+            for k, v in tags.items():
+                tag_set_xml += f'<Tag><Key>{k}</Key><Value>{v}</Value></Tag>'
+        tag_set_xml += '</TagSet>'
+        self.cli_runner.add_response(
+            HTTPResponse(body=f'<Tagging>{tag_set_xml}</Tagging>')
+        )
+
+    def add_botocore_set_object_tagging_response(self):
         self.cli_runner.add_response(HTTPResponse())
 
     def assert_no_remaining_botocore_responses(self):

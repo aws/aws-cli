@@ -204,12 +204,14 @@ class CopyPropsSubscriberFactory(object):
         return [
             self._create_metadata_directive_props_subscriber(fileinfo),
             SetTagsSubscriber(
-                self._client, self._transfer_config, self._cli_params)
+                self._client, self._transfer_config, self._cli_params,
+                source_client=fileinfo.source_client,
+            )
         ]
 
     def _create_metadata_directive_props_subscriber(self, fileinfo):
         subscriber_kwargs = {
-            'client': self._client,
+            'client': fileinfo.source_client,
             'transfer_config': self._transfer_config,
             'cli_params': self._cli_params,
         }
@@ -294,10 +296,11 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
 class SetTagsSubscriber(OnDoneFilteredSubscriber):
     _MAX_TAGGING_HEADER_SIZE = 2 * 1024
 
-    def __init__(self, client, transfer_config, cli_params):
+    def __init__(self, client, transfer_config, cli_params, source_client):
         self._client = client
         self._transfer_config = transfer_config
         self._cli_params = cli_params
+        self._source_client = source_client
 
     def on_queued(self, future, **kwargs):
         # Tags only need to be set if the operation is a multipart copy
@@ -354,7 +357,7 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
         utils.RequestParamsMapper.map_get_object_tagging_params(
             extra_args, self._cli_params
         )
-        get_tags_response = self._client.get_object_tagging(
+        get_tags_response = self._source_client.get_object_tagging(
             Bucket=bucket, Key=key, **extra_args)
         return get_tags_response['TagSet']
 

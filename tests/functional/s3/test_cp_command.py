@@ -1909,11 +1909,26 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
 
 
 class TestCpSourceRegion(BaseS3CLIRunnerTest):
+    def setUp(self):
+        super().setUp()
+        self.target_bucket = 'bucket'
+        self.target_region = self.region
+        self.expected_target_endpoint = self.get_virtual_s3_host(
+            self.target_bucket, self.target_region)
+        self.source_bucket = 'sourcebucket'
+        self.source_region = 'af-south-1'
+        self.expected_source_endpoint = self.get_virtual_s3_host(
+            self.source_bucket, self.source_region
+        )
+        self.multipart_threshold = 8 * MB
+
     def test_respects_source_region_for_single_copy(self):
-        source_region = 'af-south-1'
         cmdline = [
-            's3', 'cp', 's3://sourcebucket/key', 's3://bucket/',
-            '--region', self.region, '--source-region', source_region
+            's3', 'cp',
+            f's3://{self.source_bucket}/key',
+            f's3://{self.target_bucket}/',
+            '--source-region', self.source_region,
+            '--region', self.target_region,
         ]
         self.add_botocore_head_object_response()
         self.add_botocore_copy_object_response()
@@ -1922,18 +1937,18 @@ class TestCpSourceRegion(BaseS3CLIRunnerTest):
         self.assert_operations_to_endpoints(
             cli_runner_result=result,
             expected_operations_to_endpoints=[
-                ('HeadObject',
-                 self.get_virtual_s3_host('sourcebucket', source_region)),
-                ('CopyObject',
-                 self.get_virtual_s3_host('bucket', self.region))
+                ('HeadObject', self.expected_source_endpoint),
+                ('CopyObject', self.expected_target_endpoint)
             ]
         )
 
     def test_respects_source_region_for_recursive_copy(self):
-        source_region = 'af-south-1'
         cmdline = [
-            's3', 'cp', 's3://sourcebucket/', 's3://bucket/',
-            '--region', self.region, '--source-region', source_region,
+            's3', 'cp',
+            f's3://{self.source_bucket}/',
+            f's3://{self.target_bucket}/',
+            '--source-region', self.source_region,
+            '--region', self.target_region,
             '--recursive'
         ]
         self.add_botocore_list_objects_response(['key'])
@@ -1943,13 +1958,72 @@ class TestCpSourceRegion(BaseS3CLIRunnerTest):
         self.assert_operations_to_endpoints(
             cli_runner_result=result,
             expected_operations_to_endpoints=[
-                ('ListObjectsV2',
-                 self.get_virtual_s3_host('sourcebucket', source_region)),
-                ('CopyObject',
-                 self.get_virtual_s3_host('bucket', self.region))
+                ('ListObjectsV2', self.expected_source_endpoint),
+                ('CopyObject', self.expected_target_endpoint),
             ]
         )
 
+    def test_respects_source_region_for_copying_mp_object_tags(self):
+        cmdline = [
+            's3', 'cp',
+            f's3://{self.source_bucket}/key',
+            f's3://{self.target_bucket}/',
+            '--source-region', self.source_region,
+            '--region', self.target_region,
+        ]
+        large_tag_value = 'value' * (2 * 1024)
+        self.add_botocore_head_object_response(size=self.multipart_threshold)
+        self.add_botocore_get_object_tagging_response(
+            tags={'tag': large_tag_value})
+        self.add_botocore_create_multipart_upload_response()
+        self.add_botocore_upload_part_copy_response()
+        self.add_botocore_complete_multipart_upload_response()
+        self.add_botocore_set_object_tagging_response()
+
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('HeadObject', self.expected_source_endpoint),
+                ('GetObjectTagging', self.expected_source_endpoint),
+                ('CreateMultipartUpload', self.expected_target_endpoint),
+                ('UploadPartCopy', self.expected_target_endpoint),
+                ('CompleteMultipartUpload', self.expected_target_endpoint),
+                ('PutObjectTagging', self.expected_target_endpoint),
+            ]
+        )
+
+    def test_respects_source_region_for_recursive_mp_copy(self):
+        cmdline = [
+            's3', 'cp',
+            f's3://{self.source_bucket}/',
+            f's3://{self.target_bucket}/',
+            '--source-region', self.source_region,
+            '--region', self.target_region,
+            '--recursive',
+        ]
+        self.add_botocore_list_objects_response(
+            ['key'], size=self.multipart_threshold)
+        self.add_botocore_head_object_response(size=self.multipart_threshold)
+        self.add_botocore_get_object_tagging_response()
+        self.add_botocore_create_multipart_upload_response()
+        self.add_botocore_upload_part_copy_response()
+        self.add_botocore_complete_multipart_upload_response()
+
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('ListObjectsV2', self.expected_source_endpoint),
+                ('HeadObject', self.expected_source_endpoint),
+                ('GetObjectTagging', self.expected_source_endpoint),
+                ('CreateMultipartUpload', self.expected_target_endpoint),
+                ('UploadPartCopy', self.expected_target_endpoint),
+                ('CompleteMultipartUpload', self.expected_target_endpoint),
+            ]
+        )
 
 class TestCpWithCRTClient(BaseCRTTransferClientTest):
     def test_upload_using_crt_client(self):

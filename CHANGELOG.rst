@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.25.87
+=======
+
+* api-change:``connect``: Updated the CreateIntegrationAssociation API to support the CASES_DOMAIN IntegrationType.
+* api-change:``connectcases``: This release adds APIs for Amazon Connect Cases. Cases allows your agents to quickly track and manage customer issues that require multiple interactions, follow-up tasks, and teams in your contact center.  For more information, see https://docs.aws.amazon.com/cases/latest/APIReference/Welcome.html
+* api-change:``ec2``: Added EnableNetworkAddressUsageMetrics flag for ModifyVpcAttribute, DescribeVpcAttribute APIs.
+* api-change:``ecs``: Documentation updates to address various Amazon ECS tickets.
+* api-change:``s3control``: S3 Object Lambda adds support to allow customers to intercept HeadObject and ListObjects requests and introduce their own compute. These requests were previously proxied to S3.
+* api-change:``workmail``: This release adds support for impersonation roles in Amazon WorkMail.
+
+
 1.25.86
 =======
 

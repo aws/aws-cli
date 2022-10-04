@@ -545,13 +545,17 @@
     "AccessPreview":{
       "type":"structure",
       "required":[
+        "id",
         "analyzerArn",
         "configurations",
         "createdAt",
-        "id",
         "status"
       ],
       "members":{
+        "id":{
+          "shape":"AccessPreviewId",
+          "documentation":"<p>The unique ID for the access preview.</p>"
+        },
         "analyzerArn":{
           "shape":"AnalyzerArn",
           "documentation":"<p>The ARN of the analyzer used to generate the access preview.</p>"
@@ -563,10 +567,6 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the access preview was created.</p>"
-        },
-        "id":{
-          "shape":"AccessPreviewId",
-          "documentation":"<p>The unique ID for the access preview.</p>"
         },
         "status":{
           "shape":"AccessPreviewStatus",
@@ -582,33 +582,17 @@
     "AccessPreviewFinding":{
       "type":"structure",
       "required":[
-        "changeType",
-        "createdAt",
         "id",
-        "resourceOwnerAccount",
         "resourceType",
-        "status"
+        "createdAt",
+        "changeType",
+        "status",
+        "resourceOwnerAccount"
       ],
       "members":{
-        "action":{
-          "shape":"ActionList",
-          "documentation":"<p>The action in the analyzed policy statement that an external principal has permission to perform.</p>"
-        },
-        "changeType":{
-          "shape":"FindingChangeType",
-          "documentation":"<p>Provides context on how the access preview finding compares to existing access identified in IAM Access Analyzer.</p> <ul> <li> <p> <code>New</code> - The finding is for newly-introduced access.</p> </li> <li> <p> <code>Unchanged</code> - The preview finding is an existing finding that would remain unchanged.</p> </li> <li> <p> <code>Changed</code> - The preview finding is an existing finding with a change in status.</p> </li> </ul> <p>For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.</p>"
-        },
-        "condition":{
-          "shape":"ConditionKeyMap",
-          "documentation":"<p>The condition in the analyzed policy statement that resulted in a finding.</p>"
-        },
-        "createdAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the access preview finding was created.</p>"
-        },
-        "error":{
-          "shape":"String",
-          "documentation":"<p>An error.</p>"
+        "id":{
+          "shape":"AccessPreviewFindingId",
+          "documentation":"<p>The ID of the access preview finding. This ID uniquely identifies the element in the list of access preview findings and is not related to the finding ID in Access Analyzer.</p>"
         },
         "existingFindingId":{
           "shape":"FindingId",
@@ -618,37 +602,53 @@
           "shape":"FindingStatus",
           "documentation":"<p>The existing status of the finding, provided only for existing findings.</p>"
         },
-        "id":{
-          "shape":"AccessPreviewFindingId",
-          "documentation":"<p>The ID of the access preview finding. This ID uniquely identifies the element in the list of access preview findings and is not related to the finding ID in Access Analyzer.</p>"
-        },
-        "isPublic":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the policy that generated the finding allows public access to the resource.</p>"
-        },
         "principal":{
           "shape":"PrincipalMap",
           "documentation":"<p>The external principal that has access to a resource within the zone of trust.</p>"
+        },
+        "action":{
+          "shape":"ActionList",
+          "documentation":"<p>The action in the analyzed policy statement that an external principal has permission to perform.</p>"
+        },
+        "condition":{
+          "shape":"ConditionKeyMap",
+          "documentation":"<p>The condition in the analyzed policy statement that resulted in a finding.</p>"
         },
         "resource":{
           "shape":"String",
           "documentation":"<p>The resource that an external principal has access to. This is the resource associated with the access preview.</p>"
         },
-        "resourceOwnerAccount":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.</p>"
+        "isPublic":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the policy that generated the finding allows public access to the resource.</p>"
         },
         "resourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The type of the resource that can be accessed in the finding.</p>"
         },
-        "sources":{
-          "shape":"FindingSourceList",
-          "documentation":"<p>The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the access preview finding was created.</p>"
+        },
+        "changeType":{
+          "shape":"FindingChangeType",
+          "documentation":"<p>Provides context on how the access preview finding compares to existing access identified in IAM Access Analyzer.</p> <ul> <li> <p> <code>New</code> - The finding is for newly-introduced access.</p> </li> <li> <p> <code>Unchanged</code> - The preview finding is an existing finding that would remain unchanged.</p> </li> <li> <p> <code>Changed</code> - The preview finding is an existing finding with a change in status.</p> </li> </ul> <p>For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.</p>"
         },
         "status":{
           "shape":"FindingStatus",
           "documentation":"<p>The preview status of the finding. This is what the status of the finding would be after permissions deployment. For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.</p>"
+        },
+        "resourceOwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>An error.</p>"
+        },
+        "sources":{
+          "shape":"FindingSourceList",
+          "documentation":"<p>The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
         }
       },
       "documentation":"<p>An access preview finding generated by the access preview.</p>"
@@ -691,12 +691,16 @@
     "AccessPreviewSummary":{
       "type":"structure",
       "required":[
+        "id",
         "analyzerArn",
         "createdAt",
-        "id",
         "status"
       ],
       "members":{
+        "id":{
+          "shape":"AccessPreviewId",
+          "documentation":"<p>The unique ID for the access preview.</p>"
+        },
         "analyzerArn":{
           "shape":"AnalyzerArn",
           "documentation":"<p>The ARN of the analyzer used to generate the access preview.</p>"
@@ -704,10 +708,6 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the access preview was created.</p>"
-        },
-        "id":{
-          "shape":"AccessPreviewId",
-          "documentation":"<p>The unique ID for the access preview.</p>"
         },
         "status":{
           "shape":"AccessPreviewStatus",
@@ -755,46 +755,42 @@
     "AnalyzedResource":{
       "type":"structure",
       "required":[
-        "analyzedAt",
-        "createdAt",
-        "isPublic",
         "resourceArn",
-        "resourceOwnerAccount",
         "resourceType",
-        "updatedAt"
+        "createdAt",
+        "analyzedAt",
+        "updatedAt",
+        "isPublic",
+        "resourceOwnerAccount"
       ],
       "members":{
-        "actions":{
-          "shape":"ActionList",
-          "documentation":"<p>The actions that an external principal is granted permission to use by the policy that generated the finding.</p>"
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource that was analyzed.</p>"
         },
-        "analyzedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the resource was analyzed.</p>"
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource that was analyzed.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the finding was created.</p>"
         },
-        "error":{
-          "shape":"String",
-          "documentation":"<p>An error message.</p>"
+        "analyzedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the resource was analyzed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the finding was updated.</p>"
         },
         "isPublic":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the policy that generated the finding grants public access to the resource.</p>"
         },
-        "resourceArn":{
-          "shape":"ResourceArn",
-          "documentation":"<p>The ARN of the resource that was analyzed.</p>"
-        },
-        "resourceOwnerAccount":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
-        },
-        "resourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The type of the resource that was analyzed.</p>"
+        "actions":{
+          "shape":"ActionList",
+          "documentation":"<p>The actions that an external principal is granted permission to use by the policy that generated the finding.</p>"
         },
         "sharedVia":{
           "shape":"SharedViaList",
@@ -804,9 +800,13 @@
           "shape":"FindingStatus",
           "documentation":"<p>The current status of the finding generated from the analyzed resource.</p>"
         },
-        "updatedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the finding was updated.</p>"
+        "resourceOwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>An error message.</p>"
         }
       },
       "documentation":"<p>Contains details about the analyzed resource.</p>"
@@ -855,15 +855,23 @@
       "type":"structure",
       "required":[
         "arn",
-        "createdAt",
         "name",
-        "status",
-        "type"
+        "type",
+        "createdAt",
+        "status"
       ],
       "members":{
         "arn":{
           "shape":"AnalyzerArn",
           "documentation":"<p>The ARN of the analyzer.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the analyzer.</p>"
+        },
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>The type of analyzer, which corresponds to the zone of trust chosen for the analyzer.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -877,9 +885,9 @@
           "shape":"Timestamp",
           "documentation":"<p>The time at which the most recently analyzed resource was analyzed.</p>"
         },
-        "name":{
-          "shape":"Name",
-          "documentation":"<p>The name of the analyzer.</p>"
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags added to the analyzer.</p>"
         },
         "status":{
           "shape":"AnalyzerStatus",
@@ -888,14 +896,6 @@
         "statusReason":{
           "shape":"StatusReason",
           "documentation":"<p>The <code>statusReason</code> provides more details about the current status of the analyzer. For example, if the creation for the analyzer fails, a <code>Failed</code> status is returned. For an analyzer with organization as the type, this failure can be due to an issue with creating the service-linked roles required in the member accounts of the Amazon Web Services organization.</p>"
-        },
-        "tags":{
-          "shape":"TagsMap",
-          "documentation":"<p>The tags added to the analyzer.</p>"
-        },
-        "type":{
-          "shape":"Type",
-          "documentation":"<p>The type of analyzer, which corresponds to the zone of trust chosen for the analyzer.</p>"
         }
       },
       "documentation":"<p>Contains information about the analyzer.</p>"
@@ -915,14 +915,14 @@
           "shape":"AnalyzerArn",
           "documentation":"<p>The Amazon resource name (ARN) of the analyzer.</p>"
         },
+        "ruleName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the rule to apply.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A client token.</p>",
           "idempotencyToken":true
-        },
-        "ruleName":{
-          "shape":"Name",
-          "documentation":"<p>The name of the rule to apply.</p>"
         }
       },
       "documentation":"<p>Retroactively applies an archive rule.</p>"
@@ -930,23 +930,23 @@
     "ArchiveRuleSummary":{
       "type":"structure",
       "required":[
-        "createdAt",
-        "filter",
         "ruleName",
+        "filter",
+        "createdAt",
         "updatedAt"
       ],
       "members":{
-        "createdAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the archive rule was created.</p>"
+        "ruleName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the archive rule.</p>"
         },
         "filter":{
           "shape":"FilterCriteriaMap",
           "documentation":"<p>A filter used to define the archive rule.</p>"
         },
-        "ruleName":{
-          "shape":"Name",
-          "documentation":"<p>The name of the archive rule.</p>"
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the archive rule was created.</p>"
         },
         "updatedAt":{
           "shape":"Timestamp",
@@ -987,26 +987,26 @@
     "CloudTrailDetails":{
       "type":"structure",
       "required":[
+        "trails",
         "accessRole",
-        "startTime",
-        "trails"
+        "startTime"
       ],
       "members":{
+        "trails":{
+          "shape":"TrailList",
+          "documentation":"<p>A <code>Trail</code> object that contains settings for a trail.</p>"
+        },
         "accessRole":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the service role that IAM Access Analyzer uses to access your CloudTrail trail and service last accessed information.</p>"
-        },
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
           "documentation":"<p>The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.</p>"
         },
-        "trails":{
-          "shape":"TrailList",
-          "documentation":"<p>A <code>Trail</code> object that contains settings for a trail.</p>"
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.</p>"
         }
       },
       "documentation":"<p>Contains information about CloudTrail access.</p>"
@@ -1014,22 +1014,22 @@
     "CloudTrailProperties":{
       "type":"structure",
       "required":[
-        "endTime",
+        "trailProperties",
         "startTime",
-        "trailProperties"
+        "endTime"
       ],
       "members":{
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.</p>"
+        "trailProperties":{
+          "shape":"TrailPropertiesList",
+          "documentation":"<p>A <code>TrailProperties</code> object that contains settings for trail properties.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
           "documentation":"<p>The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.</p>"
         },
-        "trailProperties":{
-          "shape":"TrailPropertiesList",
-          "documentation":"<p>A <code>TrailProperties</code> object that contains settings for trail properties.</p>"
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.</p>"
         }
       },
       "documentation":"<p>Contains information about CloudTrail access.</p>"
@@ -1050,13 +1050,13 @@
           "shape":"KmsKeyConfiguration",
           "documentation":"<p>The access control configuration is for a KMS key. </p>"
         },
-        "s3Bucket":{
-          "shape":"S3BucketConfiguration",
-          "documentation":"<p>The access control configuration is for an Amazon S3 Bucket. </p>"
-        },
         "secretsManagerSecret":{
           "shape":"SecretsManagerSecretConfiguration",
           "documentation":"<p>The access control configuration is for a Secrets Manager secret.</p>"
+        },
+        "s3Bucket":{
+          "shape":"S3BucketConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon S3 Bucket. </p>"
         },
         "sqsQueue":{
           "shape":"SqsQueueConfiguration",
@@ -1108,14 +1108,14 @@
           "shape":"AnalyzerArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources\">ARN of the account analyzer</a> used to generate the access preview. You can only create an access preview for analyzers with an <code>Account</code> type and <code>Active</code> status.</p>"
         },
+        "configurations":{
+          "shape":"ConfigurationsMap",
+          "documentation":"<p>Access control configuration for your resource that is used to generate the access preview. The access preview includes findings for external access allowed to the resource with the proposed access control configuration. The configuration must contain exactly one element.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A client token.</p>",
           "idempotencyToken":true
-        },
-        "configurations":{
-          "shape":"ConfigurationsMap",
-          "documentation":"<p>Access control configuration for your resource that is used to generate the access preview. The access preview includes findings for external access allowed to the resource with the proposed access control configuration. The configuration must contain exactly one element.</p>"
         }
       }
     },
@@ -1140,22 +1140,22 @@
           "shape":"Name",
           "documentation":"<p>The name of the analyzer to create.</p>"
         },
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>The type of analyzer to create. Only ACCOUNT and ORGANIZATION analyzers are supported. You can create only one analyzer per account per Region. You can create up to 5 analyzers per organization per Region.</p>"
+        },
         "archiveRules":{
           "shape":"InlineArchiveRulesList",
           "documentation":"<p>Specifies the archive rules to add for the analyzer. Archive rules automatically archive findings that meet the criteria you define for the rule.</p>"
-        },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A client token.</p>",
-          "idempotencyToken":true
         },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags to apply to the analyzer.</p>"
         },
-        "type":{
-          "shape":"Type",
-          "documentation":"<p>The type of analyzer to create. Only ACCOUNT and ORGANIZATION analyzers are supported. You can create only one analyzer per account per Region. You can create up to 5 analyzers per organization per Region.</p>"
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true
         }
       },
       "documentation":"<p>Creates an analyzer.</p>"
@@ -1174,8 +1174,8 @@
       "type":"structure",
       "required":[
         "analyzerName",
-        "filter",
-        "ruleName"
+        "ruleName",
+        "filter"
       ],
       "members":{
         "analyzerName":{
@@ -1184,18 +1184,18 @@
           "location":"uri",
           "locationName":"analyzerName"
         },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A client token.</p>",
-          "idempotencyToken":true
+        "ruleName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the rule to create.</p>"
         },
         "filter":{
           "shape":"FilterCriteriaMap",
           "documentation":"<p>The criteria for the rule.</p>"
         },
-        "ruleName":{
-          "shape":"Name",
-          "documentation":"<p>The name of the rule to create.</p>"
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true
         }
       },
       "documentation":"<p>Creates an archive rule.</p>"
@@ -1203,21 +1203,21 @@
     "Criterion":{
       "type":"structure",
       "members":{
-        "contains":{
-          "shape":"ValueList",
-          "documentation":"<p>A \"contains\" operator to match for the filter used to create the rule.</p>"
-        },
         "eq":{
           "shape":"ValueList",
           "documentation":"<p>An \"equals\" operator to match for the filter used to create the rule.</p>"
         },
-        "exists":{
-          "shape":"Boolean",
-          "documentation":"<p>An \"exists\" operator to match for the filter used to create the rule. </p>"
-        },
         "neq":{
           "shape":"ValueList",
           "documentation":"<p>A \"not equals\" operator to match for the filter used to create the rule.</p>"
+        },
+        "contains":{
+          "shape":"ValueList",
+          "documentation":"<p>A \"contains\" operator to match for the filter used to create the rule.</p>"
+        },
+        "exists":{
+          "shape":"Boolean",
+          "documentation":"<p>An \"exists\" operator to match for the filter used to create the rule. </p>"
         }
       },
       "documentation":"<p>The criteria to use in the filter that defines the archive rule.</p>"
@@ -1255,18 +1255,18 @@
           "location":"uri",
           "locationName":"analyzerName"
         },
+        "ruleName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the rule to delete.</p>",
+          "location":"uri",
+          "locationName":"ruleName"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A client token.</p>",
           "idempotencyToken":true,
           "location":"querystring",
           "locationName":"clientToken"
-        },
-        "ruleName":{
-          "shape":"Name",
-          "documentation":"<p>The name of the rule to delete.</p>",
-          "location":"uri",
-          "locationName":"ruleName"
         }
       },
       "documentation":"<p>Deletes an archive rule.</p>"
@@ -1279,23 +1279,39 @@
     "Finding":{
       "type":"structure",
       "required":[
-        "analyzedAt",
+        "id",
+        "resourceType",
         "condition",
         "createdAt",
-        "id",
-        "resourceOwnerAccount",
-        "resourceType",
+        "analyzedAt",
+        "updatedAt",
         "status",
-        "updatedAt"
+        "resourceOwnerAccount"
       ],
       "members":{
+        "id":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding.</p>"
+        },
+        "principal":{
+          "shape":"PrincipalMap",
+          "documentation":"<p>The external principal that access to a resource within the zone of trust.</p>"
+        },
         "action":{
           "shape":"ActionList",
           "documentation":"<p>The action in the analyzed policy statement that an external principal has permission to use.</p>"
         },
-        "analyzedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the resource was analyzed.</p>"
+        "resource":{
+          "shape":"String",
+          "documentation":"<p>The resource that an external principal has access to.</p>"
+        },
+        "isPublic":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the policy that generated the finding allows public access to the resource.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource identified in the finding.</p>"
         },
         "condition":{
           "shape":"ConditionKeyMap",
@@ -1305,45 +1321,29 @@
           "shape":"Timestamp",
           "documentation":"<p>The time at which the finding was generated.</p>"
         },
-        "error":{
-          "shape":"String",
-          "documentation":"<p>An error.</p>"
+        "analyzedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the resource was analyzed.</p>"
         },
-        "id":{
-          "shape":"FindingId",
-          "documentation":"<p>The ID of the finding.</p>"
-        },
-        "isPublic":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the policy that generated the finding allows public access to the resource.</p>"
-        },
-        "principal":{
-          "shape":"PrincipalMap",
-          "documentation":"<p>The external principal that access to a resource within the zone of trust.</p>"
-        },
-        "resource":{
-          "shape":"String",
-          "documentation":"<p>The resource that an external principal has access to.</p>"
-        },
-        "resourceOwnerAccount":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
-        },
-        "resourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The type of the resource identified in the finding.</p>"
-        },
-        "sources":{
-          "shape":"FindingSourceList",
-          "documentation":"<p>The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the finding was updated.</p>"
         },
         "status":{
           "shape":"FindingStatus",
           "documentation":"<p>The current status of the finding.</p>"
         },
-        "updatedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the finding was updated.</p>"
+        "resourceOwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>An error.</p>"
+        },
+        "sources":{
+          "shape":"FindingSourceList",
+          "documentation":"<p>The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
         }
       },
       "documentation":"<p>Contains information about a finding.</p>"
@@ -1365,13 +1365,13 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "detail":{
-          "shape":"FindingSourceDetail",
-          "documentation":"<p>Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.</p>"
-        },
         "type":{
           "shape":"FindingSourceType",
           "documentation":"<p>Indicates the type of access that generated the finding.</p>"
+        },
+        "detail":{
+          "shape":"FindingSourceDetail",
+          "documentation":"<p>Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.</p>"
         }
       },
       "documentation":"<p>The source of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
@@ -1416,23 +1416,39 @@
     "FindingSummary":{
       "type":"structure",
       "required":[
-        "analyzedAt",
+        "id",
+        "resourceType",
         "condition",
         "createdAt",
-        "id",
-        "resourceOwnerAccount",
-        "resourceType",
+        "analyzedAt",
+        "updatedAt",
         "status",
-        "updatedAt"
+        "resourceOwnerAccount"
       ],
       "members":{
+        "id":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding.</p>"
+        },
+        "principal":{
+          "shape":"PrincipalMap",
+          "documentation":"<p>The external principal that has access to a resource within the zone of trust.</p>"
+        },
         "action":{
           "shape":"ActionList",
           "documentation":"<p>The action in the analyzed policy statement that an external principal has permission to use.</p>"
         },
-        "analyzedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the resource-based policy that generated the finding was analyzed.</p>"
+        "resource":{
+          "shape":"String",
+          "documentation":"<p>The resource that the external principal has access to.</p>"
+        },
+        "isPublic":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the finding reports a resource that has a policy that allows public access.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource that the external principal has access to.</p>"
         },
         "condition":{
           "shape":"ConditionKeyMap",
@@ -1442,45 +1458,29 @@
           "shape":"Timestamp",
           "documentation":"<p>The time at which the finding was created.</p>"
         },
-        "error":{
-          "shape":"String",
-          "documentation":"<p>The error that resulted in an Error finding.</p>"
+        "analyzedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the resource-based policy that generated the finding was analyzed.</p>"
         },
-        "id":{
-          "shape":"FindingId",
-          "documentation":"<p>The ID of the finding.</p>"
-        },
-        "isPublic":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the finding reports a resource that has a policy that allows public access.</p>"
-        },
-        "principal":{
-          "shape":"PrincipalMap",
-          "documentation":"<p>The external principal that has access to a resource within the zone of trust.</p>"
-        },
-        "resource":{
-          "shape":"String",
-          "documentation":"<p>The resource that the external principal has access to.</p>"
-        },
-        "resourceOwnerAccount":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
-        },
-        "resourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The type of the resource that the external principal has access to.</p>"
-        },
-        "sources":{
-          "shape":"FindingSourceList",
-          "documentation":"<p>The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the finding was most recently updated.</p>"
         },
         "status":{
           "shape":"FindingStatus",
           "documentation":"<p>The status of the finding.</p>"
         },
-        "updatedAt":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the finding was most recently updated.</p>"
+        "resourceOwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
+        },
+        "error":{
+          "shape":"String",
+          "documentation":"<p>The error that resulted in an Error finding.</p>"
+        },
+        "sources":{
+          "shape":"FindingSourceList",
+          "documentation":"<p>The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.</p>"
         }
       },
       "documentation":"<p>Contains information about a finding.</p>"
@@ -1508,10 +1508,6 @@
       "type":"structure",
       "required":["principalArn"],
       "members":{
-        "cloudTrailProperties":{
-          "shape":"CloudTrailProperties",
-          "documentation":"<p>Lists details about the <code>Trail</code> used to generated policy.</p>"
-        },
         "isComplete":{
           "shape":"Boolean",
           "documentation":"<p>This value is set to <code>true</code> if the generated policy contains all possible actions for a service that IAM Access Analyzer identified from the CloudTrail trail that you specified, and <code>false</code> otherwise.</p>"
@@ -1519,6 +1515,10 @@
         "principalArn":{
           "shape":"PrincipalArn",
           "documentation":"<p>The ARN of the IAM entity (user or role) for which you are generating a policy.</p>"
+        },
+        "cloudTrailProperties":{
+          "shape":"CloudTrailProperties",
+          "documentation":"<p>Lists details about the <code>Trail</code> used to generated policy.</p>"
         }
       },
       "documentation":"<p>Contains the generated policy details.</p>"
@@ -1527,13 +1527,13 @@
       "type":"structure",
       "required":["properties"],
       "members":{
-        "generatedPolicies":{
-          "shape":"GeneratedPolicyList",
-          "documentation":"<p>The text to use as the content for the new policy. The policy is created using the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html\">CreatePolicy</a> action.</p>"
-        },
         "properties":{
           "shape":"GeneratedPolicyProperties",
           "documentation":"<p>A <code>GeneratedPolicyProperties</code> object that contains properties of the generated policy.</p>"
+        },
+        "generatedPolicies":{
+          "shape":"GeneratedPolicyList",
+          "documentation":"<p>The text to use as the content for the new policy. The policy is created using the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html\">CreatePolicy</a> action.</p>"
         }
       },
       "documentation":"<p>Contains the text for the generated policy and its details.</p>"
@@ -1691,6 +1691,12 @@
       "type":"structure",
       "required":["jobId"],
       "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        },
         "includeResourcePlaceholders":{
           "shape":"Boolean",
           "documentation":"<p>The level of detail that you want to generate. You can specify whether to generate policies with placeholders for resource ARNs for actions that support resource level granularity in policies.</p> <p>For example, in the resource section of a policy, you can receive a placeholder such as <code>\"Resource\":\"arn:aws:s3:::${BucketName}\"</code> instead of <code>\"*\"</code>.</p>",
@@ -1702,29 +1708,23 @@
           "documentation":"<p>The level of detail that you want to generate. You can specify whether to generate service-level policies. </p> <p>IAM Access Analyzer uses <code>iam:servicelastaccessed</code> to identify services that have been used recently to create this service-level template.</p>",
           "location":"querystring",
           "locationName":"includeServiceLevelTemplate"
-        },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.</p>",
-          "location":"uri",
-          "locationName":"jobId"
         }
       }
     },
     "GetGeneratedPolicyResponse":{
       "type":"structure",
       "required":[
-        "generatedPolicyResult",
-        "jobDetails"
+        "jobDetails",
+        "generatedPolicyResult"
       ],
       "members":{
-        "generatedPolicyResult":{
-          "shape":"GeneratedPolicyResult",
-          "documentation":"<p>A <code>GeneratedPolicyResult</code> object that contains the generated policies and associated details.</p>"
-        },
         "jobDetails":{
           "shape":"JobDetails",
           "documentation":"<p>A <code>GeneratedPolicyDetails</code> object that contains details about the generated policy.</p>"
+        },
+        "generatedPolicyResult":{
+          "shape":"GeneratedPolicyResult",
+          "documentation":"<p>A <code>GeneratedPolicyResult</code> object that contains the generated policies and associated details.</p>"
         }
       }
     },
@@ -1743,17 +1743,17 @@
     "InlineArchiveRule":{
       "type":"structure",
       "required":[
-        "filter",
-        "ruleName"
+        "ruleName",
+        "filter"
       ],
       "members":{
-        "filter":{
-          "shape":"FilterCriteriaMap",
-          "documentation":"<p>The condition and values for a criterion.</p>"
-        },
         "ruleName":{
           "shape":"Name",
           "documentation":"<p>The name of the rule.</p>"
+        },
+        "filter":{
+          "shape":"FilterCriteriaMap",
+          "documentation":"<p>The condition and values for a criterion.</p>"
         }
       },
       "documentation":"<p>An criterion statement in an archive rule. Each archive rule may have multiple criteria.</p>"
@@ -1796,10 +1796,22 @@
       "type":"structure",
       "required":[
         "jobId",
-        "startedOn",
-        "status"
+        "status",
+        "startedOn"
       ],
       "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the job request.</p>"
+        },
+        "startedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp of when the job was started.</p>"
+        },
         "completedOn":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of when the job was completed.</p>"
@@ -1807,18 +1819,6 @@
         "jobError":{
           "shape":"JobError",
           "documentation":"<p>The job error for the policy generation request.</p>"
-        },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.</p>"
-        },
-        "startedOn":{
-          "shape":"Timestamp",
-          "documentation":"<p>A timestamp of when the job was started.</p>"
-        },
-        "status":{
-          "shape":"JobStatus",
-          "documentation":"<p>The status of the job request.</p>"
         }
       },
       "documentation":"<p>Contains details about the policy generation request.</p>"
@@ -1870,30 +1870,30 @@
     "KmsGrantConfiguration":{
       "type":"structure",
       "required":[
+        "operations",
         "granteePrincipal",
-        "issuingAccount",
-        "operations"
+        "issuingAccount"
       ],
       "members":{
-        "constraints":{
-          "shape":"KmsGrantConstraints",
-          "documentation":"<p>Use this structure to propose allowing <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations\">cryptographic operations</a> in the grant only when the operation request includes the specified <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">encryption context</a>.</p>"
+        "operations":{
+          "shape":"KmsGrantOperationsList",
+          "documentation":"<p>A list of operations that the grant permits.</p>"
         },
         "granteePrincipal":{
           "shape":"GranteePrincipal",
           "documentation":"<p>The principal that is given permission to perform the operations that the grant permits.</p>"
         },
-        "issuingAccount":{
-          "shape":"IssuingAccount",
-          "documentation":"<p> The Amazon Web Services account under which the grant was issued. The account is used to propose KMS grants issued by accounts other than the owner of the key.</p>"
-        },
-        "operations":{
-          "shape":"KmsGrantOperationsList",
-          "documentation":"<p>A list of operations that the grant permits.</p>"
-        },
         "retiringPrincipal":{
           "shape":"RetiringPrincipal",
           "documentation":"<p>The principal that is given permission to retire the grant by using <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_RetireGrant.html\">RetireGrant</a> operation.</p>"
+        },
+        "constraints":{
+          "shape":"KmsGrantConstraints",
+          "documentation":"<p>Use this structure to propose allowing <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations\">cryptographic operations</a> in the grant only when the operation request includes the specified <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">encryption context</a>.</p>"
+        },
+        "issuingAccount":{
+          "shape":"IssuingAccount",
+          "documentation":"<p> The Amazon Web Services account under which the grant was issued. The account is used to propose KMS grants issued by accounts other than the owner of the key.</p>"
         }
       },
       "documentation":"<p>A proposed grant configuration for a KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateGrant.html\">CreateGrant</a>.</p>"
@@ -1942,13 +1942,13 @@
     "KmsKeyConfiguration":{
       "type":"structure",
       "members":{
-        "grants":{
-          "shape":"KmsGrantConfigurationsList",
-          "documentation":"<p>A list of proposed grant configurations for the KMS key. If the proposed grant configuration is for an existing key, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the key.</p>"
-        },
         "keyPolicies":{
           "shape":"KmsKeyPoliciesMap",
           "documentation":"<p>Resource policy configuration for the KMS key. The only valid value for the name of the key policy is <code>default</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default\">Default key policy</a>.</p>"
+        },
+        "grants":{
+          "shape":"KmsGrantConfigurationsList",
+          "documentation":"<p>A list of proposed grant configurations for the KMS key. If the proposed grant configuration is for an existing key, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the key.</p>"
         }
       },
       "documentation":"<p>Proposed access control configuration for a KMS key. You can propose a configuration for a new KMS key or an existing KMS key that you own by specifying the key policy and KMS grant configuration. If the configuration is for an existing key and you do not specify the key policy, the access preview uses the existing policy for the key. If the access preview is for a new resource and you do not specify the key policy, then the access preview uses the default key policy. The proposed key policy cannot be an empty string. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default\">Default key policy</a>. For more information about key policy limits, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/resource-limits.html\">Resource quotas</a>.</p> <p/>"
@@ -1981,13 +1981,13 @@
           "shape":"FilterCriteriaMap",
           "documentation":"<p>Criteria to filter the returned findings.</p>"
         },
-        "maxResults":{
-          "shape":"Integer",
-          "documentation":"<p>The maximum number of results to return in the response.</p>"
-        },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p>A token used for pagination of results returned.</p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         }
       }
     },
@@ -2015,17 +2015,17 @@
           "location":"querystring",
           "locationName":"analyzerArn"
         },
-        "maxResults":{
-          "shape":"Integer",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p>A token used for pagination of results returned.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -2051,17 +2051,17 @@
           "shape":"AnalyzerArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources\">ARN of the analyzer</a> to retrieve a list of analyzed resources from.</p>"
         },
-        "maxResults":{
-          "shape":"Integer",
-          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource.</p>"
         },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p>A token used for pagination of results returned.</p>"
         },
-        "resourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The type of resource.</p>"
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         }
       },
       "documentation":"<p>Retrieves a list of resources that have been analyzed.</p>"
@@ -2084,17 +2084,17 @@
     "ListAnalyzersRequest":{
       "type":"structure",
       "members":{
-        "maxResults":{
-          "shape":"Integer",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p>A token used for pagination of results returned.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         },
         "type":{
           "shape":"Type",
@@ -2130,17 +2130,17 @@
           "location":"uri",
           "locationName":"analyzerName"
         },
-        "maxResults":{
-          "shape":"Integer",
-          "documentation":"<p>The maximum number of results to return in the request.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p>A token used for pagination of results returned.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in the request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       },
       "documentation":"<p>Retrieves a list of archive rules created for the specified analyzer.</p>"
@@ -2172,17 +2172,17 @@
           "shape":"FilterCriteriaMap",
           "documentation":"<p>A filter to match for the findings to return.</p>"
         },
-        "maxResults":{
-          "shape":"Integer",
-          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        "sort":{
+          "shape":"SortCriteria",
+          "documentation":"<p>The sort order for the findings returned.</p>"
         },
         "nextToken":{
           "shape":"Token",
           "documentation":"<p>A token used for pagination of results returned.</p>"
         },
-        "sort":{
-          "shape":"SortCriteria",
-          "documentation":"<p>The sort order for the findings returned.</p>"
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         }
       },
       "documentation":"<p>Retrieves a list of findings generated by the specified analyzer.</p>"
@@ -2205,6 +2205,12 @@
     "ListPolicyGenerationsRequest":{
       "type":"structure",
       "members":{
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the IAM entity (user or role) for which you are generating a policy. Use this with <code>ListGeneratedPolicies</code> to filter the results to only include results for a specific principal.</p>",
+          "location":"querystring",
+          "locationName":"principalArn"
+        },
         "maxResults":{
           "shape":"ListPolicyGenerationsRequestMaxResultsInteger",
           "documentation":"<p>The maximum number of results to return in the response.</p>",
@@ -2216,12 +2222,6 @@
           "documentation":"<p>A token used for pagination of results returned.</p>",
           "location":"querystring",
           "locationName":"nextToken"
-        },
-        "principalArn":{
-          "shape":"PrincipalArn",
-          "documentation":"<p>The ARN of the IAM entity (user or role) for which you are generating a policy. Use this with <code>ListGeneratedPolicies</code> to filter the results to only include results for a specific principal.</p>",
-          "location":"querystring",
-          "locationName":"principalArn"
         }
       }
     },
@@ -2234,13 +2234,13 @@
       "type":"structure",
       "required":["policyGenerations"],
       "members":{
-        "nextToken":{
-          "shape":"Token",
-          "documentation":"<p>A token used for pagination of results returned.</p>"
-        },
         "policyGenerations":{
           "shape":"PolicyGenerationList",
           "documentation":"<p>A <code>PolicyGeneration</code> object that contains details about the generated policy.</p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token used for pagination of results returned.</p>"
         }
       }
     },
@@ -2313,11 +2313,11 @@
     "NetworkOriginConfiguration":{
       "type":"structure",
       "members":{
+        "vpcConfiguration":{"shape":"VpcConfiguration"},
         "internetConfiguration":{
           "shape":"InternetConfiguration",
           "documentation":"<p>The configuration for the Amazon S3 access point or multi-region access point with an <code>Internet</code> origin.</p>"
-        },
-        "vpcConfiguration":{"shape":"VpcConfiguration"}
+        }
       },
       "documentation":"<p>The proposed <code>InternetConfiguration</code> or <code>VpcConfiguration</code> to apply to the Amazon S3 access point. <code>VpcConfiguration</code> does not apply to multi-region access points. You can make the access point accessible from the internet, or you can specify that all requests made through that access point must originate from a specific virtual private cloud (VPC). You can specify only one type of network configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/creating-access-points.html\">Creating access points</a>.</p>",
       "union":true
@@ -2362,14 +2362,10 @@
       "required":[
         "jobId",
         "principalArn",
-        "startedOn",
-        "status"
+        "status",
+        "startedOn"
       ],
       "members":{
-        "completedOn":{
-          "shape":"Timestamp",
-          "documentation":"<p>A timestamp of when the policy generation was completed.</p>"
-        },
         "jobId":{
           "shape":"JobId",
           "documentation":"<p>The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.</p>"
@@ -2378,13 +2374,17 @@
           "shape":"PrincipalArn",
           "documentation":"<p>The ARN of the IAM entity (user or role) for which you are generating a policy.</p>"
         },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the policy generation request.</p>"
+        },
         "startedOn":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp of when the policy generation started.</p>"
         },
-        "status":{
-          "shape":"JobStatus",
-          "documentation":"<p>The status of the policy generation request.</p>"
+        "completedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp of when the policy generation was completed.</p>"
         }
       },
       "documentation":"<p>Contains details about the policy generation status and properties.</p>"
@@ -2416,18 +2416,18 @@
     "Position":{
       "type":"structure",
       "required":[
-        "column",
         "line",
+        "column",
         "offset"
       ],
       "members":{
-        "column":{
-          "shape":"Integer",
-          "documentation":"<p>The column of the position, starting from 0.</p>"
-        },
         "line":{
           "shape":"Integer",
           "documentation":"<p>The line of the position, starting from 1.</p>"
+        },
+        "column":{
+          "shape":"Integer",
+          "documentation":"<p>The column of the position, starting from 0.</p>"
         },
         "offset":{
           "shape":"Integer",
@@ -2511,16 +2511,16 @@
           "shape":"AccessPointPolicy",
           "documentation":"<p>The access point or multi-region access point policy.</p>"
         },
-        "networkOrigin":{
-          "shape":"NetworkOriginConfiguration",
-          "documentation":"<p>The proposed <code>Internet</code> and <code>VpcConfiguration</code> to apply to this Amazon S3 access point. <code>VpcConfiguration</code> does not apply to multi-region access points. If the access preview is for a new resource and neither is specified, the access preview uses <code>Internet</code> for the network origin. If the access preview is for an existing resource and neither is specified, the access preview uses the exiting network origin.</p>"
-        },
         "publicAccessBlock":{
           "shape":"S3PublicAccessBlockConfiguration",
           "documentation":"<p>The proposed <code>S3PublicAccessBlock</code> configuration to apply to this Amazon S3 access point or multi-region access point.</p>"
+        },
+        "networkOrigin":{
+          "shape":"NetworkOriginConfiguration",
+          "documentation":"<p>The proposed <code>Internet</code> and <code>VpcConfiguration</code> to apply to this Amazon S3 access point. <code>VpcConfiguration</code> does not apply to multi-region access points. If the access preview is for a new resource and neither is specified, the access preview uses <code>Internet</code> for the network origin. If the access preview is for an existing resource and neither is specified, the access preview uses the exiting network origin.</p>"
         }
       },
-      "documentation":"<p>The configuration for an Amazon S3 access point or multi-region access point for the bucket. You can propose up to 10 access points or multi-region access points per bucket. If the proposed Amazon S3 access point configuration is for an existing bucket, the access preview uses the proposed access point configuration in place of the existing access points. To propose an access point without a policy, you can provide an empty string as the access point policy. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/AmazonS3/latest/dev/creating-access-points.html\">Creating access points</a>. For more information about access point policy limits, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-points-restrictions-limitations.html\">Access points restrictions and limitations</a>.</p>"
+      "documentation":"<p>The configuration for an Amazon S3 access point or multi-region access point for the bucket. You can propose up to 10 access points or multi-region access points per bucket. If the proposed Amazon S3 access point configuration is for an existing bucket, the access preview uses the proposed access point configuration in place of the existing access points. To propose an access point without a policy, you can provide an empty string as the access point policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/creating-access-points.html\">Creating access points</a>. For more information about access point policy limits, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-points-restrictions-limitations.html\">Access points restrictions and limitations</a>.</p>"
     },
     "S3AccessPointConfigurationsMap":{
       "type":"map",
@@ -2530,17 +2530,17 @@
     "S3BucketAclGrantConfiguration":{
       "type":"structure",
       "required":[
-        "grantee",
-        "permission"
+        "permission",
+        "grantee"
       ],
       "members":{
-        "grantee":{
-          "shape":"AclGrantee",
-          "documentation":"<p>The grantee to whom you’re assigning access rights.</p>"
-        },
         "permission":{
           "shape":"AclPermission",
           "documentation":"<p>The permissions being granted.</p>"
+        },
+        "grantee":{
+          "shape":"AclGrantee",
+          "documentation":"<p>The grantee to whom you’re assigning access rights.</p>"
         }
       },
       "documentation":"<p>A proposed access control list grant configuration for an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#setting-acls\">How to Specify an ACL</a>.</p>"
@@ -2552,21 +2552,21 @@
     "S3BucketConfiguration":{
       "type":"structure",
       "members":{
-        "accessPoints":{
-          "shape":"S3AccessPointConfigurationsMap",
-          "documentation":"<p>The configuration of Amazon S3 access points or multi-region access points for the bucket. You can propose up to 10 new access points per bucket.</p>"
+        "bucketPolicy":{
+          "shape":"S3BucketPolicy",
+          "documentation":"<p>The proposed bucket policy for the Amazon S3 bucket.</p>"
         },
         "bucketAclGrants":{
           "shape":"S3BucketAclGrantConfigurationsList",
           "documentation":"<p>The proposed list of ACL grants for the Amazon S3 bucket. You can propose up to 100 ACL grants per bucket. If the proposed grant configuration is for an existing bucket, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the bucket.</p>"
         },
-        "bucketPolicy":{
-          "shape":"S3BucketPolicy",
-          "documentation":"<p>The proposed bucket policy for the Amazon S3 bucket.</p>"
-        },
         "bucketPublicAccessBlock":{
           "shape":"S3PublicAccessBlockConfiguration",
           "documentation":"<p>The proposed block public access configuration for the Amazon S3 bucket.</p>"
+        },
+        "accessPoints":{
+          "shape":"S3AccessPointConfigurationsMap",
+          "documentation":"<p>The configuration of Amazon S3 access points or multi-region access points for the bucket. You can propose up to 10 new access points per bucket.</p>"
         }
       },
       "documentation":"<p>Proposed access control configuration for an Amazon S3 bucket. You can propose a configuration for a new Amazon S3 bucket or an existing Amazon S3 bucket that you own by specifying the Amazon S3 bucket policy, bucket ACLs, bucket BPA settings, Amazon S3 access points, and multi-region access points attached to the bucket. If the configuration is for an existing Amazon S3 bucket and you do not specify the Amazon S3 bucket policy, the access preview uses the existing policy attached to the bucket. If the access preview is for a new resource and you do not specify the Amazon S3 bucket policy, the access preview assumes a bucket without a policy. To propose deletion of an existing bucket policy, you can specify an empty string. For more information about bucket policy limits, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html\">Bucket Policy Examples</a>.</p>"
@@ -2652,17 +2652,17 @@
     "Span":{
       "type":"structure",
       "required":[
-        "end",
-        "start"
+        "start",
+        "end"
       ],
       "members":{
-        "end":{
-          "shape":"Position",
-          "documentation":"<p>The end position of the span (exclusive).</p>"
-        },
         "start":{
           "shape":"Position",
           "documentation":"<p>The start position of the span (inclusive).</p>"
+        },
+        "end":{
+          "shape":"Position",
+          "documentation":"<p>The end position of the span (exclusive).</p>"
         }
       },
       "documentation":"<p>A span in a policy. The span consists of a start position (inclusive) and end position (exclusive).</p>"
@@ -2682,18 +2682,18 @@
       "type":"structure",
       "required":["policyGenerationDetails"],
       "members":{
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p>",
-          "idempotencyToken":true
+        "policyGenerationDetails":{
+          "shape":"PolicyGenerationDetails",
+          "documentation":"<p>Contains the ARN of the IAM entity (user or role) for which you are generating a policy.</p>"
         },
         "cloudTrailDetails":{
           "shape":"CloudTrailDetails",
           "documentation":"<p>A <code>CloudTrailDetails</code> object that contains details about a <code>Trail</code> that you want to analyze to generate policies.</p>"
         },
-        "policyGenerationDetails":{
-          "shape":"PolicyGenerationDetails",
-          "documentation":"<p>Contains the ARN of the IAM entity (user or role) for which you are generating a policy.</p>"
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2740,17 +2740,17 @@
     "Substring":{
       "type":"structure",
       "required":[
-        "length",
-        "start"
+        "start",
+        "length"
       ],
       "members":{
-        "length":{
-          "shape":"Integer",
-          "documentation":"<p>The length of the substring.</p>"
-        },
         "start":{
           "shape":"Integer",
           "documentation":"<p>The start index of the substring, starting from 0.</p>"
+        },
+        "length":{
+          "shape":"Integer",
+          "documentation":"<p>The length of the substring.</p>"
         }
       },
       "documentation":"<p>A reference to a substring of a literal string in a JSON document.</p>"
@@ -2819,10 +2819,6 @@
       "type":"structure",
       "required":["cloudTrailArn"],
       "members":{
-        "allRegions":{
-          "shape":"Boolean",
-          "documentation":"<p>Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.</p>"
-        },
         "cloudTrailArn":{
           "shape":"CloudTrailArn",
           "documentation":"<p>Specifies the ARN of the trail. The format of a trail ARN is <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code>.</p>"
@@ -2830,6 +2826,10 @@
         "regions":{
           "shape":"RegionList",
           "documentation":"<p>A list of regions to get CloudTrail data from and analyze to generate a policy.</p>"
+        },
+        "allRegions":{
+          "shape":"Boolean",
+          "documentation":"<p>Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.</p>"
         }
       },
       "documentation":"<p>Contains details about the CloudTrail trail being analyzed to generate a policy.</p>"
@@ -2842,10 +2842,6 @@
       "type":"structure",
       "required":["cloudTrailArn"],
       "members":{
-        "allRegions":{
-          "shape":"Boolean",
-          "documentation":"<p>Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.</p>"
-        },
         "cloudTrailArn":{
           "shape":"CloudTrailArn",
           "documentation":"<p>Specifies the ARN of the trail. The format of a trail ARN is <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code>.</p>"
@@ -2853,6 +2849,10 @@
         "regions":{
           "shape":"RegionList",
           "documentation":"<p>A list of regions to get CloudTrail data from and analyze to generate a policy.</p>"
+        },
+        "allRegions":{
+          "shape":"Boolean",
+          "documentation":"<p>Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.</p>"
         }
       },
       "documentation":"<p>Contains details about the CloudTrail trail being analyzed to generate a policy.</p>"
@@ -2900,8 +2900,8 @@
       "type":"structure",
       "required":[
         "analyzerName",
-        "filter",
-        "ruleName"
+        "ruleName",
+        "filter"
       ],
       "members":{
         "analyzerName":{
@@ -2910,20 +2910,20 @@
           "location":"uri",
           "locationName":"analyzerName"
         },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A client token.</p>",
-          "idempotencyToken":true
-        },
-        "filter":{
-          "shape":"FilterCriteriaMap",
-          "documentation":"<p>A filter to match for the rules to update. Only rules that match the filter are updated.</p>"
-        },
         "ruleName":{
           "shape":"Name",
           "documentation":"<p>The name of the rule to update.</p>",
           "location":"uri",
           "locationName":"ruleName"
+        },
+        "filter":{
+          "shape":"FilterCriteriaMap",
+          "documentation":"<p>A filter to match for the rules to update. Only rules that match the filter are updated.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true
         }
       },
       "documentation":"<p>Updates the specified archive rule.</p>"
@@ -2939,10 +2939,9 @@
           "shape":"AnalyzerArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources\">ARN of the analyzer</a> that generated the findings to update.</p>"
         },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>A client token.</p>",
-          "idempotencyToken":true
+        "status":{
+          "shape":"FindingStatusUpdate",
+          "documentation":"<p>The state represents the action to take to update the finding Status. Use <code>ARCHIVE</code> to change an Active finding to an Archived finding. Use <code>ACTIVE</code> to change an Archived finding to an Active finding.</p>"
         },
         "ids":{
           "shape":"FindingIdList",
@@ -2952,9 +2951,10 @@
           "shape":"ResourceArn",
           "documentation":"<p>The ARN of the resource identified in the finding.</p>"
         },
-        "status":{
-          "shape":"FindingStatusUpdate",
-          "documentation":"<p>The state represents the action to take to update the finding Status. Use <code>ARCHIVE</code> to change an Active finding to an Archived finding. Use <code>ACTIVE</code> to change an Archived finding to an Active finding.</p>"
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true
         }
       },
       "documentation":"<p>Updates findings with the new values provided in the request.</p>"
@@ -3048,7 +3048,8 @@
         "AWS::S3::Bucket",
         "AWS::S3::AccessPoint",
         "AWS::S3::MultiRegionAccessPoint",
-        "AWS::S3ObjectLambda::AccessPoint"
+        "AWS::S3ObjectLambda::AccessPoint",
+        "AWS::IAM::AssumeRolePolicyDocument"
       ]
     },
     "ValidatePolicyResponse":{
@@ -3072,14 +3073,14 @@
         "reason"
       ],
       "members":{
-        "fieldList":{
-          "shape":"ValidationExceptionFieldList",
-          "documentation":"<p>A list of fields that didn't validate.</p>"
-        },
         "message":{"shape":"String"},
         "reason":{
           "shape":"ValidationExceptionReason",
           "documentation":"<p>The reason for the exception.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of fields that didn't validate.</p>"
         }
       },
       "documentation":"<p>Validation exception error.</p>",
@@ -3092,17 +3093,17 @@
     "ValidationExceptionField":{
       "type":"structure",
       "required":[
-        "message",
-        "name"
+        "name",
+        "message"
       ],
       "members":{
-        "message":{
-          "shape":"String",
-          "documentation":"<p>A message about the validation exception.</p>"
-        },
         "name":{
           "shape":"String",
           "documentation":"<p>The name of the validation exception.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message about the validation exception.</p>"
         }
       },
       "documentation":"<p>Contains information about a validation exception.</p>"

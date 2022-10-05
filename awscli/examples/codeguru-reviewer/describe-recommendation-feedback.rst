@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `DescribeRecommendationFeedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DescribeRecommendationFeedback.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.
+For more information, see `View recommendations and provide feedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/give-feedback-from-code-review-details.html>`__ and `Step 4: Provide feedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/provide-feedback.html>`__ in the *Amazon CodeGuru Reviewer User Guide*.

@@ -41,7 +41,7 @@
         {"shape":"InternalServerException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Deletes the specified lifecycle policy and halts the automated operations that the policy specified.</p>"
+      "documentation":"<p>Deletes the specified lifecycle policy and halts the automated operations that the policy specified.</p> <p>For more information about deleting a policy, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/view-modify-delete.html#delete\">Delete lifecycle policies</a>.</p>"
     },
     "GetLifecyclePolicies":{
       "name":"GetLifecyclePolicies",
@@ -133,7 +133,7 @@
         {"shape":"InternalServerException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Updates the specified lifecycle policy.</p>"
+      "documentation":"<p>Updates the specified lifecycle policy.</p> <p>For more information about updating a policy, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/view-modify-delete.html#modify\">Modify lifecycle policies</a>.</p>"
     }
   },
   "shapes":{
@@ -166,6 +166,28 @@
       "max":120,
       "min":0,
       "pattern":"[0-9A-Za-z _-]+"
+    },
+    "ArchiveRetainRule":{
+      "type":"structure",
+      "required":["RetentionArchiveTier"],
+      "members":{
+        "RetentionArchiveTier":{
+          "shape":"RetentionArchiveTier",
+          "documentation":"<p>Information about retention period in the Amazon EBS Snapshots Archive. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/snapshot-archive.html\">Archive Amazon EBS snapshots</a>.</p>"
+        }
+      },
+      "documentation":"<p> <b>[Snapshot policies only]</b> Specifies information about the archive storage tier retention period.</p>"
+    },
+    "ArchiveRule":{
+      "type":"structure",
+      "required":["RetainRule"],
+      "members":{
+        "RetainRule":{
+          "shape":"ArchiveRetainRule",
+          "documentation":"<p>Information about the retention period for the snapshot archiving rule.</p>"
+        }
+      },
+      "documentation":"<p> <b>[Snapshot policies only]</b> Specifies a snapshot archiving rule for a schedule.</p>"
     },
     "AvailabilityZone":{
       "type":"string",
@@ -255,14 +277,14 @@
         },
         "Times":{
           "shape":"TimesList",
-          "documentation":"<p>The time, in UTC, to start the operation. The supported format is hh:mm.</p> <p>The operation occurs within a one-hour window following the specified time. If you do not specify a time, Amazon DLM selects a time within the next 24 hours.</p>"
+          "documentation":"<p>The time, in UTC, to start the operation. The supported format is hh:mm.</p> <p>The operation occurs within a one-hour window following the specified time. If you do not specify a time, Amazon Data Lifecycle Manager selects a time within the next 24 hours.</p>"
         },
         "CronExpression":{
           "shape":"CronExpression",
           "documentation":"<p>The schedule, as a Cron expression. The schedule interval must be between 1 hour and 1 year. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions\">Cron expressions</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
         }
       },
-      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies when the policy should create snapshots or AMIs.</p> <important> <p>You must specify either a Cron expression or an interval, interval unit, and start time. You cannot specify both.</p> </important>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies when the policy should create snapshots or AMIs.</p> <note> <ul> <li> <p>You must specify either <b>CronExpression</b>, or <b>Interval</b>, <b>IntervalUnit</b>, and <b>Times</b>.</p> </li> <li> <p>If you need to specify an <a>ArchiveRule</a> for the schedule, then you must specify a creation frequency of at least 28 days.</p> </li> </ul> </note>"
     },
     "CronExpression":{
       "type":"string",
@@ -503,7 +525,7 @@
           "documentation":"<p>The Availability Zones in which to enable fast snapshot restore.</p>"
         }
       },
-      "documentation":"<p> <b>[Snapshot policies only]</b> Specifies a rule for enabling fast snapshot restore for snapshots created by snaspshot policies. You can enable fast snapshot restore based on either a count or a time interval.</p>"
+      "documentation":"<p> <b>[Snapshot policies only]</b> Specifies a rule for enabling fast snapshot restore for snapshots created by snapshot policies. You can enable fast snapshot restore based on either a count or a time interval.</p>"
     },
     "GetLifecyclePoliciesRequest":{
       "type":"structure",
@@ -754,7 +776,7 @@
           "documentation":"<p> <b>[Snapshot policies that target instances only]</b> The tags used to identify data (non-root) volumes to exclude from multi-volume snapshot sets.</p> <p>If you create a snapshot lifecycle policy that targets instances and you specify tags for this parameter, then data volumes with the specified tags that are attached to targeted instances will be excluded from the multi-volume snapshot sets created by the policy.</p>"
         }
       },
-      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies optional parameters for snapshot and AMI policies. The set of valid parameters depends on the combination of policy type and target resource type.</p> <p>If you choose to exclude boot volumes and you specify tags that consequently exclude all of the additional data volumes attached to an instance, then Amazon DLM will not create any snapshots for the affected instance, and it will emit a <code>SnapshotsCreateFailed</code> Amazon CloudWatch metric. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-dlm-cw-metrics.html\">Monitor your policies using Amazon CloudWatch</a>.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies optional parameters for snapshot and AMI policies. The set of valid parameters depends on the combination of policy type and target resource type.</p> <p>If you choose to exclude boot volumes and you specify tags that consequently exclude all of the additional data volumes attached to an instance, then Amazon Data Lifecycle Manager will not create any snapshots for the affected instance, and it will emit a <code>SnapshotsCreateFailed</code> Amazon CloudWatch metric. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-dlm-cw-metrics.html\">Monitor your policies using Amazon CloudWatch</a>.</p>"
     },
     "PolicyArn":{
       "type":"string",
@@ -872,19 +894,37 @@
       "type":"structure",
       "members":{
         "Count":{
-          "shape":"Count",
-          "documentation":"<p>The number of snapshots to retain for each volume, up to a maximum of 1000.</p>"
+          "shape":"StandardTierRetainRuleCount",
+          "documentation":"<p>The number of snapshots to retain for each volume, up to a maximum of 1000. For example if you want to retain a maximum of three snapshots, specify <code>3</code>. When the fourth snapshot is created, the oldest retained snapshot is deleted, or it is moved to the archive tier if you have specified an <a>ArchiveRule</a>.</p>"
         },
         "Interval":{
-          "shape":"Interval",
+          "shape":"StandardTierRetainRuleInterval",
           "documentation":"<p>The amount of time to retain each snapshot. The maximum is 100 years. This is equivalent to 1200 months, 5200 weeks, or 36500 days.</p>"
         },
         "IntervalUnit":{
           "shape":"RetentionIntervalUnitValues",
-          "documentation":"<p>The unit of time for time-based retention.</p>"
+          "documentation":"<p>The unit of time for time-based retention. For example, to retain snapshots for 3 months, specify <code>Interval=3</code> and <code>IntervalUnit=MONTHS</code>. Once the snapshot has been retained for 3 months, it is deleted, or it is moved to the archive tier if you have specified an <a>ArchiveRule</a>.</p>"
         }
       },
-      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies a retention rule for snapshots created by snapshot policies or for AMIs created by AMI policies. You can retain snapshots based on either a count or a time interval.</p> <p>You must specify either <b>Count</b>, or <b>Interval</b> and <b>IntervalUnit</b>.</p>"
+      "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies a retention rule for snapshots created by snapshot policies, or for AMIs created by AMI policies.</p> <note> <p>For snapshot policies that have an <a>ArchiveRule</a>, this retention rule applies to standard tier retention. When the retention threshold is met, snapshots are moved from the standard to the archive tier.</p> <p>For snapshot policies that do not have an <b>ArchiveRule</b>, snapshots are permanently deleted when this retention threshold is met.</p> </note> <p>You can retain snapshots based on either a count or a time interval.</p> <ul> <li> <p> <b>Count-based retention</b> </p> <p>You must specify <b>Count</b>. If you specify an <a>ArchiveRule</a> for the schedule, then you can specify a retention count of <code>0</code> to archive snapshots immediately after creation. If you specify a <a>FastRestoreRule</a>, <a>ShareRule</a>, or a <a>CrossRegionCopyRule</a>, then you must specify a retention count of <code>1</code> or more.</p> </li> <li> <p> <b>Age-based retention</b> </p> <p>You must specify <b>Interval</b> and <b>IntervalUnit</b>. If you specify an <a>ArchiveRule</a> for the schedule, then you can specify a retention interval of <code>0</code> days to archive snapshots immediately after creation. If you specify a <a>FastRestoreRule</a>, <a>ShareRule</a>, or a <a>CrossRegionCopyRule</a>, then you must specify a retention interval of <code>1</code> day or more.</p> </li> </ul>"
+    },
+    "RetentionArchiveTier":{
+      "type":"structure",
+      "members":{
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The maximum number of snapshots to retain in the archive storage tier for each volume. The count must ensure that each snapshot remains in the archive tier for at least 90 days. For example, if the schedule creates snapshots every 30 days, you must specify a count of 3 or more to ensure that each snapshot is archived for at least 90 days.</p>"
+        },
+        "Interval":{
+          "shape":"Interval",
+          "documentation":"<p>Specifies the period of time to retain snapshots in the archive tier. After this period expires, the snapshot is permanently deleted.</p>"
+        },
+        "IntervalUnit":{
+          "shape":"RetentionIntervalUnitValues",
+          "documentation":"<p>The unit of time in which to measure the <b>Interval</b>. For example, to retain a snapshots in the archive tier for 6 months, specify <code>Interval=6</code> and <code>IntervalUnit=MONTHS</code>.</p>"
+        }
+      },
+      "documentation":"<p> <b>[Snapshot policies only]</b> Describes the retention rule for archived snapshots. Once the archive retention threshold is met, the snapshots are permanently deleted from the archive tier.</p> <note> <p>The archive retention rule must retain snapshots in the archive tier for a minimum of 90 days.</p> </note> <p>For <b>count-based schedules</b>, you must specify <b>Count</b>. For <b>age-based schedules</b>, you must specify <b>Interval</b> and <b> IntervalUnit</b>.</p> <p>For more information about using snapshot archiving, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#dlm-archive\">Considerations for snapshot lifecycle policies</a>.</p>"
     },
     "RetentionIntervalUnitValues":{
       "type":"string",
@@ -937,6 +977,10 @@
         "DeprecateRule":{
           "shape":"DeprecateRule",
           "documentation":"<p> <b>[AMI policies only]</b> The AMI deprecation rule for the schedule.</p>"
+        },
+        "ArchiveRule":{
+          "shape":"ArchiveRule",
+          "documentation":"<p> <b>[Snapshot policies that target volumes only]</b> The snapshot archiving rule for the schedule. When you specify an archiving rule, snapshots are automatically moved from the standard tier to the archive tier once the schedule's retention threshold is met. Snapshots are then retained in the archive tier for the archive retention period that you specify. </p> <p>For more information about using snapshot archiving, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#dlm-archive\">Considerations for snapshot lifecycle policies</a>.</p>"
         }
       },
       "documentation":"<p> <b>[Snapshot and AMI policies only]</b> Specifies a schedule for a snapshot or AMI lifecycle policy.</p>"
@@ -994,6 +1038,15 @@
       "type":"list",
       "member":{"shape":"AwsAccountId"},
       "max":50,
+      "min":0
+    },
+    "StandardTierRetainRuleCount":{
+      "type":"integer",
+      "max":1000,
+      "min":0
+    },
+    "StandardTierRetainRuleInterval":{
+      "type":"integer",
       "min":0
     },
     "StatusMessage":{
@@ -1197,5 +1250,5 @@
       "min":0
     }
   },
-  "documentation":"<fullname>Amazon Data Lifecycle Manager</fullname> <p>With Amazon Data Lifecycle Manager, you can manage the lifecycle of your Amazon Web Services resources. You create lifecycle policies, which are used to automate operations on the specified resources.</p> <p>Amazon DLM supports Amazon EBS volumes and snapshots. For information about using Amazon DLM with Amazon EBS, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-lifecycle.html\">Automating the Amazon EBS Snapshot Lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+  "documentation":"<fullname>Amazon Data Lifecycle Manager</fullname> <p>With Amazon Data Lifecycle Manager, you can manage the lifecycle of your Amazon Web Services resources. You create lifecycle policies, which are used to automate operations on the specified resources.</p> <p>Amazon Data Lifecycle Manager supports Amazon EBS volumes and snapshots. For information about using Amazon Data Lifecycle Manager with Amazon EBS, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-lifecycle.html\"> Amazon Data Lifecycle Manager</a> in the <i>Amazon EC2 User Guide</i>.</p>"
 }

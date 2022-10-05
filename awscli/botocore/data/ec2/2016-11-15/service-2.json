@@ -21897,6 +21897,11 @@
           "shape":"AttributeBooleanValue",
           "documentation":"<p>Indicates whether DNS resolution is enabled for the VPC. If this attribute is <code>true</code>, the Amazon DNS server resolves DNS hostnames for your instances to their corresponding IP addresses; otherwise, it does not.</p>",
           "locationName":"enableDnsSupport"
+        },
+        "EnableNetworkAddressUsageMetrics":{
+          "shape":"AttributeBooleanValue",
+          "documentation":"<p>Indicates whether Network Address Usage metrics are enabled for your VPC.</p>",
+          "locationName":"enableNetworkAddressUsageMetrics"
         }
       }
     },
@@ -28752,6 +28757,11 @@
           "shape":"String",
           "documentation":"<p>The date and time to deprecate the AMI, in UTC, in the following format: <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>Z. If you specified a value for seconds, Amazon EC2 rounds the seconds to the nearest minute.</p>",
           "locationName":"deprecationTime"
+        },
+        "ImdsSupport":{
+          "shape":"ImdsSupportValues",
+          "documentation":"<p>If <code>v2.0</code>, it indicates that IMDSv2 is specified in the AMI. Instances launched from this AMI will have <code>HttpTokens</code> automatically set to <code>required</code> so that, by default, the instance requires that IMDSv2 is used when requesting instance metadata. In addition, <code>HttpPutResponseHopLimit</code> is set to <code>2</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-new-instances.html#configure-IMDS-new-instances-ami-configuration\">Configure the AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
+          "locationName":"imdsSupport"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -28818,6 +28828,11 @@
           "shape":"AttributeValue",
           "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the AMI was last used to launch an EC2 instance. When the AMI is used to launch an instance, there is a 24-hour delay before that usage is reported.</p> <note> <p> <code>lastLaunchedTime</code> data is available starting April 2017.</p> </note>",
           "locationName":"lastLaunchedTime"
+        },
+        "ImdsSupport":{
+          "shape":"AttributeValue",
+          "documentation":"<p>If <code>v2.0</code>, it indicates that IMDSv2 is specified in the AMI. Instances launched from this AMI will have <code>HttpTokens</code> automatically set to <code>required</code> so that, by default, the instance requires that IMDSv2 is used when requesting instance metadata. In addition, <code>HttpPutResponseHopLimit</code> is set to <code>2</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-new-instances.html#configure-IMDS-new-instances-ami-configuration\">Configure the AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
+          "locationName":"imdsSupport"
         }
       },
       "documentation":"<p>Describes an image attribute.</p>"
@@ -28835,7 +28850,8 @@
         "bootMode",
         "tpmSupport",
         "uefiData",
-        "lastLaunchedTime"
+        "lastLaunchedTime",
+        "imdsSupport"
       ]
     },
     "ImageDiskContainer":{
@@ -28954,6 +28970,10 @@
         "kernel",
         "ramdisk"
       ]
+    },
+    "ImdsSupportValues":{
+      "type":"string",
+      "enum":["v2.0"]
     },
     "ImportClientVpnClientCertificateRevocationListRequest":{
       "type":"structure",
@@ -37774,6 +37794,10 @@
           "shape":"VpcId",
           "documentation":"<p>The ID of the VPC.</p>",
           "locationName":"vpcId"
+        },
+        "EnableNetworkAddressUsageMetrics":{
+          "shape":"AttributeBooleanValue",
+          "documentation":"<p>Indicates whether Network Address Usage metrics are enabled for your VPC.</p>"
         }
       }
     },
@@ -40498,7 +40522,7 @@
     "Port":{
       "type":"integer",
       "max":65535,
-      "min":1
+      "min":0
     },
     "PortRange":{
       "type":"structure",
@@ -41711,6 +41735,10 @@
         "UefiData":{
           "shape":"StringType",
           "documentation":"<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data, use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "ImdsSupport":{
+          "shape":"ImdsSupportValues",
+          "documentation":"<p>Set to <code>v2.0</code> to indicate that IMDSv2 is specified in the AMI. Instances launched from this AMI will have <code>HttpTokens</code> automatically set to <code>required</code> so that, by default, the instance requires that IMDSv2 is used when requesting instance metadata. In addition, <code>HttpPutResponseHopLimit</code> is set to <code>2</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-new-instances.html#configure-IMDS-new-instances-ami-configuration\">Configure the AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <note> <p>If you set the value to <code>v2.0</code>, make sure that your AMI software can support IMDSv2.</p> </note>"
         }
       },
       "documentation":"<p>Contains the parameters for RegisterImage.</p>"
@@ -51904,7 +51932,8 @@
       "type":"string",
       "enum":[
         "enableDnsSupport",
-        "enableDnsHostnames"
+        "enableDnsHostnames",
+        "enableNetworkAddressUsageMetrics"
       ]
     },
     "VpcCidrAssociationId":{"type":"string"},

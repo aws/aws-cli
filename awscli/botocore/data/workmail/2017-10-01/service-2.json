@@ -51,6 +51,22 @@
       "documentation":"<p>Adds a member (user or group) to the group's set.</p>",
       "idempotent":true
     },
+    "AssumeImpersonationRole":{
+      "name":"AssumeImpersonationRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssumeImpersonationRoleRequest"},
+      "output":{"shape":"AssumeImpersonationRoleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Assumes an impersonation role for the given WorkMail organization. This method returns an authentication token you can use to make impersonated calls.</p>"
+    },
     "CancelMailboxExportJob":{
       "name":"CancelMailboxExportJob",
       "http":{
@@ -87,7 +103,7 @@
         {"shape":"OrganizationStateException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Adds an alias to the set of a given member (user or group) of Amazon WorkMail.</p>",
+      "documentation":"<p>Adds an alias to the set of a given member (user or group) of WorkMail.</p>",
       "idempotent":true
     },
     "CreateAvailabilityConfiguration":{
@@ -126,8 +142,26 @@
         {"shape":"ReservedNameException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"<p>Creates a group that can be used in Amazon WorkMail by calling the <a>RegisterToWorkMail</a> operation.</p>",
+      "documentation":"<p>Creates a group that can be used in WorkMail by calling the <a>RegisterToWorkMail</a> operation.</p>",
       "idempotent":true
+    },
+    "CreateImpersonationRole":{
+      "name":"CreateImpersonationRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateImpersonationRoleRequest"},
+      "output":{"shape":"CreateImpersonationRoleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"EntityStateException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates an impersonation role for the given WorkMail organization.</p> <p> <i>Idempotency</i> ensures that an API request completes no more than one time. With an idempotent request, if the original request completes successfully, any subsequent retries also complete successfully without performing any further actions.</p>"
     },
     "CreateMobileDeviceAccessRule":{
       "name":"CreateMobileDeviceAccessRule",
@@ -143,7 +177,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Creates a new mobile device access rule for the specified Amazon WorkMail organization.</p>"
+      "documentation":"<p>Creates a new mobile device access rule for the specified WorkMail organization.</p>"
     },
     "CreateOrganization":{
       "name":"CreateOrganization",
@@ -160,7 +194,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"NameAvailabilityException"}
       ],
-      "documentation":"<p>Creates a new Amazon WorkMail organization. Optionally, you can choose to associate an existing AWS Directory Service directory with your organization. If an AWS Directory Service directory ID is specified, the organization alias must match the directory alias. If you choose not to associate an existing directory with your organization, then we create a new Amazon WorkMail directory for you. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/add_new_organization.html\">Adding an organization</a> in the <i>Amazon WorkMail Administrator Guide</i>.</p> <p>You can associate multiple email domains with an organization, then set your default email domain from the Amazon WorkMail console. You can also associate a domain that is managed in an Amazon Route 53 public hosted zone. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html\">Adding a domain</a> and <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/default_domain.html\">Choosing the default domain</a> in the <i>Amazon WorkMail Administrator Guide</i>.</p> <p>Optionally, you can use a customer managed master key from AWS Key Management Service (AWS KMS) to encrypt email for your organization. If you don't associate an AWS KMS key, Amazon WorkMail creates a default AWS managed master key for you.</p>",
+      "documentation":"<p>Creates a new WorkMail organization. Optionally, you can choose to associate an existing AWS Directory Service directory with your organization. If an AWS Directory Service directory ID is specified, the organization alias must match the directory alias. If you choose not to associate an existing directory with your organization, then we create a new WorkMail directory for you. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/add_new_organization.html\">Adding an organization</a> in the <i>WorkMail Administrator Guide</i>.</p> <p>You can associate multiple email domains with an organization, then choose your default email domain from the WorkMail console. You can also associate a domain that is managed in an Amazon Route 53 public hosted zone. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html\">Adding a domain</a> and <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/default_domain.html\">Choosing the default domain</a> in the <i>WorkMail Administrator Guide</i>.</p> <p>Optionally, you can use a customer managed key from AWS Key Management Service (AWS KMS) to encrypt email for your organization. If you don't associate an AWS KMS key, WorkMail creates a default, AWS managed key for you.</p>",
       "idempotent":true
     },
     "CreateResource":{
@@ -180,7 +214,7 @@
         {"shape":"OrganizationStateException"},
         {"shape":"ReservedNameException"}
       ],
-      "documentation":"<p>Creates a new Amazon WorkMail resource. </p>",
+      "documentation":"<p>Creates a new WorkMail resource.</p>",
       "idempotent":true
     },
     "CreateUser":{
@@ -202,7 +236,7 @@
         {"shape":"ReservedNameException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"<p>Creates a user who can be used in Amazon WorkMail by calling the <a>RegisterToWorkMail</a> operation.</p>",
+      "documentation":"<p>Creates a user who can be used in WorkMail by calling the <a>RegisterToWorkMail</a> operation.</p>",
       "idempotent":true
     },
     "DeleteAccessControlRule":{
@@ -285,8 +319,23 @@
         {"shape":"OrganizationStateException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"<p>Deletes a group from Amazon WorkMail.</p>",
+      "documentation":"<p>Deletes a group from WorkMail.</p>",
       "idempotent":true
+    },
+    "DeleteImpersonationRole":{
+      "name":"DeleteImpersonationRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteImpersonationRoleRequest"},
+      "output":{"shape":"DeleteImpersonationRoleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>Deletes an impersonation role for the given WorkMail organization.</p>"
     },
     "DeleteMailboxPermissions":{
       "name":"DeleteMailboxPermissions",
@@ -335,7 +384,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Deletes a mobile device access rule for the specified Amazon WorkMail organization.</p> <note> <p>Deleting already deleted and non-existing rules does not produce an error. In those cases, the service sends back an HTTP 200 response with an empty HTTP body.</p> </note>"
+      "documentation":"<p>Deletes a mobile device access rule for the specified WorkMail organization.</p> <note> <p>Deleting already deleted and non-existing rules does not produce an error. In those cases, the service sends back an HTTP 200 response with an empty HTTP body.</p> </note>"
     },
     "DeleteOrganization":{
       "name":"DeleteOrganization",
@@ -350,7 +399,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Deletes an Amazon WorkMail organization and all underlying AWS resources managed by Amazon WorkMail as part of the organization. You can choose whether to delete the associated directory. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/remove_organization.html\">Removing an organization</a> in the <i>Amazon WorkMail Administrator Guide</i>.</p>",
+      "documentation":"<p>Deletes an WorkMail organization and all underlying AWS resources managed by WorkMail as part of the organization. You can choose whether to delete the associated directory. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/remove_organization.html\">Removing an organization</a> in the <i>WorkMail Administrator Guide</i>.</p>",
       "idempotent":true
     },
     "DeleteResource":{
@@ -367,7 +416,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Deletes the specified resource. </p>",
+      "documentation":"<p>Deletes the specified resource.</p>",
       "idempotent":true
     },
     "DeleteRetentionPolicy":{
@@ -403,7 +452,7 @@
         {"shape":"OrganizationStateException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"<p>Deletes a user from Amazon WorkMail and all subsequent systems. Before you can delete a user, the user state must be <code>DISABLED</code>. Use the <a>DescribeUser</a> action to confirm the user state.</p> <p>Deleting a user is permanent and cannot be undone. WorkMail archives user mailboxes for 30 days before they are permanently removed.</p>",
+      "documentation":"<p>Deletes a user from WorkMail and all subsequent systems. Before you can delete a user, the user state must be <code>DISABLED</code>. Use the <a>DescribeUser</a> action to confirm the user state.</p> <p>Deleting a user is permanent and cannot be undone. WorkMail archives user mailboxes for 30 days before they are permanently removed.</p>",
       "idempotent":true
     },
     "DeregisterFromWorkMail":{
@@ -421,7 +470,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Mark a user, group, or resource as no longer used in Amazon WorkMail. This action disassociates the mailbox and schedules it for clean-up. WorkMail keeps mailboxes for 30 days before they are permanently removed. The functionality in the console is <i>Disable</i>.</p>",
+      "documentation":"<p>Mark a user, group, or resource as no longer used in WorkMail. This action disassociates the mailbox and schedules it for clean-up. WorkMail keeps mailboxes for 30 days before they are permanently removed. The functionality in the console is <i>Disable</i>.</p>",
       "idempotent":true
     },
     "DeregisterMailDomain":{
@@ -439,7 +488,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"InvalidCustomSesConfigurationException"}
       ],
-      "documentation":"<p>Removes a domain from Amazon WorkMail, stops email routing to WorkMail, and removes the authorization allowing WorkMail use. SES keeps the domain because other applications may use it. You must first remove any email address used by WorkMail entities before you remove the domain.</p>",
+      "documentation":"<p>Removes a domain from WorkMail, stops email routing to WorkMail, and removes the authorization allowing WorkMail use. SES keeps the domain because other applications may use it. You must first remove any email address used by WorkMail entities before you remove the domain.</p>",
       "idempotent":true
     },
     "DescribeEmailMonitoringConfiguration":{
@@ -606,11 +655,12 @@
       "output":{"shape":"GetAccessControlEffectResponse"},
       "errors":[
         {"shape":"EntityNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Gets the effects of an organization's access control rules as they apply to a specified IPv4 address, access protocol action, or user ID. </p>"
+      "documentation":"<p>Gets the effects of an organization's access control rules as they apply to a specified IPv4 address, access protocol action, and user ID or impersonation role ID. You must provide either the user ID or impersonation role ID. Impersonation role ID can only be used with Action EWS.</p>"
     },
     "GetDefaultRetentionPolicy":{
       "name":"GetDefaultRetentionPolicy",
@@ -628,6 +678,40 @@
       ],
       "documentation":"<p>Gets the default retention policy details for the specified organization.</p>",
       "idempotent":true
+    },
+    "GetImpersonationRole":{
+      "name":"GetImpersonationRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImpersonationRoleRequest"},
+      "output":{"shape":"GetImpersonationRoleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the impersonation role details for the given WorkMail organization.</p>"
+    },
+    "GetImpersonationRoleEffect":{
+      "name":"GetImpersonationRoleEffect",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImpersonationRoleEffectRequest"},
+      "output":{"shape":"GetImpersonationRoleEffectResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"EntityStateException"}
+      ],
+      "documentation":"<p>Tests whether the given impersonation role can impersonate a target user.</p>"
     },
     "GetMailDomain":{
       "name":"GetMailDomain",
@@ -675,7 +759,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Simulates the effect of the mobile device access rules for the given attributes of a sample access event. Use this method to test the effects of the current set of mobile device access rules for the Amazon WorkMail organization for a particular user's attributes.</p>"
+      "documentation":"<p>Simulates the effect of the mobile device access rules for the given attributes of a sample access event. Use this method to test the effects of the current set of mobile device access rules for the WorkMail organization for a particular user's attributes.</p>"
     },
     "GetMobileDeviceAccessOverride":{
       "name":"GetMobileDeviceAccessOverride",
@@ -775,6 +859,21 @@
       "documentation":"<p>Returns summaries of the organization's groups.</p>",
       "idempotent":true
     },
+    "ListImpersonationRoles":{
+      "name":"ListImpersonationRoles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListImpersonationRolesRequest"},
+      "output":{"shape":"ListImpersonationRolesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p>Lists all the impersonation roles for the given WorkMail organization.</p>"
+    },
     "ListMailDomains":{
       "name":"ListMailDomains",
       "http":{
@@ -788,7 +887,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Lists the mail domains in a given Amazon WorkMail organization.</p>",
+      "documentation":"<p>Lists the mail domains in a given WorkMail organization.</p>",
       "idempotent":true
     },
     "ListMailboxExportJobs":{
@@ -853,7 +952,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Lists the mobile device access rules for the specified Amazon WorkMail organization.</p>"
+      "documentation":"<p>Lists the mobile device access rules for the specified WorkMail organization.</p>"
     },
     "ListOrganizations":{
       "name":"ListOrganizations",
@@ -914,7 +1013,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the tags applied to an Amazon WorkMail organization resource.</p>"
+      "documentation":"<p>Lists the tags applied to an WorkMail organization resource.</p>"
     },
     "ListUsers":{
       "name":"ListUsers",
@@ -944,10 +1043,11 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidParameterException"},
         {"shape":"EntityNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Adds a new access control rule for the specified organization. The rule allows or denies access to the organization for the specified IPv4 addresses, access protocol actions, and user IDs. Adding a new rule with the same name as an existing rule replaces the older rule.</p>"
+      "documentation":"<p>Adds a new access control rule for the specified organization. The rule allows or denies access to the organization for the specified IPv4 addresses, access protocol actions, user IDs and impersonation IDs. Adding a new rule with the same name as an existing rule replaces the older rule.</p>"
     },
     "PutEmailMonitoringConfiguration":{
       "name":"PutEmailMonitoringConfiguration",
@@ -1048,7 +1148,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Registers a new domain in Amazon WorkMail and SES, and configures it for use by WorkMail. Emails received by SES for this domain are routed to the specified WorkMail organization, and WorkMail has permanent permission to use the specified domain for sending your users' emails.</p>",
+      "documentation":"<p>Registers a new domain in WorkMail and SES, and configures it for use by WorkMail. Emails received by SES for this domain are routed to the specified WorkMail organization, and WorkMail has permanent permission to use the specified domain for sending your users' emails.</p>",
       "idempotent":true
     },
     "RegisterToWorkMail":{
@@ -1072,7 +1172,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Registers an existing and disabled user, group, or resource for Amazon WorkMail use by associating a mailbox and calendaring capabilities. It performs no change if the user, group, or resource is enabled and fails if the user, group, or resource is deleted. This operation results in the accumulation of costs. For more information, see <a href=\"https://aws.amazon.com/workmail/pricing\">Pricing</a>. The equivalent console functionality for this operation is <i>Enable</i>. </p> <p>Users can either be created by calling the <a>CreateUser</a> API operation or they can be synchronized from your directory. For more information, see <a>DeregisterFromWorkMail</a>.</p>",
+      "documentation":"<p>Registers an existing and disabled user, group, or resource for WorkMail use by associating a mailbox and calendaring capabilities. It performs no change if the user, group, or resource is enabled and fails if the user, group, or resource is deleted. This operation results in the accumulation of costs. For more information, see <a href=\"https://aws.amazon.com/workmail/pricing\">Pricing</a>. The equivalent console functionality for this operation is <i>Enable</i>.</p> <p>Users can either be created by calling the <a>CreateUser</a> API operation or they can be synchronized from your directory. For more information, see <a>DeregisterFromWorkMail</a>.</p>",
       "idempotent":true
     },
     "ResetPassword":{
@@ -1112,7 +1212,7 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Starts a mailbox export job to export MIME-format email messages and calendar items from the specified mailbox to the specified Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/mail-export.html\">Exporting mailbox content</a> in the <i>Amazon WorkMail Administrator Guide</i>.</p>",
+      "documentation":"<p>Starts a mailbox export job to export MIME-format email messages and calendar items from the specified mailbox to the specified Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/mail-export.html\">Exporting mailbox content</a> in the <i>WorkMail Administrator Guide</i>.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1128,7 +1228,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Applies the specified tags to the specified Amazon WorkMail organization resource.</p>"
+      "documentation":"<p>Applies the specified tags to the specified WorkMailorganization resource.</p>"
     },
     "TestAvailabilityConfiguration":{
       "name":"TestAvailabilityConfiguration",
@@ -1144,7 +1244,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Performs a test on an availability provider to ensure that access is allowed. For EWS, it verifies the provided credentials can be used to successfully log in. For Lambda, it verifies that the Lambda function can be invoked and that the resource access policy was configured to deny anonymous access. An anonymous invocation is one done without providing either a <code>SourceArn</code> or <code>SourceAccount</code> header.</p> <note> <p>The request must contain either one provider definition (<code>EwsProvider</code> or <code>LambdaProvider</code>) or the <code>DomainName</code> parameter. If the <code>DomainName</code> parameter is provided, the configuration stored under the <code>DomainName</code> will be tested. </p> </note>"
+      "documentation":"<p>Performs a test on an availability provider to ensure that access is allowed. For EWS, it verifies the provided credentials can be used to successfully log in. For Lambda, it verifies that the Lambda function can be invoked and that the resource access policy was configured to deny anonymous access. An anonymous invocation is one done without providing either a <code>SourceArn</code> or <code>SourceAccount</code> header.</p> <note> <p>The request must contain either one provider definition (<code>EwsProvider</code> or <code>LambdaProvider</code>) or the <code>DomainName</code> parameter. If the <code>DomainName</code> parameter is provided, the configuration stored under the <code>DomainName</code> will be tested.</p> </note>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1157,7 +1257,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Untags the specified tags from the specified Amazon WorkMail organization resource.</p>"
+      "documentation":"<p>Untags the specified tags from the specified WorkMail organization resource.</p>"
     },
     "UpdateAvailabilityConfiguration":{
       "name":"UpdateAvailabilityConfiguration",
@@ -1194,6 +1294,25 @@
       "documentation":"<p>Updates the default mail domain for an organization. The default mail domain is used by the WorkMail AWS Console to suggest an email address when enabling a mail user. You can only have one default domain.</p>",
       "idempotent":true
     },
+    "UpdateImpersonationRole":{
+      "name":"UpdateImpersonationRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateImpersonationRoleRequest"},
+      "output":{"shape":"UpdateImpersonationRoleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"EntityStateException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Updates an impersonation role for the given WorkMail organization.</p>"
+    },
     "UpdateMailboxQuota":{
       "name":"UpdateMailboxQuota",
       "http":{
@@ -1226,7 +1345,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationStateException"}
       ],
-      "documentation":"<p>Updates a mobile device access rule for the specified Amazon WorkMail organization.</p>"
+      "documentation":"<p>Updates a mobile device access rule for the specified WorkMail organization.</p>"
     },
     "UpdatePrimaryEmailAddress":{
       "name":"UpdatePrimaryEmailAddress",
@@ -1324,9 +1443,17 @@
         "DateModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date that the rule was modified.</p>"
+        },
+        "ImpersonationRoleIds":{
+          "shape":"ImpersonationRoleIdList",
+          "documentation":"<p>Impersonation role IDs to include in the rule.</p>"
+        },
+        "NotImpersonationRoleIds":{
+          "shape":"ImpersonationRoleIdList",
+          "documentation":"<p>Impersonation role IDs to exclude from the rule.</p>"
         }
       },
-      "documentation":"<p>A rule that controls access to an Amazon WorkMail organization.</p>"
+      "documentation":"<p>A rule that controls access to an WorkMail organization.</p>"
     },
     "AccessControlRuleAction":{
       "type":"string",
@@ -1364,6 +1491,13 @@
       "member":{"shape":"AccessControlRule"},
       "max":10,
       "min":0
+    },
+    "AccessEffect":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "DENY"
+      ]
     },
     "ActionsList":{
       "type":"list",
@@ -1434,6 +1568,36 @@
       "members":{
       }
     },
+    "AssumeImpersonationRoleRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "ImpersonationRoleId"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization under which the impersonation role will be assumed.</p>"
+        },
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The impersonation role ID to assume.</p>"
+        }
+      }
+    },
+    "AssumeImpersonationRoleResponse":{
+      "type":"structure",
+      "members":{
+        "Token":{
+          "shape":"ImpersonationToken",
+          "documentation":"<p>The authentication token for the impersonation role.</p>"
+        },
+        "ExpiresIn":{
+          "shape":"ExpiresIn",
+          "documentation":"<p>The authentication token's validity, in seconds.</p>"
+        }
+      }
+    },
     "AvailabilityConfiguration":{
       "type":"structure",
       "members":{
@@ -1447,7 +1611,7 @@
         },
         "EwsProvider":{
           "shape":"RedactedEwsAvailabilityProvider",
-          "documentation":"<p>If <code>ProviderType</code> is <code>EWS</code>, then this field contains <code>RedactedEwsAvailabilityProvider</code>. Otherwise, it is not requried.</p>"
+          "documentation":"<p>If <code>ProviderType</code> is <code>EWS</code>, then this field contains <code>RedactedEwsAvailabilityProvider</code>. Otherwise, it is not required.</p>"
         },
         "LambdaProvider":{
           "shape":"LambdaAvailabilityProvider",
@@ -1564,7 +1728,7 @@
         },
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code> will be created.</p>"
+          "documentation":"<p>The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be created.</p>"
         },
         "DomainName":{
           "shape":"DomainName",
@@ -1611,6 +1775,51 @@
         }
       }
     },
+    "CreateImpersonationRoleRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "Name",
+        "Type",
+        "Rules"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"IdempotencyClientToken",
+          "documentation":"<p>The idempotency token for the client request.</p>",
+          "idempotencyToken":true
+        },
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization to create the new impersonation role within.</p>"
+        },
+        "Name":{
+          "shape":"ImpersonationRoleName",
+          "documentation":"<p>The name of the new impersonation role.</p>"
+        },
+        "Type":{
+          "shape":"ImpersonationRoleType",
+          "documentation":"<p>The impersonation role's type. The available impersonation role types are <code>READ_ONLY</code> or <code>FULL_ACCESS</code>.</p>"
+        },
+        "Description":{
+          "shape":"ImpersonationRoleDescription",
+          "documentation":"<p>The description of the new impersonation role.</p>"
+        },
+        "Rules":{
+          "shape":"ImpersonationRuleList",
+          "documentation":"<p>The list of rules for the impersonation role.</p>"
+        }
+      }
+    },
+    "CreateImpersonationRoleResponse":{
+      "type":"structure",
+      "members":{
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The new impersonation role ID.</p>"
+        }
+      }
+    },
     "CreateMobileDeviceAccessRuleRequest":{
       "type":"structure",
       "required":[
@@ -1621,7 +1830,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization under which the rule will be created.</p>"
+          "documentation":"<p>The WorkMail organization under which the rule will be created.</p>"
         },
         "ClientToken":{
           "shape":"IdempotencyClientToken",
@@ -1706,11 +1915,11 @@
         },
         "KmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a customer managed master key from AWS KMS.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a customer managed key from AWS KMS.</p>"
         },
         "EnableInteroperability":{
           "shape":"Boolean",
-          "documentation":"<p>When <code>true</code>, allows organization interoperability between Amazon WorkMail and Microsoft Exchange. Can only be set to <code>true</code> if an AD Connector directory ID is included in the request.</p>"
+          "documentation":"<p>When <code>true</code>, allows organization interoperability between WorkMail and Microsoft Exchange. If <code>true</code>, you must include a AD Connector directory ID in the request.</p>"
         }
       }
     },
@@ -1866,7 +2075,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code> will be deleted.</p>"
+          "documentation":"<p>The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be deleted.</p>"
         },
         "DomainName":{
           "shape":"DomainName",
@@ -1916,6 +2125,28 @@
       "members":{
       }
     },
+    "DeleteImpersonationRoleRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "ImpersonationRoleId"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization from which to delete the impersonation role.</p>"
+        },
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The ID of the impersonation role to delete.</p>"
+        }
+      }
+    },
+    "DeleteImpersonationRoleResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteMailboxPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -1953,7 +2184,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the access override will be deleted.</p>"
+          "documentation":"<p>The WorkMail organization for which the access override will be deleted.</p>"
         },
         "UserId":{
           "shape":"EntityIdentifier",
@@ -1979,7 +2210,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization under which the rule will be deleted.</p>"
+          "documentation":"<p>The WorkMail organization under which the rule will be deleted.</p>"
         },
         "MobileDeviceAccessRuleId":{
           "shape":"MobileDeviceAccessRuleId",
@@ -2102,7 +2333,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The identifier for the organization under which the Amazon WorkMail entity exists.</p>"
+          "documentation":"<p>The identifier for the organization under which the WorkMail entity exists.</p>"
         },
         "EntityId":{
           "shape":"WorkMailIdentifier",
@@ -2124,11 +2355,11 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the domain will be deregistered.</p>"
+          "documentation":"<p>The WorkMail organization for which the domain will be deregistered.</p>"
         },
         "DomainName":{
           "shape":"WorkMailDomainName",
-          "documentation":"<p>The domain to deregister in WorkMail and SES. </p>"
+          "documentation":"<p>The domain to deregister in WorkMail and SES.</p>"
         }
       }
     },
@@ -2194,7 +2425,7 @@
         },
         "State":{
           "shape":"EntityState",
-          "documentation":"<p>The state of the user: enabled (registered to Amazon WorkMail) or disabled (deregistered or never registered to WorkMail).</p>"
+          "documentation":"<p>The state of the user: enabled (registered to WorkMail) or disabled (deregistered or never registered to WorkMail).</p>"
         },
         "EnabledDate":{
           "shape":"Timestamp",
@@ -2322,7 +2553,7 @@
         },
         "DirectoryId":{
           "shape":"String",
-          "documentation":"<p>The identifier for the directory associated with an Amazon WorkMail organization.</p>"
+          "documentation":"<p>The identifier for the directory associated with an WorkMail organization.</p>"
         },
         "DirectoryType":{
           "shape":"String",
@@ -2388,7 +2619,7 @@
         },
         "State":{
           "shape":"EntityState",
-          "documentation":"<p>The state of the resource: enabled (registered to Amazon WorkMail), disabled (deregistered or never registered to WorkMail), or deleted.</p>"
+          "documentation":"<p>The state of the resource: enabled (registered to WorkMail), disabled (deregistered or never registered to WorkMail), or deleted.</p>"
         },
         "EnabledDate":{
           "shape":"Timestamp",
@@ -2438,19 +2669,19 @@
         },
         "State":{
           "shape":"EntityState",
-          "documentation":"<p>The state of a user: enabled (registered to Amazon WorkMail) or disabled (deregistered or never registered to WorkMail).</p>"
+          "documentation":"<p>The state of a user: enabled (registered to WorkMail) or disabled (deregistered or never registered to WorkMail).</p>"
         },
         "UserRole":{
           "shape":"UserRole",
-          "documentation":"<p>In certain cases, other entities are modeled as users. If interoperability is enabled, resources are imported into Amazon WorkMail as users. Because different WorkMail organizations rely on different directory types, administrators can distinguish between an unregistered user (account is disabled and has a user role) and the directory administrators. The values are USER, RESOURCE, and SYSTEM_USER.</p>"
+          "documentation":"<p>In certain cases, other entities are modeled as users. If interoperability is enabled, resources are imported into WorkMail as users. Because different WorkMail organizations rely on different directory types, administrators can distinguish between an unregistered user (account is disabled and has a user role) and the directory administrators. The values are USER, RESOURCE, and SYSTEM_USER.</p>"
         },
         "EnabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time at which the user was enabled for Amazon WorkMail usage, in UNIX epoch time format.</p>"
+          "documentation":"<p>The date and time at which the user was enabled for WorkMailusage, in UNIX epoch time format.</p>"
         },
         "DisabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time at which the user was disabled for Amazon WorkMail usage, in UNIX epoch time format.</p>"
+          "documentation":"<p>The date and time at which the user was disabled for WorkMail usage, in UNIX epoch time format.</p>"
         }
       }
     },
@@ -2640,7 +2871,7 @@
           "documentation":"<p>The hosted zone ID for a domain hosted in Route 53. Required when configuring a domain hosted in Route 53.</p>"
         }
       },
-      "documentation":"<p>The domain to associate with an Amazon WorkMail organization.</p> <p>When you configure a domain hosted in Amazon Route 53 (Route 53), all recommended DNS records are added to the organization when you create it. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html\">Adding a domain</a> in the <i>Amazon WorkMail Administrator Guide</i>.</p>"
+      "documentation":"<p>The domain to associate with an WorkMail organization.</p> <p>When you configure a domain hosted in Amazon Route 53 (Route 53), all recommended DNS records are added to the organization when you create it. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html\">Adding a domain</a> in the <i>WorkMail Administrator Guide</i>.</p>"
     },
     "DomainName":{
       "type":"string",
@@ -2729,6 +2960,10 @@
       },
       "documentation":"<p>Describes an EWS based availability provider. This is only used as input to the service.</p>"
     },
+    "ExpiresIn":{
+      "type":"long",
+      "box":true
+    },
     "ExternalUserName":{
       "type":"string",
       "max":256,
@@ -2775,8 +3010,7 @@
       "required":[
         "OrganizationId",
         "IpAddress",
-        "Action",
-        "UserId"
+        "Action"
       ],
       "members":{
         "OrganizationId":{
@@ -2794,6 +3028,10 @@
         "UserId":{
           "shape":"WorkMailIdentifier",
           "documentation":"<p>The user ID.</p>"
+        },
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The impersonation role ID.</p>"
         }
       }
     },
@@ -2841,6 +3079,95 @@
         }
       }
     },
+    "GetImpersonationRoleEffectRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "ImpersonationRoleId",
+        "TargetUser"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization where the impersonation role is defined.</p>"
+        },
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The impersonation role ID to test.</p>"
+        },
+        "TargetUser":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The WorkMail organization user chosen to test the impersonation role. The following identity formats are available:</p> <ul> <li> <p>User ID: <code>12345678-1234-1234-1234-123456789012</code> or <code>S-1-1-12-1234567890-123456789-123456789-1234</code> </p> </li> <li> <p>Email address: <code>user@domain.tld</code> </p> </li> <li> <p>User name: <code>user</code> </p> </li> </ul>"
+        }
+      }
+    },
+    "GetImpersonationRoleEffectResponse":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ImpersonationRoleType",
+          "documentation":"<p>The impersonation role type.</p>"
+        },
+        "Effect":{
+          "shape":"AccessEffect",
+          "documentation":"<p> <code/>Effect of the impersonation role on the target user based on its rules. Available effects are <code>ALLOW</code> or <code>DENY</code>.</p>"
+        },
+        "MatchedRules":{
+          "shape":"ImpersonationMatchedRuleList",
+          "documentation":"<p>A list of the rules that match the input and produce the configured effect.</p>"
+        }
+      }
+    },
+    "GetImpersonationRoleRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "ImpersonationRoleId"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization from which to retrieve the impersonation role.</p>"
+        },
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The impersonation role ID to retrieve.</p>"
+        }
+      }
+    },
+    "GetImpersonationRoleResponse":{
+      "type":"structure",
+      "members":{
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The impersonation role ID.</p>"
+        },
+        "Name":{
+          "shape":"ImpersonationRoleName",
+          "documentation":"<p>The impersonation role name.</p>"
+        },
+        "Type":{
+          "shape":"ImpersonationRoleType",
+          "documentation":"<p>The impersonation role type.</p>"
+        },
+        "Description":{
+          "shape":"ImpersonationRoleDescription",
+          "documentation":"<p>The impersonation role description.</p>"
+        },
+        "Rules":{
+          "shape":"ImpersonationRuleList",
+          "documentation":"<p>The list of rules for the given impersonation role.</p>"
+        },
+        "DateCreated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the impersonation role was created.</p>"
+        },
+        "DateModified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the impersonation role was last modified.</p>"
+        }
+      }
+    },
     "GetMailDomainRequest":{
       "type":"structure",
       "required":[
@@ -2850,7 +3177,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the domain is retrieved.</p>"
+          "documentation":"<p>The WorkMail organization for which the domain is retrieved.</p>"
         },
         "DomainName":{
           "shape":"WorkMailDomainName",
@@ -2863,7 +3190,7 @@
       "members":{
         "Records":{
           "shape":"DnsRecords",
-          "documentation":"<p>A list of the DNS records that Amazon WorkMail recommends adding in your DNS provider for the best user experience. The records configure your domain with DMARC, SPF, DKIM, and direct incoming email traffic to SES. See admin guide for more details.</p>"
+          "documentation":"<p>A list of the DNS records that WorkMail recommends adding in your DNS provider for the best user experience. The records configure your domain with DMARC, SPF, DKIM, and direct incoming email traffic to SES. See admin guide for more details.</p>"
         },
         "IsTestDomain":{
           "shape":"Boolean",
@@ -2919,7 +3246,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization to simulate the access effect for.</p>"
+          "documentation":"<p>The WorkMail organization to simulate the access effect for.</p>"
         },
         "DeviceType":{
           "shape":"DeviceType",
@@ -2944,7 +3271,7 @@
       "members":{
         "Effect":{
           "shape":"MobileDeviceAccessRuleEffect",
-          "documentation":"<p>The effect of the simulated access, <code>ALLOW</code> or <code>DENY</code>, after evaluating mobile device access rules in the Amazon WorkMail organization for the simulated user parameters.</p>"
+          "documentation":"<p>The effect of the simulated access, <code>ALLOW</code> or <code>DENY</code>, after evaluating mobile device access rules in the WorkMail organization for the simulated user parameters.</p>"
         },
         "MatchedRules":{
           "shape":"MobileDeviceAccessMatchedRuleList",
@@ -2962,7 +3289,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization to which you want to apply the override.</p>"
+          "documentation":"<p>The WorkMail organization to which you want to apply the override.</p>"
         },
         "UserId":{
           "shape":"EntityIdentifier",
@@ -3024,14 +3351,14 @@
         },
         "EnabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the group was enabled for Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the group was enabled for WorkMail use.</p>"
         },
         "DisabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the group was disabled from Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the group was disabled from WorkMail use.</p>"
         }
       },
-      "documentation":"<p>The representation of an Amazon WorkMail group.</p>"
+      "documentation":"<p>The representation of an WorkMail group.</p>"
     },
     "GroupName":{
       "type":"string",
@@ -3055,6 +3382,153 @@
       "min":1,
       "pattern":"[\\x21-\\x7e]+"
     },
+    "ImpersonationMatchedRule":{
+      "type":"structure",
+      "members":{
+        "ImpersonationRuleId":{
+          "shape":"ImpersonationRuleId",
+          "documentation":"<p>The ID of the rule that matched the input</p>"
+        },
+        "Name":{
+          "shape":"ImpersonationRuleName",
+          "documentation":"<p>The name of the rule that matched the input.</p>"
+        }
+      },
+      "documentation":"<p>The impersonation rule that matched the input.</p>"
+    },
+    "ImpersonationMatchedRuleList":{
+      "type":"list",
+      "member":{"shape":"ImpersonationMatchedRule"},
+      "max":10,
+      "min":0
+    },
+    "ImpersonationRole":{
+      "type":"structure",
+      "members":{
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The identifier of the impersonation role.</p>"
+        },
+        "Name":{
+          "shape":"ImpersonationRoleName",
+          "documentation":"<p>The impersonation role name.</p>"
+        },
+        "Type":{
+          "shape":"ImpersonationRoleType",
+          "documentation":"<p>The impersonation role type.</p>"
+        },
+        "DateCreated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the impersonation role was created.</p>"
+        },
+        "DateModified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the impersonation role was last modified.</p>"
+        }
+      },
+      "documentation":"<p>An impersonation role for the given WorkMail organization.</p>"
+    },
+    "ImpersonationRoleDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F\\x3C\\x3E\\x5C]+"
+    },
+    "ImpersonationRoleId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ImpersonationRoleIdList":{
+      "type":"list",
+      "member":{"shape":"ImpersonationRoleId"},
+      "max":10,
+      "min":0
+    },
+    "ImpersonationRoleList":{
+      "type":"list",
+      "member":{"shape":"ImpersonationRole"},
+      "max":20,
+      "min":0
+    },
+    "ImpersonationRoleName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F\\x3C\\x3E\\x5C]+"
+    },
+    "ImpersonationRoleType":{
+      "type":"string",
+      "enum":[
+        "FULL_ACCESS",
+        "READ_ONLY"
+      ]
+    },
+    "ImpersonationRule":{
+      "type":"structure",
+      "required":[
+        "ImpersonationRuleId",
+        "Effect"
+      ],
+      "members":{
+        "ImpersonationRuleId":{
+          "shape":"ImpersonationRuleId",
+          "documentation":"<p>The identifier of the rule.</p>"
+        },
+        "Name":{
+          "shape":"ImpersonationRuleName",
+          "documentation":"<p>The rule name.</p>"
+        },
+        "Description":{
+          "shape":"ImpersonationRuleDescription",
+          "documentation":"<p>The rule description.</p>"
+        },
+        "Effect":{
+          "shape":"AccessEffect",
+          "documentation":"<p>The effect of the rule when it matches the input. Allowed effect values are <code>ALLOW</code> or <code>DENY</code>.</p>"
+        },
+        "TargetUsers":{
+          "shape":"TargetUsers",
+          "documentation":"<p>A list of user IDs that match the rule.</p>"
+        },
+        "NotTargetUsers":{
+          "shape":"TargetUsers",
+          "documentation":"<p>A list of user IDs that don't match the rule.</p>"
+        }
+      },
+      "documentation":"<p>The rules for the given impersonation role.</p>"
+    },
+    "ImpersonationRuleDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F\\x3C\\x3E\\x5C]+"
+    },
+    "ImpersonationRuleId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ImpersonationRuleList":{
+      "type":"list",
+      "member":{"shape":"ImpersonationRule"},
+      "max":10,
+      "min":0
+    },
+    "ImpersonationRuleName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F\\x3C\\x3E\\x5C]+"
+    },
+    "ImpersonationToken":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\x21-\\x7e]+"
+    },
     "InvalidConfigurationException":{
       "type":"structure",
       "members":{
@@ -3068,7 +3542,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>You SES configuration has customizations that Amazon WorkMail cannot save. The error message lists the invalid setting. For examples of invalid settings, refer to <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference/API_CreateReceiptRule.html\">CreateReceiptRule</a>.</p>",
+      "documentation":"<p>You SES configuration has customizations that WorkMail cannot save. The error message lists the invalid setting. For examples of invalid settings, refer to <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference/API_CreateReceiptRule.html\">CreateReceiptRule</a>.</p>",
       "exception":true
     },
     "InvalidParameterException":{
@@ -3203,7 +3677,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code>'s will be listed.</p>"
+          "documentation":"<p>The WorkMail organization for which the <code>AvailabilityConfiguration</code>'s will be listed.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -3220,7 +3694,7 @@
       "members":{
         "AvailabilityConfigurations":{
           "shape":"AvailabilityConfigurationList",
-          "documentation":"<p>The list of <code>AvailabilityConfiguration</code>'s that exist for the specified Amazon WorkMail organization.</p>"
+          "documentation":"<p>The list of <code>AvailabilityConfiguration</code>'s that exist for the specified WorkMail organization.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3297,13 +3771,44 @@
         }
       }
     },
+    "ListImpersonationRolesRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization to which the listed impersonation roles belong.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used to retrieve the next page of results. The first call doesn't require a token.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results returned in a single call.</p>"
+        }
+      }
+    },
+    "ListImpersonationRolesResponse":{
+      "type":"structure",
+      "members":{
+        "Roles":{
+          "shape":"ImpersonationRoleList",
+          "documentation":"<p>The list of impersonation roles under the given WorkMail organization.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. The value is <code>null</code> when there are no results to return.</p>"
+        }
+      }
+    },
     "ListMailDomainsRequest":{
       "type":"structure",
       "required":["OrganizationId"],
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which to list domains.</p>"
+          "documentation":"<p>The WorkMail organization for which to list domains.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -3320,7 +3825,7 @@
       "members":{
         "MailDomains":{
           "shape":"MailDomains",
-          "documentation":"<p>The list of mail domain summaries, specifying domains that exist in the specified Amazon WorkMail organization, along with the information about whether the domain is or isn't the default.</p>"
+          "documentation":"<p>The list of mail domain summaries, specifying domains that exist in the specified WorkMail organization, along with the information about whether the domain is or isn't the default.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3403,7 +3908,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization under which to list mobile device access overrides.</p>"
+          "documentation":"<p>The WorkMail organization under which to list mobile device access overrides.</p>"
         },
         "UserId":{
           "shape":"EntityIdentifier",
@@ -3428,7 +3933,7 @@
       "members":{
         "Overrides":{
           "shape":"MobileDeviceAccessOverridesList",
-          "documentation":"<p>The list of mobile device access overrides that exist for the specified Amazon WorkMail organization and user.</p>"
+          "documentation":"<p>The list of mobile device access overrides that exist for the specified WorkMail organization and user.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3442,7 +3947,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which to list the rules.</p>"
+          "documentation":"<p>The WorkMail organization for which to list the rules.</p>"
         }
       }
     },
@@ -3451,7 +3956,7 @@
       "members":{
         "Rules":{
           "shape":"MobileDeviceAccessRulesList",
-          "documentation":"<p>The list of mobile device access rules that exist under the specified Amazon WorkMail organization.</p>"
+          "documentation":"<p>The list of mobile device access rules that exist under the specified WorkMail organization.</p>"
         }
       }
     },
@@ -3515,7 +4020,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to paginate through the delegates associated with a resource. While results are still available, it has an associated value. When the last page is reached, the token is empty. </p>"
+          "documentation":"<p>The token used to paginate through the delegates associated with a resource. While results are still available, it has an associated value. When the last page is reached, the token is empty.</p>"
         }
       }
     },
@@ -3747,11 +4252,11 @@
         },
         "EnabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the member was enabled for Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the member was enabled for WorkMail use.</p>"
         },
         "DisabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the member was disabled from Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the member was disabled from WorkMail use.</p>"
         }
       },
       "documentation":"<p>The representation of a user or group.</p>"
@@ -3826,7 +4331,7 @@
       "members":{
         "MobileDeviceAccessRuleId":{
           "shape":"MobileDeviceAccessRuleId",
-          "documentation":"<p>The ID assigned to a mobile access rule. </p>"
+          "documentation":"<p>The ID assigned to a mobile access rule.</p>"
         },
         "Name":{
           "shape":"MobileDeviceAccessRuleName",
@@ -3842,7 +4347,7 @@
         },
         "DeviceTypes":{
           "shape":"DeviceTypeList",
-          "documentation":"<p>Device types that a rule will match. </p>"
+          "documentation":"<p>Device types that a rule will match.</p>"
         },
         "NotDeviceTypes":{
           "shape":"DeviceTypeList",
@@ -3881,7 +4386,7 @@
           "documentation":"<p>The date and time at which an access rule was modified.</p>"
         }
       },
-      "documentation":"<p>A rule that controls access to mobile devices for an Amazon WorkMail group.</p>"
+      "documentation":"<p>A rule that controls access to mobile devices for an WorkMail group.</p>"
     },
     "MobileDeviceAccessRuleDescription":{
       "type":"string",
@@ -3919,7 +4424,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The user, group, or resource name isn't unique in Amazon WorkMail.</p>",
+      "documentation":"<p>The user, group, or resource name isn't unique in WorkMail.</p>",
       "exception":true
     },
     "NextToken":{
@@ -4090,6 +4595,14 @@
         "OrganizationId":{
           "shape":"OrganizationId",
           "documentation":"<p>The identifier of the organization.</p>"
+        },
+        "ImpersonationRoleIds":{
+          "shape":"ImpersonationRoleIdList",
+          "documentation":"<p>Impersonation role IDs to include in the rule.</p>"
+        },
+        "NotImpersonationRoleIds":{
+          "shape":"ImpersonationRoleIdList",
+          "documentation":"<p>Impersonation role IDs to exclude from the rule.</p>"
         }
       }
     },
@@ -4134,7 +4647,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The ID of the organization that you are applying the DMARC policy to. </p>"
+          "documentation":"<p>The ID of the organization that you are applying the DMARC policy to.</p>"
         },
         "Enforced":{
           "shape":"BooleanObject",
@@ -4190,7 +4703,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>Identifies the Amazon WorkMail organization for which you create the override.</p>"
+          "documentation":"<p>Identifies the WorkMail organization for which you create the override.</p>"
         },
         "UserId":{
           "shape":"EntityIdentifier",
@@ -4278,11 +4791,11 @@
         },
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization under which you're creating the domain.</p>"
+          "documentation":"<p>The WorkMail organization under which you're creating the domain.</p>"
         },
         "DomainName":{
           "shape":"WorkMailDomainName",
-          "documentation":"<p>The name of the mail domain to create in Amazon WorkMail and SES.</p>"
+          "documentation":"<p>The name of the mail domain to create in WorkMail and SES.</p>"
         }
       }
     },
@@ -4323,7 +4836,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>This user, group, or resource name is not allowed in Amazon WorkMail.</p>",
+      "documentation":"<p>This user, group, or resource name is not allowed in WorkMail.</p>",
       "exception":true
     },
     "ResetPasswordRequest":{
@@ -4378,11 +4891,11 @@
         },
         "EnabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the resource was enabled for Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the resource was enabled for WorkMail use.</p>"
         },
         "DisabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the resource was disabled from Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the resource was disabled from WorkMail use.</p>"
         }
       },
       "documentation":"<p>The representation of a resource.</p>"
@@ -4581,13 +5094,19 @@
       "max":256,
       "min":0
     },
+    "TargetUsers":{
+      "type":"list",
+      "member":{"shape":"EntityIdentifier"},
+      "max":10,
+      "min":1
+    },
     "TestAvailabilityConfigurationRequest":{
       "type":"structure",
       "required":["OrganizationId"],
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization where the availability provider will be tested.</p>"
+          "documentation":"<p>The WorkMail organization where the availability provider will be tested.</p>"
         },
         "DomainName":{
           "shape":"DomainName",
@@ -4658,7 +5177,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which the <code>AvailabilityConfiguration</code> will be updated.</p>"
+          "documentation":"<p>The WorkMail organization for which the <code>AvailabilityConfiguration</code> will be updated.</p>"
         },
         "DomainName":{
           "shape":"DomainName",
@@ -4688,7 +5207,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization for which to list domains.</p>"
+          "documentation":"<p>The WorkMail organization for which to list domains.</p>"
         },
         "DomainName":{
           "shape":"WorkMailDomainName",
@@ -4697,6 +5216,47 @@
       }
     },
     "UpdateDefaultMailDomainResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateImpersonationRoleRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "ImpersonationRoleId",
+        "Name",
+        "Type",
+        "Rules"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The WorkMail organization that contains the impersonation role to update.</p>"
+        },
+        "ImpersonationRoleId":{
+          "shape":"ImpersonationRoleId",
+          "documentation":"<p>The ID of the impersonation role to update.</p>"
+        },
+        "Name":{
+          "shape":"ImpersonationRoleName",
+          "documentation":"<p>The updated impersonation role name.</p>"
+        },
+        "Type":{
+          "shape":"ImpersonationRoleType",
+          "documentation":"<p>The updated impersonation role type.</p>"
+        },
+        "Description":{
+          "shape":"ImpersonationRoleDescription",
+          "documentation":"<p>The updated impersonation role description.</p>"
+        },
+        "Rules":{
+          "shape":"ImpersonationRuleList",
+          "documentation":"<p>The updated list of rules.</p>"
+        }
+      }
+    },
+    "UpdateImpersonationRoleResponse":{
       "type":"structure",
       "members":{
       }
@@ -4739,7 +5299,7 @@
       "members":{
         "OrganizationId":{
           "shape":"OrganizationId",
-          "documentation":"<p>The Amazon WorkMail organization under which the rule will be updated.</p>"
+          "documentation":"<p>The WorkMail organization under which the rule will be updated.</p>"
         },
         "MobileDeviceAccessRuleId":{
           "shape":"MobileDeviceAccessRuleId",
@@ -4887,14 +5447,14 @@
         },
         "EnabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the user was enabled for Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the user was enabled for WorkMail use.</p>"
         },
         "DisabledDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date indicating when the user was disabled from Amazon WorkMail use.</p>"
+          "documentation":"<p>The date indicating when the user was disabled from WorkMail use.</p>"
         }
       },
-      "documentation":"<p>The representation of an Amazon WorkMail user.</p>"
+      "documentation":"<p>The representation of an WorkMail user.</p>"
     },
     "UserIdList":{
       "type":"list",
@@ -4932,5 +5492,5 @@
       "min":12
     }
   },
-  "documentation":"<p>Amazon WorkMail is a secure, managed business email and calendaring service with support for existing desktop and mobile email clients. You can access your email, contacts, and calendars using Microsoft Outlook, your browser, or other native iOS and Android email applications. You can integrate WorkMail with your existing corporate directory and control both the keys that encrypt your data and the location in which your data is stored.</p> <p>The WorkMail API is designed for the following scenarios:</p> <ul> <li> <p>Listing and describing organizations</p> </li> </ul> <ul> <li> <p>Managing users</p> </li> </ul> <ul> <li> <p>Managing groups</p> </li> </ul> <ul> <li> <p>Managing resources</p> </li> </ul> <p>All WorkMail API operations are Amazon-authenticated and certificate-signed. They not only require the use of the AWS SDK, but also allow for the exclusive use of AWS Identity and Access Management users and roles to help facilitate access, trust, and permission policies. By creating a role and allowing an IAM user to access the WorkMail site, the IAM user gains full administrative visibility into the entire WorkMail organization (or as set in the IAM policy). This includes, but is not limited to, the ability to create, update, and delete users, groups, and resources. This allows developers to perform the scenarios listed above, as well as give users the ability to grant access on a selective basis using the IAM model.</p>"
+  "documentation":"<p>WorkMail is a secure, managed business email and calendaring service with support for existing desktop and mobile email clients. You can access your email, contacts, and calendars using Microsoft Outlook, your browser, or other native iOS and Android email applications. You can integrate WorkMail with your existing corporate directory and control both the keys that encrypt your data and the location in which your data is stored.</p> <p>The WorkMail API is designed for the following scenarios:</p> <ul> <li> <p>Listing and describing organizations</p> </li> </ul> <ul> <li> <p>Managing users</p> </li> </ul> <ul> <li> <p>Managing groups</p> </li> </ul> <ul> <li> <p>Managing resources</p> </li> </ul> <p>All WorkMail API operations are Amazon-authenticated and certificate-signed. They not only require the use of the AWS SDK, but also allow for the exclusive use of AWS Identity and Access Management users and roles to help facilitate access, trust, and permission policies. By creating a role and allowing an IAM user to access the WorkMail site, the IAM user gains full administrative visibility into the entire WorkMail organization (or as set in the IAM policy). This includes, but is not limited to, the ability to create, update, and delete users, groups, and resources. This allows developers to perform the scenarios listed above, as well as give users the ability to grant access on a selective basis using the IAM model.</p>"
 }

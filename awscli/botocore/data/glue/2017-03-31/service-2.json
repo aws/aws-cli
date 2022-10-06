@@ -2910,6 +2910,25 @@
       ],
       "documentation":"<p>Updates an existing job definition. The previous job definition is completely overwritten by this information.</p>"
     },
+    "UpdateJobFromSourceControl":{
+      "name":"UpdateJobFromSourceControl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateJobFromSourceControlRequest"},
+      "output":{"shape":"UpdateJobFromSourceControlResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ValidationException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Synchronizes a job from the source control repository. This operation takes the job artifacts that are located in the remote repository and updates the Glue internal stores with these artifacts.</p> <p>This API supports optional parameters which take in the repository information.</p>"
+    },
     "UpdateMLTransform":{
       "name":"UpdateMLTransform",
       "http":{
@@ -2977,6 +2996,25 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates the description, compatibility setting, or version checkpoint for a schema set.</p> <p>For updating the compatibility setting, the call will not validate compatibility for the entire set of schema versions with the new compatibility setting. If the value for <code>Compatibility</code> is provided, the <code>VersionNumber</code> (a checkpoint) is also required. The API will validate the checkpoint version number for consistency.</p> <p>If the value for the <code>VersionNumber</code> (checkpoint) is provided, <code>Compatibility</code> is optional and this can be used to set/reset a checkpoint for the schema.</p> <p>This update will happen only if the schema is in the AVAILABLE state.</p>"
+    },
+    "UpdateSourceControlFromJob":{
+      "name":"UpdateSourceControlFromJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSourceControlFromJobRequest"},
+      "output":{"shape":"UpdateSourceControlFromJobResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ValidationException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Synchronizes a job to the source control repository. This operation takes the job artifacts from the Glue internal stores and makes a commit to the remote repository that is configured on the job.</p> <p>This API supports optional parameters which take in the repository information.</p>"
     },
     "UpdateTable":{
       "name":"UpdateTable",
@@ -3285,6 +3323,12 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "AuthTokenString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "BackfillError":{
       "type":"structure",
@@ -4999,6 +5043,12 @@
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "CommitIdString":{
+      "type":"string",
+      "max":40,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
     "Comparator":{
       "type":"string",
       "enum":[
@@ -6167,6 +6217,10 @@
         "ExecutionClass":{
           "shape":"ExecutionClass",
           "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
+        },
+        "SourceControlDetails":{
+          "shape":"SourceControlDetails",
+          "documentation":"<p>The details for a source control configuration for a job, allowing synchronization of job artifacts to or from a remote repository.</p>"
         }
       }
     },
@@ -11225,6 +11279,10 @@
         "ExecutionClass":{
           "shape":"ExecutionClass",
           "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
+        },
+        "SourceControlDetails":{
+          "shape":"SourceControlDetails",
+          "documentation":"<p>The details for a source control configuration for a job, allowing synchronization of job artifacts to or from a remote repository.</p>"
         }
       },
       "documentation":"<p>Specifies a job definition.</p>"
@@ -11523,6 +11581,10 @@
         "ExecutionClass":{
           "shape":"ExecutionClass",
           "documentation":"<p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>"
+        },
+        "SourceControlDetails":{
+          "shape":"SourceControlDetails",
+          "documentation":"<p>The details for a source control configuration for a job, allowing synchronization of job artifacts to or from a remote repository.</p>"
         }
       },
       "documentation":"<p>Specifies information used to update an existing job definition. The previous job definition is completely overwritten by this information.</p>"
@@ -15339,6 +15401,58 @@
         "ASCENDING"
       ]
     },
+    "SourceControlAuthStrategy":{
+      "type":"string",
+      "enum":[
+        "PERSONAL_ACCESS_TOKEN",
+        "AWS_SECRETS_MANAGER"
+      ]
+    },
+    "SourceControlDetails":{
+      "type":"structure",
+      "members":{
+        "Provider":{
+          "shape":"SourceControlProvider",
+          "documentation":"<p>The provider for the remote repository.</p>"
+        },
+        "Repository":{
+          "shape":"Generic512CharString",
+          "documentation":"<p>The name of the remote repository that contains the job artifacts.</p>"
+        },
+        "Owner":{
+          "shape":"Generic512CharString",
+          "documentation":"<p>The owner of the remote repository that contains the job artifacts.</p>"
+        },
+        "Branch":{
+          "shape":"Generic512CharString",
+          "documentation":"<p>An optional branch in the remote repository.</p>"
+        },
+        "Folder":{
+          "shape":"Generic512CharString",
+          "documentation":"<p>An optional folder in the remote repository.</p>"
+        },
+        "LastCommitId":{
+          "shape":"Generic512CharString",
+          "documentation":"<p>The last commit ID for a commit in the remote repository.</p>"
+        },
+        "AuthStrategy":{
+          "shape":"SourceControlAuthStrategy",
+          "documentation":"<p>The type of authentication, which can be an authentication token stored in Amazon Web Services Secrets Manager, or a personal access token.</p>"
+        },
+        "AuthToken":{
+          "shape":"Generic512CharString",
+          "documentation":"<p>The value of an authorization token.</p>"
+        }
+      },
+      "documentation":"<p>The details for a source control configuration for a job, allowing synchronization of job artifacts to or from a remote repository.</p>"
+    },
+    "SourceControlProvider":{
+      "type":"string",
+      "enum":[
+        "GITHUB",
+        "AWS_CODE_COMMIT"
+      ]
+    },
     "SparkConnectorSource":{
       "type":"structure",
       "required":[
@@ -17275,6 +17389,56 @@
       },
       "documentation":"<p>Specifies a grok classifier to update when passed to <code>UpdateClassifier</code>.</p>"
     },
+    "UpdateJobFromSourceControlRequest":{
+      "type":"structure",
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the Glue job to be synchronized to or from the remote repository.</p>"
+        },
+        "Provider":{
+          "shape":"SourceControlProvider",
+          "documentation":"<p>The provider for the remote repository.</p>"
+        },
+        "RepositoryName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the remote repository that contains the job artifacts.</p>"
+        },
+        "RepositoryOwner":{
+          "shape":"NameString",
+          "documentation":"<p>The owner of the remote repository that contains the job artifacts.</p>"
+        },
+        "BranchName":{
+          "shape":"NameString",
+          "documentation":"<p>An optional branch in the remote repository.</p>"
+        },
+        "Folder":{
+          "shape":"NameString",
+          "documentation":"<p>An optional folder in the remote repository.</p>"
+        },
+        "CommitId":{
+          "shape":"CommitIdString",
+          "documentation":"<p>A commit ID for a commit in the remote repository.</p>"
+        },
+        "AuthStrategy":{
+          "shape":"SourceControlAuthStrategy",
+          "documentation":"<p>The type of authentication, which can be an authentication token stored in Amazon Web Services Secrets Manager, or a personal access token.</p>"
+        },
+        "AuthToken":{
+          "shape":"AuthTokenString",
+          "documentation":"<p>The value of the authorization token.</p>"
+        }
+      }
+    },
+    "UpdateJobFromSourceControlResponse":{
+      "type":"structure",
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the Glue job.</p>"
+        }
+      }
+    },
     "UpdateJobRequest":{
       "type":"structure",
       "required":[
@@ -17477,6 +17641,56 @@
         "RegistryName":{
           "shape":"SchemaRegistryNameString",
           "documentation":"<p>The name of the registry that contains the schema.</p>"
+        }
+      }
+    },
+    "UpdateSourceControlFromJobRequest":{
+      "type":"structure",
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the Glue job to be synchronized to or from the remote repository.</p>"
+        },
+        "Provider":{
+          "shape":"SourceControlProvider",
+          "documentation":"<p>The provider for the remote repository.</p>"
+        },
+        "RepositoryName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the remote repository that contains the job artifacts.</p>"
+        },
+        "RepositoryOwner":{
+          "shape":"NameString",
+          "documentation":"<p>The owner of the remote repository that contains the job artifacts.</p>"
+        },
+        "BranchName":{
+          "shape":"NameString",
+          "documentation":"<p>An optional branch in the remote repository.</p>"
+        },
+        "Folder":{
+          "shape":"NameString",
+          "documentation":"<p>An optional folder in the remote repository.</p>"
+        },
+        "CommitId":{
+          "shape":"CommitIdString",
+          "documentation":"<p>A commit ID for a commit in the remote repository.</p>"
+        },
+        "AuthStrategy":{
+          "shape":"SourceControlAuthStrategy",
+          "documentation":"<p>The type of authentication, which can be an authentication token stored in Amazon Web Services Secrets Manager, or a personal access token.</p>"
+        },
+        "AuthToken":{
+          "shape":"AuthTokenString",
+          "documentation":"<p>The value of the authorization token.</p>"
+        }
+      }
+    },
+    "UpdateSourceControlFromJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the Glue job.</p>"
         }
       }
     },

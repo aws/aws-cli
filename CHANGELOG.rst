@@ -4172,6 +4172,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.25.89
+=======
+
+* api-change:``resiliencehub``: Documentation change for AWS Resilience Hub. Doc-only update to fix Documentation layout
+
+
+1.25.88
+=======
+
+* api-change:``glue``: This SDK release adds support to sync glue jobs with source control provider. Additionally, a new parameter called SourceControlDetails will be added to Job model.
+* api-change:``network-firewall``: StreamExceptionPolicy configures how AWS Network Firewall processes traffic when a network connection breaks midstream
+* api-change:``outposts``: This release adds the Asset state information to the ListAssets response. The ListAssets request supports filtering on Asset state.
+
+
 1.25.87
 =======
 

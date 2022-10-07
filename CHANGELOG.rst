@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.25.90
+=======
+
+* api-change:``codeguru-reviewer``: Documentation update to replace broken link.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``greengrassv2``: This release adds error status details for deployments and components that failed on a device and adds features to improve visibility into component installation.
+* api-change:``quicksight``: Amazon QuickSight now supports SecretsManager Secret ARN in place of CredentialPair for DataSource creation and update. This release also has some minor documentation updates and removes CountryCode as a required parameter in GeoSpatialColumnGroup
+
+
 1.25.89
 =======
 

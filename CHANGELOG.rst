@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+1.25.91
+=======
+
+* api-change:``amplifyuibuilder``: We are releasing the ability for fields to be configured as arrays.
+* api-change:``appflow``: With this update, you can choose which Salesforce API is used by Amazon AppFlow to transfer data to or from your Salesforce account. You can choose the Salesforce REST API or Bulk API 2.0. You can also choose for Amazon AppFlow to pick the API automatically.
+* api-change:``connect``: This release adds support for a secondary email and a mobile number for Amazon Connect instance users.
+* api-change:``ds``: This release adds support for describing and updating AWS Managed Microsoft AD set up.
+* api-change:``ecs``: Documentation update to address tickets.
+* api-change:``guardduty``: Add UnprocessedDataSources to CreateDetectorResponse which specifies the data sources that couldn't be enabled during the CreateDetector request. In addition, update documentations.
+* api-change:``iam``: Documentation updates for the AWS Identity and Access Management API Reference.
+* api-change:``iotfleetwise``: Documentation update for AWS IoT FleetWise
+* api-change:``medialive``: AWS Elemental MediaLive now supports forwarding SCTE-35 messages through the Event Signaling and Management (ESAM) API, and can read those SCTE-35 messages from an inactive source.
+* api-change:``mediapackage-vod``: This release adds SPEKE v2 support for MediaPackage VOD. Speke v2 is an upgrade to the existing SPEKE API to support multiple encryption keys, based on an encryption contract selected by the customer.
+* api-change:``panorama``: Pause and resume camera stream processing with SignalApplicationInstanceNodeInstances. Reboot an appliance with CreateJobForDevices. More application state information in DescribeApplicationInstance response.
+* api-change:``rds-data``: Doc update to reflect no support for schema parameter on BatchExecuteStatement API
+* api-change:``ssm-incidents``: Update RelatedItem enum to support Tasks
+* api-change:``ssm``: Support of AmazonLinux2022 by Patch Manager
+* api-change:``transfer``: This release adds an option for customers to configure workflows that are triggered when files are only partially received from a client due to premature session disconnect.
+* api-change:``translate``: This release enables customers to specify multiple target languages in asynchronous batch translation requests.
+* api-change:``wisdom``: This release updates the GetRecommendations API to include a trigger event list for classifying and grouping recommendations.
+
+
 1.25.90
 =======
 

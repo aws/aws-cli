@@ -4592,7 +4592,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Optional metadata that you assign to a resource. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment. For example, you might want to tag an association to identify the type of resource to which it applies, the environment, or the purpose of the association.</p>",
+          "documentation":"<p>Adds or overwrites one or more tags for a State Manager association. <i>Tags</i> are metadata that you can assign to your Amazon Web Services resources. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. </p>",
           "box":true
         },
         "AlarmConfiguration":{"shape":"AlarmConfiguration"}
@@ -6876,7 +6876,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The document can't be shared with more Amazon Web Services user accounts. You can share a document with a maximum of 20 accounts. You can publicly share up to five documents. If you need to increase this limit, contact Amazon Web Services Support.</p>",
+      "documentation":"<p>The document can't be shared with more Amazon Web Services user accounts. You can specify a maximum of 20 accounts per API operation to share a private document.</p> <p>By default, you can share a private document with a maximum of 1,000 accounts and publicly share up to five documents.</p> <p>If you need to increase the quota for privately or publicly shared Systems Manager documents, contact Amazon Web Services Support.</p>",
       "exception":true
     },
     "DocumentPermissionMaxResults":{
@@ -8707,7 +8707,7 @@
       "members":{
         "Key":{
           "shape":"InstanceInformationStringFilterKey",
-          "documentation":"<p>The filter key name to describe your managed nodes. For example:</p> <p>\"InstanceIds\" | \"AgentVersion\" | \"PingStatus\" | \"PlatformTypes\" | \"ActivationIds\" | \"IamRole\" | \"ResourceType\" | \"AssociationStatus\" | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <important> <p> <code>Tag Key</code> isn't a valid filter. You must specify either <code>tag-key</code> or <code>tag:{keyname}</code> and a string. Here are some valid examples: <code>tag-key</code>, <code>tag:123</code>, <code>tag:al!</code>, <code>tag:Windows</code>. Here are some <i>invalid</i> examples: <code>tag-keys</code>, <code>Tag Key</code>, <code>tag:</code>, <code>tagKey</code>, <code>abc:keyname</code>.</p> </important>"
+          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformType</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"InstanceInformationFilterValueSet",
@@ -8817,17 +8817,17 @@
         },
         "CriticalNonCompliantCount":{
           "shape":"PatchCriticalNonCompliantCount",
-          "documentation":"<p>The number of managed nodes where patches that are specified as <code>Critical</code> for compliance reporting in the patch baseline aren't installed. These patches might be missing, have failed installation, were rejected, or were installed but awaiting a required managed node reboot. The status of these managed nodes is <code>NON_COMPLIANT</code>.</p>",
+          "documentation":"<p>The number of patches per node that are specified as <code>Critical</code> for compliance reporting in the patch baseline aren't installed. These patches might be missing, have failed installation, were rejected, or were installed but awaiting a required managed node reboot. The status of these managed nodes is <code>NON_COMPLIANT</code>.</p>",
           "box":true
         },
         "SecurityNonCompliantCount":{
           "shape":"PatchSecurityNonCompliantCount",
-          "documentation":"<p>The number of managed nodes where patches that are specified as <code>Security</code> in a patch advisory aren't installed. These patches might be missing, have failed installation, were rejected, or were installed but awaiting a required managed node reboot. The status of these managed nodes is <code>NON_COMPLIANT</code>.</p>",
+          "documentation":"<p>The number of patches per node that are specified as <code>Security</code> in a patch advisory aren't installed. These patches might be missing, have failed installation, were rejected, or were installed but awaiting a required managed node reboot. The status of these managed nodes is <code>NON_COMPLIANT</code>.</p>",
           "box":true
         },
         "OtherNonCompliantCount":{
           "shape":"PatchOtherNonCompliantCount",
-          "documentation":"<p>The number of managed nodes with patches installed that are specified as other than <code>Critical</code> or <code>Security</code> but aren't compliant with the patch baseline. The status of these managed nodes is <code>NON_COMPLIANT</code>.</p>",
+          "documentation":"<p>The number of patches per node that are specified as other than <code>Critical</code> or <code>Security</code> but aren't compliant with the patch baseline. The status of these managed nodes is <code>NON_COMPLIANT</code>.</p>",
           "box":true
         }
       },
@@ -9271,7 +9271,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The tag key or value isn't valid.</p>",
+      "documentation":"<p>The specified tag key or value isn't valid.</p>",
       "exception":true
     },
     "InvalidTarget":{
@@ -10386,7 +10386,7 @@
       "members":{
         "S3BucketName":{
           "shape":"S3BucketName",
-          "documentation":"<p>The name of an S3 bucket where execution logs are stored .</p>"
+          "documentation":"<p>The name of an S3 bucket where execution logs are stored.</p>"
         },
         "S3KeyPrefix":{
           "shape":"S3KeyPrefix",
@@ -11262,6 +11262,7 @@
         "WINDOWS",
         "AMAZON_LINUX",
         "AMAZON_LINUX_2",
+        "AMAZON_LINUX_2022",
         "UBUNTU",
         "REDHAT_ENTERPRISE_LINUX",
         "SUSE",

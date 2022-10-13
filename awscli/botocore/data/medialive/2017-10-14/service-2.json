@@ -3604,6 +3604,10 @@
     "AvailSettings": {
       "type": "structure",
       "members": {
+        "Esam": {
+          "shape": "Esam",
+          "locationName": "esam"
+        },
         "Scte35SpliceInsert": {
           "shape": "Scte35SpliceInsert",
           "locationName": "scte35SpliceInsert"
@@ -7283,6 +7287,46 @@
         "AudioDescriptions",
         "OutputGroups",
         "TimecodeConfig"
+      ]
+    },
+    "Esam": {
+      "type": "structure",
+      "members": {
+        "AcquisitionPointId": {
+          "shape": "__stringMax256",
+          "locationName": "acquisitionPointId",
+          "documentation": "Sent as acquisitionPointIdentity to identify the MediaLive channel to the POIS."
+        },
+        "AdAvailOffset": {
+          "shape": "__integerMinNegative1000Max1000",
+          "locationName": "adAvailOffset",
+          "documentation": "When specified, this offset (in milliseconds) is added to the input Ad Avail PTS time. This only applies to embedded SCTE 104/35 messages and does not apply to OOB messages."
+        },
+        "PasswordParam": {
+          "shape": "__string",
+          "locationName": "passwordParam",
+          "documentation": "Password if credentials are required to access the POIS endpoint.  This is a reference to an AWS parameter store name from which the password can be retrieved.  AWS Parameter store format: \"ssm://<parameter name>\""
+        },
+        "PoisEndpoint": {
+          "shape": "__string",
+          "locationName": "poisEndpoint",
+          "documentation": "The URL of the signal conditioner endpoint on the Placement Opportunity Information System (POIS). MediaLive sends SignalProcessingEvents here when SCTE-35 messages are read."
+        },
+        "Username": {
+          "shape": "__string",
+          "locationName": "username",
+          "documentation": "Username if credentials are required to access the POIS endpoint.  This can be either a plaintext username, or a reference to an AWS parameter store name from which the username can be retrieved.  AWS Parameter store format: \"ssm://<parameter name>\""
+        },
+        "ZoneIdentity": {
+          "shape": "__stringMax256",
+          "locationName": "zoneIdentity",
+          "documentation": "Optional data sent as zoneIdentity to identify the MediaLive channel to the POIS."
+        }
+      },
+      "documentation": "Settings for the Esam",
+      "required": [
+        "AcquisitionPointId",
+        "PoisEndpoint"
       ]
     },
     "FailoverCondition": {
@@ -13533,6 +13577,11 @@
           "locationName": "pauseStateSettings",
           "documentation": "Action to pause or unpause one or both channel pipelines"
         },
+        "Scte35InputSettings": {
+          "shape": "Scte35InputScheduleActionSettings",
+          "locationName": "scte35InputSettings",
+          "documentation": "Action to specify scte35 input"
+        },
         "Scte35ReturnToNetworkSettings": {
           "shape": "Scte35ReturnToNetworkScheduleActionSettings",
           "locationName": "scte35ReturnToNetworkSettings",
@@ -13763,6 +13812,33 @@
         "RESTRICT_GROUP0",
         "RESTRICT_GROUP1",
         "RESTRICT_GROUP2"
+      ]
+    },
+    "Scte35InputMode": {
+      "type": "string",
+      "documentation": "Settings to let you create a clip of the file input, in order to set up the input to ingest only a portion of the file.",
+      "enum": [
+        "FIXED",
+        "FOLLOW_ACTIVE"
+      ]
+    },
+    "Scte35InputScheduleActionSettings": {
+      "type": "structure",
+      "members": {
+        "InputAttachmentNameReference": {
+          "shape": "__string",
+          "locationName": "inputAttachmentNameReference",
+          "documentation": "In fixed mode, enter the name of the input attachment that you want to use as a SCTE-35 input. (Don't enter the ID of the input.)\""
+        },
+        "Mode": {
+          "shape": "Scte35InputMode",
+          "locationName": "mode",
+          "documentation": "Whether the SCTE-35 input should be the active input or a fixed input."
+        }
+      },
+      "documentation": "Settings for the \"scte35 input\" action",
+      "required": [
+        "Mode"
       ]
     },
     "Scte35NoRegionalBlackoutFlag": {

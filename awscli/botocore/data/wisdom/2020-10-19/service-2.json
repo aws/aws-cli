@@ -377,23 +377,6 @@
       "documentation":"<p>Removes the specified recommendations from the specified assistant's queue of newly available recommendations. You can use this API in conjunction with <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_GetRecommendations.html\">GetRecommendations</a> and a <code>waitTimeSeconds</code> input for long-polling behavior and avoiding duplicate recommendations.</p>",
       "idempotent":true
     },
-    "PutFeedback":{
-      "name":"PutFeedback",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/assistants/{assistantId}/feedback",
-        "responseCode":200
-      },
-      "input":{"shape":"PutFeedbackRequest"},
-      "output":{"shape":"PutFeedbackResponse"},
-      "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
-      ],
-      "documentation":"<p>Submits feedback to Wisdom. The feedback is used to improve future recommendations from <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_GetRecommendations.html\">GetRecommendations</a> or results from <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_QueryAssistant.html\">QueryAssistant</a>. Feedback can be resubmitted up to 6 hours after submission. </p>",
-      "idempotent":true
-    },
     "QueryAssistant":{
       "name":"QueryAssistant",
       "http":{
@@ -1366,17 +1349,6 @@
       },
       "documentation":"<p>The text of the document.</p>"
     },
-    "FeedbackData":{
-      "type":"structure",
-      "required":["relevance"],
-      "members":{
-        "relevance":{
-          "shape":"Relevance",
-          "documentation":"<p>The relevance of the target this feedback is for.</p>"
-        }
-      },
-      "documentation":"<p>The feedback to submit to Wisdom.</p>"
-    },
     "Filter":{
       "type":"structure",
       "required":[
@@ -2054,67 +2026,6 @@
       },
       "exception":true
     },
-    "PutFeedbackRequest":{
-      "type":"structure",
-      "required":[
-        "assistantId",
-        "feedback",
-        "targetId",
-        "targetType"
-      ],
-      "members":{
-        "assistantId":{
-          "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
-          "location":"uri",
-          "locationName":"assistantId"
-        },
-        "feedback":{
-          "shape":"FeedbackData",
-          "documentation":"<p>The feedback.</p>"
-        },
-        "targetId":{
-          "shape":"String",
-          "documentation":"<p>The identifier of a recommendation. or The identifier of the result data.</p>"
-        },
-        "targetType":{
-          "shape":"TargetType",
-          "documentation":"<p>The type of the targetId for which The feedback. is targeted.</p>"
-        }
-      }
-    },
-    "PutFeedbackResponse":{
-      "type":"structure",
-      "required":[
-        "assistantArn",
-        "assistantId",
-        "feedback",
-        "targetId",
-        "targetType"
-      ],
-      "members":{
-        "assistantArn":{
-          "shape":"UuidOrArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Wisdom assistant.</p>"
-        },
-        "assistantId":{
-          "shape":"Uuid",
-          "documentation":"<p>The identifier of the Wisdom assistant.</p>"
-        },
-        "feedback":{
-          "shape":"FeedbackData",
-          "documentation":"<p>The feedback.</p>"
-        },
-        "targetId":{
-          "shape":"Uuid",
-          "documentation":"<p>The identifier of a recommendation. or The identifier of the result data.</p>"
-        },
-        "targetType":{
-          "shape":"TargetType",
-          "documentation":"<p>The type of the targetId for which The feedback. is targeted.</p>"
-        }
-      }
-    },
     "QueryAssistantRequest":{
       "type":"structure",
       "required":[
@@ -2275,13 +2186,6 @@
     "RecommendationType":{
       "type":"string",
       "enum":["KNOWLEDGE_CONTENT"]
-    },
-    "Relevance":{
-      "type":"string",
-      "enum":[
-        "HELPFUL",
-        "NOT_HELPFUL"
-      ]
     },
     "RelevanceLevel":{
       "type":"string",
@@ -2657,13 +2561,6 @@
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"}
-    },
-    "TargetType":{
-      "type":"string",
-      "enum":[
-        "RECOMMENDATION",
-        "RESULT"
-      ]
     },
     "TooManyTagsException":{
       "type":"structure",

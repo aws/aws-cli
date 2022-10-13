@@ -1954,7 +1954,7 @@
         {"shape":"UnsupportedUserEditionException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates a dataset. This operation doesn't support datasets that include uploaded files as a source.</p>"
+      "documentation":"<p>Updates a dataset. This operation doesn't support datasets that include uploaded files as a source. Partial updates are not supported by this operation.</p>"
     },
     "UpdateDataSetPermissions":{
       "name":"UpdateDataSetPermissions",
@@ -4834,6 +4834,10 @@
         "ErrorInfo":{
           "shape":"DataSourceErrorInfo",
           "documentation":"<p>Error information from the last update or the creation of the data source.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret associated with the data source in Amazon Secrets Manager.</p>"
         }
       },
       "documentation":"<p>The structure of a data source.</p>"
@@ -4848,6 +4852,10 @@
         "CopySourceArn":{
           "shape":"CopySourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of a data source that has the credential pair that you want to use. When <code>CopySourceArn</code> is not null, the credential pair from the data source in the ARN is used as the credentials for the <code>DataSourceCredentials</code> structure.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret associated with the data source in Amazon Secrets Manager.</p>"
         }
       },
       "documentation":"<p>Data source credentials. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>",
@@ -7476,7 +7484,6 @@
       "type":"structure",
       "required":[
         "Name",
-        "CountryCode",
         "Columns"
       ],
       "members":{
@@ -10657,6 +10664,12 @@
         }
       }
     },
+    "SecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:[-a-z0-9]*:secretsmanager:[-a-z0-9]*:[0-9]{12}:secret:.+"
+    },
     "ServiceNowParameters":{
       "type":"structure",
       "required":["SiteBaseUrl"],
@@ -13153,7 +13166,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The user's user name. In the output, the value for <code>UserName</code> is <code>N/A</code> when the value for <code>IdentityType</code> is <code>IAM</code> and the corresponding IAM user is deleted.</p>"
+          "documentation":"<p>The user's user name. This value is required if you are registering a user that will be managed in Amazon QuickSight. In the output, the value for <code>UserName</code> is <code>N/A</code> when the value for <code>IdentityType</code> is <code>IAM</code> and the corresponding IAM user is deleted.</p>"
         },
         "Email":{
           "shape":"String",

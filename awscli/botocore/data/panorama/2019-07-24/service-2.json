@@ -46,7 +46,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a job to run on one or more devices.</p>"
+      "documentation":"<p>Creates a job to run on one or more devices. A job can update a device's software or reboot it.</p>"
     },
     "CreateNodeFromTemplateJob":{
       "name":"CreateNodeFromTemplateJob",
@@ -529,6 +529,23 @@
       ],
       "documentation":"<p>Removes an application instance.</p>"
     },
+    "SignalApplicationInstanceNodeInstances":{
+      "name":"SignalApplicationInstanceNodeInstances",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/application-instances/{ApplicationInstanceId}/node-signals",
+        "responseCode":200
+      },
+      "input":{"shape":"SignalApplicationInstanceNodeInstancesRequest"},
+      "output":{"shape":"SignalApplicationInstanceNodeInstancesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Signal camera nodes to stop or resume.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -642,6 +659,10 @@
         "Name":{
           "shape":"ApplicationInstanceName",
           "documentation":"<p>The application instance's name.</p>"
+        },
+        "RuntimeContextStates":{
+          "shape":"ReportedRuntimeContextStates",
+          "documentation":"<p>The application's state.</p>"
         },
         "Status":{
           "shape":"ApplicationInstanceStatus",
@@ -840,7 +861,6 @@
       "type":"structure",
       "required":[
         "DeviceIds",
-        "DeviceJobConfig",
         "JobType"
       ],
       "members":{
@@ -850,7 +870,7 @@
         },
         "DeviceJobConfig":{
           "shape":"DeviceJobConfig",
-          "documentation":"<p>Configuration settings for the job.</p>"
+          "documentation":"<p>Configuration settings for a software update job.</p>"
         },
         "JobType":{
           "shape":"JobType",
@@ -1202,6 +1222,10 @@
           "shape":"ApplicationInstanceName",
           "documentation":"<p>The application instance's name.</p>"
         },
+        "RuntimeContextStates":{
+          "shape":"ReportedRuntimeContextStates",
+          "documentation":"<p>The application instance's state.</p>"
+        },
         "RuntimeRoleArn":{
           "shape":"RuntimeRoleArn",
           "documentation":"<p>The application instance's runtime role ARN.</p>"
@@ -1262,6 +1286,10 @@
         "JobId":{
           "shape":"JobId",
           "documentation":"<p>The job's ID.</p>"
+        },
+        "JobType":{
+          "shape":"JobType",
+          "documentation":"<p>The job's type.</p>"
         },
         "Status":{
           "shape":"UpdateProgress",
@@ -1757,6 +1785,14 @@
       "min":0,
       "pattern":"^.*$"
     },
+    "DesiredState":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "STOPPED",
+        "REMOVED"
+      ]
+    },
     "Device":{
       "type":"structure",
       "members":{
@@ -1826,7 +1862,8 @@
         "ONLINE",
         "OFFLINE",
         "LEASE_EXPIRED",
-        "UPDATE_NEEDED"
+        "UPDATE_NEEDED",
+        "REBOOTING"
       ]
     },
     "DeviceArn":{
@@ -1881,6 +1918,10 @@
         "JobId":{
           "shape":"JobId",
           "documentation":"<p>The job's ID.</p>"
+        },
+        "JobType":{
+          "shape":"JobType",
+          "documentation":"<p>The job's type.</p>"
         }
       },
       "documentation":"<p>A job that runs on a device.</p>"
@@ -1908,6 +1949,22 @@
       "max":255,
       "min":1,
       "pattern":"^[a-zA-Z0-9\\-\\_]+$"
+    },
+    "DeviceReportedStatus":{
+      "type":"string",
+      "enum":[
+        "STOPPING",
+        "STOPPED",
+        "STOP_ERROR",
+        "REMOVAL_FAILED",
+        "REMOVAL_IN_PROGRESS",
+        "STARTING",
+        "RUNNING",
+        "INSTALL_ERROR",
+        "LAUNCHED",
+        "LAUNCH_ERROR",
+        "INSTALL_IN_PROGRESS"
+      ]
     },
     "DeviceSerialNumber":{
       "type":"string",
@@ -2075,7 +2132,10 @@
     },
     "JobType":{
       "type":"string",
-      "enum":["OTA"]
+      "enum":[
+        "OTA",
+        "REBOOT"
+      ]
     },
     "LastUpdatedTime":{"type":"timestamp"},
     "LatestAlternateSoftware":{
@@ -2089,6 +2149,10 @@
         "ImageVersion":{
           "shape":"ImageVersion",
           "documentation":"<p>The target version of the device software.</p>"
+        },
+        "JobType":{
+          "shape":"JobType",
+          "documentation":"<p>The job's type.</p>"
         },
         "Status":{
           "shape":"UpdateProgress",
@@ -2793,7 +2857,8 @@
       "enum":[
         "RUNNING",
         "ERROR",
-        "NOT_AVAILABLE"
+        "NOT_AVAILABLE",
+        "PAUSED"
       ]
     },
     "NodeInstances":{
@@ -2870,6 +2935,36 @@
       "max":255,
       "min":1,
       "pattern":"^([0-9]+)\\.([0-9]+)$"
+    },
+    "NodeSignal":{
+      "type":"structure",
+      "required":[
+        "NodeInstanceId",
+        "Signal"
+      ],
+      "members":{
+        "NodeInstanceId":{
+          "shape":"NodeInstanceId",
+          "documentation":"<p>The camera node's name, from the application manifest.</p>"
+        },
+        "Signal":{
+          "shape":"NodeSignalValue",
+          "documentation":"<p>The signal value.</p>"
+        }
+      },
+      "documentation":"<p>A signal to a camera node to start or stop processing video.</p>"
+    },
+    "NodeSignalList":{
+      "type":"list",
+      "member":{"shape":"NodeSignal"},
+      "min":1
+    },
+    "NodeSignalValue":{
+      "type":"string",
+      "enum":[
+        "PAUSE",
+        "RESUME"
+      ]
     },
     "NodesList":{
       "type":"list",
@@ -3309,6 +3404,38 @@
       "members":{
       }
     },
+    "ReportedRuntimeContextState":{
+      "type":"structure",
+      "required":[
+        "DesiredState",
+        "DeviceReportedStatus",
+        "DeviceReportedTime",
+        "RuntimeContextName"
+      ],
+      "members":{
+        "DesiredState":{
+          "shape":"DesiredState",
+          "documentation":"<p>The application's desired state.</p>"
+        },
+        "DeviceReportedStatus":{
+          "shape":"DeviceReportedStatus",
+          "documentation":"<p>The application's reported status.</p>"
+        },
+        "DeviceReportedTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>When the device reported the application's state.</p>"
+        },
+        "RuntimeContextName":{
+          "shape":"RuntimeContextName",
+          "documentation":"<p>The device's name.</p>"
+        }
+      },
+      "documentation":"<p>An application instance's state.</p>"
+    },
+    "ReportedRuntimeContextStates":{
+      "type":"list",
+      "member":{"shape":"ReportedRuntimeContextState"}
+    },
     "ResourceArn":{
       "type":"string",
       "max":2048,
@@ -3341,6 +3468,12 @@
       "exception":true
     },
     "RetryAfterSeconds":{"type":"integer"},
+    "RuntimeContextName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^.+$"
+    },
     "RuntimeRoleArn":{
       "type":"string",
       "max":255,
@@ -3401,6 +3534,35 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SignalApplicationInstanceNodeInstancesRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationInstanceId",
+        "NodeSignals"
+      ],
+      "members":{
+        "ApplicationInstanceId":{
+          "shape":"ApplicationInstanceId",
+          "documentation":"<p>An application instance ID.</p>",
+          "location":"uri",
+          "locationName":"ApplicationInstanceId"
+        },
+        "NodeSignals":{
+          "shape":"NodeSignalList",
+          "documentation":"<p>A list of signals.</p>"
+        }
+      }
+    },
+    "SignalApplicationInstanceNodeInstancesResponse":{
+      "type":"structure",
+      "required":["ApplicationInstanceId"],
+      "members":{
+        "ApplicationInstanceId":{
+          "shape":"ApplicationInstanceId",
+          "documentation":"<p>An application instance ID.</p>"
+        }
+      }
     },
     "SortOrder":{
       "type":"string",

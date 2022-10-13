@@ -297,7 +297,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns a list of malware scans.</p>"
+      "documentation":"<p>Returns a list of malware scans. Each member account can view the malware scans for their own accounts. An administrator can view the malware scans for all the member accounts.</p>"
     },
     "DescribeOrganizationConfiguration":{
       "name":"DescribeOrganizationConfiguration",
@@ -389,7 +389,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Disassociates GuardDuty member accounts (to the current GuardDuty administrator account) specified by the account IDs.</p>"
+      "documentation":"<p>Disassociates GuardDuty member accounts (to the current administrator account) specified by the account IDs.</p>"
     },
     "EnableOrganizationAdminAccount":{
       "name":"EnableOrganizationAdminAccount",
@@ -1632,6 +1632,11 @@
           "shape":"DetectorId",
           "documentation":"<p>The unique ID of the created detector.</p>",
           "locationName":"detectorId"
+        },
+        "UnprocessedDataSources":{
+          "shape":"UnprocessedDataSourcesResult",
+          "documentation":"<p>Specifies the data sources that couldn't be enabled when GuardDuty was enabled for the first time.</p>",
+          "locationName":"unprocessedDataSources"
         }
       }
     },
@@ -2045,7 +2050,7 @@
       "members":{
         "CloudTrail":{
           "shape":"DataSourceFreeTrial",
-          "documentation":"<p>Describes whether any AWS CloudTrail management event logs are enabled as data sources.</p>",
+          "documentation":"<p>Describes whether any Amazon Web Services CloudTrail management event logs are enabled as data sources.</p>",
           "locationName":"cloudTrail"
         },
         "DnsLogs":{
@@ -2686,6 +2691,11 @@
           "shape":"DataSourceStatus",
           "documentation":"<p>Describes whether scanning EBS volumes is enabled as a data source.</p>",
           "locationName":"status"
+        },
+        "Reason":{
+          "shape":"String",
+          "documentation":"<p>Specifies the reason why scanning EBS volumes (Malware Protection) was not enabled as a data source.</p>",
+          "locationName":"reason"
         }
       },
       "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>"
@@ -2934,7 +2944,7 @@
           "locationName":"filterCondition"
         }
       },
-      "documentation":"<p>Represents a condition that when matched will be added to the response of the operation.</p>"
+      "documentation":"<p>Represents a condition that when matched will be added to the response of the operation. Irrespective of using any filter criteria, an administrator account can view the scan entries for all of its member accounts. However, each member account can view the scan entries only for their own account.</p>"
     },
     "FilterCriterionList":{
       "type":"list",
@@ -3456,7 +3466,7 @@
         },
         "EbsSnapshotPreservation":{
           "shape":"EbsSnapshotPreservation",
-          "documentation":"<p>An enum value representing possible snapshot preservations.</p>",
+          "documentation":"<p>An enum value representing possible snapshot preservation settings.</p>",
           "locationName":"ebsSnapshotPreservation"
         }
       }
@@ -4370,7 +4380,7 @@
         },
         "OnlyAssociated":{
           "shape":"String",
-          "documentation":"<p>Specifies whether to only return associated members or to return all members (including members who haven't been invited yet or have been disassociated).</p>",
+          "documentation":"<p>Specifies whether to only return associated members or to return all members (including members who haven't been invited yet or have been disassociated). Member accounts must have been previously associated with the GuardDuty administrator account using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\"> <code>Create Members</code> </a>. </p>",
           "location":"querystring",
           "locationName":"onlyAssociated"
         }
@@ -6129,6 +6139,16 @@
       "max":50,
       "min":0
     },
+    "UnprocessedDataSourcesResult":{
+      "type":"structure",
+      "members":{
+        "MalwareProtection":{
+          "shape":"MalwareProtectionConfigurationResult",
+          "locationName":"malwareProtection"
+        }
+      },
+      "documentation":"<p>Specifies the names of the data sources that couldn't be enabled.</p>"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -6333,7 +6353,7 @@
         },
         "EbsSnapshotPreservation":{
           "shape":"EbsSnapshotPreservation",
-          "documentation":"<p>An enum value representing possible snapshot preservations.</p>",
+          "documentation":"<p>An enum value representing possible snapshot preservation settings.</p>",
           "locationName":"ebsSnapshotPreservation"
         }
       }
@@ -6684,5 +6704,5 @@
       "member":{"shape":"Volume"}
     }
   },
-  "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC Flow Logs, AWS CloudTrail management event logs, CloudTrail S3 data event logs, EKS audit logs, and DNS logs. It uses threat intelligence feeds (such as lists of malicious IPs and domains) and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, URLs, or domains. For example, GuardDuty can detect compromised EC2 instances that serve malware or mine bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise. Some examples of this are unauthorized infrastructure deployments such as EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you of the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon CloudWatch events. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"
+  "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC flow logs, Amazon Web Services CloudTrail management event logs, CloudTrail S3 data event logs, EKS audit logs, and DNS logs. It uses threat intelligence feeds (such as lists of malicious IPs and domains) and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, URLs, or domains. For example, GuardDuty can detect compromised EC2 instances that serve malware or mine bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise. Some examples of this are unauthorized infrastructure deployments such as EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you of the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon CloudWatch events. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"
 }

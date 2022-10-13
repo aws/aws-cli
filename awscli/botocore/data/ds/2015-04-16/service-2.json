@@ -592,6 +592,24 @@
       ],
       "documentation":"<p>Obtains information about the trust relationships for this account.</p> <p>If no input parameters are provided, such as DirectoryId or TrustIds, this request describes all the trust relationships belonging to the account.</p>"
     },
+    "DescribeUpdateDirectory":{
+      "name":"DescribeUpdateDirectory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeUpdateDirectoryRequest"},
+      "output":{"shape":"DescribeUpdateDirectoryResult"},
+      "errors":[
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p> Describes the updates of a directory for a particular update type. </p>"
+    },
     "DisableClientAuthentication":{
       "name":"DisableClientAuthentication",
       "http":{
@@ -1062,6 +1080,27 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Updates a conditional forwarder that has been set up for your Amazon Web Services directory.</p>"
+    },
+    "UpdateDirectorySetup":{
+      "name":"UpdateDirectorySetup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDirectorySetupRequest"},
+      "output":{"shape":"UpdateDirectorySetupResult"},
+      "errors":[
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"DirectoryInDesiredStateException"},
+        {"shape":"DirectoryUnavailableException"},
+        {"shape":"SnapshotLimitExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p> Updates the directory for a particular update type. </p>"
     },
     "UpdateNumberOfDomainControllers":{
       "name":"UpdateNumberOfDomainControllers",
@@ -1865,6 +1904,7 @@
       "documentation":"<p>Result of a CreateMicrosoftAD request.</p>"
     },
     "CreateSnapshotBeforeSchemaExtension":{"type":"boolean"},
+    "CreateSnapshotBeforeUpdate":{"type":"boolean"},
     "CreateSnapshotRequest":{
       "type":"structure",
       "required":["DirectoryId"],
@@ -2489,6 +2529,44 @@
       },
       "documentation":"<p>The result of a DescribeTrust request.</p>"
     },
+    "DescribeUpdateDirectoryRequest":{
+      "type":"structure",
+      "required":[
+        "DirectoryId",
+        "UpdateType"
+      ],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p> The unique identifier of the directory. </p>"
+        },
+        "UpdateType":{
+          "shape":"UpdateType",
+          "documentation":"<p> The type of updates you want to describe for the directory. </p>"
+        },
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p> The name of the Region. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The <code>DescribeUpdateDirectoryResult</code>. NextToken value from a previous call to <a>DescribeUpdateDirectory</a>. Pass null if this is the first call. </p>"
+        }
+      }
+    },
+    "DescribeUpdateDirectoryResult":{
+      "type":"structure",
+      "members":{
+        "UpdateActivities":{
+          "shape":"UpdateActivities",
+          "documentation":"<p> The list of update activities on a directory for the requested update type. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> If not null, more results are available. Pass this value for the <code>NextToken</code> parameter. </p>"
+        }
+      }
+    },
     "Description":{
       "type":"string",
       "max":128,
@@ -2709,6 +2787,10 @@
         "RegionsInfo":{
           "shape":"RegionsInfo",
           "documentation":"<p>Lists the Regions where the directory has replicated.</p>"
+        },
+        "OsVersion":{
+          "shape":"OSVersion",
+          "documentation":"<p>The operating system (OS) version of the directory.</p>"
         }
       },
       "documentation":"<p>Contains information about an Directory Service directory.</p>"
@@ -2742,6 +2824,15 @@
       "type":"list",
       "member":{"shape":"DirectoryId"},
       "documentation":"<p>A list of directory identifiers.</p>"
+    },
+    "DirectoryInDesiredStateException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"},
+        "RequestId":{"shape":"RequestId"}
+      },
+      "documentation":"<p> The directory is already updated to desired update type settings. </p>",
+      "exception":true
     },
     "DirectoryLimitExceededException":{
       "type":"structure",
@@ -3254,6 +3345,7 @@
       "documentation":"<p>The specified directory setting is not compatible with other settings.</p>",
       "exception":true
     },
+    "InitiatedBy":{"type":"string"},
     "InsufficientPermissionsException":{
       "type":"structure",
       "members":{
@@ -3657,6 +3749,23 @@
       "max":1024,
       "min":1,
       "pattern":"^(https?|ftp|file|ldaps?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;()]*[-a-zA-Z0-9+&@#/%=~_|()]"
+    },
+    "OSUpdateSettings":{
+      "type":"structure",
+      "members":{
+        "OSVersion":{
+          "shape":"OSVersion",
+          "documentation":"<p> OS version that the directory needs to be updated to. </p>"
+        }
+      },
+      "documentation":"<p> OS version that the directory needs to be updated to. </p>"
+    },
+    "OSVersion":{
+      "type":"string",
+      "enum":[
+        "SERVER_2012",
+        "SERVER_2019"
+      ]
     },
     "OrganizationalUnitDN":{
       "type":"string",
@@ -4748,6 +4857,10 @@
       "documentation":"<p>The specified directory setting is not supported.</p>",
       "exception":true
     },
+    "UpdateActivities":{
+      "type":"list",
+      "member":{"shape":"UpdateInfoEntry"}
+    },
     "UpdateConditionalForwarderRequest":{
       "type":"structure",
       "required":[
@@ -4776,6 +4889,75 @@
       "members":{
       },
       "documentation":"<p>The result of an UpdateConditionalForwarder request.</p>"
+    },
+    "UpdateDirectorySetupRequest":{
+      "type":"structure",
+      "required":[
+        "DirectoryId",
+        "UpdateType"
+      ],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p> The identifier of the directory on which you want to perform the update. </p>"
+        },
+        "UpdateType":{
+          "shape":"UpdateType",
+          "documentation":"<p> The type of update that needs to be performed on the directory. For example, OS. </p>"
+        },
+        "OSUpdateSettings":{
+          "shape":"OSUpdateSettings",
+          "documentation":"<p> The settings for the OS update that needs to be performed on the directory. </p>"
+        },
+        "CreateSnapshotBeforeUpdate":{
+          "shape":"CreateSnapshotBeforeUpdate",
+          "documentation":"<p> The boolean that specifies if a snapshot for the directory needs to be taken before updating the directory. </p>",
+          "box":true
+        }
+      }
+    },
+    "UpdateDirectorySetupResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateInfoEntry":{
+      "type":"structure",
+      "members":{
+        "Region":{
+          "shape":"RegionName",
+          "documentation":"<p> The name of the Region. </p>"
+        },
+        "Status":{
+          "shape":"UpdateStatus",
+          "documentation":"<p> The status of the update performed on the directory. </p>"
+        },
+        "StatusReason":{
+          "shape":"UpdateStatusReason",
+          "documentation":"<p> The reason for the current status of the update type activity. </p>"
+        },
+        "InitiatedBy":{
+          "shape":"InitiatedBy",
+          "documentation":"<p> This specifies if the update was initiated by the customer or by the service team. </p>"
+        },
+        "NewValue":{
+          "shape":"UpdateValue",
+          "documentation":"<p> The new value of the target setting. </p>"
+        },
+        "PreviousValue":{
+          "shape":"UpdateValue",
+          "documentation":"<p> The old value of the target setting. </p>"
+        },
+        "StartTime":{
+          "shape":"StartDateTime",
+          "documentation":"<p> The start time of the <code>UpdateDirectorySetup</code> for the particular type. </p>"
+        },
+        "LastUpdatedDateTime":{
+          "shape":"LastUpdatedDateTime",
+          "documentation":"<p> The last updated date and time of a particular directory setting. </p>"
+        }
+      },
+      "documentation":"<p> An entry of update information related to a requested update type. </p>"
     },
     "UpdateNumberOfDomainControllersRequest":{
       "type":"structure",
@@ -4850,6 +5032,15 @@
         }
       }
     },
+    "UpdateStatus":{
+      "type":"string",
+      "enum":[
+        "Updated",
+        "Updating",
+        "UpdateFailed"
+      ]
+    },
+    "UpdateStatusReason":{"type":"string"},
     "UpdateTrustRequest":{
       "type":"structure",
       "required":["TrustId"],
@@ -4873,6 +5064,20 @@
           "documentation":"<p>Identifier of the trust relationship.</p>"
         }
       }
+    },
+    "UpdateType":{
+      "type":"string",
+      "enum":["OS"]
+    },
+    "UpdateValue":{
+      "type":"structure",
+      "members":{
+        "OSUpdateSettings":{
+          "shape":"OSUpdateSettings",
+          "documentation":"<p> The OS update related settings. </p>"
+        }
+      },
+      "documentation":"<p> The value for a given type of <code>UpdateSettings</code>. </p>"
     },
     "UseSameUsername":{"type":"boolean"},
     "UserDoesNotExistException":{

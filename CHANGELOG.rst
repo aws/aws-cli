@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.92
+=======
+
+* bugfix:docs: Fixes `#7338 <https://github.com/aws/aws-cli/issues/7338>`__. Remove global options from topic tags.
+* api-change:``mediaconvert``: MediaConvert now supports specifying the minimum percentage of the HRD buffer available at the end of each encoded video segment.
+
+
 1.25.91
 =======
 

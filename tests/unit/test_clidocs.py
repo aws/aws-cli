@@ -652,6 +652,11 @@ class TestTopicDocumentEventHandler(TestTopicDocumentEventHandlerBase):
         contents = self.cmd.doc.getvalue().decode('utf-8')
         self.assertIn(ref_body, contents)
 
+    def test_excludes_global_options(self):
+        self.doc_handler.doc_global_option(self.cmd)
+        global_options = self.cmd.doc.getvalue().decode('utf-8')
+        self.assertNotIn('Global Options', global_options)
+
 
 class TestGlobalOptionsDocumenter(unittest.TestCase):
     def create_help_command(self):

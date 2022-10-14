@@ -655,6 +655,9 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     def doc_options_end(self, help_command, **kwargs):
         pass
 
+    def doc_global_option(self, help_command, **kwargs):
+        pass
+
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
         doc.style.h2('Available Topics')

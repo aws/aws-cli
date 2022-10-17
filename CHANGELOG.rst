@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.93
+=======
+
+* api-change:``greengrass``: This change allows customers to specify FunctionRuntimeOverride in FunctionDefinitionVersion. This configuration can be used if the runtime on the device is different from the AWS Lambda runtime specified for that function.
+* api-change:``sagemaker``: This release adds support for C7g, C6g, C6gd, C6gn, M6g, M6gd, R6g, and R6gn Graviton instance types in Amazon SageMaker Inference.
+
+
 1.25.92
 =======
 

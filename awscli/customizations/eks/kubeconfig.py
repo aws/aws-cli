@@ -65,7 +65,7 @@ class Kubeconfig(object):
         if 'clusters' not in self.content:
             return False
         return name in [cluster['name']
-                        for cluster in self.content['clusters']]
+                        for cluster in self.content['clusters'] if 'name' in cluster]
 
 
 class KubeconfigValidator(object):

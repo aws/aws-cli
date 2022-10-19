@@ -347,7 +347,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Starts a hyperparameter tuning job. A hyperparameter tuning job finds the best version of a model by running many training jobs on your dataset using the algorithm you choose and values for hyperparameters within ranges that you specify. It then chooses the hyperparameter values that result in a model that performs the best, as measured by an objective metric that you choose.</p>"
+      "documentation":"<p>Starts a hyperparameter tuning job. A hyperparameter tuning job finds the best version of a model by running many training jobs on your dataset using the algorithm you choose and values for hyperparameters within ranges that you specify. It then chooses the hyperparameter values that result in a model that performs the best, as measured by an objective metric that you choose.</p> <p>A hyperparameter tuning job automatically creates Amazon SageMaker experiments, trials, and trial components for each training job that it runs. You can view these entities in Amazon SageMaker Studio. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/experiments-view-compare.html#experiments-view\">View Experiments, Trials, and Trial Components</a>.</p> <important> <p>Do not include any security-sensitive information including account access IDs, secrets or tokens in any hyperparameter field. If the use of security-sensitive credentials are detected, SageMaker will reject your training job request and return an exception error.</p> </important>"
     },
     "CreateImage":{
       "name":"CreateImage",
@@ -619,7 +619,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Starts a model training job. After training completes, SageMaker saves the resulting model artifacts to an Amazon S3 location that you specify. </p> <p>If you choose to host your model using SageMaker hosting services, you can use the resulting model artifacts as part of the model. You can also use the artifacts in a machine learning service other than SageMaker, provided that you know how to use them for inference. </p> <p>In the request body, you provide the following: </p> <ul> <li> <p> <code>AlgorithmSpecification</code> - Identifies the training algorithm to use. </p> </li> <li> <p> <code>HyperParameters</code> - Specify these algorithm-specific parameters to enable the estimation of model parameters during training. Hyperparameters can be tuned to optimize this learning process. For a list of hyperparameters for each training algorithm provided by SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html\">Algorithms</a>. </p> <important> <p>You must not include any security-sensitive information, such as account access IDs, secrets, and tokens, in the dictionary for configuring hyperparameters. SageMaker rejects the training job request and returns an exception error for detected credentials, if such user input is found.</p> </important> </li> <li> <p> <code>InputDataConfig</code> - Describes the training dataset and the Amazon S3, EFS, or FSx location where it is stored.</p> </li> <li> <p> <code>OutputDataConfig</code> - Identifies the Amazon S3 bucket where you want SageMaker to save the results of model training. </p> </li> <li> <p> <code>ResourceConfig</code> - Identifies the resources, ML compute instances, and ML storage volumes to deploy for model training. In distributed training, you specify more than one instance. </p> </li> <li> <p> <code>EnableManagedSpotTraining</code> - Optimize the cost of training machine learning models by up to 80% by using Amazon EC2 Spot instances. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-managed-spot-training.html\">Managed Spot Training</a>. </p> </li> <li> <p> <code>RoleArn</code> - The Amazon Resource Name (ARN) that SageMaker assumes to perform tasks on your behalf during model training. You must grant this role the necessary permissions so that SageMaker can successfully complete model training. </p> </li> <li> <p> <code>StoppingCondition</code> - To help cap training costs, use <code>MaxRuntimeInSeconds</code> to set a time limit for training. Use <code>MaxWaitTimeInSeconds</code> to specify how long a managed spot training job has to complete. </p> </li> <li> <p> <code>Environment</code> - The environment variables to set in the Docker container.</p> </li> <li> <p> <code>RetryStrategy</code> - The number of times to retry the job when the job fails due to an <code>InternalServerError</code>.</p> </li> </ul> <p> For more information about SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works.html\">How It Works</a>. </p>"
+      "documentation":"<p>Starts a model training job. After training completes, SageMaker saves the resulting model artifacts to an Amazon S3 location that you specify. </p> <p>If you choose to host your model using SageMaker hosting services, you can use the resulting model artifacts as part of the model. You can also use the artifacts in a machine learning service other than SageMaker, provided that you know how to use them for inference. </p> <p>In the request body, you provide the following: </p> <ul> <li> <p> <code>AlgorithmSpecification</code> - Identifies the training algorithm to use. </p> </li> <li> <p> <code>HyperParameters</code> - Specify these algorithm-specific parameters to enable the estimation of model parameters during training. Hyperparameters can be tuned to optimize this learning process. For a list of hyperparameters for each training algorithm provided by SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html\">Algorithms</a>. </p> <important> <p>Do not include any security-sensitive information including account access IDs, secrets or tokens in any hyperparameter field. If the use of security-sensitive credentials are detected, SageMaker will reject your training job request and return an exception error.</p> </important> </li> <li> <p> <code>InputDataConfig</code> - Describes the training dataset and the Amazon S3, EFS, or FSx location where it is stored.</p> </li> <li> <p> <code>OutputDataConfig</code> - Identifies the Amazon S3 bucket where you want SageMaker to save the results of model training. </p> </li> <li> <p> <code>ResourceConfig</code> - Identifies the resources, ML compute instances, and ML storage volumes to deploy for model training. In distributed training, you specify more than one instance. </p> </li> <li> <p> <code>EnableManagedSpotTraining</code> - Optimize the cost of training machine learning models by up to 80% by using Amazon EC2 Spot instances. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-managed-spot-training.html\">Managed Spot Training</a>. </p> </li> <li> <p> <code>RoleArn</code> - The Amazon Resource Name (ARN) that SageMaker assumes to perform tasks on your behalf during model training. You must grant this role the necessary permissions so that SageMaker can successfully complete model training. </p> </li> <li> <p> <code>StoppingCondition</code> - To help cap training costs, use <code>MaxRuntimeInSeconds</code> to set a time limit for training. Use <code>MaxWaitTimeInSeconds</code> to specify how long a managed spot training job has to complete. </p> </li> <li> <p> <code>Environment</code> - The environment variables to set in the Docker container.</p> </li> <li> <p> <code>RetryStrategy</code> - The number of times to retry the job when the job fails due to an <code>InternalServerError</code>.</p> </li> </ul> <p> For more information about SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works.html\">How It Works</a>. </p>"
     },
     "CreateTransformJob":{
       "name":"CreateTransformJob",
@@ -4662,6 +4662,25 @@
         "AWS/Textract/AnalyzeDocument/Forms/V1"
       ]
     },
+    "BatchDataCaptureConfig":{
+      "type":"structure",
+      "required":["DestinationS3Uri"],
+      "members":{
+        "DestinationS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location being used to capture the data.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the batch transform job.</p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul>"
+        },
+        "GenerateInferenceId":{
+          "shape":"Boolean",
+          "documentation":"<p>Flag that indicates whether to append inference id to the output.</p>"
+        }
+      },
+      "documentation":"<p>Configuration to control how SageMaker captures inference data for batch transform jobs.</p>"
+    },
     "BatchDescribeModelPackageError":{
       "type":"structure",
       "required":[
@@ -4756,6 +4775,61 @@
         "MultiRecord",
         "SingleRecord"
       ]
+    },
+    "BatchTransformInput":{
+      "type":"structure",
+      "required":[
+        "DataCapturedDestinationS3Uri",
+        "DatasetFormat",
+        "LocalPath"
+      ],
+      "members":{
+        "DataCapturedDestinationS3Uri":{
+          "shape":"DestinationS3Uri",
+          "documentation":"<p>The Amazon S3 location being used to capture the data.</p>"
+        },
+        "DatasetFormat":{
+          "shape":"MonitoringDatasetFormat",
+          "documentation":"<p>The dataset format for your batch transform job.</p>"
+        },
+        "LocalPath":{
+          "shape":"ProcessingLocalPath",
+          "documentation":"<p>Path to the filesystem where the batch transform data is available to the container.</p>"
+        },
+        "S3InputMode":{
+          "shape":"ProcessingS3InputMode",
+          "documentation":"<p>Whether the <code>Pipe</code> or <code>File</code> is used as the input mode for transferring data for the monitoring job. <code>Pipe</code> mode is recommended for large datasets. <code>File</code> mode is useful for small files that fit in memory. Defaults to <code>File</code>.</p>"
+        },
+        "S3DataDistributionType":{
+          "shape":"ProcessingS3DataDistributionType",
+          "documentation":"<p>Whether input data distributed in Amazon S3 is fully replicated or sharded by an S3 key. Defaults to <code>FullyReplicated</code> </p>"
+        },
+        "FeaturesAttribute":{
+          "shape":"String",
+          "documentation":"<p>The attributes of the input data that are the input features.</p>"
+        },
+        "InferenceAttribute":{
+          "shape":"String",
+          "documentation":"<p>The attribute of the input data that represents the ground truth label.</p>"
+        },
+        "ProbabilityAttribute":{
+          "shape":"String",
+          "documentation":"<p>In a classification problem, the attribute that represents the class probability.</p>"
+        },
+        "ProbabilityThresholdAttribute":{
+          "shape":"ProbabilityThresholdAttribute",
+          "documentation":"<p>The threshold for the class probability to be evaluated as a positive result.</p>"
+        },
+        "StartTimeOffset":{
+          "shape":"MonitoringTimeOffsetString",
+          "documentation":"<p>If specified, monitoring jobs substract this time from the start time. For information about using offsets for scheduling monitoring jobs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-model-quality-schedule.html\">Schedule Model Quality Monitoring Jobs</a>.</p>"
+        },
+        "EndTimeOffset":{
+          "shape":"MonitoringTimeOffsetString",
+          "documentation":"<p>If specified, monitoring jobs substract this time from the end time. For information about using offsets for scheduling monitoring jobs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-model-quality-schedule.html\">Schedule Model Quality Monitoring Jobs</a>.</p>"
+        }
+      },
+      "documentation":"<p>Input object for the batch transform job.</p>"
     },
     "Bias":{
       "type":"structure",
@@ -5262,7 +5336,7 @@
       "members":{
         "EnableExplanations":{
           "shape":"ClarifyEnableExplanations",
-          "documentation":"<p>A JMESPath boolean expression used to filter which records to explain. Explanations are activated by default. See <a href=\"https://docs.aws.amazon.com/sagemaker-dg/src/AWSIronmanApiDoc/build/server-root/sagemaker/latest/dg/clarify-online-explainability-create-endpoint.html#clarify-online-explainability-create-endpoint-enable\"> <code>EnableExplanations</code> </a>for additional information.</p>"
+          "documentation":"<p>A JMESPath boolean expression used to filter which records to explain. Explanations are activated by default. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-create-endpoint.html#clarify-online-explainability-create-endpoint-enable\"> <code>EnableExplanations</code> </a>for additional information.</p>"
         },
         "InferenceConfig":{
           "shape":"ClarifyInferenceConfig",
@@ -5312,7 +5386,7 @@
       "members":{
         "FeaturesAttribute":{
           "shape":"ClarifyFeaturesAttribute",
-          "documentation":"<p>Provides the JMESPath expression to extract the features from a model container input in JSON Lines format. For example, if <code>FeaturesAttribute</code> is the JMESPath expression <code>'myfeatures'</code>, it extracts a list of features <code>[1,2,3]</code> from request data <code>'{\"myfeatures\":[1,2,3}'</code>.</p>"
+          "documentation":"<p>Provides the JMESPath expression to extract the features from a model container input in JSON Lines format. For example, if <code>FeaturesAttribute</code> is the JMESPath expression <code>'myfeatures'</code>, it extracts a list of features <code>[1,2,3]</code> from request data <code>'{\"myfeatures\":[1,2,3]}'</code>.</p>"
         },
         "ContentTemplate":{
           "shape":"ClarifyContentTemplate",
@@ -7932,7 +8006,7 @@
         },
         "HyperParameters":{
           "shape":"HyperParameters",
-          "documentation":"<p>Algorithm-specific parameters that influence the quality of the model. You set hyperparameters before you start the learning process. For a list of hyperparameters for each training algorithm provided by SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html\">Algorithms</a>. </p> <p>You can specify a maximum of 100 hyperparameters. Each hyperparameter is a key-value pair. Each key and value is limited to 256 characters, as specified by the <code>Length Constraint</code>. </p> <important> <p>You must not include any security-sensitive information, such as account access IDs, secrets, and tokens, in the dictionary for configuring hyperparameters. SageMaker rejects the training job request and returns an exception error for detected credentials, if such user input is found.</p> </important>"
+          "documentation":"<p>Algorithm-specific parameters that influence the quality of the model. You set hyperparameters before you start the learning process. For a list of hyperparameters for each training algorithm provided by SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html\">Algorithms</a>. </p> <p>You can specify a maximum of 100 hyperparameters. Each hyperparameter is a key-value pair. Each key and value is limited to 256 characters, as specified by the <code>Length Constraint</code>. </p> <important> <p>Do not include any security-sensitive information including account access IDs, secrets or tokens in any hyperparameter field. If the use of security-sensitive credentials are detected, SageMaker will reject your training job request and return an exception error.</p> </important>"
         },
         "AlgorithmSpecification":{
           "shape":"AlgorithmSpecification",
@@ -8059,6 +8133,10 @@
         "TransformOutput":{
           "shape":"TransformOutput",
           "documentation":"<p>Describes the results of the transform job.</p>"
+        },
+        "DataCaptureConfig":{
+          "shape":"BatchDataCaptureConfig",
+          "documentation":"<p>Configuration to control how SageMaker captures inference data.</p>"
         },
         "TransformResources":{
           "shape":"TransformResources",
@@ -8529,9 +8607,12 @@
     },
     "DataQualityJobInput":{
       "type":"structure",
-      "required":["EndpointInput"],
       "members":{
-        "EndpointInput":{"shape":"EndpointInput"}
+        "EndpointInput":{"shape":"EndpointInput"},
+        "BatchTransformInput":{
+          "shape":"BatchTransformInput",
+          "documentation":"<p>Input object for the batch transform job.</p>"
+        }
       },
       "documentation":"<p>The input for the data quality monitoring job. Currently endpoints are supported for input.</p>"
     },
@@ -12458,6 +12539,10 @@
           "shape":"TransformOutput",
           "documentation":"<p>Identifies the Amazon S3 location where you want Amazon SageMaker to save the results from the transform job.</p>"
         },
+        "DataCaptureConfig":{
+          "shape":"BatchDataCaptureConfig",
+          "documentation":"<p>Configuration to control how SageMaker captures inference data.</p>"
+        },
         "TransformResources":{
           "shape":"TransformResources",
           "documentation":"<p>Describes the resources, including ML instance types and ML instance count, to use for the transform job.</p>"
@@ -16186,7 +16271,7 @@
         },
         "FrameworkVersion":{
           "shape":"FrameworkVersion",
-          "documentation":"<p>Specifies the framework version to use. This API field is only supported for the PyTorch and TensorFlow frameworks.</p> <p>For information about framework versions supported for cloud targets and edge devices, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-cloud.html\">Cloud Supported Instance Types and Frameworks</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-devices-edge-frameworks.html\">Edge Supported Frameworks</a>.</p>"
+          "documentation":"<p>Specifies the framework version to use. This API field is only supported for the MXNet, PyTorch, TensorFlow and TensorFlow Lite frameworks.</p> <p>For information about framework versions supported for cloud targets and edge devices, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-cloud.html\">Cloud Supported Instance Types and Frameworks</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-devices-edge-frameworks.html\">Edge Supported Frameworks</a>.</p>"
         }
       },
       "documentation":"<p>Contains information about the location of input model artifacts, the name and shape of the expected data inputs, and the framework in which the model was trained.</p>"
@@ -20328,12 +20413,13 @@
     },
     "ModelBiasJobInput":{
       "type":"structure",
-      "required":[
-        "EndpointInput",
-        "GroundTruthS3Input"
-      ],
+      "required":["GroundTruthS3Input"],
       "members":{
         "EndpointInput":{"shape":"EndpointInput"},
+        "BatchTransformInput":{
+          "shape":"BatchTransformInput",
+          "documentation":"<p>Input object for the batch transform job.</p>"
+        },
         "GroundTruthS3Input":{
           "shape":"MonitoringGroundTruthS3Input",
           "documentation":"<p>Location of ground truth labels to use in model bias job.</p>"
@@ -20459,9 +20545,12 @@
     },
     "ModelExplainabilityJobInput":{
       "type":"structure",
-      "required":["EndpointInput"],
       "members":{
-        "EndpointInput":{"shape":"EndpointInput"}
+        "EndpointInput":{"shape":"EndpointInput"},
+        "BatchTransformInput":{
+          "shape":"BatchTransformInput",
+          "documentation":"<p>Input object for the batch transform job.</p>"
+        }
       },
       "documentation":"<p>Inputs for the model explainability job.</p>"
     },
@@ -21105,12 +21194,13 @@
     },
     "ModelQualityJobInput":{
       "type":"structure",
-      "required":[
-        "EndpointInput",
-        "GroundTruthS3Input"
-      ],
+      "required":["GroundTruthS3Input"],
       "members":{
         "EndpointInput":{"shape":"EndpointInput"},
+        "BatchTransformInput":{
+          "shape":"BatchTransformInput",
+          "documentation":"<p>Input object for the batch transform job.</p>"
+        },
         "GroundTruthS3Input":{
           "shape":"MonitoringGroundTruthS3Input",
           "documentation":"<p>The ground truth label provided for the model.</p>"
@@ -21250,6 +21340,34 @@
       "max":50,
       "min":1
     },
+    "MonitoringCsvDatasetFormat":{
+      "type":"structure",
+      "members":{
+        "Header":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if the CSV data has a header.</p>"
+        }
+      },
+      "documentation":"<p>Represents the CSV dataset format used when running a monitoring job.</p>"
+    },
+    "MonitoringDatasetFormat":{
+      "type":"structure",
+      "members":{
+        "Csv":{
+          "shape":"MonitoringCsvDatasetFormat",
+          "documentation":"<p>The CSV dataset used in the monitoring job.</p>"
+        },
+        "Json":{
+          "shape":"MonitoringJsonDatasetFormat",
+          "documentation":"<p>The JSON dataset used in the monitoring job</p>"
+        },
+        "Parquet":{
+          "shape":"MonitoringParquetDatasetFormat",
+          "documentation":"<p>The Parquet dataset used in the monitoring job</p>"
+        }
+      },
+      "documentation":"<p>Represents the dataset format used when running a monitoring job.</p>"
+    },
     "MonitoringEnvironmentMap":{
       "type":"map",
       "key":{"shape":"ProcessingEnvironmentKey"},
@@ -21333,11 +21451,14 @@
     },
     "MonitoringInput":{
       "type":"structure",
-      "required":["EndpointInput"],
       "members":{
         "EndpointInput":{
           "shape":"EndpointInput",
           "documentation":"<p>The endpoint for a monitoring job.</p>"
+        },
+        "BatchTransformInput":{
+          "shape":"BatchTransformInput",
+          "documentation":"<p>Input object for the batch transform job.</p>"
         }
       },
       "documentation":"<p>The inputs for a monitoring job.</p>"
@@ -21447,6 +21568,16 @@
       "type":"list",
       "member":{"shape":"MonitoringJobDefinitionSummary"}
     },
+    "MonitoringJsonDatasetFormat":{
+      "type":"structure",
+      "members":{
+        "Line":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if the file should be read as a json object per line. </p>"
+        }
+      },
+      "documentation":"<p>Represents the JSON dataset format used when running a monitoring job.</p>"
+    },
     "MonitoringMaxRuntimeInSeconds":{
       "type":"integer",
       "max":86400,
@@ -21498,6 +21629,12 @@
       "member":{"shape":"MonitoringOutput"},
       "max":1,
       "min":1
+    },
+    "MonitoringParquetDatasetFormat":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Represents the Parquet dataset format used when running a monitoring job.</p>"
     },
     "MonitoringProblemType":{
       "type":"string",
@@ -23635,7 +23772,63 @@
         "ml.g5.16xlarge",
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
-        "ml.p4d.24xlarge"
+        "ml.p4d.24xlarge",
+        "ml.c7g.large",
+        "ml.c7g.xlarge",
+        "ml.c7g.2xlarge",
+        "ml.c7g.4xlarge",
+        "ml.c7g.8xlarge",
+        "ml.c7g.12xlarge",
+        "ml.c7g.16xlarge",
+        "ml.m6g.large",
+        "ml.m6g.xlarge",
+        "ml.m6g.2xlarge",
+        "ml.m6g.4xlarge",
+        "ml.m6g.8xlarge",
+        "ml.m6g.12xlarge",
+        "ml.m6g.16xlarge",
+        "ml.m6gd.large",
+        "ml.m6gd.xlarge",
+        "ml.m6gd.2xlarge",
+        "ml.m6gd.4xlarge",
+        "ml.m6gd.8xlarge",
+        "ml.m6gd.12xlarge",
+        "ml.m6gd.16xlarge",
+        "ml.c6g.large",
+        "ml.c6g.xlarge",
+        "ml.c6g.2xlarge",
+        "ml.c6g.4xlarge",
+        "ml.c6g.8xlarge",
+        "ml.c6g.12xlarge",
+        "ml.c6g.16xlarge",
+        "ml.c6gd.large",
+        "ml.c6gd.xlarge",
+        "ml.c6gd.2xlarge",
+        "ml.c6gd.4xlarge",
+        "ml.c6gd.8xlarge",
+        "ml.c6gd.12xlarge",
+        "ml.c6gd.16xlarge",
+        "ml.c6gn.large",
+        "ml.c6gn.xlarge",
+        "ml.c6gn.2xlarge",
+        "ml.c6gn.4xlarge",
+        "ml.c6gn.8xlarge",
+        "ml.c6gn.12xlarge",
+        "ml.c6gn.16xlarge",
+        "ml.r6g.large",
+        "ml.r6g.xlarge",
+        "ml.r6g.2xlarge",
+        "ml.r6g.4xlarge",
+        "ml.r6g.8xlarge",
+        "ml.r6g.12xlarge",
+        "ml.r6g.16xlarge",
+        "ml.r6gd.large",
+        "ml.r6gd.xlarge",
+        "ml.r6gd.2xlarge",
+        "ml.r6gd.4xlarge",
+        "ml.r6gd.8xlarge",
+        "ml.r6gd.12xlarge",
+        "ml.r6gd.16xlarge"
       ]
     },
     "ProductionVariantList":{

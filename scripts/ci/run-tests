@@ -34,6 +34,10 @@ def run(command, allow_repo_root_on_path=False):
 def process_args(args):
     runner = args.test_runner
     test_args = ""
+    if args.ignore:
+        test_args += " ".join(f"--ignore {ignore}" for ignore in args.ignore)
+        test_args += " "
+
     if args.with_cov:
         test_args += (
             # Even though botocore and s3transfer reside in the awscli package,
@@ -80,6 +84,14 @@ if __name__ == "__main__":
             "running tests. This allows you to run the tests against the "
             "current repository without have to install the package as a "
             "distribution."
+        )
+    )
+    parser.add_argument(
+        "--ignore",
+        nargs='+',
+        default=[],
+        help=(
+            "Ignore a test subdirectory. Can be specified multiple times."
         )
     )
     raw_args = parser.parse_args()

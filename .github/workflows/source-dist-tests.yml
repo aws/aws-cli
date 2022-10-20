@@ -1,0 +1,33 @@
+
+name: Run source distribution tests
+
+on:
+  push:
+  pull_request:
+    branches-ignore: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python scripts/ci/install
+        python scripts/ci/install-build-system
+        python -m pip freeze --all
+    - name: Run build-system tests
+      run: |
+        pip uninstall -y awscli
+        python scripts/ci/run-build-system-tests

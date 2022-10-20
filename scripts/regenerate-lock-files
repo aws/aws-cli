@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+# Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+"""This script is to programatically regenerate the requirements/*-lock.txt
+files. In order to run it you need to have pip-tools installed into the
+curerntly active virtual environment."""
+import sys
+import os
+from typing import List
+from pathlib import Path
+
+from utils import run, BadRCError
+
+
+ROOT = Path(__file__).parents[1]
+REQ_DIR = ROOT / "requirements"
+IS_WINDOWS = sys.platform == "win32"
+LOCK_SUFFIX = "win-lock.txt" if IS_WINDOWS else "lock.txt"
+UNSAFE_PACKAGES = [
+    "flit-core",
+    "setuptools",
+    "pip",
+    "wheel",
+]
+
+
+def pip_compile(args: List[str], allow_unsafe: bool = False):
+    command = [
+        sys.executable,
+        "-m",
+        "piptools",
+        "compile",
+        "--generate-hashes",
+    ]
+    for unsafe in UNSAFE_PACKAGES:
+        command.append("--unsafe-package")
+        command.append(unsafe)
+    if allow_unsafe:
+        command += ["--allow-unsafe"]
+    command += args
+    return run(command, cwd=ROOT)
+
+
+def build_lock_file(sources: List[str], output: str, allow_unsafe = False):
+    output_path = _output_path(output)
+    delete_file(output_path)
+    args = _pip_compile_args(sources, output_path)
+    return pip_compile(args, allow_unsafe)
+
+
+def _output_path(output: str) -> Path:
+    lock_path = REQ_DIR / f"{output}-{LOCK_SUFFIX}"
+    return lock_path
+
+
+def _pip_compile_args(sources: List[str], lock_path: Path):
+    rel_lock_path = os.path.relpath(lock_path, ROOT)
+    args = [
+        f"--output-file={rel_lock_path}"
+    ]
+    for source in sources:
+        if source == 'pyproject.toml':
+            source_path = ROOT / source
+        else:
+            source_path = REQ_DIR / f"{source}"
+        args.append(os.path.relpath(source_path, ROOT))
+    return args
+
+
+def delete_file(path: Path):
+    try:
+        os.remove(path)
+        print(f"Removed file: {path}")
+    except FileNotFoundError:
+        pass
+
+
+def main():
+    build_lock_file(
+        sources=[os.path.join("download-deps", "bootstrap.txt")],
+        output=os.path.join("download-deps", "bootstrap"),
+        allow_unsafe=True,
+    )
+    build_lock_file(
+        sources=["portable-exe-extras.txt", "pyproject.toml"],
+        output=os.path.join("download-deps", "portable-exe"),
+    )
+    build_lock_file(
+        sources=["pyproject.toml"],
+        output=os.path.join("download-deps", "system-sandbox"),
+    )
+
+
+if __name__ == "__main__":
+    try:
+        pip_compile(["-h"])
+    except BadRCError:
+        print(
+            "Must have pip-tools installed to run this script, run the following:\npip install pip-tools"
+        )
+        sys.exit(1)
+    main()

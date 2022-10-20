@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+import os
+import glob
+from subprocess import check_call
+import shutil
+
+_dname = os.path.dirname
+
+REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
+os.chdir(REPO_ROOT)
+
+
+def run(command):
+    return check_call(command, shell=True)
+
+
+run("pip install --no-build-isolation -r requirements-base.txt")
+run('pip install --no-build-isolation -r requirements.txt')
+run('pip install --no-build-isolation -r requirements-test.txt')
+run(
+    "pip install --no-build-isolation -r requirements/download-deps/bootstrap-lock.txt"
+)
+if os.path.isdir('dist') and os.listdir('dist'):
+    shutil.rmtree('dist')
+run('python -m build')
+wheel_dist = glob.glob(os.path.join('dist', '*.whl'))[0]
+run('pip install %s' % wheel_dist)

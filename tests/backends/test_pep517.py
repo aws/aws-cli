@@ -110,6 +110,13 @@ def test_build_sdist(tmpdir, config_settings):
     # Make sure the bin directory is included.
     assert unpacked_sdist.join("bin", "aws").check()
 
+    # Make sure the tests directory is included.
+    assert unpacked_sdist.join("tests", "__init__.py").check()
+    assert unpacked_sdist.join("tests", "unit", "__init__.py").check()
+    assert unpacked_sdist.join(
+        "tests", "backends", "build_system", "unit", "__init__.py").check()
+    assert unpacked_sdist.join("tests", "__init__.py").check()
+
     # We do not build the ac.index in building the sdist. So we want to make
     # sure it is not being included.
     assert not unpacked_sdist.join("awscli", "data", "ac.index").check()
@@ -244,6 +251,7 @@ def test_read_sdist_extras():
         "backends/**/*.py",
         "bin/*",
         "CHANGELOG.rst",
+        "tests/**/*",
     }
     extras = set(backends.pep517.read_sdist_extras())
 

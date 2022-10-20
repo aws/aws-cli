@@ -1,0 +1,41 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+libdir = @libdir@
+aws_cli_builddir = $(builddir)/build
+build_backend = $(srcdir)/backends/build_system
+
+builddir = @builddir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+PYTHON = @PYTHON@
+
+INSTALL_TYPE = @INSTALL_TYPE@
+DOWNLOAD_DEPS_FLAG = @DOWNLOAD_DEPS_FLAG@
+
+all: build
+
+build:
+	"$(PYTHON)" "$(build_backend)" \
+		build \
+		--artifact "$(INSTALL_TYPE)" \
+		--build-dir "$(aws_cli_builddir)" $(DOWNLOAD_DEPS_FLAG)
+
+clean:
+	rm -rf "$(aws_cli_builddir)"
+
+install:
+	"$(PYTHON)" "$(build_backend)" \
+		install \
+		--build-dir "$(aws_cli_builddir)" \
+		--lib-dir "$(DESTDIR)$(libdir)" \
+		--bin-dir "$(DESTDIR)$(bindir)"
+
+uninstall:
+	"$(PYTHON)" "$(build_backend)" \
+		uninstall \
+		--lib-dir "$(DESTDIR)$(libdir)" \
+		--bin-dir "$(DESTDIR)$(bindir)"
+
+.PHONY: all build install uninstall

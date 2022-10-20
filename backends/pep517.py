@@ -206,10 +206,12 @@ def _extracted_sdist_dir(sdist_path):
 
 def _build_and_inject_ac_index(build_dir, extracted_wheel_dir):
     ac_index_build_name = _build_ac_index(build_dir)
+    extracted_ac_index = os.path.join(extracted_wheel_dir, AC_INDEX_REL_PATH)
+    _remove_file_if_exists(extracted_ac_index)
     print("Adding auto-complete index into wheel")
     os.rename(
         ac_index_build_name,
-        os.path.join(extracted_wheel_dir, AC_INDEX_REL_PATH),
+        extracted_ac_index,
     )
 
 

@@ -27,7 +27,7 @@ import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc, six
 from awscli.testutils import (
-    unittest, mock, capture_output, skip_if_windows, create_bucket,
+    unittest, mock, capture_output, if_windows, skip_if_windows, create_bucket,
     FileCreator, ConsistencyWaiter
 )
 

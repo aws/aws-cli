@@ -71,6 +71,26 @@
       "documentation":"<p>Associates a trust store with a web portal.</p>",
       "idempotent":true
     },
+    "AssociateUserAccessLoggingSettings":{
+      "name":"AssociateUserAccessLoggingSettings",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/portals/{portalArn+}/userAccessLoggingSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"AssociateUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associates a user access logging settings resource with a web portal.</p>",
+      "idempotent":true
+    },
     "AssociateUserSettings":{
       "name":"AssociateUserSettings",
       "http":{
@@ -189,6 +209,25 @@
       ],
       "documentation":"<p>Creates a trust store that can be associated with a web portal. A trust store contains certificate authority (CA) certificates. Once associated with a web portal, the browser in a streaming session will recognize certificates that have been issued using any of the CAs in the trust store. If your organization has internal websites that use certificates issued by private CAs, you should add the private CA certificate to the trust store. </p>"
     },
+    "CreateUserAccessLoggingSettings":{
+      "name":"CreateUserAccessLoggingSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/userAccessLoggingSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"CreateUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a user access logging settings resource that can be associated with a web portal.</p>"
+    },
     "CreateUserSettings":{
       "name":"CreateUserSettings",
       "http":{
@@ -303,6 +342,25 @@
       "documentation":"<p>Deletes the trust store.</p>",
       "idempotent":true
     },
+    "DeleteUserAccessLoggingSettings":{
+      "name":"DeleteUserAccessLoggingSettings",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"DeleteUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes user access logging settings.</p>",
+      "idempotent":true
+    },
     "DeleteUserSettings":{
       "name":"DeleteUserSettings",
       "http":{
@@ -377,6 +435,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Disassociates a trust store from a web portal.</p>",
+      "idempotent":true
+    },
+    "DisassociateUserAccessLoggingSettings":{
+      "name":"DisassociateUserAccessLoggingSettings",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/portals/{portalArn+}/userAccessLoggingSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"DisassociateUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Disassociates user access logging settings from a web portal.</p>",
       "idempotent":true
     },
     "DisassociateUserSettings":{
@@ -524,6 +601,24 @@
       ],
       "documentation":"<p>Gets the trust store certificate.</p>"
     },
+    "GetUserAccessLoggingSettings":{
+      "name":"GetUserAccessLoggingSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"GetUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets user access logging settings.</p>"
+    },
     "GetUserSettings":{
       "name":"GetUserSettings",
       "http":{
@@ -662,6 +757,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves a list of trust stores.</p>"
+    },
+    "ListUserAccessLoggingSettings":{
+      "name":"ListUserAccessLoggingSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/userAccessLoggingSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"ListUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves a list of user access logging settings.</p>"
     },
     "ListUserSettings":{
       "name":"ListUserSettings",
@@ -809,6 +921,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates the trust store.</p>"
+    },
+    "UpdateUserAccessLoggingSettings":{
+      "name":"UpdateUserAccessLoggingSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateUserAccessLoggingSettingsRequest"},
+      "output":{"shape":"UpdateUserAccessLoggingSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the user access logging settings.</p>"
     },
     "UpdateUserSettings":{
       "name":"UpdateUserSettings",
@@ -963,6 +1093,44 @@
         "trustStoreArn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the trust store.</p>"
+        }
+      }
+    },
+    "AssociateUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "portalArn",
+        "userAccessLoggingSettingsArn"
+      ],
+      "members":{
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>",
+          "location":"uri",
+          "locationName":"portalArn"
+        },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>",
+          "location":"querystring",
+          "locationName":"userAccessLoggingSettingsArn"
+        }
+      }
+    },
+    "AssociateUserAccessLoggingSettingsResponse":{
+      "type":"structure",
+      "required":[
+        "portalArn",
+        "userAccessLoggingSettingsArn"
+      ],
+      "members":{
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>"
+        },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>"
         }
       }
     },
@@ -1346,6 +1514,35 @@
         }
       }
     },
+    "CreateUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "required":["kinesisStreamArn"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the AWS SDK.</p>",
+          "idempotencyToken":true
+        },
+        "kinesisStreamArn":{
+          "shape":"KinesisStreamArn",
+          "documentation":"<p>The ARN of the Kinesis stream.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the user settings resource. A tag is a key-value pair.</p>"
+        }
+      }
+    },
+    "CreateUserAccessLoggingSettingsResponse":{
+      "type":"structure",
+      "required":["userAccessLoggingSettingsArn"],
+      "members":{
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>"
+        }
+      }
+    },
     "CreateUserSettingsRequest":{
       "type":"structure",
       "required":[
@@ -1490,6 +1687,23 @@
       "members":{
       }
     },
+    "DeleteUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "required":["userAccessLoggingSettingsArn"],
+      "members":{
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>",
+          "location":"uri",
+          "locationName":"userAccessLoggingSettingsArn"
+        }
+      }
+    },
+    "DeleteUserAccessLoggingSettingsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteUserSettingsRequest":{
       "type":"structure",
       "required":["userSettingsArn"],
@@ -1554,6 +1768,23 @@
       }
     },
     "DisassociateTrustStoreResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisassociateUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "required":["portalArn"],
+      "members":{
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>",
+          "location":"uri",
+          "locationName":"portalArn"
+        }
+      }
+    },
+    "DisassociateUserAccessLoggingSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -1767,6 +1998,27 @@
         }
       }
     },
+    "GetUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "required":["userAccessLoggingSettingsArn"],
+      "members":{
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>",
+          "location":"uri",
+          "locationName":"userAccessLoggingSettingsArn"
+        }
+      }
+    },
+    "GetUserAccessLoggingSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "userAccessLoggingSettings":{
+          "shape":"UserAccessLoggingSettings",
+          "documentation":"<p>The user access logging settings.</p>"
+        }
+      }
+    },
     "GetUserSettingsRequest":{
       "type":"structure",
       "required":["userSettingsArn"],
@@ -1878,6 +2130,13 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "KinesisStreamArn":{
+      "type":"string",
+      "documentation":"<p>Kinesis stream ARN to which log events are published.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[\\w+=/,.@-]+:kinesis:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:stream/.+"
     },
     "ListBrowserSettingsRequest":{
       "type":"structure",
@@ -2098,6 +2357,36 @@
         }
       }
     },
+    "ListUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be included in the next page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListUserAccessLoggingSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "userAccessLoggingSettings":{
+          "shape":"UserAccessLoggingSettingsList",
+          "documentation":"<p>The user access logging settings.</p>"
+        }
+      }
+    },
     "ListUserSettingsRequest":{
       "type":"structure",
       "members":{
@@ -2231,9 +2520,13 @@
           "shape":"ARN",
           "documentation":"<p>The ARN of the trust store that is associated with the web portal.</p>"
         },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings that is associated with the web portal.</p>"
+        },
         "userSettingsArn":{
           "shape":"ARN",
-          "documentation":"<p>The ARN of the trust store that is associated with the web portal.</p>"
+          "documentation":"<p>The ARN of the user settings that is associated with the web portal.</p>"
         }
       },
       "documentation":"<p>The web portal.</p>"
@@ -2298,6 +2591,10 @@
         "trustStoreArn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the trust that is associated with this web portal.</p>"
+        },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings that is associated with the web portal.</p>"
         },
         "userSettingsArn":{
           "shape":"ARN",
@@ -2746,6 +3043,37 @@
         }
       }
     },
+    "UpdateUserAccessLoggingSettingsRequest":{
+      "type":"structure",
+      "required":["userAccessLoggingSettingsArn"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the AWS SDK.</p>",
+          "idempotencyToken":true
+        },
+        "kinesisStreamArn":{
+          "shape":"KinesisStreamArn",
+          "documentation":"<p>The ARN of the Kinesis stream.</p>"
+        },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>",
+          "location":"uri",
+          "locationName":"userAccessLoggingSettingsArn"
+        }
+      }
+    },
+    "UpdateUserAccessLoggingSettingsResponse":{
+      "type":"structure",
+      "required":["userAccessLoggingSettings"],
+      "members":{
+        "userAccessLoggingSettings":{
+          "shape":"UserAccessLoggingSettings",
+          "documentation":"<p>The user access logging settings.</p>"
+        }
+      }
+    },
     "UpdateUserSettingsRequest":{
       "type":"structure",
       "required":["userSettingsArn"],
@@ -2800,6 +3128,43 @@
           "documentation":"<p>The user settings.</p>"
         }
       }
+    },
+    "UserAccessLoggingSettings":{
+      "type":"structure",
+      "required":["userAccessLoggingSettingsArn"],
+      "members":{
+        "associatedPortalArns":{
+          "shape":"ArnList",
+          "documentation":"<p>A list of web portal ARNs that this user access logging settings is associated with.</p>"
+        },
+        "kinesisStreamArn":{
+          "shape":"KinesisStreamArn",
+          "documentation":"<p>The ARN of the Kinesis stream.</p>"
+        },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>"
+        }
+      },
+      "documentation":"<p>A user access logging settings resource that can be associated with a web portal.</p>"
+    },
+    "UserAccessLoggingSettingsList":{
+      "type":"list",
+      "member":{"shape":"UserAccessLoggingSettingsSummary"}
+    },
+    "UserAccessLoggingSettingsSummary":{
+      "type":"structure",
+      "members":{
+        "kinesisStreamArn":{
+          "shape":"KinesisStreamArn",
+          "documentation":"<p>The ARN of the Kinesis stream.</p>"
+        },
+        "userAccessLoggingSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the user access logging settings.</p>"
+        }
+      },
+      "documentation":"<p>The summary of user access logging settings.</p>"
     },
     "UserSettings":{
       "type":"structure",

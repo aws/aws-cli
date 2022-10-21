@@ -471,7 +471,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Returns a list of insights in your Amazon Web Services account. You can specify which insights are returned by their start time, one or more statuses (<code>ONGOING</code>, <code>CLOSED</code>, and <code>CLOSED</code>), one or more severities (<code>LOW</code>, <code>MEDIUM</code>, and <code>HIGH</code>), and type (<code>REACTIVE</code> or <code>PROACTIVE</code>). </p> <p> Use the <code>Filters</code> parameter to specify status and severity search parameters. Use the <code>Type</code> parameter to specify <code>REACTIVE</code> or <code>PROACTIVE</code> in your search. </p>"
+      "documentation":"<p> Returns a list of insights in your Amazon Web Services account. You can specify which insights are returned by their start time, one or more statuses (<code>ONGOING</code> or <code>CLOSED</code>), one or more severities (<code>LOW</code>, <code>MEDIUM</code>, and <code>HIGH</code>), and type (<code>REACTIVE</code> or <code>PROACTIVE</code>). </p> <p> Use the <code>Filters</code> parameter to specify status and severity search parameters. Use the <code>Type</code> parameter to specify <code>REACTIVE</code> or <code>PROACTIVE</code> in your search. </p>"
     },
     "SearchOrganizationInsights":{
       "name":"SearchOrganizationInsights",
@@ -642,6 +642,7 @@
       },
       "documentation":"<p>Information about your account's integration with Amazon CodeGuru Profiler. This returns whether DevOps Guru is configured to consume recommendations generated from Amazon CodeGuru Profiler.</p>"
     },
+    "AnalyzedResourceCount":{"type":"long"},
     "AnomalousLogGroup":{
       "type":"structure",
       "members":{
@@ -853,6 +854,10 @@
         "Insight":{
           "shape":"InsightHealth",
           "documentation":"<p> Information about the health of the Amazon Web Services resources in your account that are specified by an Amazon Web Services CloudFormation stack, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. </p>"
+        },
+        "AnalyzedResourceCount":{
+          "shape":"AnalyzedResourceCount",
+          "documentation":"<p> Number of resources that DevOps Guru is monitoring in your account that are specified by an Amazon Web Services CloudFormation stack. </p>"
         }
       },
       "documentation":"<p> Information about the health of Amazon Web Services resources in your account that are specified by an Amazon Web Services CloudFormation stack. </p>"
@@ -1082,6 +1087,10 @@
         "ResourceHours":{
           "shape":"ResourceHours",
           "documentation":"<p>The number of Amazon DevOps Guru resource analysis hours billed to the current Amazon Web Services account in the last hour. </p>"
+        },
+        "AnalyzedResourceCount":{
+          "shape":"AnalyzedResourceCount",
+          "documentation":"<p> Number of resources that DevOps Guru is monitoring in your Amazon Web Services account. </p>"
         }
       }
     },
@@ -2054,7 +2063,6 @@
     },
     "ListMonitoredResourcesRequest":{
       "type":"structure",
-      "required":["Filters"],
       "members":{
         "Filters":{
           "shape":"ListMonitoredResourcesFilters",
@@ -2322,7 +2330,12 @@
         "ResourcePermission":{
           "shape":"ResourcePermission",
           "documentation":"<p> The permission status of a resource. </p>"
-        }
+        },
+        "LastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which DevOps Guru last updated this resource. </p>"
+        },
+        "ResourceCollection":{"shape":"ResourceCollection"}
       },
       "documentation":"<p> Information about the resource that is being monitored, including the name of the resource, the type of resource, and whether or not permission is given to DevOps Guru to access that resource. </p>"
     },
@@ -3340,7 +3353,35 @@
     },
     "ResourceTypeFilter":{
       "type":"string",
-      "enum":["LOG_GROUPS"]
+      "enum":[
+        "LOG_GROUPS",
+        "CLOUDFRONT_DISTRIBUTION",
+        "DYNAMODB_TABLE",
+        "EC2_NAT_GATEWAY",
+        "ECS_CLUSTER",
+        "ECS_SERVICE",
+        "EKS_CLUSTER",
+        "ELASTIC_BEANSTALK_ENVIRONMENT",
+        "ELASTIC_LOAD_BALANCER_LOAD_BALANCER",
+        "ELASTIC_LOAD_BALANCING_V2_LOAD_BALANCER",
+        "ELASTIC_LOAD_BALANCING_V2_TARGET_GROUP",
+        "ELASTICACHE_CACHE_CLUSTER",
+        "ELASTICSEARCH_DOMAIN",
+        "KINESIS_STREAM",
+        "LAMBDA_FUNCTION",
+        "OPEN_SEARCH_SERVICE_DOMAIN",
+        "RDS_DB_INSTANCE",
+        "RDS_DB_CLUSTER",
+        "REDSHIFT_CLUSTER",
+        "ROUTE53_HOSTED_ZONE",
+        "ROUTE53_HEALTH_CHECK",
+        "S3_BUCKET",
+        "SAGEMAKER_ENDPOINT",
+        "SNS_TOPIC",
+        "SQS_QUEUE",
+        "STEP_FUNCTIONS_ACTIVITY",
+        "STEP_FUNCTIONS_STATE_MACHINE"
+      ]
     },
     "ResourceTypeFilters":{
       "type":"list",
@@ -3512,6 +3553,10 @@
         "Insight":{
           "shape":"ServiceInsightHealth",
           "documentation":"<p>Represents the health of an Amazon Web Services service. This is a <code>ServiceInsightHealth</code> that contains the number of open proactive and reactive insights for this service.</p>"
+        },
+        "AnalyzedResourceCount":{
+          "shape":"AnalyzedResourceCount",
+          "documentation":"<p> Number of resources that DevOps Guru is monitoring in an analyzed Amazon Web Services service. </p>"
         }
       },
       "documentation":"<p>Represents the health of an Amazon Web Services service.</p>"
@@ -3761,6 +3806,10 @@
         "Insight":{
           "shape":"InsightHealth",
           "documentation":"<p>Information about the health of the Amazon Web Services resources in your account that are specified by an Amazon Web Services tag, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. </p>"
+        },
+        "AnalyzedResourceCount":{
+          "shape":"AnalyzedResourceCount",
+          "documentation":"<p> Number of resources that DevOps Guru is monitoring in your account that are specified by an Amazon Web Services tag. </p>"
         }
       },
       "documentation":"<p> Information about the health of Amazon Web Services resources in your account that are specified by an Amazon Web Services tag <i>key</i>. </p>"

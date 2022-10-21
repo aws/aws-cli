@@ -13,6 +13,24 @@
     "uid":"managedblockchain-2018-09-24"
   },
   "operations":{
+    "CreateAccessor":{
+      "name":"CreateAccessor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accessors"
+      },
+      "input":{"shape":"CreateAccessorInput"},
+      "output":{"shape":"CreateAccessorOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<important> <p>The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is subject to change. We recommend that you use this feature only with test scenarios, and not in production environments.</p> </important> <p>Creates a new accessor for use with Managed Blockchain Ethereum nodes. An accessor object is a container that has the information required for token based access to your Ethereum nodes.</p>"
+    },
     "CreateMember":{
       "name":"CreateMember",
       "http":{
@@ -93,6 +111,23 @@
       ],
       "documentation":"<p>Creates a proposal for a change to the network that other members of the network can vote on, for example, a proposal to add a new member to the network. Any member can create a proposal.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
+    "DeleteAccessor":{
+      "name":"DeleteAccessor",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accessors/{AccessorId}"
+      },
+      "input":{"shape":"DeleteAccessorInput"},
+      "output":{"shape":"DeleteAccessorOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<important> <p>The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is subject to change. We recommend that you use this feature only with test scenarios, and not in production environments.</p> </important> <p>Deletes an accessor that your Amazon Web Services account owns. An accessor object is a container that has the information required for token based access to your Ethereum nodes including, the <code>BILLING_TOKEN</code>. After an accessor is deleted, the status of the accessor changes from <code>AVAILABLE</code> to <code>PENDING_DELETION</code>. An accessor in the <code>PENDING_DELETION</code> state can’t be used for new WebSocket requests or HTTP requests. However, WebSocket connections that are initiated while the accessor was in the <code>AVAILABLE</code> state remain open until they expire (up to 2 hours).</p>"
+    },
     "DeleteMember":{
       "name":"DeleteMember",
       "http":{
@@ -109,7 +144,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Deletes a member. Deleting a member removes the member and all associated resources from the network. <code>DeleteMember</code> can only be called for a specified <code>MemberId</code> if the principal performing the action is associated with the AWS account that owns the member. In all other cases, the <code>DeleteMember</code> action is carried out as the result of an approved proposal to remove a member. If <code>MemberId</code> is the last member in a network specified by the last AWS account, the network is deleted also.</p> <p>Applies only to Hyperledger Fabric.</p>"
+      "documentation":"<p>Deletes a member. Deleting a member removes the member and all associated resources from the network. <code>DeleteMember</code> can only be called for a specified <code>MemberId</code> if the principal performing the action is associated with the Amazon Web Services account that owns the member. In all other cases, the <code>DeleteMember</code> action is carried out as the result of an approved proposal to remove a member. If <code>MemberId</code> is the last member in a network specified by the last Amazon Web Services account, the network is deleted also.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
     "DeleteNode":{
       "name":"DeleteNode",
@@ -127,7 +162,24 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Deletes a node that your AWS account owns. All data on the node is lost and cannot be recovered.</p> <p>Applies to Hyperledger Fabric and Ethereum.</p>"
+      "documentation":"<p>Deletes a node that your Amazon Web Services account owns. All data on the node is lost and cannot be recovered.</p> <p>Applies to Hyperledger Fabric and Ethereum.</p>"
+    },
+    "GetAccessor":{
+      "name":"GetAccessor",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accessors/{AccessorId}"
+      },
+      "input":{"shape":"GetAccessorInput"},
+      "output":{"shape":"GetAccessorOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<important> <p>The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is subject to change. We recommend that you use this feature only with test scenarios, and not in production environments.</p> </important> <p>Returns detailed information about an accessor. An accessor object is a container that has the information required for token based access to your Ethereum nodes.</p>"
     },
     "GetMember":{
       "name":"GetMember",
@@ -197,6 +249,22 @@
       ],
       "documentation":"<p>Returns detailed information about a proposal.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
+    "ListAccessors":{
+      "name":"ListAccessors",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accessors"
+      },
+      "input":{"shape":"ListAccessorsInput"},
+      "output":{"shape":"ListAccessorsOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<important> <p>The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is subject to change. We recommend that you use this feature only with test scenarios, and not in production environments.</p> </important> <p>Returns a list of the accessors and their properties. Accessor objects are containers that have the information required for token based access to your Ethereum nodes.</p>"
+    },
     "ListInvitations":{
       "name":"ListInvitations",
       "http":{
@@ -213,7 +281,7 @@
         {"shape":"ResourceLimitExceededException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Returns a list of all invitations for the current AWS account.</p> <p>Applies only to Hyperledger Fabric.</p>"
+      "documentation":"<p>Returns a list of all invitations for the current Amazon Web Services account.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
     "ListMembers":{
       "name":"ListMembers",
@@ -245,7 +313,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Returns information about the networks in which the current AWS account participates.</p> <p>Applies to Hyperledger Fabric and Ethereum.</p>"
+      "documentation":"<p>Returns information about the networks in which the current Amazon Web Services account participates.</p> <p>Applies to Hyperledger Fabric and Ethereum.</p>"
     },
     "ListNodes":{
       "name":"ListNodes",
@@ -328,7 +396,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Rejects an invitation to join a network. This action can be called by a principal in an AWS account that has received an invitation to create a member and join a network.</p> <p>Applies only to Hyperledger Fabric.</p>"
+      "documentation":"<p>Rejects an invitation to join a network. This action can be called by a principal in an Amazon Web Services account that has received an invitation to create a member and join a network.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -413,7 +481,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Casts a vote for a specified <code>ProposalId</code> on behalf of a member. The member to vote as, specified by <code>VoterMemberId</code>, must be in the same AWS account as the principal that calls the action.</p> <p>Applies only to Hyperledger Fabric.</p>"
+      "documentation":"<p>Casts a vote for a specified <code>ProposalId</code> on behalf of a member. The member to vote as, specified by <code>VoterMemberId</code>, must be in the same Amazon Web Services account as the principal that calls the action.</p> <p>Applies only to Hyperledger Fabric.</p>"
     }
   },
   "shapes":{
@@ -422,9 +490,92 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "Accessor":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The unique identifier of the accessor.</p>"
+        },
+        "Type":{
+          "shape":"AccessorType",
+          "documentation":"<p>The type of the accessor.</p> <note> <p>Currently accessor type is restricted to <code>BILLING_TOKEN</code>.</p> </note>"
+        },
+        "BillingToken":{
+          "shape":"AccessorBillingTokenString",
+          "documentation":"<p>The billing token is a property of the accessor. Use this token to make Ethereum API calls to your Ethereum node. The billing token is used to track your accessor object for billing Ethereum API requests made to your Ethereum nodes.</p>"
+        },
+        "Status":{
+          "shape":"AccessorStatus",
+          "documentation":"<p>The current status of the accessor.</p>"
+        },
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date and time of the accessor.</p>"
+        },
+        "Arn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the accessor. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        }
+      },
+      "documentation":"<important> <p>The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is subject to change. We recommend that you use this feature only with test scenarios, and not in production environments.</p> </important> <p>The properties of the Accessor.</p>"
+    },
+    "AccessorBillingTokenString":{
+      "type":"string",
+      "max":42,
+      "min":42
+    },
+    "AccessorListMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "AccessorStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "PENDING_DELETION",
+        "DELETED"
+      ]
+    },
+    "AccessorSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The unique identifier of the accessor.</p>"
+        },
+        "Type":{
+          "shape":"AccessorType",
+          "documentation":"<p>The type of the accessor.</p> <note> <p>Currently accessor type is restricted to <code>BILLING_TOKEN</code>.</p> </note>"
+        },
+        "Status":{
+          "shape":"AccessorStatus",
+          "documentation":"<p>The current status of the accessor.</p>"
+        },
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date and time of the accessor.</p>"
+        },
+        "Arn":{
+          "shape":"ArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the accessor. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        }
+      },
+      "documentation":"<important> <p>The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is subject to change. We recommend that you use this feature only with test scenarios, and not in production environments.</p> </important> <p>A summary of accessor properties.</p>"
+    },
+    "AccessorSummaryList":{
+      "type":"list",
+      "member":{"shape":"AccessorSummary"}
+    },
+    "AccessorType":{
+      "type":"string",
+      "enum":["BILLING_TOKEN"]
     },
     "ApprovalThresholdPolicy":{
       "type":"structure",
@@ -435,7 +586,7 @@
         },
         "ProposalDurationInHours":{
           "shape":"ProposalDurationInt",
-          "documentation":"<p>The duration from the time that a proposal is created until it expires. If members cast neither the required number of <code>YES</code> votes to approve the proposal nor the number of <code>NO</code> votes required to reject it before the duration expires, the proposal is <code>EXPIRED</code> and <code>ProposalActions</code> are not carried out.</p>"
+          "documentation":"<p>The duration from the time that a proposal is created until it expires. If members cast neither the required number of <code>YES</code> votes to approve the proposal nor the number of <code>NO</code> votes required to reject it before the duration expires, the proposal is <code>EXPIRED</code> and <code>ProposalActions</code> aren't carried out.</p>"
         },
         "ThresholdComparator":{
           "shape":"ThresholdComparator",
@@ -456,6 +607,37 @@
       "max":64,
       "min":1
     },
+    "CreateAccessorInput":{
+      "type":"structure",
+      "required":[
+        "ClientRequestToken",
+        "AccessorType"
+      ],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestTokenString",
+          "documentation":"<p>This is a unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than once. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an Amazon Web Services SDK or the Amazon Web Services CLI.</p>",
+          "idempotencyToken":true
+        },
+        "AccessorType":{
+          "shape":"AccessorType",
+          "documentation":"<p>The type of accessor.</p> <note> <p>Currently accessor type is restricted to <code>BILLING_TOKEN</code>.</p> </note>"
+        }
+      }
+    },
+    "CreateAccessorOutput":{
+      "type":"structure",
+      "members":{
+        "AccessorId":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The unique identifier of the accessor.</p>"
+        },
+        "BillingToken":{
+          "shape":"AccessorBillingTokenString",
+          "documentation":"<p>The billing token is a property of the Accessor. Use this token to make Ethereum API calls to your Ethereum node. The billing token is used to track your accessor object for billing Ethereum API requests made to your Ethereum nodes.</p>"
+        }
+      }
+    },
     "CreateMemberInput":{
       "type":"structure",
       "required":[
@@ -467,7 +649,7 @@
       "members":{
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an AWS SDK or the AWS CLI.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an Amazon Web Services SDK or the CLI.</p>",
           "idempotencyToken":true
         },
         "InvitationId":{
@@ -508,7 +690,7 @@
       "members":{
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an AWS SDK or the AWS CLI.</p>",
+          "documentation":"<p>This is a unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than once. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an Amazon Web Services SDK or the Amazon Web Services CLI. </p>",
           "idempotencyToken":true
         },
         "Name":{
@@ -568,7 +750,7 @@
       "members":{
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an AWS SDK or the AWS CLI.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an Amazon Web Services SDK or the CLI.</p>",
           "idempotencyToken":true
         },
         "NetworkId":{
@@ -611,7 +793,7 @@
       "members":{
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an AWS SDK or the AWS CLI.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the operation. An idempotent operation completes no more than one time. This identifier is required only if you make a service request directly using an HTTP client. It is generated automatically if you use an Amazon Web Services SDK or the CLI.</p>",
           "idempotencyToken":true
         },
         "NetworkId":{
@@ -622,7 +804,7 @@
         },
         "MemberId":{
           "shape":"ResourceIdString",
-          "documentation":"<p>The unique identifier of the member that is creating the proposal. This identifier is especially useful for identifying the member making the proposal when multiple members exist in a single AWS account.</p>"
+          "documentation":"<p>The unique identifier of the member that is creating the proposal. This identifier is especially useful for identifying the member making the proposal when multiple members exist in a single Amazon Web Services account.</p>"
         },
         "Actions":{
           "shape":"ProposalActions",
@@ -645,6 +827,23 @@
           "shape":"ResourceIdString",
           "documentation":"<p>The unique identifier of the proposal.</p>"
         }
+      }
+    },
+    "DeleteAccessorInput":{
+      "type":"structure",
+      "required":["AccessorId"],
+      "members":{
+        "AccessorId":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The unique identifier of the accessor.</p>",
+          "location":"uri",
+          "locationName":"AccessorId"
+        }
+      }
+    },
+    "DeleteAccessorOutput":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteMemberInput":{
@@ -732,6 +931,27 @@
       "type":"string",
       "max":8,
       "min":1
+    },
+    "GetAccessorInput":{
+      "type":"structure",
+      "required":["AccessorId"],
+      "members":{
+        "AccessorId":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The unique identifier of the accessor.</p>",
+          "location":"uri",
+          "locationName":"AccessorId"
+        }
+      }
+    },
+    "GetAccessorOutput":{
+      "type":"structure",
+      "members":{
+        "Accessor":{
+          "shape":"Accessor",
+          "documentation":"<p>The properties of the accessor.</p>"
+        }
+      }
     },
     "GetMemberInput":{
       "type":"structure",
@@ -901,15 +1121,15 @@
         },
         "Status":{
           "shape":"InvitationStatus",
-          "documentation":"<p>The status of the invitation:</p> <ul> <li> <p> <code>PENDING</code> - The invitee has not created a member to join the network, and the invitation has not yet expired.</p> </li> <li> <p> <code>ACCEPTING</code> - The invitee has begun creating a member, and creation has not yet completed.</p> </li> <li> <p> <code>ACCEPTED</code> - The invitee created a member and joined the network using the <code>InvitationID</code>.</p> </li> <li> <p> <code>REJECTED</code> - The invitee rejected the invitation.</p> </li> <li> <p> <code>EXPIRED</code> - The invitee neither created a member nor rejected the invitation before the <code>ExpirationDate</code>.</p> </li> </ul>"
+          "documentation":"<p>The status of the invitation:</p> <ul> <li> <p> <code>PENDING</code> - The invitee hasn't created a member to join the network, and the invitation hasn't yet expired.</p> </li> <li> <p> <code>ACCEPTING</code> - The invitee has begun creating a member, and creation hasn't yet completed.</p> </li> <li> <p> <code>ACCEPTED</code> - The invitee created a member and joined the network using the <code>InvitationID</code>.</p> </li> <li> <p> <code>REJECTED</code> - The invitee rejected the invitation.</p> </li> <li> <p> <code>EXPIRED</code> - The invitee neither created a member nor rejected the invitation before the <code>ExpirationDate</code>.</p> </li> </ul>"
         },
         "NetworkSummary":{"shape":"NetworkSummary"},
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the invitation. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the invitation. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
-      "documentation":"<p>An invitation to an AWS account to create a member and join the network.</p> <p>Applies only to Hyperledger Fabric.</p>"
+      "documentation":"<p>An invitation to an Amazon Web Services account to create a member and join the network.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
     "InvitationList":{
       "type":"list",
@@ -931,10 +1151,10 @@
       "members":{
         "Principal":{
           "shape":"PrincipalString",
-          "documentation":"<p>The AWS account ID to invite.</p>"
+          "documentation":"<p>The Amazon Web Services account ID to invite.</p>"
         }
       },
-      "documentation":"<p>An action to invite a specific AWS account to create a member and join the network. The <code>InviteAction</code> is carried out when a <code>Proposal</code> is <code>APPROVED</code>.</p> <p>Applies only to Hyperledger Fabric.</p>"
+      "documentation":"<p>An action to invite a specific Amazon Web Services account to create a member and join the network. The <code>InviteAction</code> is carried out when a <code>Proposal</code> is <code>APPROVED</code>.</p> <p>Applies only to Hyperledger Fabric.</p>"
     },
     "InviteActionList":{
       "type":"list",
@@ -943,6 +1163,36 @@
     "IsOwned":{
       "type":"boolean",
       "box":true
+    },
+    "ListAccessorsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"AccessorListMaxResults",
+          "documentation":"<p> The maximum number of accessors to list.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> The pagination token that indicates the next set of results to retrieve. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAccessorsOutput":{
+      "type":"structure",
+      "members":{
+        "Accessors":{
+          "shape":"AccessorSummaryList",
+          "documentation":"<p>An array of AccessorSummary objects that contain configuration properties for each accessor.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> The pagination token that indicates the next set of results to retrieve. </p>"
+        }
+      }
     },
     "ListInvitationsInput":{
       "type":"structure",
@@ -998,7 +1248,7 @@
         },
         "IsOwned":{
           "shape":"IsOwned",
-          "documentation":"<p>An optional Boolean value. If provided, the request is limited either to members that the current AWS account owns (<code>true</code>) or that other AWS accounts own (<code>false</code>). If omitted, all members are listed.</p>",
+          "documentation":"<p>An optional Boolean value. If provided, the request is limited either to members that the current Amazon Web Services account owns (<code>true</code>) or that other Amazon Web Services accountsn own (<code>false</code>). If omitted, all members are listed.</p>",
           "location":"querystring",
           "locationName":"isOwned"
         },
@@ -1215,7 +1465,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -1279,7 +1529,7 @@
         },
         "Status":{
           "shape":"MemberStatus",
-          "documentation":"<p>The status of a member.</p> <ul> <li> <p> <code>CREATING</code> - The AWS account is in the process of creating a member.</p> </li> <li> <p> <code>AVAILABLE</code> - The member has been created and can participate in the network.</p> </li> <li> <p> <code>CREATE_FAILED</code> - The AWS account attempted to create a member and creation failed.</p> </li> <li> <p> <code>UPDATING</code> - The member is in the process of being updated.</p> </li> <li> <p> <code>DELETING</code> - The member and all associated resources are in the process of being deleted. Either the AWS account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>DELETED</code> - The member can no longer participate on the network and all associated resources are deleted. Either the AWS account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_KEY</code> - The member is impaired and might not function as expected because it cannot access the specified customer managed key in AWS KMS for encryption at rest. Either the KMS key was disabled or deleted, or the grants on the key were revoked.</p> <p>The effect of disabling or deleting a key, or revoking a grant is not immediate. The member resource might take some time to find that the key is inaccessible. When a resource is in this state, we recommend deleting and recreating the resource.</p> </li> </ul>"
+          "documentation":"<p>The status of a member.</p> <ul> <li> <p> <code>CREATING</code> - The Amazon Web Services account is in the process of creating a member.</p> </li> <li> <p> <code>AVAILABLE</code> - The member has been created and can participate in the network.</p> </li> <li> <p> <code>CREATE_FAILED</code> - The Amazon Web Services account attempted to create a member and creation failed.</p> </li> <li> <p> <code>UPDATING</code> - The member is in the process of being updated.</p> </li> <li> <p> <code>DELETING</code> - The member and all associated resources are in the process of being deleted. Either the Amazon Web Services account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>DELETED</code> - The member can no longer participate on the network and all associated resources are deleted. Either the Amazon Web Services account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_KEY</code> - The member is impaired and might not function as expected because it cannot access the specified customer managed key in KMS for encryption at rest. Either the KMS key was disabled or deleted, or the grants on the key were revoked.</p> <p>The effect of disabling or deleting a key or of revoking a grant isn't immediate. It might take some time for the member resource to discover that the key is inaccessible. When a resource is in this state, we recommend deleting and recreating the resource.</p> </li> </ul>"
         },
         "CreationDate":{
           "shape":"Timestamp",
@@ -1291,11 +1541,11 @@
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the member. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "KmsKeyArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key in AWS Key Management Service (AWS KMS) that the member uses for encryption at rest. If the value of this parameter is <code>\"AWS Owned KMS Key\"</code>, the member uses an AWS owned KMS key for encryption. This parameter is inherited by the nodes that this member owns.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key in Key Management Service (KMS) that the member uses for encryption at rest. If the value of this parameter is <code>\"AWS Owned KMS Key\"</code>, the member uses an Amazon Web Services owned KMS key for encryption. This parameter is inherited by the nodes that this member owns.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/hyperledger-fabric-dev/managed-blockchain-encryption-at-rest.html\">Encryption at Rest</a> in the <i>Amazon Managed Blockchain Hyperledger Fabric Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Member configuration properties.</p> <p>Applies only to Hyperledger Fabric.</p>"
@@ -1329,7 +1579,7 @@
         },
         "KmsKeyArn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key in AWS Key Management Service (AWS KMS) to use for encryption at rest in the member. This parameter is inherited by any nodes that this member creates.</p> <p>Use one of the following options to specify this parameter:</p> <ul> <li> <p> <b>Undefined or empty string</b> - The member uses an AWS owned KMS key for encryption by default.</p> </li> <li> <p> <b>A valid symmetric customer managed KMS key</b> - The member uses the specified key for encryption.</p> <p>Amazon Managed Blockchain doesn't support asymmetric keys. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html\">Using symmetric and asymmetric keys</a> in the <i>AWS Key Management Service Developer Guide</i>.</p> <p>The following is an example of a KMS key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key in Key Management Service (KMS) to use for encryption at rest in the member. This parameter is inherited by any nodes that this member creates. For more information, see <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/hyperledger-fabric-dev/managed-blockchain-encryption-at-rest.html\">Encryption at Rest</a> in the <i>Amazon Managed Blockchain Hyperledger Fabric Developer Guide</i>.</p> <p>Use one of the following options to specify this parameter:</p> <ul> <li> <p> <b>Undefined or empty string</b> - By default, use an KMS key that is owned and managed by Amazon Web Services on your behalf.</p> </li> <li> <p> <b>A valid symmetric customer managed KMS key</b> - Use the specified KMS key in your account that you create, own, and manage.</p> <p>Amazon Managed Blockchain doesn't support asymmetric keys. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html\">Using symmetric and asymmetric keys</a> in the <i>Key Management Service Developer Guide</i>.</p> <p>The following is an example of a KMS key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Configuration properties of the member.</p> <p>Applies only to Hyperledger Fabric.</p>"
@@ -1441,7 +1691,7 @@
         },
         "Status":{
           "shape":"MemberStatus",
-          "documentation":"<p>The status of the member.</p> <ul> <li> <p> <code>CREATING</code> - The AWS account is in the process of creating a member.</p> </li> <li> <p> <code>AVAILABLE</code> - The member has been created and can participate in the network.</p> </li> <li> <p> <code>CREATE_FAILED</code> - The AWS account attempted to create a member and creation failed.</p> </li> <li> <p> <code>UPDATING</code> - The member is in the process of being updated.</p> </li> <li> <p> <code>DELETING</code> - The member and all associated resources are in the process of being deleted. Either the AWS account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>DELETED</code> - The member can no longer participate on the network and all associated resources are deleted. Either the AWS account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_KEY</code> - The member is impaired and might not function as expected because it cannot access the specified customer managed key in AWS Key Management Service (AWS KMS) for encryption at rest. Either the KMS key was disabled or deleted, or the grants on the key were revoked.</p> <p>The effect of disabling or deleting a key, or revoking a grant is not immediate. The member resource might take some time to find that the key is inaccessible. When a resource is in this state, we recommend deleting and recreating the resource.</p> </li> </ul>"
+          "documentation":"<p>The status of the member.</p> <ul> <li> <p> <code>CREATING</code> - The Amazon Web Services account is in the process of creating a member.</p> </li> <li> <p> <code>AVAILABLE</code> - The member has been created and can participate in the network.</p> </li> <li> <p> <code>CREATE_FAILED</code> - The Amazon Web Services account attempted to create a member and creation failed.</p> </li> <li> <p> <code>UPDATING</code> - The member is in the process of being updated.</p> </li> <li> <p> <code>DELETING</code> - The member and all associated resources are in the process of being deleted. Either the Amazon Web Services account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>DELETED</code> - The member can no longer participate on the network and all associated resources are deleted. Either the Amazon Web Services account that owns the member deleted it, or the member is being deleted as the result of an <code>APPROVED</code> <code>PROPOSAL</code> to remove the member.</p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_KEY</code> - The member is impaired and might not function as expected because it cannot access the specified customer managed key in Key Management Service (KMS) for encryption at rest. Either the KMS key was disabled or deleted, or the grants on the key were revoked.</p> <p>The effect of disabling or deleting a key or of revoking a grant isn't immediate. It might take some time for the member resource to discover that the key is inaccessible. When a resource is in this state, we recommend deleting and recreating the resource.</p> </li> </ul>"
         },
         "CreationDate":{
           "shape":"Timestamp",
@@ -1449,11 +1699,11 @@
         },
         "IsOwned":{
           "shape":"IsOwned",
-          "documentation":"<p>An indicator of whether the member is owned by your AWS account or a different AWS account.</p>"
+          "documentation":"<p>An indicator of whether the member is owned by your Amazon Web Services account or a different Amazon Web Services account.</p>"
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the member. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>A summary of configuration properties for a member.</p> <p>Applies only to Hyperledger Fabric.</p>"
@@ -1517,7 +1767,7 @@
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the network. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>Network configuration properties.</p>"
@@ -1636,7 +1886,7 @@
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the network. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>A summary of network configuration properties.</p>"
@@ -1682,7 +1932,7 @@
         },
         "Status":{
           "shape":"NodeStatus",
-          "documentation":"<p>The status of the node.</p> <ul> <li> <p> <code>CREATING</code> - The AWS account is in the process of creating a node.</p> </li> <li> <p> <code>AVAILABLE</code> - The node has been created and can participate in the network.</p> </li> <li> <p> <code>UNHEALTHY</code> - The node is impaired and might not function as expected. Amazon Managed Blockchain automatically finds nodes in this state and tries to recover them. If a node is recoverable, it returns to <code>AVAILABLE</code>. Otherwise, it moves to <code>FAILED</code> status.</p> </li> <li> <p> <code>CREATE_FAILED</code> - The AWS account attempted to create a node and creation failed.</p> </li> <li> <p> <code>UPDATING</code> - The node is in the process of being updated.</p> </li> <li> <p> <code>DELETING</code> - The node is in the process of being deleted.</p> </li> <li> <p> <code>DELETED</code> - The node can no longer participate on the network.</p> </li> <li> <p> <code>FAILED</code> - The node is no longer functional, cannot be recovered, and must be deleted.</p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_KEY</code> - The node is impaired and might not function as expected because it cannot access the specified customer managed key in AWS KMS for encryption at rest. Either the KMS key was disabled or deleted, or the grants on the key were revoked.</p> <p>The effect of disabling or deleting a key, or revoking a grant is not immediate. The node resource might take some time to find that the key is inaccessible. When a resource is in this state, we recommend deleting and recreating the resource.</p> </li> </ul>"
+          "documentation":"<p>The status of the node.</p> <ul> <li> <p> <code>CREATING</code> - The Amazon Web Services account is in the process of creating a node.</p> </li> <li> <p> <code>AVAILABLE</code> - The node has been created and can participate in the network.</p> </li> <li> <p> <code>UNHEALTHY</code> - The node is impaired and might not function as expected. Amazon Managed Blockchain automatically finds nodes in this state and tries to recover them. If a node is recoverable, it returns to <code>AVAILABLE</code>. Otherwise, it moves to <code>FAILED</code> status.</p> </li> <li> <p> <code>CREATE_FAILED</code> - The Amazon Web Services account attempted to create a node and creation failed.</p> </li> <li> <p> <code>UPDATING</code> - The node is in the process of being updated.</p> </li> <li> <p> <code>DELETING</code> - The node is in the process of being deleted.</p> </li> <li> <p> <code>DELETED</code> - The node can no longer participate on the network.</p> </li> <li> <p> <code>FAILED</code> - The node is no longer functional, cannot be recovered, and must be deleted.</p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_KEY</code> - The node is impaired and might not function as expected because it cannot access the specified customer managed key in KMS for encryption at rest. Either the KMS key was disabled or deleted, or the grants on the key were revoked.</p> <p>The effect of disabling or deleting a key or of revoking a grant isn't immediate. It might take some time for the node resource to discover that the key is inaccessible. When a resource is in this state, we recommend deleting and recreating the resource.</p> </li> </ul>"
         },
         "CreationDate":{
           "shape":"Timestamp",
@@ -1694,11 +1944,11 @@
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the node. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the node. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "KmsKeyArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key in AWS Key Management Service (AWS KMS) that the node uses for encryption at rest. If the value of this parameter is <code>\"AWS Owned KMS Key\"</code>, the node uses an AWS owned KMS key for encryption. The node inherits this parameter from the member that it belongs to.</p> <p>Applies only to Hyperledger Fabric.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key in Key Management Service (KMS) that the node uses for encryption at rest. If the value of this parameter is <code>\"AWS Owned KMS Key\"</code>, the node uses an Amazon Web Services owned KMS key for encryption. The node inherits this parameter from the member that it belongs to.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/hyperledger-fabric-dev/managed-blockchain-encryption-at-rest.html\">Encryption at Rest</a> in the <i>Amazon Managed Blockchain Hyperledger Fabric Developer Guide</i>.</p> <p>Applies only to Hyperledger Fabric.</p>"
         }
       },
       "documentation":"<p>Configuration properties of a node.</p>"
@@ -1731,7 +1981,7 @@
       "members":{
         "HttpEndpoint":{
           "shape":"String",
-          "documentation":"<p>The endpoint on which the Ethereum node listens to run Ethereum JSON-RPC methods over HTTP connections from a client. Use this endpoint in client code for smart contracts when using an HTTP connection. Connections to this endpoint are authenticated using <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p>"
+          "documentation":"<p>The endpoint on which the Ethereum node listens to run Ethereum API methods over HTTP connections from a client. Use this endpoint in client code for smart contracts when using an HTTP connection. Connections to this endpoint are authenticated using <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p>"
         },
         "WebSocketEndpoint":{
           "shape":"String",
@@ -1837,7 +2087,7 @@
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the node. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the node. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>A summary of configuration properties for a node.</p>"
@@ -1894,7 +2144,7 @@
         },
         "Status":{
           "shape":"ProposalStatus",
-          "documentation":"<p>The status of the proposal. Values are as follows:</p> <ul> <li> <p> <code>IN_PROGRESS</code> - The proposal is active and open for member voting.</p> </li> <li> <p> <code>APPROVED</code> - The proposal was approved with sufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified proposal actions are carried out.</p> </li> <li> <p> <code>REJECTED</code> - The proposal was rejected with insufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified <code>ProposalActions</code> are not carried out.</p> </li> <li> <p> <code>EXPIRED</code> - Members did not cast the number of votes required to determine the proposal outcome before the proposal expired. The specified <code>ProposalActions</code> are not carried out.</p> </li> <li> <p> <code>ACTION_FAILED</code> - One or more of the specified <code>ProposalActions</code> in a proposal that was approved could not be completed because of an error. The <code>ACTION_FAILED</code> status occurs even if only one ProposalAction fails and other actions are successful.</p> </li> </ul>"
+          "documentation":"<p>The status of the proposal. Values are as follows:</p> <ul> <li> <p> <code>IN_PROGRESS</code> - The proposal is active and open for member voting.</p> </li> <li> <p> <code>APPROVED</code> - The proposal was approved with sufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified proposal actions are carried out.</p> </li> <li> <p> <code>REJECTED</code> - The proposal was rejected with insufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified <code>ProposalActions</code> aren't carried out.</p> </li> <li> <p> <code>EXPIRED</code> - Members didn't cast the number of votes required to determine the proposal outcome before the proposal expired. The specified <code>ProposalActions</code> aren't carried out.</p> </li> <li> <p> <code>ACTION_FAILED</code> - One or more of the specified <code>ProposalActions</code> in a proposal that was approved couldn't be completed because of an error. The <code>ACTION_FAILED</code> status occurs even if only one ProposalAction fails and other actions are successful.</p> </li> </ul>"
         },
         "CreationDate":{
           "shape":"Timestamp",
@@ -1902,7 +2152,7 @@
         },
         "ExpirationDate":{
           "shape":"Timestamp",
-          "documentation":"<p> The date and time that the proposal expires. This is the <code>CreationDate</code> plus the <code>ProposalDurationInHours</code> that is specified in the <code>ProposalThresholdPolicy</code>. After this date and time, if members have not cast enough votes to determine the outcome according to the voting policy, the proposal is <code>EXPIRED</code> and <code>Actions</code> are not carried out. </p>"
+          "documentation":"<p> The date and time that the proposal expires. This is the <code>CreationDate</code> plus the <code>ProposalDurationInHours</code> that is specified in the <code>ProposalThresholdPolicy</code>. After this date and time, if members haven't cast enough votes to determine the outcome according to the voting policy, the proposal is <code>EXPIRED</code> and <code>Actions</code> aren't carried out. </p>"
         },
         "YesVoteCount":{
           "shape":"VoteCount",
@@ -1922,7 +2172,7 @@
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the proposal. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the proposal. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>Properties of a proposal on a Managed Blockchain network.</p> <p>Applies only to Hyperledger Fabric.</p>"
@@ -1932,7 +2182,7 @@
       "members":{
         "Invitations":{
           "shape":"InviteActionList",
-          "documentation":"<p> The actions to perform for an <code>APPROVED</code> proposal to invite an AWS account to create a member and join the network. </p>"
+          "documentation":"<p> The actions to perform for an <code>APPROVED</code> proposal to invite an Amazon Web Services account to create a member and join the network. </p>"
         },
         "Removals":{
           "shape":"RemoveActionList",
@@ -1984,7 +2234,7 @@
         },
         "Status":{
           "shape":"ProposalStatus",
-          "documentation":"<p>The status of the proposal. Values are as follows:</p> <ul> <li> <p> <code>IN_PROGRESS</code> - The proposal is active and open for member voting.</p> </li> <li> <p> <code>APPROVED</code> - The proposal was approved with sufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified proposal actions are carried out.</p> </li> <li> <p> <code>REJECTED</code> - The proposal was rejected with insufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified <code>ProposalActions</code> are not carried out.</p> </li> <li> <p> <code>EXPIRED</code> - Members did not cast the number of votes required to determine the proposal outcome before the proposal expired. The specified <code>ProposalActions</code> are not carried out.</p> </li> <li> <p> <code>ACTION_FAILED</code> - One or more of the specified <code>ProposalActions</code> in a proposal that was approved could not be completed because of an error.</p> </li> </ul>"
+          "documentation":"<p>The status of the proposal. Values are as follows:</p> <ul> <li> <p> <code>IN_PROGRESS</code> - The proposal is active and open for member voting.</p> </li> <li> <p> <code>APPROVED</code> - The proposal was approved with sufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified proposal actions are carried out.</p> </li> <li> <p> <code>REJECTED</code> - The proposal was rejected with insufficient <code>YES</code> votes among members according to the <code>VotingPolicy</code> specified for the <code>Network</code>. The specified <code>ProposalActions</code> aren't carried out.</p> </li> <li> <p> <code>EXPIRED</code> - Members didn't cast the number of votes required to determine the proposal outcome before the proposal expired. The specified <code>ProposalActions</code> aren't carried out.</p> </li> <li> <p> <code>ACTION_FAILED</code> - One or more of the specified <code>ProposalActions</code> in a proposal that was approved couldn't be completed because of an error.</p> </li> </ul>"
         },
         "CreationDate":{
           "shape":"Timestamp",
@@ -1992,11 +2242,11 @@
         },
         "ExpirationDate":{
           "shape":"Timestamp",
-          "documentation":"<p> The date and time that the proposal expires. This is the <code>CreationDate</code> plus the <code>ProposalDurationInHours</code> that is specified in the <code>ProposalThresholdPolicy</code>. After this date and time, if members have not cast enough votes to determine the outcome according to the voting policy, the proposal is <code>EXPIRED</code> and <code>Actions</code> are not carried out. </p>"
+          "documentation":"<p> The date and time that the proposal expires. This is the <code>CreationDate</code> plus the <code>ProposalDurationInHours</code> that is specified in the <code>ProposalThresholdPolicy</code>. After this date and time, if members haven't cast enough votes to determine the outcome according to the voting policy, the proposal is <code>EXPIRED</code> and <code>Actions</code> aren't carried out. </p>"
         },
         "Arn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the proposal. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the proposal. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>Properties of a proposal.</p> <p>Applies only to Hyperledger Fabric.</p>"
@@ -2070,10 +2320,10 @@
         "Message":{"shape":"String"},
         "ResourceName":{
           "shape":"ArnString",
-          "documentation":"<p>A requested resource does not exist. It may have been deleted or referenced inaccurately.</p>"
+          "documentation":"<p>A requested resource doesn't exist. It may have been deleted or referenced inaccurately.</p>"
         }
       },
-      "documentation":"<p>A requested resource does not exist. It may have been deleted or referenced inaccurately.</p>",
+      "documentation":"<p>A requested resource doesn't exist. It may have been deleted or referenced incorrectly.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
@@ -2082,7 +2332,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The requested resource exists but is not in a status that can complete the operation.</p>",
+      "documentation":"<p>The requested resource exists but isn't in a status that can complete the operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -2114,7 +2364,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -2151,7 +2401,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The request or operation could not be performed because a service is throttling requests. The most common source of throttling errors is launching EC2 instances such that your service limit for EC2 instances is exceeded. Request a limit increase or delete unused resources if possible.</p>",
+      "documentation":"<p>The request or operation couldn't be performed because a service is throttling requests. The most common source of throttling errors is creating resources that exceed your service limit for this resource type. Request a limit increase or delete unused resources if possible.</p>",
       "error":{"httpStatusCode":429},
       "exception":true
     },
@@ -2181,7 +2431,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ArnString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. For more information about ARNs and their format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -2344,5 +2594,5 @@
       "documentation":"<p> The voting rules for the network to decide if a proposal is accepted </p> <p>Applies only to Hyperledger Fabric.</p>"
     }
   },
-  "documentation":"<p/> <p>Amazon Managed Blockchain is a fully managed service for creating and managing blockchain networks using open-source frameworks. Blockchain allows you to build applications where multiple parties can securely and transparently run transactions and share data without the need for a trusted, central authority.</p> <p>Managed Blockchain supports the Hyperledger Fabric and Ethereum open-source frameworks. Because of fundamental differences between the frameworks, some API actions or data types may only apply in the context of one framework and not the other. For example, actions related to Hyperledger Fabric network members such as <code>CreateMember</code> and <code>DeleteMember</code> do not apply to Ethereum.</p> <p>The description for each action indicates the framework or frameworks to which it applies. Data types and properties that apply only in the context of a particular framework are similarly indicated.</p>"
+  "documentation":"<p/> <p>Amazon Managed Blockchain is a fully managed service for creating and managing blockchain networks using open-source frameworks. Blockchain allows you to build applications where multiple parties can securely and transparently run transactions and share data without the need for a trusted, central authority.</p> <p>Managed Blockchain supports the Hyperledger Fabric and Ethereum open-source frameworks. Because of fundamental differences between the frameworks, some API actions or data types may only apply in the context of one framework and not the other. For example, actions related to Hyperledger Fabric network members such as <code>CreateMember</code> and <code>DeleteMember</code> don't apply to Ethereum.</p> <p>The description for each action indicates the framework or frameworks to which it applies. Data types and properties that apply only in the context of a particular framework are similarly indicated.</p>"
 }

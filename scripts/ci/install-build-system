@@ -1,27 +1,61 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import argparse
+import tarfile
+import tempfile
 import os
 import glob
-from subprocess import check_call
 import shutil
 
-_dname = os.path.dirname
+from pathlib import Path
+from subprocess import check_call
 
-REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
+REPO_ROOT = Path(__file__).parents[2]
 os.chdir(REPO_ROOT)
 
 
-def run(command):
-    return check_call(command, shell=True)
+def run(command, cwd=None):
+    print(f"Running command: {command}")
+    return check_call(command, shell=True, cwd=cwd)
 
 
-run("pip install --no-build-isolation -r requirements-base.txt")
-run('pip install --no-build-isolation -r requirements.txt')
-run('pip install --no-build-isolation -r requirements-test.txt')
-run(
-    "pip install --no-build-isolation -r requirements/download-deps/bootstrap-lock.txt"
-)
-if os.path.isdir('dist') and os.listdir('dist'):
-    shutil.rmtree('dist')
-run('python -m build')
-wheel_dist = glob.glob(os.path.join('dist', '*.whl'))[0]
-run('pip install %s' % wheel_dist)
+def main(sdist_path=None):
+    run("pip install --no-build-isolation -r requirements-base.txt")
+    run("pip install --no-build-isolation -r requirements.txt")
+    run("pip install --no-build-isolation -r requirements-test.txt")
+    run(
+        "pip install --no-build-isolation -r requirements/download-deps/bootstrap-lock.txt"
+    )
+    if sdist_path is None:
+        wheel_dist = _build_sdist_and_wheel()
+    else:
+        wheel_dist = _build_wheel(sdist_path)
+    run("pip install %s" % wheel_dist)
+
+
+def _build_wheel(sdist_path):
+    build_dir = REPO_ROOT / "dist"
+    with tempfile.TemporaryDirectory() as tempdir:
+        with tarfile.open(sdist_path, "r:gz") as tar:
+            tar.extractall(tempdir)
+        unpacked_sdist = os.path.join(tempdir, os.listdir(tempdir)[0])
+        run(f"python -m build -w -o {build_dir}", cwd=unpacked_sdist)
+    return _find_wheel_file()
+    return wheel_dist
+
+
+def _build_sdist_and_wheel():
+    if os.path.isdir("dist") and os.listdir("dist"):
+        shutil.rmtree("dist")
+    run("python -m build")
+    return _find_wheel_file()
+
+
+def _find_wheel_file():
+    return glob.glob(os.path.join("dist", "*.whl"))[0]
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--use-sdist", default=None, type=os.path.abspath)
+    args = parser.parse_args()
+    main(args.use_sdist)

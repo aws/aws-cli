@@ -136,10 +136,19 @@ def _inject_extra_sdist_files(tar_root):
         for filename in glob.glob(pattern, recursive=True):
             filename = os.path.relpath(filename, ROOT_DIR)
             path_to_add = os.path.join(ROOT_DIR, filename)
+            if not _should_copy(path_to_add):
+                continue
             target_path = os.path.join(tar_root, filename)
             _create_dir_if_not_exists(os.path.dirname(target_path))
             shutil.copy2(path_to_add, target_path)
 
+
+def _should_copy(path):
+    if "__pycache__" in path or path.endswith(".pyc"):
+        return False
+    if os.path.isdir(path):
+        return False
+    return True
 
 def read_sdist_extras():
     with open(ROOT_DIR / "pyproject.toml", "r") as f:

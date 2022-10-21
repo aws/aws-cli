@@ -68,7 +68,10 @@
       ],
       "documentationUrl":"http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketPUT.html",
       "documentation":"<p>Creates a new S3 bucket. To create a bucket, you must register with Amazon S3 and have a valid Amazon Web Services Access Key ID to authenticate requests. Anonymous requests are never allowed to create buckets. By creating the bucket, you become the bucket owner.</p> <p>Not every string is an acceptable bucket name. For information about bucket naming restrictions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html\">Bucket naming rules</a>.</p> <p>If you want to create an Amazon S3 on Outposts bucket, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_CreateBucket.html\">Create Bucket</a>. </p> <p>By default, the bucket is created in the US East (N. Virginia) Region. You can optionally specify a Region in the request body. You might choose a Region to optimize latency, minimize costs, or address regulatory requirements. For example, if you reside in Europe, you will probably find it advantageous to create buckets in the Europe (Ireland) Region. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro\">Accessing a bucket</a>.</p> <note> <p>If you send your create bucket request to the <code>s3.amazonaws.com</code> endpoint, the request goes to the us-east-1 Region. Accordingly, the signature calculations in Signature Version 4 must use us-east-1 as the Region, even if the location constraint in the request specifies another Region where the bucket is to be created. If you create a bucket in a Region other than US East (N. Virginia), your application must be able to handle 307 redirect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/VirtualHosting.html\">Virtual hosting of buckets</a>.</p> </note> <p> <b>Access control lists (ACLs)</b> </p> <p>When creating a bucket using this operation, you can optionally configure the bucket ACL to specify the accounts or groups that should be granted specific permissions on the bucket.</p> <important> <p>If your CreateBucket request sets bucket owner enforced for S3 Object Ownership and specifies a bucket ACL that provides access to an external Amazon Web Services account, your request fails with a <code>400</code> error and returns the <code>InvalidBucketAclWithObjectOwnership</code> error code. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html\">Controlling object ownership</a> in the <i>Amazon S3 User Guide</i>.</p> </important> <p>There are two ways to grant the appropriate permissions using the request headers.</p> <ul> <li> <p>Specify a canned ACL using the <code>x-amz-acl</code> request header. Amazon S3 supports a set of predefined ACLs, known as <i>canned ACLs</i>. Each canned ACL has a predefined set of grantees and permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#CannedACL\">Canned ACL</a>.</p> </li> <li> <p>Specify access permissions explicitly using the <code>x-amz-grant-read</code>, <code>x-amz-grant-write</code>, <code>x-amz-grant-read-acp</code>, <code>x-amz-grant-write-acp</code>, and <code>x-amz-grant-full-control</code> headers. These headers map to the set of permissions Amazon S3 supports in an ACL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html\">Access control list (ACL) overview</a>.</p> <p>You specify each grantee as a type=value pair, where the type is one of the following:</p> <ul> <li> <p> <code>id</code> – if the value specified is the canonical user ID of an Amazon Web Services account</p> </li> <li> <p> <code>uri</code> – if you are granting permissions to a predefined group</p> </li> <li> <p> <code>emailAddress</code> – if the value specified is the email address of an Amazon Web Services account</p> <note> <p>Using email addresses to specify a grantee is only supported in the following Amazon Web Services Regions: </p> <ul> <li> <p>US East (N. Virginia)</p> </li> <li> <p>US West (N. California)</p> </li> <li> <p> US West (Oregon)</p> </li> <li> <p> Asia Pacific (Singapore)</p> </li> <li> <p>Asia Pacific (Sydney)</p> </li> <li> <p>Asia Pacific (Tokyo)</p> </li> <li> <p>Europe (Ireland)</p> </li> <li> <p>South America (São Paulo)</p> </li> </ul> <p>For a list of all the Amazon S3 supported Regions and endpoints, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region\">Regions and Endpoints</a> in the Amazon Web Services General Reference.</p> </note> </li> </ul> <p>For example, the following <code>x-amz-grant-read</code> header grants the Amazon Web Services accounts identified by account IDs permissions to read object data and its metadata:</p> <p> <code>x-amz-grant-read: id=\"11112222333\", id=\"444455556666\" </code> </p> </li> </ul> <note> <p>You can use either a canned ACL or specify access permissions explicitly. You cannot do both.</p> </note> <p> <b>Permissions</b> </p> <p>In addition to <code>s3:CreateBucket</code>, the following permissions are required when your CreateBucket includes specific headers:</p> <ul> <li> <p> <b>ACLs</b> - If your <code>CreateBucket</code> request specifies ACL permissions and the ACL is public-read, public-read-write, authenticated-read, or if you specify access permissions explicitly through any other ACL, both <code>s3:CreateBucket</code> and <code>s3:PutBucketAcl</code> permissions are needed. If the ACL the <code>CreateBucket</code> request is private or doesn't specify any ACLs, only <code>s3:CreateBucket</code> permission is needed. </p> </li> <li> <p> <b>Object Lock</b> - If <code>ObjectLockEnabledForBucket</code> is set to true in your <code>CreateBucket</code> request, <code>s3:PutBucketObjectLockConfiguration</code> and <code>s3:PutBucketVersioning</code> permissions are required.</p> </li> <li> <p> <b>S3 Object Ownership</b> - If your CreateBucket request includes the the <code>x-amz-object-ownership</code> header, <code>s3:PutBucketOwnershipControls</code> permission is required.</p> </li> </ul> <p>The following operations are related to <code>CreateBucket</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html\">PutObject</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html\">DeleteBucket</a> </p> </li> </ul>",
-      "alias":"PutBucket"
+      "alias":"PutBucket",
+      "staticContextParams":{
+        "DisableAccessPoints":{"value":true}
+      }
     },
     "CreateMultipartUpload":{
       "name":"CreateMultipartUpload",
@@ -1173,6 +1176,9 @@
       "authtype":"v4-unsigned-body",
       "endpoint":{
         "hostPrefix":"{RequestRoute}."
+      },
+      "staticContextParams":{
+        "UseObjectLambdaEndpoint":{"value":true}
       }
     }
   },
@@ -1209,6 +1215,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name to which the upload was taking place. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -1475,6 +1482,7 @@
         "ap-south-1",
         "ap-southeast-1",
         "ap-southeast-2",
+        "ap-southeast-3",
         "ca-central-1",
         "cn-north-1",
         "cn-northwest-1",
@@ -1814,6 +1822,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Name of the bucket to which the multipart upload was initiated.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2060,6 +2069,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the destination bucket.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2408,6 +2418,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket to create.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2554,6 +2565,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket to which to initiate the upload</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2777,6 +2789,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket from which an analytics configuration is deleted.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2801,6 +2814,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Specifies the bucket whose <code>cors</code> configuration is being deleted.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2819,6 +2833,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the server-side encryption configuration to delete.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2840,6 +2855,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2861,6 +2877,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the inventory configuration to delete.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2885,6 +2902,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name of the lifecycle to delete.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2906,6 +2924,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the metrics configuration to delete.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2930,6 +2949,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The Amazon S3 bucket whose <code>OwnershipControls</code> you want to delete. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2948,6 +2968,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2966,6 +2987,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p> The bucket name. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -2984,6 +3006,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Specifies the bucket being deleted.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3002,6 +3025,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket that has the tag set to be removed.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3020,6 +3044,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name for which you want to remove the website configuration. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3113,6 +3138,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name of the bucket containing the object. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3174,6 +3200,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the objects from which to remove the tags. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3226,6 +3253,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the objects to delete. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3274,6 +3302,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The Amazon S3 bucket whose <code>PublicAccessBlock</code> configuration you want to delete. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3572,6 +3601,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which the accelerate configuration is retrieved.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3604,6 +3634,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Specifies the S3 bucket whose ACL is being requested.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3635,6 +3666,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket from which an analytics configuration is retrieved.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3669,6 +3701,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name for which to get the cors configuration.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3694,6 +3727,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket from which the server-side encryption configuration is retrieved.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3725,6 +3759,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3756,6 +3791,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the inventory configuration to retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3790,6 +3826,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the lifecycle information.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3818,6 +3855,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the lifecycle information.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3845,6 +3883,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the location.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3869,6 +3908,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name for which to get the logging information.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3900,6 +3940,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the metrics configuration to retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3924,6 +3965,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the notification configuration.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3952,6 +3994,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose <code>OwnershipControls</code> you want to retrieve. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -3980,6 +4023,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name for which to get the bucket policy.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4008,6 +4052,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose policy status you want to retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4033,6 +4078,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name for which to get the replication information.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4060,6 +4106,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the payment request configuration</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4088,6 +4135,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the tagging information.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4120,6 +4168,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to get the versioning information.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4159,6 +4208,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name for which to get the website configuration.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4199,6 +4249,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name that contains the object for which to get the ACL information. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4318,6 +4369,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket that contains the object.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4402,6 +4454,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object whose legal hold status you want to retrieve. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4447,6 +4500,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket whose Object Lock configuration you want to retrieve.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4688,6 +4742,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using an Object Lambda access point the hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-object-lambda.<i>Region</i>.amazonaws.com.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4833,6 +4888,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object whose retention settings you want to retrieve. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4887,6 +4943,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object for which to get the tagging information. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4941,6 +4998,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the object for which to get the torrent files.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -4980,6 +5038,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose <code>PublicAccessBlock</code> configuration you want to retrieve. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -5068,6 +5127,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -5297,6 +5357,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the object.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -5918,6 +5979,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket from which analytics configurations are retrieved.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -5964,6 +6026,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6004,6 +6067,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the inventory configurations to retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6050,6 +6114,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the metrics configurations to retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6141,6 +6206,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket to which the multipart upload was initiated. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6253,6 +6319,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name that contains the objects. </p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6351,6 +6418,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket containing the objects.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6457,6 +6525,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Bucket name to list. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -6598,6 +6667,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket to which the parts are being uploaded. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7494,6 +7564,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which the accelerate configuration is set.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7537,6 +7608,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket to which to apply the ACL.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7602,6 +7674,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket to which an analytics configuration is stored.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7636,6 +7709,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Specifies the bucket impacted by the <code>cors</code>configuration.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7676,6 +7750,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>Specifies default encryption for a bucket using server-side encryption with Amazon S3-managed keys (SSE-S3) or customer managed keys (SSE-KMS). For information about the Amazon S3 default encryption feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html\">Amazon S3 Default Bucket Encryption</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7716,6 +7791,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7745,6 +7821,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket where the inventory configuration will be stored.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7776,6 +7853,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to set the configuration.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7807,6 +7885,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p/>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7847,6 +7926,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which to set the logging parameters.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7888,6 +7968,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket for which the metrics configuration is set.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7922,6 +8003,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7955,6 +8037,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -7995,6 +8078,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose <code>OwnershipControls</code> you want to set.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8029,6 +8113,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8073,6 +8158,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8118,6 +8204,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8158,6 +8245,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8198,6 +8286,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8244,6 +8333,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8306,6 +8396,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name that contains the object to which you want to attach the ACL. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8397,6 +8488,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object that you want to place a legal hold on. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8461,6 +8553,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket whose Object Lock configuration you want to create or replace.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8611,6 +8704,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name to which the PUT action was initiated. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8840,6 +8934,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name that contains the object you want to apply this Object Retention configuration to. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8915,6 +9010,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -8972,6 +9068,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the Amazon S3 bucket whose <code>PublicAccessBlock</code> configuration you want to set.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -9355,6 +9452,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name containing the object to restore. </p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -9642,6 +9740,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The S3 bucket.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -10154,6 +10253,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The bucket name.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -10353,6 +10453,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The name of the bucket to which the multipart upload was initiated.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When using this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When using this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts bucket ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
@@ -10747,5 +10848,23 @@
     },
     "Years":{"type":"integer"}
   },
-  "documentation":"<p/>"
+  "documentation":"<p/>",
+  "clientContextParams":{
+    "Accelerate":{
+      "documentation":"Enables this client to use S3 Transfer Acceleration endpoints.",
+      "type":"boolean"
+    },
+    "DisableMultiRegionAccessPoints":{
+      "documentation":"Disables this client's usage of Multi-Region Access Points.",
+      "type":"boolean"
+    },
+    "ForcePathStyle":{
+      "documentation":"Forces this client to use path-style addressing for buckets.",
+      "type":"boolean"
+    },
+    "UseArnRegion":{
+      "documentation":"Enables this client to use an ARN's region when constructing an endpoint instead of the client's configured region.",
+      "type":"boolean"
+    }
+  }
 }

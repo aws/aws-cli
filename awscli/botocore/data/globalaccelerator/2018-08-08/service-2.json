@@ -32,6 +32,24 @@
       ],
       "documentation":"<p>Associate a virtual private cloud (VPC) subnet endpoint with your custom routing accelerator.</p> <p>The listener port range must be large enough to support the number of IP addresses that can be specified in your subnet. The number of ports required is: subnet size times the number of ports per destination EC2 instances. For example, a subnet defined as /24 requires a listener port range of at least 255 ports. </p> <p>Note: You must have enough remaining listener ports available to map to the subnet ports, or the call will fail with a LimitExceededException.</p> <p>By default, all destinations in a subnet in a custom routing accelerator cannot receive traffic. To enable all destinations to receive traffic, or to specify individual port mappings that can receive traffic, see the <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/api/API_AllowCustomRoutingTraffic.html\"> AllowCustomRoutingTraffic</a> operation.</p>"
     },
+    "AddEndpoints":{
+      "name":"AddEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AddEndpointsRequest"},
+      "output":{"shape":"AddEndpointsResponse"},
+      "errors":[
+        {"shape":"TransactionInProgressException"},
+        {"shape":"EndpointGroupNotFoundException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Add endpoints to an endpoint group. The <code>AddEndpoints</code> API operation is the recommended option for adding endpoints. The alternative options are to add endpoints when you create an endpoint group (with the <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/api/API_CreateEndpointGroup.html\">CreateEndpointGroup</a> API) or when you update an endpoint group (with the <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/api/API_UpdateEndpointGroup.html\">UpdateEndpointGroup</a> API). </p> <p>There are two advantages to using <code>AddEndpoints</code> to add endpoints:</p> <ul> <li> <p>It's faster, because Global Accelerator only has to resolve the new endpoints that you're adding.</p> </li> <li> <p>It's more convenient, because you don't need to specify all of the current endpoints that are already in the endpoint group in addition to the new endpoints that you want to add.</p> </li> </ul>"
+    },
     "AdvertiseByoipCidr":{
       "name":"AdvertiseByoipCidr",
       "http":{
@@ -600,6 +618,22 @@
       ],
       "documentation":"<p>Remove endpoints from a custom routing accelerator.</p>"
     },
+    "RemoveEndpoints":{
+      "name":"RemoveEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RemoveEndpointsRequest"},
+      "errors":[
+        {"shape":"EndpointGroupNotFoundException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TransactionInProgressException"}
+      ],
+      "documentation":"<p>Remove endpoints from an endpoint group. </p> <p>The <code>RemoveEndpoints</code> API operation is the recommended option for removing endpoints. The alternative is to remove endpoints by updating an endpoint group by using the <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/api/API_UpdateEndpointGroup.html\">UpdateEndpointGroup</a> API operation. There are two advantages to using <code>AddEndpoints</code> to remove endpoints instead:</p> <ul> <li> <p>It's more convenient, because you only need to specify the endpoints that you want to remove. With the <code>UpdateEndpointGroup</code> API operation, you must specify all of the endpoints in the endpoint group except the ones that you want to remove from the group.</p> </li> <li> <p>It's faster, because Global Accelerator doesn't need to resolve any endpoints. With the <code>UpdateEndpointGroup</code> API operation, Global Accelerator must resolve all of the endpoints that remain in the group.</p> </li> </ul>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -788,7 +822,7 @@
         },
         "DnsName":{
           "shape":"GenericString",
-          "documentation":"<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator's static IPv4 addresses.</p> <p>The naming convention for the DNS name for an accelerator is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, DualStackDnsName, that points to both the A record and the AAAA record for all four static addresses for the accelerator (two IPv4 addresses and two IPv6 addresses).</p> <p>For more information about the default DNS name, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html\"> Support for DNS Addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
+          "documentation":"<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator's static IPv4 addresses.</p> <p>The naming convention for the DNS name for an accelerator is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, <code>DualStackDnsName</code>, that points to both the A record and the AAAA record for all four static addresses for the accelerator: two IPv4 addresses and two IPv6 addresses.</p> <p>For more information about the default DNS name, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html\"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
         },
         "Status":{
           "shape":"AcceleratorStatus",
@@ -804,7 +838,7 @@
         },
         "DualStackDnsName":{
           "shape":"GenericString",
-          "documentation":"<p>The Domain Name System (DNS) name that Global Accelerator creates that points to a dual-stack accelerator's four static IP addresses: two IPv4 addresses and two IPv6 addresses.</p> <p>The naming convention for the dual-stack DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .dualstack.awsglobalaccelerator.com. For example: a1234567890abcdef.dualstack.awsglobalaccelerator.com.</p> <p>Note: Global Accelerator also assigns a default DNS name, DnsName, to your accelerator that points just to the static IPv4 addresses. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html#about-accelerators.dns-addressing\"> Support for DNS Addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
+          "documentation":"<p>The Domain Name System (DNS) name that Global Accelerator creates that points to a dual-stack accelerator's four static IP addresses: two IPv4 addresses and two IPv6 addresses.</p> <p>The naming convention for the dual-stack DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .dualstack.awsglobalaccelerator.com. For example: a1234567890abcdef.dualstack.awsglobalaccelerator.com.</p> <p>Note: Global Accelerator also assigns a default DNS name, <code>DnsName</code>, to your accelerator that points just to the static IPv4 addresses. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html#about-accelerators.dns-addressing\"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
         },
         "Events":{
           "shape":"AcceleratorEvents",
@@ -911,6 +945,36 @@
         "EndpointGroupArn":{
           "shape":"GenericString",
           "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint group for the custom routing endpoint.</p>"
+        }
+      }
+    },
+    "AddEndpointsRequest":{
+      "type":"structure",
+      "required":[
+        "EndpointConfigurations",
+        "EndpointGroupArn"
+      ],
+      "members":{
+        "EndpointConfigurations":{
+          "shape":"EndpointConfigurations",
+          "documentation":"<p>The list of endpoint objects.</p>"
+        },
+        "EndpointGroupArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint group.</p>"
+        }
+      }
+    },
+    "AddEndpointsResponse":{
+      "type":"structure",
+      "members":{
+        "EndpointDescriptions":{
+          "shape":"EndpointDescriptions",
+          "documentation":"<p>The list of endpoint objects.</p>"
+        },
+        "EndpointGroupArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint group.</p>"
         }
       }
     },
@@ -1360,7 +1424,7 @@
         },
         "DnsName":{
           "shape":"GenericString",
-          "documentation":"<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator's static IPv4 addresses. </p> <p>The naming convention for the DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, DualStackDnsName, that points to both the A record and the AAAA record for all four static addresses for the accelerator (two IPv4 addresses and two IPv6 addresses).</p> <p>For more information about the default DNS name, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html\"> Support for DNS Addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
+          "documentation":"<p>The Domain Name System (DNS) name that Global Accelerator creates that points to an accelerator's static IPv4 addresses. </p> <p>The naming convention for the DNS name is the following: A lowercase letter a, followed by a 16-bit random hex string, followed by .awsglobalaccelerator.com. For example: a1234567890abcdef.awsglobalaccelerator.com.</p> <p>If you have a dual-stack accelerator, you also have a second DNS name, <code>DualStackDnsName</code>, that points to both the A record and the AAAA record for all four static addresses for the accelerator: two IPv4 addresses and two IPv6 addresses.</p> <p>For more information about the default DNS name, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/dns-addressing-custom-domains.dns-addressing.html\"> Support for DNS addressing in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
         },
         "Status":{
           "shape":"CustomRoutingAcceleratorStatus",
@@ -1991,6 +2055,27 @@
       "type":"list",
       "member":{"shape":"EndpointGroup"}
     },
+    "EndpointIdentifier":{
+      "type":"structure",
+      "required":["EndpointId"],
+      "members":{
+        "EndpointId":{
+          "shape":"GenericString",
+          "documentation":"<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. </p> <p>An Application Load Balancer can be either internal or internet-facing.</p>"
+        },
+        "ClientIPPreservationEnabled":{
+          "shape":"GenericBoolean",
+          "documentation":"<p>Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. </p> <p>If the value is set to true, the client's IP address is preserved in the <code>X-Forwarded-For</code> request header as traffic travels to applications on the endpoint fronted by the accelerator.</p>"
+        }
+      },
+      "documentation":"<p>A complex type for an endpoint. Specifies information about the endpoint to remove from the endpoint group.</p>"
+    },
+    "EndpointIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EndpointIdentifier"},
+      "max":10,
+      "min":1
+    },
     "EndpointIds":{
       "type":"list",
       "member":{"shape":"GenericString"}
@@ -2616,6 +2701,23 @@
         }
       }
     },
+    "RemoveEndpointsRequest":{
+      "type":"structure",
+      "required":[
+        "EndpointIdentifiers",
+        "EndpointGroupArn"
+      ],
+      "members":{
+        "EndpointIdentifiers":{
+          "shape":"EndpointIdentifiers",
+          "documentation":"<p>The identifiers of the endpoints that you want to remove.</p>"
+        },
+        "EndpointGroupArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint group.</p>"
+        }
+      }
+    },
     "ResourceArn":{
       "type":"string",
       "max":1011,
@@ -2709,6 +2811,14 @@
       "type":"float",
       "max":100,
       "min":0
+    },
+    "TransactionInProgressException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>There's already a transaction in progress. Another transaction can't be processed.</p>",
+      "exception":true
     },
     "UntagResourceRequest":{
       "type":"structure",

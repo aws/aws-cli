@@ -898,7 +898,7 @@
         },
         "status":{
           "shape":"AppStatusType",
-          "documentation":"<p>The status of the action.</p>"
+          "documentation":"<p>The status of the application.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1154,6 +1154,10 @@
         "resiliencyScore":{
           "shape":"Double",
           "documentation":"<p>The current resiliency score for the application.</p>"
+        },
+        "status":{
+          "shape":"AppStatusType",
+          "documentation":"<p>The status of the application.</p>"
         }
       },
       "documentation":"<p>Defines an application summary.</p>"
@@ -1164,7 +1168,7 @@
     },
     "AppTemplateBody":{
       "type":"string",
-      "max":51200,
+      "max":204800,
       "min":0,
       "pattern":"^[\\w\\s:,-\\.'{}\\[\\]:\"]+$"
     },
@@ -1332,7 +1336,8 @@
         "LeastChange",
         "BestAZRecovery",
         "LeastErrors",
-        "BestAttainable"
+        "BestAttainable",
+        "BestRegionRecovery"
       ]
     },
     "ConflictException":{
@@ -3680,7 +3685,7 @@
         },
         "policy":{
           "shape":"DisruptionPolicy",
-          "documentation":"<p>The type of resiliency policy to be created, including the recovery time objective (RTO) and recovery point objective (RPO) in seconds.</p> <note> <p>If you do not want to specify regional targets for a regional policy, you must set the values of <code>rpoInSecs</code> and <code>rtoInSecs</code> to <code>-1</code>.</p> </note>"
+          "documentation":"<p>The type of resiliency policy to be created, including the recovery time objective (RTO) and recovery point objective (RPO) in seconds.</p>"
         },
         "policyArn":{
           "shape":"Arn",

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.25.97
+=======
+
+* api-change:``cognito-idp``: This release adds a new "DeletionProtection" field to the UserPool in Cognito. Application admins can configure this value with either ACTIVE or INACTIVE value. Setting this field to ACTIVE will prevent a user pool from accidental deletion.
+* api-change:``sagemaker``: CreateInferenceRecommenderjob API now supports passing endpoint details directly, that will help customers to identify the max invocation and max latency they can achieve for their model and the associated endpoint along with getting recommendations on other instances.
+
+
 1.25.96
 =======
 

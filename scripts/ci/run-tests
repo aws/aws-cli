@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Don't run tests from the root repo dir.
 # We want to ensure we're importing from the installed
 # binary package not from the CWD.
@@ -94,10 +94,23 @@ if __name__ == "__main__":
             "Ignore a test subdirectory. Can be specified multiple times."
         )
     )
+    parser.add_argument(
+        "--tests-path",
+        default=None,
+        type=os.path.abspath,
+        help=(
+            "Optional path to an alternate test directory to use."
+        )
+    )
     raw_args = parser.parse_args()
     test_runner, test_args, test_dirs = process_args(raw_args)
 
+    tests_path = raw_args.tests_path
+    if tests_path is None:
+        tests_path = os.path.join(REPO_ROOT, "tests")
+
     cmd = f"{test_runner} {test_args}{test_dirs}"
+    print(f"CDing to {tests_path}")
     print(f"Running {cmd}...")
-    with cd(os.path.join(REPO_ROOT, "tests")):
+    with cd(tests_path):
         run(cmd, allow_repo_root_on_path=raw_args.allow_repo_root_on_path)

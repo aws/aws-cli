@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.8.5
+=====
+
+* api-change:``events``: Update events command to latest version
+* api-change:``workspaces-web``: WorkSpaces Web now supports user access logging for recording session start, stop, and URL navigation.
+* api-change:``connect``: This release adds API support for managing phone numbers that can be used across multiple AWS regions through telephony traffic distribution.
+* api-change:``config``: This release adds resourceType enums for AppConfig, AppSync, DataSync, EC2, EKS, Glue, GuardDuty, SageMaker, ServiceDiscovery, SES, Route53 types.
+* api-change:``cloudtrail``: This release includes support for exporting CloudTrail Lake query results to an Amazon S3 bucket.
+* api-change:``s3``: Updates internal logic for constructing API endpoints. We have added rule-based endpoints and internal model parameters.
+* api-change:``resiliencehub``: In this release, we are introducing support for regional optimization for AWS Resilience Hub applications. It also includes a few documentation updates to improve clarity.
+* api-change:``globalaccelerator``: Global Accelerator now supports AddEndpoints and RemoveEndpoints operations for standard endpoint groups.
+* api-change:``rum``: CloudWatch RUM now supports Extended CloudWatch Metrics with Additional Dimensions
+* api-change:``devops-guru``: This release adds information about the resources DevOps Guru is analyzing.
+* api-change:``support-app``: This release adds the RegisterSlackWorkspaceForOrganization API. You can use the API to register a Slack workspace for an AWS account that is part of an organization.
+* api-change:``s3control``: Updates internal logic for constructing API endpoints. We have added rule-based endpoints and internal model parameters.
+* api-change:``managedblockchain``: Adding new Accessor APIs for Amazon Managed Blockchain
+* api-change:``chime-sdk-messaging``: Documentation updates for Chime Messaging SDK
+
+
 2.8.4
 =====
 

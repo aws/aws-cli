@@ -11187,6 +11187,10 @@
         "InferenceRecommendations":{
           "shape":"InferenceRecommendations",
           "documentation":"<p>The recommendations made by Inference Recommender.</p>"
+        },
+        "EndpointPerformances":{
+          "shape":"EndpointPerformances",
+          "documentation":"<p>The performance results from running an Inference Recommender job on an existing endpoint.</p>"
         }
       }
     },
@@ -13893,6 +13897,17 @@
       "type":"list",
       "member":{"shape":"EndpointConfigSummary"}
     },
+    "EndpointInfo":{
+      "type":"structure",
+      "required":["EndpointName"],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of a customer's endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Details about a customer endpoint that was compared in an Inference Recommender job.</p>"
+    },
     "EndpointInput":{
       "type":"structure",
       "required":[
@@ -14006,6 +14021,26 @@
       },
       "documentation":"<p>The endpoint configuration made by Inference Recommender during a recommendation job.</p>"
     },
+    "EndpointPerformance":{
+      "type":"structure",
+      "required":[
+        "Metrics",
+        "EndpointInfo"
+      ],
+      "members":{
+        "Metrics":{
+          "shape":"InferenceMetrics",
+          "documentation":"<p>The metrics for an existing endpoint.</p>"
+        },
+        "EndpointInfo":{"shape":"EndpointInfo"}
+      },
+      "documentation":"<p>The performance results from running an Inference Recommender job on an existing endpoint.</p>"
+    },
+    "EndpointPerformances":{
+      "type":"list",
+      "member":{"shape":"EndpointPerformance"},
+      "max":1
+    },
     "EndpointSortKey":{
       "type":"string",
       "enum":[
@@ -14063,6 +14098,11 @@
     "EndpointSummaryList":{
       "type":"list",
       "member":{"shape":"EndpointSummary"}
+    },
+    "Endpoints":{
+      "type":"list",
+      "member":{"shape":"EndpointInfo"},
+      "max":1
     },
     "EntityDescription":{
       "type":"string",
@@ -16114,6 +16154,24 @@
     "InferenceImage":{
       "type":"string",
       "max":256
+    },
+    "InferenceMetrics":{
+      "type":"structure",
+      "required":[
+        "MaxInvocations",
+        "ModelLatency"
+      ],
+      "members":{
+        "MaxInvocations":{
+          "shape":"Integer",
+          "documentation":"<p>The expected maximum number of requests per minute for the instance.</p>"
+        },
+        "ModelLatency":{
+          "shape":"Integer",
+          "documentation":"<p>The expected model latency at maximum invocations per minute for the instance.</p>"
+        }
+      },
+      "documentation":"<p>The metrics for an existing endpoint compared in an Inference Recommender job.</p>"
     },
     "InferenceRecommendation":{
       "type":"structure",
@@ -24623,6 +24681,10 @@
         "ContainerConfig":{
           "shape":"RecommendationJobContainerConfig",
           "documentation":"<p>Specifies mandatory fields for running an Inference Recommender job. The fields specified in <code>ContainerConfig</code> override the corresponding fields in the model package.</p>"
+        },
+        "Endpoints":{
+          "shape":"Endpoints",
+          "documentation":"<p>Existing customer endpoints on which to run an Inference Recommender job.</p>"
         }
       },
       "documentation":"<p>The input configuration of the recommendation job.</p>"
@@ -27345,7 +27407,7 @@
         },
         "InstanceCount":{
           "shape":"TransformInstanceCount",
-          "documentation":"<p>The number of ML compute instances to use in the transform job. For distributed transform jobs, specify a value greater than 1. The default value is <code>1</code>.</p>"
+          "documentation":"<p>The number of ML compute instances to use in the transform job. The default value is <code>1</code>, and the maximum is <code>100</code>. For distributed transform jobs, specify a value greater than <code>1</code>.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",

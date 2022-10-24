@@ -135,7 +135,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         session = mock.Mock()
 
         globalargs.no_sign_request(args, session)
-        session.register.assert_called_with(
+        emitter = session.get_component('event_emitter')
+        emitter.register_first.assert_called_with(
             'choose-signer', disable_signing, unique_id='disable-signing')
 
     def test_request_signed_by_default(self):

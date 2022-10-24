@@ -2,6 +2,7 @@ import collections
 import copy
 import os
 import sys
+import unittest
 
 # Both nose and py.test will add the first parent directory it
 # encounters that does not have a __init__.py to the sys.path. In
@@ -27,7 +28,7 @@ import botocore.loaders
 import botocore.model
 import botocore.serialize
 import botocore.validate
-
+from botocore.compat import HAS_CRT
 
 # A shared loader to use for classes in this module. This allows us to
 # load models outside of influence of a session and take advantage of
@@ -323,3 +324,13 @@ class CaseInsensitiveDict(collections_abc.MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
+
+
+def requires_crt(reason=None):
+    if reason is None:
+        reason = "Test requires awscrt to be installed"
+
+    def decorator(func):
+        return unittest.skipIf(not HAS_CRT, reason)(func)
+
+    return decorator

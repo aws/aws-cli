@@ -45,7 +45,8 @@ AC_INDEX = ROOT_DIR / "awscli" / "data" / "ac.index"
 INSTALL_DIRNAME = "aws-cli"
 
 
-DISTRIBUTION_SOURCE = "exe"
+DISTRIBUTION_SOURCE_EXE = "source-exe"
+DISTRIBUTION_SOURCE_SANDBOX = "source-sandbox"
 
 
 class ArtifactType(Enum):

@@ -81,11 +81,6 @@ class TestExe:
                 {"cwd": PYINSTALLER_DIR, "check": True},
             ),
             (
-                "update_metadata",
-                os.path.join("workspace", "dist", "aws"),
-                {"distribution_source": "exe"},
-            ),
-            (
                 "copy_directory",
                 os.path.join("workspace", "dist", "aws"),
                 os.path.join("workspace", "aws", "dist"),
@@ -115,6 +110,13 @@ class TestExe:
                 EXE_ASSETS_DIR,
                 os.path.join("workspace", "aws"),
             ),
+            # Update metadata
+            (
+                "update_metadata",
+                os.path.join("workspace", "aws", "dist"),
+                {"distribution_source": "source-exe"},
+            ),
+
         ]
 
     def test_build(self, fake_aws_cli_venv):

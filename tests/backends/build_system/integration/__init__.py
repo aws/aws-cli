@@ -54,14 +54,14 @@ class BaseArtifactTest:
         python_info = sys.version_info
         return f"{python_info.major}.{python_info.minor}.{python_info.micro}"
 
-    def assert_version_string_is_correct(self, exe_path):
+    def assert_version_string_is_correct(self, exe_path, dist_type):
         version_string = subprocess.check_output(
             [str(exe_path), "--version"]
         ).decode()
 
         assert f"aws-cli/{self.expected_cli_version()}" in version_string
         assert f"Python/{self.expected_python_version()}" in version_string
-        assert "source/" in version_string
+        assert f"source-{dist_type}" in version_string
 
     def assert_built_venv_is_correct(self, venv_dir):
         self.assert_venv_is_correct(venv_dir)
@@ -70,7 +70,7 @@ class BaseArtifactTest:
         # The venv after building also includes the binary
         assert BIN_DIRNAME in files
         aws_exe = venv_dir / BIN_DIRNAME / CLI_SCRIPT_NAME
-        self.assert_version_string_is_correct(aws_exe)
+        self.assert_version_string_is_correct(aws_exe, "sandbox")
 
     def assert_venv_is_correct(self, venv_dir):
         files = os.listdir(venv_dir)
@@ -90,13 +90,13 @@ class BaseArtifactTest:
         }
 
         aws_exe = aws_dir / "dist" / "aws"
-        self.assert_version_string_is_correct(aws_exe)
+        self.assert_version_string_is_correct(aws_exe, "exe")
 
     def assert_installed_exe_is_correct(self, exe_dir):
-        self.assert_version_string_is_correct(exe_dir / CLI_SCRIPT_NAME)
+        self.assert_version_string_is_correct(exe_dir / CLI_SCRIPT_NAME, "exe")
 
     def assert_installed_venv_is_correct(self, exe_dir, lib_dir):
-        self.assert_version_string_is_correct(exe_dir / CLI_SCRIPT_NAME)
+        self.assert_version_string_is_correct(exe_dir / CLI_SCRIPT_NAME, "sandbox")
         self.assert_venv_is_correct(lib_dir / "aws-cli")
 
 

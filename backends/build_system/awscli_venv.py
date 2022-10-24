@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import json
 import subprocess
 import site
 import sys
@@ -26,6 +27,7 @@ from constants import (
     BIN_DIRNAME,
     PYTHON_EXE_NAME,
     CLI_SCRIPTS,
+    DISTRIBUTION_SOURCE_SANDBOX,
 )
 from utils import Utils
 
@@ -33,6 +35,7 @@ from utils import Utils
 class AwsCliVenv:
     _PARENT_SCRIPTS_TO_COPY = [
         "pyinstaller",
+        "pyinstaller.exe",
     ]
 
     def __init__(self, venv_dir: str, utils: Utils = None):
@@ -56,6 +59,7 @@ class AwsCliVenv:
         else:
             self._copy_parent_packages()
         self._install_awscli()
+        self._update_metadata()
         self._update_windows_script_header()
 
     def _copy_parent_packages(self):
@@ -103,6 +107,12 @@ class AwsCliVenv:
         lines[0] = self._utils.get_script_header(python_exe_path)
         self._utils.write_file(exe_path, "".join(lines))
 
+    def _update_metadata(self):
+        self._utils.update_metadata(
+            self._site_packages(),
+            distribution_source=DISTRIBUTION_SOURCE_SANDBOX,
+        )
+
     @property
     def bin_dir(self):
         return os.path.join(self._venv_dir, BIN_DIRNAME)
@@ -125,15 +135,18 @@ class AwsCliVenv:
         self._utils.run(args, **run_kwargs)
 
     def _site_packages(self) -> str:
-        site_path = (
+        # On windows the getsitepackages can return the root venv dir.
+        # So instead of just taking the first entry, we need to take the
+        # first entry that contains the string "site-packages" in the path.
+        site_path = [path for path in json.loads(
             subprocess.check_output(
                 [
                     self.python_exe,
                     "-c",
-                    "import site; print(site.getsitepackages()[0])",
+                    "import site, json; print(json.dumps(site.getsitepackages()))",
                 ]
             )
             .decode()
             .strip()
-        )
+        ) if "site-packages" in path][0]
         return site_path

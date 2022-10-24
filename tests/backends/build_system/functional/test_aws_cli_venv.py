@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import contextlib
+import json
 import re
 import os
 import sys
@@ -87,17 +88,17 @@ class TestAwsCliVenv:
         return f"python{info[0]}.{info[1]}"
 
     def _site_packages_dir(self, venv_path: pathlib.PurePath) -> str:
-        site_path = (
+        site_path = [path for path in json.loads(
             subprocess.check_output(
                 [
                     venv_path / BIN_DIRNAME / PYTHON_EXE_NAME,
                     "-c",
-                    "import site; print(site.getsitepackages()[0])",
+                    "import site, json; print(json.dumps(site.getsitepackages()))",
                 ]
             )
             .decode()
             .strip()
-        )
+        ) if "site-packages" in path][0]
         return site_path
 
     @skip_if_windows("Posix virtualenv")

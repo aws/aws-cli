@@ -29,7 +29,7 @@ class TestMakeInstall(BaseArtifactTest):
         assert bins == {"aws", "aws_completer"}
 
         aws_exe = bin_path / "aws"
-        self.assert_version_string_is_correct(aws_exe)
+        self.assert_version_string_is_correct(aws_exe, "sandbox")
 
     @skip_if_windows(WINDOWS_SKIP_REASON)
     def test_install(self, workspace: VEnvWorkspace):

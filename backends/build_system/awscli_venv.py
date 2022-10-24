@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import json
 import subprocess
 import site
 import sys
@@ -34,6 +35,7 @@ from utils import Utils
 class AwsCliVenv:
     _PARENT_SCRIPTS_TO_COPY = [
         "pyinstaller",
+        "pyinstaller.exe",
     ]
 
     def __init__(self, venv_dir: str, utils: Utils = None):
@@ -133,15 +135,18 @@ class AwsCliVenv:
         self._utils.run(args, **run_kwargs)
 
     def _site_packages(self) -> str:
-        site_path = (
+        # On windows the getsitepackages can return the root venv dir.
+        # So instead of just taking the first entry, we need to take the
+        # first entry that contains the string "site-packages" in the path.
+        site_path = [path for path in json.loads(
             subprocess.check_output(
                 [
                     self.python_exe,
                     "-c",
-                    "import site; print(site.getsitepackages()[0])",
+                    "import site, json; print(json.dumps(site.getsitepackages()))",
                 ]
             )
             .decode()
             .strip()
-        )
+        ) if "site-packages" in path][0]
         return site_path

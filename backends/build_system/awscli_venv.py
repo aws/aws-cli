@@ -26,6 +26,7 @@ from constants import (
     BIN_DIRNAME,
     PYTHON_EXE_NAME,
     CLI_SCRIPTS,
+    DISTRIBUTION_SOURCE_SANDBOX,
 )
 from utils import Utils
 
@@ -56,6 +57,7 @@ class AwsCliVenv:
         else:
             self._copy_parent_packages()
         self._install_awscli()
+        self._update_metadata()
         self._update_windows_script_header()
 
     def _copy_parent_packages(self):
@@ -102,6 +104,12 @@ class AwsCliVenv:
         lines = self._utils.read_file_lines(exe_path)
         lines[0] = self._utils.get_script_header(python_exe_path)
         self._utils.write_file(exe_path, "".join(lines))
+
+    def _update_metadata(self):
+        self._utils.update_metadata(
+            self._site_packages(),
+            distribution_source=DISTRIBUTION_SOURCE_SANDBOX,
+        )
 
     @property
     def bin_dir(self):

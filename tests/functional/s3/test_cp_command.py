@@ -18,6 +18,7 @@ from awscli.testutils import capture_input
 from awscli.testutils import mock 
 from awscli.compat import six
 from tests.functional.s3 import BaseS3TransferCommandTest
+from tests import requires_crt
 
 
 class BufferedBytesIO(six.BytesIO):
@@ -1147,6 +1148,7 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
             ]
         )
 
+    @requires_crt()
     def test_accepts_mrap_arns(self):
         mrap_arn = (
             'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
@@ -1162,6 +1164,7 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
             ]
         )
 
+    @requires_crt()
     def test_accepts_mrap_arns_with_slash(self):
         mrap_arn = (
             'arn:aws:s3::123456789012:accesspoint/mfzwi23gnjvgw.mrap'

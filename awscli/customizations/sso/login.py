@@ -23,14 +23,24 @@ class LoginCommand(BaseSSOCommand):
         'credentials. To login, the requested profile must have first been '
         'setup using ``aws configure sso``. Each time the ``login`` command '
         'is called, a new SSO access token will be retrieved. Please note '
-        'that only one login session can be active for a given SSO Start URL '
+        'that only one login session can be active for a given SSO Session '
         'and creating multiple profiles does not allow for multiple users to '
-        'be authenticated against the same SSO Start URL.'
+        'be authenticated against the same SSO Session.'
     )
-    ARG_TABLE = LOGIN_ARGS
+    ARG_TABLE = LOGIN_ARGS + [
+        {
+            'name': 'sso-session',
+            'help_text': (
+               'An explicit SSO session to use to login. By default, this '
+               'command will login using the SSO session configured as part '
+               'of the requested profile and generally does not require this '
+               'argument to be set.'
+            )
+        }
+    ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        sso_config = self._get_sso_config()
+        sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()

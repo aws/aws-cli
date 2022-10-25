@@ -77,6 +77,15 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
     )
 
 
+def parse_sso_registration_scopes(raw_scopes):
+    parsed_scopes = []
+    for scope in raw_scopes.split(','):
+        scope = scope.strip()
+        if scope:
+            parsed_scopes.append(scope)
+    return parsed_scopes
+
+
 def open_browser_with_original_ld_path(url):
     with original_ld_library_path():
         webbrowser.open_new_tab(url)
@@ -148,25 +157,16 @@ class BaseSSOCommand(BasicCommand):
         'sso_region',
     ]
 
-    def _get_sso_config(self):
+    def _get_sso_config(self, sso_session=None):
         scoped_config = self._session.get_scoped_config()
-        sso_session_config = self._get_sso_session_config(scoped_config)
-        if sso_session_config:
-            return sso_session_config
-        return self._get_legacy_sso_config(scoped_config)
+        if sso_session is None:
+            sso_session = scoped_config.get('sso_session')
+        if sso_session:
+            return self._get_sso_session_config(sso_session)
+        else:
+            return self._get_legacy_sso_config(scoped_config)
 
-    def _get_sso_session_config(self, scoped_config):
-        if 'sso_session' not in scoped_config:
-            return None
-
-        for config_var in self._REQUIRED_SSO_CONFIG_VARS:
-            if config_var in scoped_config:
-                raise InvalidSSOConfigError(
-                    'Inline SSO configuration and sso_session cannot be '
-                    'configured on the same profile.'
-                )
-
-        session_name = scoped_config['sso_session']
+    def _get_sso_session_config(self, session_name):
         full_config = self._session.full_config
         if session_name not in full_config.get('sso_sessions', {}):
             raise InvalidSSOConfigError(
@@ -179,7 +179,7 @@ class BaseSSOCommand(BasicCommand):
         scopes_var = 'sso_registration_scopes'
         if scopes_var in session_config:
             raw_scopes = session_config[scopes_var]
-            parsed_scopes = self._parse_registration_scopes(raw_scopes)
+            parsed_scopes = parse_sso_registration_scopes(raw_scopes)
             sso_config['registration_scopes'] = parsed_scopes
 
         if missing:
@@ -189,14 +189,6 @@ class BaseSSOCommand(BasicCommand):
             raise InvalidSSOConfigError(error_msg)
 
         return sso_config
-
-    def _parse_registration_scopes(self, raw_scopes):
-        parsed_scopes = []
-        for scope in raw_scopes.split(','):
-            scope = scope.strip()
-            if scope:
-                parsed_scopes.append(scope)
-        return parsed_scopes
 
     def _get_legacy_sso_config(self, scoped_config):
         sso_config, missing = self._get_required_config_vars(scoped_config)

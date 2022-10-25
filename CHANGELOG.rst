@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.26.1
+======
+
+* api-change:``accessanalyzer``: This release adds support for six new resource types in IAM Access Analyzer to help you easily identify public and cross-account access to your AWS resources. Updated service API, documentation, and paginators.
+* api-change:``location``: Added new map styles with satellite imagery for map resources using HERE as a data provider.
+* api-change:``mediatailor``: This release is a documentation update
+* api-change:``rds``: Relational Database Service - This release adds support for exporting DB cluster data to Amazon S3.
+* api-change:``workspaces``: This release adds new enums for supporting Workspaces Core features, including creating Manual running mode workspaces, importing regular Workspaces Core images and importing g4dn Workspaces Core images.
+
+
 1.26.0
 ======
 

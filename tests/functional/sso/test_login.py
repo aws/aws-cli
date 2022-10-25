@@ -195,6 +195,19 @@ class TestLoginCommand(BaseSSOTest):
             expected_token=self.access_token,
         )
 
+    def test_login_sso_with_explicit_sso_session_arg(self):
+        content = self.get_sso_session_config(
+            'test-session', include_profile=False)
+        self.set_config_file_content(content=content)
+        self.add_oidc_workflow_responses(self.access_token)
+        self.run_cmd('sso login --sso-session test-session')
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+
     def test_login_sso_session_with_scopes(self):
         self.registration_scopes = ['sso:foo', 'sso:bar']
         content = self.get_sso_session_config('test-session')
@@ -210,21 +223,6 @@ class TestLoginCommand(BaseSSOTest):
         operation, params = self.operations_called[0]
         self.assertEqual(operation.name, 'RegisterClient')
         self.assertEqual(params.get('scopes'), self.registration_scopes)
-
-    def test_login_sso_session_and_legacy_config_errors(self):
-        content = self.get_legacy_config()
-        content += (
-            f'sso_session=test\n'
-            f'[sso-session test]\n'
-            f'sso_start_url={self.start_url}\n'
-            f'sso_region={self.sso_region}\n'
-        )
-        self.set_config_file_content(content=content)
-        _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
-        self.assertIn(
-            'cannot be configured on the same profile',
-            stderr
-        )
 
     def test_login_sso_session_missing_config(self):
         content = (

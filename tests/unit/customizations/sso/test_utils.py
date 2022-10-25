@@ -12,6 +12,9 @@
 # language governing permissions and limitations under the License.
 import os
 import webbrowser
+
+import pytest
+
 from awscli.testutils import mock
 from awscli.testutils import unittest
 
@@ -19,10 +22,28 @@ from botocore.session import Session
 from botocore.exceptions import ClientError
 
 from awscli.compat import StringIO
+from awscli.customizations.sso.utils import parse_sso_registration_scopes
 from awscli.customizations.sso.utils import do_sso_login
 from awscli.customizations.sso.utils import OpenBrowserHandler
 from awscli.customizations.sso.utils import PrintOnlyHandler
 from awscli.customizations.sso.utils import open_browser_with_original_ld_path
+
+
+@pytest.mark.parametrize(
+    'raw_scopes, parsed_scopes',
+    [
+        ('scope', ['scope']),
+        (' scope ', ['scope']),
+        ('', []),
+        ('scope, ', ['scope']),
+        ('scope-1,scope-2', ['scope-1', 'scope-2']),
+        ('scope-1, scope-2', ['scope-1', 'scope-2']),
+        (' scope-1, scope-2 ', ['scope-1', 'scope-2']),
+        ('scope-1,scope-2,scope-3', ['scope-1', 'scope-2', 'scope-3'])
+    ]
+)
+def test_parse_registration_scopes(raw_scopes, parsed_scopes):
+    assert parse_sso_registration_scopes(raw_scopes) == parsed_scopes
 
 
 class TestDoSSOLogin(unittest.TestCase):

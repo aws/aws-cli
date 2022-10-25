@@ -506,6 +506,14 @@ class StubbedSession(botocore.session.Session):
         self._cached_clients = {}
         self._client_stubs = {}
 
+    @property
+    def cached_clients(self):
+        return self._cached_clients
+
+    @property
+    def client_stubs(self):
+        return self._client_stubs
+
     def create_client(self, service_name, *args, **kwargs):
         if service_name not in self._cached_clients:
             client = self._create_stubbed_client(service_name, *args, **kwargs)

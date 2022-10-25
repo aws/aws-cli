@@ -2170,6 +2170,16 @@
       "output":{"shape":"ListImagesResponse"},
       "documentation":"<p>Lists the images in your account and their properties. The list can be filtered by creation time or modified time, and whether the image name contains a specified string.</p>"
     },
+    "ListInferenceRecommendationsJobSteps":{
+      "name":"ListInferenceRecommendationsJobSteps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInferenceRecommendationsJobStepsRequest"},
+      "output":{"shape":"ListInferenceRecommendationsJobStepsResponse"},
+      "documentation":"<p>Returns a list of the subtasks for an Inference Recommender job.</p> <p>The supported subtasks are benchmarks, which evaluate the performance of your model on different instance types.</p>"
+    },
     "ListInferenceRecommendationsJobs":{
       "name":"ListInferenceRecommendationsJobs",
       "http":{
@@ -4540,7 +4550,8 @@
         "PrecisionMacro",
         "Recall",
         "RecallMacro",
-        "LogLoss"
+        "LogLoss",
+        "InferenceLatency"
       ]
     },
     "AutoMLMode":{
@@ -11187,6 +11198,10 @@
         "InferenceRecommendations":{
           "shape":"InferenceRecommendations",
           "documentation":"<p>The recommendations made by Inference Recommender.</p>"
+        },
+        "EndpointPerformances":{
+          "shape":"EndpointPerformances",
+          "documentation":"<p>The performance results from running an Inference Recommender job on an existing endpoint.</p>"
         }
       }
     },
@@ -13893,6 +13908,17 @@
       "type":"list",
       "member":{"shape":"EndpointConfigSummary"}
     },
+    "EndpointInfo":{
+      "type":"structure",
+      "required":["EndpointName"],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of a customer's endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Details about a customer endpoint that was compared in an Inference Recommender job.</p>"
+    },
     "EndpointInput":{
       "type":"structure",
       "required":[
@@ -14006,6 +14032,26 @@
       },
       "documentation":"<p>The endpoint configuration made by Inference Recommender during a recommendation job.</p>"
     },
+    "EndpointPerformance":{
+      "type":"structure",
+      "required":[
+        "Metrics",
+        "EndpointInfo"
+      ],
+      "members":{
+        "Metrics":{
+          "shape":"InferenceMetrics",
+          "documentation":"<p>The metrics for an existing endpoint.</p>"
+        },
+        "EndpointInfo":{"shape":"EndpointInfo"}
+      },
+      "documentation":"<p>The performance results from running an Inference Recommender job on an existing endpoint.</p>"
+    },
+    "EndpointPerformances":{
+      "type":"list",
+      "member":{"shape":"EndpointPerformance"},
+      "max":1
+    },
     "EndpointSortKey":{
       "type":"string",
       "enum":[
@@ -14063,6 +14109,11 @@
     "EndpointSummaryList":{
       "type":"list",
       "member":{"shape":"EndpointSummary"}
+    },
+    "Endpoints":{
+      "type":"list",
+      "member":{"shape":"EndpointInfo"},
+      "max":1
     },
     "EntityDescription":{
       "type":"string",
@@ -16115,6 +16166,24 @@
       "type":"string",
       "max":256
     },
+    "InferenceMetrics":{
+      "type":"structure",
+      "required":[
+        "MaxInvocations",
+        "ModelLatency"
+      ],
+      "members":{
+        "MaxInvocations":{
+          "shape":"Integer",
+          "documentation":"<p>The expected maximum number of requests per minute for the instance.</p>"
+        },
+        "ModelLatency":{
+          "shape":"Integer",
+          "documentation":"<p>The expected model latency at maximum invocations per minute for the instance.</p>"
+        }
+      },
+      "documentation":"<p>The metrics for an existing endpoint compared in an Inference Recommender job.</p>"
+    },
     "InferenceRecommendation":{
       "type":"structure",
       "required":[
@@ -16199,6 +16268,37 @@
         }
       },
       "documentation":"<p>A structure that contains a list of recommendation jobs.</p>"
+    },
+    "InferenceRecommendationsJobStep":{
+      "type":"structure",
+      "required":[
+        "StepType",
+        "JobName",
+        "Status"
+      ],
+      "members":{
+        "StepType":{
+          "shape":"RecommendationStepType",
+          "documentation":"<p>The type of the subtask.</p> <p> <code>BENCHMARK</code>: Evaluate the performance of your model on different instance types.</p>"
+        },
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of the Inference Recommender job.</p>"
+        },
+        "Status":{
+          "shape":"RecommendationJobStatus",
+          "documentation":"<p>The current status of the benchmark.</p>"
+        },
+        "InferenceBenchmark":{
+          "shape":"RecommendationJobInferenceBenchmark",
+          "documentation":"<p>The details for a specific benchmark.</p>"
+        }
+      },
+      "documentation":"<p>A returned array object for the <code>Steps</code> response field in the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_InferenceRecommendationsJobStep.html\">ListInferenceRecommendationsJobSteps</a> API command.</p>"
+    },
+    "InferenceRecommendationsJobSteps":{
+      "type":"list",
+      "member":{"shape":"InferenceRecommendationsJobStep"}
     },
     "InferenceRecommendationsJobs":{
       "type":"list",
@@ -18409,6 +18509,45 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token for getting the next set of images, if there are any.</p>"
+        }
+      }
+    },
+    "ListInferenceRecommendationsJobStepsRequest":{
+      "type":"structure",
+      "required":["JobName"],
+      "members":{
+        "JobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name for the Inference Recommender job.</p>"
+        },
+        "Status":{
+          "shape":"RecommendationJobStatus",
+          "documentation":"<p>A filter to return benchmarks of a specified status. If this field is left empty, then all benchmarks are returned.</p>"
+        },
+        "StepType":{
+          "shape":"RecommendationStepType",
+          "documentation":"<p>A filter to return details about the specified type of subtask.</p> <p> <code>BENCHMARK</code>: Evaluate the performance of your model on different instance types.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that you can specify to return more results from the list. Specify this field if you have a token that was returned from a previous request.</p>"
+        }
+      }
+    },
+    "ListInferenceRecommendationsJobStepsResponse":{
+      "type":"structure",
+      "members":{
+        "Steps":{
+          "shape":"InferenceRecommendationsJobSteps",
+          "documentation":"<p>A list of all subtask details in Inference Recommender.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that you can specify in your next request to return more results from the list.</p>"
         }
       }
     },
@@ -24539,6 +24678,7 @@
       "type":"list",
       "member":{"shape":"ProductionVariantInstanceType"}
     },
+    "RecommendationFailureReason":{"type":"string"},
     "RecommendationJobArn":{
       "type":"string",
       "max":256,
@@ -24592,6 +24732,20 @@
       "type":"string",
       "max":128
     },
+    "RecommendationJobInferenceBenchmark":{
+      "type":"structure",
+      "required":["ModelConfiguration"],
+      "members":{
+        "Metrics":{"shape":"RecommendationMetrics"},
+        "EndpointConfiguration":{"shape":"EndpointOutputConfiguration"},
+        "ModelConfiguration":{"shape":"ModelConfiguration"},
+        "FailureReason":{
+          "shape":"RecommendationFailureReason",
+          "documentation":"<p>The reason why a benchmark failed.</p>"
+        }
+      },
+      "documentation":"<p>The details for a specific benchmark from an Inference Recommender job.</p>"
+    },
     "RecommendationJobInputConfig":{
       "type":"structure",
       "required":["ModelPackageVersionArn"],
@@ -24623,6 +24777,10 @@
         "ContainerConfig":{
           "shape":"RecommendationJobContainerConfig",
           "documentation":"<p>Specifies mandatory fields for running an Inference Recommender job. The fields specified in <code>ContainerConfig</code> override the corresponding fields in the model package.</p>"
+        },
+        "Endpoints":{
+          "shape":"Endpoints",
+          "documentation":"<p>Existing customer endpoints on which to run an Inference Recommender job.</p>"
         }
       },
       "documentation":"<p>The input configuration of the recommendation job.</p>"
@@ -24742,6 +24900,10 @@
         }
       },
       "documentation":"<p>The metrics of recommendations.</p>"
+    },
+    "RecommendationStepType":{
+      "type":"string",
+      "enum":["BENCHMARK"]
     },
     "RecordWrapper":{
       "type":"string",
@@ -27345,7 +27507,7 @@
         },
         "InstanceCount":{
           "shape":"TransformInstanceCount",
-          "documentation":"<p>The number of ML compute instances to use in the transform job. For distributed transform jobs, specify a value greater than 1. The default value is <code>1</code>.</p>"
+          "documentation":"<p>The number of ML compute instances to use in the transform job. The default value is <code>1</code>, and the maximum is <code>100</code>. For distributed transform jobs, specify a value greater than <code>1</code>.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",

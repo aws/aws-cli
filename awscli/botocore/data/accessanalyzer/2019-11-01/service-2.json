@@ -1042,13 +1042,33 @@
     "Configuration":{
       "type":"structure",
       "members":{
+        "ebsSnapshot":{
+          "shape":"EbsSnapshotConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon EBS volume snapshot.</p>"
+        },
+        "ecrRepository":{
+          "shape":"EcrRepositoryConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon ECR repository.</p>"
+        },
         "iamRole":{
           "shape":"IamRoleConfiguration",
           "documentation":"<p>The access control configuration is for an IAM role. </p>"
         },
+        "efsFileSystem":{
+          "shape":"EfsFileSystemConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon EFS file system.</p>"
+        },
         "kmsKey":{
           "shape":"KmsKeyConfiguration",
           "documentation":"<p>The access control configuration is for a KMS key. </p>"
+        },
+        "rdsDbClusterSnapshot":{
+          "shape":"RdsDbClusterSnapshotConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon RDS DB cluster snapshot.</p>"
+        },
+        "rdsDbSnapshot":{
+          "shape":"RdsDbSnapshotConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon RDS DB snapshot.</p>"
         },
         "secretsManagerSecret":{
           "shape":"SecretsManagerSecretConfiguration",
@@ -1057,6 +1077,10 @@
         "s3Bucket":{
           "shape":"S3BucketConfiguration",
           "documentation":"<p>The access control configuration is for an Amazon S3 Bucket. </p>"
+        },
+        "snsTopic":{
+          "shape":"SnsTopicConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon SNS topic</p>"
         },
         "sqsQueue":{
           "shape":"SqsQueueConfiguration",
@@ -1271,6 +1295,57 @@
       },
       "documentation":"<p>Deletes an archive rule.</p>"
     },
+    "EbsGroup":{"type":"string"},
+    "EbsGroupList":{
+      "type":"list",
+      "member":{"shape":"EbsGroup"}
+    },
+    "EbsSnapshotConfiguration":{
+      "type":"structure",
+      "members":{
+        "userIds":{
+          "shape":"EbsUserIdList",
+          "documentation":"<p>The IDs of the Amazon Web Services accounts that have access to the Amazon EBS volume snapshot.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>userIds</code>, then the access preview uses the existing shared <code>userIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>userIds</code>, then the access preview considers the snapshot without any <code>userIds</code>.</p> </li> <li> <p>To propose deletion of existing shared <code>accountIds</code>, you can specify an empty list for <code>userIds</code>.</p> </li> </ul>"
+        },
+        "groups":{
+          "shape":"EbsGroupList",
+          "documentation":"<p>The groups that have access to the Amazon EBS volume snapshot. If the value <code>all</code> is specified, then the Amazon EBS volume snapshot is public.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>groups</code>, then the access preview uses the existing shared <code>groups</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>groups</code>, then the access preview considers the snapshot without any <code>groups</code>.</p> </li> <li> <p>To propose deletion of existing shared <code>groups</code>, you can specify an empty list for <code>groups</code>.</p> </li> </ul>"
+        },
+        "kmsKeyId":{
+          "shape":"EbsSnapshotDataEncryptionKeyId",
+          "documentation":"<p>The KMS key identifier for an encrypted Amazon EBS volume snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>kmsKeyId</code>, the access preview considers the snapshot as unencrypted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for an Amazon EBS volume snapshot. You can propose a configuration for a new Amazon EBS volume snapshot or an Amazon EBS volume snapshot that you own by specifying the user IDs, groups, and optional KMS encryption key. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifySnapshotAttribute.html\">ModifySnapshotAttribute</a>.</p>"
+    },
+    "EbsSnapshotDataEncryptionKeyId":{"type":"string"},
+    "EbsUserId":{"type":"string"},
+    "EbsUserIdList":{
+      "type":"list",
+      "member":{"shape":"EbsUserId"}
+    },
+    "EcrRepositoryConfiguration":{
+      "type":"structure",
+      "members":{
+        "repositoryPolicy":{
+          "shape":"EcrRepositoryPolicy",
+          "documentation":"<p>The JSON repository policy text to apply to the Amazon ECR repository. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html\">Private repository policy examples</a> in the <i>Amazon ECR User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for an Amazon ECR repository. You can propose a configuration for a new Amazon ECR repository or an existing Amazon ECR repository that you own by specifying the Amazon ECR policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_Repository.html\">Repository</a>.</p> <ul> <li> <p>If the configuration is for an existing Amazon ECR repository and you do not specify the Amazon ECR policy, then the access preview uses the existing Amazon ECR policy for the repository.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the policy, then the access preview assumes an Amazon ECR repository without a policy.</p> </li> <li> <p>To propose deletion of an existing Amazon ECR repository policy, you can specify an empty string for the Amazon ECR policy.</p> </li> </ul>"
+    },
+    "EcrRepositoryPolicy":{"type":"string"},
+    "EfsFileSystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "fileSystemPolicy":{
+          "shape":"EfsFileSystemPolicy",
+          "documentation":"<p>The JSON policy definition to apply to the Amazon EFS file system. For more information on the elements that make up a file system policy, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/access-control-overview.html#access-control-manage-access-intro-resource-policies\">Amazon EFS Resource-based policies</a>.</p>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for an Amazon EFS file system. You can propose a configuration for a new Amazon EFS file system or an existing Amazon EFS file system that you own by specifying the Amazon EFS policy. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/using-fs.html\">Using file systems in Amazon EFS</a>.</p> <ul> <li> <p>If the configuration is for an existing Amazon EFS file system and you do not specify the Amazon EFS policy, then the access preview uses the existing Amazon EFS policy for the file system.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the policy, then the access preview assumes an Amazon EFS file system without a policy.</p> </li> <li> <p>To propose deletion of an existing Amazon EFS file system policy, you can specify an empty string for the Amazon EFS policy.</p> </li> </ul>"
+    },
+    "EfsFileSystemPolicy":{"type":"string"},
     "FilterCriteriaMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -2334,7 +2409,8 @@
       "members":{
         "index":{
           "shape":"Integer",
-          "documentation":"<p>Refers to an index in a JSON array.</p>"
+          "documentation":"<p>Refers to an index in a JSON array.</p>",
+          "box":true
         },
         "key":{
           "shape":"String",
@@ -2445,6 +2521,80 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "RdsDbClusterSnapshotAccountId":{"type":"string"},
+    "RdsDbClusterSnapshotAccountIdsList":{
+      "type":"list",
+      "member":{"shape":"RdsDbClusterSnapshotAccountId"}
+    },
+    "RdsDbClusterSnapshotAttributeName":{"type":"string"},
+    "RdsDbClusterSnapshotAttributeValue":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"RdsDbClusterSnapshotAccountIdsList",
+          "documentation":"<p>The Amazon Web Services account IDs that have access to the manual Amazon RDS DB cluster snapshot. If the value <code>all</code> is specified, then the Amazon RDS DB cluster snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the <code>accountIds</code> in <code>RdsDbClusterSnapshotAttributeValue</code>, then the access preview uses the existing shared <code>accountIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>accountIds</code> in <code>RdsDbClusterSnapshotAttributeValue</code>, then the access preview considers the snapshot without any attributes.</p> </li> <li> <p>To propose deletion of existing shared <code>accountIds</code>, you can specify an empty list for <code>accountIds</code> in the <code>RdsDbClusterSnapshotAttributeValue</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The values for a manual Amazon RDS DB cluster snapshot attribute.</p>",
+      "union":true
+    },
+    "RdsDbClusterSnapshotAttributesMap":{
+      "type":"map",
+      "key":{"shape":"RdsDbClusterSnapshotAttributeName"},
+      "value":{"shape":"RdsDbClusterSnapshotAttributeValue"}
+    },
+    "RdsDbClusterSnapshotConfiguration":{
+      "type":"structure",
+      "members":{
+        "attributes":{
+          "shape":"RdsDbClusterSnapshotAttributesMap",
+          "documentation":"<p>The names and values of manual DB cluster snapshot attributes. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB cluster snapshot. The only valid value for <code>AttributeName</code> for the attribute map is <code>restore</code> </p>"
+        },
+        "kmsKeyId":{
+          "shape":"RdsDbClusterSnapshotKmsKeyId",
+          "documentation":"<p>The KMS key identifier for an encrypted Amazon RDS DB cluster snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>kmsKeyId</code>, then the access preview considers the snapshot as unencrypted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for an Amazon RDS DB cluster snapshot. You can propose a configuration for a new Amazon RDS DB cluster snapshot or an Amazon RDS DB cluster snapshot that you own by specifying the <code>RdsDbClusterSnapshotAttributeValue</code> and optional KMS encryption key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBClusterSnapshotAttribute.html\">ModifyDBClusterSnapshotAttribute</a>.</p>"
+    },
+    "RdsDbClusterSnapshotKmsKeyId":{"type":"string"},
+    "RdsDbSnapshotAccountId":{"type":"string"},
+    "RdsDbSnapshotAccountIdsList":{
+      "type":"list",
+      "member":{"shape":"RdsDbSnapshotAccountId"}
+    },
+    "RdsDbSnapshotAttributeName":{"type":"string"},
+    "RdsDbSnapshotAttributeValue":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"RdsDbSnapshotAccountIdsList",
+          "documentation":"<p>The Amazon Web Services account IDs that have access to the manual Amazon RDS DB snapshot. If the value <code>all</code> is specified, then the Amazon RDS DB snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the <code>accountIds</code> in <code>RdsDbSnapshotAttributeValue</code>, then the access preview uses the existing shared <code>accountIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>accountIds</code> in <code>RdsDbSnapshotAttributeValue</code>, then the access preview considers the snapshot without any attributes.</p> </li> <li> <p>To propose deletion of an existing shared <code>accountIds</code>, you can specify an empty list for <code>accountIds</code> in the <code>RdsDbSnapshotAttributeValue</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The name and values of a manual Amazon RDS DB snapshot attribute. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot.</p>",
+      "union":true
+    },
+    "RdsDbSnapshotAttributesMap":{
+      "type":"map",
+      "key":{"shape":"RdsDbSnapshotAttributeName"},
+      "value":{"shape":"RdsDbSnapshotAttributeValue"}
+    },
+    "RdsDbSnapshotConfiguration":{
+      "type":"structure",
+      "members":{
+        "attributes":{
+          "shape":"RdsDbSnapshotAttributesMap",
+          "documentation":"<p>The names and values of manual DB snapshot attributes. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot. The only valid value for <code>attributeName</code> for the attribute map is restore.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"RdsDbSnapshotKmsKeyId",
+          "documentation":"<p>The KMS key identifier for an encrypted Amazon RDS DB snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>kmsKeyId</code>, then the access preview considers the snapshot as unencrypted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for an Amazon RDS DB snapshot. You can propose a configuration for a new Amazon RDS DB snapshot or an Amazon RDS DB snapshot that you own by specifying the <code>RdsDbSnapshotAttributeValue</code> and optional KMS encryption key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBSnapshotAttribute.html\">ModifyDBSnapshotAttribute</a>.</p>"
+    },
+    "RdsDbSnapshotKmsKeyId":{"type":"string"},
     "ReasonCode":{
       "type":"string",
       "enum":[
@@ -2496,7 +2646,13 @@
         "AWS::Lambda::Function",
         "AWS::Lambda::LayerVersion",
         "AWS::KMS::Key",
-        "AWS::SecretsManager::Secret"
+        "AWS::SecretsManager::Secret",
+        "AWS::EFS::FileSystem",
+        "AWS::EC2::Snapshot",
+        "AWS::ECR::Repository",
+        "AWS::RDS::DBSnapshot",
+        "AWS::RDS::DBClusterSnapshot",
+        "AWS::SNS::Topic"
       ]
     },
     "RetiringPrincipal":{"type":"string"},
@@ -2635,6 +2791,21 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "SnsTopicConfiguration":{
+      "type":"structure",
+      "members":{
+        "topicPolicy":{
+          "shape":"SnsTopicPolicy",
+          "documentation":"<p>The JSON policy text that defines who can access an Amazon SNS topic. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html\">Example cases for Amazon SNS access control</a> in the <i>Amazon SNS Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for an Amazon SNS topic. You can propose a configuration for a new Amazon SNS topic or an existing Amazon SNS topic that you own by specifying the policy. If the configuration is for an existing Amazon SNS topic and you do not specify the Amazon SNS policy, then the access preview uses the existing Amazon SNS policy for the topic. If the access preview is for a new resource and you do not specify the policy, then the access preview assumes an Amazon SNS topic without a policy. To propose deletion of an existing Amazon SNS topic policy, you can specify an empty string for the Amazon SNS policy. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/api/API_Topic.html\">Topic</a>.</p>"
+    },
+    "SnsTopicPolicy":{
+      "type":"string",
+      "max":30720,
+      "min":0
+    },
     "SortCriteria":{
       "type":"structure",
       "members":{
@@ -2721,6 +2892,10 @@
         "resourceArn":{
           "shape":"ResourceArn",
           "documentation":"<p>The ARN of the resource to scan.</p>"
+        },
+        "resourceOwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.</p>"
         }
       },
       "documentation":"<p>Starts a scan of the policies applied to the specified resource.</p>"

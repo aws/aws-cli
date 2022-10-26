@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.8.6
+=====
+
+* api-change:``location``: Added new map styles with satellite imagery for map resources using HERE as a data provider.
+* api-change:``rds``: Relational Database Service - This release adds support for exporting DB cluster data to Amazon S3.
+* api-change:``datasync``: Added support for self-signed certificates when using object storage locations; added BytesCompressed to the TaskExecution response.
+* api-change:``cognito-idp``: This release adds a new "DeletionProtection" field to the UserPool in Cognito. Application admins can configure this value with either ACTIVE or INACTIVE value. Setting this field to ACTIVE will prevent a user pool from accidental deletion.
+* api-change:``accessanalyzer``: This release adds support for six new resource types in IAM Access Analyzer to help you easily identify public and cross-account access to your AWS resources. Updated service API, documentation, and paginators.
+* api-change:``mediatailor``: This release is a documentation update
+* api-change:``sagemaker``: CreateInferenceRecommenderjob API now supports passing endpoint details directly, that will help customers to identify the max invocation and max latency they can achieve for their model and the associated endpoint along with getting recommendations on other instances.
+* api-change:``batch``: This release adds support for AWS Batch on Amazon EKS.
+* api-change:``sagemaker``: SageMaker Inference Recommender now supports a new API ListInferenceRecommendationJobSteps to return the details of all the benchmark we create for an inference recommendation job.
+* api-change:``workspaces``: This release adds new enums for supporting Workspaces Core features, including creating Manual running mode workspaces, importing regular Workspaces Core images and importing g4dn Workspaces Core images.
+* api-change:``acm-pca``: AWS Private Certificate Authority (AWS Private CA) now offers usage modes which are combination of features to address specific use cases.
+
+
 2.8.5
 =====
 

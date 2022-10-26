@@ -26,7 +26,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Cancels execution of a task. </p> <p>When you cancel a task execution, the transfer of some files is abruptly interrupted. The contents of files that are transferred to the destination might be incomplete or inconsistent with the source files. However, if you start a new task execution on the same task and you allow the task execution to complete, file content on the destination is complete and consistent. This applies to other unexpected failures that interrupt a task execution. In all of these cases, DataSync successfully complete the transfer when you start the next task execution.</p>"
+      "documentation":"<p>Stops an DataSync task execution that's in progress. The transfer of some files are abruptly interrupted. File contents that're transferred to the destination might be incomplete or inconsistent with the source files.</p> <p>However, if you start a new task execution using the same task and allow it to finish, file content on the destination will be complete and consistent. This applies to other unexpected failures that interrupt a task execution. In all of these cases, DataSync successfully completes the transfer when you start the next task execution.</p>"
     },
     "CreateAgent":{
       "name":"CreateAgent",
@@ -40,7 +40,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Activates an DataSync agent that you have deployed on your host. The activation process associates your agent with your account. In the activation process, you specify information such as the Amazon Web Services Region that you want to activate the agent in. You activate the agent in the Amazon Web Services Region where your target locations (in Amazon S3 or Amazon EFS) reside. Your tasks are created in this Amazon Web Services Region.</p> <p>You can activate the agent in a VPC (virtual private cloud) or provide the agent access to a VPC endpoint so you can run tasks without going over the public internet.</p> <p>You can use an agent for more than one location. If a task uses multiple agents, all of them need to have status AVAILABLE for the task to run. If you use multiple agents for a source location, the status of all the agents must be AVAILABLE for the task to run. </p> <p>Agents are automatically updated by Amazon Web Services on a regular basis, using a mechanism that ensures minimal interruption to your tasks.</p> <p/>"
+      "documentation":"<p>Activates an DataSync agent that you have deployed in your storage environment. The activation process associates your agent with your account. In the activation process, you specify information such as the Amazon Web Services Region that you want to activate the agent in. You activate the agent in the Amazon Web Services Region where your target locations (in Amazon S3 or Amazon EFS) reside. Your tasks are created in this Amazon Web Services Region.</p> <p>You can activate the agent in a VPC (virtual private cloud) or provide the agent access to a VPC endpoint so you can run tasks without going over the public internet.</p> <p>You can use an agent for more than one location. If a task uses multiple agents, all of them need to have status AVAILABLE for the task to run. If you use multiple agents for a source location, the status of all the agents must be AVAILABLE for the task to run. </p> <p>Agents are automatically updated by Amazon Web Services on a regular basis, using a mechanism that ensures minimal interruption to your tasks.</p>"
     },
     "CreateLocationEfs":{
       "name":"CreateLocationEfs",
@@ -96,7 +96,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for an Amazon FSx for OpenZFS file system.</p>"
+      "documentation":"<p>Creates an endpoint for an Amazon FSx for OpenZFS file system that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-openzfs-location.html\">Creating a location for FSx for OpenZFS</a>.</p> <note> <p>Request parameters related to <code>SMB</code> aren't supported with the <code>CreateLocationFsxOpenZfs</code> operation.</p> </note>"
     },
     "CreateLocationFsxWindows":{
       "name":"CreateLocationFsxWindows",
@@ -166,7 +166,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for an Amazon S3 bucket.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Create an Amazon S3 location</a> in the <i>DataSync User Guide</i>.</p>"
+      "documentation":"<p>Creates an endpoint for an Amazon S3 bucket that DataSync can access for a transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Create an Amazon S3 location</a> in the <i>DataSync User Guide</i>.</p>"
     },
     "CreateLocationSmb":{
       "name":"CreateLocationSmb",
@@ -278,7 +278,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata about an Amazon FSx for Lustre location, such as information about its path.</p>"
+      "documentation":"<p>Provides details about how an DataSync location for an Amazon FSx for Lustre file system is configured.</p>"
     },
     "DescribeLocationFsxOntap":{
       "name":"DescribeLocationFsxOntap",
@@ -292,7 +292,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Provides details about how an DataSync location for an Amazon FSx for NetApp ONTAP file system is configured.</p>"
+      "documentation":"<p>Provides details about how an DataSync location for an Amazon FSx for NetApp ONTAP file system is configured.</p> <note> <p>If your location uses SMB, the <code>DescribeLocationFsxOntap</code> operation doesn't actually return a <code>Password</code>.</p> </note>"
     },
     "DescribeLocationFsxOpenZfs":{
       "name":"DescribeLocationFsxOpenZfs",
@@ -306,7 +306,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata about an Amazon FSx for OpenZFS location, such as information about its path.</p>"
+      "documentation":"<p>Provides details about how an DataSync location for an Amazon FSx for OpenZFS file system is configured.</p> <note> <p>Response elements related to <code>SMB</code> aren't supported with the <code>DescribeLocationFsxOpenZfs</code> operation.</p> </note>"
     },
     "DescribeLocationFsxWindows":{
       "name":"DescribeLocationFsxWindows",
@@ -586,7 +586,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Updates some of the parameters of a previously created location for self-managed object storage server access. For information about creating a self-managed object storage location, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-object-location.html\">Creating a location for object storage</a>.</p>"
+      "documentation":"<p>Updates some parameters of an existing object storage location that DataSync accesses for a transfer. For information about creating a self-managed object storage location, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-object-location.html\">Creating a location for object storage</a>.</p>"
     },
     "UpdateLocationSmb":{
       "name":"UpdateLocationSmb",
@@ -694,7 +694,7 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution to cancel.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution to stop.</p>"
         }
       },
       "documentation":"<p>CancelTaskExecutionRequest</p>"
@@ -1105,6 +1105,10 @@
         "Tags":{
           "shape":"InputTagList",
           "documentation":"<p>Specifies the key-value pair that represents a tag that you want to add to the resource. Tags can help you manage, filter, and search for your resources. We recommend creating a name tag for your location.</p>"
+        },
+        "ServerCertificate":{
+          "shape":"ObjectStorageCertificate",
+          "documentation":"<p>Specifies a certificate to authenticate with an object storage system that uses a private or self-signed certificate authority (CA). You must specify a Base64-encoded <code>.pem</code> file (for example, <code>file:///home/user/.ssh/storage_sys_certificate.pem</code>). The certificate can be up to 32768 bytes (before Base64 encoding).</p> <p>To use this parameter, configure <code>ServerProtocol</code> to <code>HTTPS</code>.</p>"
         }
       },
       "documentation":"<p>CreateLocationObjectStorageRequest</p>"
@@ -1672,7 +1676,7 @@
         },
         "AccessKey":{
           "shape":"ObjectStorageAccessKey",
-          "documentation":"<p>The access key (for example, a user name) required to authenticate with the object storage server.</p>"
+          "documentation":"<p>The access key (for example, a user name) required to authenticate with the object storage system.</p>"
         },
         "ServerPort":{
           "shape":"ObjectStorageServerPort",
@@ -1680,7 +1684,7 @@
         },
         "ServerProtocol":{
           "shape":"ObjectStorageServerProtocol",
-          "documentation":"<p>The protocol that your object storage server uses to communicate.</p>"
+          "documentation":"<p>The protocol that your object storage system uses to communicate.</p>"
         },
         "AgentArns":{
           "shape":"AgentArnList",
@@ -1689,6 +1693,10 @@
         "CreationTime":{
           "shape":"Time",
           "documentation":"<p>The time that the location was created.</p>"
+        },
+        "ServerCertificate":{
+          "shape":"ObjectStorageCertificate",
+          "documentation":"<p>The self-signed certificate that DataSync uses to securely authenticate with your object storage system.</p>"
         }
       },
       "documentation":"<p>DescribeLocationObjectStorageResponse</p>"
@@ -1801,11 +1809,11 @@
         "Options":{"shape":"Options"},
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p> <p> </p>"
+          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p>"
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The list should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p> <p> </p>"
+          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The list should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p>"
         },
         "StartTime":{
           "shape":"Time",
@@ -1834,6 +1842,10 @@
         "Result":{
           "shape":"TaskExecutionResultDetail",
           "documentation":"<p>The result of the task execution.</p>"
+        },
+        "BytesCompressed":{
+          "shape":"long",
+          "documentation":"<p>The physical number of bytes transferred over the network after compression was applied. In most cases, this number is less than <code>BytesTransferred</code>.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionResponse</p>"
@@ -2540,6 +2552,10 @@
       "max":63,
       "min":3,
       "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+    },
+    "ObjectStorageCertificate":{
+      "type":"blob",
+      "max":32768
     },
     "ObjectStorageSecretKey":{
       "type":"string",
@@ -3256,31 +3272,35 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the self-managed object storage server location to be updated.</p>"
+          "documentation":"<p>Specifies the ARN of the object storage system location that you're updating.</p>"
         },
         "ServerPort":{
           "shape":"ObjectStorageServerPort",
-          "documentation":"<p>The port that your self-managed object storage server accepts inbound network traffic on. The server port is set by default to TCP 80 (HTTP) or TCP 443 (HTTPS). You can specify a custom port if your self-managed object storage server requires one.</p>"
+          "documentation":"<p>Specifies the port that your object storage server accepts inbound network traffic on (for example, port 443).</p>"
         },
         "ServerProtocol":{
           "shape":"ObjectStorageServerProtocol",
-          "documentation":"<p>The protocol that the object storage server uses to communicate. Valid values are <code>HTTP</code> or <code>HTTPS</code>.</p>"
+          "documentation":"<p>Specifies the protocol that your object storage server uses to communicate.</p>"
         },
         "Subdirectory":{
           "shape":"S3Subdirectory",
-          "documentation":"<p>The subdirectory in the self-managed object storage server that is used to read data from.</p>"
+          "documentation":"<p>Specifies the object prefix for your object storage server. If this is a source location, DataSync only copies objects with this prefix. If this is a destination location, DataSync writes all objects with this prefix.</p>"
         },
         "AccessKey":{
           "shape":"ObjectStorageAccessKey",
-          "documentation":"<p>Optional. The access key is used if credentials are required to access the self-managed object storage server. If your object storage requires a user name and password to authenticate, use <code>AccessKey</code> and <code>SecretKey</code> to provide the user name and password, respectively.</p>"
+          "documentation":"<p>Specifies the access key (for example, a user name) if credentials are required to authenticate with the object storage server.</p>"
         },
         "SecretKey":{
           "shape":"ObjectStorageSecretKey",
-          "documentation":"<p>Optional. The secret key is used if credentials are required to access the self-managed object storage server. If your object storage requires a user name and password to authenticate, use <code>AccessKey</code> and <code>SecretKey</code> to provide the user name and password, respectively.</p>"
+          "documentation":"<p>Specifies the secret key (for example, a password) if credentials are required to authenticate with the object storage server.</p>"
         },
         "AgentArns":{
           "shape":"AgentArnList",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the agents associated with the self-managed object storage server location.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can securely connect with your location.</p>"
+        },
+        "ServerCertificate":{
+          "shape":"ObjectStorageCertificate",
+          "documentation":"<p>Specifies a certificate to authenticate with an object storage system that uses a private or self-signed certificate authority (CA). You must specify a Base64-encoded <code>.pem</code> file (for example, <code>file:///home/user/.ssh/storage_sys_certificate.pem</code>). The certificate can be up to 32768 bytes (before Base64 encoding).</p> <p>To use this parameter, configure <code>ServerProtocol</code> to <code>HTTPS</code>.</p> <p>Updating the certificate doesn't interfere with tasks that you have in progress.</p>"
         }
       }
     },
@@ -3396,5 +3416,5 @@
     "long":{"type":"long"},
     "string":{"type":"string"}
   },
-  "documentation":"<fullname>DataSync</fullname> <p>DataSync is a managed data transfer service that makes it simpler for you to automate moving data between on-premises storage and Amazon Simple Storage Service (Amazon S3) or Amazon Elastic File System (Amazon EFS). </p> <p>This API interface reference for DataSync contains documentation for a programming interface that you can use to manage DataSync.</p>"
+  "documentation":"<fullname>DataSync</fullname> <p>DataSync is a managed data transfer service that makes it simpler for you to automate moving data between on-premises storage and Amazon Web Services storage services. You also can use DataSync to transfer data between other cloud providers and Amazon Web Services storage services.</p> <p>This API interface reference includes documentation for using DataSync programmatically. For complete information, see the <i> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html\">DataSync User Guide</a> </i>.</p>"
 }

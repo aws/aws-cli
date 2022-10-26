@@ -2447,6 +2447,7 @@
       "errors":[
         {"shape":"DBSnapshotNotFoundFault"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"},
         {"shape":"ExportTaskAlreadyExistsFault"},
         {"shape":"InvalidS3BucketFault"},
         {"shape":"IamRoleNotFoundFault"},
@@ -3072,11 +3073,11 @@
       "members":{
         "MaxConnectionsPercent":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum size of the connection pool for each target in a target group. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group.</p> <p>Default: 10 for RDS for Microsoft SQL Server, and 100 for all other engines</p> <p>Constraints: Must be between 1 and 100.</p>"
+          "documentation":"<p>The maximum size of the connection pool for each target in a target group. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group.</p> <p>If you specify <code>MaxIdleConnectionsPercent</code>, then you must also include a value for this parameter.</p> <p>Default: 10 for RDS for Microsoft SQL Server, and 100 for all other engines</p> <p>Constraints: Must be between 1 and 100.</p>"
         },
         "MaxIdleConnectionsPercent":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Controls how actively the proxy closes idle database connections in the connection pool. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group. With a high value, the proxy leaves a high percentage of idle database connections open. A low value causes the proxy to close more idle connections and return them to the database.</p> <p>Default: The default value is half of the value of <code>MaxConnectionsPercent</code>. For example, if <code>MaxConnectionsPercent</code> is 80, then the default value of <code>MaxIdleConnectionsPercent</code> is 40. If the value of <code>MaxConnectionsPercent</code> isn't specified, then for SQL Server, <code>MaxIdleConnectionsPercent</code> is 5, and for all other engines, the default is 50.</p> <p>Constraints: Must be between 0 and the value of <code>MaxConnectionsPercent</code>.</p>"
+          "documentation":"<p>Controls how actively the proxy closes idle database connections in the connection pool. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group. With a high value, the proxy leaves a high percentage of idle database connections open. A low value causes the proxy to close more idle connections and return them to the database.</p> <p>If you specify this parameter, then you must also include a value for <code>MaxConnectionsPercent</code>.</p> <p>Default: The default value is half of the value of <code>MaxConnectionsPercent</code>. For example, if <code>MaxConnectionsPercent</code> is 80, then the default value of <code>MaxIdleConnectionsPercent</code> is 40. If the value of <code>MaxConnectionsPercent</code> isn't specified, then for SQL Server, <code>MaxIdleConnectionsPercent</code> is 5, and for all other engines, the default is 50.</p> <p>Constraints: Must be between 0 and the value of <code>MaxConnectionsPercent</code>.</p>"
         },
         "ConnectionBorrowTimeout":{
           "shape":"IntegerOptional",
@@ -8024,7 +8025,7 @@
       "members":{
         "DBParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of the DB parameter group family.</p> <p>Valid Values:</p> <ul> <li> <p> <code>aurora5.6</code> </p> </li> <li> <p> <code>aurora-mysql5.7</code> </p> </li> <li> <p> <code>aurora-mysql8.0</code> </p> </li> <li> <p> <code>aurora-postgresql10</code> </p> </li> <li> <p> <code>aurora-postgresql11</code> </p> </li> <li> <p> <code>aurora-postgresql12</code> </p> </li> <li> <p> <code>aurora-postgresql13</code> </p> </li> <li> <p> <code>mariadb10.2</code> </p> </li> <li> <p> <code>mariadb10.3</code> </p> </li> <li> <p> <code>mariadb10.4</code> </p> </li> <li> <p> <code>mariadb10.5</code> </p> </li> <li> <p> <code>mariadb10.6</code> </p> </li> <li> <p> <code>mysql5.7</code> </p> </li> <li> <p> <code>mysql8.0</code> </p> </li> <li> <p> <code>postgres10</code> </p> </li> <li> <p> <code>postgres11</code> </p> </li> <li> <p> <code>postgres12</code> </p> </li> <li> <p> <code>postgres13</code> </p> </li> <li> <p> <code>postgres14</code> </p> </li> <li> <p> <code>sqlserver-ee-11.0</code> </p> </li> <li> <p> <code>sqlserver-ee-12.0</code> </p> </li> <li> <p> <code>sqlserver-ee-13.0</code> </p> </li> <li> <p> <code>sqlserver-ee-14.0</code> </p> </li> <li> <p> <code>sqlserver-ee-15.0</code> </p> </li> <li> <p> <code>sqlserver-ex-11.0</code> </p> </li> <li> <p> <code>sqlserver-ex-12.0</code> </p> </li> <li> <p> <code>sqlserver-ex-13.0</code> </p> </li> <li> <p> <code>sqlserver-ex-14.0</code> </p> </li> <li> <p> <code>sqlserver-ex-15.0</code> </p> </li> <li> <p> <code>sqlserver-se-11.0</code> </p> </li> <li> <p> <code>sqlserver-se-12.0</code> </p> </li> <li> <p> <code>sqlserver-se-13.0</code> </p> </li> <li> <p> <code>sqlserver-se-14.0</code> </p> </li> <li> <p> <code>sqlserver-se-15.0</code> </p> </li> <li> <p> <code>sqlserver-web-11.0</code> </p> </li> <li> <p> <code>sqlserver-web-12.0</code> </p> </li> <li> <p> <code>sqlserver-web-13.0</code> </p> </li> <li> <p> <code>sqlserver-web-14.0</code> </p> </li> <li> <p> <code>sqlserver-web-15.0</code> </p> </li> </ul>"
+          "documentation":"<p>The name of the DB parameter group family.</p> <p>Valid Values:</p> <ul> <li> <p> <code>aurora5.6</code> </p> </li> <li> <p> <code>aurora-mysql5.7</code> </p> </li> <li> <p> <code>aurora-mysql8.0</code> </p> </li> <li> <p> <code>aurora-postgresql10</code> </p> </li> <li> <p> <code>aurora-postgresql11</code> </p> </li> <li> <p> <code>aurora-postgresql12</code> </p> </li> <li> <p> <code>aurora-postgresql13</code> </p> </li> <li> <p> <code>aurora-postgresql14</code> </p> </li> <li> <p> <code>custom-oracle-ee-19</code> </p> </li> <li> <p> <code>mariadb10.2</code> </p> </li> <li> <p> <code>mariadb10.3</code> </p> </li> <li> <p> <code>mariadb10.4</code> </p> </li> <li> <p> <code>mariadb10.5</code> </p> </li> <li> <p> <code>mariadb10.6</code> </p> </li> <li> <p> <code>mysql5.7</code> </p> </li> <li> <p> <code>mysql8.0</code> </p> </li> <li> <p> <code>oracle-ee-19</code> </p> </li> <li> <p> <code>oracle-ee-cdb-19</code> </p> </li> <li> <p> <code>oracle-ee-cdb-21</code> </p> </li> <li> <p> <code>oracle-se2-19</code> </p> </li> <li> <p> <code>oracle-se2-cdb-19</code> </p> </li> <li> <p> <code>oracle-se2-cdb-21</code> </p> </li> <li> <p> <code>postgres10</code> </p> </li> <li> <p> <code>postgres11</code> </p> </li> <li> <p> <code>postgres12</code> </p> </li> <li> <p> <code>postgres13</code> </p> </li> <li> <p> <code>postgres14</code> </p> </li> <li> <p> <code>sqlserver-ee-11.0</code> </p> </li> <li> <p> <code>sqlserver-ee-12.0</code> </p> </li> <li> <p> <code>sqlserver-ee-13.0</code> </p> </li> <li> <p> <code>sqlserver-ee-14.0</code> </p> </li> <li> <p> <code>sqlserver-ee-15.0</code> </p> </li> <li> <p> <code>sqlserver-ex-11.0</code> </p> </li> <li> <p> <code>sqlserver-ex-12.0</code> </p> </li> <li> <p> <code>sqlserver-ex-13.0</code> </p> </li> <li> <p> <code>sqlserver-ex-14.0</code> </p> </li> <li> <p> <code>sqlserver-ex-15.0</code> </p> </li> <li> <p> <code>sqlserver-se-11.0</code> </p> </li> <li> <p> <code>sqlserver-se-12.0</code> </p> </li> <li> <p> <code>sqlserver-se-13.0</code> </p> </li> <li> <p> <code>sqlserver-se-14.0</code> </p> </li> <li> <p> <code>sqlserver-se-15.0</code> </p> </li> <li> <p> <code>sqlserver-web-11.0</code> </p> </li> <li> <p> <code>sqlserver-web-12.0</code> </p> </li> <li> <p> <code>sqlserver-web-13.0</code> </p> </li> <li> <p> <code>sqlserver-web-14.0</code> </p> </li> <li> <p> <code>sqlserver-web-15.0</code> </p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -8147,6 +8148,10 @@
         "MaxRecords":{
           "shape":"MaxRecords",
           "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified value, a pagination token called a marker is included in the response. You can use the marker in a later <code>DescribeExportTasks</code> request to retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+        },
+        "SourceType":{
+          "shape":"ExportSourceType",
+          "documentation":"<p>The type of source for the export.</p>"
         }
       }
     },
@@ -8786,6 +8791,13 @@
       },
       "documentation":"<p>Contains the result of a successful invocation of the <code>DescribeEvents</code> action.</p>"
     },
+    "ExportSourceType":{
+      "type":"string",
+      "enum":[
+        "SNAPSHOT",
+        "CLUSTER"
+      ]
+    },
     "ExportTask":{
       "type":"structure",
       "members":{
@@ -8848,6 +8860,10 @@
         "WarningMessage":{
           "shape":"String",
           "documentation":"<p>A warning about the snapshot export task.</p>"
+        },
+        "SourceType":{
+          "shape":"ExportSourceType",
+          "documentation":"<p>The type of source for the export.</p>"
         }
       },
       "documentation":"<p>Contains the details of a snapshot export to Amazon S3.</p> <p>This data type is used as a response element in the <code>DescribeExportTasks</code> action.</p>"

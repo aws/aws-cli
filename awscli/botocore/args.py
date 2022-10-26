@@ -185,7 +185,7 @@ class ClientArgsCreator(object):
         self._compute_retry_config(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
-        is_s3_service = service_name in ['s3', 's3-control']
+        is_s3_service = self._is_s3_service(service_name)
 
         if is_s3_service and 'dualstack' in endpoint_variant_tags:
             if s3_config is None:
@@ -221,6 +221,16 @@ class ClientArgsCreator(object):
                     s3_configuration.update(client_config.s3)
 
         return s3_configuration
+
+    def _is_s3_service(self, service_name):
+        """Whether the service is S3 or S3 Control.
+
+        Note that throughout this class, service_name refers to the endpoint
+        prefix, not the folder name of the service in botocore/data. For
+        S3 Control, the folder name is 's3control' but the endpoint prefix is
+        's3-control'.
+        """
+        return service_name in ['s3', 's3-control']
 
     def _compute_endpoint_config(self, service_name, region_name, endpoint_url,
                                  is_secure, endpoint_bridge, s3_config):
@@ -351,9 +361,11 @@ class ClientArgsCreator(object):
         # botocore does not support client context parameters generically
         # for every service. Instead, the s3 config section entries are
         # available as client context parameters. In the future, endpoint
-        # rulesets of services other than S3 may require client context
-        # parameters.
-        client_context = s3_config_raw if service_name_raw == 's3' else {}
+        # rulesets of services other than s3/s3control may require client
+        # context parameters.
+        client_context = (
+            s3_config_raw if self._is_s3_service(service_name_raw) else {}
+        )
         sig_version = (
             client_config.signature_version
             if client_config is not None

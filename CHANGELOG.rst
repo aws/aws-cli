@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.26.2
+======
+
+* api-change:``iam``: Doc only update that corrects instances of CLI not using an entity.
+* api-change:``kafka``: This release adds support for Tiered Storage. UpdateStorage allows you to control the Storage Mode for supported storage tiers.
+* api-change:``neptune``: Added a new cluster-level attribute to set the capacity range for Neptune Serverless instances.
+* api-change:``sagemaker``: Amazon SageMaker Automatic Model Tuning now supports specifying Grid Search strategy for tuning jobs, which evaluates all hyperparameter combinations exhaustively based on the categorical hyperparameters provided.
+
+
 1.26.1
 ======
 

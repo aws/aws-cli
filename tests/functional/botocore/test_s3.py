@@ -2805,6 +2805,16 @@ def _addressing_for_presigned_url_test_cases():
         s3_config=us_east_1_regional_endpoint, signature_version='s3v4',
         expected_url=(
             'https://bucket.s3.us-east-1.amazonaws.com/key'))
+    # Bucket names that contain dots or are otherwise not virtual host style
+    # compatible should always resolve to a regional endpoint.
+    # https://github.com/boto/botocore/issues/2798
+    yield dict(
+        region="us-west-1",
+        bucket="foo.bar.biz",
+        key="key",
+        signature_version="s3v4",
+        expected_url="https://s3.us-west-1.amazonaws.com/foo.bar.biz/key",
+    )
 
 
 @pytest.mark.parametrize("test_case", _addressing_for_presigned_url_test_cases())

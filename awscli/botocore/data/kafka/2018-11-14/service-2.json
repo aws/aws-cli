@@ -1352,6 +1352,44 @@
         "documentation" : "\n            <p>The request throughput limit was exceeded.</p>\n         "
       } ],
       "documentation" : "\n            <p>Updates the security settings for the cluster. You can use this operation to specify encryption and authentication on existing clusters.</p>\n         "
+    },
+    "UpdateStorage" : {
+      "name" : "UpdateStorage",
+      "http" : {
+        "method" : "PUT",
+        "requestUri" : "/v1/clusters/{clusterArn}/storage",
+        "responseCode" : 200
+      },
+      "input" : {
+        "shape" : "UpdateStorageRequest"
+      },
+      "output" : {
+        "shape" : "UpdateStorageResponse",
+        "documentation" : "HTTP Status Code 200: OK."
+      },
+      "errors" : [ {
+        "shape" : "BadRequestException",
+        "documentation" : "HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it."
+      }, {
+        "shape" : "UnauthorizedException",
+        "documentation" : "HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated."
+      }, {
+        "shape" : "InternalServerErrorException",
+        "documentation" : "HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue."
+      }, {
+        "shape" : "ForbiddenException",
+        "documentation" : "HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request."
+      }, {
+        "shape" : "NotFoundException",
+        "documentation" : "HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it."
+      }, {
+        "shape" : "ServiceUnavailableException",
+        "documentation" : "HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue."
+      }, {
+        "shape" : "TooManyRequestsException",
+        "documentation" : "HTTP Status Code 429: Limit exceeded. Resource limit reached."
+      } ],
+      "documentation" : "Updates cluster broker volume size (or) sets cluster storage mode to TIERED."
     }
   },
   "shapes": {
@@ -1426,7 +1464,7 @@
         "ProvisionedThroughput" : {
           "shape" : "ProvisionedThroughput",
           "locationName" : "provisionedThroughput",
-          "documentation" : "EBS volume provisioned throughput information."
+          "documentation" : "\n            <p>EBS volume provisioned throughput information.</p>\n         "
         },
         "VolumeSizeGB": {
           "shape": "__integer",
@@ -1698,6 +1736,11 @@
           "shape" : "__string",
           "locationName" : "zookeeperConnectStringTls",
           "documentation" : "\n            <p>The connection string to use to connect to zookeeper cluster on Tls port.</p>\n         "
+        },
+        "StorageMode" : {
+          "shape" : "StorageMode",
+          "locationName" : "storageMode",
+          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "documentation": "\n            <p>Returns information about a cluster.</p>\n         "
@@ -1921,6 +1964,11 @@
           "shape": "__integerMin1Max15",
           "locationName": "numberOfBrokerNodes",
           "documentation": "\n            <p>The number of broker nodes in the cluster.</p>\n         "
+        },
+        "StorageMode" : {
+          "shape" : "StorageMode",
+          "locationName" : "storageMode",
+          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "required": [
@@ -1982,6 +2030,11 @@
           "shape" : "__string",
           "locationName" : "zookeeperConnectStringTls",
           "documentation" : "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster on a TLS port.</p>\n         "
+        },
+        "StorageMode" : {
+          "shape" : "StorageMode",
+          "locationName" : "storageMode",
+          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "required": [
@@ -2281,6 +2334,11 @@
           "shape": "__mapOf__string",
           "locationName": "tags",
           "documentation": "\n            <p>Create tags when creating the cluster.</p>\n         "
+        },
+        "StorageMode" : {
+          "shape" : "StorageMode",
+          "locationName" : "storageMode",
+          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "required": [
@@ -2674,7 +2732,7 @@
         "ProvisionedThroughput" : {
           "shape" : "ProvisionedThroughput",
           "locationName" : "provisionedThroughput",
-          "documentation" : "EBS volume provisioned throughput information."
+          "documentation" : "\n            <p>EBS volume provisioned throughput information.</p>\n         "
         },
         "VolumeSize": {
           "shape": "__integerMin1Max16384",
@@ -3323,6 +3381,11 @@
           "shape" : "ConnectivityInfo",
           "locationName" : "connectivityInfo",
           "documentation" : "\n            <p>Information about the broker access configuration.</p>\n         "
+        },
+        "StorageMode" : {
+          "shape" : "StorageMode",
+          "locationName" : "storageMode",
+          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "documentation": "\n            <p>Information about cluster attributes that can be updated via update APIs.</p>\n         "
@@ -3437,15 +3500,15 @@
         "Enabled" : {
           "shape" : "__boolean",
           "locationName" : "enabled",
-          "documentation" : "Provisioned throughput is enabled or not."
+          "documentation" : "\n            <p>Provisioned throughput is enabled or not.</p>\n         "
         },
         "VolumeThroughput" : {
           "shape" : "__integer",
           "locationName" : "volumeThroughput",
-          "documentation" : "Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second."
+          "documentation" : "\n            <p>Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second.</p>\n         "
         }
       },
-      "documentation" : "Contains information about provisioned throughput for EBS storage volumes attached to kafka broker nodes."
+      "documentation" : "\n            <p>Contains information about provisioned throughput for EBS storage volumes attached to kafka broker nodes.</p>\n         "
     },
     "PublicAccess" : {
       "type" : "structure",
@@ -3664,6 +3727,11 @@
         }
       },
       "documentation": "\n            <p>Contains information about storage volumes attached to MSK broker nodes.</p>\n         "
+    },
+    "StorageMode" : {
+      "type" : "string",
+      "documentation" : "Controls storage mode for various supported storage tiers.",
+      "enum" : [ "LOCAL", "TIERED" ]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -4074,6 +4142,54 @@
       "required" : [ "ClusterArn", "CurrentVersion" ]
     },
     "UpdateSecurityResponse" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterArn" : {
+          "shape" : "__string",
+          "locationName" : "clusterArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "ClusterOperationArn" : {
+          "shape" : "__string",
+          "locationName" : "clusterOperationArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        }
+      }
+    },
+    "UpdateStorageRequest" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterArn" : {
+          "shape" : "__string",
+          "location" : "uri",
+          "locationName" : "clusterArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
+        },
+        "CurrentVersion" : {
+          "shape" : "__string",
+          "locationName" : "currentVersion",
+          "documentation" : "\n            <p>The version of cluster to update from. A successful operation will then generate a new version.</p>\n         "
+        },
+        "ProvisionedThroughput" : {
+          "shape" : "ProvisionedThroughput",
+          "locationName" : "provisionedThroughput",
+          "documentation" : "\n            <p>EBS volume provisioned throughput information.</p>\n         "
+        },
+        "StorageMode" : {
+          "shape" : "StorageMode",
+          "locationName" : "storageMode",
+          "documentation" : "\n            <p>Controls storage mode for supported storage tiers.</p>\n         "
+        },
+        "VolumeSizeGB" : {
+          "shape" : "__integer",
+          "locationName" : "volumeSizeGB",
+          "documentation" : "\n            <p>size of the EBS volume to update.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Request object for UpdateStorage api. Its used to update the storage attributes for the cluster.</p>\n         ",
+      "required" : [ "ClusterArn", "CurrentVersion" ]
+    },
+    "UpdateStorageResponse" : {
       "type" : "structure",
       "members" : {
         "ClusterArn" : {

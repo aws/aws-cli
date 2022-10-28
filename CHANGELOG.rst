@@ -4256,6 +4256,26 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.26.3
+======
+
+* api-change:``ec2``: Feature supports the replacement of instance root volume using an updated AMI without requiring customers to stop their instance.
+* api-change:``fms``: Add support NetworkFirewall Managed Rule Group Override flag in GetViolationDetails API
+* api-change:``glue``: Added support for custom datatypes when using custom csv classifier.
+* api-change:``redshift``: This release clarifies use for the ElasticIp parameter of the CreateCluster and RestoreFromClusterSnapshot APIs.
+* api-change:``sagemaker``: This change allows customers to provide a custom entrypoint script for the docker container to be run while executing training jobs, and provide custom arguments to the entrypoint script.
+* api-change:``wafv2``: This release adds the following: Challenge rule action, to silently verify client browsers; rule group rule action override to any valid rule action, not just Count; token sharing between protected applications for challenge/CAPTCHA token; targeted rules option for Bot Control managed rule group.
+
+
+1.26.2
+======
+
+* api-change:``iam``: Doc only update that corrects instances of CLI not using an entity.
+* api-change:``kafka``: This release adds support for Tiered Storage. UpdateStorage allows you to control the Storage Mode for supported storage tiers.
+* api-change:``neptune``: Added a new cluster-level attribute to set the capacity range for Neptune Serverless instances.
+* api-change:``sagemaker``: Amazon SageMaker Automatic Model Tuning now supports specifying Grid Search strategy for tuning jobs, which evaluates all hyperparameter combinations exhaustively based on the categorical hyperparameters provided.
+
+
 1.26.1
 ======
 

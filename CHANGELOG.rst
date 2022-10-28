@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.26.4
+======
+
+* api-change:``apprunner``: AWS App Runner adds .NET 6, Go 1, PHP 8.1 and Ruby 3.1 runtimes.
+* api-change:``appstream``: This release includes CertificateBasedAuthProperties in CreateDirectoryConfig and UpdateDirectoryConfig.
+* api-change:``cloud9``: Update to the documentation section of the Cloud9 API Reference guide.
+* api-change:``cloudformation``: This release adds more fields to improves visibility of AWS CloudFormation StackSets information in following APIs: ListStackInstances, DescribeStackInstance, ListStackSetOperationResults, ListStackSetOperations, DescribeStackSetOperation.
+* api-change:``gamesparks``: Add LATEST as a possible GameSDK Version on snapshot
+* api-change:``mediatailor``: This release introduces support for SCTE-35 segmentation descriptor messages which can be sent within time signal messages.
+
+
 1.26.3
 ======
 

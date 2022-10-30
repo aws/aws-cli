@@ -427,6 +427,61 @@ class TestConfigureSSOCommand(unittest.TestCase):
         ]
         self.assert_prompt_completions(expected_completions)
 
+    def test_account_list_sorted_by_name(self):
+        selected_account = {
+            'accountId': self.account_id,
+            'emailAddress': 'account@example.com',
+        }
+        first_account = {
+            'accountId': '1111111111',
+            'accountName': 'alpha',
+            'emailAddress': 'alpha@example.com'
+        }
+        second_account = {
+            'accountId': '2222222222',
+            'accountName': 'Bravo',
+            'emailAddress': 'Bravo@example.com'
+        }
+        third_account = {
+            'accountId': '3333333333',
+            'emailAddress': 'charlie@example.com'
+        }
+        accounts = [selected_account, second_account,
+                    third_account, first_account]
+        expected_accounts = [first_account,
+                             second_account, selected_account, third_account]
+        self._add_prompt_responses()
+        self._add_list_accounts_response(accounts)
+        self._add_list_account_roles_response([{'roleName': self.role_name}])
+        self.selector.side_effect = [selected_account]
+        with self.sso_stub:
+            self.configure_sso(args=[], parsed_globals=self.global_args)
+        printed_accounts = self.selector.call_args[0][0]
+        self.assertEqual(printed_accounts, expected_accounts)
+
+    def test_role_list_sorted_by_name(self):
+        selected_account = {
+            'accountId': self.account_id,
+            'emailAddress': 'account@example.com',
+        }
+        first_role = {'roleName': 'AdministratorAccess',
+                      'accountId': self.account_id}
+        second_role = {'roleName': 'DataScientist',
+                       'accountId': self.account_id}
+        third_role = {'roleName': 'SystemAdministrator',
+                      'accountId': self.account_id}
+        roles = [second_role, third_role, first_role]
+        expected_roles = [first_role['roleName'],
+                          second_role['roleName'], third_role['roleName']]
+        self._add_prompt_responses()
+        self._add_list_accounts_response([selected_account])
+        self._add_list_account_roles_response(roles)
+        self.selector.side_effect = [selected_account]
+        with self.sso_stub:
+            self.configure_sso(args=[], parsed_globals=self.global_args)
+        printed_roles = self.selector.call_args[0][0]
+        self.assertEqual(printed_roles, expected_roles)
+
 
 class TestDisplayAccount(unittest.TestCase):
     def setUp(self):

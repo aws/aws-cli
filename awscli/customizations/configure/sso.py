@@ -186,7 +186,10 @@ class ConfigureSSOCommand(BasicCommand):
             'There are {} AWS accounts available to you.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
-        selected_account = self._selector(accounts, display_account)
+        sorted_accounts = sorted(accounts, key=lambda x: (
+            'accountName' not in x, x.get('accountName',
+                                          x.get('accountId')).lower()))
+        selected_account = self._selector(sorted_accounts, display_account)
         sso_account_id = selected_account['accountId']
         return sso_account_id
 
@@ -216,7 +219,8 @@ class ConfigureSSOCommand(BasicCommand):
     def _handle_multiple_roles(self, roles):
         available_roles_msg = 'There are {} roles available to you.\n'
         uni_print(available_roles_msg.format(len(roles)))
-        role_names = [r['roleName'] for r in roles]
+        sorted_roles = sorted(roles, key=lambda x: x['roleName'].lower())
+        role_names = [r['roleName'] for r in sorted_roles]
         sso_role_name = self._selector(role_names)
         return sso_role_name
 

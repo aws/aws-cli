@@ -13,6 +13,22 @@
     "uid":"sesv2-2019-09-27"
   },
   "operations":{
+    "BatchGetMetricData":{
+      "name":"BatchGetMetricData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/metrics/batch"
+      },
+      "input":{"shape":"BatchGetMetricDataRequest"},
+      "output":{"shape":"BatchGetMetricDataResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Retrieves batches of metric data collected based on your sending activity.</p> <p>You can execute this operation no more than 16 times per second, and with at most 160 queries from the batches per second (cumulative).</p>"
+    },
     "CreateConfigurationSet":{
       "name":"CreateConfigurationSet",
       "http":{
@@ -782,6 +798,21 @@
       ],
       "documentation":"<p>Lists all of the import jobs.</p>"
     },
+    "ListRecommendations":{
+      "name":"ListRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/vdm/recommendations"
+      },
+      "input":{"shape":"ListRecommendationsRequest"},
+      "output":{"shape":"ListRecommendationsResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Lists the recommendations present in your Amazon SES account in the current Amazon Web Services Region.</p> <p>You can execute this operation no more than once per second.</p>"
+    },
     "ListSuppressedDestinations":{
       "name":"ListSuppressedDestinations",
       "http":{
@@ -869,6 +900,20 @@
       ],
       "documentation":"<p>Change the settings for the account-level suppression list.</p>"
     },
+    "PutAccountVdmAttributes":{
+      "name":"PutAccountVdmAttributes",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/account/vdm"
+      },
+      "input":{"shape":"PutAccountVdmAttributesRequest"},
+      "output":{"shape":"PutAccountVdmAttributesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Update your Amazon SES account VDM attributes.</p> <p>You can execute this operation no more than once per second.</p>"
+    },
     "PutConfigurationSetDeliveryOptions":{
       "name":"PutConfigurationSetDeliveryOptions",
       "http":{
@@ -943,6 +988,21 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Specify a custom domain to use for open and click tracking elements in email that you send.</p>"
+    },
+    "PutConfigurationSetVdmOptions":{
+      "name":"PutConfigurationSetVdmOptions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/configuration-sets/{ConfigurationSetName}/vdm-options"
+      },
+      "input":{"shape":"PutConfigurationSetVdmOptionsRequest"},
+      "output":{"shape":"PutConfigurationSetVdmOptionsResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Specify VDM preferences for email that you send using the configuration set.</p> <p>You can execute this operation no more than once per second.</p>"
     },
     "PutDedicatedIpInPool":{
       "name":"PutDedicatedIpInPool",
@@ -1350,6 +1410,74 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "BatchGetMetricDataQueries":{
+      "type":"list",
+      "member":{"shape":"BatchGetMetricDataQuery"},
+      "max":10,
+      "min":1
+    },
+    "BatchGetMetricDataQuery":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Namespace",
+        "Metric",
+        "StartDate",
+        "EndDate"
+      ],
+      "members":{
+        "Id":{
+          "shape":"QueryIdentifier",
+          "documentation":"<p>The query identifier.</p>"
+        },
+        "Namespace":{
+          "shape":"MetricNamespace",
+          "documentation":"<p>The query namespace - e.g. <code>VDM</code> </p>"
+        },
+        "Metric":{
+          "shape":"Metric",
+          "documentation":"<p>The queried metric. This can be one of the following:</p> <ul> <li> <p> <code>SEND</code> – Emails sent eligible for tracking in the VDM dashboard. This excludes emails sent to the mailbox simulator and emails addressed to more than one recipient.</p> </li> <li> <p> <code>COMPLAINT</code> – Complaints received for your account. This excludes complaints from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those for emails addressed to more than one recipient</p> </li> <li> <p> <code>PERMANENT_BOUNCE</code> – Permanent bounces - i.e. feedback received for emails sent to non-existent mailboxes. Excludes bounces from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those for emails addressed to more than one recipient.</p> </li> <li> <p> <code>TRANSIENT_BOUNCE</code> – Transient bounces - i.e. feedback received for delivery failures excluding issues with non-existent mailboxes. Excludes bounces from the mailbox simulator, and those for emails addressed to more than one recipient.</p> </li> <li> <p> <code>OPEN</code> – Unique open events for emails including open trackers. Excludes opens for emails addressed to more than one recipient.</p> </li> <li> <p> <code>CLICK</code> – Unique click events for emails including wrapped links. Excludes clicks for emails addressed to more than one recipient.</p> </li> <li> <p> <code>DELIVERY</code> – Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator and for emails addressed to more than one recipient.</p> </li> <li> <p> <code>DELIVERY_OPEN</code> – Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator, for emails addressed to more than one recipient, and emails without open trackers.</p> </li> <li> <p> <code>DELIVERY_CLICK</code> – Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator, for emails addressed to more than one recipient, and emails without click trackers.</p> </li> <li> <p> <code>DELIVERY_COMPLAINT</code> – Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator, for emails addressed to more than one recipient, and emails addressed to recipients hosted by ISPs with which Amazon SES does not have a feedback loop agreement.</p> </li> </ul>"
+        },
+        "Dimensions":{
+          "shape":"Dimensions",
+          "documentation":"<p>An object that contains mapping between <code>MetricDimensionName</code> and <code>MetricDimensionValue</code> to filter metrics by.</p>"
+        },
+        "StartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Represents the start date for the query interval.</p>"
+        },
+        "EndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Represents the end date for the query interval.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single metric data query to include in a batch.</p>"
+    },
+    "BatchGetMetricDataRequest":{
+      "type":"structure",
+      "required":["Queries"],
+      "members":{
+        "Queries":{
+          "shape":"BatchGetMetricDataQueries",
+          "documentation":"<p>A list of queries for metrics to be retrieved.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to retrieve a batch of metric data.</p>"
+    },
+    "BatchGetMetricDataResponse":{
+      "type":"structure",
+      "members":{
+        "Results":{
+          "shape":"MetricDataResultList",
+          "documentation":"<p>A list of successfully retrieved <code>MetricDataResult</code>.</p>"
+        },
+        "Errors":{
+          "shape":"MetricDataErrorList",
+          "documentation":"<p>A list of <code>MetricDataError</code> encountered while processing your metric data batch request.</p>"
+        }
+      },
+      "documentation":"<p>Represents the result of processing your metric data batch request</p>"
+    },
     "BehaviorOnMxFailure":{
       "type":"string",
       "documentation":"<p>The action to take if the required MX record can't be found when you send an email. When you set this value to <code>UseDefaultValue</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>",
@@ -1640,6 +1768,7 @@
       },
       "documentation":"<p>An object that represents the content of the email, and optionally a character set specification.</p>"
     },
+    "Counter":{"type":"long"},
     "CreateConfigurationSetEventDestinationRequest":{
       "type":"structure",
       "required":[
@@ -1699,7 +1828,11 @@
           "shape":"TagList",
           "documentation":"<p>An array of objects that define the tags (keys and values) to associate with the configuration set.</p>"
         },
-        "SuppressionOptions":{"shape":"SuppressionOptions"}
+        "SuppressionOptions":{"shape":"SuppressionOptions"},
+        "VdmOptions":{
+          "shape":"VdmOptions",
+          "documentation":"<p>An object that defines the VDM options for emails that you send using the configuration set.</p>"
+        }
       },
       "documentation":"<p>A request to create a configuration set.</p>"
     },
@@ -2067,6 +2200,26 @@
     "DailyVolumes":{
       "type":"list",
       "member":{"shape":"DailyVolume"}
+    },
+    "DashboardAttributes":{
+      "type":"structure",
+      "members":{
+        "EngagementMetrics":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Specifies the status of your VDM engagement metrics collection. Can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Amazon SES enables engagement metrics for your account.</p> </li> <li> <p> <code>DISABLED</code> – Amazon SES disables engagement metrics for your account.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object containing additional settings for your VDM configuration as applicable to the Dashboard.</p>"
+    },
+    "DashboardOptions":{
+      "type":"structure",
+      "members":{
+        "EngagementMetrics":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Specifies the status of your VDM engagement metrics collection. Can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Amazon SES enables engagement metrics for the configuration set.</p> </li> <li> <p> <code>DISABLED</code> – Amazon SES disables engagement metrics for the configuration set.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object containing additional settings for your VDM configuration as applicable to the Dashboard.</p>"
     },
     "DataFormat":{
       "type":"string",
@@ -2443,6 +2596,13 @@
         "EMAIL_HEADER",
         "LINK_TAG"
       ]
+    },
+    "Dimensions":{
+      "type":"map",
+      "key":{"shape":"MetricDimensionName"},
+      "value":{"shape":"MetricDimensionValue"},
+      "max":3,
+      "min":1
     },
     "DisplayName":{"type":"string"},
     "DkimAttributes":{
@@ -2854,6 +3014,13 @@
       "type":"string",
       "documentation":"<p>The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.</p>"
     },
+    "FeatureStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "FeedbackId":{"type":"string"},
     "GeneralEnforcementStatus":{"type":"string"},
     "GetAccountRequest":{
@@ -2892,6 +3059,10 @@
         "Details":{
           "shape":"AccountDetails",
           "documentation":"<p>An object that defines your account details.</p>"
+        },
+        "VdmAttributes":{
+          "shape":"VdmAttributes",
+          "documentation":"<p>The VDM attributes that apply to your Amazon SES account.</p>"
         }
       },
       "documentation":"<p>A list of details about the email-sending capabilities of your Amazon SES account in the current Amazon Web Services Region.</p>"
@@ -2986,6 +3157,10 @@
         "SuppressionOptions":{
           "shape":"SuppressionOptions",
           "documentation":"<p>An object that contains information about the suppression list preferences for your account.</p>"
+        },
+        "VdmOptions":{
+          "shape":"VdmOptions",
+          "documentation":"<p>An object that contains information about the VDM preferences for your configuration set.</p>"
         }
       },
       "documentation":"<p>Information about a configuration set.</p>"
@@ -3552,6 +3727,26 @@
       },
       "documentation":"<p>Information about the suppressed email address.</p>"
     },
+    "GuardianAttributes":{
+      "type":"structure",
+      "members":{
+        "OptimizedSharedDelivery":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Specifies the status of your VDM optimized shared delivery. Can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Amazon SES enables optimized shared delivery for your account.</p> </li> <li> <p> <code>DISABLED</code> – Amazon SES disables optimized shared delivery for your account.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object containing additional settings for your VDM configuration as applicable to the Guardian.</p>"
+    },
+    "GuardianOptions":{
+      "type":"structure",
+      "members":{
+        "OptimizedSharedDelivery":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Specifies the status of your VDM optimized shared delivery. Can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Amazon SES enables optimized shared delivery for the configuration set.</p> </li> <li> <p> <code>DISABLED</code> – Amazon SES disables optimized shared delivery for the configuration set.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object containing additional settings for your VDM configuration as applicable to the Guardian.</p>"
+    },
     "Identity":{
       "type":"string",
       "min":1
@@ -3670,6 +3865,15 @@
         }
       },
       "documentation":"<p>An object that contains information about the inbox placement data settings for a verified domain that’s associated with your Amazon Web Services account. This data is available only if you enabled the Deliverability dashboard for the domain.</p>"
+    },
+    "InternalServiceErrorException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request couldn't be processed because an error occurred with the Amazon SES API v2.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
     },
     "InvalidNextTokenException":{
       "type":"structure",
@@ -4156,6 +4360,61 @@
       "member":{"shape":"PoolName"},
       "documentation":"<p>A list of dedicated IP pools that are associated with your Amazon Web Services account.</p>"
     },
+    "ListRecommendationFilterValue":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "ListRecommendationsFilter":{
+      "type":"map",
+      "key":{"shape":"ListRecommendationsFilterKey"},
+      "value":{"shape":"ListRecommendationFilterValue"},
+      "documentation":"<p>An object that contains mapping between <code>ListRecommendationsFilterKey</code> and <code>ListRecommendationFilterValue</code> to filter by.</p>",
+      "max":2,
+      "min":1
+    },
+    "ListRecommendationsFilterKey":{
+      "type":"string",
+      "documentation":"<p>The <code>ListRecommendations</code> filter type. This can be one of the following:</p> <ul> <li> <p> <code>TYPE</code> – The recommendation type, with values like <code>DKIM</code>, <code>SPF</code> or <code>DMARC</code>.</p> </li> <li> <p> <code>IMPACT</code> – The recommendation impact, with values like <code>HIGH</code> or <code>LOW</code>.</p> </li> <li> <p> <code>STATUS</code> – The recommendation status, with values like <code>OPEN</code> or <code>FIXED</code>.</p> </li> <li> <p> <code>RESOURCE_ARN</code> – The resource affected by the recommendation, with values like <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> </li> </ul>",
+      "enum":[
+        "TYPE",
+        "IMPACT",
+        "STATUS",
+        "RESOURCE_ARN"
+      ]
+    },
+    "ListRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"ListRecommendationsFilter",
+          "documentation":"<p>Filters applied when retrieving recommendations. Can eiter be an individual filter, or combinations of <code>STATUS</code> and <code>IMPACT</code> or <code>STATUS</code> and <code>TYPE</code> </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from a previous call to <code>ListRecommendations</code> to indicate the position in the list of recommendations.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>The number of results to show in a single call to <code>ListRecommendations</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p> <p>The value you specify has to be at least 1, and can be no more than 100.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to list the existing recommendations for your account.</p>"
+    },
+    "ListRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "Recommendations":{
+          "shape":"RecommendationsList",
+          "documentation":"<p>The recommendations applicable to your account.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string token indicating that there might be additional recommendations available to be listed. Use the token provided in the <code>ListRecommendationsResponse</code> to use in the subsequent call to <code>ListRecommendations</code> with the same parameters to retrieve the next page of recommendations.</p>"
+        }
+      },
+      "documentation":"<p>Contains the response to your request to retrieve the list of recommendations for your account.</p>"
+    },
     "ListSuppressedDestinationsRequest":{
       "type":"structure",
       "members":{
@@ -4345,6 +4604,83 @@
       "type":"string",
       "documentation":"<p>The value of the message tag. The message tag value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>"
     },
+    "Metric":{
+      "type":"string",
+      "enum":[
+        "SEND",
+        "COMPLAINT",
+        "PERMANENT_BOUNCE",
+        "TRANSIENT_BOUNCE",
+        "OPEN",
+        "CLICK",
+        "DELIVERY",
+        "DELIVERY_OPEN",
+        "DELIVERY_CLICK",
+        "DELIVERY_COMPLAINT"
+      ]
+    },
+    "MetricDataError":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"QueryIdentifier",
+          "documentation":"<p>The query identifier.</p>"
+        },
+        "Code":{
+          "shape":"QueryErrorCode",
+          "documentation":"<p>The query error code. Can be one of:</p> <ul> <li> <p> <code>INTERNAL_FAILURE</code> – Amazon SES has failed to process one of the queries.</p> </li> <li> <p> <code>ACCESS_DENIED</code> – You have insufficient access to retrieve metrics based on the given query.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"QueryErrorMessage",
+          "documentation":"<p>The error message associated with the current query error.</p>"
+        }
+      },
+      "documentation":"<p>An error corresponding to the unsuccessful processing of a single metric data query.</p>"
+    },
+    "MetricDataErrorList":{
+      "type":"list",
+      "member":{"shape":"MetricDataError"}
+    },
+    "MetricDataResult":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"QueryIdentifier",
+          "documentation":"<p>The query identifier.</p>"
+        },
+        "Timestamps":{
+          "shape":"TimestampList",
+          "documentation":"<p>A list of timestamps for the metric data results.</p>"
+        },
+        "Values":{
+          "shape":"MetricValueList",
+          "documentation":"<p>A list of values (cumulative / sum) for the metric data results.</p>"
+        }
+      },
+      "documentation":"<p>The result of a single metric data query.</p>"
+    },
+    "MetricDataResultList":{
+      "type":"list",
+      "member":{"shape":"MetricDataResult"}
+    },
+    "MetricDimensionName":{
+      "type":"string",
+      "documentation":"<p>The <code>BatchGetMetricDataQuery</code> dimension name. This can be one of the following:</p> <ul> <li> <p> <code>EMAIL_IDENTITY</code> – The email identity used when sending messages.</p> </li> <li> <p> <code>CONFIGURATION_SET</code> – The configuration set used when sending messages (if one was used).</p> </li> <li> <p> <code>ISP</code> – The recipient ISP (e.g. <code>Gmail</code>, <code>Yahoo</code>, etc.).</p> </li> </ul>",
+      "enum":[
+        "EMAIL_IDENTITY",
+        "CONFIGURATION_SET",
+        "ISP"
+      ]
+    },
+    "MetricDimensionValue":{"type":"string"},
+    "MetricNamespace":{
+      "type":"string",
+      "enum":["VDM"]
+    },
+    "MetricValueList":{
+      "type":"list",
+      "member":{"shape":"Counter"}
+    },
     "NextToken":{"type":"string"},
     "NotFoundException":{
       "type":"structure",
@@ -4532,6 +4868,22 @@
       },
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
+    "PutAccountVdmAttributesRequest":{
+      "type":"structure",
+      "required":["VdmAttributes"],
+      "members":{
+        "VdmAttributes":{
+          "shape":"VdmAttributes",
+          "documentation":"<p>The VDM attributes that you wish to apply to your Amazon SES account.</p>"
+        }
+      },
+      "documentation":"<p>A request to submit new account VDM attributes.</p>"
+    },
+    "PutAccountVdmAttributesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "PutConfigurationSetDeliveryOptionsRequest":{
       "type":"structure",
       "required":["ConfigurationSetName"],
@@ -4646,6 +4998,29 @@
       "documentation":"<p>A request to add a custom domain for tracking open and click events to a configuration set.</p>"
     },
     "PutConfigurationSetTrackingOptionsResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
+    "PutConfigurationSetVdmOptionsRequest":{
+      "type":"structure",
+      "required":["ConfigurationSetName"],
+      "members":{
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the configuration set.</p>",
+          "location":"uri",
+          "locationName":"ConfigurationSetName"
+        },
+        "VdmOptions":{
+          "shape":"VdmOptions",
+          "documentation":"<p>The VDM options to apply to the configuration set.</p>"
+        }
+      },
+      "documentation":"<p>A request to add specific VDM settings to a configuration set.</p>"
+    },
+    "PutConfigurationSetVdmOptionsResponse":{
       "type":"structure",
       "members":{
       },
@@ -4882,6 +5257,19 @@
       },
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
+    "QueryErrorCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_FAILURE",
+        "ACCESS_DENIED"
+      ]
+    },
+    "QueryErrorMessage":{"type":"string"},
+    "QueryIdentifier":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "RawMessage":{
       "type":"structure",
       "required":["Data"],
@@ -4900,6 +5288,67 @@
     "RblName":{
       "type":"string",
       "documentation":"<p>The name of a blacklist that an IP address was found on.</p>"
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The resource affected by the recommendation, with values like <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p>"
+        },
+        "Type":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The recommendation type, with values like <code>DKIM</code>, <code>SPF</code> or <code>DMARC</code>.</p>"
+        },
+        "Description":{
+          "shape":"RecommendationDescription",
+          "documentation":"<p>The recommendation description / disambiguator - e.g. <code>DKIM1</code> and <code>DKIM2</code> are different recommendations about your DKIM setup.</p>"
+        },
+        "Status":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>The recommendation status, with values like <code>OPEN</code> or <code>FIXED</code>.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The first time this issue was encountered and the recommendation was generated.</p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time the recommendation was updated.</p>"
+        },
+        "Impact":{
+          "shape":"RecommendationImpact",
+          "documentation":"<p>The recommendation impact, with values like <code>HIGH</code> or <code>LOW</code>.</p>"
+        }
+      },
+      "documentation":"<p>A recommendation generated for your account.</p>"
+    },
+    "RecommendationDescription":{"type":"string"},
+    "RecommendationImpact":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "HIGH"
+      ]
+    },
+    "RecommendationStatus":{
+      "type":"string",
+      "enum":[
+        "OPEN",
+        "FIXED"
+      ]
+    },
+    "RecommendationType":{
+      "type":"string",
+      "enum":[
+        "DKIM",
+        "DMARC",
+        "SPF"
+      ]
+    },
+    "RecommendationsList":{
+      "type":"list",
+      "member":{"shape":"Recommendation"}
     },
     "RenderedEmailTemplate":{
       "type":"string",
@@ -5421,6 +5870,10 @@
       "documentation":"<p>The following element is returned by the service.</p>"
     },
     "Timestamp":{"type":"timestamp"},
+    "TimestampList":{
+      "type":"list",
+      "member":{"shape":"Timestamp"}
+    },
     "TlsPolicy":{
       "type":"string",
       "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>",
@@ -5751,6 +6204,39 @@
       "sensitive":true
     },
     "UseDefaultIfPreferenceUnavailable":{"type":"boolean"},
+    "VdmAttributes":{
+      "type":"structure",
+      "required":["VdmEnabled"],
+      "members":{
+        "VdmEnabled":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Specifies the status of your VDM configuration. Can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Amazon SES enables VDM for your account.</p> </li> <li> <p> <code>DISABLED</code> – Amazon SES disables VDM for your account.</p> </li> </ul>"
+        },
+        "DashboardAttributes":{
+          "shape":"DashboardAttributes",
+          "documentation":"<p>Specifies additional settings for your VDM configuration as applicable to the Dashboard.</p>"
+        },
+        "GuardianAttributes":{
+          "shape":"GuardianAttributes",
+          "documentation":"<p>Specifies additional settings for your VDM configuration as applicable to the Guardian.</p>"
+        }
+      },
+      "documentation":"<p>The VDM attributes that apply to your Amazon SES account.</p>"
+    },
+    "VdmOptions":{
+      "type":"structure",
+      "members":{
+        "DashboardOptions":{
+          "shape":"DashboardOptions",
+          "documentation":"<p>Specifies additional settings for your VDM configuration as applicable to the Dashboard.</p>"
+        },
+        "GuardianOptions":{
+          "shape":"GuardianOptions",
+          "documentation":"<p>Specifies additional settings for your VDM configuration as applicable to the Guardian.</p>"
+        }
+      },
+      "documentation":"<p>An object that defines the VDM settings that apply to emails that you send using the configuration set.</p>"
+    },
     "VerificationStatus":{
       "type":"string",
       "enum":[

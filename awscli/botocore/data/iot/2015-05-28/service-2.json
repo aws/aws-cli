@@ -4222,6 +4222,10 @@
         "openSearch":{
           "shape":"OpenSearchAction",
           "documentation":"<p>Write data to an Amazon OpenSearch Service domain.</p>"
+        },
+        "location":{
+          "shape":"LocationAction",
+          "documentation":"<p>The Amazon Location Service rule action sends device location updates from an MQTT message to an Amazon Location tracker resource.</p>"
         }
       },
       "documentation":"<p>Describes the actions associated with a rule.</p>"
@@ -7183,7 +7187,7 @@
         },
         "preProvisioningHook":{
           "shape":"ProvisioningHook",
-          "documentation":"<p>Creates a pre-provisioning hook template.</p>"
+          "documentation":"<p>Creates a pre-provisioning hook template. Only supports template of type <code>FLEET_PROVISIONING</code>. For more information about provisioning template types, see <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_CreateProvisioningTemplate.html#iot-CreateProvisioningTemplate-request-type\">type</a>.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -10487,7 +10491,7 @@
         },
         "maxResults":{
           "shape":"TinyMaxResults",
-          "documentation":"<p> The maximum number of results to return at one time. The default is 25. </p>",
+          "documentation":"<p> The maximum number of results to return at one time. The default is 10. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -14220,6 +14224,58 @@
         }
       }
     },
+    "LocationAction":{
+      "type":"structure",
+      "required":[
+        "roleArn",
+        "trackerName",
+        "deviceId",
+        "latitude",
+        "longitude"
+      ],
+      "members":{
+        "roleArn":{
+          "shape":"AwsArn",
+          "documentation":"<p>The IAM role that grants permission to write to the Amazon Location resource.</p>"
+        },
+        "trackerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the tracker resource in Amazon Location in which the location is updated.</p>"
+        },
+        "deviceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the device providing the location data.</p>"
+        },
+        "timestamp":{
+          "shape":"LocationTimestamp",
+          "documentation":"<p>The time that the location data was sampled. The default value is the time the MQTT message was processed.</p>"
+        },
+        "latitude":{
+          "shape":"String",
+          "documentation":"<p>A string that evaluates to a double value that represents the latitude of the device's location.</p>"
+        },
+        "longitude":{
+          "shape":"String",
+          "documentation":"<p>A string that evaluates to a double value that represents the longitude of the device's location.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Location rule action sends device location updates from an MQTT message to an Amazon Location tracker resource.</p>"
+    },
+    "LocationTimestamp":{
+      "type":"structure",
+      "required":["value"],
+      "members":{
+        "value":{
+          "shape":"String",
+          "documentation":"<p>An expression that returns a long epoch time value.</p>"
+        },
+        "unit":{
+          "shape":"String",
+          "documentation":"<p>The precision of the timestamp value that results from the expression described in <code>value</code>.</p> <p>Valid values: <code>SECONDS</code> | <code>MILLISECONDS</code> | <code>MICROSECONDS</code> | <code>NANOSECONDS</code>. The default is <code>MILLISECONDS</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes how to interpret an application-defined timestamp value from an MQTT message payload and the precision of that value.</p>"
+    },
     "LogGroupName":{"type":"string"},
     "LogLevel":{
       "type":"string",
@@ -15213,7 +15269,7 @@
       "members":{
         "versionId":{
           "shape":"TemplateVersionId",
-          "documentation":"<p>The ID of the fleet privisioning template version.</p>"
+          "documentation":"<p>The ID of the fleet provisioning template version.</p>"
         },
         "creationDate":{
           "shape":"DateType",
@@ -18572,7 +18628,7 @@
         },
         "preProvisioningHook":{
           "shape":"ProvisioningHook",
-          "documentation":"<p>Updates the pre-provisioning hook template.</p>"
+          "documentation":"<p>Updates the pre-provisioning hook template. Only supports template of type <code>FLEET_PROVISIONING</code>. For more information about provisioning template types, see <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_CreateProvisioningTemplate.html#iot-CreateProvisioningTemplate-request-type\">type</a>.</p>"
         },
         "removePreProvisioningHook":{
           "shape":"RemoveHook",

@@ -547,6 +547,10 @@
         "SpliceInsertMessage":{
           "shape":"SpliceInsertMessage",
           "documentation":"<p>This defines the SCTE-35 <code>splice_insert()</code> message inserted around the ad. For information about using <code>splice_insert()</code>, see the SCTE-35 specficiaiton, section 9.7.3.1.</p>"
+        },
+        "TimeSignalMessage":{
+          "shape":"TimeSignalMessage",
+          "documentation":"<p>Defines the SCTE-35 <code>time_signal</code> message inserted around the ad.</p> <p>Programs on a channel's schedule can be configured with one or more ad breaks. You can attach a <code>splice_insert</code> SCTE-35 message to the ad break. This message provides basic metadata about the ad break.</p> <p>See section 9.7.4 of the 2022 SCTE-35 specification for more information.</p>"
         }
       },
       "documentation":"<p>Ad break configuration parameters.</p>"
@@ -2010,6 +2014,10 @@
       "member":{"shape":"HttpPackageConfiguration"},
       "documentation":"<p>The VOD source's HTTP package configuration settings.</p>"
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "ListAlertsRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -2353,7 +2361,10 @@
     },
     "MessageType":{
       "type":"string",
-      "enum":["SPLICE_INSERT"]
+      "enum":[
+        "SPLICE_INSERT",
+        "TIME_SIGNAL"
+      ]
     },
     "Mode":{
       "type":"string",
@@ -2904,6 +2915,48 @@
       },
       "documentation":"<p>The segment delivery configuration settings.</p>"
     },
+    "SegmentationDescriptor":{
+      "type":"structure",
+      "members":{
+        "SegmentNum":{
+          "shape":"Integer",
+          "documentation":"<p>The segment number to assign to the <code>segmentation_descriptor.segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.</p>"
+        },
+        "SegmentationEventId":{
+          "shape":"Integer",
+          "documentation":"<p>The Event Identifier to assign to the <code>segmentation_descriptor.segmentation_event_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The default value is 1.</p>"
+        },
+        "SegmentationTypeId":{
+          "shape":"Integer",
+          "documentation":"<p>The Type Identifier to assign to the <code>segmentation_descriptor.segmentation_type_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 48.</p>"
+        },
+        "SegmentationUpid":{
+          "shape":"String",
+          "documentation":"<p>The Upid to assign to the <code>segmentation_descriptor.segmentation_upid</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The value must be a hexadecimal string containing only the characters 0 though 9 and A through F. The default value is \"\" (an empty string).</p>"
+        },
+        "SegmentationUpidType":{
+          "shape":"Integer",
+          "documentation":"<p>The Upid Type to assign to the <code>segmentation_descriptor.segmentation_upid_type</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 14.</p>"
+        },
+        "SegmentsExpected":{
+          "shape":"Integer",
+          "documentation":"<p>The number of segments expected, which is assigned to the <code>segmentation_descriptor.segments_expectedS</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.</p>"
+        },
+        "SubSegmentNum":{
+          "shape":"Integer",
+          "documentation":"<p>The sub-segment number to assign to the <code>segmentation_descriptor.sub_segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The defualt value is null.</p>"
+        },
+        "SubSegmentsExpected":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sub-segments expected, which is assigned to the <code>segmentation_descriptor.sub_segments_expected</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is null.</p>"
+        }
+      },
+      "documentation":"<p>The <code>segmentation_descriptor</code> message can contain advanced metadata fields, like content identifiers, to convey a wide range of information about the ad break. MediaTailor writes the ad metadata in the egress manifest as part of the <code>EXT-X-DATERANGE</code> or <code>EventStream</code> ad marker's SCTE-35 data.</p> <p> <code>segmentation_descriptor</code> messages must be sent with the <code>time_signal</code> message type.</p> <p>See the <code>segmentation_descriptor()</code> table of the 2022 SCTE-35 specification for more information.</p>"
+    },
+    "SegmentationDescriptorList":{
+      "type":"list",
+      "member":{"shape":"SegmentationDescriptor"}
+    },
     "SlateSource":{
       "type":"structure",
       "members":{
@@ -3022,6 +3075,7 @@
       "members":{
       }
     },
+    "String":{"type":"string"},
     "TagResourceRequest":{
       "type":"structure",
       "required":[
@@ -3048,6 +3102,16 @@
         "BASIC",
         "STANDARD"
       ]
+    },
+    "TimeSignalMessage":{
+      "type":"structure",
+      "members":{
+        "SegmentationDescriptors":{
+          "shape":"SegmentationDescriptorList",
+          "documentation":"<p>The configurations for the SCTE-35 <code>segmentation_descriptor</code> message(s) sent with the <code>time_signal</code> message.</p>"
+        }
+      },
+      "documentation":"<p>The SCTE-35 <code>time_signal</code> message can be sent with one or more <code>segmentation_descriptor</code> messages. A <code>time_signal</code> message can be sent only if a single <code>segmentation_descriptor</code> message is sent.</p> <p>The <code>time_signal</code> message contains only the <code>splice_time</code> field which is constructed using a given presentation timestamp. When sending a <code>time_signal</code> message, the <code>splice_command_type</code> field in the <code>splice_info_section</code> message is set to 6 (0x06).</p> <p>See the <code>time_signal()</code> table of the 2022 SCTE-35 specification for more information.</p>"
     },
     "Transition":{
       "type":"structure",

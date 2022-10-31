@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 # List of services for which rule-based endpoint resolution is always enabled.
 # This list will change and eventually be removed during minor or patch version
 # changes as part of the rollout of rule-based endpoints resolution.
-ENDPOINT_RESOLUTION_V2_SERVICES = ['s3', 's3control']
+ENDPOINT_RESOLUTION_V2_SERVICES = ['s3', 's3control', 'events']
 # Feature flag to enable rule-based endpoint resolution for all services.
 # Only for testing use. Rulesets for services may be missing or incomplete
 # until the service is enabled for rule-based endpoint resolution by default.

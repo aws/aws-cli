@@ -123,12 +123,6 @@ class ClientCreator(object):
         self._register_retries(service_client)
         self._register_s3_events(service_client, client_config, scoped_config)
         self._register_s3_control_events(service_client)
-
-        if client_args['endpoint_ruleset_resolver'] is None:
-            # When using the legacy endpoint resolver, several event handlers
-            # modify endpoint and request context.
-            self._register_eventbridge_events(
-                service_client, endpoint_bridge, endpoint_url)
         self._register_endpoint_discovery(
             service_client, endpoint_url, client_config
         )

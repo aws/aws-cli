@@ -27,6 +27,7 @@ from botocore.crt import CRT_SUPPORTED_AUTH_TYPES
 from botocore.endpoint_provider import EndpointProvider
 from botocore.exceptions import (
     EndpointProviderError,
+    InvalidEndpointConfigurationError,
     EndpointVariantError,
     InvalidHostLabelError,
     NoRegionError,
@@ -760,4 +761,12 @@ class EndpointRulesetResolver:
                 return UnsupportedS3ControlConfigurationError(msg=msg)
             if msg == "AccountId is required but not set":
                 return ParamValidationError(report=msg)
+        if service_name == 'events':
+            if msg.startswith(
+                'Invalid Configuration: FIPS is not supported with '
+                'EventBridge multi-region endpoints.'
+            ):
+                return InvalidEndpointConfigurationError(msg=msg)
+            if msg == 'EndpointId must be a valid host label.':
+                return InvalidEndpointConfigurationError(msg=msg)
         return None

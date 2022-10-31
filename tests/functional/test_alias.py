@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.alias import AliasLoader
+from awscli.alias import AliasLoader, register_alias_commands
 from awscli.testutils import skip_if_windows
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -24,6 +24,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
+        register_alias_commands(
+            self.driver.session.get_component('event_emitter'),
+            alias_filename=self.alias_file
+        )
 
     def tearDown(self):
         super(TestAliases, self).tearDown()
@@ -224,4 +228,43 @@ class TestAliases(BaseAWSCommandParamsTest):
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
         self.add_alias('mkdir', '!f() { mkdir "${1}"; }; f')
         self.run_cmd('mkdir %s' % directory_to_make)
+        self.assertTrue(os.path.isdir(directory_to_make))
+
+    def test_operation_level_alias_with_additonal_params(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2]\n')
+            f.write('regions = describe-regions --region-names us-west-2\n')
+
+        cmdline = 'ec2 regions'
+        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-west-2']})
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
+        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
+
+    def test_multi_nested_command_alias(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2 wait]\n')
+            f.write('vpc-ready = vpc-available\n')
+
+        cmdline = 'ec2 wait vpc-ready'
+        self.parsed_response = {
+            'Vpcs': [{'State': 'available'}],
+        }
+        self.assert_params_for_cmd(cmdline)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
+        self.assertEqual(self.operations_called[0][0].name, 'DescribeVpcs')
+
+    def test_operation_level_external_alias(self):
+        directory_to_make = os.path.join(self.files.rootdir, 'newdir')
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2]\n')
+            f.write('mkdir = !mkdir\n')
+        self.run_cmd('ec2 mkdir %s' % directory_to_make)
         self.assertTrue(os.path.isdir(directory_to_make))

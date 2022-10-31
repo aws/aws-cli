@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.26.5
+======
+
+* api-change:``apprunner``: This release adds support for private App Runner services. Services may now be configured to be made private and only accessible from a VPC. The changes include a new VpcIngressConnection resource and several new and modified APIs.
+* api-change:``connect``: Amazon connect now support a new API DismissUserContact to dismiss or remove terminated contacts in Agent CCP
+* api-change:``ec2``: Elastic IP transfer is a new Amazon VPC feature that allows you to transfer your Elastic IP addresses from one AWS Account to another.
+* api-change:``iot``: This release adds the Amazon Location action to IoT Rules Engine.
+* api-change:``logs``: SDK release to support tagging for destinations and log groups with TagResource. Also supports tag on create with PutDestination.
+* api-change:``sesv2``: This release includes support for interacting with the Virtual Deliverability Manager, allowing you to opt in/out of the feature and to retrieve recommendations and metric data.
+* api-change:``textract``: This release introduces additional support for 30+ normalized fields such as vendor address and currency. It also includes OCR output in the response and accuracy improvements for the already supported fields in previous version
+
+
 1.26.4
 ======
 

@@ -1323,7 +1323,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assertEqual(expected_error_msg, result[1])
 
     def test_create_cluster_with_security_config(self):
-        cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+ 
+        cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+
                '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = \
             {
@@ -1495,6 +1495,21 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_os_release_label(self):
+        test_os_release_label = '2.0.20220406.1'
+        cmd = (self.prefix + '--release-label emr-6.6.0' 
+                + ' --os-release-label ' + test_os_release_label 
+                + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+             {
+                  'Name': DEFAULT_CLUSTER_NAME,
+                  'Instances': DEFAULT_INSTANCES,
+                  'ReleaseLabel': 'emr-6.6.0',
+                  'VisibleToAllUsers': True,
+                  'Tags': [],
+                  'OSReleaseLabel': test_os_release_label
+             }
+        self.assert_params_for_cmd(cmd, result)
 
 if __name__ == "__main__":
     unittest.main()

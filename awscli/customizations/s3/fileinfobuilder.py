@@ -25,12 +25,12 @@ class FileInfoBuilder(object):
         if source_client is not None:
             self._source_client = source_client
         self._parameters = parameters
-        self._is_stream = is_stream 
+        self._is_stream = is_stream
 
     def call(self, files):
         for file_base in files:
             file_info = self._inject_info(file_base)
-            yield file_info            
+            yield file_info
 
     def _inject_info(self, file_base):
         file_info_attr = {}

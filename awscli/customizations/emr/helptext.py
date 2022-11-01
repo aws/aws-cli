@@ -48,13 +48,17 @@ HBASE_BACKUP_VERSION = (
 # create-cluster options help text
 
 CREATE_CLUSTER_DESCRIPTION = (
-    'Creates an Amazon EMR cluster with the specified configurations.\n'
-    '\nQuick start:\n'
-    '\naws emr create-cluster --release-label <release-label>'
-    ' --instance-type <instance-type> --instance-count <instance-count>\n'
-    '\nValues for the following can be set in the AWS CLI'
-    ' config file using the "aws configure set" command: --service-role, --log-uri,'
-    ' and InstanceProfile and KeyName arguments under --ec2-attributes.')
+    'Creates an Amazon EMR cluster with the specified configurations.')
+
+DESCRIBE_CLUSTER_DESCRIPTION = (
+    'Provides  cluster-level details including status, hardware '
+    'and software configuration, VPC settings, bootstrap '
+    'actions, instance groups and so on. '
+    'Permissions needed for describe-cluster include '
+    'elasticmapreduce:ListBootstrapActions, '
+    'elasticmapreduce:ListInstanceFleets, '
+    'elasticmapreduce:DescribeCluster, '
+    'and elasticmapreduce:ListInstanceGroups.')
 
 CLUSTER_NAME = (
     '<p>The name of the cluster. If not provided, the default is "Development Cluster".</p>')
@@ -112,6 +116,11 @@ RELEASE_LABEL = (
     '<p>Use <code>--release-label</code> only for Amazon EMR release version 4.0'
     ' and later. Use <code>--ami-version</code> for earlier versions.'
     ' You cannot specify both a release label and AMI version.</p>')
+
+OS_RELEASE_LABEL = (
+    '<p>Specifies a particular Amazon Linux release for all nodes in a cluster'
+    ' launch request. If a release is not specified, EMR uses the latest validated' 
+    ' Amazon Linux release for cluster launch.</p>')
 
 CONFIGURATIONS = (
     '<p>Specifies a JSON file that contains configuration classifications,'
@@ -400,7 +409,7 @@ KERBEROS_ATTRIBUTES = (
      ' with a KDC in a different realm. This is the cross-realm principal password,'
      ' which must be identical across realms.</li>'
      ' <li><code>ADDomainJoinUser</code> - Required when establishing trust with an Active Directory'
-     ' domain. This is the User logon name of an AD account with sufficient privileges to join resouces to the domain.</li>'
+     ' domain. This is the User logon name of an AD account with sufficient privileges to join resources to the domain.</li>'
      ' <li><code>ADDomainJoinPassword</code> - The AD password for <code>ADDomainJoinUser</code>.</li>')
 
 # end create-cluster options help descriptions
@@ -490,4 +499,10 @@ AUTO_TERMINATION_POLICY = (
     '<p>Auto termination policy for an Amazon EMR cluster. '
     'The configuration specifies the termination idle timeout'
     'threshold for an cluster.</p> '
+)
+
+EXECUTION_ROLE_ARN = (
+    '<p>You must grant the execution role the permissions needed '
+    'to access the same IAM resources that the step can access. '
+    'The execution role can be a cross-account IAM Role.</p> '
 )

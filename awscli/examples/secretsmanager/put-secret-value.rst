@@ -4,7 +4,7 @@ The following ``put-secret-value`` example creates a new version of a secret wit
 
     aws secretsmanager put-secret-value \
         --secret-id MyTestSecret \
-        --secret-string "{\"user\":\"diegor\",\"password\":\"VCsdUbPX!bcu]N\"KEnm||:3Bp3$IBOS\"}"  
+        --secret-string "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}"  
 
 Output::
 
@@ -32,7 +32,7 @@ Contents of ``mycreds.json``::
     {
       "engine": "mysql",
       "username": "saanvis",
-      "password": "i29wwX!%9wFV",
+      "password": "EXAMPLE-PASSWORD",
       "host": "my-database-endpoint.us-west-2.rds.amazonaws.com",
       "dbname": "myDatabase",
       "port": "3306"

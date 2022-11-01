@@ -36,6 +36,8 @@ class CreateCluster(Command):
     ARG_TABLE = [
         {'name': 'release-label',
          'help_text': helptext.RELEASE_LABEL},
+        {'name': 'os-release-label',
+         'help_text': helptext.OS_RELEASE_LABEL},
         {'name': 'ami-version',
          'help_text': helptext.AMI_VERSION},
         {'name': 'instance-groups',
@@ -198,6 +200,10 @@ class CreateCluster(Command):
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)
+
+        if parsed_args.os_release_label is not None:
+            emrutils.apply_dict(params, 'OSReleaseLabel',
+                parsed_args.os_release_label)
 
         if parsed_args.log_encryption_kms_key_id is not None:
             emrutils.apply_dict(params, 'LogEncryptionKmsKeyId',
@@ -491,7 +497,7 @@ class CreateCluster(Command):
             bootstrap_actions.append(ba_config)
 
         result = cluster_ba_list + bootstrap_actions
-        if len(result) > 0:
+        if result:
             cluster['BootstrapActions'] = result
 
         return cluster
@@ -513,9 +519,9 @@ class CreateCluster(Command):
             args=args)
 
     def _update_cluster_dict(self, cluster, key, value):
-        if key in cluster.keys():
+        if key in cluster:
             cluster[key] += value
-        elif value is not None and len(value) > 0:
+        elif value:
             cluster[key] = value
         return cluster
 
@@ -548,14 +554,14 @@ class CreateCluster(Command):
             if constants.HBASE not in specified_apps:
                 missing_apps.add(constants.HBASE.title())
 
-        if len(missing_apps) != 0:
+        if missing_apps:
             raise exceptions.MissingApplicationsError(
                 applications=missing_apps)
 
     def _get_missing_applications_for_steps(self, specified_apps, parsed_args):
         allowed_app_steps = set([constants.HIVE, constants.PIG,
                                  constants.IMPALA])
-        missing_apps = set([])
+        missing_apps = set()
         if parsed_args.steps is not None:
             for step in parsed_args.steps:
                 if len(missing_apps) == len(allowed_app_steps):

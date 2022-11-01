@@ -7,6 +7,10 @@ on:
 
 jobs:
   cleanup:
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     name: Stale issue job
     steps:
@@ -18,7 +22,7 @@ jobs:
 
         # These labels are required
         stale-issue-label: closing-soon
-        exempt-issue-labels: automation-exempt, help wanted, bug, confusing-error
+        exempt-issue-labels: automation-exempt, help wanted, bug, confusing-error, community
         response-requested-label: response-requested
 
         # Don't set closed-for-staleness label to skip closing very old issues

@@ -20,4 +20,4 @@ To confirm that the operation succeeded, you can run ``get-operation-detail``. F
 
 The registry for each top-level domain (TLD), such as .com or .org, controls the maximum number of years that you can renew a domain for. To get the maximum renewal period for your domain, see the "Registration and Renewal Period" section for your TLD in `Domains That You Can Register with Amazon Route 53 <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html>`__ in the *Amazon Route 53 Developer Guide*.
 
-For more information, see `Renewing Registration for a Domain <http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-renew.html>`__ in the *Amazon Route 53 Developer Guide*.
+For more information, see `Renewing Registration for a Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-renew.html>`__ in the *Amazon Route 53 Developer Guide*.

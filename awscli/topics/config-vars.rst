@@ -231,7 +231,9 @@ in the AWS CLI config file:
   the initial ``assume-role`` call. This parameter cannot be provided
   alongside ``source_profile``. Valid values are:
 
-  * ``Environment`` to pull source credentials from environment variables.
+  * ``Environment`` to pull source credentials from environment variables. Note
+    this credential source does not work alongside the ``AWS_PROFILE``
+    environment variable.
   * ``Ec2InstanceMetadata`` to use the EC2 instance role as source credentials.
   * ``EcsContainer`` to use the ECS container credentials as the source
     credentials.

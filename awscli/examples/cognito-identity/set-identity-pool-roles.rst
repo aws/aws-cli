@@ -1,4 +1,4 @@
-**To get identity pool roles**
+**To set identity pool roles**
 
 The following ``set-identity-pool-roles``  example sets an identity pool role. ::
 

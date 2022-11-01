@@ -31,10 +31,9 @@ LOG = logging.getLogger(__name__)
 
 DEFAULT_PATH = os.path.expanduser("~/.kube/config")
 
-# Use the endpoint for kubernetes 1.10
-# To get the most recent endpoint we will need to
-# Do a check on the cluster's version number
-API_VERSION = "client.authentication.k8s.io/v1alpha1"
+# At the time EKS no longer supports Kubernetes v1.21 (probably ~Dec 2023),
+# this can be safely changed to default to writing "v1"
+API_VERSION = "client.authentication.k8s.io/v1beta1"
 
 class UpdateKubeconfigCommand(BasicCommand):
     NAME = 'update-kubeconfig'
@@ -289,8 +288,17 @@ class EKSClient(object):
         Return a user entry generated using
         the previously obtained description.
         """
+        cluster_description = self._get_cluster_description()
+        region = cluster_description.get("arn").split(":")[3]
+        outpost_config = cluster_description.get("outpostConfig")
 
-        region = self._get_cluster_description().get("arn").split(":")[3]
+        if outpost_config is None:
+            cluster_identification_parameter = "--cluster-name"
+            cluster_identification_value = self._cluster_name
+        else:
+            # If cluster contains outpostConfig, use id for identification
+            cluster_identification_parameter = "--cluster-id"
+            cluster_identification_value = cluster_description.get("id")
 
         generated_user = OrderedDict([
             ("name", self._get_cluster_description().get("arn", "")),
@@ -303,10 +311,10 @@ class EKSClient(object):
                             region,
                             "eks",
                             "get-token",
-                            "--cluster-name",
-                            self._cluster_name,
+                            cluster_identification_parameter,
+                            cluster_identification_value,
                         ]),
-                    ("command", "aws")
+                    ("command", "aws"),
                 ]))
             ]))
         ])

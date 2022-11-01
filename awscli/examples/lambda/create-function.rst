@@ -4,7 +4,7 @@ The following ``create-function`` example creates a Lambda function named ``my-f
 
     aws lambda create-function \
         --function-name my-function \
-        --runtime nodejs10.x \
+        --runtime nodejs14.x \
         --zip-file fileb://my-function.zip \
         --handler my-function.handler \
         --role arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-tges6bf4
@@ -29,7 +29,7 @@ Output::
         "Timeout": 3,
         "LastModified": "2019-08-14T22:26:11.234+0000",
         "Handler": "my-function.handler",
-        "Runtime": "nodejs10.x",
+        "Runtime": "nodejs14.x",
         "Description": ""
     }
 

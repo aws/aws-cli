@@ -24,7 +24,7 @@ class Comparator(object):
     def __init__(self, file_at_src_and_dest_sync_strategy,
                  file_not_at_dest_sync_strategy,
                  file_not_at_src_sync_strategy):
-        
+
         self._sync_strategy = file_at_src_and_dest_sync_strategy
         self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
         self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
@@ -110,7 +110,7 @@ class Comparator(object):
                     src_take = False
                     dest_take = True
                     should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                    if should_sync:                        
+                    if should_sync:
                         yield dest_file
 
             elif (not src_done) and dest_done:
@@ -122,7 +122,7 @@ class Comparator(object):
             elif src_done and (not dest_done):
                 dest_take = True
                 should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                if should_sync:                        
+                if should_sync:
                     yield dest_file
             else:
                 break

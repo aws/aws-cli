@@ -14,6 +14,7 @@ Output::
             "startTime": "2020-05-05T21:55:38Z",
             "state": "LIVE",
             "health": "HEALTHY",
+            "streamId": "st-ABCDEfghij01234KLMN5678",
             "viewerCount": 1
         }
     }

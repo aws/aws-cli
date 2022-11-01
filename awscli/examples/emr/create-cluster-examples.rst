@@ -77,7 +77,7 @@ The following ``create-cluster`` example creates a cluster instance based on the
 
 **Example 8: To customize application configurations**
 
-The following examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
+The following examples use the ``--configurations`` parameter to specify a JSON configuration file that contains application customizations for Hadoop. For more information, see `Configuring Applications <https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html>`__ in the *Amazon EMR Release Guide*.
 
 Contents of ``configurations.json``::
 
@@ -138,7 +138,7 @@ The following ``create-cluster`` example uses ``--auto-terminate`` to specify th
 
 **Example 11: To specify cluster configuration details such as the Amazon EC2 key pair, network configuration, and security groups**
 
-The following ``create-cluster`` example creates a cluster with the Amazon EC2 key pair named ``myKey`` and a customized instance profile named ``myProfile``. Key pairs are used to authorize SSH connections to cluster nodes, most often the master node. For more information, see `Use an Amazon EC2 Key Pair for SSH Credentials <http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-access-ssh.html>`__ in the *Amazon EMR Management Guide*. ::
+The following ``create-cluster`` example creates a cluster with the Amazon EC2 key pair named ``myKey`` and a customized instance profile named ``myProfile``. Key pairs are used to authorize SSH connections to cluster nodes, most often the master node. For more information, see `Use an Amazon EC2 Key Pair for SSH Credentials <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-access-ssh.html>`__ in the *Amazon EMR Management Guide*. ::
 
     aws emr create-cluster \
         --ec2-attributes KeyName=myKey,InstanceProfile=myProfile \
@@ -276,7 +276,7 @@ The following example creates a cluster with multiple EBS volumes attached to EC
 
 **Example 16: To create a cluster with an automatic scaling policy**
 
-You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
+You can attach automatic scaling policies to core and task instance groups using Amazon EMR version 4.0 and later. The automatic scaling policy dynamically adds and removes EC2 instances in response to an Amazon CloudWatch metric. For more information, see `Using Automatic Scaling in Amazon EMR` <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-automatic-scaling.html>`_ in the *Amazon EMR Management Guide*.
 
 When attaching an automatic scaling policy, you must also specify the default role for automatic scaling using ``--auto-scaling-role EMR_AutoScaling_DefaultRole``.
 
@@ -293,7 +293,7 @@ The following example uses a JSON file, ``instancegroupconfig.json``, to specify
         --release-label emr-5.9.0 \
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
-        --instance-groups s3://mybucket/instancegroupconfig.json \
+        --instance-groups file://myfolder/instancegroupconfig.json \
         --auto-scaling-role EMR_AutoScaling_DefaultRole
 
 Contents of ``instancegroupconfig.json``::
@@ -524,3 +524,12 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --auto-termination-policy IdleTimeout=100
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--os-release-label" to define an Amazon Linux release for cluster launch ::
+
+    aws emr create-cluster \
+        --release-label emr-6.6.0 \
+        --os-release-label 2.0.20220406.1 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large

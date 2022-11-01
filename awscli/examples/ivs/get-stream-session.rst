@@ -1,10 +1,10 @@
 **To get metadata for a specified stream**
 
-The following ``get-stream-session`` example gets the metadata configuration for the specified channel ARN (Amazon Resource Name) and the specified stream; if streamId is not provided, the most recent stream for the channel is selected. ::
+The following ``get-stream-session`` example gets the metadata configuration for the specified channel ARN (Amazon Resource Name) and the specified stream; if ``streamId`` is not provided, the most recent stream for the channel is selected. ::
 
     aws ivs get-stream-session \
-        --channelArn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
-        --streamId "mystream"
+        --channel-arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
+        --stream-id "mystream"
 
 Output::
 
@@ -52,6 +52,7 @@ Output::
                     }
                 },
                 "name": "test-recording-config",
+                "recordingReconnectWindowSeconds": 60,
                 "state": "ACTIVE",
                 "tags": {
                     "rkey1" : "rvalue1"
@@ -72,5 +73,5 @@ Output::
             ]
         }
     }
-
+    
 For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/userguide/GSIVS-create-channel.html>`__ in the *Amazon Interactive Video Service User Guide*.

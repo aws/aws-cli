@@ -13,8 +13,8 @@ Below are common questions regarding the use of Amazon S3 in the AWS CLI.
 Q: Does the AWS CLI validate checksums?
 ---------------------------------------
 
-The AWS CLI will perform checksum validation for uploading and downloading
-files in specific scenarios.
+The AWS CLI will perform checksum validation for uploading files in 
+specific scenarios.
 
 Upload
 ~~~~~~
@@ -42,22 +42,3 @@ the high level ``aws s3`` commands that perform uploads
 commands including ``aws s3api put-object`` and ``aws s3api upload-part``.
 
 If you want to verify the integrity of an object during upload, see `How can I check the integrity of an object uploaded to Amazon S3? <https://aws.amazon.com/premiumsupport/knowledge-center/data-integrity-s3/>`_ in the *AWS Knowledge Center*.
-
-Download
-~~~~~~~~
-
-The AWS CLI will attempt to verify the checksum of downloads when possible,
-based on the ``ETag`` header returned from a ``GetObject`` request that's
-performed whenever the AWS CLI downloads objects from S3.  If the calculated
-MD5 checksum does not match the expected checksum, the file is deleted
-and the download is retried.  This process is retried up to 3 times.
-If a downloads fails, the AWS CLI will exit with a non zero RC.
-See ``aws help return-codes`` for more information.
-
-There are several conditions where the CLI is *not* able to verify
-checksums on downloads:
-
-* If the object was uploaded via multipart uploads
-* If the object was uploaded using server side encryption with KMS
-* If the object was uploaded using a customer provided encryption key
-* If the object is downloaded using range ``GetObject`` requests

@@ -33,7 +33,7 @@ The following ``create-vpc-endpoint`` example creates an interface VPC endpoint 
         --vpc-id vpc-1a2b3c4d \
         --vpc-endpoint-type Interface \
         --service-name com.amazonaws.us-east-1.s3 \
-        --subnet-id subnet-7b16de0c \
+        --subnet-ids subnet-7b16de0c \
         --security-group-id sg-1a2b3c4d \
         --tag-specifications ResourceType=vpc-endpoint,Tags=[{Key=service,Value=S3}]
 
@@ -92,7 +92,7 @@ The following ``create-vpc-endpoint`` example creates a Gateway Load Balancer en
         --service-name com.amazonaws.vpce.us-east-1.vpce-svc-123123a1c43abc123 \
         --vpc-endpoint-type GatewayLoadBalancer \
         --vpc-id vpc-111122223333aabbc \
-        --subnet-id subnet-0011aabbcc2233445
+        --subnet-ids subnet-0011aabbcc2233445
 
 Output::
 

@@ -98,19 +98,16 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
 
 
 def _find_quote_char_in_part(part):
-    if '"' not in part and "'" not in part:
-        return
+    """
+    Returns a single or double quote character, whichever appears first in the
+    given string. None is returned if the given string doesn't have a single or
+    double quote character.
+    """
     quote_char = None
-    double_quote = part.find('"')
-    single_quote = part.find("'")
-    if double_quote >= 0 and single_quote == -1:
-        quote_char = '"'
-    elif single_quote >= 0 and double_quote == -1:
-        quote_char = "'"
-    elif double_quote < single_quote:
-        quote_char = '"'
-    elif single_quote < double_quote:
-        quote_char = "'"
+    for ch in part:
+        if ch in ('"', "'"):
+            quote_char = ch
+            break
     return quote_char
 
 
@@ -154,6 +151,17 @@ def is_document_type_container(shape):
         if shape.type_name not in ['list', 'map']:
             return False
     return True
+
+
+def is_streaming_blob_type(shape):
+    """Check if the shape is a streaming blob type."""
+    return (shape and shape.type_name == 'blob' and
+            shape.serialization.get('streaming', False))
+
+
+def is_tagged_union_type(shape):
+    """Check if the shape is a tagged union structure."""
+    return getattr(shape, 'is_tagged_union', False)
 
 
 def operation_uses_document_types(operation_model):

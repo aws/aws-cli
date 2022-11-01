@@ -1,63 +1,58 @@
-**To describe your WorkSpace directories**
+**To describe a registered directory**
 
-This example describes all of your WorkSpace directories.
+The following ``describe-workspace-directories`` example describes the specified registered directory. ::
 
-Command::
-
-  aws workspaces describe-workspace-directories
+    aws workspaces describe-workspace-directories \
+        --directory-ids d-926722edaf
 
 Output::
 
-  {
-    "Directories" : [
-      {
-        "CustomerUserName" : "Administrator",
-        "DirectoryId" : "d-906735683d",
-        "DirectoryName" : "example.awsapps.com",
-        "SubnetIds" : [
-          "subnet-af0e2a87",
-          "subnet-657e7a23"
-        ],
-        "WorkspaceCreationProperties" :
-        {
-          "EnableInternetAccess" : false,
-          "EnableWorkDocs" : false,
-          "UserEnabledAsLocalAdministrator" : true
-        },
-        "Alias" : "example",
-        "State" : "REGISTERED",
-        "DirectoryType" : "SIMPLE_AD",
-        "RegistrationCode" : "SLiad+S393HD",
-        "IamRoleId" : "arn:aws:iam::972506530580:role/workspaces_DefaultRole",
-        "DnsIpAddresses" : [
-          "10.0.2.190",
-          "10.0.1.202"
-        ],
-        "WorkspaceSecurityGroupId" : "sg-6e40640b"
-      },
-      {
-        "CustomerUserName" : "Administrator",
-        "DirectoryId" : "d-906732325d",
-        "DirectoryName" : "exampledomain.com",
-        "SubnetIds" : [
-          "subnet-775a6531",
-          "subnet-435c036b"
-        ],
-        "WorkspaceCreationProperties" :
-        {
-          "EnableInternetAccess" : false,
-          "EnableWorkDocs" : true,
-          "UserEnabledAsLocalAdministrator" : true
-        },
-        "Alias" : "example-domain",
-        "State" : "REGISTERED",
-        "DirectoryType" : "AD_CONNECTOR",
-        "RegistrationCode" : "SLiad+UBZGNH",
-        "IamRoleId" : "arn:aws:iam::972506530580:role/workspaces_DefaultRole",
-        "DnsIpAddresses" : [
-          "50.0.2.223",
-          "50.0.2.184"
+    {
+        "Directories": [
+            {
+                "DirectoryId": "d-926722edaf",
+                "Alias": "d-926722edaf",
+                "DirectoryName": "example.com",
+                "RegistrationCode": "WSpdx+9RJ8JT",
+                "SubnetIds": [
+                    "subnet-9d19c4c6",
+                    "subnet-500d5819"
+                ],
+                "DnsIpAddresses": [
+                    "172.16.1.140",
+                    "172.16.0.30"
+                ],
+                "CustomerUserName": "Administrator",
+                "IamRoleId": "arn:aws:iam::123456789012:role/workspaces_DefaultRole",
+                "DirectoryType": "SIMPLE_AD",
+                "WorkspaceSecurityGroupId": "sg-0d89e927e5645d7c5",
+                "State": "REGISTERED",
+                "WorkspaceCreationProperties": {
+                    "EnableWorkDocs": false,
+                    "EnableInternetAccess": false,
+                    "UserEnabledAsLocalAdministrator": true,
+                    "EnableMaintenanceMode": true
+                },
+                "WorkspaceAccessProperties": {
+                    "DeviceTypeWindows": "ALLOW",
+                    "DeviceTypeOsx": "ALLOW",
+                    "DeviceTypeWeb": "DENY",
+                    "DeviceTypeIos": "ALLOW",
+                    "DeviceTypeAndroid": "ALLOW",
+                    "DeviceTypeChromeOs": "ALLOW",
+                    "DeviceTypeZeroClient": "ALLOW",
+                    "DeviceTypeLinux": "DENY"
+                },
+                "Tenancy": "SHARED",
+                "SelfservicePermissions": {
+                    "RestartWorkspace": "ENABLED",
+                    "IncreaseVolumeSize": "DISABLED",
+                    "ChangeComputeType": "DISABLED",
+                    "SwitchRunningMode": "DISABLED",
+                    "RebuildWorkspace": "DISABLED"
+                }
+            }
         ]
-      }
-    ]
-  }
+    }
+
+For more information, see `Manage directories for WorkSpaces <https://docs.aws.amazon.com/workspaces/latest/adminguide/manage-workspaces-directory.html>`__ in the *Amazon WorkSpaces Administration Guide*.

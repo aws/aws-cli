@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.0
+======
+
+* api-change:``rds``: Relational Database Service - This release adds support for configuring Storage Throughput on RDS database instances.
+* api-change:``textract``: Add ocr results in AnalyzeIDResponse as blocks
+* feature:Endpoints: Migrate all services to use new AWS Endpoint Resolution framework
+
+
 1.26.5
 ======
 

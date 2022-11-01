@@ -336,7 +336,7 @@ class ClientArgsCreator(object):
         service_name_raw = service_model.endpoint_prefix
         # Maintain complex logic for s3 and sts endpoints for backwards
         # compatibility.
-        if service_name_raw in ['s3', 'sts']:
+        if service_name_raw in ['s3', 'sts'] or region_name is None:
             eprv2_region_name = endpoint_region_name
         else:
             eprv2_region_name = region_name

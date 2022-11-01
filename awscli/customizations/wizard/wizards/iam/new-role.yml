@@ -26,6 +26,8 @@ plan:
           # There's also Web Identity and SAML but we're skipping that.
           - display: AWS Service
             actual_value: aws_service
+          - display: This AWS Account
+            actual_value: this_aws_account
           - display: Another AWS Account
             actual_value: aws_account
       service_name:
@@ -49,6 +51,19 @@ plan:
         condition:
           variable: role_type
           equals: aws_account
+      this_account_id:
+        # We need a separate condition here because
+        # the key for the value is associated with a single set of steps
+        # to populate this value.  Ideally we could have an "output_var"
+        # that lets us populate other vars so could have a single "account_id"
+        # that could be populated by any number of different values.
+        type: apicall
+        condition:
+          variable: role_type
+          equals: this_aws_account
+        operation: sts.GetCallerIdentity
+        params: {}
+        query: Account
       trust_policy:
         type: template
         value: |
@@ -63,6 +78,9 @@ plan:
                         {% endif %}
                         {% if {role_type} == aws_account %}
                         "AWS": "arn:aws:iam::{account_id}:root"
+                        {% endif %}
+                        {% if {role_type} == this_aws_account %}
+                        "AWS": "arn:aws:iam::{this_account_id}:root"
                         {% endif %}
                     }},
                     "Effect": "Allow",
@@ -128,22 +146,52 @@ plan:
       existing_profiles:
         type: sharedconfig
         operation: ListProfiles
+      source_type:
+        type: prompt
+        description: Select the credential source
+        condition:
+          variable: wants_config_profile
+          equals: yes
+        choices:
+          - display: Source Profile
+            actual_value: wants_source_profile
+          - display: Environment Variables
+            actual_value: wants_env_source
+          - display: EC2 Instance Metadata
+            actual_value: wants_imds_source
+          - display: ECS Container Task Role
+            actual_value: wants_ecs_source
       source_profile:
         type: prompt
         description: Name of the source profile
         choices: existing_profiles
         condition:
-          variable: wants_config_profile
-          equals: yes
+          variable: source_type
+          equals: wants_source_profile
   preview:
     shortname: Preview
     description: Preview results
     values:
+      cli_config_cmd:
+        type: template
+        value: |
+          {% if {source_type} == wants_source_profile %}
+          aws configure set source_profile {source_profile} --profile {new_profile_name}
+          {% endif %}
+          {% if {source_type} == wants_env_source %}
+          aws configure set credential_source Environment --profile {new_profile_name}
+          {% endif %}
+          {% if {source_type} == wants_imds_source %}
+          aws configure set credential_source Ec2InstanceMetadata --profile {new_profile_name}
+          {% endif %}
+          {% if {source_type} == wants_ecs_source %}
+          aws configure set credential_source EcsContainer --profile {new_profile_name}
+          {% endif %}
       preview_cli_command_value:
         type: template
         value: |
           aws iam create-role \
-            --role-name '{role_name}' \
+            --role-name "{role_name}" \
             --description '{role_description}' \
             --assume-role-policy-document \
             '{{"Version": "2008-10-17","Statement":
@@ -152,16 +200,18 @@ plan:
              {{"Service": "{service_name}.amazonaws.com"}}{% endif %}
              {% if {role_type} == aws_account %}
              {{"AWS": "arn:aws:iam::{account_id}:root"}}{% endif %}
+             {% if {role_type} == this_aws_account %}
+             {{"AWS": "arn:aws:iam::{this_account_id}:root"}}{% endif %}
           ,"Effect": "Allow","Sid": ""}}]}}'
 
           aws iam attach-role-policy \
-            --role-name '{role_name}' \
+            --role-name "{role_name}" \
             --policy-arn '{policy_arn}'
 
           {% if {wants_config_profile} == yes %}
-          aws configure set source_profile {source_profile} --profile {new_profile_name}
+          {cli_config_cmd}
 
-          role_arn=$(aws iam get-role --role-name '{role_name}' \
+          role_arn=$(aws iam get-role --role-name "{role_name}" \
             --query Role.Arn --output text)
 
           aws configure set role_arn "$role_arn" --profile {new_profile_name}
@@ -189,6 +239,10 @@ plan:
                       {% if {role_type} == aws_account %}
                         AWS:
                           - arn:aws:iam::{account_id}:root
+                      {% endif %}
+                      {% if {role_type} == this_aws_account %}
+                        AWS:
+                          - arn:aws:iam::{this_account_id}:root
                       {% endif %}
                       Action:
                         - 'sts:AssumeRole'

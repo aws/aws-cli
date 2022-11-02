@@ -969,7 +969,7 @@
         {"shape":"CFNRegistryException"},
         {"shape":"TypeNotFoundException"}
       ],
-      "documentation":"<p>Tests a registered extension to make sure it meets all necessary requirements for being published in the CloudFormation registry.</p> <ul> <li> <p>For resource types, this includes passing all contracts tests defined for the type.</p> </li> <li> <p>For modules, this includes determining if the module's model meets all necessary requirements.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html#publish-extension-testing\">Testing your public extension prior to publishing</a> in the <i>CloudFormation CLI User Guide</i>.</p> <p>If you don't specify a version, CloudFormation uses the default version of the extension in your account and region for testing.</p> <p>To perform testing, CloudFormation assumes the execution role specified when the type was registered. For more information, see <a href=\"AWSCloudFormation/latest/APIReference/API_RegisterType.html\">RegisterType</a>.</p> <p>Once you've initiated testing on an extension using <code>TestType</code>, you can use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DescribeType.html\">DescribeType</a> to monitor the current test status and test status description for the extension.</p> <p>An extension must have a test status of <code>PASSED</code> before it can be published. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-publish.html\">Publishing extensions to make them available for public use</a> in the <i>CloudFormation CLI User Guide</i>.</p>",
+      "documentation":"<p>Tests a registered extension to make sure it meets all necessary requirements for being published in the CloudFormation registry.</p> <ul> <li> <p>For resource types, this includes passing all contracts tests defined for the type.</p> </li> <li> <p>For modules, this includes determining if the module's model meets all necessary requirements.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html#publish-extension-testing\">Testing your public extension prior to publishing</a> in the <i>CloudFormation CLI User Guide</i>.</p> <p>If you don't specify a version, CloudFormation uses the default version of the extension in your account and region for testing.</p> <p>To perform testing, CloudFormation assumes the execution role specified when the type was registered. For more information, see <a href=\"AWSCloudFormation/latest/APIReference/API_RegisterType.html\">RegisterType</a>.</p> <p>Once you've initiated testing on an extension using <code>TestType</code>, you can pass the returned <code>TypeVersionArn</code> into <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DescribeType.html\">DescribeType</a> to monitor the current test status and test status description for the extension.</p> <p>An extension must have a test status of <code>PASSED</code> before it can be published. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-publish.html\">Publishing extensions to make them available for public use</a> in the <i>CloudFormation CLI User Guide</i>.</p>",
       "idempotent":true
     },
     "UpdateStack":{
@@ -2076,7 +2076,7 @@
         },
         "AccountFilterType":{
           "shape":"AccountFilterType",
-          "documentation":"<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: (default value) StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>"
+          "documentation":"<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>"
         }
       },
       "documentation":"<p>[Service-managed permissions] The Organizations accounts to which StackSets deploys. StackSets doesn't deploy stack instances to the organization management account, even if the organization management account is in your organization or in an OU in your organization.</p> <p>For update operations, you can specify either <code>Accounts</code> or <code>OrganizationalUnitIds</code>. For create and delete operations, specify <code>OrganizationalUnitIds</code>.</p>"
@@ -3441,7 +3441,7 @@
         },
         "Filters":{
           "shape":"StackInstanceFilters",
-          "documentation":"<p>The status that stack instances are filtered by.</p>"
+          "documentation":"<p>The filter to apply to stack instances</p>"
         },
         "StackInstanceAccount":{
           "shape":"Account",
@@ -3525,6 +3525,10 @@
         "CallAs":{
           "shape":"CallAs",
           "documentation":"<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization's management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html\">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>"
+        },
+        "Filters":{
+          "shape":"OperationResultFilters",
+          "documentation":"<p>The filter to apply to operation results.</p>"
         }
       }
     },
@@ -3921,6 +3925,35 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "OperationResultFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OperationResultFilterName",
+          "documentation":"<p>The type of filter to apply.</p>"
+        },
+        "Values":{
+          "shape":"OperationResultFilterValues",
+          "documentation":"<p>The value to filter by.</p>"
+        }
+      },
+      "documentation":"<p>The status that operation results are filtered by.</p>"
+    },
+    "OperationResultFilterName":{
+      "type":"string",
+      "enum":["OPERATION_RESULT_STATUS"]
+    },
+    "OperationResultFilterValues":{
+      "type":"string",
+      "max":9,
+      "min":6,
+      "pattern":"^\\S{6,9}$"
+    },
+    "OperationResultFilters":{
+      "type":"list",
+      "member":{"shape":"OperationResultFilter"},
+      "max":1
     },
     "OperationStatus":{
       "type":"string",
@@ -5116,6 +5149,10 @@
         "LastDriftCheckTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>Most recent time when CloudFormation performed a drift detection operation on the stack instance. This value will be <code>NULL</code> for any stack instance on which drift detection hasn't yet been performed.</p>"
+        },
+        "LastOperationId":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The last unique ID of a StackSet operation performed on a stack instance.</p>"
         }
       },
       "documentation":"<p>An CloudFormation stack, in a specific account and Region, that's part of a stack set operation. A stack instance is a reference to an attempted or actual stack in a given account within a given Region. A stack instance can exist without a stack—for example, if the stack couldn't be created for some reason. A stack instance is associated with only one stack set. Each stack instance contains the ID of its associated stack set, in addition to the ID of the actual stack and the stack status.</p>"
@@ -5153,21 +5190,25 @@
           "documentation":"<p>The status to filter by.</p>"
         }
       },
-      "documentation":"<p>The status that stack instances are filtered by.</p>"
+      "documentation":"<p>The filter to apply to stack instances</p>"
     },
     "StackInstanceFilterName":{
       "type":"string",
-      "enum":["DETAILED_STATUS"]
+      "enum":[
+        "DETAILED_STATUS",
+        "LAST_OPERATION_ID"
+      ]
     },
     "StackInstanceFilterValues":{
       "type":"string",
-      "max":10,
-      "min":6
+      "max":128,
+      "min":1,
+      "pattern":"^\\S{1,128}$"
     },
     "StackInstanceFilters":{
       "type":"list",
       "member":{"shape":"StackInstanceFilter"},
-      "max":1
+      "max":2
     },
     "StackInstanceNotFoundException":{
       "type":"structure",
@@ -5235,6 +5276,10 @@
         "LastDriftCheckTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>Most recent time when CloudFormation performed a drift detection operation on the stack instance. This value will be <code>NULL</code> for any stack instance on which drift detection hasn't yet been performed.</p>"
+        },
+        "LastOperationId":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The last unique ID of a StackSet operation performed on a stack instance.</p>"
         }
       },
       "documentation":"<p>The structure that contains summary information about a stack instance.</p>"
@@ -5762,6 +5807,10 @@
         "StatusReason":{
           "shape":"StackSetOperationStatusReason",
           "documentation":"<p>The status of the operation in details.</p>"
+        },
+        "StatusDetails":{
+          "shape":"StackSetOperationStatusDetails",
+          "documentation":"<p>Detailed information about the StackSet operation.</p>"
         }
       },
       "documentation":"<p>The structure that contains information about a stack set operation.</p>"
@@ -5860,6 +5909,16 @@
         "QUEUED"
       ]
     },
+    "StackSetOperationStatusDetails":{
+      "type":"structure",
+      "members":{
+        "FailedStackInstancesCount":{
+          "shape":"FailedStackInstancesCount",
+          "documentation":"<p>The number of stack instances for which the StackSet operation failed.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about the StackSet operation.</p>"
+    },
     "StackSetOperationStatusReason":{"type":"string"},
     "StackSetOperationSummaries":{
       "type":"list",
@@ -5891,7 +5950,12 @@
         "StatusReason":{
           "shape":"StackSetOperationStatusReason",
           "documentation":"<p>The status of the operation in details.</p>"
-        }
+        },
+        "StatusDetails":{
+          "shape":"StackSetOperationStatusDetails",
+          "documentation":"<p>Detailed information about the stack set operation.</p>"
+        },
+        "OperationPreferences":{"shape":"StackSetOperationPreferences"}
       },
       "documentation":"<p>The structures that contain summary information about the specified operation.</p>"
     },

@@ -103,6 +103,22 @@
       ],
       "documentation":"<p>Create an App Runner VPC connector resource. App Runner requires this resource when you want to associate your App Runner service to a custom Amazon Virtual Private Cloud (Amazon VPC).</p>"
     },
+    "CreateVpcIngressConnection":{
+      "name":"CreateVpcIngressConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateVpcIngressConnectionRequest"},
+      "output":{"shape":"CreateVpcIngressConnectionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidStateException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Create an App Runner VPC Ingress Connection resource. App Runner requires this resource when you want to associate your App Runner service with an Amazon VPC endpoint.</p>"
+    },
     "DeleteAutoScalingConfiguration":{
       "name":"DeleteAutoScalingConfiguration",
       "http":{
@@ -162,7 +178,7 @@
         {"shape":"InvalidStateException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Delete an App Runner service.</p> <p>This is an asynchronous operation. On a successful call, you can use the returned <code>OperationId</code> and the <a>ListOperations</a> call to track the operation's progress.</p>"
+      "documentation":"<p>Delete an App Runner service.</p> <p>This is an asynchronous operation. On a successful call, you can use the returned <code>OperationId</code> and the <a>ListOperations</a> call to track the operation's progress.</p> <note> <p>Make sure that you don't have any active VPCIngressConnections associated with the service you want to delete. </p> </note>"
     },
     "DeleteVpcConnector":{
       "name":"DeleteVpcConnector",
@@ -178,6 +194,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Delete an App Runner VPC connector resource. You can't delete a connector that's used by one or more App Runner services.</p>"
+    },
+    "DeleteVpcIngressConnection":{
+      "name":"DeleteVpcIngressConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteVpcIngressConnectionRequest"},
+      "output":{"shape":"DeleteVpcIngressConnectionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Delete an App Runner VPC Ingress Connection resource that's associated with an App Runner service. The VPC Ingress Connection must be in one of the following states to be deleted: </p> <ul> <li> <p> <code>AVAILABLE</code> </p> </li> <li> <p> <code>FAILED_CREATION</code> </p> </li> <li> <p> <code>FAILED_UPDATE</code> </p> </li> <li> <p> <code>FAILED_DELETION</code> </p> </li> </ul>"
     },
     "DescribeAutoScalingConfiguration":{
       "name":"DescribeAutoScalingConfiguration",
@@ -253,6 +285,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Return a description of an App Runner VPC connector resource.</p>"
+    },
+    "DescribeVpcIngressConnection":{
+      "name":"DescribeVpcIngressConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeVpcIngressConnectionRequest"},
+      "output":{"shape":"DescribeVpcIngressConnectionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Return a full description of an App Runner VPC Ingress Connection resource.</p>"
     },
     "DisassociateCustomDomain":{
       "name":"DisassociateCustomDomain",
@@ -371,6 +418,20 @@
       ],
       "documentation":"<p>Returns a list of App Runner VPC connectors in your Amazon Web Services account.</p>"
     },
+    "ListVpcIngressConnections":{
+      "name":"ListVpcIngressConnections",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListVpcIngressConnectionsRequest"},
+      "output":{"shape":"ListVpcIngressConnectionsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<p>Return a list of App Runner VPC Ingress Connections in your Amazon Web Services account.</p>"
+    },
     "PauseService":{
       "name":"PauseService",
       "http":{
@@ -465,6 +526,22 @@
         {"shape":"InternalServiceErrorException"}
       ],
       "documentation":"<p>Update an App Runner service. You can update the source configuration and instance configuration of the service. You can also update the ARN of the auto scaling configuration resource that's associated with the service. However, you can't change the name or the encryption configuration of the service. These can be set only when you create the service.</p> <p>To update the tags applied to your service, use the separate actions <a>TagResource</a> and <a>UntagResource</a>.</p> <p>This is an asynchronous operation. On a successful call, you can use the returned <code>OperationId</code> and the <a>ListOperations</a> call to track the operation's progress.</p>"
+    },
+    "UpdateVpcIngressConnection":{
+      "name":"UpdateVpcIngressConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateVpcIngressConnectionRequest"},
+      "output":{"shape":"UpdateVpcIngressConnectionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidStateException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<p>Update an existing App Runner VPC Ingress Connection resource. The VPC Ingress Connection must be in one of the following states to be updated:</p> <ul> <li> <p> AVAILABLE </p> </li> <li> <p> FAILED_CREATION </p> </li> <li> <p> FAILED_UPDATE </p> </li> </ul>"
     }
   },
   "shapes":{
@@ -515,7 +592,8 @@
       "required":[
         "DNSTarget",
         "ServiceArn",
-        "CustomDomain"
+        "CustomDomain",
+        "VpcDNSTargets"
       ],
       "members":{
         "DNSTarget":{
@@ -529,6 +607,10 @@
         "CustomDomain":{
           "shape":"CustomDomain",
           "documentation":"<p>A description of the domain name that's being associated.</p>"
+        },
+        "VpcDNSTargets":{
+          "shape":"VpcDNSTargetList",
+          "documentation":"<p>DNS Target records for the custom domains of this Amazon VPC. </p>"
         }
       }
     },
@@ -1007,6 +1089,42 @@
         }
       }
     },
+    "CreateVpcIngressConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceArn",
+        "VpcIngressConnectionName",
+        "IngressVpcConfiguration"
+      ],
+      "members":{
+        "ServiceArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for this App Runner service that is used to create the VPC Ingress Connection resource.</p>"
+        },
+        "VpcIngressConnectionName":{
+          "shape":"VpcIngressConnectionName",
+          "documentation":"<p>A name for the VPC Ingress Connection resource. It must be unique across all the active VPC Ingress Connections in your Amazon Web Services account in the Amazon Web Services Region. </p>"
+        },
+        "IngressVpcConfiguration":{
+          "shape":"IngressVpcConfiguration",
+          "documentation":"<p>Specifications for the customer’s Amazon VPC and the related Amazon Web Services PrivateLink VPC endpoint that are used to create the VPC Ingress Connection resource.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An optional list of metadata items that you can associate with the VPC Ingress Connection resource. A tag is a key-value pair.</p>"
+        }
+      }
+    },
+    "CreateVpcIngressConnectionResponse":{
+      "type":"structure",
+      "required":["VpcIngressConnection"],
+      "members":{
+        "VpcIngressConnection":{
+          "shape":"VpcIngressConnection",
+          "documentation":"<p>A description of the App Runner VPC Ingress Connection resource that's created by this request. </p>"
+        }
+      }
+    },
     "CustomDomain":{
       "type":"structure",
       "required":[
@@ -1049,6 +1167,12 @@
     "CustomDomainList":{
       "type":"list",
       "member":{"shape":"CustomDomain"}
+    },
+    "CustomerAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
     },
     "DeleteAutoScalingConfigurationRequest":{
       "type":"structure",
@@ -1156,6 +1280,26 @@
         }
       }
     },
+    "DeleteVpcIngressConnectionRequest":{
+      "type":"structure",
+      "required":["VpcIngressConnectionArn"],
+      "members":{
+        "VpcIngressConnectionArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner VPC Ingress Connection that you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteVpcIngressConnectionResponse":{
+      "type":"structure",
+      "required":["VpcIngressConnection"],
+      "members":{
+        "VpcIngressConnection":{
+          "shape":"VpcIngressConnection",
+          "documentation":"<p>A description of the App Runner VPC Ingress Connection that this request just deleted.</p>"
+        }
+      }
+    },
     "DescribeAutoScalingConfigurationRequest":{
       "type":"structure",
       "required":["AutoScalingConfigurationArn"],
@@ -1204,7 +1348,8 @@
       "required":[
         "DNSTarget",
         "ServiceArn",
-        "CustomDomains"
+        "CustomDomains",
+        "VpcDNSTargets"
       ],
       "members":{
         "DNSTarget":{
@@ -1218,6 +1363,10 @@
         "CustomDomains":{
           "shape":"CustomDomainList",
           "documentation":"<p>A list of descriptions of custom domain names that are associated with the service. In a paginated request, the request returns up to <code>MaxResults</code> records per call.</p>"
+        },
+        "VpcDNSTargets":{
+          "shape":"VpcDNSTargetList",
+          "documentation":"<p>DNS Target records for the custom domains of this Amazon VPC. </p>"
         },
         "NextToken":{
           "shape":"String",
@@ -1285,6 +1434,26 @@
         }
       }
     },
+    "DescribeVpcIngressConnectionRequest":{
+      "type":"structure",
+      "required":["VpcIngressConnectionArn"],
+      "members":{
+        "VpcIngressConnectionArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner VPC Ingress Connection that you want a description for.</p>"
+        }
+      }
+    },
+    "DescribeVpcIngressConnectionResponse":{
+      "type":"structure",
+      "required":["VpcIngressConnection"],
+      "members":{
+        "VpcIngressConnection":{
+          "shape":"VpcIngressConnection",
+          "documentation":"<p>A description of the App Runner VPC Ingress Connection that you specified in this request.</p>"
+        }
+      }
+    },
     "DisassociateCustomDomainRequest":{
       "type":"structure",
       "required":[
@@ -1307,7 +1476,8 @@
       "required":[
         "DNSTarget",
         "ServiceArn",
-        "CustomDomain"
+        "CustomDomain",
+        "VpcDNSTargets"
       ],
       "members":{
         "DNSTarget":{
@@ -1321,6 +1491,10 @@
         "CustomDomain":{
           "shape":"CustomDomain",
           "documentation":"<p>A description of the domain name that's being disassociated.</p>"
+        },
+        "VpcDNSTargets":{
+          "shape":"VpcDNSTargetList",
+          "documentation":"<p>DNS Target records for the custom domains of this Amazon VPC. </p>"
         }
       }
     },
@@ -1479,6 +1653,30 @@
         "ECR",
         "ECR_PUBLIC"
       ]
+    },
+    "IngressConfiguration":{
+      "type":"structure",
+      "members":{
+        "IsPubliclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether your App Runner service is publicly accessible. To make the service publicly accessible set it to <code>True</code>. To make the service privately accessible, from only within an Amazon VPC set it to <code>False</code>. </p>"
+        }
+      },
+      "documentation":"<p>Network configuration settings for inbound network traffic.</p>"
+    },
+    "IngressVpcConfiguration":{
+      "type":"structure",
+      "members":{
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC that is used for the VPC endpoint.</p>"
+        },
+        "VpcEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC endpoint that your App Runner service connects to. </p>"
+        }
+      },
+      "documentation":"<p>The configuration of your VPC and the associated VPC endpoint. The VPC endpoint is an Amazon Web Services PrivateLink resource that allows access to your App Runner services from within an Amazon VPC.</p>"
     },
     "InstanceConfiguration":{
       "type":"structure",
@@ -1740,6 +1938,51 @@
         }
       }
     },
+    "ListVpcIngressConnectionsFilter":{
+      "type":"structure",
+      "members":{
+        "ServiceArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a service to filter by. </p>"
+        },
+        "VpcEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of a VPC Endpoint to filter by. </p>"
+        }
+      },
+      "documentation":"<p>Returns a list of VPC Ingress Connections based on the filter provided. It can return either <code>ServiceArn</code> or <code>VpcEndpointId</code>, or both.</p>"
+    },
+    "ListVpcIngressConnectionsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"ListVpcIngressConnectionsFilter",
+          "documentation":"<p>The VPC Ingress Connections to be listed based on either the Service Arn or Vpc Endpoint Id, or both.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones that are specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>"
+        }
+      }
+    },
+    "ListVpcIngressConnectionsResponse":{
+      "type":"structure",
+      "required":["VpcIngressConnectionSummaryList"],
+      "members":{
+        "VpcIngressConnectionSummaryList":{
+          "shape":"VpcIngressConnectionSummaryList",
+          "documentation":"<p>A list of summary information records for VPC Ingress Connections. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "max":100,
@@ -1757,6 +2000,10 @@
         "EgressConfiguration":{
           "shape":"EgressConfiguration",
           "documentation":"<p>Network configuration settings for outbound message traffic.</p>"
+        },
+        "IngressConfiguration":{
+          "shape":"IngressConfiguration",
+          "documentation":"<p>Network configuration settings for inbound message traffic.</p>"
         }
       },
       "documentation":"<p>Describes configuration settings related to network traffic of an App Runner service. Consists of embedded objects for each configurable network feature.</p>"
@@ -1975,7 +2222,11 @@
         "NODEJS_14",
         "CORRETTO_8",
         "CORRETTO_11",
-        "NODEJS_16"
+        "NODEJS_16",
+        "GO_1",
+        "DOTNET_6",
+        "PHP_81",
+        "RUBY_31"
       ]
     },
     "RuntimeEnvironmentVariables":{
@@ -2003,7 +2254,6 @@
         "ServiceName",
         "ServiceId",
         "ServiceArn",
-        "ServiceUrl",
         "CreatedAt",
         "UpdatedAt",
         "Status",
@@ -2395,6 +2645,33 @@
         }
       }
     },
+    "UpdateVpcIngressConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "VpcIngressConnectionArn",
+        "IngressVpcConfiguration"
+      ],
+      "members":{
+        "VpcIngressConnectionArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (Arn) for the App Runner VPC Ingress Connection resource that you want to update.</p>"
+        },
+        "IngressVpcConfiguration":{
+          "shape":"IngressVpcConfiguration",
+          "documentation":"<p>Specifications for the customer’s Amazon VPC and the related Amazon Web Services PrivateLink VPC endpoint that are used to update the VPC Ingress Connection resource.</p>"
+        }
+      }
+    },
+    "UpdateVpcIngressConnectionResponse":{
+      "type":"structure",
+      "required":["VpcIngressConnection"],
+      "members":{
+        "VpcIngressConnection":{
+          "shape":"VpcIngressConnection",
+          "documentation":"<p>A description of the App Runner VPC Ingress Connection resource that's updated by this request.</p>"
+        }
+      }
+    },
     "VpcConnector":{
       "type":"structure",
       "members":{
@@ -2449,6 +2726,107 @@
     "VpcConnectors":{
       "type":"list",
       "member":{"shape":"VpcConnector"}
+    },
+    "VpcDNSTarget":{
+      "type":"structure",
+      "members":{
+        "VpcIngressConnectionArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC Ingress Connection that is associated with your service.</p>"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon VPC that is associated with the custom domain name of the target DNS.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of your target DNS that is associated with the Amazon VPC.</p>"
+        }
+      },
+      "documentation":"<p>DNS Target record for a custom domain of this Amazon VPC.</p>"
+    },
+    "VpcDNSTargetList":{
+      "type":"list",
+      "member":{"shape":"VpcDNSTarget"}
+    },
+    "VpcIngressConnection":{
+      "type":"structure",
+      "members":{
+        "VpcIngressConnectionArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC Ingress Connection. </p>"
+        },
+        "VpcIngressConnectionName":{
+          "shape":"VpcIngressConnectionName",
+          "documentation":"<p>The customer-provided VPC Ingress Connection name.</p>"
+        },
+        "ServiceArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service associated with the VPC Ingress Connection. </p>"
+        },
+        "Status":{
+          "shape":"VpcIngressConnectionStatus",
+          "documentation":"<p>The current status of the VPC Ingress Connection. The VPC Ingress Connection displays one of the following statuses: <code>AVAILABLE</code>, <code>PENDING_CREATION</code>, <code>PENDING_UPDATE</code>, <code>PENDING_DELETION</code>,<code>FAILED_CREATION</code>, <code>FAILED_UPDATE</code>, <code>FAILED_DELETION</code>, and <code>DELETED</code>.. </p>"
+        },
+        "AccountId":{
+          "shape":"CustomerAccountId",
+          "documentation":"<p>The Account Id you use to create the VPC Ingress Connection resource.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name associated with the VPC Ingress Connection resource.</p>"
+        },
+        "IngressVpcConfiguration":{
+          "shape":"IngressVpcConfiguration",
+          "documentation":"<p>Specifications for the customer’s VPC and related PrivateLink VPC endpoint that are used to associate with the VPC Ingress Connection resource.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the VPC Ingress Connection was created. It's in the Unix time stamp format.</p> <ul> <li> <p> Type: Timestamp </p> </li> <li> <p> Required: Yes </p> </li> </ul>"
+        },
+        "DeletedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the App Runner service was deleted. It's in the Unix time stamp format.</p> <ul> <li> <p> Type: Timestamp </p> </li> <li> <p> Required: No </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The App Runner resource that specifies an App Runner endpoint for incoming traffic. It establishes a connection between a VPC interface endpoint and a App Runner service, to make your App Runner service accessible from only within an Amazon VPC.</p>"
+    },
+    "VpcIngressConnectionName":{
+      "type":"string",
+      "max":40,
+      "min":4,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-_]{3,39}"
+    },
+    "VpcIngressConnectionStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "PENDING_CREATION",
+        "PENDING_UPDATE",
+        "PENDING_DELETION",
+        "FAILED_CREATION",
+        "FAILED_UPDATE",
+        "FAILED_DELETION",
+        "DELETED"
+      ]
+    },
+    "VpcIngressConnectionSummary":{
+      "type":"structure",
+      "members":{
+        "VpcIngressConnectionArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC Ingress Connection. </p>"
+        },
+        "ServiceArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service associated with the VPC Ingress Connection. </p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about an VPC Ingress Connection, which includes its VPC Ingress Connection ARN and its associated Service ARN.</p>"
+    },
+    "VpcIngressConnectionSummaryList":{
+      "type":"list",
+      "member":{"shape":"VpcIngressConnectionSummary"}
     }
   },
   "documentation":"<fullname>App Runner</fullname> <p>App Runner is an application service that provides a fast, simple, and cost-effective way to go directly from an existing container image or source code to a running service in the Amazon Web Services Cloud in seconds. You don't need to learn new technologies, decide which compute service to use, or understand how to provision and configure Amazon Web Services resources.</p> <p>App Runner connects directly to your container registry or source code repository. It provides an automatic delivery pipeline with fully managed operations, high performance, scalability, and security.</p> <p>For more information about App Runner, see the <a href=\"https://docs.aws.amazon.com/apprunner/latest/dg/\">App Runner Developer Guide</a>. For release information, see the <a href=\"https://docs.aws.amazon.com/apprunner/latest/relnotes/\">App Runner Release Notes</a>.</p> <p> To install the Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools that you can use to access the API, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> <p> <b>Endpoints</b> </p> <p>For a list of Region-specific endpoints that App Runner supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/apprunner.html\">App Runner endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>"

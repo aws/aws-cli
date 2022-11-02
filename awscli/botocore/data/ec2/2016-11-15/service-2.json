@@ -12,6 +12,16 @@
     "xmlNamespace":"http://ec2.amazonaws.com/doc/2016-11-15"
   },
   "operations":{
+    "AcceptAddressTransfer":{
+      "name":"AcceptAddressTransfer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptAddressTransferRequest"},
+      "output":{"shape":"AcceptAddressTransferResult"},
+      "documentation":"<p>Accepts an Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#using-instance-addressing-eips-transfer-accept\">Accept a transferred Elastic IP address</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
     "AcceptReservedInstancesExchangeQuote":{
       "name":"AcceptReservedInstancesExchangeQuote",
       "http":{
@@ -1984,6 +1994,16 @@
       "output":{"shape":"DescribeAccountAttributesResult"},
       "documentation":"<p>Describes attributes of your Amazon Web Services account. The following are the supported account attributes:</p> <ul> <li> <p> <code>supported-platforms</code>: Indicates whether your account can launch instances into EC2-Classic and EC2-VPC, or only into EC2-VPC.</p> </li> <li> <p> <code>default-vpc</code>: The ID of the default VPC for your account, or <code>none</code>.</p> </li> <li> <p> <code>max-instances</code>: This attribute is no longer supported. The returned value does not reflect your actual vCPU limit for running On-Demand Instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html#ec2-on-demand-instances-limits\">On-Demand Instance Limits</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </li> <li> <p> <code>vpc-max-security-groups-per-interface</code>: The maximum number of security groups that you can assign to a network interface.</p> </li> <li> <p> <code>max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-Classic. </p> </li> <li> <p> <code>vpc-max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-VPC.</p> </li> </ul> <note> <p>We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
     },
+    "DescribeAddressTransfers":{
+      "name":"DescribeAddressTransfers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAddressTransfersRequest"},
+      "output":{"shape":"DescribeAddressTransfersResult"},
+      "documentation":"<p>Describes an Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro\">Transfer Elastic IP addresses</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
     "DescribeAddresses":{
       "name":"DescribeAddresses",
       "http":{
@@ -3371,6 +3391,16 @@
       "input":{"shape":"DetachVpnGatewayRequest"},
       "documentation":"<p>Detaches a virtual private gateway from a VPC. You do this if you're planning to turn off the VPC and not use it anymore. You can confirm a virtual private gateway has been completely detached from a VPC by describing the virtual private gateway (any attachments to the virtual private gateway are also described).</p> <p>You must wait for the attachment's state to switch to <code>detached</code> before you can delete the VPC or attach a different VPC to the virtual private gateway.</p>"
     },
+    "DisableAddressTransfer":{
+      "name":"DisableAddressTransfer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableAddressTransferRequest"},
+      "output":{"shape":"DisableAddressTransferResult"},
+      "documentation":"<p>Disables Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro\">Transfer Elastic IP addresses</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
     "DisableEbsEncryptionByDefault":{
       "name":"DisableEbsEncryptionByDefault",
       "http":{
@@ -3587,6 +3617,16 @@
       "input":{"shape":"DisassociateVpcCidrBlockRequest"},
       "output":{"shape":"DisassociateVpcCidrBlockResult"},
       "documentation":"<p>Disassociates a CIDR block from a VPC. To disassociate the CIDR block, you must specify its association ID. You can get the association ID by using <a>DescribeVpcs</a>. You must detach or delete all gateways and resources that are associated with the CIDR block before you can disassociate it. </p> <p>You cannot disassociate the CIDR block with which you originally created the VPC (the primary CIDR block).</p>"
+    },
+    "EnableAddressTransfer":{
+      "name":"EnableAddressTransfer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableAddressTransferRequest"},
+      "output":{"shape":"EnableAddressTransferResult"},
+      "documentation":"<p>Enables Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro\">Transfer Elastic IP addresses</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
     },
     "EnableEbsEncryptionByDefault":{
       "name":"EnableEbsEncryptionByDefault",
@@ -5490,6 +5530,35 @@
         "locationName":"item"
       }
     },
+    "AcceptAddressTransferRequest":{
+      "type":"structure",
+      "required":["Address"],
+      "members":{
+        "Address":{
+          "shape":"String",
+          "documentation":"<p>The Elastic IP address you are accepting for transfer.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AcceptAddressTransferResult":{
+      "type":"structure",
+      "members":{
+        "AddressTransfer":{
+          "shape":"AddressTransfer",
+          "documentation":"<p>An Elastic IP address transfer.</p>",
+          "locationName":"addressTransfer"
+        }
+      }
+    },
     "AcceptReservedInstancesExchangeQuoteRequest":{
       "type":"structure",
       "required":["ReservedInstanceIds"],
@@ -6065,6 +6134,57 @@
         "shape":"AddressAttribute",
         "locationName":"item"
       }
+    },
+    "AddressTransfer":{
+      "type":"structure",
+      "members":{
+        "PublicIp":{
+          "shape":"String",
+          "documentation":"<p>The Elastic IP address being transferred.</p>",
+          "locationName":"publicIp"
+        },
+        "AllocationId":{
+          "shape":"String",
+          "documentation":"<p>The allocation ID of an Elastic IP address.</p>",
+          "locationName":"allocationId"
+        },
+        "TransferAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account that you want to transfer the Elastic IP address to.</p>",
+          "locationName":"transferAccountId"
+        },
+        "TransferOfferExpirationTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The timestamp when the Elastic IP address transfer expired. When the source account starts the transfer, the transfer account has seven hours to allocate the Elastic IP address to complete the transfer, or the Elastic IP address will return to its original owner.</p>",
+          "locationName":"transferOfferExpirationTimestamp"
+        },
+        "TransferOfferAcceptedTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The timestamp when the Elastic IP address transfer was accepted.</p>",
+          "locationName":"transferOfferAcceptedTimestamp"
+        },
+        "AddressTransferStatus":{
+          "shape":"AddressTransferStatus",
+          "documentation":"<p>The Elastic IP address transfer status.</p>",
+          "locationName":"addressTransferStatus"
+        }
+      },
+      "documentation":"<p>Details on the Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro\">Transfer Elastic IP addresses</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
+    "AddressTransferList":{
+      "type":"list",
+      "member":{
+        "shape":"AddressTransfer",
+        "locationName":"item"
+      }
+    },
+    "AddressTransferStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "disabled",
+        "accepted"
+      ]
     },
     "AdvertiseByoipCidrRequest":{
       "type":"structure",
@@ -16436,6 +16556,48 @@
         }
       }
     },
+    "DescribeAddressTransfersMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "DescribeAddressTransfersRequest":{
+      "type":"structure",
+      "members":{
+        "AllocationIds":{
+          "shape":"AllocationIdList",
+          "documentation":"<p>The allocation IDs of Elastic IP addresses.</p>",
+          "locationName":"AllocationId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeAddressTransfersMaxResults",
+          "documentation":"<p>The maximum number of address transfers to return in one page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeAddressTransfersResult":{
+      "type":"structure",
+      "members":{
+        "AddressTransfers":{
+          "shape":"AddressTransferList",
+          "documentation":"<p>The Elastic IP address transfer.</p>",
+          "locationName":"addressTransferSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeAddressesAttributeRequest":{
       "type":"structure",
       "members":{
@@ -22677,6 +22839,30 @@
       },
       "documentation":"<p>Describes the Active Directory to be used for client authentication.</p>"
     },
+    "DisableAddressTransferRequest":{
+      "type":"structure",
+      "required":["AllocationId"],
+      "members":{
+        "AllocationId":{
+          "shape":"AllocationId",
+          "documentation":"<p>The allocation ID of an Elastic IP address.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableAddressTransferResult":{
+      "type":"structure",
+      "members":{
+        "AddressTransfer":{
+          "shape":"AddressTransfer",
+          "documentation":"<p>An Elastic IP address transfer.</p>",
+          "locationName":"addressTransfer"
+        }
+      }
+    },
     "DisableEbsEncryptionByDefaultRequest":{
       "type":"structure",
       "members":{
@@ -24114,6 +24300,37 @@
         "supported",
         "required"
       ]
+    },
+    "EnableAddressTransferRequest":{
+      "type":"structure",
+      "required":[
+        "AllocationId",
+        "TransferAccountId"
+      ],
+      "members":{
+        "AllocationId":{
+          "shape":"AllocationId",
+          "documentation":"<p>The allocation ID of an Elastic IP address.</p>"
+        },
+        "TransferAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account that you want to transfer the Elastic IP address to.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableAddressTransferResult":{
+      "type":"structure",
+      "members":{
+        "AddressTransfer":{
+          "shape":"AddressTransfer",
+          "documentation":"<p>An Elastic IP address transfer.</p>",
+          "locationName":"addressTransfer"
+        }
+      }
     },
     "EnableEbsEncryptionByDefaultRequest":{
       "type":"structure",
@@ -27126,7 +27343,10 @@
           "shape":"IpamResourceType",
           "documentation":"<p>The resource type.</p>"
         },
-        "ResourceTag":{"shape":"RequestIpamResourceTag"},
+        "ResourceTag":{
+          "shape":"RequestIpamResourceTag",
+          "documentation":"<p>The resource tag.</p>"
+        },
         "ResourceOwner":{
           "shape":"String",
           "documentation":"<p>The ID of the Amazon Web Services account that owns the resource.</p>"
@@ -36932,6 +37152,7 @@
       "members":{
         "IpamResourceCidr":{
           "shape":"IpamResourceCidr",
+          "documentation":"<p>The CIDR of the resource.</p>",
           "locationName":"ipamResourceCidr"
         }
       }
@@ -38454,6 +38675,7 @@
       "members":{
         "ByoipCidr":{
           "shape":"ByoipCidr",
+          "documentation":"<p>The BYOIP CIDR.</p>",
           "locationName":"byoipCidr"
         }
       }
@@ -41155,6 +41377,7 @@
         },
         "PoolAddressRange":{
           "shape":"PublicIpv4PoolRange",
+          "documentation":"<p>Information about the address range of the public IPv4 pool.</p>",
           "locationName":"poolAddressRange"
         }
       }

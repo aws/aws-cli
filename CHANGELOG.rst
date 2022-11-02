@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.8.8
+=====
+
+* api-change:``cloud9``: Update to the documentation section of the Cloud9 API Reference guide.
+* api-change:``connect``: Amazon connect now support a new API DismissUserContact to dismiss or remove terminated contacts in Agent CCP
+* api-change:``appstream``: This release includes CertificateBasedAuthProperties in CreateDirectoryConfig and UpdateDirectoryConfig.
+* api-change:``cloudformation``: This release adds more fields to improves visibility of AWS CloudFormation StackSets information in following APIs: ListStackInstances, DescribeStackInstance, ListStackSetOperationResults, ListStackSetOperations, DescribeStackSetOperation.
+* api-change:``mediatailor``: This release introduces support for SCTE-35 segmentation descriptor messages which can be sent within time signal messages.
+* api-change:``iot``: This release adds the Amazon Location action to IoT Rules Engine.
+* api-change:``sesv2``: This release includes support for interacting with the Virtual Deliverability Manager, allowing you to opt in/out of the feature and to retrieve recommendations and metric data.
+* api-change:``apprunner``: AWS App Runner adds .NET 6, Go 1, PHP 8.1 and Ruby 3.1 runtimes.
+* api-change:``apprunner``: This release adds support for private App Runner services. Services may now be configured to be made private and only accessible from a VPC. The changes include a new VpcIngressConnection resource and several new and modified APIs.
+* api-change:``logs``: SDK release to support tagging for destinations and log groups with TagResource. Also supports tag on create with PutDestination.
+* api-change:``gamesparks``: Add LATEST as a possible GameSDK Version on snapshot
+* api-change:``textract``: This release introduces additional support for 30+ normalized fields such as vendor address and currency. It also includes OCR output in the response and accuracy improvements for the already supported fields in previous version
+* api-change:``ec2``: Elastic IP transfer is a new Amazon VPC feature that allows you to transfer your Elastic IP addresses from one AWS Account to another.
+
+
 2.8.7
 =====
 

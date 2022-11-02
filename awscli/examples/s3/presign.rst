@@ -35,10 +35,11 @@ Output::
 
 
 Accept the results after execution:
-```python
-import subprocess
 
-output = subprocess.getstatusoutput('aws s3 presign s3://DOC-EXAMPLE-BUCKET/test2.txt  s3://DOC-EXAMPLE-BUCKET/test2.txt')
-print(output[1].split('\n'))
+Output::
+    import subprocess
 
-```
+    output = subprocess.getstatusoutput('aws s3 presign s3://DOC-EXAMPLE-BUCKET/test2.txt  s3://DOC-EXAMPLE-BUCKET/test2.txt')
+    print(output[1].split('\n'))
+
+

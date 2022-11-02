@@ -436,6 +436,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
             'before-building-argument-table-parser.s3.list-objects',
+            'building-command-table.s3_list-objects',
             'operation-args-parsed.s3.list-objects',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',

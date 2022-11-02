@@ -654,7 +654,7 @@ class PresignCommand(S3Command):
         "configured explicitly."
     )
     USAGE = "<S3Uri>"
-    ARG_TABLE = [{'name': 'path',
+    ARG_TABLE = [{'name': 'paths','nargs': '+',
                   'positional_arg': True, 'synopsis': USAGE},
                  {'name': 'expires-in', 'default': 3600,
                   'cli_type_name': 'integer',
@@ -664,17 +664,17 @@ class PresignCommand(S3Command):
 
     def _run_main(self, parsed_args, parsed_globals):
         super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
-        path = parsed_args.path
-        if path.startswith('s3://'):
-            path = path[5:]
-        bucket, key = find_bucket_key(path)
-        url = self.client.generate_presigned_url(
-            'get_object',
-            {'Bucket': bucket, 'Key': key},
-            ExpiresIn=parsed_args.expires_in
-        )
-        uni_print(url)
-        uni_print('\n')
+        for path in  parsed_args.paths:
+            if path.startswith('s3://'):
+                path = path[5:]
+            bucket, key = find_bucket_key(path)
+            url = self.client.generate_presigned_url(
+                'get_object',
+                {'Bucket': bucket, 'Key': key},
+                ExpiresIn=parsed_args.expires_in
+            )
+            uni_print(url)
+            uni_print('\n')
         return 0
 
 

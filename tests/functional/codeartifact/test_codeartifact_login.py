@@ -218,7 +218,7 @@ password: {auth_token}'''
             pypi_rc.set('codeartifact', 'username', 'aws')
             pypi_rc.set('codeartifact', 'password', self.auth_token)
         else:
-            pypi_rc.readfp(StringIO(default_pypi_rc))
+            pypi_rc.read_string(default_pypi_rc)
 
         pypi_rc_stream = StringIO()
         pypi_rc.write(pypi_rc_stream)
@@ -302,7 +302,7 @@ password: {auth_token}'''
         self, pypi_rc_str, server, repo_url=None, username=None, password=None
     ):
         pypi_rc = RawConfigParser()
-        pypi_rc.readfp(StringIO(pypi_rc_str))
+        pypi_rc.read_string(pypi_rc_str)
 
         self.assertIn('distutils', pypi_rc.sections())
         self.assertIn('index-servers', pypi_rc.options('distutils'))

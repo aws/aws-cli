@@ -172,7 +172,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an access policy that grants the specified identity (Amazon Web Services SSO user, Amazon Web Services SSO group, or IAM user) access to the specified IoT SiteWise Monitor portal or project resource.</p>",
+      "documentation":"<p>Creates an access policy that grants the specified identity (IAM Identity Center user, IAM Identity Center group, or IAM user) access to the specified IoT SiteWise Monitor portal or project resource.</p>",
       "endpoint":{"hostPrefix":"monitor."}
     },
     "CreateAsset":{
@@ -292,7 +292,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates a portal, which can contain projects and dashboards. IoT SiteWise Monitor uses Amazon Web Services SSO or IAM to authenticate portal users and manage user permissions.</p> <note> <p>Before you can sign in to a new portal, you must add at least one identity to that portal. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins\">Adding or removing portal administrators</a> in the <i>IoT SiteWise User Guide</i>.</p> </note>",
+      "documentation":"<p>Creates a portal, which can contain projects and dashboards. IoT SiteWise Monitor uses IAM Identity Center or IAM to authenticate portal users and manage user permissions.</p> <note> <p>Before you can sign in to a new portal, you must add at least one identity to that portal. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins\">Adding or removing portal administrators</a> in the <i>IoT SiteWise User Guide</i>.</p> </note>",
       "endpoint":{"hostPrefix":"monitor."}
     },
     "CreateProject":{
@@ -821,8 +821,25 @@
         {"shape":"InternalFailureException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves a paginated list of access policies for an identity (an Amazon Web Services SSO user, an Amazon Web Services SSO group, or an IAM user) or an IoT SiteWise Monitor resource (a portal or project).</p>",
+      "documentation":"<p>Retrieves a paginated list of access policies for an identity (an IAM Identity Center user, an IAM Identity Center group, or an IAM user) or an IoT SiteWise Monitor resource (a portal or project).</p>",
       "endpoint":{"hostPrefix":"monitor."}
+    },
+    "ListAssetModelProperties":{
+      "name":"ListAssetModelProperties",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset-models/{assetModelId}/properties"
+      },
+      "input":{"shape":"ListAssetModelPropertiesRequest"},
+      "output":{"shape":"ListAssetModelPropertiesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of properties associated with an asset model. If you update properties associated with the model before you finish listing all the properties, you need to start all over again.</p>",
+      "endpoint":{"hostPrefix":"api."}
     },
     "ListAssetModels":{
       "name":"ListAssetModels",
@@ -838,6 +855,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves a paginated list of summaries of all asset models.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "ListAssetProperties":{
+      "name":"ListAssetProperties",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assets/{assetId}/properties"
+      },
+      "input":{"shape":"ListAssetPropertiesRequest"},
+      "output":{"shape":"ListAssetPropertiesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of properties associated with an asset. If you update properties associated with the model before you finish listing all the properties, you need to start all over again.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "ListAssetRelationships":{
@@ -1321,7 +1355,7 @@
         },
         "identity":{
           "shape":"Identity",
-          "documentation":"<p>The identity (an Amazon Web Services SSO user, an Amazon Web Services SSO group, or an IAM user).</p>"
+          "documentation":"<p>The identity (an IAM Identity Center user, an IAM Identity Center group, or an IAM user).</p>"
         },
         "resource":{
           "shape":"Resource",
@@ -1458,6 +1492,10 @@
         "properties":{
           "shape":"AssetProperties",
           "documentation":"<p>The asset properties that this composite model defines.</p>"
+        },
+        "id":{
+          "shape":"ID",
+          "documentation":"<p> The ID of the asset composite model. </p>"
         }
       },
       "documentation":"<p>Contains information about a composite model in an asset. This object contains the asset's properties that you define in the composite model.</p>"
@@ -1553,6 +1591,10 @@
         "properties":{
           "shape":"AssetModelProperties",
           "documentation":"<p>The asset property definitions for this composite model.</p>"
+        },
+        "id":{
+          "shape":"ID",
+          "documentation":"<p> The ID of the asset model composite model. </p>"
         }
       },
       "documentation":"<p>Contains information about a composite model in an asset model. This object contains the asset property definitions that you define in the composite model.</p>"
@@ -1713,6 +1755,46 @@
       "type":"list",
       "member":{"shape":"AssetModelPropertyDefinition"}
     },
+    "AssetModelPropertySummaries":{
+      "type":"list",
+      "member":{"shape":"AssetModelPropertySummary"}
+    },
+    "AssetModelPropertySummary":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataType",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the property.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the property.</p>"
+        },
+        "dataType":{
+          "shape":"PropertyDataType",
+          "documentation":"<p>The data type of the property.</p>"
+        },
+        "dataTypeSpec":{
+          "shape":"Name",
+          "documentation":"<p>The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.</p>"
+        },
+        "unit":{
+          "shape":"PropertyUnit",
+          "documentation":"<p>The unit (such as <code>Newtons</code> or <code>RPM</code>) of the property.</p>"
+        },
+        "type":{"shape":"PropertyType"},
+        "assetModelCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p> The ID of the composite model that contains the asset model property. </p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of a property associated with a model.</p>"
+    },
     "AssetModelState":{
       "type":"string",
       "enum":[
@@ -1834,6 +1916,33 @@
       "max":2048,
       "min":1,
       "pattern":"[^\\u0000-\\u001F\\u007F]+"
+    },
+    "AssetPropertySummaries":{
+      "type":"list",
+      "member":{"shape":"AssetPropertySummary"}
+    },
+    "AssetPropertySummary":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the property.</p>"
+        },
+        "alias":{
+          "shape":"PropertyAlias",
+          "documentation":"<p>The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html\">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "unit":{
+          "shape":"PropertyUnit",
+          "documentation":"<p> The unit of measure (such as Newtons or RPM) of the asset property. </p>"
+        },
+        "notification":{"shape":"PropertyNotification"},
+        "assetCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p> The ID of the composite model that contains the asset property. </p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of a property associated with an asset.</p>"
     },
     "AssetPropertyValue":{
       "type":"structure",
@@ -2892,7 +3001,11 @@
           "shape":"Name",
           "documentation":"<p>The type of the composite model that defines this property.</p>"
         },
-        "assetProperty":{"shape":"Property"}
+        "assetProperty":{"shape":"Property"},
+        "id":{
+          "shape":"ID",
+          "documentation":"<p> The ID of the composite model that contains the property. </p>"
+        }
       },
       "documentation":"<p>Contains information about a composite model property on an asset.</p>"
     },
@@ -2981,7 +3094,7 @@
       "members":{
         "accessPolicyIdentity":{
           "shape":"Identity",
-          "documentation":"<p>The identity for this access policy. Choose an Amazon Web Services SSO user, an Amazon Web Services SSO group, or an IAM user.</p>"
+          "documentation":"<p>The identity for this access policy. Choose an IAM Identity Center user, an IAM Identity Center group, or an IAM user.</p>"
         },
         "accessPolicyResource":{
           "shape":"Resource",
@@ -3311,7 +3424,7 @@
         },
         "portalAuthMode":{
           "shape":"AuthMode",
-          "documentation":"<p>The service to use to authenticate users to the portal. Choose from the following options:</p> <ul> <li> <p> <code>SSO</code> – The portal uses Amazon Web Services Single Sign On to authenticate users and manage user permissions. Before you can create a portal that uses Amazon Web Services SSO, you must enable Amazon Web Services SSO. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso\">Enabling Amazon Web Services SSO</a> in the <i>IoT SiteWise User Guide</i>. This option is only available in Amazon Web Services Regions other than the China Regions.</p> </li> <li> <p> <code>IAM</code> – The portal uses Identity and Access Management to authenticate users and manage user permissions.</p> </li> </ul> <p>You can't change this value after you create a portal.</p> <p>Default: <code>SSO</code> </p>"
+          "documentation":"<p>The service to use to authenticate users to the portal. Choose from the following options:</p> <ul> <li> <p> <code>SSO</code> – The portal uses IAM Identity Center (successor to Single Sign-On) to authenticate users and manage user permissions. Before you can create a portal that uses IAM Identity Center, you must enable IAM Identity Center. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso\">Enabling IAM Identity Center</a> in the <i>IoT SiteWise User Guide</i>. This option is only available in Amazon Web Services Regions other than the China Regions.</p> </li> <li> <p> <code>IAM</code> – The portal uses Identity and Access Management to authenticate users and manage user permissions.</p> </li> </ul> <p>You can't change this value after you create a portal.</p> <p>Default: <code>SSO</code> </p>"
         },
         "notificationSenderEmail":{
           "shape":"Email",
@@ -3343,7 +3456,7 @@
         },
         "portalStartUrl":{
           "shape":"Url",
-          "documentation":"<p>The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use Amazon Web Services SSO for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.</p>"
+          "documentation":"<p>The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.</p>"
         },
         "portalStatus":{
           "shape":"PortalStatus",
@@ -3351,7 +3464,7 @@
         },
         "ssoApplicationId":{
           "shape":"SSOApplicationId",
-          "documentation":"<p>The associated Amazon Web Services SSO application ID, if the portal uses Amazon Web Services SSO.</p>"
+          "documentation":"<p>The associated IAM Identity Center application ID, if the portal uses IAM Identity Center.</p>"
         }
       }
     },
@@ -3709,7 +3822,7 @@
         },
         "accessPolicyIdentity":{
           "shape":"Identity",
-          "documentation":"<p>The identity (Amazon Web Services SSO user, Amazon Web Services SSO group, or IAM user) to which this access policy applies.</p>"
+          "documentation":"<p>The identity (IAM Identity Center user, IAM Identity Center group, or IAM user) to which this access policy applies.</p>"
         },
         "accessPolicyResource":{
           "shape":"Resource",
@@ -3738,6 +3851,12 @@
           "documentation":"<p>The ID of the asset model.</p>",
           "location":"uri",
           "locationName":"assetModelId"
+        },
+        "excludeProperties":{
+          "shape":"ExcludeProperties",
+          "documentation":"<p> Whether or not to exclude asset model properties from the response. </p>",
+          "location":"querystring",
+          "locationName":"excludeProperties"
         }
       }
     },
@@ -3857,6 +3976,12 @@
           "documentation":"<p>The ID of the asset.</p>",
           "location":"uri",
           "locationName":"assetId"
+        },
+        "excludeProperties":{
+          "shape":"ExcludeProperties",
+          "documentation":"<p> Whether or not to exclude asset properties from the response. </p>",
+          "location":"querystring",
+          "locationName":"excludeProperties"
         }
       }
     },
@@ -4228,11 +4353,11 @@
         },
         "portalClientId":{
           "shape":"PortalClientId",
-          "documentation":"<p>The Amazon Web Services SSO application generated client ID (used with Amazon Web Services SSO APIs). IoT SiteWise includes <code>portalClientId</code> for only portals that use Amazon Web Services SSO to authenticate users.</p>"
+          "documentation":"<p>The IAM Identity Center application generated client ID (used with IAM Identity Center APIs). IoT SiteWise includes <code>portalClientId</code> for only portals that use IAM Identity Center to authenticate users.</p>"
         },
         "portalStartUrl":{
           "shape":"Url",
-          "documentation":"<p>The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use Amazon Web Services SSO for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.</p>"
+          "documentation":"<p>The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.</p>"
         },
         "portalContactEmail":{
           "shape":"Email",
@@ -4599,6 +4724,7 @@
       "documentation":"<p>The Amazon S3 destination where errors associated with the job creation request are saved.</p>"
     },
     "ExceptionMessage":{"type":"string"},
+    "ExcludeProperties":{"type":"boolean"},
     "Expression":{
       "type":"string",
       "max":1024,
@@ -5081,7 +5207,7 @@
       "members":{
         "id":{
           "shape":"IdentityId",
-          "documentation":"<p>The Amazon Web Services SSO ID of the group.</p>"
+          "documentation":"<p>The IAM Identity Center ID of the group.</p>"
         }
       },
       "documentation":"<p>Contains information for a group identity in an access policy.</p>"
@@ -5125,11 +5251,11 @@
       "members":{
         "user":{
           "shape":"UserIdentity",
-          "documentation":"<p>An Amazon Web Services SSO user identity.</p>"
+          "documentation":"<p>An IAM Identity Center user identity.</p>"
         },
         "group":{
           "shape":"GroupIdentity",
-          "documentation":"<p>An Amazon Web Services SSO group identity.</p>"
+          "documentation":"<p>An IAM Identity Center group identity.</p>"
         },
         "iamUser":{
           "shape":"IAMUserIdentity",
@@ -5140,7 +5266,7 @@
           "documentation":"<p>An IAM role identity.</p>"
         }
       },
-      "documentation":"<p>Contains an identity that can access an IoT SiteWise Monitor resource.</p> <note> <p>Currently, you can't use Amazon Web Services APIs to retrieve Amazon Web Services SSO identity IDs. You can find the Amazon Web Services SSO identity IDs in the URL of user and group pages in the <a href=\"https://console.aws.amazon.com/singlesignon\">Amazon Web Services SSO console</a>.</p> </note>"
+      "documentation":"<p>Contains an identity that can access an IoT SiteWise Monitor resource.</p> <note> <p>Currently, you can't use Amazon Web Services APIs to retrieve IAM Identity Center identity IDs. You can find the IAM Identity Center identity IDs in the URL of user and group pages in the <a href=\"https://console.aws.amazon.com/singlesignon\">IAM Identity Center console</a>.</p> </note>"
     },
     "IdentityId":{
       "type":"string",
@@ -5338,7 +5464,7 @@
       "members":{
         "identityType":{
           "shape":"IdentityType",
-          "documentation":"<p>The type of identity (Amazon Web Services SSO user, Amazon Web Services SSO group, or IAM user). This parameter is required if you specify <code>identityId</code>.</p>",
+          "documentation":"<p>The type of identity (IAM Identity Center user, IAM Identity Center group, or IAM user). This parameter is required if you specify <code>identityId</code>.</p>",
           "location":"querystring",
           "locationName":"identityType"
         },
@@ -5394,6 +5520,57 @@
         }
       }
     },
+    "ListAssetModelPropertiesFilter":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "BASE"
+      ]
+    },
+    "ListAssetModelPropertiesRequest":{
+      "type":"structure",
+      "required":["assetModelId"],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. If not specified, the default value is 50.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "filter":{
+          "shape":"ListAssetModelPropertiesFilter",
+          "documentation":"<p> Filters the requested list of asset model properties. You can choose one of the following options:</p> <ul> <li> <p> <code>ALL</code> – The list includes all asset model properties for a given asset model ID. </p> </li> <li> <p> <code>BASE</code> – The list includes only base asset model properties for a given asset model ID. </p> </li> </ul> <p>Default: <code>BASE</code> </p>",
+          "location":"querystring",
+          "locationName":"filter"
+        }
+      }
+    },
+    "ListAssetModelPropertiesResponse":{
+      "type":"structure",
+      "required":["assetModelPropertySummaries"],
+      "members":{
+        "assetModelPropertySummaries":{
+          "shape":"AssetModelPropertySummaries",
+          "documentation":"<p>A list that summarizes the properties associated with the specified asset model.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
     "ListAssetModelsRequest":{
       "type":"structure",
       "members":{
@@ -5418,6 +5595,57 @@
         "assetModelSummaries":{
           "shape":"AssetModelSummaries",
           "documentation":"<p>A list that summarizes each asset model.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListAssetPropertiesFilter":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "BASE"
+      ]
+    },
+    "ListAssetPropertiesRequest":{
+      "type":"structure",
+      "required":["assetId"],
+      "members":{
+        "assetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset.</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. If not specified, the default value is 50.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "filter":{
+          "shape":"ListAssetPropertiesFilter",
+          "documentation":"<p> Filters the requested list of asset properties. You can choose one of the following options:</p> <ul> <li> <p> <code>ALL</code> – The list includes all asset properties for a given asset model ID. </p> </li> <li> <p> <code>BASE</code> – The list includes only base asset properties for a given asset model ID. </p> </li> </ul> <p>Default: <code>BASE</code> </p>",
+          "location":"querystring",
+          "locationName":"filter"
+        }
+      }
+    },
+    "ListAssetPropertiesResponse":{
+      "type":"structure",
+      "required":["assetPropertySummaries"],
+      "members":{
+        "assetPropertySummaries":{
+          "shape":"AssetPropertySummaries",
+          "documentation":"<p>A list that summarizes the properties associated with the specified asset.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -6112,7 +6340,7 @@
         },
         "startUrl":{
           "shape":"Url",
-          "documentation":"<p>The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use Amazon Web Services SSO for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.</p>"
+          "documentation":"<p>The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.</p>"
         },
         "creationDate":{
           "shape":"Timestamp",
@@ -6796,7 +7024,7 @@
         },
         "accessPolicyIdentity":{
           "shape":"Identity",
-          "documentation":"<p>The identity for this access policy. Choose an Amazon Web Services SSO user, an Amazon Web Services SSO group, or an IAM user.</p>"
+          "documentation":"<p>The identity for this access policy. Choose an IAM Identity Center user, an IAM Identity Center group, or an IAM user.</p>"
         },
         "accessPolicyResource":{
           "shape":"Resource",
@@ -7144,7 +7372,7 @@
       "members":{
         "id":{
           "shape":"IdentityId",
-          "documentation":"<p>The Amazon Web Services SSO ID of the user.</p>"
+          "documentation":"<p>The IAM Identity Center ID of the user.</p>"
         }
       },
       "documentation":"<p>Contains information for a user identity in an access policy.</p>"

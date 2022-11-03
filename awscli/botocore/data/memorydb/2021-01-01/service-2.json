@@ -436,7 +436,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Used to failover a shard</p>"
+      "documentation":"<p>Used to failover a shard. This API is designed for testing the behavior of your application in case of MemoryDB failover. It is not designed to be used as a production-level tool for initiating a failover to overcome a problem you may have with the cluster. Moreover, in certain conditions such as large scale operational events, Amazon may block this API. </p>"
     },
     "ListAllowedNodeTypeUpdates":{
       "name":"ListAllowedNodeTypeUpdates",
@@ -927,6 +927,10 @@
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
           "documentation":"<p>When set to true, the cluster will automatically receive minor engine version upgrades after launch.</p>"
+        },
+        "DataTiering":{
+          "shape":"DataTieringStatus",
+          "documentation":"<p>Enables data tiering. Data tiering is only supported for clusters using the r6gd node type. This parameter must be set when using r6gd nodes. For more information, see <a href=\"https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html\">Data tiering</a>.</p>"
         }
       },
       "documentation":"<p>Contains all of the attributes of a specific cluster.</p>"
@@ -1148,7 +1152,7 @@
         },
         "MaintenanceWindow":{
           "shape":"String",
-          "documentation":"<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format <code>ddd:hh24:mi-ddd:hh24:mi</code> (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p>"
+          "documentation":"<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -1197,6 +1201,10 @@
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
           "documentation":"<p>When set to true, the cluster will automatically receive minor engine version upgrades after launch.</p>"
+        },
+        "DataTiering":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Enables data tiering. Data tiering is only supported for clusters using the r6gd node type. This parameter must be set when using r6gd nodes. For more information, see <a href=\"https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html\">Data tiering</a>.</p>"
         }
       }
     },
@@ -1345,6 +1353,13 @@
           "documentation":"<p>The newly-created user.</p>"
         }
       }
+    },
+    "DataTieringStatus":{
+      "type":"string",
+      "enum":[
+        "true",
+        "false"
+      ]
     },
     "DefaultUserRequired":{
       "type":"structure",
@@ -2577,6 +2592,10 @@
         "ClusterConfiguration":{
           "shape":"ClusterConfiguration",
           "documentation":"<p>The configuration of the cluster from which the snapshot was taken</p>"
+        },
+        "DataTiering":{
+          "shape":"DataTieringStatus",
+          "documentation":"<p>Enables data tiering. Data tiering is only supported for clusters using the r6gd node type. This parameter must be set when using r6gd nodes. For more information, see <a href=\"https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html\">Data tiering</a>.</p>"
         }
       },
       "documentation":"<p>Represents a copy of an entire cluster as of the time when the snapshot was taken.</p>"
@@ -2888,7 +2907,7 @@
         },
         "MaintenanceWindow":{
           "shape":"String",
-          "documentation":"<p>The maintenance window to update</p>"
+          "documentation":"<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>"
         },
         "SnsTopicArn":{
           "shape":"String",

@@ -569,7 +569,7 @@
       "members":{
         "Code":{
           "shape":"String",
-          "documentation":"<p>Currency code for detected currency.</p>"
+          "documentation":"<p>Currency code for detected currency. the current supported codes are:</p> <ul> <li> <p>USD</p> </li> <li> <p>EUR</p> </li> <li> <p>GBP</p> </li> <li> <p>CAD</p> </li> <li> <p>INR</p> </li> <li> <p>JPY</p> </li> <li> <p>CHF</p> </li> <li> <p>AUD</p> </li> <li> <p>CNY</p> </li> <li> <p>BZR</p> </li> <li> <p>SEK</p> </li> <li> <p>HKD</p> </li> </ul>"
         },
         "Confidence":{
           "shape":"Percent",
@@ -658,14 +658,14 @@
       "members":{
         "Types":{
           "shape":"StringList",
-          "documentation":"<p>Informs you on the kind of label associated with the group</p>"
+          "documentation":"<p>Informs you on whether the expense group is a name or an address.</p>"
         },
         "Id":{
           "shape":"String",
           "documentation":"<p>Provides a group Id number, which will be the same for each in the group.</p>"
         }
       },
-      "documentation":"<p>Shows the group that a certain key belongs to. This helps differentiate responses like addresses that can appear similar in response JSON.</p>"
+      "documentation":"<p>Shows the group that a certain key belongs to. This helps differentiate between names and addresses for different organizations, that can be hard to determine via JSON response.</p>"
     },
     "ExpenseGroupPropertyList":{
       "type":"list",
@@ -980,6 +980,10 @@
         "IdentityDocumentFields":{
           "shape":"IdentityDocumentFieldList",
           "documentation":"<p>The structure used to record information extracted from identity documents. Contains both normalized field and value of the extracted text.</p>"
+        },
+        "Blocks":{
+          "shape":"BlockList",
+          "documentation":"<p>Individual word recognition, as returned by document detection.</p>"
         }
       },
       "documentation":"<p>The structure that lists each document processed in an AnalyzeID operation.</p>"

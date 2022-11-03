@@ -127,6 +127,7 @@ def test_examples(command, subcommand):
         t.tearDown()
 
 
+@pytest.mark.filterwarnings('ignore::DeprecationWarning')
 @pytest.mark.parametrize(
     "example_file",
     RST_DOC_EXAMPLES

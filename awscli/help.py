@@ -109,9 +109,12 @@ class PosixHelpRenderer(PagingHelpRenderer):
             contents, writer=manpage.Writer(),
             settings_overrides={'report_level': 3}
         )
-        if not self._exists_on_path('groff'):
-            raise ExecutableNotFoundError('groff')
-        cmdline = ['groff', '-m', 'man', '-T', 'ascii']
+        if self._exists_on_path('groff'):
+            cmdline = ['groff', '-m', 'man', '-T', 'ascii']
+        elif self._exists_on_path('mandoc'):
+            cmdline = ['mandoc', '-T', 'ascii']
+        else:
+            raise ExecutableNotFoundError('groff or mandoc')
         LOG.debug("Running command: %s", cmdline)
         p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         groff_output = p3.communicate(input=man_contents)[0]

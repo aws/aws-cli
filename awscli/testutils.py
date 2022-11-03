@@ -79,7 +79,7 @@ def skip_if_windows(reason):
     """
     def decorator(func):
         return unittest.skipIf(
-            platform.system() not in ['Darwin', 'Linux'], reason)(func)
+            platform.system() not in ['Darwin', 'Linux', 'FreeBSD', 'NetBSD', 'OpenBSD'], reason)(func)
     return decorator
 
 

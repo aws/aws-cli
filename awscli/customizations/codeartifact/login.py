@@ -459,7 +459,7 @@ password: {auth_token}'''
                 sys.stdout.write(os.linesep)
                 raise e
         else:
-            pypi_rc.readfp(StringIO(default_pypi_rc))
+            pypi_rc.read_string(default_pypi_rc)
 
         pypi_rc_stream = StringIO()
         pypi_rc.write(pypi_rc_stream)

@@ -6,7 +6,7 @@ from dateutil.tz import tzlocal, tzutc
 from dateutil.relativedelta import relativedelta
 
 from awscli.testutils import unittest, mock, FileCreator
-from awscli.compat import urlparse, RawConfigParser, StringIO
+from awscli.compat import urlparse, RawConfigParser
 from awscli.customizations.codeartifact.login import (
     BaseLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin, TwineLogin,
     get_relative_expiration_time
@@ -590,7 +590,7 @@ class TestTwineLogin(unittest.TestCase):
         self, pypi_rc_str, server, repo_url=None, username=None, password=None
     ):
         pypi_rc = RawConfigParser()
-        pypi_rc.readfp(StringIO(pypi_rc_str))
+        pypi_rc.read_string(pypi_rc_str)
 
         self.assertIn('distutils', pypi_rc.sections())
         self.assertIn('index-servers', pypi_rc.options('distutils'))

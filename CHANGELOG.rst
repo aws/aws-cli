@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.3
+======
+
+* api-change:``ec2``: This release adds API support for the recipient of an AMI account share to remove shared AMI launch permissions.
+* api-change:``emr-containers``: Adding support for Job templates. Job templates allow you to create and store templates to configure Spark applications parameters. This helps you ensure consistent settings across applications by reusing and enforcing configuration overrides in data pipelines.
+* api-change:``logs``: Doc-only update for bug fixes and support of export to buckets encrypted with SSE-KMS
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.27.2
 ======
 

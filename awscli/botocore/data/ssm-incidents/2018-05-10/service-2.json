@@ -371,7 +371,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds a resource policy to the specified response plan. The resource policy is used to share the response plan using Resource Access Manager (RAM). For more information about cross-account sharing, see <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/xa.html\">Setting up cross-account functionality</a>.</p>"
+      "documentation":"<p>Adds a resource policy to the specified response plan. The resource policy is used to share the response plan using Resource Access Manager (RAM). For more information about cross-account sharing, see <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/incident-manager-cross-account-cross-region.html\">Cross-Region and cross-account incident management</a>.</p>"
     },
     "StartIncident":{
       "name":"StartIncident",
@@ -715,12 +715,16 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "regions":{
           "shape":"RegionMapInput",
           "documentation":"<p>The Regions that Incident Manager replicates your data to. You can have up to three Regions in your replication set.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of tags to add to the replication set.</p>"
         }
       }
     },
@@ -760,7 +764,7 @@
         },
         "engagements":{
           "shape":"EngagementSet",
-          "documentation":"<p>The contacts and escalation plans that the response plan engages during an incident.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.</p>"
         },
         "incidentTemplate":{
           "shape":"IncidentTemplate",
@@ -1101,7 +1105,7 @@
       "members":{
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of resource policies to display per page of results.</p>"
+          "documentation":"<p>The maximum number of resource policies to display for each page of results.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1167,7 +1171,7 @@
         },
         "engagements":{
           "shape":"EngagementSet",
-          "documentation":"<p>The contacts and escalation plans that the response plan engages during an incident.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.</p>"
         },
         "incidentTemplate":{
           "shape":"IncidentTemplate",
@@ -1397,7 +1401,7 @@
         },
         "incidentTags":{
           "shape":"TagMap",
-          "documentation":"<p>Tags to apply to an incident when calling the <code>StartIncident</code> API action.</p>"
+          "documentation":"<p>Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident.</p>"
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
@@ -1730,7 +1734,7 @@
         },
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the response plan you're adding the resource policy to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the response plan to add the resource policy to.</p>"
         }
       }
     },
@@ -2250,7 +2254,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A list of tags that you are adding to the response plan.</p>"
+          "documentation":"<p>A list of tags to add to the response plan.</p>"
         }
       }
     },
@@ -2384,7 +2388,7 @@
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>The name of the tag you're removing from the response plan.</p>",
+          "documentation":"<p>The name of the tag to remove from the response plan.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -2404,16 +2408,16 @@
       "members":{
         "arn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the replication set you're updating.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replication set to update.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "deletionProtected":{
           "shape":"Boolean",
-          "documentation":"<p>Details if deletion protection is enabled or disabled in your account.</p>"
+          "documentation":"<p>Specifies if deletion protection is turned on or off in your account. </p>"
         }
       }
     },
@@ -2525,7 +2529,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that the operation is called only once with the specified details.</p>",
           "idempotencyToken":true
         }
       }
@@ -2568,7 +2572,7 @@
         },
         "engagements":{
           "shape":"EngagementSet",
-          "documentation":"<p>The contacts and escalation plans that Incident Manager engages at the start of the incident.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.</p>"
         },
         "incidentTemplateDedupeString":{
           "shape":"DedupeString",
@@ -2588,7 +2592,7 @@
         },
         "incidentTemplateTags":{
           "shape":"TagMapUpdate",
-          "documentation":"<p>Tags to apply to an incident when calling the <code>StartIncident</code> API action. To call this action, you must also have permission to call the <code>TagResource</code> API action for the incident record resource.</p>"
+          "documentation":"<p>Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident. To call this action, you must also have permission to call the <code>TagResource</code> API action for the incident record resource.</p>"
         },
         "incidentTemplateTitle":{
           "shape":"IncidentTitle",

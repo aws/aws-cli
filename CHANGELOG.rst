@@ -4289,6 +4289,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.2
+======
+
+* api-change:``memorydb``: Adding support for r6gd instances for MemoryDB Redis with data tiering. In a cluster with data tiering enabled, when available memory capacity is exhausted, the least recently used data is automatically tiered to solid state drives for cost-effective capacity scaling with minimal performance impact.
+* api-change:``sagemaker``: Amazon SageMaker now supports running training jobs on ml.trn1 instance types.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.27.1
+======
+
+* api-change:``iotsitewise``: This release adds the ListAssetModelProperties and ListAssetProperties APIs. You can list all properties that belong to a single asset model or asset using these two new APIs.
+* api-change:``s3control``: S3 on Outposts launches support for Lifecycle configuration for Outposts buckets. With S3 Lifecycle configuration, you can mange objects so they are stored cost effectively. You can manage objects using size-based rules and specify how many noncurrent versions bucket will retain.
+* api-change:``sagemaker``: This release updates Framework model regex for ModelPackage to support new Framework version xgboost, sklearn.
+* api-change:``ssm-incidents``: Adds support for tagging replication-set on creation.
+
+
+1.27.0
+======
+
+* api-change:``rds``: Relational Database Service - This release adds support for configuring Storage Throughput on RDS database instances.
+* api-change:``textract``: Add ocr results in AnalyzeIDResponse as blocks
+* feature:Endpoints: Migrate all services to use new AWS Endpoint Resolution framework
+
+
 1.26.5
 ======
 

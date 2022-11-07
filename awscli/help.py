@@ -114,8 +114,8 @@ class PosixHelpRenderer(PagingHelpRenderer):
             raise ExecutableNotFoundError('groff or mandoc')
         LOG.debug("Running command: %s", cmdline)
         p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        groff_output = p3.communicate(input=man_contents)[0]
-        return groff_output
+        output = p3.communicate(input=man_contents)[0]
+        return output
 
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()

@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.27.4
+======
+
+* api-change:``athena``: Adds support for using Query Result Reuse
+* api-change:``autoscaling``: This release adds support for two new attributes for attribute-based instance type selection - NetworkBandwidthGbps and AllowedInstanceTypes.
+* api-change:``cloudtrail``: This release includes support for configuring a delegated administrator to manage an AWS Organizations organization CloudTrail trails and event data stores, and AWS Key Management Service encryption of CloudTrail Lake event data stores.
+* api-change:``ec2``: This release adds support for two new attributes for attribute-based instance type selection - NetworkBandwidthGbps and AllowedInstanceTypes.
+* api-change:``elasticache``: Added support for IPv6 and dual stack for Memcached and Redis clusters. Customers can now launch new Redis and Memcached clusters with IPv6 and dual stack networking support.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has added support for setting the SDR reference white point for HDR conversions and conversion of HDR10 to DolbyVision without mastering metadata.
+* api-change:``ssm``: This release includes support for applying a CloudWatch alarm to multi account multi region Systems Manager Automation
+* api-change:``wafv2``: The geo match statement now adds labels for country and region. You can match requests at the region level by combining a geo match statement with label match statements.
+* api-change:``wellarchitected``: This release adds support for integrations with AWS Trusted Advisor and AWS Service Catalog AppRegistry to improve workload discovery and speed up your workload reviews.
+* api-change:``workspaces``: This release adds protocols attribute to workspaces properties data type. This enables customers to migrate workspaces from PC over IP (PCoIP) to WorkSpaces Streaming Protocol (WSP) using create and modify workspaces public APIs.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.27.3
 ======
 

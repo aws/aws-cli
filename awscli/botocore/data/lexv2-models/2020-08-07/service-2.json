@@ -13,6 +13,60 @@
     "uid":"models.lex.v2-2020-08-07"
   },
   "operations":{
+    "BatchCreateCustomVocabularyItem":{
+      "name":"BatchCreateCustomVocabularyItem",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchcreate",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchCreateCustomVocabularyItemRequest"},
+      "output":{"shape":"BatchCreateCustomVocabularyItemResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Batch create custom vocabulary item for the specified locale in the specified bot.</p>"
+    },
+    "BatchDeleteCustomVocabularyItem":{
+      "name":"BatchDeleteCustomVocabularyItem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchdelete",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteCustomVocabularyItemRequest"},
+      "output":{"shape":"BatchDeleteCustomVocabularyItemResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Batch delete custom vocabulary item for the specified locale in the specified bot.</p>"
+    },
+    "BatchUpdateCustomVocabularyItem":{
+      "name":"BatchUpdateCustomVocabularyItem",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchupdate",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateCustomVocabularyItemRequest"},
+      "output":{"shape":"BatchUpdateCustomVocabularyItemResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Batch update custom vocabulary item for the specified locale in the specified bot.</p>"
+    },
     "BuildBotLocale":{
       "name":"BuildBotLocale",
       "http":{
@@ -823,6 +877,24 @@
       ],
       "documentation":"<p>Gets a list of built-in slot types that meet the specified criteria.</p>"
     },
+    "ListCustomVocabularyItems":{
+      "name":"ListCustomVocabularyItems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCustomVocabularyItemsRequest"},
+      "output":{"shape":"ListCustomVocabularyItemsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List custom vocabulary items for the specified locale in the specified bot.</p>"
+    },
     "ListExports":{
       "name":"ListExports",
       "http":{
@@ -888,7 +960,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets a list of recommended intents provided by the bot recommendation that you can use in your bot.</p>"
+      "documentation":"<p>Gets a list of recommended intents provided by the bot recommendation that you can use in your bot. Intents in the response are ordered by relevance.</p>"
     },
     "ListSlotTypes":{
       "name":"ListSlotTypes",
@@ -1488,6 +1560,180 @@
         }
       },
       "documentation":"<p>Specifies the audio input specifications.</p>"
+    },
+    "BatchCreateCustomVocabularyItemRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId",
+        "customVocabularyItemList"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to batch create the custom vocabulary item for.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to batch create the custom vocabulary item for.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The unique locale identifier of the bot to batch create the custom vocabulary item for.</p>",
+          "location":"uri",
+          "locationName":"localeId"
+        },
+        "customVocabularyItemList":{
+          "shape":"CreateCustomVocabularyItemsList",
+          "documentation":"<p>The custom vocabulary item list of the bot to batch create the custom vocabulary item for.</p>"
+        }
+      }
+    },
+    "BatchCreateCustomVocabularyItemResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to batch create response for the custom vocabulary item.</p>"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to batch create the custom vocabulary item response for.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The unique locale identifier of the bot to batch create the custom vocabulary item response for.</p>"
+        },
+        "errors":{
+          "shape":"FailedCustomVocabularyItems",
+          "documentation":"<p>The errors of the action to batch create the custom vocabulary item response for a bot.</p>"
+        },
+        "resources":{
+          "shape":"CustomVocabularyItems",
+          "documentation":"<p>The resources of the action to batch create the custom vocabulary item response for a bot.</p>"
+        }
+      }
+    },
+    "BatchDeleteCustomVocabularyItemRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId",
+        "customVocabularyItemList"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to batch delete request for the custom vocabulary item.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The version of the bot to batch delete request for the custom vocabulary item.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot to batch delete request for the custom vocabulary item.</p>",
+          "location":"uri",
+          "locationName":"localeId"
+        },
+        "customVocabularyItemList":{
+          "shape":"DeleteCustomVocabularyItemsList",
+          "documentation":"<p>The custom vocabulary list to batch delete request for the custom vocabulary item.</p>"
+        }
+      }
+    },
+    "BatchDeleteCustomVocabularyItemResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to batch delete response for the custom vocabulary item.</p>"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The version of the bot to batch delete response for the custom vocabulary item.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot to batch delete response for the custom vocabulary item.</p>"
+        },
+        "errors":{
+          "shape":"FailedCustomVocabularyItems",
+          "documentation":"<p>The errors of the action to batch delete response for the custom vocabulary item.</p>"
+        },
+        "resources":{
+          "shape":"CustomVocabularyItems",
+          "documentation":"<p>The resources of the action to batch delete response for the custom vocabulary item.</p>"
+        }
+      }
+    },
+    "BatchUpdateCustomVocabularyItemRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId",
+        "customVocabularyItemList"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to the batch update request for the custom vocabulary item.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to the batch update request for the custom vocabulary item.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot to the batch update request for the custom vocabulary item.</p>",
+          "location":"uri",
+          "locationName":"localeId"
+        },
+        "customVocabularyItemList":{
+          "shape":"UpdateCustomVocabularyItemsList",
+          "documentation":"<p>The custom vocabulary item list of the bot to the batch update request for the custom vocabulary item.</p>"
+        }
+      }
+    },
+    "BatchUpdateCustomVocabularyItemResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to the batch update response for the custom vocabulary item.</p>"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to the batch update response for the custom vocabulary item.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot to the batch update response for the custom vocabulary item.</p>"
+        },
+        "errors":{
+          "shape":"FailedCustomVocabularyItems",
+          "documentation":"<p>The errors of the action to batch update response for the custom vocabulary item.</p>"
+        },
+        "resources":{
+          "shape":"CustomVocabularyItems",
+          "documentation":"<p>The resources of the action to batch update response for the custom vocabulary item.</p>"
+        }
+      }
     },
     "Boolean":{"type":"boolean"},
     "BotAliasHistoryEvent":{
@@ -2748,6 +2994,12 @@
         }
       }
     },
+    "CreateCustomVocabularyItemsList":{
+      "type":"list",
+      "member":{"shape":"NewCustomVocabularyItem"},
+      "max":10,
+      "min":1
+    },
     "CreateExportRequest":{
       "type":"structure",
       "required":[
@@ -3299,6 +3551,17 @@
       "max":1000,
       "min":1
     },
+    "CustomVocabularyEntryId":{
+      "type":"structure",
+      "required":["itemId"],
+      "members":{
+        "itemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique item identifier for the custom vocabulary items.</p>"
+        }
+      },
+      "documentation":"<p>The unique entry identifier for the custom vocabulary items.</p>"
+    },
     "CustomVocabularyExportSpecification":{
       "type":"structure",
       "required":[
@@ -3344,6 +3607,36 @@
         }
       },
       "documentation":"<p>Provides the parameters required for importing a custom vocabulary.</p>"
+    },
+    "CustomVocabularyItem":{
+      "type":"structure",
+      "required":[
+        "itemId",
+        "phrase"
+      ],
+      "members":{
+        "itemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique item identifer for the custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "phrase":{
+          "shape":"Phrase",
+          "documentation":"<p>The unique phrase for the custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "weight":{
+          "shape":"Weight",
+          "documentation":"<p>The weight assigned for the custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "displayAs":{
+          "shape":"Phrase",
+          "documentation":"<p>The display as value for the custom vocabulary item from the custom vocabulary list.</p>"
+        }
+      },
+      "documentation":"<p>The unique custom vocabulary item from the custom vocabulary list.</p>"
+    },
+    "CustomVocabularyItems":{
+      "type":"list",
+      "member":{"shape":"CustomVocabularyItem"}
     },
     "CustomVocabularyStatus":{
       "type":"string",
@@ -3594,6 +3887,12 @@
           "documentation":"<p>The current status of the bot. </p>"
         }
       }
+    },
+    "DeleteCustomVocabularyItemsList":{
+      "type":"list",
+      "member":{"shape":"CustomVocabularyEntryId"},
+      "max":10,
+      "min":1
     },
     "DeleteCustomVocabularyRequest":{
       "type":"structure",
@@ -4913,6 +5212,16 @@
       },
       "documentation":"<p>The object representing the passwords that were used to encrypt the data related to the bot recommendation, as well as the KMS key ARN used to encrypt the associated metadata.</p>"
     },
+    "ErrorCode":{
+      "type":"string",
+      "enum":[
+        "DUPLICATE_INPUT",
+        "RESOURCE_DOES_NOT_EXIST",
+        "RESOURCE_ALREADY_EXISTS",
+        "INTERNAL_SERVER_FAILURE"
+      ]
+    },
+    "ErrorMessage":{"type":"string"},
     "ExceptionMessage":{"type":"string"},
     "ExportFilter":{
       "type":"structure",
@@ -5046,6 +5355,28 @@
         }
       },
       "documentation":"<p>Provides information about the external source of the slot type's definition.</p>"
+    },
+    "FailedCustomVocabularyItem":{
+      "type":"structure",
+      "members":{
+        "itemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique item identifer for the failed custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The error message for the failed custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The unique error code for the failed custom vocabulary item from the custom vocabulary list.</p>"
+        }
+      },
+      "documentation":"<p>The unique failed custom vocabulary item from the custom vocabulary list.</p>"
+    },
+    "FailedCustomVocabularyItems":{
+      "type":"list",
+      "member":{"shape":"FailedCustomVocabularyItem"}
     },
     "FailureReason":{"type":"string"},
     "FailureReasons":{
@@ -5632,6 +5963,11 @@
       "exception":true,
       "fault":true
     },
+    "ItemId":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
     "KendraConfiguration":{
       "type":"structure",
       "required":["kendraIndex"],
@@ -6100,6 +6436,67 @@
         "localeId":{
           "shape":"LocaleId",
           "documentation":"<p>The language and locale of the slot types in the list.</p>"
+        }
+      }
+    },
+    "ListCustomVocabularyItemsRequest":{
+      "type":"structure",
+      "required":[
+        "botId",
+        "botVersion",
+        "localeId"
+      ],
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to the list custom vocabulary request.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to the list custom vocabulary request.</p>",
+          "location":"uri",
+          "locationName":"botVersion"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot to the list custom vocabulary request.</p>",
+          "location":"uri",
+          "locationName":"localeId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum results to the list custom vocabulary request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The nextToken identifier to the list custom vocabulary request.</p>"
+        }
+      }
+    },
+    "ListCustomVocabularyItemsResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the bot to the list custom vocabulary response.</p>"
+        },
+        "botVersion":{
+          "shape":"BotVersion",
+          "documentation":"<p>The bot version of the bot to the list custom vocabulary response.</p>"
+        },
+        "localeId":{
+          "shape":"LocaleId",
+          "documentation":"<p>The locale identifier of the bot to the list custom vocabulary response.</p>"
+        },
+        "customVocabularyItems":{
+          "shape":"CustomVocabularyItems",
+          "documentation":"<p>The custom vocabulary items from the list custom vocabulary response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The nextToken identifier to the list custom vocabulary response.</p>"
         }
       }
     },
@@ -6628,6 +7025,25 @@
       "min":1,
       "pattern":"^([0-9a-zA-Z][_-]?)+$"
     },
+    "NewCustomVocabularyItem":{
+      "type":"structure",
+      "required":["phrase"],
+      "members":{
+        "phrase":{
+          "shape":"Phrase",
+          "documentation":"<p>The unique phrase for the new custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "weight":{
+          "shape":"Weight",
+          "documentation":"<p>The weight assigned to the new custom vocabulary item from the custom vocabulary list.</p>"
+        },
+        "displayAs":{
+          "shape":"Phrase",
+          "documentation":"<p>The display as value assigned to the new custom vocabulary item from the custom vocabulary list.</p>"
+        }
+      },
+      "documentation":"<p>The new custom vocabulary item from the custom vocabulary list.</p>"
+    },
     "NextIndex":{
       "type":"integer",
       "box":true,
@@ -6722,6 +7138,11 @@
         }
       },
       "documentation":"<p>The object that contains a path format that will be applied when Amazon Lex reads the transcript file in the bucket you provide. Specify this object if you only want Lex to read a subset of files in your Amazon S3 bucket.</p>"
+    },
+    "Phrase":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "PlainTextMessage":{
       "type":"structure",
@@ -8557,6 +8978,12 @@
         }
       }
     },
+    "UpdateCustomVocabularyItemsList":{
+      "type":"list",
+      "member":{"shape":"CustomVocabularyItem"},
+      "max":10,
+      "min":1
+    },
     "UpdateExportRequest":{
       "type":"structure",
       "required":["exportId"],
@@ -9131,6 +9558,12 @@
         }
       },
       "documentation":"<p>Specifies the prompts that Amazon Lex uses while a bot is waiting for customer input. </p>"
+    },
+    "Weight":{
+      "type":"integer",
+      "box":true,
+      "max":3,
+      "min":1
     }
   },
   "documentation":"<p/>"

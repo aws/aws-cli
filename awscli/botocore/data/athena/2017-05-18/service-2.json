@@ -252,7 +252,8 @@
       "output":{"shape":"GetQueryResultsOutput"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"InvalidRequestException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Streams the results of a single query execution specified by <code>QueryExecutionId</code> from the Athena query results location in Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Query Results</a> in the <i>Amazon Athena User Guide</i>. This request does not execute the query but returns results. Use <a>StartQueryExecution</a> to run a query.</p> <p>To stream query results successfully, the IAM principal with permission to call <code>GetQueryResults</code> also must have permissions to the Amazon S3 <code>GetObject</code> action for the Athena query results location.</p> <important> <p>IAM principals with permission to the Amazon S3 <code>GetObject</code> action for the query results location are able to retrieve query results from Amazon S3 even if permission to the <code>GetQueryResults</code> action is denied. To restrict user or role access, ensure that Amazon S3 permissions to the Athena query location are denied.</p> </important>"
     },
@@ -559,6 +560,11 @@
         }
       },
       "documentation":"<p>Indicates that an Amazon S3 canned ACL should be set to control ownership of stored query results. When Athena stores query results in Amazon S3, the canned ACL is set with the <code>x-amz-acl</code> request header. For more information about S3 Object Ownership, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html#object-ownership-overview\">Object Ownership settings</a> in the <i>Amazon S3 User Guide</i>.</p>"
+    },
+    "Age":{
+      "type":"integer",
+      "max":10080,
+      "min":0
     },
     "AmazonResourceName":{
       "type":"string",
@@ -1882,6 +1888,10 @@
           "shape":"ResultConfiguration",
           "documentation":"<p>The location in Amazon S3 where query results were stored and the encryption option, if any, used for query results. These are known as \"client-side settings\". If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup.</p>"
         },
+        "ResultReuseConfiguration":{
+          "shape":"ResultReuseConfiguration",
+          "documentation":"<p>Specifies the query result reuse behavior that was used for the query.</p>"
+        },
         "QueryExecutionContext":{
           "shape":"QueryExecutionContext",
           "documentation":"<p>The database in which the query execution occurred.</p>"
@@ -1979,6 +1989,10 @@
         "ServiceProcessingTimeInMillis":{
           "shape":"Long",
           "documentation":"<p>The number of milliseconds that Athena took to finalize and publish the query results after the query engine finished running the query.</p>"
+        },
+        "ResultReuseInformation":{
+          "shape":"ResultReuseInformation",
+          "documentation":"<p>Contains information about whether previous query results were reused for the query.</p>"
         }
       },
       "documentation":"<p>The amount of data scanned during the query execution and the amount of time that it took to execute, and the type of statement that was run.</p>"
@@ -2219,6 +2233,42 @@
       "documentation":"<p>The information about the updates in the query results, such as output location and encryption configuration for the query results.</p>"
     },
     "ResultOutputLocation":{"type":"string"},
+    "ResultReuseByAgeConfiguration":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if previous query results can be reused when the query is run; otherwise, false. The default is false.</p>"
+        },
+        "MaxAgeInMinutes":{
+          "shape":"Age",
+          "documentation":"<p>Specifies, in minutes, the maximum age of a previous query result that Athena should consider for reuse. The default is 60.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether previous query results are reused, and if so, their maximum age.</p>"
+    },
+    "ResultReuseConfiguration":{
+      "type":"structure",
+      "members":{
+        "ResultReuseByAgeConfiguration":{
+          "shape":"ResultReuseByAgeConfiguration",
+          "documentation":"<p>Specifies whether previous query results are reused, and if so, their maximum age.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the query result reuse behavior for the query.</p>"
+    },
+    "ResultReuseInformation":{
+      "type":"structure",
+      "required":["ReusedPreviousResult"],
+      "members":{
+        "ReusedPreviousResult":{
+          "shape":"Boolean",
+          "documentation":"<p>True if a previous query result was reused; false if the result was generated from a new run of the query.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about whether the result of a previous query was reused.</p>"
+    },
     "ResultSet":{
       "type":"structure",
       "members":{
@@ -2289,6 +2339,10 @@
         "ExecutionParameters":{
           "shape":"ExecutionParameters",
           "documentation":"<p>A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur.</p>"
+        },
+        "ResultReuseConfiguration":{
+          "shape":"ResultReuseConfiguration",
+          "documentation":"<p>Specifies the query result reuse behavior for the query.</p>"
         }
       }
     },

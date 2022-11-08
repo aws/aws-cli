@@ -45,6 +45,39 @@
       ],
       "documentation":"<p>Sets the Firewall Manager policy administrator as a tenant administrator of a third-party firewall service. A tenant is an instance of the third-party firewall service that's associated with your Amazon Web Services customer account.</p>"
     },
+    "BatchAssociateResource":{
+      "name":"BatchAssociateResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchAssociateResourceRequest"},
+      "output":{"shape":"BatchAssociateResourceResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associate resources to a Firewall Manager resource set.</p>"
+    },
+    "BatchDisassociateResource":{
+      "name":"BatchDisassociateResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchDisassociateResourceRequest"},
+      "output":{"shape":"BatchDisassociateResourceResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates resources from a Firewall Manager resource set.</p>"
+    },
     "DeleteAppsList":{
       "name":"DeleteAppsList",
       "http":{
@@ -102,6 +135,21 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Permanently deletes an Firewall Manager protocols list.</p>"
+    },
+    "DeleteResourceSet":{
+      "name":"DeleteResourceSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourceSetRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidOperationException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Deletes the specified <a>ResourceSet</a>.</p>"
     },
     "DisassociateAdminAccount":{
       "name":"DisassociateAdminAccount",
@@ -240,6 +288,22 @@
       ],
       "documentation":"<p>Returns information about the specified Firewall Manager protocols list.</p>"
     },
+    "GetResourceSet":{
+      "name":"GetResourceSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourceSetRequest"},
+      "output":{"shape":"GetResourceSetResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Gets information about a specific resource set.</p>"
+    },
     "GetThirdPartyFirewallAssociationStatus":{
       "name":"GetThirdPartyFirewallAssociationStatus",
       "http":{
@@ -301,6 +365,21 @@
       ],
       "documentation":"<p>Returns an array of <code>PolicyComplianceStatus</code> objects. Use <code>PolicyComplianceStatus</code> to get a summary of which member accounts are protected by the specified policy. </p>"
     },
+    "ListDiscoveredResources":{
+      "name":"ListDiscoveredResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDiscoveredResourcesRequest"},
+      "output":{"shape":"ListDiscoveredResourcesResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns an array of resources in the organization's accounts that are available to be associated with a resource set.</p>"
+    },
     "ListMemberAccounts":{
       "name":"ListMemberAccounts",
       "http":{
@@ -345,6 +424,37 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Returns an array of <code>ProtocolsListDataSummary</code> objects.</p>"
+    },
+    "ListResourceSetResources":{
+      "name":"ListResourceSetResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceSetResourcesRequest"},
+      "output":{"shape":"ListResourceSetResourcesResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns an array of resources that are currently associated to a resource set.</p>"
+    },
+    "ListResourceSets":{
+      "name":"ListResourceSets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceSetsRequest"},
+      "output":{"shape":"ListResourceSetsResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns an array of <code>ResourceSetSummary</code> objects.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -444,6 +554,22 @@
       ],
       "documentation":"<p>Creates an Firewall Manager protocols list.</p>"
     },
+    "PutResourceSet":{
+      "name":"PutResourceSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourceSetRequest"},
+      "output":{"shape":"PutResourceSetResponse"},
+      "errors":[
+        {"shape":"InvalidOperationException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Creates the resource set.</p> <p>An Firewall Manager resource set defines the resources to import into an Firewall Manager policy from another Amazon Web Services service.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -484,6 +610,10 @@
       "max":1024,
       "min":1,
       "pattern":"^[0-9]+$"
+    },
+    "AWSAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AWSAccountId"}
     },
     "AccountRoleStatus":{
       "type":"string",
@@ -683,10 +813,84 @@
       },
       "documentation":"<p>Violation detail for the rule violation in a security group when compared to the primary security group of the Firewall Manager policy.</p>"
     },
+    "Base62Id":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^[a-z0-9A-Z]{22}$"
+    },
     "BasicInteger":{
       "type":"integer",
       "max":2147483647,
       "min":-2147483648
+    },
+    "BatchAssociateResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceSetIdentifier",
+        "Items"
+      ],
+      "members":{
+        "ResourceSetIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        },
+        "Items":{
+          "shape":"IdentifierList",
+          "documentation":"<p>The uniform resource identifiers (URIs) of resources that should be associated to the resource set. The URIs must be Amazon Resource Names (ARNs).</p>"
+        }
+      }
+    },
+    "BatchAssociateResourceResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceSetIdentifier",
+        "FailedItems"
+      ],
+      "members":{
+        "ResourceSetIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        },
+        "FailedItems":{
+          "shape":"FailedItemList",
+          "documentation":"<p>The resources that failed to associate to the resource set.</p>"
+        }
+      }
+    },
+    "BatchDisassociateResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceSetIdentifier",
+        "Items"
+      ],
+      "members":{
+        "ResourceSetIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        },
+        "Items":{
+          "shape":"IdentifierList",
+          "documentation":"<p>The uniform resource identifiers (URI) of resources that should be disassociated from the resource set. The URIs must be Amazon Resource Names (ARNs).</p>"
+        }
+      }
+    },
+    "BatchDisassociateResourceResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceSetIdentifier",
+        "FailedItems"
+      ],
+      "members":{
+        "ResourceSetIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        },
+        "FailedItems":{
+          "shape":"FailedItemList",
+          "documentation":"<p>The resources that failed to disassociate from the resource set.</p>"
+        }
+      }
     },
     "Boolean":{"type":"boolean"},
     "CIDR":{
@@ -787,6 +991,16 @@
         }
       }
     },
+    "DeleteResourceSetRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"Base62Id",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        }
+      }
+    },
     "DependentServiceName":{
       "type":"string",
       "enum":[
@@ -795,6 +1009,11 @@
         "AWSSHIELD_ADVANCED",
         "AWSVPC"
       ]
+    },
+    "Description":{
+      "type":"string",
+      "max":256,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "DestinationType":{
       "type":"string",
@@ -806,7 +1025,7 @@
     },
     "DetailedInfo":{
       "type":"string",
-      "max":1024,
+      "max":4096,
       "min":1,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=,+\\-@]*)$"
     },
@@ -833,6 +1052,32 @@
           "documentation":"<p>The current status for the disassociation of a Firewall Manager administrators account with a third-party firewall.</p>"
         }
       }
+    },
+    "DiscoveredResource":{
+      "type":"structure",
+      "members":{
+        "URI":{
+          "shape":"Identifier",
+          "documentation":"<p>The universal resource identifier (URI) of the discovered resource.</p>"
+        },
+        "AccountId":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the discovered resource.</p>"
+        },
+        "Type":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the discovered resource.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the discovered resource.</p>"
+        }
+      },
+      "documentation":"<p>A resource in the organization that's available to be associated with a Firewall Manager resource set.</p>"
+    },
+    "DiscoveredResourceList":{
+      "type":"list",
+      "member":{"shape":"DiscoveredResource"}
     },
     "DnsDuplicateRuleGroupViolation":{
       "type":"structure",
@@ -1147,6 +1392,35 @@
       },
       "documentation":"<p>Contains information about the actions that you can take to remediate scope violations caused by your policy's <code>FirewallCreationConfig</code>. <code>FirewallCreationConfig</code> is an optional configuration that you can use to choose which Availability Zones Firewall Manager creates Network Firewall endpoints in.</p>"
     },
+    "FailedItem":{
+      "type":"structure",
+      "members":{
+        "URI":{
+          "shape":"Identifier",
+          "documentation":"<p>The univeral resource indicator (URI) of the resource that failed.</p>"
+        },
+        "Reason":{
+          "shape":"FailedItemReason",
+          "documentation":"<p>The reason the resource's association could not be updated.</p>"
+        }
+      },
+      "documentation":"<p>Details of a resource that failed when trying to update it's association to a resource set.</p>"
+    },
+    "FailedItemList":{
+      "type":"list",
+      "member":{"shape":"FailedItem"}
+    },
+    "FailedItemReason":{
+      "type":"string",
+      "enum":[
+        "NOT_VALID_ARN",
+        "NOT_VALID_PARTITION",
+        "NOT_VALID_REGION",
+        "NOT_VALID_SERVICE",
+        "NOT_VALID_RESOURCE_TYPE",
+        "NOT_VALID_ACCOUNT_ID"
+      ]
+    },
     "FirewallDeploymentModel":{
       "type":"string",
       "enum":[
@@ -1404,6 +1678,33 @@
         }
       }
     },
+    "GetResourceSetRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"Base62Id",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        }
+      }
+    },
+    "GetResourceSetResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceSet",
+        "ResourceSetArn"
+      ],
+      "members":{
+        "ResourceSet":{
+          "shape":"ResourceSet",
+          "documentation":"<p>Information about the specified resource set.</p>"
+        },
+        "ResourceSetArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource set.</p>"
+        }
+      }
+    },
     "GetThirdPartyFirewallAssociationStatusRequest":{
       "type":"structure",
       "required":["ThirdPartyFirewall"],
@@ -1467,6 +1768,16 @@
       "type":"long",
       "max":65535,
       "min":0
+    },
+    "Identifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "IdentifierList":{
+      "type":"list",
+      "member":{"shape":"Identifier"}
     },
     "InternalErrorException":{
       "type":"structure",
@@ -1584,6 +1895,44 @@
         }
       }
     },
+    "ListDiscoveredResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "MemberAccountIds",
+        "ResourceType"
+      ],
+      "members":{
+        "MemberAccountIds":{
+          "shape":"AWSAccountIdList",
+          "documentation":"<p>The Amazon Web Services account IDs to discover resources in. Only one account is supported per request. The account must be a member of your organization.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resources to discover.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListDiscoveredResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"DiscoveredResourceList",
+          "documentation":"<p>Details of the resources that were discovered.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
     "ListId":{
       "type":"string",
       "max":36,
@@ -1673,6 +2022,64 @@
         }
       }
     },
+    "ListResourceSetResourcesRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the resource set, used in a TODO to refer to the resource set.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListResourceSetResourcesResponse":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"ResourceList",
+          "documentation":"<p>An array of the associated resources' uniform resource identifiers (URI).</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListResourceSetsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Firewall Manager to return for this request. If more objects are available, in the response, Firewall Manager provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListResourceSetsResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceSets":{
+          "shape":"ResourceSetSummaryList",
+          "documentation":"<p>An array of <code>ResourceSetSummary</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Firewall Manager returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1743,6 +2150,12 @@
     "MemberAccounts":{
       "type":"list",
       "member":{"shape":"AWSAccountId"}
+    },
+    "Name":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "NetworkFirewallAction":{
       "type":"string",
@@ -2220,6 +2633,14 @@
         "ExcludeMap":{
           "shape":"CustomerPolicyScopeMap",
           "documentation":"<p>Specifies the Amazon Web Services account IDs and Organizations organizational units (OUs) to exclude from the policy. Specifying an OU is the equivalent of specifying all accounts in the OU and in any of its child OUs, including any child OUs and accounts that are added at a later time.</p> <p>You can specify inclusions or exclusions, but not both. If you specify an <code>IncludeMap</code>, Firewall Manager applies the policy to all accounts specified by the <code>IncludeMap</code>, and does not evaluate any <code>ExcludeMap</code> specifications. If you do not specify an <code>IncludeMap</code>, then Firewall Manager applies the policy to all accounts except for those specified by the <code>ExcludeMap</code>.</p> <p>You can specify account IDs, OUs, or a combination: </p> <ul> <li> <p>Specify account IDs by setting the key to <code>ACCOUNT</code>. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”]}</code>.</p> </li> <li> <p>Specify OUs by setting the key to <code>ORG_UNIT</code>. For example, the following is a valid map: <code>{“ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> <li> <p>Specify accounts and OUs together in a single map, separated with a comma. For example, the following is a valid map: <code>{“ACCOUNT” : [“accountID1”, “accountID2”], “ORG_UNIT” : [“ouid111”, “ouid112”]}</code>.</p> </li> </ul>"
+        },
+        "ResourceSetIds":{
+          "shape":"ResourceSetIds",
+          "documentation":"<p>The unique identifiers of the resource sets used by the policy.</p>"
+        },
+        "PolicyDescription":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The definition of the Network Firewall firewall policy.</p>"
         }
       },
       "documentation":"<p>An Firewall Manager policy.</p>"
@@ -2594,6 +3015,37 @@
         }
       }
     },
+    "PutResourceSetRequest":{
+      "type":"structure",
+      "required":["ResourceSet"],
+      "members":{
+        "ResourceSet":{
+          "shape":"ResourceSet",
+          "documentation":"<p>Details about the resource set to be created or updated.&gt;</p>"
+        },
+        "TagList":{
+          "shape":"TagList",
+          "documentation":"<p>Retrieves the tags associated with the specified resource set. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to \"customer\" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.</p>"
+        }
+      }
+    },
+    "PutResourceSetResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceSet",
+        "ResourceSetArn"
+      ],
+      "members":{
+        "ResourceSet":{
+          "shape":"ResourceSet",
+          "documentation":"<p>Details about the resource set.</p>"
+        },
+        "ResourceSetArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource set.</p>"
+        }
+      }
+    },
     "ReferenceRule":{"type":"string"},
     "RemediationAction":{
       "type":"structure",
@@ -2664,6 +3116,21 @@
       },
       "documentation":"<p>An ordered list of actions you can take to remediate a violation.</p>"
     },
+    "Resource":{
+      "type":"structure",
+      "required":["URI"],
+      "members":{
+        "URI":{
+          "shape":"Identifier",
+          "documentation":"<p>The resource's universal resource indicator (URI).</p>"
+        },
+        "AccountId":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The Amazon Web Services account ID that the associated resource belongs to.</p>"
+        }
+      },
+      "documentation":"<p>Details of a resource that is associated to an Firewall Manager resource set.</p>"
+    },
     "ResourceArn":{
       "type":"string",
       "max":1024,
@@ -2674,6 +3141,11 @@
       "type":"long",
       "min":0
     },
+    "ResourceDescription":{
+      "type":"string",
+      "max":256,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
     "ResourceId":{
       "type":"string",
       "max":1024,
@@ -2683,6 +3155,10 @@
     "ResourceIdList":{
       "type":"list",
       "member":{"shape":"ResourceId"}
+    },
+    "ResourceList":{
+      "type":"list",
+      "member":{"shape":"Resource"}
     },
     "ResourceName":{
       "type":"string",
@@ -2697,6 +3173,70 @@
       },
       "documentation":"<p>The specified resource was not found.</p>",
       "exception":true
+    },
+    "ResourceSet":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ResourceTypeList"
+      ],
+      "members":{
+        "Id":{
+          "shape":"Base62Id",
+          "documentation":"<p>A unique identifier for the resource set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The descriptive name of the resource set. You can't change the name of a resource set after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the resource set.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Firewall Manager returns a token to your requests that access the resource set. The token marks the state of the resource set resource at the time of the request. Update tokens are not allowed when creating a resource set. After creation, each subsequent update call to the resource set requires the update token. </p> <p>To make an unconditional change to the resource set, omit the token in your update request. Without the token, Firewall Manager performs your updates regardless of whether the resource set has changed since you last retrieved it.</p> <p>To make a conditional change to the resource set, provide the token in your update request. Firewall Manager uses the token to ensure that the resource set hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the resource set again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "ResourceTypeList":{
+          "shape":"ResourceTypeList",
+          "documentation":"<p>Determines the resources that can be associated to the resource set. Depending on your setting for max results and the number of resource sets, a single call might not return the full list.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The last time that the resource set was changed.</p>"
+        }
+      },
+      "documentation":"<p>A set of resources to include in a policy.</p>"
+    },
+    "ResourceSetIds":{
+      "type":"list",
+      "member":{"shape":"Base62Id"}
+    },
+    "ResourceSetSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"Base62Id",
+          "documentation":"<p>A unique identifier for the resource set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The descriptive name of the resource set. You can't change the name of a resource set after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the resource set.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The last time that the resource set was changed.</p>"
+        }
+      },
+      "documentation":"<p>Summarizes the resource sets used in a policy.</p>"
+    },
+    "ResourceSetSummaryList":{
+      "type":"list",
+      "member":{"shape":"ResourceSetSummary"}
     },
     "ResourceTag":{
       "type":"structure",
@@ -3012,7 +3552,8 @@
         "SECURITY_GROUPS_USAGE_AUDIT",
         "NETWORK_FIREWALL",
         "DNS_FIREWALL",
-        "THIRD_PARTY_FIREWALL"
+        "THIRD_PARTY_FIREWALL",
+        "IMPORT_NETWORK_FIREWALL"
       ]
     },
     "StatefulEngineOptions":{

@@ -3188,6 +3188,17 @@
       "max":2048,
       "min":1
     },
+    "Protocol":{
+      "type":"string",
+      "enum":[
+        "PCOIP",
+        "WSP"
+      ]
+    },
+    "ProtocolList":{
+      "type":"list",
+      "member":{"shape":"Protocol"}
+    },
     "RebootRequest":{
       "type":"structure",
       "required":["WorkspaceId"],
@@ -4308,6 +4319,10 @@
         "ComputeTypeName":{
           "shape":"Compute",
           "documentation":"<p>The compute type. For more information, see <a href=\"http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles\">Amazon WorkSpaces Bundles</a>.</p>"
+        },
+        "Protocols":{
+          "shape":"ProtocolList",
+          "documentation":"<p>The protocol. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-protocols.html\"> Protocols for Amazon WorkSpaces</a>.</p> <note> <ul> <li> <p>Only available for WorkSpaces created with PCoIP bundles.</p> </li> <li> <p>The <code>Protocols</code> property is case sensitive. Ensure you use <code>PCOIP</code> or <code>WSP</code>.</p> </li> <li> <p>Unavailable for Windows 7 WorkSpaces and WorkSpaces using GPU-based bundles (Graphics, GraphicsPro, Graphics.g4dn, and GraphicsPro.g4dn).</p> </li> </ul> </note>"
         }
       },
       "documentation":"<p>Describes a WorkSpace.</p>"

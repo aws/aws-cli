@@ -47,7 +47,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Create a lens share.</p> <p>The owner of a lens can share it with other Amazon Web Services accounts and IAM users in the same Amazon Web Services Region. Shared access to a lens is not removed until the lens invitation is deleted.</p> <note> <p> <b>Disclaimer</b> </p> <p>By sharing your custom lenses with other Amazon Web Services accounts, you acknowledge that Amazon Web Services will make your custom lenses available to those other accounts. Those other accounts may continue to access and use your shared custom lenses even if you delete the custom lenses from your own Amazon Web Services account or terminate your Amazon Web Services account.</p> </note>"
+      "documentation":"<p>Create a lens share.</p> <p>The owner of a lens can share it with other Amazon Web Services accounts, IAM users, an organization, and organizational units (OUs) in the same Amazon Web Services Region. Shared access to a lens is not removed until the lens invitation is deleted.</p> <note> <p> <b>Disclaimer</b> </p> <p>By sharing your custom lenses with other Amazon Web Services accounts, you acknowledge that Amazon Web Services will make your custom lenses available to those other accounts. Those other accounts may continue to access and use your shared custom lenses even if you delete the custom lenses from your own Amazon Web Services account or terminate your Amazon Web Services account.</p> </note>"
     },
     "CreateLensVersion":{
       "name":"CreateLensVersion",
@@ -103,7 +103,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Create a new workload.</p> <p>The owner of a workload can share the workload with other Amazon Web Services accounts and IAM users in the same Amazon Web Services Region. Only the owner of a workload can delete it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/define-workload.html\">Defining a Workload</a> in the <i>Well-Architected Tool User Guide</i>.</p>"
+      "documentation":"<p>Create a new workload.</p> <p>The owner of a workload can share the workload with other Amazon Web Services accounts, IAM users, an organization, and organizational units (OUs) in the same Amazon Web Services Region. Only the owner of a workload can delete it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/define-workload.html\">Defining a Workload</a> in the <i>Well-Architected Tool User Guide</i>.</p>"
     },
     "CreateWorkloadShare":{
       "name":"CreateWorkloadShare",
@@ -156,7 +156,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Delete a lens share.</p> <p>After the lens share is deleted, Amazon Web Services accounts and IAM users that you shared the lens with can continue to use it, but they will no longer be able to apply it to new workloads.</p> <note> <p> <b>Disclaimer</b> </p> <p>By sharing your custom lenses with other Amazon Web Services accounts, you acknowledge that Amazon Web Services will make your custom lenses available to those other accounts. Those other accounts may continue to access and use your shared custom lenses even if you delete the custom lenses from your own Amazon Web Services account or terminate your Amazon Web Services account.</p> </note>"
+      "documentation":"<p>Delete a lens share.</p> <p>After the lens share is deleted, Amazon Web Services accounts, IAM users, organizations, and organizational units (OUs) that you shared the lens with can continue to use it, but they will no longer be able to apply it to new workloads.</p> <note> <p> <b>Disclaimer</b> </p> <p>By sharing your custom lenses with other Amazon Web Services accounts, you acknowledge that Amazon Web Services will make your custom lenses available to those other accounts. Those other accounts may continue to access and use your shared custom lenses even if you delete the custom lenses from your own Amazon Web Services account or terminate your Amazon Web Services account.</p> </note>"
     },
     "DeleteWorkload":{
       "name":"DeleteWorkload",
@@ -380,6 +380,40 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List of answers.</p>"
+    },
+    "ListCheckDetails":{
+      "name":"ListCheckDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workloads/{WorkloadId}/checks"
+      },
+      "input":{"shape":"ListCheckDetailsInput"},
+      "output":{"shape":"ListCheckDetailsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List of Trusted Advisor check details by account related to the workload.</p>"
+    },
+    "ListCheckSummaries":{
+      "name":"ListCheckSummaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workloads/{WorkloadId}/checkSummaries"
+      },
+      "input":{"shape":"ListCheckSummariesInput"},
+      "output":{"shape":"ListCheckSummariesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List of Trusted Advisor checks summarized for all accounts related to the workload.</p>"
     },
     "ListLensReviewImprovements":{
       "name":"ListLensReviewImprovements",
@@ -640,7 +674,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Update a workload invitation.</p>"
+      "documentation":"<p>Update a workload or custom lens share invitation.</p> <note> <p>This API operation can be called independently of any resource. Previous documentation implied that a workload ARN must be specified.</p> </note>"
     },
     "UpdateWorkload":{
       "name":"UpdateWorkload",
@@ -706,6 +740,12 @@
       "documentation":"<p>User does not have sufficient access to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "AccountSummary":{
+      "type":"map",
+      "key":{"shape":"CheckStatus"},
+      "value":{"shape":"CheckStatusCount"},
+      "documentation":"<p>Account summary for a Well-Architected best practice in relation to Trusted Advisor checks.</p>"
     },
     "AdditionalResourceType":{
       "type":"string",
@@ -797,6 +837,11 @@
       },
       "documentation":"<p>An answer summary of a lens review in a workload.</p>"
     },
+    "ApplicationArn":{
+      "type":"string",
+      "max":2084,
+      "pattern":"arn:aws[-a-z]*:servicecatalog:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:/applications/[a-z0-9]+"
+    },
     "AssociateLensesInput":{
       "type":"structure",
       "required":[
@@ -826,6 +871,126 @@
     "Base64String":{
       "type":"string",
       "documentation":"<p>The Base64-encoded string representation of a lens review report.</p> <p>This data can be used to create a PDF file.</p>"
+    },
+    "CheckDescription":{"type":"string"},
+    "CheckDetail":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"CheckId",
+          "documentation":"<p>Trusted Advisor check ID.</p>"
+        },
+        "Name":{
+          "shape":"CheckName",
+          "documentation":"<p>Trusted Advisor check name.</p>"
+        },
+        "Description":{
+          "shape":"CheckDescription",
+          "documentation":"<p>Trusted Advisor check description.</p>"
+        },
+        "Provider":{
+          "shape":"CheckProvider",
+          "documentation":"<p>Provider of the check related to the best practice.</p>"
+        },
+        "LensArn":{
+          "shape":"LensArn",
+          "documentation":"<p>Well-Architected Lens ARN associated to the check.</p>"
+        },
+        "PillarId":{"shape":"PillarId"},
+        "QuestionId":{"shape":"QuestionId"},
+        "ChoiceId":{"shape":"ChoiceId"},
+        "Status":{
+          "shape":"CheckStatus",
+          "documentation":"<p>Status associated to the check.</p>"
+        },
+        "AccountId":{"shape":"AwsAccountId"},
+        "FlaggedResources":{
+          "shape":"FlaggedResources",
+          "documentation":"<p>Count of flagged resources associated to the check.</p>"
+        },
+        "Reason":{
+          "shape":"CheckFailureReason",
+          "documentation":"<p>Reason associated to the check.</p>"
+        },
+        "UpdatedAt":{"shape":"Timestamp"}
+      },
+      "documentation":"<p>Account details for a Well-Architected best practice in relation to Trusted Advisor checks.</p>"
+    },
+    "CheckDetails":{
+      "type":"list",
+      "member":{"shape":"CheckDetail"}
+    },
+    "CheckFailureReason":{
+      "type":"string",
+      "enum":[
+        "ASSUME_ROLE_ERROR",
+        "ACCESS_DENIED",
+        "UNKNOWN_ERROR",
+        "PREMIUM_SUPPORT_REQUIRED"
+      ]
+    },
+    "CheckId":{"type":"string"},
+    "CheckName":{"type":"string"},
+    "CheckProvider":{
+      "type":"string",
+      "enum":["TRUSTED_ADVISOR"]
+    },
+    "CheckStatus":{
+      "type":"string",
+      "enum":[
+        "OKAY",
+        "WARNING",
+        "ERROR",
+        "NOT_AVAILABLE",
+        "FETCH_FAILED"
+      ]
+    },
+    "CheckStatusCount":{
+      "type":"integer",
+      "max":101,
+      "min":1
+    },
+    "CheckSummaries":{
+      "type":"list",
+      "member":{"shape":"CheckSummary"}
+    },
+    "CheckSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"CheckId",
+          "documentation":"<p>Trusted Advisor check ID.</p>"
+        },
+        "Name":{
+          "shape":"CheckName",
+          "documentation":"<p>Trusted Advisor check name.</p>"
+        },
+        "Provider":{
+          "shape":"CheckProvider",
+          "documentation":"<p>Provider of the check related to the best practice.</p>"
+        },
+        "Description":{
+          "shape":"CheckDescription",
+          "documentation":"<p>Trusted Advisor check description.</p>"
+        },
+        "UpdatedAt":{"shape":"Timestamp"},
+        "LensArn":{
+          "shape":"LensArn",
+          "documentation":"<p>Well-Architected Lens ARN associated to the check.</p>"
+        },
+        "PillarId":{"shape":"PillarId"},
+        "QuestionId":{"shape":"QuestionId"},
+        "ChoiceId":{"shape":"ChoiceId"},
+        "Status":{
+          "shape":"CheckStatus",
+          "documentation":"<p>Status associated to the check.</p>"
+        },
+        "AccountSummary":{
+          "shape":"AccountSummary",
+          "documentation":"<p>Account summary associated to the check.</p>"
+        }
+      },
+      "documentation":"<p>Trusted Advisor check summary.</p>"
     },
     "Choice":{
       "type":"structure",
@@ -1149,6 +1314,14 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags to be associated with the workload.</p>"
+        },
+        "DiscoveryConfig":{
+          "shape":"WorkloadDiscoveryConfig",
+          "documentation":"<p>Well-Architected discovery configuration settings associated to the workload.</p>"
+        },
+        "Applications":{
+          "shape":"WorkloadApplications",
+          "documentation":"<p>List of AppRegistry application ARNs associated to the workload.</p>"
         }
       },
       "documentation":"<p>Input for workload creation.</p>"
@@ -1359,6 +1532,11 @@
           "documentation":"<p>The JSON for the lens.</p>"
         }
       }
+    },
+    "FlaggedResources":{
+      "type":"integer",
+      "max":9999,
+      "min":1
     },
     "GetAnswerInput":{
       "type":"structure",
@@ -1974,6 +2152,78 @@
       },
       "documentation":"<p>Output of a list answers call.</p>"
     },
+    "ListCheckDetailsInput":{
+      "type":"structure",
+      "required":[
+        "WorkloadId",
+        "LensArn",
+        "PillarId",
+        "QuestionId",
+        "ChoiceId"
+      ],
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "location":"uri",
+          "locationName":"WorkloadId"
+        },
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"MaxResults"},
+        "LensArn":{
+          "shape":"LensArn",
+          "documentation":"<p>Well-Architected Lens ARN.</p>"
+        },
+        "PillarId":{"shape":"PillarId"},
+        "QuestionId":{"shape":"QuestionId"},
+        "ChoiceId":{"shape":"ChoiceId"}
+      }
+    },
+    "ListCheckDetailsOutput":{
+      "type":"structure",
+      "members":{
+        "CheckDetails":{
+          "shape":"CheckDetails",
+          "documentation":"<p>The details about the Trusted Advisor checks related to the Well-Architected best practice.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListCheckSummariesInput":{
+      "type":"structure",
+      "required":[
+        "WorkloadId",
+        "LensArn",
+        "PillarId",
+        "QuestionId",
+        "ChoiceId"
+      ],
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "location":"uri",
+          "locationName":"WorkloadId"
+        },
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"MaxResults"},
+        "LensArn":{
+          "shape":"LensArn",
+          "documentation":"<p>Well-Architected Lens ARN.</p>"
+        },
+        "PillarId":{"shape":"PillarId"},
+        "QuestionId":{"shape":"QuestionId"},
+        "ChoiceId":{"shape":"ChoiceId"}
+      }
+    },
+    "ListCheckSummariesOutput":{
+      "type":"structure",
+      "members":{
+        "CheckSummaries":{
+          "shape":"CheckSummaries",
+          "documentation":"<p>List of Trusted Advisor summaries related to the Well-Architected best practice.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
     "ListLensReviewImprovementsInput":{
       "type":"structure",
       "required":[
@@ -2083,7 +2333,7 @@
         },
         "SharedWithPrefix":{
           "shape":"SharedWithPrefix",
-          "documentation":"<p>The Amazon Web Services account ID or IAM role with which the lens is shared.</p>",
+          "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the lens is shared.</p>",
           "location":"querystring",
           "locationName":"SharedWithPrefix"
         },
@@ -2286,7 +2536,7 @@
         },
         "SharedWithPrefix":{
           "shape":"SharedWithPrefix",
-          "documentation":"<p>The Amazon Web Services account ID or IAM role with which the workload is shared.</p>",
+          "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the workload is shared.</p>",
           "location":"querystring",
           "locationName":"SharedWithPrefix"
         },
@@ -2679,7 +2929,7 @@
     },
     "SharedWith":{
       "type":"string",
-      "documentation":"<p>The Amazon Web Services account ID or IAM role with which the workload is shared.</p>",
+      "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the workload is shared.</p>",
       "max":2048,
       "min":12
     },
@@ -2753,6 +3003,13 @@
     "Timestamp":{
       "type":"timestamp",
       "documentation":"<p>The date and time recorded.</p>"
+    },
+    "TrustedAdvisorIntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "UntagResourceInput":{
       "type":"structure",
@@ -2890,7 +3147,7 @@
       "members":{
         "ShareInvitation":{
           "shape":"ShareInvitation",
-          "documentation":"<p>The updated workload share invitation.</p>"
+          "documentation":"<p>The updated workload or custom lens share invitation.</p>"
         }
       }
     },
@@ -2919,7 +3176,15 @@
         "IndustryType":{"shape":"WorkloadIndustryType"},
         "Industry":{"shape":"WorkloadIndustry"},
         "Notes":{"shape":"Notes"},
-        "ImprovementStatus":{"shape":"WorkloadImprovementStatus"}
+        "ImprovementStatus":{"shape":"WorkloadImprovementStatus"},
+        "DiscoveryConfig":{
+          "shape":"WorkloadDiscoveryConfig",
+          "documentation":"<p>Well-Architected discovery configuration settings to associate to the workload.</p>"
+        },
+        "Applications":{
+          "shape":"WorkloadApplications",
+          "documentation":"<p>List of AppRegistry application ARNs to associate to the workload.</p>"
+        }
       },
       "documentation":"<p>Input to update a workload.</p>"
     },
@@ -3073,6 +3338,14 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags associated with the workload.</p>"
+        },
+        "DiscoveryConfig":{
+          "shape":"WorkloadDiscoveryConfig",
+          "documentation":"<p>Discovery configuration associated to the workload.</p>"
+        },
+        "Applications":{
+          "shape":"WorkloadApplications",
+          "documentation":"<p>List of AppRegistry application ARNs associated to the workload.</p>"
         }
       },
       "documentation":"<p>A workload return object.</p>"
@@ -3083,10 +3356,16 @@
       "documentation":"<p>The list of Amazon Web Services account IDs associated with the workload.</p>",
       "max":100
     },
+    "WorkloadApplications":{
+      "type":"list",
+      "member":{"shape":"ApplicationArn"},
+      "max":1
+    },
     "WorkloadArchitecturalDesign":{
       "type":"string",
       "documentation":"<p>The URL of the architectural design for the workload.</p>",
-      "max":2048
+      "max":2048,
+      "pattern":"^(|(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*)$"
     },
     "WorkloadArn":{
       "type":"string",
@@ -3103,6 +3382,16 @@
       "documentation":"<p>The description for the workload.</p>",
       "max":250,
       "min":3
+    },
+    "WorkloadDiscoveryConfig":{
+      "type":"structure",
+      "members":{
+        "TrustedAdvisorIntegrationStatus":{
+          "shape":"TrustedAdvisorIntegrationStatus",
+          "documentation":"<p>Discovery integration status in respect to Trusted Advisor for the workload.</p>"
+        }
+      },
+      "documentation":"<p>Discovery configuration associated to the workload.</p>"
     },
     "WorkloadEnvironment":{
       "type":"string",

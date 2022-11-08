@@ -26,6 +26,21 @@
       ],
       "documentation":"<p>Cancels a job run. A job run is a unit of work, such as a Spark jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on EKS.</p>"
     },
+    "CreateJobTemplate":{
+      "name":"CreateJobTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/jobtemplates"
+      },
+      "input":{"shape":"CreateJobTemplateRequest"},
+      "output":{"shape":"CreateJobTemplateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a job template. Job template stores values of StartJobRun API request in a template and can be used to start a job run. Job template allows two use cases: avoid repeating recurring StartJobRun API request values, enforcing certain values in StartJobRun API request.</p>"
+    },
     "CreateManagedEndpoint":{
       "name":"CreateManagedEndpoint",
       "http":{
@@ -55,6 +70,20 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
+    },
+    "DeleteJobTemplate":{
+      "name":"DeleteJobTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/jobtemplates/{templateId}"
+      },
+      "input":{"shape":"DeleteJobTemplateRequest"},
+      "output":{"shape":"DeleteJobTemplateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a job template. Job template stores values of StartJobRun API request in a template and can be used to start a job run. Job template allows two use cases: avoid repeating recurring StartJobRun API request values, enforcing certain values in StartJobRun API request.</p>"
     },
     "DeleteManagedEndpoint":{
       "name":"DeleteManagedEndpoint",
@@ -99,6 +128,21 @@
       ],
       "documentation":"<p>Displays detailed information about a job run. A job run is a unit of work, such as a Spark jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on EKS.</p>"
     },
+    "DescribeJobTemplate":{
+      "name":"DescribeJobTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/jobtemplates/{templateId}"
+      },
+      "input":{"shape":"DescribeJobTemplateRequest"},
+      "output":{"shape":"DescribeJobTemplateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Displays detailed information about a specified job template. Job template stores values of StartJobRun API request in a template and can be used to start a job run. Job template allows two use cases: avoid repeating recurring StartJobRun API request values, enforcing certain values in StartJobRun API request.</p>"
+    },
     "DescribeManagedEndpoint":{
       "name":"DescribeManagedEndpoint",
       "http":{
@@ -142,6 +186,20 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists job runs based on a set of parameters. A job run is a unit of work, such as a Spark jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on EKS.</p>"
+    },
+    "ListJobTemplates":{
+      "name":"ListJobTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/jobtemplates"
+      },
+      "input":{"shape":"ListJobTemplatesRequest"},
+      "output":{"shape":"ListJobTemplatesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists job templates based on a set of parameters. Job template stores values of StartJobRun API request in a template and can be used to start a job run. Job template allows two use cases: avoid repeating recurring StartJobRun API request values, enforcing certain values in StartJobRun API request.</p>"
     },
     "ListManagedEndpoints":{
       "name":"ListManagedEndpoints",
@@ -394,6 +452,58 @@
       "type":"string",
       "enum":["EKS"]
     },
+    "CreateJobTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "clientToken",
+        "jobTemplateData"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceNameString",
+          "documentation":"<p>The specified name of the job template.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token of the job template.</p>",
+          "idempotencyToken":true
+        },
+        "jobTemplateData":{
+          "shape":"JobTemplateData",
+          "documentation":"<p>The job template data which holds values of StartJobRun API request.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags that are associated with the job template.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The KMS key ARN used to encrypt the job template.</p>"
+        }
+      }
+    },
+    "CreateJobTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>This output display the created job template ID.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameString",
+          "documentation":"<p>This output displays the name of the created job template.</p>"
+        },
+        "arn":{
+          "shape":"JobTemplateArn",
+          "documentation":"<p>This output display the ARN of the created job template.</p>"
+        },
+        "createdAt":{
+          "shape":"Date",
+          "documentation":"<p>This output displays the date and time when the job template was created.</p>"
+        }
+      }
+    },
     "CreateManagedEndpointRequest":{
       "type":"structure",
       "required":[
@@ -517,6 +627,27 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "DeleteJobTemplateRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The ID of the job template that will be deleted.</p>",
+          "location":"uri",
+          "locationName":"templateId"
+        }
+      }
+    },
+    "DeleteJobTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>This output contains the ID of the job template that was deleted.</p>"
+        }
+      }
+    },
     "DeleteManagedEndpointRequest":{
       "type":"structure",
       "required":[
@@ -599,6 +730,27 @@
         "jobRun":{
           "shape":"JobRun",
           "documentation":"<p>The output displays information about a job run.</p>"
+        }
+      }
+    },
+    "DescribeJobTemplateRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The ID of the job template that will be described.</p>",
+          "location":"uri",
+          "locationName":"templateId"
+        }
+      }
+    },
+    "DescribeJobTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "jobTemplate":{
+          "shape":"JobTemplate",
+          "documentation":"<p>This output displays information about the specified job template.</p>"
         }
       }
     },
@@ -840,7 +992,7 @@
           "documentation":"<p>The job driver for job type.</p>"
         }
       },
-      "documentation":"<p>Specify the driver that the job runs on.</p>"
+      "documentation":"<p>Specify the driver that the job runs on. Exactly one of the two available job drivers is required, either sparkSqlJobDriver or sparkSubmitJobDriver.</p>"
     },
     "JobRun":{
       "type":"structure",
@@ -933,6 +1085,97 @@
       "type":"list",
       "member":{"shape":"JobRun"}
     },
+    "JobTemplate":{
+      "type":"structure",
+      "required":["jobTemplateData"],
+      "members":{
+        "name":{
+          "shape":"ResourceNameString",
+          "documentation":"<p>The name of the job template.</p>"
+        },
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The ID of the job template.</p>"
+        },
+        "arn":{
+          "shape":"JobTemplateArn",
+          "documentation":"<p>The ARN of the job template.</p>"
+        },
+        "createdAt":{
+          "shape":"Date",
+          "documentation":"<p> The date and time when the job template was created.</p>"
+        },
+        "createdBy":{
+          "shape":"RequestIdentityUserArn",
+          "documentation":"<p> The user who created the job template.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags assigned to the job template.</p>"
+        },
+        "jobTemplateData":{
+          "shape":"JobTemplateData",
+          "documentation":"<p>The job template data which holds values of StartJobRun API request.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The KMS key ARN used to encrypt the job template.</p>"
+        },
+        "decryptionError":{
+          "shape":"String2048",
+          "documentation":"<p>The error message in case the decryption of job template fails.</p>"
+        }
+      },
+      "documentation":"<p>This entity describes a job template. Job template stores values of StartJobRun API request in a template and can be used to start a job run. Job template allows two use cases: avoid repeating recurring StartJobRun API request values, enforcing certain values in StartJobRun API request.</p>"
+    },
+    "JobTemplateArn":{
+      "type":"string",
+      "max":1024,
+      "min":60,
+      "pattern":"^arn:(aws[a-zA-Z0-9-]*):emr-containers:.+:(\\d{12}):\\/jobtemplates\\/[0-9a-zA-Z]+$"
+    },
+    "JobTemplateData":{
+      "type":"structure",
+      "required":[
+        "executionRoleArn",
+        "releaseLabel",
+        "jobDriver"
+      ],
+      "members":{
+        "executionRoleArn":{
+          "shape":"ParametricIAMRoleArn",
+          "documentation":"<p>The execution role ARN of the job run.</p>"
+        },
+        "releaseLabel":{
+          "shape":"ParametricReleaseLabel",
+          "documentation":"<p> The release version of Amazon EMR.</p>"
+        },
+        "configurationOverrides":{
+          "shape":"ParametricConfigurationOverrides",
+          "documentation":"<p> The configuration settings that are used to override defaults configuration.</p>"
+        },
+        "jobDriver":{"shape":"JobDriver"},
+        "parameterConfiguration":{
+          "shape":"TemplateParameterConfigurationMap",
+          "documentation":"<p>The configuration of parameters existing in the job template.</p>"
+        },
+        "jobTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags assigned to jobs started using the job template.</p>"
+        }
+      },
+      "documentation":"<p>The values of StartJobRun API requests used in job runs started using the job template.</p>"
+    },
+    "JobTemplates":{
+      "type":"list",
+      "member":{"shape":"JobTemplate"}
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":3,
+      "pattern":"^(arn:(aws[a-zA-Z0-9-]*):kms:([a-zA-Z0-9]+-?)+:(\\d{12})?:key\\/[(0-9a-zA-Z)-?]+|\\$\\{[a-zA-Z]\\w*\\})$"
+    },
     "KubernetesNamespace":{
       "type":"string",
       "max":63,
@@ -997,6 +1240,48 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>This output displays the token for the next set of job runs.</p>"
+        }
+      }
+    },
+    "ListJobTemplatesRequest":{
+      "type":"structure",
+      "members":{
+        "createdAfter":{
+          "shape":"Date",
+          "documentation":"<p>The date and time after which the job templates were created.</p>",
+          "location":"querystring",
+          "locationName":"createdAfter"
+        },
+        "createdBefore":{
+          "shape":"Date",
+          "documentation":"<p> The date and time before which the job templates were created.</p>",
+          "location":"querystring",
+          "locationName":"createdBefore"
+        },
+        "maxResults":{
+          "shape":"JavaInteger",
+          "documentation":"<p> The maximum number of job templates that can be listed.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next set of job templates to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListJobTemplatesResponse":{
+      "type":"structure",
+      "members":{
+        "templates":{
+          "shape":"JobTemplates",
+          "documentation":"<p>This output lists information about the specified job templates.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> This output displays the token for the next set of job templates.</p>"
         }
       }
     },
@@ -1172,6 +1457,74 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "ParametricCloudWatchMonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "logGroupName":{
+          "shape":"TemplateParameter",
+          "documentation":"<p> The name of the log group for log publishing.</p>"
+        },
+        "logStreamNamePrefix":{
+          "shape":"String256",
+          "documentation":"<p> The specified name prefix for log streams.</p>"
+        }
+      },
+      "documentation":"<p> A configuration for CloudWatch monitoring. You can configure your jobs to send log information to CloudWatch Logs. This data type allows job template parameters to be specified within.</p>"
+    },
+    "ParametricConfigurationOverrides":{
+      "type":"structure",
+      "members":{
+        "applicationConfiguration":{
+          "shape":"ConfigurationList",
+          "documentation":"<p> The configurations for the application running by the job run.</p>"
+        },
+        "monitoringConfiguration":{
+          "shape":"ParametricMonitoringConfiguration",
+          "documentation":"<p> The configurations for monitoring. </p>"
+        }
+      },
+      "documentation":"<p> A configuration specification to be used to override existing configurations. This data type allows job template parameters to be specified within.</p>"
+    },
+    "ParametricIAMRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":4,
+      "pattern":"(^arn:(aws[a-zA-Z0-9-]*):iam::(\\d{12})?:(role((\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F))[\\w+=,.@-]+)$)|([\\.\\-_\\#A-Za-z0-9\\$\\{\\}]+)"
+    },
+    "ParametricMonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "persistentAppUI":{
+          "shape":"TemplateParameter",
+          "documentation":"<p> Monitoring configurations for the persistent application UI.</p>"
+        },
+        "cloudWatchMonitoringConfiguration":{
+          "shape":"ParametricCloudWatchMonitoringConfiguration",
+          "documentation":"<p> Monitoring configurations for CloudWatch.</p>"
+        },
+        "s3MonitoringConfiguration":{
+          "shape":"ParametricS3MonitoringConfiguration",
+          "documentation":"<p> Amazon S3 configuration for monitoring log publishing.</p>"
+        }
+      },
+      "documentation":"<p> Configuration setting for monitoring. This data type allows job template parameters to be specified within.</p>"
+    },
+    "ParametricReleaseLabel":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"([\\.\\-_/A-Za-z0-9]+|\\$\\{[a-zA-Z]\\w*\\})"
+    },
+    "ParametricS3MonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "logUri":{
+          "shape":"UriString",
+          "documentation":"<p>Amazon S3 destination URI for log publishing.</p>"
+        }
+      },
+      "documentation":"<p> Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3. This data type allows job template parameters to be specified within.</p>"
+    },
     "PersistentAppUI":{
       "type":"string",
       "enum":[
@@ -1287,10 +1640,7 @@
       "type":"structure",
       "required":[
         "virtualClusterId",
-        "clientToken",
-        "executionRoleArn",
-        "releaseLabel",
-        "jobDriver"
+        "clientToken"
       ],
       "members":{
         "name":{
@@ -1327,6 +1677,14 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags assigned to job runs.</p>"
+        },
+        "jobTemplateId":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The job template ID to be used to start the job run.</p>"
+        },
+        "jobTemplateParameters":{
+          "shape":"TemplateParameterInputMap",
+          "documentation":"<p>The values of job template parameters to start a job run.</p>"
         }
       }
     },
@@ -1360,6 +1718,12 @@
     "String128":{
       "type":"string",
       "max":128,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "String2048":{
+      "type":"string",
+      "max":2048,
       "min":1,
       "pattern":".*\\S.*"
     },
@@ -1415,6 +1779,51 @@
       "type":"structure",
       "members":{
       }
+    },
+    "TemplateParameter":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9\\$\\{\\}]+"
+    },
+    "TemplateParameterConfiguration":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"TemplateParameterDataType",
+          "documentation":"<p>The type of the job template parameter. Allowed values are: ‘String’, ‘Number’.</p>"
+        },
+        "defaultValue":{
+          "shape":"String1024",
+          "documentation":"<p>The default value for the job template parameter.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a job template parameter.</p>"
+    },
+    "TemplateParameterConfigurationMap":{
+      "type":"map",
+      "key":{"shape":"TemplateParameterName"},
+      "value":{"shape":"TemplateParameterConfiguration"},
+      "max":20
+    },
+    "TemplateParameterDataType":{
+      "type":"string",
+      "enum":[
+        "NUMBER",
+        "STRING"
+      ]
+    },
+    "TemplateParameterInputMap":{
+      "type":"map",
+      "key":{"shape":"TemplateParameterName"},
+      "value":{"shape":"String1024"},
+      "max":20
+    },
+    "TemplateParameterName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\.\\-_\\#A-Za-z0-9]+"
     },
     "UntagResourceRequest":{
       "type":"structure",

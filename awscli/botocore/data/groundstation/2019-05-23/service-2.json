@@ -62,6 +62,22 @@
       ],
       "documentation":"<p>Creates a <code>DataflowEndpoint</code> group containing the specified list of <code>DataflowEndpoint</code> objects.</p> <p>The <code>name</code> field in each endpoint is used in your mission profile <code>DataflowEndpointConfig</code> to specify which endpoints to use during a contact.</p> <p>When a contact uses multiple <code>DataflowEndpointConfig</code> objects, each <code>Config</code> must match a <code>DataflowEndpoint</code> in the same group.</p>"
     },
+    "CreateEphemeris":{
+      "name":"CreateEphemeris",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ephemeris",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateEphemerisRequest"},
+      "output":{"shape":"EphemerisIdResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates an Ephemeris with the specified <code>EphemerisData</code>.</p>"
+    },
     "CreateMissionProfile":{
       "name":"CreateMissionProfile",
       "http":{
@@ -112,6 +128,23 @@
       "documentation":"<p>Deletes a dataflow endpoint group.</p>",
       "idempotent":true
     },
+    "DeleteEphemeris":{
+      "name":"DeleteEphemeris",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/ephemeris/{ephemerisId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteEphemerisRequest"},
+      "output":{"shape":"EphemerisIdResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an ephemeris</p>",
+      "idempotent":true
+    },
     "DeleteMissionProfile":{
       "name":"DeleteMissionProfile",
       "http":{
@@ -144,6 +177,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Describes an existing contact.</p>"
+    },
+    "DescribeEphemeris":{
+      "name":"DescribeEphemeris",
+      "http":{
+        "method":"GET",
+        "requestUri":"/ephemeris/{ephemerisId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeEphemerisRequest"},
+      "output":{"shape":"DescribeEphemerisResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes an existing ephemeris.</p>"
     },
     "GetConfig":{
       "name":"GetConfig",
@@ -272,6 +321,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns a list of <code>DataflowEndpoint</code> groups.</p>"
+    },
+    "ListEphemerides":{
+      "name":"ListEphemerides",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ephemerides",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEphemeridesRequest"},
+      "output":{"shape":"ListEphemeridesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>List existing ephemerides.</p>"
     },
     "ListGroundStations":{
       "name":"ListGroundStations",
@@ -403,6 +468,23 @@
       "documentation":"<p>Updates the <code>Config</code> used when scheduling contacts.</p> <p>Updating a <code>Config</code> will not update the execution parameters for existing future contacts scheduled with this <code>Config</code>.</p>",
       "idempotent":true
     },
+    "UpdateEphemeris":{
+      "name":"UpdateEphemeris",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/ephemeris/{ephemerisId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEphemerisRequest"},
+      "output":{"shape":"EphemerisIdResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates an existing ephemeris</p>",
+      "idempotent":true
+    },
     "UpdateMissionProfile":{
       "name":"UpdateMissionProfile",
       "http":{
@@ -422,6 +504,12 @@
     }
   },
   "shapes":{
+    "AWSRegion":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\w-]+$"
+    },
     "AngleUnits":{
       "type":"string",
       "enum":[
@@ -495,6 +583,12 @@
       },
       "documentation":"<p>Information about the uplink <code>Config</code> of an antenna.</p>"
     },
+    "AnyArn":{
+      "type":"string",
+      "max":1024,
+      "min":5,
+      "pattern":"^(arn:aws:)[\\s\\S]{0,1024}$"
+    },
     "BandwidthUnits":{
       "type":"string",
       "enum":[
@@ -513,7 +607,7 @@
       "required":["contactId"],
       "members":{
         "contactId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>",
           "location":"uri",
           "locationName":"contactId"
@@ -633,7 +727,7 @@
       "type":"structure",
       "members":{
         "contactId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>"
         },
         "contactStatus":{
@@ -642,7 +736,7 @@
         },
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>End time of a contact.</p>"
+          "documentation":"<p>End time of a contact in UTC.</p>"
         },
         "errorMessage":{
           "shape":"String",
@@ -678,7 +772,7 @@
         },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Start time of a contact.</p>"
+          "documentation":"<p>Start time of a contact in UTC.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -691,7 +785,7 @@
       "type":"structure",
       "members":{
         "contactId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>"
         }
       },
@@ -756,6 +850,47 @@
       },
       "documentation":"<p/>"
     },
+    "CreateEphemerisRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "satelliteId"
+      ],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to set the ephemeris status to <code>ENABLED</code> after validation.</p> <p>Setting this to false will set the ephemeris status to <code>DISABLED</code> after validation.</p>"
+        },
+        "ephemeris":{
+          "shape":"EphemerisData",
+          "documentation":"<p>Ephemeris data.</p>"
+        },
+        "expirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>An overall expiration time for the ephemeris in UTC, after which it will become <code>EXPIRED</code>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KeyArn",
+          "documentation":"<p>The ARN of a KMS key used to encrypt the ephemeris in Ground Station.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
+        },
+        "priority":{
+          "shape":"CustomerEphemerisPriority",
+          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+        },
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>AWS Ground Station satellite ID for this ephemeris.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to an ephemeris.</p>"
+        }
+      }
+    },
     "CreateMissionProfileRequest":{
       "type":"structure",
       "required":[
@@ -778,7 +913,7 @@
           "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
         },
         "minimumViableContactDurationSeconds":{
-          "shape":"DurationInSeconds",
+          "shape":"PositiveDurationInSeconds",
           "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
         },
         "name":{
@@ -804,6 +939,12 @@
         "REQUIRED"
       ]
     },
+    "CustomerEphemerisPriority":{
+      "type":"integer",
+      "box":true,
+      "max":99999,
+      "min":1
+    },
     "DataflowDetail":{
       "type":"structure",
       "members":{
@@ -824,7 +965,9 @@
     },
     "DataflowEdgeList":{
       "type":"list",
-      "member":{"shape":"DataflowEdge"}
+      "member":{"shape":"DataflowEdge"},
+      "max":500,
+      "min":0
     },
     "DataflowEndpoint":{
       "type":"structure",
@@ -868,7 +1011,7 @@
       "type":"structure",
       "members":{
         "dataflowEndpointGroupId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a dataflow endpoint group.</p>"
         }
       },
@@ -886,7 +1029,7 @@
           "documentation":"<p>ARN of a dataflow endpoint group.</p>"
         },
         "dataflowEndpointGroupId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a dataflow endpoint group.</p>"
         }
       },
@@ -921,7 +1064,7 @@
       ],
       "members":{
         "configId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a <code>Config</code>.</p>",
           "location":"uri",
           "locationName":"configId"
@@ -940,7 +1083,7 @@
       "required":["dataflowEndpointGroupId"],
       "members":{
         "dataflowEndpointGroupId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a dataflow endpoint group.</p>",
           "location":"uri",
           "locationName":"dataflowEndpointGroupId"
@@ -948,12 +1091,24 @@
       },
       "documentation":"<p/>"
     },
+    "DeleteEphemerisRequest":{
+      "type":"structure",
+      "required":["ephemerisId"],
+      "members":{
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>",
+          "location":"uri",
+          "locationName":"ephemerisId"
+        }
+      }
+    },
     "DeleteMissionProfileRequest":{
       "type":"structure",
       "required":["missionProfileId"],
       "members":{
         "missionProfileId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>",
           "location":"uri",
           "locationName":"missionProfileId"
@@ -991,7 +1146,7 @@
       "required":["contactId"],
       "members":{
         "contactId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>",
           "location":"uri",
           "locationName":"contactId"
@@ -1003,7 +1158,7 @@
       "type":"structure",
       "members":{
         "contactId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>"
         },
         "contactStatus":{
@@ -1016,7 +1171,7 @@
         },
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>End time of a contact.</p>"
+          "documentation":"<p>End time of a contact in UTC.</p>"
         },
         "errorMessage":{
           "shape":"String",
@@ -1052,7 +1207,7 @@
         },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Start time of a contact.</p>"
+          "documentation":"<p>Start time of a contact in UTC.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1060,6 +1215,63 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DescribeEphemerisRequest":{
+      "type":"structure",
+      "required":["ephemerisId"],
+      "members":{
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>",
+          "location":"uri",
+          "locationName":"ephemerisId"
+        }
+      }
+    },
+    "DescribeEphemerisResponse":{
+      "type":"structure",
+      "members":{
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the ephemeris was uploaded in UTC.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not the ephemeris is enabled.</p>"
+        },
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>"
+        },
+        "invalidReason":{
+          "shape":"EphemerisInvalidReason",
+          "documentation":"<p>Reason that an ephemeris failed validation. Only provided for ephemerides with <code>INVALID</code> status.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
+        },
+        "priority":{
+          "shape":"EphemerisPriority",
+          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+        },
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station satellite ID associated with ephemeris.</p>"
+        },
+        "status":{
+          "shape":"EphemerisStatus",
+          "documentation":"<p>The status of the ephemeris.</p>"
+        },
+        "suppliedData":{
+          "shape":"EphemerisTypeDescription",
+          "documentation":"<p>Supplied ephemeris data.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to an ephemeris.</p>"
+        }
+      }
     },
     "Destination":{
       "type":"structure",
@@ -1069,7 +1281,7 @@
           "documentation":"<p>Additional details for a <code>Config</code>, if type is dataflow endpoint or antenna demod decode.</p>"
         },
         "configId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a <code>Config</code>.</p>"
         },
         "configType":{
@@ -1091,7 +1303,7 @@
       "type":"integer",
       "box":true,
       "max":21600,
-      "min":1
+      "min":0
     },
     "Eirp":{
       "type":"structure",
@@ -1142,14 +1354,16 @@
         },
         "securityDetails":{
           "shape":"SecurityDetails",
-          "documentation":"<p>Endpoint security details.</p>"
+          "documentation":"<p>Endpoint security details including a list of subnets, a list of security groups and a role to connect streams to instances.</p>"
         }
       },
       "documentation":"<p>Information about the endpoint details.</p>"
     },
     "EndpointDetailsList":{
       "type":"list",
-      "member":{"shape":"EndpointDetails"}
+      "member":{"shape":"EndpointDetails"},
+      "max":500,
+      "min":0
     },
     "EndpointStatus":{
       "type":"string",
@@ -1160,6 +1374,150 @@
         "deleting",
         "failed"
       ]
+    },
+    "EphemeridesList":{
+      "type":"list",
+      "member":{"shape":"EphemerisItem"},
+      "max":500,
+      "min":1
+    },
+    "EphemerisData":{
+      "type":"structure",
+      "members":{
+        "oem":{"shape":"OEMEphemeris"},
+        "tle":{"shape":"TLEEphemeris"}
+      },
+      "documentation":"<p>Ephemeris data.</p>",
+      "union":true
+    },
+    "EphemerisDescription":{
+      "type":"structure",
+      "members":{
+        "ephemerisData":{
+          "shape":"UnboundedString",
+          "documentation":"<p>Supplied ephemeris data.</p>"
+        },
+        "sourceS3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Source S3 object used for the ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Description of ephemeris.</p>"
+    },
+    "EphemerisIdResponse":{
+      "type":"structure",
+      "members":{
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>"
+        }
+      }
+    },
+    "EphemerisInvalidReason":{
+      "type":"string",
+      "enum":[
+        "METADATA_INVALID",
+        "TIME_RANGE_INVALID",
+        "TRAJECTORY_INVALID",
+        "KMS_KEY_INVALID",
+        "VALIDATION_ERROR"
+      ]
+    },
+    "EphemerisItem":{
+      "type":"structure",
+      "members":{
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the ephemeris was uploaded in UTC.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not the ephemeris is enabled.</p>"
+        },
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
+        },
+        "priority":{
+          "shape":"EphemerisPriority",
+          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+        },
+        "sourceS3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Source S3 object used for the ephemeris.</p>"
+        },
+        "status":{
+          "shape":"EphemerisStatus",
+          "documentation":"<p>The status of the ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Ephemeris item.</p>"
+    },
+    "EphemerisMetaData":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of a customer-provided ephemeris.</p> <p>This field is not populated for default ephemerides from Space Track.</p>"
+        },
+        "epoch":{
+          "shape":"Timestamp",
+          "documentation":"<p>The epoch of a default, ephemeris from Space Track in UTC.</p> <p>This field is not populated for customer-provided ephemerides.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p> <p>A name is only returned for customer-provider ephemerides that have a name associated.</p>"
+        },
+        "source":{
+          "shape":"EphemerisSource",
+          "documentation":"<p>The <code>EphemerisSource</code> that generated a given ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Metadata describing a particular ephemeris.</p>"
+    },
+    "EphemerisPriority":{
+      "type":"integer",
+      "box":true,
+      "max":99999,
+      "min":0
+    },
+    "EphemerisSource":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_PROVIDED",
+        "SPACE_TRACK"
+      ]
+    },
+    "EphemerisStatus":{
+      "type":"string",
+      "enum":[
+        "VALIDATING",
+        "INVALID",
+        "ERROR",
+        "ENABLED",
+        "DISABLED",
+        "EXPIRED"
+      ]
+    },
+    "EphemerisStatusList":{
+      "type":"list",
+      "member":{"shape":"EphemerisStatus"},
+      "max":500,
+      "min":0
+    },
+    "EphemerisTypeDescription":{
+      "type":"structure",
+      "members":{
+        "oem":{"shape":"EphemerisDescription"},
+        "tle":{"shape":"EphemerisDescription"}
+      },
+      "documentation":"<p/>",
+      "union":true
     },
     "Frequency":{
       "type":"structure",
@@ -1213,7 +1571,7 @@
       ],
       "members":{
         "configId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a <code>Config</code>.</p>",
           "location":"uri",
           "locationName":"configId"
@@ -1268,7 +1626,7 @@
       "required":["dataflowEndpointGroupId"],
       "members":{
         "dataflowEndpointGroupId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a dataflow endpoint group.</p>",
           "location":"uri",
           "locationName":"dataflowEndpointGroupId"
@@ -1284,7 +1642,7 @@
           "documentation":"<p>ARN of a dataflow endpoint group.</p>"
         },
         "dataflowEndpointGroupId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a dataflow endpoint group.</p>"
         },
         "endpointsDetails":{
@@ -1306,11 +1664,11 @@
       ],
       "members":{
         "month":{
-          "shape":"Integer",
+          "shape":"Month",
           "documentation":"<p>The month being requested, with a value of 1-12.</p>"
         },
         "year":{
-          "shape":"Integer",
+          "shape":"Year",
           "documentation":"<p>The year being requested, in the format of YYYY.</p>"
         }
       },
@@ -1347,7 +1705,7 @@
       "required":["missionProfileId"],
       "members":{
         "missionProfileId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>",
           "location":"uri",
           "locationName":"missionProfileId"
@@ -1371,7 +1729,7 @@
           "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
         },
         "minimumViableContactDurationSeconds":{
-          "shape":"DurationInSeconds",
+          "shape":"PositiveDurationInSeconds",
           "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
         },
         "missionProfileArn":{
@@ -1379,15 +1737,15 @@
           "documentation":"<p>ARN of a mission profile.</p>"
         },
         "missionProfileId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>"
         },
         "name":{
-          "shape":"String",
+          "shape":"SafeName",
           "documentation":"<p>Name of a mission profile.</p>"
         },
         "region":{
-          "shape":"String",
+          "shape":"AWSRegion",
           "documentation":"<p>Region of a mission profile.</p>"
         },
         "tags":{
@@ -1406,7 +1764,7 @@
       "required":["satelliteId"],
       "members":{
         "satelliteId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a satellite.</p>",
           "location":"uri",
           "locationName":"satelliteId"
@@ -1417,6 +1775,10 @@
     "GetSatelliteResponse":{
       "type":"structure",
       "members":{
+        "currentEphemeris":{
+          "shape":"EphemerisMetaData",
+          "documentation":"<p>The current ephemeris being used to compute the trajectory of the satellite.</p>"
+        },
         "groundStations":{
           "shape":"GroundStationIdList",
           "documentation":"<p>A list of ground stations to which the satellite is on-boarded.</p>"
@@ -1440,15 +1802,15 @@
       "type":"structure",
       "members":{
         "groundStationId":{
-          "shape":"String",
+          "shape":"GroundStationName",
           "documentation":"<p>UUID of a ground station.</p>"
         },
         "groundStationName":{
-          "shape":"String",
+          "shape":"GroundStationName",
           "documentation":"<p>Name of a ground station.</p>"
         },
         "region":{
-          "shape":"String",
+          "shape":"AWSRegion",
           "documentation":"<p>Ground station Region.</p>"
         }
       },
@@ -1456,11 +1818,19 @@
     },
     "GroundStationIdList":{
       "type":"list",
-      "member":{"shape":"String"}
+      "member":{"shape":"GroundStationName"},
+      "max":500,
+      "min":0
     },
     "GroundStationList":{
       "type":"list",
       "member":{"shape":"GroundStationData"}
+    },
+    "GroundStationName":{
+      "type":"string",
+      "max":500,
+      "min":4,
+      "pattern":"^[ a-zA-Z0-9-._:=]{4,256}$"
     },
     "Integer":{
       "type":"integer",
@@ -1488,17 +1858,18 @@
       "min":2,
       "pattern":"^[{}\\[\\]:.,\"0-9A-z\\-_\\s]{2,8192}$"
     },
+    "KeyArn":{"type":"string"},
     "ListConfigsRequest":{
       "type":"structure",
       "members":{
         "maxResults":{
-          "shape":"Integer",
+          "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of <code>Configs</code> returned.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the request of a previous <code>ListConfigs</code> call. Used to get the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
@@ -1514,7 +1885,7 @@
           "documentation":"<p>List of <code>Config</code> items.</p>"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListConfigs</code> call. Used to get the next page of results.</p>"
         }
       },
@@ -1530,14 +1901,14 @@
       "members":{
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>End time of a contact.</p>"
+          "documentation":"<p>End time of a contact in UTC.</p>"
         },
         "groundStation":{
-          "shape":"String",
+          "shape":"GroundStationName",
           "documentation":"<p>Name of a ground station.</p>"
         },
         "maxResults":{
-          "shape":"Integer",
+          "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of contacts returned.</p>"
         },
         "missionProfileArn":{
@@ -1545,7 +1916,7 @@
           "documentation":"<p>ARN of a mission profile.</p>"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the request of a previous <code>ListContacts</code> call. Used to get the next page of results.</p>"
         },
         "satelliteArn":{
@@ -1554,7 +1925,7 @@
         },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Start time of a contact.</p>"
+          "documentation":"<p>Start time of a contact in UTC.</p>"
         },
         "statusList":{
           "shape":"StatusList",
@@ -1571,7 +1942,7 @@
           "documentation":"<p>List of contacts.</p>"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListContacts</code> call. Used to get the next page of results.</p>"
         }
       },
@@ -1581,13 +1952,13 @@
       "type":"structure",
       "members":{
         "maxResults":{
-          "shape":"Integer",
+          "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of dataflow endpoint groups returned.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the request of a previous <code>ListDataflowEndpointGroups</code> call. Used to get the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
@@ -1603,29 +1974,80 @@
           "documentation":"<p>A list of dataflow endpoint groups.</p>"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListDataflowEndpointGroups</code> call. Used to get the next page of results.</p>"
         }
       },
       "documentation":"<p/>"
     },
+    "ListEphemeridesRequest":{
+      "type":"structure",
+      "required":[
+        "endTime",
+        "satelliteId",
+        "startTime"
+      ],
+      "members":{
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>Maximum number of ephemerides to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagination token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station satellite ID to list ephemeris for.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.</p>"
+        },
+        "statusList":{
+          "shape":"EphemerisStatusList",
+          "documentation":"<p>The list of ephemeris status to return.</p>"
+        }
+      }
+    },
+    "ListEphemeridesResponse":{
+      "type":"structure",
+      "members":{
+        "ephemerides":{
+          "shape":"EphemeridesList",
+          "documentation":"<p>List of ephemerides.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagination token.</p>"
+        }
+      }
+    },
     "ListGroundStationsRequest":{
       "type":"structure",
       "members":{
         "maxResults":{
-          "shape":"Integer",
+          "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of ground stations returned.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token that can be supplied in the next call to get the next page of ground stations.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "satelliteId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>Satellite ID to retrieve on-boarded ground stations.</p>",
           "location":"querystring",
           "locationName":"satelliteId"
@@ -1641,7 +2063,7 @@
           "documentation":"<p>List of ground stations.</p>"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token that can be supplied in the next call to get the next page of ground stations.</p>"
         }
       },
@@ -1651,13 +2073,13 @@
       "type":"structure",
       "members":{
         "maxResults":{
-          "shape":"Integer",
+          "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of mission profiles returned.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the request of a previous <code>ListMissionProfiles</code> call. Used to get the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
@@ -1673,7 +2095,7 @@
           "documentation":"<p>List of mission profiles.</p>"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListMissionProfiles</code> call. Used to get the next page of results.</p>"
         }
       },
@@ -1683,13 +2105,13 @@
       "type":"structure",
       "members":{
         "maxResults":{
-          "shape":"Integer",
+          "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of satellites returned.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token that can be supplied in the next call to get the next page of satellites.</p>",
           "location":"querystring",
           "locationName":"nextToken"
@@ -1701,7 +2123,7 @@
       "type":"structure",
       "members":{
         "nextToken":{
-          "shape":"String",
+          "shape":"PaginationToken",
           "documentation":"<p>Next token that can be supplied in the next call to get the next page of satellites.</p>"
         },
         "satellites":{
@@ -1716,7 +2138,7 @@
       "required":["resourceArn"],
       "members":{
         "resourceArn":{
-          "shape":"String",
+          "shape":"AnyArn",
           "documentation":"<p>ARN of a resource.</p>",
           "location":"uri",
           "locationName":"resourceArn"
@@ -1739,7 +2161,7 @@
       "type":"structure",
       "members":{
         "missionProfileId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>"
         }
       },
@@ -1757,19 +2179,51 @@
           "documentation":"<p>ARN of a mission profile.</p>"
         },
         "missionProfileId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>"
         },
         "name":{
-          "shape":"String",
+          "shape":"SafeName",
           "documentation":"<p>Name of a mission profile.</p>"
         },
         "region":{
-          "shape":"String",
+          "shape":"AWSRegion",
           "documentation":"<p>Region of a mission profile.</p>"
         }
       },
       "documentation":"<p>Item in a list of mission profiles.</p>"
+    },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
+      "min":1
+    },
+    "OEMEphemeris":{
+      "type":"structure",
+      "members":{
+        "oemData":{
+          "shape":"UnboundedString",
+          "documentation":"<p>The data for an OEM ephemeris, supplied directly in the request rather than through an S3 object.</p>"
+        },
+        "s3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Identifies the S3 object to be used as the ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Ephemeris data in Orbit Ephemeris Message (OEM) format.</p>"
+    },
+    "PaginationMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":0
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":1000,
+      "min":3,
+      "pattern":"^[A-Za-z0-9-/+_.=]+$"
     },
     "Polarization":{
       "type":"string",
@@ -1778,6 +2232,12 @@
         "NONE",
         "RIGHT_HAND"
       ]
+    },
+    "PositiveDurationInSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":21600,
+      "min":1
     },
     "ReserveContactRequest":{
       "type":"structure",
@@ -1791,10 +2251,10 @@
       "members":{
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>End time of a contact.</p>"
+          "documentation":"<p>End time of a contact in UTC.</p>"
         },
         "groundStation":{
-          "shape":"String",
+          "shape":"GroundStationName",
           "documentation":"<p>Name of a ground station.</p>"
         },
         "missionProfileArn":{
@@ -1807,7 +2267,7 @@
         },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Start time of a contact.</p>"
+          "documentation":"<p>Start time of a contact in UTC.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1845,11 +2305,41 @@
       "exception":true
     },
     "RoleArn":{"type":"string"},
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"^[a-z0-9.-]{3,63}$"
+    },
     "S3KeyPrefix":{
       "type":"string",
       "max":900,
       "min":1,
       "pattern":"^([a-zA-Z0-9_\\-=/]|\\{satellite_id\\}|\\{config\\-name}|\\{s3\\-config-id}|\\{year\\}|\\{month\\}|\\{day\\}){1,900}$"
+    },
+    "S3Object":{
+      "type":"structure",
+      "members":{
+        "bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>An Amazon S3 Bucket name.</p>"
+        },
+        "key":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>An Amazon S3 key for the ephemeris.</p>"
+        },
+        "version":{
+          "shape":"S3VersionId",
+          "documentation":"<p>For versioned S3 objects, the version to use for the ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Object stored in S3 containing ephemeris data.</p>"
+    },
+    "S3ObjectKey":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9!*'\\)\\(./_-]{1,1024}$"
     },
     "S3RecordingConfig":{
       "type":"structure",
@@ -1882,10 +2372,16 @@
         },
         "keyTemplate":{
           "shape":"String",
-          "documentation":"<p>Template of the S3 key used.</p>"
+          "documentation":"<p>Key template used for the S3 Recording Configuration</p>"
         }
       },
       "documentation":"<p>Details about an S3 recording <code>Config</code> used in a contact.</p>"
+    },
+    "S3VersionId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^[\\s\\S]{1,1024}$"
     },
     "SafeName":{
       "type":"string",
@@ -1900,6 +2396,10 @@
     "SatelliteListItem":{
       "type":"structure",
       "members":{
+        "currentEphemeris":{
+          "shape":"EphemerisMetaData",
+          "documentation":"<p>The current ephemeris being used to compute the trajectory of the satellite.</p>"
+        },
         "groundStations":{
           "shape":"GroundStationIdList",
           "documentation":"<p>A list of ground stations to which the satellite is on-boarded.</p>"
@@ -1969,7 +2469,7 @@
       "members":{
         "configDetails":{
           "shape":"ConfigDetails",
-          "documentation":"<p>Additional details for a <code>Config</code>, if type is dataflow endpoint or antenna demod decode.</p>"
+          "documentation":"<p>Additional details for a <code>Config</code>, if type is <code>dataflow-endpoint</code> or <code>antenna-downlink-demod-decode</code> </p>"
         },
         "configId":{
           "shape":"String",
@@ -2010,16 +2510,63 @@
     },
     "StatusList":{
       "type":"list",
-      "member":{"shape":"ContactStatus"}
+      "member":{"shape":"ContactStatus"},
+      "max":500,
+      "min":0
     },
     "String":{"type":"string"},
     "SubnetList":{
       "type":"list",
       "member":{"shape":"String"}
     },
+    "TLEData":{
+      "type":"structure",
+      "required":[
+        "tleLine1",
+        "tleLine2",
+        "validTimeRange"
+      ],
+      "members":{
+        "tleLine1":{
+          "shape":"TleLineOne",
+          "documentation":"<p>First line of two-line element set (TLE) data.</p>"
+        },
+        "tleLine2":{
+          "shape":"TleLineTwo",
+          "documentation":"<p>Second line of two-line element set (TLE) data.</p>"
+        },
+        "validTimeRange":{
+          "shape":"TimeRange",
+          "documentation":"<p>The valid time range for the TLE. Gaps or overlap are not permitted.</p>"
+        }
+      },
+      "documentation":"<p>Two-line element set (TLE) data.</p>"
+    },
+    "TLEDataList":{
+      "type":"list",
+      "member":{"shape":"TLEData"},
+      "max":500,
+      "min":1
+    },
+    "TLEEphemeris":{
+      "type":"structure",
+      "members":{
+        "s3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Identifies the S3 object to be used as the ephemeris.</p>"
+        },
+        "tleData":{
+          "shape":"TLEDataList",
+          "documentation":"<p>The data for a TLE ephemeris, supplied directly in the request rather than through an S3 object.</p>"
+        }
+      },
+      "documentation":"<p>Two-line element set (TLE) ephemeris.</p>"
+    },
     "TagKeys":{
       "type":"list",
-      "member":{"shape":"String"}
+      "member":{"shape":"UnboundedString"},
+      "max":500,
+      "min":0
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -2029,7 +2576,7 @@
       ],
       "members":{
         "resourceArn":{
-          "shape":"String",
+          "shape":"AnyArn",
           "documentation":"<p>ARN of a resource tag.</p>",
           "location":"uri",
           "locationName":"resourceArn"
@@ -2052,7 +2599,37 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "TimeRange":{
+      "type":"structure",
+      "required":[
+        "endTime",
+        "startTime"
+      ],
+      "members":{
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time in UTC at which the time range ends.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time in UTC at which the time range starts.</p>"
+        }
+      },
+      "documentation":"<p>A time range with a start and end time.</p>"
+    },
     "Timestamp":{"type":"timestamp"},
+    "TleLineOne":{
+      "type":"string",
+      "max":69,
+      "min":69,
+      "pattern":"^1 [ 0-9]{5}[A-Z] [ 0-9]{5}[ A-Z]{3} [ 0-9]{5}[.][ 0-9]{8} (?:(?:[ 0+-][.][ 0-9]{8})|(?: [ +-][.][ 0-9]{7})) [ +-][ 0-9]{5}[+-][ 0-9] [ +-][ 0-9]{5}[+-][ 0-9] [ 0-9] [ 0-9]{4}[ 0-9]$"
+    },
+    "TleLineTwo":{
+      "type":"string",
+      "max":69,
+      "min":69,
+      "pattern":"^2 [ 0-9]{5} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{7} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{2}[.][ 0-9]{13}[ 0-9]$"
+    },
     "TrackingConfig":{
       "type":"structure",
       "required":["autotrack"],
@@ -2064,6 +2641,11 @@
       },
       "documentation":"<p>Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile.</p>"
     },
+    "UnboundedString":{
+      "type":"string",
+      "min":1,
+      "pattern":"^[\\s\\S]+$"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -2072,7 +2654,7 @@
       ],
       "members":{
         "resourceArn":{
-          "shape":"String",
+          "shape":"AnyArn",
           "documentation":"<p>ARN of a resource.</p>",
           "location":"uri",
           "locationName":"resourceArn"
@@ -2106,7 +2688,7 @@
           "documentation":"<p>Parameters of a <code>Config</code>.</p>"
         },
         "configId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a <code>Config</code>.</p>",
           "location":"uri",
           "locationName":"configId"
@@ -2123,6 +2705,33 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "UpdateEphemerisRequest":{
+      "type":"structure",
+      "required":[
+        "enabled",
+        "ephemerisId"
+      ],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the ephemeris is enabled or not. Changing this value will not require the ephemeris to be re-validated.</p>"
+        },
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>",
+          "location":"uri",
+          "locationName":"ephemerisId"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
+        },
+        "priority":{
+          "shape":"EphemerisPriority",
+          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+        }
+      }
     },
     "UpdateMissionProfileRequest":{
       "type":"structure",
@@ -2141,11 +2750,11 @@
           "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
         },
         "minimumViableContactDurationSeconds":{
-          "shape":"DurationInSeconds",
+          "shape":"PositiveDurationInSeconds",
           "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
         },
         "missionProfileId":{
-          "shape":"String",
+          "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>",
           "location":"uri",
           "locationName":"missionProfileId"
@@ -2198,12 +2807,18 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "Year":{
+      "type":"integer",
+      "box":true,
+      "max":3000,
+      "min":2018
     },
     "noradSatelliteID":{
       "type":"integer",
       "max":99999,
-      "min":1
+      "min":0
     },
     "satelliteArn":{"type":"string"}
   },

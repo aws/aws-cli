@@ -3420,7 +3420,7 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p> <p>Pattern: <code>^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$</code> </p>",
           "idempotencyToken":true
         }
       }
@@ -6170,6 +6170,18 @@
         "Credentials":{
           "shape":"Credentials",
           "documentation":"<p>The credentials to use for federation.</p>"
+        },
+        "SignInUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to sign into the user's instance. </p>"
+        },
+        "UserArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user.</p>"
+        },
+        "UserId":{
+          "shape":"AgentResourceId",
+          "documentation":"<p>The identifier for the user.</p>"
         }
       }
     },
@@ -9676,7 +9688,7 @@
       "members":{
         "InstanceId":{
           "shape":"InstanceIdOrArn",
-          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance. You can provide the <code>InstanceId</code>, or the entire ARN.</p>",
           "location":"uri",
           "locationName":"InstanceId"
         },
@@ -12449,6 +12461,7 @@
         }
       }
     },
+    "Url":{"type":"string"},
     "UrlReference":{
       "type":"structure",
       "members":{

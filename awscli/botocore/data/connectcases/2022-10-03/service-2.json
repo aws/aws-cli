@@ -170,7 +170,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template.</p>",
+      "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, to define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template. A template can be either Active or Inactive, as indicated by its status. Inactive templates cannot be used to create cases.</p>",
       "idempotent":true
     },
     "GetCase":{
@@ -532,7 +532,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the attributes of an existing layout.</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p> <p>A <code>ValidationException</code> is returned when you add non-existent <code>fieldIds</code> to a layout.</p> <note> <p>Title and Status fields cannot be part of layouts because they are not configurable.</p> </note>",
       "idempotent":true
@@ -554,7 +555,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates the attributes of an existing template. The template attributes that can be modified include <code>name</code>, <code>description</code>, <code>layouts</code>, and <code>requiredFields</code>. At least one of these attributes must not be null. If a null value is provided for a given attribute, that attribute is ignored and its current value is preserved.</p>",
+      "documentation":"<p>Updates the attributes of an existing template. The template attributes that can be modified include <code>name</code>, <code>description</code>, <code>layoutConfiguration</code>, <code>requiredFields</code>, and <code>status</code>. At least one of these attributes must not be null. If a null value is provided for a given attribute, that attribute is ignored and its current value is preserved.</p>",
       "idempotent":true
     }
   },
@@ -891,7 +892,7 @@
       "members":{
         "clientToken":{
           "shape":"CreateCaseRequestClientTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "domainId":{
@@ -1132,6 +1133,10 @@
         "requiredFields":{
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+        },
+        "status":{
+          "shape":"TemplateStatus",
+          "documentation":"<p>The status of the template.</p>"
         }
       }
     },
@@ -1321,7 +1326,7 @@
     "FieldGroupFieldsList":{
       "type":"list",
       "member":{"shape":"FieldItem"},
-      "max":30,
+      "max":100,
       "min":0
     },
     "FieldGroupNameString":{
@@ -1771,6 +1776,7 @@
       "type":"structure",
       "required":[
         "name",
+        "status",
         "templateArn",
         "templateId"
       ],
@@ -1790,6 +1796,10 @@
         "requiredFields":{
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+        },
+        "status":{
+          "shape":"TemplateStatus",
+          "documentation":"<p>The status of the template.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2165,6 +2175,12 @@
           "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "status":{
+          "shape":"TemplateStatusFilters",
+          "documentation":"<p>A list of status values to filter on.</p>",
+          "location":"querystring",
+          "locationName":"status"
         }
       }
     },
@@ -2662,10 +2678,26 @@
       "min":1,
       "pattern":"^.*[\\S]$"
     },
+    "TemplateStatus":{
+      "type":"string",
+      "documentation":"<p>Status of a template</p>",
+      "enum":[
+        "Active",
+        "Inactive"
+      ]
+    },
+    "TemplateStatusFilters":{
+      "type":"list",
+      "member":{"shape":"TemplateStatus"},
+      "documentation":"<p>List of filters used on the ListTemplates result set</p>",
+      "max":2,
+      "min":1
+    },
     "TemplateSummary":{
       "type":"structure",
       "required":[
         "name",
+        "status",
         "templateArn",
         "templateId"
       ],
@@ -2673,6 +2705,10 @@
         "name":{
           "shape":"TemplateName",
           "documentation":"<p>The template name.</p>"
+        },
+        "status":{
+          "shape":"TemplateStatus",
+          "documentation":"<p>The status of the template.</p>"
         },
         "templateArn":{
           "shape":"TemplateArn",
@@ -2853,6 +2889,10 @@
         "requiredFields":{
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+        },
+        "status":{
+          "shape":"TemplateStatus",
+          "documentation":"<p>The status of the template.</p>"
         },
         "templateId":{
           "shape":"TemplateId",

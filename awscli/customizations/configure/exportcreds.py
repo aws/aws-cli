@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import io
 import sys
+import csv
 import json
 from datetime import datetime
 from collections import namedtuple
@@ -137,7 +139,13 @@ class ConfigureExportCredsCommand(BasicCommand):
          'choices': list(SUPPORTED_FORMATS),
          'default': CredentialProcessFormatter.FORMAT},
     ]
-    _RECURSION_VAR = '_AWS_CLI_RESOLVING_CREDS'
+    _RECURSION_VAR = '_AWS_CLI_PROFILE_CHAIN'
+    # Two levels is reasonable because you might explicitly run
+    # "aws configure export-creds" with a profile that is configured
+    # with a credential_process of "aws configure export-creds".
+    # So we'll give one more level of recursion for padding and then
+    # error out when we hit _MAX_RECURSION.
+    _MAX_RECURSION = 4
 
     def __init__(self, session, out_stream=None, error_stream=None, env=None):
         super(ConfigureExportCredsCommand, self).__init__(session)
@@ -151,18 +159,46 @@ class ConfigureExportCredsCommand(BasicCommand):
         self._error_stream = error_stream
         self._env = env
 
-    def _recursion_detected(self):
-        return self._RECURSION_VAR in self._env
+    def _recursion_barrier_detected(self):
+        profile = self._get_current_profile()
+        seen_profiles = self._parse_profile_chain(
+            self._env.get(self._RECURSION_VAR, ''))
+        if len(seen_profiles) >= self._MAX_RECURSION:
+            return True
+        return profile in seen_profiles
 
     def _set_recursion_barrier(self):
-        self._env[self._RECURSION_VAR] = 'true'
+        profile = self._get_current_profile()
+        seen_profiles = self._parse_profile_chain(
+            self._env.get(self._RECURSION_VAR, ''))
+        seen_profiles.append(profile)
+        serialized = self._serialize_to_csv_str(seen_profiles)
+        self._env[self._RECURSION_VAR] = serialized
+
+    def _serialize_to_csv_str(self, profiles):
+        out = io.StringIO()
+        w = csv.writer(out)
+        w.writerow(profiles)
+        serialized = out.getvalue().strip()
+        return serialized
+
+    def _get_current_profile(self):
+        profile = self._session.get_config_variable('profile')
+        if profile is None:
+            profile = 'default'
+        return profile
+
+    def _parse_profile_chain(self, value):
+        result = list(csv.reader([value]))[0]
+        return result
 
     def _run_main(self, parsed_args, parsed_globals):
-        if self._recursion_detected():
+        if self._recursion_barrier_detected():
             self._error_stream.write(
                 "\n\nRecursive credential resolution process detected.\n"
                 "Try setting an explicit '--profile' value in the "
-                "'credential_process' configuration:\n\n"
+                "'credential_process' configuration and ensure there "
+                "are no cycles:\n\n"
                 "credential_process = aws configure export-creds "
                 "--profile other-profile\n"
             )

@@ -155,6 +155,7 @@ class TestConfigureExportCredsCommand(unittest.TestCase):
         self.out_stream = io.StringIO()
         self.err_stream = io.StringIO()
         self.os_env = {}
+        self.session.get_config_variable.return_value = 'default'
         self.export_creds_cmd = ConfigureExportCredsCommand(
             self.session, self.out_stream, self.err_stream, env=self.os_env)
         self.global_args = mock.Mock()
@@ -193,7 +194,8 @@ class TestConfigureExportCredsCommand(unittest.TestCase):
         self.assertEqual(rc, 1)
 
     def test_show_error_when_cred_resolution_errors(self):
-        self.session.get_credentials.side_effect = Exception("resolution failed")
+        self.session.get_credentials.side_effect = Exception(
+            "resolution failed")
         rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
             'resolution failed', self.err_stream.getvalue()
@@ -201,7 +203,79 @@ class TestConfigureExportCredsCommand(unittest.TestCase):
         self.assertEqual(rc, 1)
 
     def test_can_detect_recursive_resolution(self):
-        self.os_env['_AWS_CLI_RESOLVING_CREDS'] = 'true'
+        self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'default'
+        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertIn(
+            'Recursive credential resolution process detected',
+            self.err_stream.getvalue()
+        )
+        self.assertEqual(rc, 2)
+
+    def test_nested_calls_not_recursive(self):
+        self.session.get_credentials.return_value = self.creds
+        # If we've seen the profiles foo and bar:
+        self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'foo,bar'
+        # And we're now on baz, then we shouldn't get an error
+        # because there's no cycle.
+        self.session.get_config_variable.return_value = 'baz'
+        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertEqual(rc, 0)
+        self.assertEqual(
+            self.out_stream.getvalue(),
+            JSONValue(
+                '{"Version": 1, "AccessKeyId": "access_key", '
+                '"SecretAccessKey": "secret_key"}')
+        )
+
+    def test_nested_calls_with_cycle(self):
+        self.session.get_credentials.return_value = self.creds
+        self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'foo,bar,baz'
+        self.session.get_config_variable.return_value = 'bar'
+        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertIn(
+            'Recursive credential resolution process detected',
+            self.err_stream.getvalue()
+        )
+        self.assertEqual(rc, 2)
+
+    def test_handles_comma_char_in_profile_name_no_cycle(self):
+        self.session.get_credentials.return_value = self.creds
+        self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'foo,bar,baz'
+        # Shouldn't be a cycle, the comma is part of the profile name.
+        self.session.get_config_variable.return_value = 'bar,baz'
+        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertEqual(rc, 0)
+        self.assertEqual(
+            self.out_stream.getvalue(),
+            JSONValue(
+                '{"Version": 1, "AccessKeyId": "access_key", '
+                '"SecretAccessKey": "secret_key"}')
+        )
+
+    def test_detects_comma_char_with_cycle(self):
+        self.session.get_credentials.return_value = self.creds
+        # To test the round tripping of CSV writing/reading, we'll invoke
+        # the command twice to ensure however it records the profiles
+        # that it detects a cycle with names that need to be escaped/quoted.
+        self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'foo,bar'
+        self.session.get_config_variable.return_value = 'bar,baz'
+        # First time it succeeds.
+        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertEqual(rc, 0)
+        # Second time, it detects the cycle.
+        second_invoke = ConfigureExportCredsCommand(
+            self.session, self.out_stream, self.err_stream, env=self.os_env)
+        rc = second_invoke(args=[], parsed_globals=self.global_args)
+        self.assertIn(
+            'Recursive credential resolution process detected',
+            self.err_stream.getvalue()
+        )
+        self.assertEqual(rc, 2)
+
+    def test_max_recursion_limit(self):
+        self.session.get_credentials.return_value = self.creds
+        self.os_env['_AWS_CLI_PROFILE_CHAIN'] = ','.join(
+            ['a', 'b', 'c', 'd', 'e', 'f', 'g'])
         rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
             'Recursive credential resolution process detected',

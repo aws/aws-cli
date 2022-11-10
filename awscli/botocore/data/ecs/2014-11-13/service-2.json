@@ -366,6 +366,25 @@
       ],
       "documentation":"<p>Runs a command remotely on a container within a task.</p> <p>If you use a condition key in your IAM policy to refine the conditions for the policy statement, for example limit the actions to a specific cluster, you recevie an <code>AccessDeniedException</code> when there is a mismatch between the condition key value and the corresponding parameter value.</p>"
     },
+    "GetTaskProtection":{
+      "name":"GetTaskProtection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTaskProtectionRequest"},
+      "output":{"shape":"GetTaskProtectionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Retrieves the protection status of tasks in an Amazon ECS service.</p>"
+    },
     "ListAccountSettings":{
       "name":"ListAccountSettings",
       "http":{
@@ -856,6 +875,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Modifies which task set in a service is the primary task set. Any parameters that are updated on the primary task set in a service will transition to the service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS Deployment Types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
+    "UpdateTaskProtection":{
+      "name":"UpdateTaskProtection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateTaskProtectionRequest"},
+      "output":{"shape":"UpdateTaskProtectionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Updates the protection status of a task. You can set <code>protectionEnabled</code> to <code>true</code> to protect your task from termination during scale-in events from <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-auto-scaling.html\">Service Autoscaling</a> or <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">deployments</a>.</p> <p>Task-protection, by default, expires after 2 hours at which point Amazon ECS unsets the <code>protectionEnabled</code> property making the task eligible for termination by a subsequent scale-in event.</p> <p>You can specify a custom expiration period for task protection from 1 minute to up to 2,880 minutes (48 hours). To specify the custom expiration period, set the <code>expiresInMinutes</code> property. The <code>expiresInMinutes</code> property is always reset when you invoke this operation for a task that already has <code>protectionEnabled</code> set to <code>true</code>. You can keep extending the protection expiration period of a task by invoking this operation repeatedly.</p> <p>To learn more about Amazon ECS task protection, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-scale-in-protection.html\">Task scale-in protection</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <note> <p>This operation is only supported for tasks belonging to an Amazon ECS service. Invoking this operation for a standalone task will result in an <code>TASK_NOT_VALID</code> failure. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/api_failures_messages.html.html\">API failure reasons</a>.</p> </note> <important> <p>If you prefer to set task protection from within the container, we recommend using the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-endpoint.html\">Amazon ECS container agent endpoint</a>.</p> </important>"
     },
     "UpdateTaskSet":{
       "name":"UpdateTaskSet",
@@ -2997,6 +3035,33 @@
         "fluentbit"
       ]
     },
+    "GetTaskProtectionRequest":{
+      "type":"structure",
+      "required":["cluster"],
+      "members":{
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster that hosts the service that the task sets exist in.</p>"
+        },
+        "tasks":{
+          "shape":"StringList",
+          "documentation":"<p>A list of up to 100 task IDs or full ARN entries.</p>"
+        }
+      }
+    },
+    "GetTaskProtectionResponse":{
+      "type":"structure",
+      "members":{
+        "protectedTasks":{
+          "shape":"ProtectedTasks",
+          "documentation":"<p>A list of tasks with the following information.</p> <ul> <li> <p> <code>taskArn</code>: The task ARN.</p> </li> <li> <p> <code>protectionEnabled</code>: The protection status of the task. If scale-in protection is enabled for a task, the value is <code>true</code>. Otherwise, it is <code>false</code>.</p> </li> <li> <p> <code>expirationDate</code>: The epoch time when protection for the task will expire.</p> </li> </ul>"
+        },
+        "failures":{
+          "shape":"Failures",
+          "documentation":"<p>Any failures associated with the call.</p>"
+        }
+      }
+    },
     "GpuIds":{
       "type":"list",
       "member":{"shape":"String"}
@@ -3995,6 +4060,28 @@
         "SERVICE",
         "NONE"
       ]
+    },
+    "ProtectedTask":{
+      "type":"structure",
+      "members":{
+        "taskArn":{
+          "shape":"String",
+          "documentation":"<p>The task ARN.</p>"
+        },
+        "protectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The protection status of the task. If scale-in protection is enabled for a task, the value is <code>true</code>. Otherwise, it is <code>false</code>.</p>"
+        },
+        "expirationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The epoch time when protection for the task will expire.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the protection status details for a task. You can set the protection status with the <a>UpdateTaskProtection</a> API and get the status of tasks with the <a>GetTaskProtection</a> API.</p>"
+    },
+    "ProtectedTasks":{
+      "type":"list",
+      "member":{"shape":"ProtectedTask"}
     },
     "ProxyConfiguration":{
       "type":"structure",
@@ -5965,6 +6052,45 @@
         "service":{
           "shape":"Service",
           "documentation":"<p>The full description of your service following the update call.</p>"
+        }
+      }
+    },
+    "UpdateTaskProtectionRequest":{
+      "type":"structure",
+      "required":[
+        "cluster",
+        "tasks",
+        "protectionEnabled"
+      ],
+      "members":{
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster that hosts the service that the task sets exist in.</p>"
+        },
+        "tasks":{
+          "shape":"StringList",
+          "documentation":"<p>A list of up to 10 task IDs or full ARN entries.</p>"
+        },
+        "protectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specify <code>true</code> to mark a task for protection and <code>false</code> to unset protection, making it eligible for termination.</p>"
+        },
+        "expiresInMinutes":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>If you set <code>protectionEnabled</code> to <code>true</code>, you can specify the duration for task protection in minutes. You can specify a value from 1 minute to up to 2,880 minutes (48 hours). During this time, your task will not be terminated by scale-in events from Service Auto Scaling or deployments. After this time period lapses, <code>protectionEnabled</code> will be reset to <code>false</code>.</p> <p>If you don’t specify the time, then the task is automatically protected for 120 minutes (2 hours).</p>"
+        }
+      }
+    },
+    "UpdateTaskProtectionResponse":{
+      "type":"structure",
+      "members":{
+        "protectedTasks":{
+          "shape":"ProtectedTasks",
+          "documentation":"<p>A list of tasks with the following information.</p> <ul> <li> <p> <code>taskArn</code>: The task ARN.</p> </li> <li> <p> <code>protectionEnabled</code>: The protection status of the task. If scale-in protection is enabled for a task, the value is <code>true</code>. Otherwise, it is <code>false</code>.</p> </li> <li> <p> <code>expirationDate</code>: The epoch time when protection for the task will expire.</p> </li> </ul>"
+        },
+        "failures":{
+          "shape":"Failures",
+          "documentation":"<p>Any failures associated with the call.</p>"
         }
       }
     },

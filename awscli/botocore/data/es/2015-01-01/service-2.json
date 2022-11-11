@@ -58,6 +58,24 @@
       ],
       "documentation":"<p>Associates a package with an Amazon ES domain.</p>"
     },
+    "AuthorizeVpcEndpointAccess":{
+      "name":"AuthorizeVpcEndpointAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/authorizeVpcEndpointAccess"
+      },
+      "input":{"shape":"AuthorizeVpcEndpointAccessRequest"},
+      "output":{"shape":"AuthorizeVpcEndpointAccessResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Provides access to an Amazon OpenSearch Service domain through the use of an interface VPC endpoint.</p>"
+    },
     "CancelElasticsearchServiceSoftwareUpdate":{
       "name":"CancelElasticsearchServiceSoftwareUpdate",
       "http":{
@@ -127,6 +145,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Create a package for use with Amazon ES domains.</p>"
+    },
+    "CreateVpcEndpoint":{
+      "name":"CreateVpcEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/vpcEndpoints"
+      },
+      "input":{"shape":"CreateVpcEndpointRequest"},
+      "output":{"shape":"CreateVpcEndpointResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Creates an Amazon OpenSearch Service-managed VPC endpoint.</p>"
     },
     "DeleteElasticsearchDomain":{
       "name":"DeleteElasticsearchDomain",
@@ -202,6 +238,22 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Delete the package.</p>"
+    },
+    "DeleteVpcEndpoint":{
+      "name":"DeleteVpcEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2015-01-01/es/vpcEndpoints/{VpcEndpointId}"
+      },
+      "input":{"shape":"DeleteVpcEndpointRequest"},
+      "output":{"shape":"DeleteVpcEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"InternalException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Deletes an Amazon OpenSearch Service-managed interface VPC endpoint.</p>"
     },
     "DescribeDomainAutoTunes":{
       "name":"DescribeDomainAutoTunes",
@@ -376,6 +428,22 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Returns information about reserved Elasticsearch instances for this account.</p>"
+    },
+    "DescribeVpcEndpoints":{
+      "name":"DescribeVpcEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/vpcEndpoints/describe"
+      },
+      "input":{"shape":"DescribeVpcEndpointsRequest"},
+      "output":{"shape":"DescribeVpcEndpointsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Describes one or more Amazon OpenSearch Service-managed VPC endpoints.</p>"
     },
     "DissociatePackage":{
       "name":"DissociatePackage",
@@ -559,6 +627,53 @@
       ],
       "documentation":"<p>Returns all tags for the given Elasticsearch domain.</p>"
     },
+    "ListVpcEndpointAccess":{
+      "name":"ListVpcEndpointAccess",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/listVpcEndpointAccess"
+      },
+      "input":{"shape":"ListVpcEndpointAccessRequest"},
+      "output":{"shape":"ListVpcEndpointAccessResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"InternalException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Retrieves information about each principal that is allowed to access a given Amazon OpenSearch Service domain through the use of an interface VPC endpoint.</p>"
+    },
+    "ListVpcEndpoints":{
+      "name":"ListVpcEndpoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2015-01-01/es/vpcEndpoints"
+      },
+      "input":{"shape":"ListVpcEndpointsRequest"},
+      "output":{"shape":"ListVpcEndpointsResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Retrieves all Amazon OpenSearch Service-managed VPC endpoints in the current account and Region.</p>"
+    },
+    "ListVpcEndpointsForDomain":{
+      "name":"ListVpcEndpointsForDomain",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/vpcEndpoints"
+      },
+      "input":{"shape":"ListVpcEndpointsForDomainRequest"},
+      "output":{"shape":"ListVpcEndpointsForDomainResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Retrieves all Amazon OpenSearch Service-managed VPC endpoints associated with a particular domain.</p>"
+    },
     "PurchaseReservedElasticsearchInstanceOffering":{
       "name":"PurchaseReservedElasticsearchInstanceOffering",
       "http":{
@@ -604,6 +719,23 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Removes the specified set of tags from the specified Elasticsearch domain.</p>"
+    },
+    "RevokeVpcEndpointAccess":{
+      "name":"RevokeVpcEndpointAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/revokeVpcEndpointAccess"
+      },
+      "input":{"shape":"RevokeVpcEndpointAccessRequest"},
+      "output":{"shape":"RevokeVpcEndpointAccessResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"InternalException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Revokes access to an Amazon OpenSearch Service domain that was provided through an interface VPC endpoint.</p>"
     },
     "StartElasticsearchServiceSoftwareUpdate":{
       "name":"StartElasticsearchServiceSoftwareUpdate",
@@ -657,6 +789,24 @@
       ],
       "documentation":"<p>Updates a package for use with Amazon ES domains.</p>"
     },
+    "UpdateVpcEndpoint":{
+      "name":"UpdateVpcEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/vpcEndpoints/update"
+      },
+      "input":{"shape":"UpdateVpcEndpointRequest"},
+      "output":{"shape":"UpdateVpcEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"InternalException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"BaseException"}
+      ],
+      "documentation":"<p>Modifies an Amazon OpenSearch Service-managed interface VPC endpoint.</p>"
+    },
     "UpgradeElasticsearchDomain":{
       "name":"UpgradeElasticsearchDomain",
       "http":{
@@ -680,6 +830,10 @@
     "ARN":{
       "type":"string",
       "documentation":"<p>The Amazon Resource Name (ARN) of the Elasticsearch domain. See <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html\" target=\"_blank\">Identifiers for IAM Entities</a> in <i>Using AWS Identity and Access Management</i> for more information.</p>"
+    },
+    "AWSAccount":{
+      "type":"string",
+      "pattern":"^[0-9]+$"
     },
     "AcceptInboundCrossClusterSearchConnectionRequest":{
       "type":"structure",
@@ -891,6 +1045,55 @@
         }
       },
       "documentation":"<p> Container for response returned by <code> <a>AssociatePackage</a> </code> operation. </p>"
+    },
+    "AuthorizeVpcEndpointAccessRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Account"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the OpenSearch Service domain to provide access to.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Account":{
+          "shape":"AWSAccount",
+          "documentation":"<p>The account ID to grant access to.</p>"
+        }
+      },
+      "documentation":"<p>Container for request parameters to the <code><a>AuthorizeVpcEndpointAccess</a></code> operation. Specifies the account to be permitted to manage VPC endpoints against the domain.</p>"
+    },
+    "AuthorizeVpcEndpointAccessResponse":{
+      "type":"structure",
+      "required":["AuthorizedPrincipal"],
+      "members":{
+        "AuthorizedPrincipal":{
+          "shape":"AuthorizedPrincipal",
+          "documentation":"<p>Information about the account or service that was provided access to the domain.</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>AuthorizeVpcEndpointAccess</a></code> operation. Contains the account ID and the type of the account being authorized to access the VPC endpoint.</p>"
+    },
+    "AuthorizedPrincipal":{
+      "type":"structure",
+      "members":{
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The type of principal.</p>"
+        },
+        "Principal":{
+          "shape":"String",
+          "documentation":"<p>The IAM principal that is allowed access to the domain.</p>"
+        }
+      },
+      "documentation":"<p>Information about an account or service that has access to an Amazon OpenSearch Service domain through the use of an interface VPC endpoint.</p>"
+    },
+    "AuthorizedPrincipalList":{
+      "type":"list",
+      "member":{"shape":"AuthorizedPrincipal"}
     },
     "AutoTune":{
       "type":"structure",
@@ -1190,6 +1393,11 @@
       },
       "documentation":"<p>The progress details of a specific domain configuration change.</p>"
     },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "CloudWatchLogsLogGroupArn":{
       "type":"string",
       "documentation":"<p>ARN of the Cloudwatch log group to which log needs to be published.</p>"
@@ -1442,6 +1650,39 @@
       },
       "documentation":"<p> Container for response returned by <code> <a>CreatePackage</a> </code> operation. </p>"
     },
+    "CreateVpcEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "DomainArn",
+        "VpcOptions"
+      ],
+      "members":{
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain to grant access to.</p>"
+        },
+        "VpcOptions":{
+          "shape":"VPCOptions",
+          "documentation":"<p>Options to specify the subnets and security groups for the endpoint.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code><a>CreateVpcEndpointRequest</a></code> operation.</p>"
+    },
+    "CreateVpcEndpointResponse":{
+      "type":"structure",
+      "required":["VpcEndpoint"],
+      "members":{
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>Information about the newly created VPC endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>CreateVpcEndpoint</a></code> operation. Contains the configuration and status of the VPC Endpoint being created.</p>"
+    },
     "CreatedAt":{"type":"timestamp"},
     "CrossClusterSearchConnectionId":{"type":"string"},
     "CrossClusterSearchConnectionStatusMessage":{"type":"string"},
@@ -1536,6 +1777,30 @@
         }
       },
       "documentation":"<p> Container for response parameters to <code> <a>DeletePackage</a> </code> operation. </p>"
+    },
+    "DeleteVpcEndpointRequest":{
+      "type":"structure",
+      "required":["VpcEndpointId"],
+      "members":{
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the endpoint to be deleted.</p>",
+          "location":"uri",
+          "locationName":"VpcEndpointId"
+        }
+      },
+      "documentation":"<p>Deletes an Amazon OpenSearch Service-managed interface VPC endpoint.</p>"
+    },
+    "DeleteVpcEndpointResponse":{
+      "type":"structure",
+      "required":["VpcEndpointSummary"],
+      "members":{
+        "VpcEndpointSummary":{
+          "shape":"VpcEndpointSummary",
+          "documentation":"<p>Information about the deleted endpoint, including its current status (<code>DELETING</code> or <code>DELETE_FAILED</code>).</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>DeleteVpcEndpoint</a></code> operation. Contains the summarized detail of the VPC Endpoint being deleted.</p>"
     },
     "DeploymentCloseDateTimeStamp":{"type":"timestamp"},
     "DeploymentStatus":{
@@ -1926,6 +2191,35 @@
       },
       "documentation":"<p>Container for results from <code>DescribeReservedElasticsearchInstances</code></p>"
     },
+    "DescribeVpcEndpointsRequest":{
+      "type":"structure",
+      "required":["VpcEndpointIds"],
+      "members":{
+        "VpcEndpointIds":{
+          "shape":"VpcEndpointIdList",
+          "documentation":"<p>The unique identifiers of the endpoints to get information about.</p>"
+        }
+      },
+      "documentation":"<p>Container for request parameters to the <code><a>DescribeVpcEndpoints</a></code> operation. Specifies the list of VPC endpoints to be described.</p>"
+    },
+    "DescribeVpcEndpointsResponse":{
+      "type":"structure",
+      "required":[
+        "VpcEndpoints",
+        "VpcEndpointErrors"
+      ],
+      "members":{
+        "VpcEndpoints":{
+          "shape":"VpcEndpoints",
+          "documentation":"<p>Information about each requested VPC endpoint.</p>"
+        },
+        "VpcEndpointErrors":{
+          "shape":"VpcEndpointErrorList",
+          "documentation":"<p>Any errors associated with the request.</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>DescribeVpcEndpoints</a></code> operation. Returns a list containing configuration details and status of the VPC Endpoints as well as a list containing error responses of the endpoints that could not be described</p>"
+    },
     "Description":{"type":"string"},
     "DisableTimestamp":{"type":"timestamp"},
     "DisabledOperationException":{
@@ -1967,6 +2261,12 @@
         }
       },
       "documentation":"<p> Container for response returned by <code> <a>DissociatePackage</a> </code> operation. </p>"
+    },
+    "DomainArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:[a-z]+:[a-z0-9\\-]+:[0-9]+:domain\\/[a-z0-9\\-]+"
     },
     "DomainEndpointOptions":{
       "type":"structure",
@@ -2577,6 +2877,10 @@
       },
       "documentation":"<p> Status of the Encryption At Rest options for the specified Elasticsearch domain.</p>"
     },
+    "Endpoint":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9\\-\\.]+$"
+    },
     "EndpointsMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -3084,6 +3388,110 @@
       },
       "documentation":"<p>The result of a <code>ListTags</code> operation. Contains tags for all requested Elasticsearch domains.</p>"
     },
+    "ListVpcEndpointAccessRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the OpenSearch Service domain to retrieve access information for.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Provides an identifier to allow retrieval of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"<p>Retrieves information about each principal that is allowed to access a given Amazon OpenSearch Service domain through the use of an interface VPC endpoint</p>"
+    },
+    "ListVpcEndpointAccessResponse":{
+      "type":"structure",
+      "required":[
+        "AuthorizedPrincipalList",
+        "NextToken"
+      ],
+      "members":{
+        "AuthorizedPrincipalList":{
+          "shape":"AuthorizedPrincipalList",
+          "documentation":"<p>List of <code>AuthorizedPrincipal</code> describing the details of the permissions to manage VPC endpoints against the specified domain.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Provides an identifier to allow retrieval of paginated results.</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>ListVpcEndpointAccess</a></code> operation. Returns a list of accounts id and account type authorized to manage VPC endpoints.</p>"
+    },
+    "ListVpcEndpointsForDomainRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>Name of the ElasticSearch domain whose VPC endpoints are to be listed.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Provides an identifier to allow retrieval of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"<p>Container for request parameters to the <code><a>ListVpcEndpointsForDomain</a></code> operation. Specifies the domain whose VPC endpoints will be listed.</p>"
+    },
+    "ListVpcEndpointsForDomainResponse":{
+      "type":"structure",
+      "required":[
+        "VpcEndpointSummaryList",
+        "NextToken"
+      ],
+      "members":{
+        "VpcEndpointSummaryList":{
+          "shape":"VpcEndpointSummaryList",
+          "documentation":"<p>Provides list of <code>VpcEndpointSummary</code> summarizing details of the VPC endpoints.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Information about each endpoint associated with the domain.</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>ListVpcEndpointsForDomain</a></code> operation. Returns a list containing summarized details of the VPC endpoints.</p>"
+    },
+    "ListVpcEndpointsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Identifier to allow retrieval of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"<p>Container for request parameters to the <code><a>ListVpcEndpoints</a></code> operation.</p>"
+    },
+    "ListVpcEndpointsResponse":{
+      "type":"structure",
+      "required":[
+        "VpcEndpointSummaryList",
+        "NextToken"
+      ],
+      "members":{
+        "VpcEndpointSummaryList":{
+          "shape":"VpcEndpointSummaryList",
+          "documentation":"<p>Information about each endpoint.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Provides an identifier to allow retrieval of paginated results.</p>"
+        }
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>ListVpcEndpoints</a></code> operation. Returns a list containing summarized details of the VPC endpoints.</p>"
+    },
     "LogPublishingOption":{
       "type":"structure",
       "members":{
@@ -3422,6 +3830,14 @@
       "type":"string",
       "documentation":"<p>Access policy rules for an Elasticsearch domain service endpoints. For more information, see <a href=\"http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-access-policies\" target=\"_blank\">Configuring Access Policies</a> in the <i>Amazon Elasticsearch Service Developer Guide</i>. The maximum size of a policy document is 100 KB.</p>"
     },
+    "PrincipalType":{
+      "type":"string",
+      "documentation":"<p>Specifies the type of AWS account permitted to manage VPC endpoints.: <ul> <li>AWS_ACCOUNT: Indicates that the account is owned by an AWS user.</li> <li>AWS_SERVICE: Indicates the the account is owned by an AWS service.</li> </ul> </p>",
+      "enum":[
+        "AWS_ACCOUNT",
+        "AWS_SERVICE"
+      ]
+    },
     "PurchaseReservedElasticsearchInstanceOfferingRequest":{
       "type":"structure",
       "required":[
@@ -3651,6 +4067,32 @@
       "documentation":"<p>An exception for accessing or deleting a resource that does not exist. Gives http status code of 400.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "RevokeVpcEndpointAccessRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Account"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the OpenSearch Service domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Account":{
+          "shape":"AWSAccount",
+          "documentation":"<p>The account ID to revoke access from.</p>"
+        }
+      },
+      "documentation":"<p>Revokes access to an Amazon OpenSearch Service domain that was provided through an interface VPC endpoint.</p>"
+    },
+    "RevokeVpcEndpointAccessResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Container for response parameters to the <code><a>RevokeVpcEndpointAccess</a></code> operation. The response body for this operation is empty.</p>"
     },
     "RoleArn":{
       "type":"string",
@@ -4112,6 +4554,35 @@
       "documentation":"<p> Container for response returned by <code> <a>UpdatePackage</a> </code> operation. </p>"
     },
     "UpdateTimestamp":{"type":"timestamp"},
+    "UpdateVpcEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "VpcEndpointId",
+        "VpcOptions"
+      ],
+      "members":{
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>Unique identifier of the VPC endpoint to be updated.</p>"
+        },
+        "VpcOptions":{
+          "shape":"VPCOptions",
+          "documentation":"<p>The security groups and/or subnets to add, remove, or modify.</p>"
+        }
+      },
+      "documentation":"<p>Modifies an Amazon OpenSearch Service-managed interface VPC endpoint.</p>"
+    },
+    "UpdateVpcEndpointResponse":{
+      "type":"structure",
+      "required":["VpcEndpoint"],
+      "members":{
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>The endpoint to be updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration and status of the VPC endpoint being updated.</p>"
+    },
     "UpgradeElasticsearchDomainRequest":{
       "type":"structure",
       "required":[
@@ -4304,6 +4775,119 @@
         "io1",
         "gp3"
       ]
+    },
+    "VpcEndpoint":{
+      "type":"structure",
+      "members":{
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the endpoint.</p>"
+        },
+        "VpcEndpointOwner":{
+          "shape":"AWSAccount",
+          "documentation":"<p>The creator of the endpoint.</p>"
+        },
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain associated with the endpoint.</p>"
+        },
+        "VpcOptions":{
+          "shape":"VPCDerivedInfo",
+          "documentation":"<p>Options to specify the subnets and security groups for an Amazon OpenSearch Service VPC endpoint.</p>"
+        },
+        "Status":{
+          "shape":"VpcEndpointStatus",
+          "documentation":"<p>The current status of the endpoint.</p>"
+        },
+        "Endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The connection endpoint ID for connecting to the domain.</p>"
+        }
+      },
+      "documentation":"<p>The connection endpoint for connecting to an Amazon OpenSearch Service domain through a proxy.</p>"
+    },
+    "VpcEndpointError":{
+      "type":"structure",
+      "members":{
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the endpoint. </p>"
+        },
+        "ErrorCode":{
+          "shape":"VpcEndpointErrorCode",
+          "documentation":"<p>The code associated with the error.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error.</p>"
+        }
+      },
+      "documentation":"<p>Error information when attempting to describe an Amazon OpenSearch Service-managed VPC endpoint.</p>"
+    },
+    "VpcEndpointErrorCode":{
+      "type":"string",
+      "documentation":"<p>Specifies the error code of the failure encountered while describing the VPC endpoint: <ul> <li>ENDPOINT_NOT_FOUND: Indicates that the requested VPC endpoint does not exist.</li> <li>SERVER_ERROR: Indicates the describe endpoint operation failed due to an internal server error.</li> </ul> </p>",
+      "enum":[
+        "ENDPOINT_NOT_FOUND",
+        "SERVER_ERROR"
+      ]
+    },
+    "VpcEndpointErrorList":{
+      "type":"list",
+      "member":{"shape":"VpcEndpointError"}
+    },
+    "VpcEndpointId":{
+      "type":"string",
+      "max":256,
+      "min":5,
+      "pattern":"^aos-[a-zA-Z0-9]*$"
+    },
+    "VpcEndpointIdList":{
+      "type":"list",
+      "member":{"shape":"VpcEndpointId"}
+    },
+    "VpcEndpointStatus":{
+      "type":"string",
+      "documentation":"<p>Specifies the current status of the VPC endpoint: <ul> <li>CREATING: Indicates that the VPC endpoint is currently being created.</li> <li>CREATE_FAILED: Indicates that the VPC endpoint creation failed.</li> <li>ACTIVE: Indicates that the VPC endpoint is currently active.</li> <li>UPDATING: Indicates that the VPC endpoint is currently being updated.</li> <li>UPDATE_FAILED: Indicates that the VPC endpoint update failed.</li> <li>DELETING: Indicates that the VPC endpoint is currently being deleted.</li> <li>DELETE_FAILED: Indicates that the VPC endpoint deletion failed.</li> </ul> </p>",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "VpcEndpointSummary":{
+      "type":"structure",
+      "members":{
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the endpoint.</p>"
+        },
+        "VpcEndpointOwner":{
+          "shape":"String",
+          "documentation":"<p>The creator of the endpoint.</p>"
+        },
+        "DomainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain associated with the endpoint.</p>"
+        },
+        "Status":{
+          "shape":"VpcEndpointStatus",
+          "documentation":"<p>The current status of the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Summary information for an Amazon OpenSearch Service-managed VPC endpoint.</p>"
+    },
+    "VpcEndpointSummaryList":{
+      "type":"list",
+      "member":{"shape":"VpcEndpointSummary"}
+    },
+    "VpcEndpoints":{
+      "type":"list",
+      "member":{"shape":"VpcEndpoint"}
     },
     "ZoneAwarenessConfig":{
       "type":"structure",

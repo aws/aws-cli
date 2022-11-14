@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.27.9
+======
+
+* api-change:``customer-profiles``: This release enhances the SearchProfiles API by providing functionality to search for profiles using multiple keys and logical operators.
+* api-change:``lakeformation``: This release adds a new parameter "Parameters" in the DataLakeSettings.
+* api-change:``managedblockchain``: Updating the API docs data type: NetworkEthereumAttributes, and the operations DeleteNode, and CreateNode to also include the supported Goerli network.
+* api-change:``proton``: Add support for CodeBuild Provisioning
+* api-change:``rds``: This release adds support for restoring an RDS Multi-AZ DB cluster snapshot to a Single-AZ deployment or a Multi-AZ DB instance deployment.
+* api-change:``workdocs``: Added 2 new document related operations, DeleteDocumentVersion and RestoreDocumentVersions.
+* api-change:``xray``: This release enhances GetServiceGraph API to support new type of edge to represent links between SQS and Lambda in event-driven applications.
+
+
 1.27.8
 ======
 

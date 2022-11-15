@@ -1098,7 +1098,7 @@
       "members":{
         "targetArn":{
           "shape":"TargetARN",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the target IoT thing or thing group.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the target IoT thing or thing group. When creating a subdeployment, the targetARN can only be a thing group.</p>"
         },
         "deploymentName":{
           "shape":"DeploymentNameString",
@@ -1115,6 +1115,10 @@
         "deploymentPolicies":{
           "shape":"DeploymentPolicies",
           "documentation":"<p>The deployment policies for the deployment. These policies define how the deployment updates components and handles failure.</p>"
+        },
+        "parentTargetArn":{
+          "shape":"ThingGroupARN",
+          "documentation":"<p>The parent deployment's target <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> within a subdeployment.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1190,7 +1194,7 @@
       "members":{
         "targetArn":{
           "shape":"TargetARN",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the target IoT thing or thing group.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the target IoT thing or thing group. When creating a subdeployment, the targetARN can only be a thing group.</p>"
         },
         "revisionId":{
           "shape":"NonEmptyString",
@@ -1215,6 +1219,10 @@
         "isLatestForTarget":{
           "shape":"IsLatestForTarget",
           "documentation":"<p>Whether or not the deployment is the latest revision for its target.</p>"
+        },
+        "parentTargetArn":{
+          "shape":"ThingGroupARN",
+          "documentation":"<p>The parent deployment's target <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> within a subdeployment.</p>"
         }
       },
       "documentation":"<p>Contains information about a deployment.</p>"
@@ -1757,6 +1765,10 @@
         "isLatestForTarget":{
           "shape":"IsLatestForTarget",
           "documentation":"<p>Whether or not the deployment is the latest revision for its target.</p>"
+        },
+        "parentTargetArn":{
+          "shape":"ThingGroupARN",
+          "documentation":"<p>The parent deployment's target <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> within a subdeployment.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -2462,6 +2474,12 @@
           "documentation":"<p>The filter for the list of deployments. Choose one of the following options:</p> <ul> <li> <p> <code>ALL</code> – The list includes all deployments.</p> </li> <li> <p> <code>LATEST_ONLY</code> – The list includes only the latest revision of each deployment.</p> </li> </ul> <p>Default: <code>LATEST_ONLY</code> </p>",
           "location":"querystring",
           "locationName":"historyFilter"
+        },
+        "parentTargetArn":{
+          "shape":"ThingGroupARN",
+          "documentation":"<p>The parent deployment's target <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> within a subdeployment.</p>",
+          "location":"querystring",
+          "locationName":"parentTargetArn"
         },
         "maxResults":{
           "shape":"DefaultMaxResults",

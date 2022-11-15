@@ -808,6 +808,10 @@
           "shape":"EventData",
           "documentation":"<p>A short description of the event.</p>"
         },
+        "eventReferences":{
+          "shape":"EventReferenceList",
+          "documentation":"<p>Adds one or more references to the <code>TimelineEvent</code>. A reference can be an Amazon Web Services resource involved in the incident or in some way associated with it. When you specify a reference, you enter the Amazon Resource Name (ARN) of the resource. You can also specify a related item. As an example, you could specify the ARN of an Amazon DynamoDB (DynamoDB) table. The table for this example is the resource. You could also specify a Amazon CloudWatch metric for that table. The metric is the related item.</p>"
+        },
         "eventTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the event occurred.</p>"
@@ -983,7 +987,28 @@
     },
     "EventData":{
       "type":"string",
-      "max":6000,
+      "max":12000,
+      "min":0
+    },
+    "EventReference":{
+      "type":"structure",
+      "members":{
+        "relatedItemId":{
+          "shape":"GeneratedId",
+          "documentation":"<p>The ID of a <code>RelatedItem</code> referenced in a <code>TimelineEvent</code>.</p>"
+        },
+        "resource":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Web Services resource referenced in a <code>TimelineEvent</code>.</p>"
+        }
+      },
+      "documentation":"<p>An item referenced in a <code>TimelineEvent</code> that is involved in or somehow associated with an incident. You can specify an Amazon Resource Name (ARN) for an Amazon Web Services resource or a <code>RelatedItem</code> ID.</p>",
+      "union":true
+    },
+    "EventReferenceList":{
+      "type":"list",
+      "member":{"shape":"EventReference"},
+      "max":10,
       "min":0
     },
     "EventSummary":{
@@ -999,6 +1024,10 @@
         "eventId":{
           "shape":"UUID",
           "documentation":"<p>The timeline event ID.</p>"
+        },
+        "eventReferences":{
+          "shape":"EventReferenceList",
+          "documentation":"<p>A list of references in a <code>TimelineEvent</code>.</p>"
         },
         "eventTime":{
           "shape":"Timestamp",
@@ -1054,6 +1083,12 @@
       "member":{"shape":"Filter"},
       "max":5,
       "min":0
+    },
+    "GeneratedId":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"^related-item/(ANALYSIS|INCIDENT|METRIC|PARENT|ATTACHMENT|OTHER|AUTOMATION|INVOLVED_RESOURCE|TASK)/([0-9]|[A-F]){32}$"
     },
     "GetIncidentRecordInput":{
       "type":"structure",
@@ -1819,6 +1854,10 @@
       "type":"structure",
       "required":["identifier"],
       "members":{
+        "generatedId":{
+          "shape":"GeneratedId",
+          "documentation":"<p>A unique ID for a <code>RelatedItem</code>.</p> <important> <p>Don't specify this parameter when you add a <code>RelatedItem</code> by using the <a>UpdateRelatedItems</a> API action.</p> </important>"
+        },
         "identifier":{
           "shape":"ItemIdentifier",
           "documentation":"<p>Details about the related item.</p>"
@@ -2313,6 +2352,10 @@
           "shape":"UUID",
           "documentation":"<p>The ID of the timeline event.</p>"
         },
+        "eventReferences":{
+          "shape":"EventReferenceList",
+          "documentation":"<p>A list of references in a <code>TimelineEvent</code>.</p>"
+        },
         "eventTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the event occurred.</p>"
@@ -2624,6 +2667,10 @@
         "eventId":{
           "shape":"UUID",
           "documentation":"<p>The ID of the event you are updating. You can find this by using <code>ListTimelineEvents</code>.</p>"
+        },
+        "eventReferences":{
+          "shape":"EventReferenceList",
+          "documentation":"<p>Updates all existing references in a <code>TimelineEvent</code>. A reference can be an Amazon Web Services resource involved in the incident or in some way associated with it. When you specify a reference, you enter the Amazon Resource Name (ARN) of the resource. You can also specify a related item. As an example, you could specify the ARN of an Amazon DynamoDB (DynamoDB) table. The table for this example is the resource. You could also specify a Amazon CloudWatch metric for that table. The metric is the related item.</p> <important> <p>This update action overrides all existing references. If you want to keep existing references, you must specify them in the call. If you don't, this action removes them and enters only new references.</p> </important>"
         },
         "eventTime":{
           "shape":"Timestamp",

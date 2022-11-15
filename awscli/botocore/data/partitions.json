@@ -6,7 +6,7 @@
       "regionRegex": "^(us|eu|ap|sa|ca|me|af)-\\w+-\\d+$",
       "regions": {
         "af-south-1": {},
-        "af-east-1": {},
+        "ap-east-1": {},
         "ap-northeast-1": {},
         "ap-northeast-2": {},
         "ap-northeast-3": {},
@@ -21,6 +21,7 @@
         "eu-west-1": {},
         "eu-west-2": {},
         "eu-west-3": {},
+        "me-central-1": {},
         "me-south-1": {},
         "sa-east-1": {},
         "us-east-1": {},
@@ -80,6 +81,8 @@
         "dualStackDnsSuffix": "c2s.ic.gov"
       },
       "regions": {
+        "us-iso-east-1":  {},
+        "us-iso-west-1": {},
         "aws-iso-global": {}
       }
     },
@@ -94,6 +97,7 @@
         "dualStackDnsSuffix": "sc2s.sgov.gov"
       },
       "regions": {
+        "us-isob-east-1": {},
         "aws-iso-b-global": {}
       }
     }

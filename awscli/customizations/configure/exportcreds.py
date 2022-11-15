@@ -139,9 +139,9 @@ SUPPORTED_FORMATS = {
 }
 
 
-class ConfigureExportCredsCommand(BasicCommand):
-    NAME = 'export-creds'
-    SYNOPSIS = 'aws configure export-creds --profile profile-name'
+class ConfigureExportCredentialsCommand(BasicCommand):
+    NAME = 'export-credentials'
+    SYNOPSIS = 'aws configure export-credentials --profile profile-name'
     ARG_TABLE = [
         {'name': 'format',
          'help_text': (
@@ -153,14 +153,14 @@ class ConfigureExportCredsCommand(BasicCommand):
     ]
     _RECURSION_VAR = '_AWS_CLI_PROFILE_CHAIN'
     # Two levels is reasonable because you might explicitly run
-    # "aws configure export-creds" with a profile that is configured
-    # with a credential_process of "aws configure export-creds".
+    # "aws configure export-credentials" with a profile that is configured
+    # with a credential_process of "aws configure export-credentials".
     # So we'll give one more level of recursion for padding and then
     # error out when we hit _MAX_RECURSION.
     _MAX_RECURSION = 4
 
     def __init__(self, session, out_stream=None, error_stream=None, env=None):
-        super(ConfigureExportCredsCommand, self).__init__(session)
+        super(ConfigureExportCredentialsCommand, self).__init__(session)
         if out_stream is None:
             out_stream = sys.stdout
         if error_stream is None:
@@ -211,7 +211,7 @@ class ConfigureExportCredsCommand(BasicCommand):
                 "Try setting an explicit '--profile' value in the "
                 "'credential_process' configuration and ensure there "
                 "are no cycles:\n\n"
-                "credential_process = aws configure export-creds "
+                "credential_process = aws configure export-credentials "
                 "--profile other-profile\n"
             )
             return 2

@@ -26,7 +26,7 @@ from awscli.testutils import unittest
 from awscli.customizations.configure.exportcreds import (
     Credentials,
     convert_botocore_credentials,
-    ConfigureExportCredsCommand,
+    ConfigureExportCredentialsCommand,
     BashEnvVarFormatter,
     PowershellFormatter,
     WindowsCmdFormatter,
@@ -151,7 +151,7 @@ class TestCanConvertBotocoreCredentials(unittest.TestCase):
         )
 
 
-class TestConfigureExportCredsCommand(unittest.TestCase):
+class TestConfigureExportCredentialsCommand(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(spec=Session)
         self.session.emit_first_non_none_response.return_value = None
@@ -159,7 +159,7 @@ class TestConfigureExportCredsCommand(unittest.TestCase):
         self.err_stream = io.StringIO()
         self.os_env = {}
         self.session.get_config_variable.return_value = 'default'
-        self.export_creds_cmd = ConfigureExportCredsCommand(
+        self.export_creds_cmd = ConfigureExportCredentialsCommand(
             self.session, self.out_stream, self.err_stream, env=self.os_env)
         self.global_args = mock.Mock()
         self.expiry = '2023-01-01T00:00:00Z'
@@ -266,7 +266,7 @@ class TestConfigureExportCredsCommand(unittest.TestCase):
         rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertEqual(rc, 0)
         # Second time, it detects the cycle.
-        second_invoke = ConfigureExportCredsCommand(
+        second_invoke = ConfigureExportCredentialsCommand(
             self.session, self.out_stream, self.err_stream, env=self.os_env)
         rc = second_invoke(args=[], parsed_globals=self.global_args)
         self.assertIn(

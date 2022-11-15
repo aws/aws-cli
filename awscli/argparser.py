@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import copy
 import sys
 from awscli.compat import six
 from difflib import get_close_matches
@@ -207,6 +208,73 @@ class ArgTableArgParser(CLIArgParser):
         else:
             return super(ArgTableArgParser, self).parse_known_args(
                 args, namespace)
+
+
+class SubCommandArgParser(ArgTableArgParser):
+    """Parse args for a subcommand but do not consume the arg table.
+
+    This is similar to the ArgTableArgParser, except it doesn't consume
+    any args from the provided arg table, though it will respect the
+    arg table when looking for a subcommand.
+
+    """
+
+    def parse_known_args(self, args, namespace=None):
+        parsed_args, remaining = super(
+            SubCommandArgParser, self).parse_known_args(args, namespace)
+        if getattr(parsed_args, 'subcommand', None) is not None:
+            new_args = self._remove_subcommand(args, parsed_args)
+            return new_args, parsed_args.subcommand
+        return None
+
+    def _remove_subcommand(self, args, parsed_args):
+        # We want to remove only the subcommand from the args list
+        # and keep everything else.  We should be safe to remove
+        # the first argument that matches the subcommand name.
+        #
+        # .parse_known_args() assumes that any args that it doesn't
+        # understand do not consume any values.  For example:
+        #
+        # aws ecs --cluster mycluster describe-tasks --tasks foo
+        #
+        # is not a valid command, because we ignore `--cluster`
+        # and assume that `mycluster` is a subcommand.
+        #
+        # However, this command works:
+        #
+        # aws ecs --cluster=mycluster desribe-tasks --tasks foo
+        #
+        # Therefore we don't have to worry about the case where
+        # a param *value* shadows the parsed subcommand because
+        # the existing parser would have already errored out.
+        new_args = args[:]
+        new_args.remove(parsed_args.subcommand)
+        return new_args
+
+    def _build(self, argument_table, command_table):
+        # In order to check for a subcommand while still respecting
+        # the arg table, we do need to consider the arg table, but not
+        # fail if any of the required args aren't provided.  We don't
+        # want to mutate the arg table that's provided to us, so we
+        # make a copy of it and then set all the required to not required.
+        non_required_arg_table = self._non_required_arg_table(
+            argument_table)
+        for arg_name in non_required_arg_table:
+            argument = non_required_arg_table[arg_name]
+            argument.add_to_parser(self)
+        if command_table:
+            self.add_argument('subcommand', action=CommandAction,
+                              command_table=command_table, nargs='?')
+
+    def _non_required_arg_table(self, argument_table):
+        arg_table_copy = {}
+        for key, value in argument_table.items():
+            copied = copy.copy(value)
+            copied.required = False
+            arg_table_copy[key] = copied
+        return arg_table_copy
+
+
 
 
 class FirstPassGlobalArgParser(CLIArgParser):

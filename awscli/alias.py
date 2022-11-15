@@ -32,7 +32,8 @@ def register_alias_commands(event_handlers, alias_filename=None):
     alias_injector = AliasSubCommandInjector(AliasLoader(**kwargs))
     event_handlers.register(
         'building-command-table',
-        alias_injector.on_building_command_table
+        alias_injector.on_building_command_table,
+        unique_id='cli-alias-injector',
     )
 
 
@@ -398,6 +399,11 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
             .parse_known_args(globally_parseable_args)
         self._update_parsed_globals(arg_parser, alias_globals, parsed_globals)
         return remaining
+
+    def create_help_command(self):
+        # In the future we could create a custom help command
+        # that documents that this is an alias with more info.
+        return self._command_object.create_help_command()
 
     def __call__(self, args, parsed_globals):
         # args - Args explicitly provided by the user when

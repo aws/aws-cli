@@ -19,7 +19,7 @@ def _generate_command_tests():
     driver = create_clidriver()
     help_command = driver.create_help_command()
     top_level_params = set(driver.create_help_command().arg_table)
-    for command_name, command_obj in help_command.command_table.items():
+    for command_name, command_obj in list(help_command.command_table.items()):
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
             yield command_name, sub_help.command_table, top_level_params

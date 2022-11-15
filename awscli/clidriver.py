@@ -14,6 +14,7 @@ import json
 import os
 import platform
 import sys
+import copy
 import logging
 
 import distro
@@ -38,6 +39,7 @@ from awscli.argparser import MainArgParser
 from awscli.argparser import FirstPassGlobalArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
+from awscli.argparser import SubCommandArgParser
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -681,6 +683,7 @@ class ServiceOperation(object):
         self._operation_model = operation_model
         self._session = session
         self._subcommand_table = None
+        self._subcommand_delegated = False
         if operation_model.deprecated:
             self._UNDOCUMENTED = True
 
@@ -730,6 +733,12 @@ class ServiceOperation(object):
             self._arg_table = self._create_argument_table()
         return self._arg_table
 
+    def _parse_potential_subcommand(self, args, subcommand_table):
+        if subcommand_table and not self._subcommand_delegated:
+            parser = SubCommandArgParser(self.arg_table, subcommand_table)
+            return parser.parse_known_args(args)
+        return None
+
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
@@ -738,7 +747,14 @@ class ServiceOperation(object):
         self._emit(event, argument_table=self.arg_table, args=args,
                    session=self._session)
         subcommand_table = self.subcommand_table
-        operation_parser = self._create_operation_parser(self.arg_table, subcommand_table)
+        maybe_parsed_subcommand = self._parse_potential_subcommand(
+            args, subcommand_table)
+        if maybe_parsed_subcommand is not None:
+            new_args, subcommand_name = maybe_parsed_subcommand
+            self._subcommand_delegated = True
+            return subcommand_table[subcommand_name](new_args, parsed_globals)
+        operation_parser = self._create_operation_parser(
+            self.arg_table, subcommand_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if parsed_args.help == 'help':
@@ -780,7 +796,7 @@ class ServiceOperation(object):
                 # code of the operation.
                 return override
         elif getattr(parsed_args, 'subcommand', None) is not None:
-            return self._subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
+            return subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
         else:
             # No override value was supplied.
             return self._operation_caller.invoke(

@@ -24,8 +24,15 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
+        event_emitter = self.driver.session.get_component('event_emitter')
+        # Alias injection is part of the built-in handler chain which defaults
+        # to the real ~/.aws/cli/alias file.  We need to unregister the default
+        # injector so we can swap in our own version that points to a
+        # test file.
+        event_emitter.unregister(
+            'building-command-table', unique_id='cli-alias-injector')
         register_alias_commands(
-            self.driver.session.get_component('event_emitter'),
+            event_emitter,
             alias_filename=self.alias_file
         )
 
@@ -268,3 +275,64 @@ class TestAliases(BaseAWSCommandParamsTest):
             f.write('mkdir = !mkdir\n')
         self.run_cmd('ec2 mkdir %s' % directory_to_make)
         self.assertTrue(os.path.isdir(directory_to_make))
+
+    def test_can_merge_explicit_and_alias_local_params(self):
+        section = '[command resourcegroupstaggingapi get-resources]\n'
+        alias = (
+            'mysvc = --tag-filters Key=foo,Values=bar '
+            'Key=bar,Values=baz --query ResourceTagMappingList[].[ResourceARN]'
+            ' --output text\n'
+        )
+        with open(self.alias_file, 'a+') as f:
+            f.write(section)
+            f.write(alias)
+        # If we add additional operatio-specific params such as
+        # "--resource-type-filters ecs", then we should merge
+        # those values with the params specified in the alias definition.
+        self.run_cmd(
+            'resourcegroupstaggingapi get-resources mysvc '
+            '--resource-type-filters ecs')
+        op_model, params = self.operations_called[0]
+        self.assertEqual(op_model.name, 'GetResources')
+        self.assertEqual(params, {
+            'TagFilters': [
+                {'Key': 'foo', 'Values': ['bar']},
+                {'Key': 'bar', 'Values': ['baz']},
+            ],
+            'ResourceTypeFilters': ['ecs'],
+        })
+
+    def test_can_handle_bag_of_options_with_required_args(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command iam create-user]\n')
+            f.write('test-user = --user-name test-user\n')
+        # The current behavior without aliases is that `--user-name`
+        # is a required parameter.  So without changing anything
+        # if you ran "aws iam create-user test-user", the parser
+        # would complain that the `--user-name` arg is required.
+        # However, the `--user-name` is specified, it's just in the
+        # `test-user` alias.  So we have to ensure that we're able
+        # to delegate to the alias in the hopes that it can provide
+        # the required value.  FWIW we had to do something similar
+        # in the `--generate-cli-skeleton` flow.
+        self.run_cmd('iam create-user test-user')
+        op_model, params = self.operations_called[0]
+        self.assertEqual(op_model.name, 'CreateUser')
+        self.assertEqual(params, {
+            'UserName': 'test-user',
+        })
+
+#    def test_can_handle_bag_of_options_with_custom_command(self):
+#        template_file = self.files.create_file('template', "{}")
+#        with open(self.alias_file, 'a+') as f:
+#            f.write('[command cloudformation deploy]\n')
+#            f.write(f'myapp = --template-file {template_file} --stack-name bar\n')
+#        self.parsed_response = {
+#            'Stacks': [{'StackStatus': 'CREATE_COMPLETE'}],
+#        }
+#        self.run_cmd(f'cloudformation deploy --template-file {template_file} --stack-name bar\n')
+#        op_model, params = self.operations_called[0]
+#        self.assertEqual(op_model.name, 'CreateUser')
+#        self.assertEqual(params, {
+#            'UserName': 'test-user',
+#        })

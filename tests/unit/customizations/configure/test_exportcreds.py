@@ -28,6 +28,7 @@ from awscli.customizations.configure.exportcreds import (
     convert_botocore_credentials,
     ConfigureExportCredentialsCommand,
     BashEnvVarFormatter,
+    BashNoExportEnvFormatter,
     PowershellFormatter,
     WindowsCmdFormatter,
     CredentialProcessFormatter,
@@ -55,6 +56,14 @@ class JSONValue:
              'export AWS_SECRET_ACCESS_KEY=secret_key\n'
              'export AWS_SESSION_TOKEN=token\n'
              'export AWS_CREDENTIAL_EXPIRATION=2023-01-01T00:00:00Z\n'),
+        )),
+        (BashNoExportEnvFormatter, (
+            ('AWS_ACCESS_KEY_ID=access_key\n'
+             'AWS_SECRET_ACCESS_KEY=secret_key\n'),
+            ('AWS_ACCESS_KEY_ID=access_key\n'
+             'AWS_SECRET_ACCESS_KEY=secret_key\n'
+             'AWS_SESSION_TOKEN=token\n'
+             'AWS_CREDENTIAL_EXPIRATION=2023-01-01T00:00:00Z\n'),
         )),
         (PowershellFormatter, (
             ('$Env:AWS_ACCESS_KEY_ID="access_key"\n'

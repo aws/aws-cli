@@ -58,22 +58,35 @@ class BaseCredentialFormatter(object):
         pass
 
 
-class BashEnvVarFormatter(BaseCredentialFormatter):
+class BaseEnvVarFormatter(BaseCredentialFormatter):
 
-    FORMAT = 'env'
+    _VAR_PREFIX = ''
 
     def display_credentials(self, credentials):
+        prefix = self._VAR_PREFIX
         output = (
-            f'export AWS_ACCESS_KEY_ID={credentials.access_key}\n'
-            f'export AWS_SECRET_ACCESS_KEY={credentials.secret_key}\n'
+            f'{prefix}AWS_ACCESS_KEY_ID={credentials.access_key}\n'
+            f'{prefix}AWS_SECRET_ACCESS_KEY={credentials.secret_key}\n'
         )
         if credentials.token is not None:
-            output += f'export AWS_SESSION_TOKEN={credentials.token}\n'
+            output += f'{prefix}AWS_SESSION_TOKEN={credentials.token}\n'
         if credentials.expiry_time is not None:
             output += (
-                f'export AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
+                f'{prefix}AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
             )
         self._stream.write(output)
+
+
+class BashEnvVarFormatter(BaseEnvVarFormatter):
+
+    FORMAT = 'env'
+    _VAR_PREFIX = 'export '
+
+
+class BashNoExportEnvFormatter(BaseEnvVarFormatter):
+
+    FORMAT = 'env-no-export'
+    _VAR_PREFIX = ''
 
 
 class PowershellFormatter(BaseCredentialFormatter):
@@ -134,8 +147,8 @@ class CredentialProcessFormatter(BaseCredentialFormatter):
 
 SUPPORTED_FORMATS = {
     format_cls.FORMAT: format_cls for format_cls in
-    [BashEnvVarFormatter, CredentialProcessFormatter, PowershellFormatter,
-     WindowsCmdFormatter]
+    [BashEnvVarFormatter, BashNoExportEnvFormatter, CredentialProcessFormatter,
+     PowershellFormatter, WindowsCmdFormatter]
 }
 
 

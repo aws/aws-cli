@@ -69,6 +69,10 @@ class BashEnvVarFormatter(BaseCredentialFormatter):
         )
         if credentials.token is not None:
             output += f'export AWS_SESSION_TOKEN={credentials.token}\n'
+        if credentials.expiry_time is not None:
+            output += (
+                f'export AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
+            )
         self._stream.write(output)
 
 
@@ -83,6 +87,10 @@ class PowershellFormatter(BaseCredentialFormatter):
         )
         if credentials.token is not None:
             output += f'$Env:AWS_SESSION_TOKEN="{credentials.token}"\n'
+        if credentials.expiry_time is not None:
+            output += (
+                f'$Env:AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
+            )
         self._stream.write(output)
 
 
@@ -97,6 +105,10 @@ class WindowsCmdFormatter(BaseCredentialFormatter):
         )
         if credentials.token is not None:
             output += f'set AWS_SESSION_TOKEN={credentials.token}\n'
+        if credentials.expiry_time is not None:
+            output += (
+                f'set AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
+            )
         self._stream.write(output)
 
 

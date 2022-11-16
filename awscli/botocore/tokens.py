@@ -24,13 +24,12 @@ from dateutil.tz import tzutc
 from botocore import UNSIGNED
 from botocore.compat import total_seconds
 from botocore.config import Config
-from botocore.credentials import JSONFileCache
 from botocore.exceptions import (
     ClientError,
     InvalidConfigError,
     TokenRetrievalError,
 )
-from botocore.utils import CachedProperty, SSOTokenLoader
+from botocore.utils import CachedProperty, JSONFileCache, SSOTokenLoader
 
 logger = logging.getLogger(__name__)
 
@@ -184,11 +183,12 @@ class SSOTokenProvider:
         "sso_region",
     ]
     _GRANT_TYPE = "refresh_token"
+    DEFAULT_CACHE_CLS = JSONFileCache
 
     def __init__(self, session, cache=None, time_fetcher=_utc_now):
         self._session = session
         if cache is None:
-            cache = JSONFileCache(
+            cache = self.DEFAULT_CACHE_CLS(
                 self._SSO_TOKEN_CACHE_DIR,
                 dumps_func=_sso_json_dumps,
             )

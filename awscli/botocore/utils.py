@@ -26,6 +26,7 @@ import socket
 import time
 import warnings
 import weakref
+from pathlib import Path
 
 import botocore
 import botocore.awsrequest
@@ -2887,3 +2888,72 @@ class EventbridgeSignerSetter:
             dns_suffix = self._DEFAULT_DNS_SUFFIX
 
         return f"https://{endpoint}.endpoint.events.{dns_suffix}/"
+
+
+class JSONFileCache:
+    """JSON file cache.
+    This provides a dict like interface that stores JSON serializable
+    objects.
+    The objects are serialized to JSON and stored in a file.  These
+    values can be retrieved at a later time.
+    """
+
+    CACHE_DIR = os.path.expanduser(os.path.join('~', '.aws', 'boto', 'cache'))
+
+    def __init__(self, working_dir=CACHE_DIR, dumps_func=None):
+        self._working_dir = working_dir
+        if dumps_func is None:
+            dumps_func = self._default_dumps
+        self._dumps = dumps_func
+
+    def _default_dumps(self, obj):
+        return json.dumps(obj, default=self._serialize_if_needed)
+
+    def __contains__(self, cache_key):
+        actual_key = self._convert_cache_key(cache_key)
+        return os.path.isfile(actual_key)
+
+    def __getitem__(self, cache_key):
+        """Retrieve value from a cache key."""
+        actual_key = self._convert_cache_key(cache_key)
+        try:
+            with open(actual_key) as f:
+                return json.load(f)
+        except (OSError, ValueError):
+            raise KeyError(cache_key)
+
+    def __delitem__(self, cache_key):
+        actual_key = self._convert_cache_key(cache_key)
+        try:
+            key_path = Path(actual_key)
+            key_path.unlink()
+        except FileNotFoundError:
+            raise KeyError(cache_key)
+
+    def __setitem__(self, cache_key, value):
+        full_key = self._convert_cache_key(cache_key)
+        try:
+            file_content = self._dumps(value)
+        except (TypeError, ValueError):
+            raise ValueError(
+                f"Value cannot be cached, must be "
+                f"JSON serializable: {value}"
+            )
+        if not os.path.isdir(self._working_dir):
+            os.makedirs(self._working_dir)
+        with os.fdopen(
+            os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
+        ) as f:
+            f.truncate()
+            f.write(file_content)
+
+    def _convert_cache_key(self, cache_key):
+        full_path = os.path.join(self._working_dir, cache_key + '.json')
+        return full_path
+
+    def _serialize_if_needed(self, value, iso=False):
+        if isinstance(value, datetime.datetime):
+            if iso:
+                return value.isoformat()
+            return value.strftime('%Y-%m-%dT%H:%M:%S%Z')
+        return value

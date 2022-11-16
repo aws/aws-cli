@@ -48,6 +48,7 @@ def convert_botocore_credentials(credentials):
 class BaseCredentialFormatter(object):
 
     FORMAT = None
+    DOCUMENTATION = ""
 
     def __init__(self, stream=None):
         if stream is None:
@@ -80,18 +81,30 @@ class BaseEnvVarFormatter(BaseCredentialFormatter):
 class BashEnvVarFormatter(BaseEnvVarFormatter):
 
     FORMAT = 'env'
+    DOCUMENTATION = (
+        "Display credentials as exported shell variables: "
+        "``export AWS_ACCESS_KEY_ID=EXAMPLE``"
+    )
     _VAR_PREFIX = 'export '
 
 
 class BashNoExportEnvFormatter(BaseEnvVarFormatter):
 
     FORMAT = 'env-no-export'
+    DOCUMENTATION = (
+        "Display credentials as non-exported shell variables: "
+        "``AWS_ACCESS_KEY_ID=EXAMPLE``"
+    )
     _VAR_PREFIX = ''
 
 
 class PowershellFormatter(BaseCredentialFormatter):
 
     FORMAT = 'powershell'
+    DOCUMENTATION = (
+        'Display credentials as PowerShell environment variables: '
+        '``$Env:AWS_ACCESS_KEY_ID="EXAMPLE"``'
+    )
 
     def display_credentials(self, credentials):
         output = (
@@ -102,7 +115,7 @@ class PowershellFormatter(BaseCredentialFormatter):
             output += f'$Env:AWS_SESSION_TOKEN="{credentials.token}"\n'
         if credentials.expiry_time is not None:
             output += (
-                f'$Env:AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
+                f'$Env:AWS_CREDENTIAL_EXPIRATION="{credentials.expiry_time}"\n'
             )
         self._stream.write(output)
 
@@ -110,6 +123,10 @@ class PowershellFormatter(BaseCredentialFormatter):
 class WindowsCmdFormatter(BaseCredentialFormatter):
 
     FORMAT = 'windows-cmd'
+    DOCUMENTATION = (
+        'Display credentials as Windows cmd environment variables: '
+        '``set AWS_ACCESS_KEY_ID=EXAMPLE``'
+    )
 
     def display_credentials(self, credentials):
         output = (
@@ -128,6 +145,14 @@ class WindowsCmdFormatter(BaseCredentialFormatter):
 class CredentialProcessFormatter(BaseCredentialFormatter):
 
     FORMAT = 'process'
+    DOCUMENTATION = (
+        "Display credentials as JSON output, in the schema "
+        "expected by the ``credential_process`` config value."
+        "This enables any library or tool that supports "
+        "``credential_process`` to use the AWS CLI's credential "
+        "resolution process: ``credential_process = aws configure "
+        "export-credentials --profile myprofile``"
+    )
 
     def display_credentials(self, credentials):
         output = {
@@ -147,19 +172,37 @@ class CredentialProcessFormatter(BaseCredentialFormatter):
 
 SUPPORTED_FORMATS = {
     format_cls.FORMAT: format_cls for format_cls in
-    [BashEnvVarFormatter, BashNoExportEnvFormatter, CredentialProcessFormatter,
+    [CredentialProcessFormatter, BashEnvVarFormatter, BashNoExportEnvFormatter,
      PowershellFormatter, WindowsCmdFormatter]
 }
 
 
+def generate_docs(formats):
+    lines = ['The output format to display credentials.  '
+             'Defaults to `process`.  ', '<ul>']
+    for name, cls in formats.items():
+        line = f'<li>``{name}`` - {cls.DOCUMENTATION} </li>'
+        lines.append(line)
+    lines.append('</ul>')
+    return '\n'.join(lines)
+
+
 class ConfigureExportCredentialsCommand(BasicCommand):
+
     NAME = 'export-credentials'
     SYNOPSIS = 'aws configure export-credentials --profile profile-name'
+    DESCRIPTION = (
+        "Export credentials in various formats.  This command will retrieve "
+        "AWS credentials using the AWS CLI's credential resolution process "
+        "and display the credentials in the specified ``--format``. By "
+        "default, the output format is ``process``, which is a JSON format "
+        "that's expected by the credential process feature supported by the "
+        "AWS SDKs and Tools.  This command ignores the global ``--query`` and "
+        "``--output`` options."
+    )
     ARG_TABLE = [
         {'name': 'format',
-         'help_text': (
-             'The output format to display credentials.'
-             'Defaults to "process".'),
+         'help_text': generate_docs(SUPPORTED_FORMATS),
          'action': 'store',
          'choices': list(SUPPORTED_FORMATS),
          'default': CredentialProcessFormatter.FORMAT},

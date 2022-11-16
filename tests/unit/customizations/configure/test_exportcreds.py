@@ -71,7 +71,7 @@ class JSONValue:
             ('$Env:AWS_ACCESS_KEY_ID="access_key"\n'
              '$Env:AWS_SECRET_ACCESS_KEY="secret_key"\n'
              '$Env:AWS_SESSION_TOKEN="token"\n'
-             '$Env:AWS_CREDENTIAL_EXPIRATION=2023-01-01T00:00:00Z\n'),
+             '$Env:AWS_CREDENTIAL_EXPIRATION="2023-01-01T00:00:00Z"\n'),
         )),
         (WindowsCmdFormatter, (
             ('set AWS_ACCESS_KEY_ID=access_key\n'

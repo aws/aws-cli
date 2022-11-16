@@ -59,87 +59,64 @@ class BaseCredentialFormatter(object):
         pass
 
 
-class BaseEnvVarFormatter(BaseCredentialFormatter):
+class BasePerLineFormatter(BaseCredentialFormatter):
 
-    _VAR_PREFIX = ''
+    _VAR_FORMAT = 'export {var_name}={var_value}'
 
     def display_credentials(self, credentials):
-        prefix = self._VAR_PREFIX
         output = (
-            f'{prefix}AWS_ACCESS_KEY_ID={credentials.access_key}\n'
-            f'{prefix}AWS_SECRET_ACCESS_KEY={credentials.secret_key}\n'
-        )
+            self._format_line('AWS_ACCESS_KEY_ID', credentials.access_key) +
+            self._format_line('AWS_SECRET_ACCESS_KEY', credentials.secret_key))
         if credentials.token is not None:
-            output += f'{prefix}AWS_SESSION_TOKEN={credentials.token}\n'
+            output += self._format_line('AWS_SESSION_TOKEN', credentials.token)
         if credentials.expiry_time is not None:
-            output += (
-                f'{prefix}AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
-            )
+            output += self._format_line(
+                'AWS_CREDENTIAL_EXPIRATION', credentials.expiry_time)
         self._stream.write(output)
 
+    def _format_line(self, var_name, var_value):
+        return self._VAR_FORMAT.format(
+            var_name=var_name, var_value=var_value) + '\n'
 
-class BashEnvVarFormatter(BaseEnvVarFormatter):
+
+class BashEnvVarFormatter(BasePerLineFormatter):
 
     FORMAT = 'env'
     DOCUMENTATION = (
         "Display credentials as exported shell variables: "
         "``export AWS_ACCESS_KEY_ID=EXAMPLE``"
     )
-    _VAR_PREFIX = 'export '
+    _VAR_FORMAT = 'export {var_name}={var_value}'
 
 
-class BashNoExportEnvFormatter(BaseEnvVarFormatter):
+class BashNoExportEnvFormatter(BasePerLineFormatter):
 
     FORMAT = 'env-no-export'
     DOCUMENTATION = (
         "Display credentials as non-exported shell variables: "
         "``AWS_ACCESS_KEY_ID=EXAMPLE``"
     )
-    _VAR_PREFIX = ''
+    _VAR_FORMAT = '{var_name}={var_value}'
 
 
-class PowershellFormatter(BaseCredentialFormatter):
+class PowershellFormatter(BasePerLineFormatter):
 
     FORMAT = 'powershell'
     DOCUMENTATION = (
         'Display credentials as PowerShell environment variables: '
         '``$Env:AWS_ACCESS_KEY_ID="EXAMPLE"``'
     )
-
-    def display_credentials(self, credentials):
-        output = (
-            f'$Env:AWS_ACCESS_KEY_ID="{credentials.access_key}"\n'
-            f'$Env:AWS_SECRET_ACCESS_KEY="{credentials.secret_key}"\n'
-        )
-        if credentials.token is not None:
-            output += f'$Env:AWS_SESSION_TOKEN="{credentials.token}"\n'
-        if credentials.expiry_time is not None:
-            output += (
-                f'$Env:AWS_CREDENTIAL_EXPIRATION="{credentials.expiry_time}"\n'
-            )
-        self._stream.write(output)
+    _VAR_FORMAT = '$Env:{var_name}="{var_value}"'
 
 
-class WindowsCmdFormatter(BaseCredentialFormatter):
+class WindowsCmdFormatter(BasePerLineFormatter):
 
     FORMAT = 'windows-cmd'
     DOCUMENTATION = (
         'Display credentials as Windows cmd environment variables: '
         '``set AWS_ACCESS_KEY_ID=EXAMPLE``'
     )
-
-    def display_credentials(self, credentials):
-        output = (
-            f'set AWS_ACCESS_KEY_ID={credentials.access_key}\n'
-            f'set AWS_SECRET_ACCESS_KEY={credentials.secret_key}\n'
-        )
-        if credentials.token is not None:
-            output += f'set AWS_SESSION_TOKEN={credentials.token}\n'
-        if credentials.expiry_time is not None:
-            output += (
-                f'set AWS_CREDENTIAL_EXPIRATION={credentials.expiry_time}\n'
-            )
-        self._stream.write(output)
+    _VAR_FORMAT = 'set {var_name}={var_value}'
 
 
 class CredentialProcessFormatter(BaseCredentialFormatter):

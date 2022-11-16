@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.8.13
+======
+
+* api-change:``rds``: This release adds support for restoring an RDS Multi-AZ DB cluster snapshot to a Single-AZ deployment or a Multi-AZ DB instance deployment.
+* api-change:``workdocs``: Added 2 new document related operations, DeleteDocumentVersion and RestoreDocumentVersions.
+* api-change:``route53``: Amazon Route 53 now supports the Europe (Spain) Region (eu-south-2) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+* api-change:``securityhub``: Documentation updates for Security Hub
+* api-change:``rekognition``: Adding support for ImageProperties feature to detect dominant colors and image brightness, sharpness, and contrast, inclusion and exclusion filters for labels and label categories, new fields to the API response, "aliases" and "categories"
+* api-change:``proton``: Add support for CodeBuild Provisioning
+* enhancement:Wizards: Update ``new-role`` wizard with additional prompts `issue 7397 <https://github.com/aws/aws-cli/pull/7397>__`
+* api-change:``lakeformation``: This release adds a new parameter "Parameters" in the DataLakeSettings.
+* api-change:``license-manager``: AWS License Manager now supports onboarded Management Accounts or Delegated Admins to view granted licenses aggregated from all accounts in the organization.
+* api-change:``glue``: Added links related to enabling job bookmarks.
+* api-change:``customer-profiles``: This release enhances the SearchProfiles API by providing functionality to search for profiles using multiple keys and logical operators.
+* api-change:``iot``: This release add new api listRelatedResourcesForAuditFinding and new member type IssuerCertificates for Iot device device defender Audit.
+* api-change:``connect``: This release updates the APIs: UpdateInstanceAttribute, DescribeInstanceAttribute, and ListInstanceAttributes. You can use it to programmatically enable/disable enhanced contact monitoring using attribute type ENHANCED_CONTACT_MONITORING on the specified Amazon Connect instance.
+* api-change:``ssm-incidents``: RelatedItems now have an ID field which can be used for referencing them else where. Introducing event references in TimelineEvent API and increasing maximum length of "eventData" to 12K characters.
+* api-change:``managedblockchain``: Updating the API docs data type: NetworkEthereumAttributes, and the operations DeleteNode, and CreateNode to also include the supported Goerli network.
+* api-change:``ssmsap``: AWS Systems Manager for SAP provides simplified operations and management of SAP applications such as SAP HANA. With this release, SAP customers and partners can automate and simplify their SAP system administration tasks such as backup/restore of SAP HANA.
+* api-change:``workspaces``: This release introduces ModifyCertificateBasedAuthProperties, a new API that allows control of certificate-based auth properties associated with a WorkSpaces directory. The DescribeWorkspaceDirectories API will now additionally return certificate-based auth properties in its responses.
+* api-change:``marketplace-catalog``: Added three new APIs to support tagging and tag-based authorization: TagResource, UntagResource, and ListTagsForResource. Added optional parameters to the StartChangeSet API to support tagging a resource while making a request to create it.
+* api-change:``xray``: This release enhances GetServiceGraph API to support new type of edge to represent links between SQS and Lambda in event-driven applications.
+* api-change:``greengrassv2``: Adds new parent target ARN paramater to CreateDeployment, GetDeployment, and ListDeployments APIs for the new subdeployments feature.
+
+
 2.8.12
 ======
 

@@ -39,10 +39,12 @@ from botocore.exceptions import (
     UnauthorizedSSOTokenError,
     UnknownCredentialError,
 )
+from botocore.tokens import SSOTokenProvider
 from botocore.utils import (
     ContainerMetadataFetcher,
     FileWebIdentityTokenLoader,
     InstanceMetadataFetcher,
+    JSONFileCache,
     SSOTokenLoader,
     original_ld_library_path,
     parse_key_val_file,
@@ -211,6 +213,7 @@ class ProfileProviderBuilder(object):
             profile_name=profile_name,
             cache=self._cache,
             token_cache=self._sso_token_cache,
+            token_provider=SSOTokenProvider(self._session),
         )
 
 
@@ -280,57 +283,6 @@ def create_mfa_serial_refresher(actual_refresh):
             return self._refresh()
 
     return _Refresher(actual_refresh)
-
-
-class JSONFileCache(object):
-    """JSON file cache.
-    This provides a dict like interface that stores JSON serializable
-    objects.
-    The objects are serialized to JSON and stored in a file.  These
-    values can be retrieved at a later time.
-    """
-
-    CACHE_DIR = os.path.expanduser(os.path.join('~', '.aws', 'boto', 'cache'))
-
-    def __init__(self, working_dir=CACHE_DIR, dumps_func=None):
-        self._working_dir = working_dir
-        if dumps_func is None:
-            dumps_func = self._default_dumps
-        self._dumps = dumps_func
-
-    def _default_dumps(self, obj):
-        return json.dumps(obj, default=_serialize_if_needed)
-
-    def __contains__(self, cache_key):
-        actual_key = self._convert_cache_key(cache_key)
-        return os.path.isfile(actual_key)
-
-    def __getitem__(self, cache_key):
-        """Retrieve value from a cache key."""
-        actual_key = self._convert_cache_key(cache_key)
-        try:
-            with open(actual_key) as f:
-                return json.load(f)
-        except (OSError, ValueError, IOError):
-            raise KeyError(cache_key)
-
-    def __setitem__(self, cache_key, value):
-        full_key = self._convert_cache_key(cache_key)
-        try:
-            file_content = self._dumps(value)
-        except (TypeError, ValueError):
-            raise ValueError("Value cannot be cached, must be "
-                             "JSON serializable: %s" % value)
-        if not os.path.isdir(self._working_dir):
-            os.makedirs(self._working_dir)
-        with os.fdopen(os.open(full_key,
-                               os.O_WRONLY | os.O_CREAT, 0o600), 'w') as f:
-            f.truncate()
-            f.write(file_content)
-
-    def _convert_cache_key(self, cache_key):
-        full_path = os.path.join(self._working_dir, cache_key + '.json')
-        return full_path
 
 
 class Credentials(object):
@@ -2002,13 +1954,16 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
 
     def __init__(self, start_url, sso_region, role_name, account_id,
                  client_creator, token_loader=None, cache=None,
-                 expiry_window_seconds=None):
+                 expiry_window_seconds=None, token_provider=None,
+                 sso_session_name=None):
         self._client_creator = client_creator
         self._sso_region = sso_region
         self._role_name = role_name
         self._account_id = account_id
         self._start_url = start_url
         self._token_loader = token_loader
+        self._token_provider = token_provider
+        self._sso_session_name = sso_session_name
         super(SSOCredentialFetcher, self).__init__(
             cache, expiry_window_seconds
         )
@@ -2019,10 +1974,13 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
         The cache key is intended to be compatible with file names.
         """
         args = {
-            'startUrl': self._start_url,
             'roleName': self._role_name,
             'accountId': self._account_id,
         }
+        if self._sso_session_name:
+            args['sessionName'] = self._sso_session_name
+        else:
+            args['startUrl'] = self._start_url
         # NOTE: It would be good to hoist this cache key construction logic
         # into the CachedCredentialFetcher class as we should be consistent.
         # Unfortunately, the current assume role fetchers that sub class don't
@@ -2045,12 +2003,16 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
             region_name=self._sso_region,
         )
         client = self._client_creator('sso', config=config)
+        if self._token_provider:
+            initial_token_data = self._token_provider.load_token()
+            token = initial_token_data.get_frozen_token().token
+        else:
+            token = self._token_loader(self._start_url)['accessToken']
 
-        token_dict = self._token_loader(self._start_url)
         kwargs = {
             'roleName': self._role_name,
             'accountId': self._account_id,
-            'accessToken': token_dict['accessToken'],
+            'accessToken': token,
         }
         try:
             response = client.get_role_credentials(**kwargs)
@@ -2076,18 +2038,24 @@ class SSOProvider(CredentialProvider):
     _SSO_TOKEN_CACHE_DIR = os.path.expanduser(
         os.path.join('~', '.aws', 'sso', 'cache')
     )
-    _SSO_CONFIG_VARS = [
-        'sso_start_url',
-        'sso_region',
+    _PROFILE_REQUIRED_CONFIG_VARS = (
         'sso_role_name',
         'sso_account_id',
-    ]
+    )
+    _SSO_REQUIRED_CONFIG_VARS = (
+        'sso_start_url',
+        'sso_region',
+    )
+    _ALL_REQUIRED_CONFIG_VARS = (
+        _PROFILE_REQUIRED_CONFIG_VARS + _SSO_REQUIRED_CONFIG_VARS
+    )
 
     def __init__(self, load_config, client_creator, profile_name,
-                 cache=None, token_cache=None):
+                 cache=None, token_cache=None, token_provider=None):
         if token_cache is None:
             token_cache = JSONFileCache(self._SSO_TOKEN_CACHE_DIR)
         self._token_cache = token_cache
+        self._token_provider = token_provider
         if cache is None:
             cache = {}
         self.cache = cache
@@ -2100,17 +2068,24 @@ class SSOProvider(CredentialProvider):
         profiles = loaded_config.get('profiles', {})
         profile_name = self._profile_name
         profile_config = profiles.get(self._profile_name, {})
+        sso_sessions = loaded_config.get('sso_sessions', {})
 
         # Role name & Account ID indicate the cred provider should be used
-        sso_cred_vars = ('sso_role_name', 'sso_account_id')
-        if all(c not in profile_config for c in sso_cred_vars):
+        if all(
+            c not in profile_config for c in self._PROFILE_REQUIRED_CONFIG_VARS
+        ):
             return None
+
+        resolved_config, extra_reqs = self._resolve_sso_session_reference(
+            profile_config, sso_sessions
+        )
 
         config = {}
         missing_config_vars = []
-        for config_var in self._SSO_CONFIG_VARS:
-            if config_var in profile_config:
-                config[config_var] = profile_config[config_var]
+        all_required_configs = self._ALL_REQUIRED_CONFIG_VARS + extra_reqs
+        for config_var in all_required_configs:
+            if config_var in resolved_config:
+                config[config_var] = resolved_config[config_var]
             else:
                 missing_config_vars.append(config_var)
 
@@ -2122,23 +2097,50 @@ class SSOProvider(CredentialProvider):
                     'required configuration: %s' % (profile_name, missing)
                 )
             )
-
         return config
+
+    def _resolve_sso_session_reference(self, profile_config, sso_sessions):
+        sso_session_name = profile_config.get('sso_session')
+        if sso_session_name is None:
+            # No reference to resolve, proceed with legacy flow
+            return profile_config, ()
+
+        if sso_session_name not in sso_sessions:
+            error_msg = f'The specified sso-session does not exist: "{sso_session_name}"'
+            raise InvalidConfigError(error_msg=error_msg)
+
+        config = profile_config.copy()
+        session = sso_sessions[sso_session_name]
+        for config_var, val in session.items():
+            # Validate any keys referenced in both profile and sso_session match
+            if config.get(config_var, val) != val:
+                error_msg = (
+                    f"The value for {config_var} is inconsistent between "
+                    f"profile ({config[config_var]}) and sso-session ({val})."
+                )
+                raise InvalidConfigError(error_msg=error_msg)
+            config[config_var] = val
+        return config, ('sso_session',)
 
     def load(self):
         sso_config = self._load_sso_config()
         if not sso_config:
             return None
 
-        sso_fetcher = SSOCredentialFetcher(
-            sso_config['sso_start_url'],
-            sso_config['sso_region'],
-            sso_config['sso_role_name'],
-            sso_config['sso_account_id'],
-            self._client_creator,
-            token_loader=SSOTokenLoader(cache=self._token_cache),
-            cache=self.cache,
-        )
+        fetcher_kwargs = {
+            'start_url': sso_config['sso_start_url'],
+            'sso_region': sso_config['sso_region'],
+            'role_name': sso_config['sso_role_name'],
+            'account_id': sso_config['sso_account_id'],
+            'client_creator': self._client_creator,
+            'token_loader': SSOTokenLoader(cache=self._token_cache),
+            'cache': self.cache,
+        }
+        if 'sso_session' in sso_config:
+            fetcher_kwargs['sso_session_name'] = sso_config['sso_session']
+            fetcher_kwargs['token_provider'] = self._token_provider
+
+        sso_fetcher = SSOCredentialFetcher(**fetcher_kwargs)
 
         return DeferredRefreshableCredentials(
             method=self.METHOD,

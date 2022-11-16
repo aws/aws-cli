@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import uuid
 import threading
 import os
@@ -21,6 +22,7 @@ import shutil
 from datetime import datetime, timedelta
 import sys
 
+import pytest
 from dateutil.tz import tzlocal
 from botocore.exceptions import CredentialRetrievalError
 
@@ -42,7 +44,11 @@ from botocore.config import Config
 from botocore.session import Session
 from botocore.exceptions import InvalidConfigError, InfiniteLoopConfigError
 from botocore.stub import Stubber
+from botocore.tokens import SSOTokenProvider
 from botocore.utils import datetime2timestamp
+
+TIME_IN_ONE_HOUR = datetime.utcnow() + timedelta(hours=1)
+TIME_IN_SIX_MONTHS = datetime.utcnow() + timedelta(hours=4320)
 
 
 class TestCredentialRefreshRaces(unittest.TestCase):
@@ -842,3 +848,148 @@ class TestInstanceMetadataFetcher(BaseSessionTest):
         provider.load()
         args, _ = send.call_args
         self.assertEqual(args[0].headers['User-Agent'], 'Botocore/24.0')
+
+
+class MockCache:
+    """Mock for JSONFileCache to avoid touching files on disk"""
+
+    def __init__(self, working_dir=None, dumps_func=None):
+        self.working_dir = working_dir
+        self.dumps_func = dumps_func
+
+    def __contains__(self, cache_key):
+        return True
+
+    def __getitem__(self, cache_key):
+        return {
+            "startUrl": "https://test.awsapps.com/start",
+            "region": "us-east-1",
+            "accessToken": "access-token",
+            "expiresAt": TIME_IN_ONE_HOUR.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "expiresIn": 3600,
+            "clientId": "client-12345",
+            "clientSecret": "client-secret",
+            "registrationExpiresAt": TIME_IN_SIX_MONTHS.strftime(
+                '%Y-%m-%dT%H:%M:%SZ'
+            ),
+            "refreshToken": "refresh-here",
+        }
+
+    def __delitem__(self, cache_key):
+        pass
+
+
+class SSOSessionTest(BaseEnvVar):
+    def setUp(self):
+        super().setUp()
+        self.tempdir = tempfile.mkdtemp()
+        self.config_file = os.path.join(self.tempdir, 'config')
+        self.environ['AWS_CONFIG_FILE'] = self.config_file
+        self.access_key_id = 'ASIA123456ABCDEFG'
+        self.secret_access_key = 'secret-key'
+        self.session_token = 'session-token'
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+        super().tearDown()
+
+    def write_config(self, config):
+        with open(self.config_file, 'w') as f:
+            f.write(config)
+
+    def test_token_chosen_from_provider(self):
+        profile = (
+            '[profile sso-test]\n'
+            'region = us-east-1\n'
+            'sso_session = sso-test-session\n'
+            'sso_account_id = 12345678901234\n'
+            'sso_role_name = ViewOnlyAccess\n'
+            '\n'
+            '[sso-session sso-test-session]\n'
+            'sso_region = us-east-1\n'
+            'sso_start_url = https://test.awsapps.com/start\n'
+            'sso_registration_scopes = sso:account:access\n'
+        )
+        self.write_config(profile)
+
+        session = Session(profile='sso-test')
+        with SessionHTTPStubber(session) as stubber:
+            self.add_credential_response(stubber)
+            stubber.add_response()
+            with mock.patch.object(
+                SSOTokenProvider, 'DEFAULT_CACHE_CLS', MockCache
+            ):
+                c = session.create_client('s3')
+                c.list_buckets()
+
+        self.assert_valid_sso_call(
+            stubber.requests[0],
+            (
+                'https://portal.sso.us-east-1.amazonaws.com/federation/credentials'
+                '?role_name=ViewOnlyAccess&account_id=12345678901234'
+            ),
+            b'access-token',
+        )
+        self.assert_credentials_used(
+            stubber.requests[1],
+            self.access_key_id.encode('utf-8'),
+            self.session_token.encode('utf-8'),
+        )
+
+    def test_mismatched_session_values(self):
+        profile = (
+            '[profile sso-test]\n'
+            'region = us-east-1\n'
+            'sso_session = sso-test-session\n'
+            'sso_start_url = https://test2.awsapps.com/start\n'
+            'sso_account_id = 12345678901234\n'
+            'sso_role_name = ViewOnlyAccess\n'
+            '\n'
+            '[sso-session sso-test-session]\n'
+            'sso_region = us-east-1\n'
+            'sso_start_url = https://test.awsapps.com/start\n'
+            'sso_registration_scopes = sso:account:access\n'
+        )
+        self.write_config(profile)
+
+        session = Session(profile='sso-test')
+        with pytest.raises(InvalidConfigError):
+            c = session.create_client('s3')
+            c.list_buckets()
+
+    def test_missing_sso_session(self):
+        profile = (
+            '[profile sso-test]\n'
+            'region = us-east-1\n'
+            'sso_session = sso-test-session\n'
+            'sso_start_url = https://test2.awsapps.com/start\n'
+            'sso_account_id = 12345678901234\n'
+            'sso_role_name = ViewOnlyAccess\n'
+            '\n'
+        )
+        self.write_config(profile)
+
+        session = Session(profile='sso-test')
+        with pytest.raises(InvalidConfigError):
+            c = session.create_client('s3')
+            c.list_buckets()
+
+    def assert_valid_sso_call(self, request, url, access_token):
+        assert request.url == url
+        assert 'x-amz-sso_bearer_token' in request.headers
+        assert request.headers['x-amz-sso_bearer_token'] == access_token
+
+    def assert_credentials_used(self, request, access_key, session_token):
+        assert access_key in request.headers.get('Authorization')
+        assert request.headers.get('X-Amz-Security-Token') == session_token
+
+    def add_credential_response(self, stubber):
+        response = {
+            'roleCredentials': {
+                'accessKeyId': self.access_key_id,
+                'secretAccessKey': self.secret_access_key,
+                'sessionToken': self.session_token,
+                'expiration': TIME_IN_ONE_HOUR.timestamp() * 1000,
+            }
+        }
+        stubber.add_response(body=json.dumps(response).encode('utf-8'))

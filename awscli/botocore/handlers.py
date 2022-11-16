@@ -180,31 +180,27 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
     if auth_type == 'bearer':
         return 'bearer'
 
-    if auth_type == 'v4a':
-        # If sigv4a is chosen, we must add additional
-        # signing config for global signature.
-        signing = {
-            'region': '*',
-            'signing_name': signing_name
-        }
-        if 'signing' in context:
-            context['signing'].update(signing)
-        else:
-            context['signing'] = signing
-        return 'v4a'
-
     if auth_type.startswith('v4'):
-        signature_version = 'v4'
-        if signing_name == 's3':
-            if is_global_accesspoint(context):
-                signature_version = 's3v4a'
+        if auth_type == 'v4a':
+            # If sigv4a is chosen, we must add additional signing config for
+            # global signature.
+            signing = {'region': '*', 'signing_name': signing_name}
+            if 'signing' in context:
+                context['signing'].update(signing)
             else:
-                signature_version = 's3v4'
+                context['signing'] = signing
+            signature_version = 'v4a'
+        else:
+            signature_version = 'v4'
 
         # If the operation needs an unsigned body, we set additional context
         # allowing the signer to be aware of this.
         if auth_type == 'v4-unsigned-body':
             context['payload_signing_enabled'] = False
+
+        # S3 has customized signers "s3v4" and "s3v4a"
+        if signing_name in ('s3', 's3-outposts'):
+            signature_version = f's3{signature_version}'
 
         return signature_version
 

@@ -648,6 +648,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             's3-outposts.us-west-2.amazonaws.com'
         )
         self.assert_endpoint(request, expected_endpoint)
+        sha_header = request.headers.get("x-amz-content-sha256")
+        self.assertIsNotNone(sha_header)
+        self.assertNotEqual(sha_header, b"UNSIGNED-PAYLOAD")
 
     def test_basic_outpost_arn(self):
         outpost_arn = (
@@ -1314,6 +1317,10 @@ class TestS3SigV4(BaseS3OperationTest):
         self.assertIn('content-md5', self.get_sent_headers())
 
     def test_content_sha256_set_if_config_value_is_true(self):
+        # By default, put_object() does not include an x-amz-content-sha256
+        # header because it also includes a `Content-MD5` header. The
+        # `payload_signing_enabled` config overrides this logic and forces the
+        # header.
         config = Config(signature_version='s3v4', s3={
             'payload_signing_enabled': True
         })
@@ -1340,6 +1347,56 @@ class TestS3SigV4(BaseS3OperationTest):
         sent_headers = self.get_sent_headers()
         sha_header = sent_headers.get('x-amz-content-sha256')
         self.assertEqual(sha_header, b'UNSIGNED-PAYLOAD')
+
+    def test_content_sha256_set_if_config_value_not_set_put_object(self):
+        # The default behavior matches payload_signing_enabled=False. For
+        # operations where the `Content-MD5` is present this means that
+        # `x-amz-content-sha256` is present but not set.
+        config = Config(signature_version='s3v4')
+        self.client = self.session.create_client(
+            's3', self.region, config=config
+        )
+        self.http_stubber = ClientHTTPStubber(self.client)
+        self.http_stubber.add_response()
+        with self.http_stubber:
+            self.client.put_object(Bucket='foo', Key='bar', Body='baz')
+        sent_headers = self.get_sent_headers()
+        sha_header = sent_headers.get('x-amz-content-sha256')
+        self.assertEqual(sha_header, b'UNSIGNED-PAYLOAD')
+
+    def test_content_sha256_set_if_config_value_not_set_list_objects(self):
+        # The default behavior matches payload_signing_enabled=False. For
+        # operations where the `Content-MD5` is not present, this means that
+        # `x-amz-content-sha256` is present and set.
+        config = Config(signature_version='s3v4')
+        self.client = self.session.create_client(
+            's3', self.region, config=config
+        )
+        self.http_stubber = ClientHTTPStubber(self.client)
+        self.http_stubber.add_response()
+        with self.http_stubber:
+            self.client.list_objects(Bucket='foo')
+        sent_headers = self.get_sent_headers()
+        sha_header = sent_headers.get('x-amz-content-sha256')
+        self.assertIsNotNone(sha_header)
+        self.assertNotEqual(sha_header, b'UNSIGNED-PAYLOAD')
+
+    def test_content_sha256_set_s3_on_outpost(self):
+        # S3 on Outpost bucket names should behave the same way.
+        config = Config(signature_version='s3v4')
+        bucket = (
+            'test-accessp-e0000075431d83bebde8xz5w8ijx1qzlbp3i3kuse10--op-s3'
+        )
+        self.client = self.session.create_client(
+            's3', self.region, config=config
+        )
+        self.http_stubber = ClientHTTPStubber(self.client)
+        self.http_stubber.add_response()
+        with self.http_stubber:
+            self.client.list_objects(Bucket=bucket)
+        sent_headers = self.get_sent_headers()
+        sha_header = sent_headers.get('x-amz-content-sha256')
+        self.assertNotEqual(sha_header, b'UNSIGNED-PAYLOAD')
 
     def test_content_sha256_set_if_md5_is_unavailable(self):
         with mock.patch('botocore.auth.MD5_AVAILABLE', False):

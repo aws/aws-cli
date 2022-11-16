@@ -19,6 +19,7 @@ from datetime import datetime
 from collections import namedtuple
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ConfigurationError
 
 
 # Takes botocore's ReadOnlyCredentials and exposes an expiry_time.
@@ -204,15 +205,23 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         self._error_stream = error_stream
         self._env = env
 
-    def _recursion_barrier_detected(self):
+    def _detect_recursion_barrier(self):
         profile = self._get_current_profile()
         seen_profiles = self._parse_profile_chain(
             self._env.get(self._RECURSION_VAR, ''))
         if len(seen_profiles) >= self._MAX_RECURSION:
-            return True
-        return profile in seen_profiles
+            raise ConfigurationError(
+                f"Maximum recursive credential process resolution reached "
+                f"({self._MAX_RECURSION}).\n"
+                f"Profiles seen: {' -> '.join(seen_profiles)}"
+            )
+        if profile in seen_profiles:
+            raise ConfigurationError(
+                f"Credential process resolution detected an infinite loop, "
+                f"profile cycle: {' -> '.join(seen_profiles + [profile])}\n"
+            )
 
-    def _set_recursion_barrier(self):
+    def _update_recursion_barrier(self):
         profile = self._get_current_profile()
         seen_profiles = self._parse_profile_chain(
             self._env.get(self._RECURSION_VAR, ''))
@@ -238,27 +247,17 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         return result
 
     def _run_main(self, parsed_args, parsed_globals):
-        if self._recursion_barrier_detected():
-            self._error_stream.write(
-                "\n\nRecursive credential resolution process detected.\n"
-                "Try setting an explicit '--profile' value in the "
-                "'credential_process' configuration and ensure there "
-                "are no cycles:\n\n"
-                "credential_process = aws configure export-credentials "
-                "--profile other-profile\n"
-            )
-            return 2
-        self._set_recursion_barrier()
+        self._detect_recursion_barrier()
+        self._update_recursion_barrier()
         try:
             creds = self._session.get_credentials()
         except Exception as e:
-            self._error_stream.write(
-                "Unable to retrieve credentials: %s\n" % e)
-            return 1
+            original_msg = str(e).strip()
+            raise ConfigurationError(
+                f"Unable to retrieve credentials: {original_msg}\n")
         if creds is None:
-            self._error_stream.write(
-                "Unable to retrieve credentials: no credentials found\n")
-            return 1
+            raise ConfigurationError(
+                "Unable to retrieve credentials: no credentials found")
         creds_with_expiry = convert_botocore_credentials(creds)
         formatter = SUPPORTED_FORMATS[parsed_args.format](self._out_stream)
         formatter.display_credentials(creds_with_expiry)

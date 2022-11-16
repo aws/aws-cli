@@ -23,6 +23,7 @@ from botocore.credentials import ReadOnlyCredentials
 from botocore.session import Session
 
 from awscli.testutils import unittest
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.configure.exportcreds import (
     Credentials,
     convert_botocore_credentials,
@@ -199,29 +200,28 @@ class TestConfigureExportCredentialsCommand(unittest.TestCase):
 
     def test_show_error_when_no_cred(self):
         self.session.get_credentials.return_value = None
-        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        with pytest.raises(ConfigurationError) as excinfo:
+            self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
-            'Unable to retrieve credentials', self.err_stream.getvalue()
-        )
-        self.assertEqual(rc, 1)
+            'Unable to retrieve credentials', str(excinfo))
 
     def test_show_error_when_cred_resolution_errors(self):
         self.session.get_credentials.side_effect = Exception(
             "resolution failed")
-        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        with pytest.raises(ConfigurationError) as excinfo:
+            self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
-            'resolution failed', self.err_stream.getvalue()
+            'resolution failed', str(excinfo)
         )
-        self.assertEqual(rc, 1)
 
     def test_can_detect_recursive_resolution(self):
         self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'default'
-        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        with pytest.raises(ConfigurationError) as excinfo:
+            self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
-            'Recursive credential resolution process detected',
-            self.err_stream.getvalue()
+            'Credential process resolution detected an infinite loop',
+            str(excinfo),
         )
-        self.assertEqual(rc, 2)
 
     def test_nested_calls_not_recursive(self):
         self.session.get_credentials.return_value = self.creds
@@ -243,12 +243,12 @@ class TestConfigureExportCredentialsCommand(unittest.TestCase):
         self.session.get_credentials.return_value = self.creds
         self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'foo,bar,baz'
         self.session.get_config_variable.return_value = 'bar'
-        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        with pytest.raises(ConfigurationError) as excinfo:
+            self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
-            'Recursive credential resolution process detected',
-            self.err_stream.getvalue()
+            'Credential process resolution detected an infinite loop',
+            str(excinfo),
         )
-        self.assertEqual(rc, 2)
 
     def test_handles_comma_char_in_profile_name_no_cycle(self):
         self.session.get_credentials.return_value = self.creds
@@ -277,20 +277,20 @@ class TestConfigureExportCredentialsCommand(unittest.TestCase):
         # Second time, it detects the cycle.
         second_invoke = ConfigureExportCredentialsCommand(
             self.session, self.out_stream, self.err_stream, env=self.os_env)
-        rc = second_invoke(args=[], parsed_globals=self.global_args)
+        with pytest.raises(ConfigurationError) as excinfo:
+            second_invoke(args=[], parsed_globals=self.global_args)
         self.assertIn(
-            'Recursive credential resolution process detected',
-            self.err_stream.getvalue()
+            'Credential process resolution detected an infinite loop',
+            str(excinfo),
         )
-        self.assertEqual(rc, 2)
 
     def test_max_recursion_limit(self):
         self.session.get_credentials.return_value = self.creds
         self.os_env['_AWS_CLI_PROFILE_CHAIN'] = ','.join(
             ['a', 'b', 'c', 'd', 'e', 'f', 'g'])
-        rc = self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        with pytest.raises(ConfigurationError) as excinfo:
+            self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn(
-            'Recursive credential resolution process detected',
-            self.err_stream.getvalue()
+            'Maximum recursive credential process resolution reached',
+            str(excinfo),
         )
-        self.assertEqual(rc, 2)

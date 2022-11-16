@@ -25,6 +25,8 @@ from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.configure.importer import ConfigureImportCommand
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
 from awscli.customizations.configure.sso import ConfigureSSOCommand
+from awscli.customizations.configure.exportcreds import \
+    ConfigureExportCredentialsCommand
 
 from . import mask_value, profile_to_section
 
@@ -80,6 +82,8 @@ class ConfigureCommand(BasicCommand):
         {'name': 'import', 'command_class': ConfigureImportCommand},
         {'name': 'list-profiles', 'command_class': ListProfilesCommand},
         {'name': 'sso', 'command_class': ConfigureSSOCommand},
+        {'name': 'export-credentials',
+         'command_class': ConfigureExportCredentialsCommand},
     ]
 
     # If you want to add new values to prompt, update this list here.

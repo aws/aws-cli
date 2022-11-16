@@ -1297,11 +1297,15 @@
         },
         "CreateDatabaseDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
-          "documentation":"<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions. You can override this default setting when you create a database.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting \"Use only IAM access control,\" and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html\">Changing the Default Security Settings for Your Data Lake</a>.</p>"
+          "documentation":"<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting \"Use only IAM access control,\" and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html\">Changing the Default Security Settings for Your Data Lake</a>.</p>"
         },
         "CreateTableDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
           "documentation":"<p>Specifies whether access control on newly created table is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting \"Use only IAM access control,\" and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html\">Changing the Default Security Settings for Your Data Lake</a>.</p>"
+        },
+        "Parameters":{
+          "shape":"ParametersMap",
+          "documentation":"<p>A key-value map that provides an additional configuration on your data lake. CrossAccountVersion is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, and 3.</p>"
         },
         "TrustedResourceOwners":{
           "shape":"TrustedResourceOwners",
@@ -2165,6 +2169,12 @@
       },
       "exception":true
     },
+    "KeyString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
     "LFTag":{
       "type":"structure",
       "required":[
@@ -2546,6 +2556,15 @@
       "max":1000,
       "min":1
     },
+    "ParametersMap":{
+      "type":"map",
+      "key":{"shape":"KeyString"},
+      "value":{"shape":"ParametersMapValue"}
+    },
+    "ParametersMapValue":{
+      "type":"string",
+      "max":512000
+    },
     "PartitionObjects":{
       "type":"structure",
       "members":{
@@ -2784,7 +2803,7 @@
         },
         "UseServiceLinkedRole":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Designates an Identity and Access Management (IAM) service-linked role by registering this role with the Data Catalog. A service-linked role is a unique type of IAM role that is linked directly to Lake Formation.</p> <p>For more information, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/service-linked-roles.html\">Using Service-Linked Roles for Lake Formation</a>.</p>"
+          "documentation":"<p>Designates an Identity and Access Management (IAM) service-linked role by registering this role with the Data Catalog. A service-linked role is a unique type of IAM role that is linked directly to Lake Formation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/service-linked-roles.html\">Using Service-Linked Roles for Lake Formation</a>.</p>"
         },
         "RoleArn":{
           "shape":"IAMRoleArn",
@@ -2997,7 +3016,7 @@
           "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
         },
         "MaxResults":{
-          "shape":"PageSize",
+          "shape":"SearchPageSize",
           "documentation":"<p>The maximum number of results to return.</p>"
         },
         "CatalogId":{
@@ -3023,6 +3042,12 @@
         }
       }
     },
+    "SearchPageSize":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "SearchTablesByLFTagsRequest":{
       "type":"structure",
       "required":["Expression"],
@@ -3032,7 +3057,7 @@
           "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
         },
         "MaxResults":{
-          "shape":"PageSize",
+          "shape":"SearchPageSize",
           "documentation":"<p>The maximum number of results to return.</p>"
         },
         "CatalogId":{

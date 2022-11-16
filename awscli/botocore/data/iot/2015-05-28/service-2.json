@@ -2848,6 +2848,22 @@
       ],
       "documentation":"<p>Lists the provisioning templates in your Amazon Web Services account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListProvisioningTemplates</a> action.</p>"
     },
+    "ListRelatedResourcesForAuditFinding":{
+      "name":"ListRelatedResourcesForAuditFinding",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/relatedResources"
+      },
+      "input":{"shape":"ListRelatedResourcesForAuditFindingRequest"},
+      "output":{"shape":"ListRelatedResourcesForAuditFindingResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>The related resources of an Audit finding. The following resources can be returned from calling this API:</p> <ul> <li> <p>DEVICE_CERTIFICATE</p> </li> <li> <p>CA_CERTIFICATE</p> </li> <li> <p>IOT_POLICY</p> </li> <li> <p>COGNITO_IDENTITY_POOL</p> </li> <li> <p>CLIENT_ID</p> </li> <li> <p>ACCOUNT_SETTINGS</p> </li> <li> <p>ROLE_ALIAS</p> </li> <li> <p>IAM_ROLE</p> </li> <li> <p>ISSUER_CERTIFICATE</p> </li> </ul> <note> <p>This API is similar to DescribeAuditFinding's <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_DescribeAuditFinding.html\">RelatedResources</a> but provides pagination and is not limited to 10 resources. When calling <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_DescribeAuditFinding.html\">DescribeAuditFinding</a> for the intermediate CA revoked for active device certificates check, RelatedResources will not be populated. You must use this API, ListRelatedResourcesForAuditFinding, to list the certificates.</p> </note>"
+    },
     "ListRoleAliases":{
       "name":"ListRoleAliases",
       "http":{
@@ -3094,7 +3110,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Lists your things. Use the <b>attributeName</b> and <b>attributeValue</b> parameters to filter your things. For example, calling <code>ListThings</code> with attributeName=Color and attributeValue=Red retrieves all things in the registry that contain an attribute <b>Color</b> with the value <b>Red</b>. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListThings</a> action.</p> <note> <p>You will not be charged for calling this API if an <code>Access denied</code> error is returned. You will also not be charged if no attributes or pagination token was provided in request and no pagination token and no results were returned.</p> </note>"
+      "documentation":"<p>Lists your things. Use the <b>attributeName</b> and <b>attributeValue</b> parameters to filter your things. For example, calling <code>ListThings</code> with attributeName=Color and attributeValue=Red retrieves all things in the registry that contain an attribute <b>Color</b> with the value <b>Red</b>. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/thing-registry.html#list-things\">List Things</a> from the <i>Amazon Web Services IoT Core Developer Guide</i>.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListThings</a> action.</p> <note> <p>You will not be charged for calling this API if an <code>Access denied</code> error is returned. You will also not be charged if no attributes or pagination token was provided in request and no pagination token and no results were returned.</p> </note>"
     },
     "ListThingsInBillingGroup":{
       "name":"ListThingsInBillingGroup",
@@ -11333,6 +11349,39 @@
     "IsDefaultVersion":{"type":"boolean"},
     "IsDisabled":{"type":"boolean"},
     "IsSuppressed":{"type":"boolean"},
+    "IssuerCertificateIdentifier":{
+      "type":"structure",
+      "members":{
+        "issuerCertificateSubject":{
+          "shape":"IssuerCertificateSubject",
+          "documentation":"<p>The subject of the issuer certificate.</p>"
+        },
+        "issuerId":{
+          "shape":"IssuerId",
+          "documentation":"<p>The issuer ID.</p>"
+        },
+        "issuerCertificateSerialNumber":{
+          "shape":"IssuerCertificateSerialNumber",
+          "documentation":"<p>The issuer certificate serial number.</p>"
+        }
+      },
+      "documentation":"<p>The certificate issuer indentifier.</p>"
+    },
+    "IssuerCertificateSerialNumber":{
+      "type":"string",
+      "max":20,
+      "pattern":"[a-fA-F0-9:]+"
+    },
+    "IssuerCertificateSubject":{
+      "type":"string",
+      "max":1000,
+      "pattern":"[\\p{Graph}\\x20]*"
+    },
+    "IssuerId":{
+      "type":"string",
+      "max":64,
+      "pattern":"(0x)?[a-fA-F0-9]+"
+    },
     "Job":{
       "type":"structure",
       "members":{
@@ -13357,6 +13406,43 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListRelatedResourcesForAuditFindingRequest":{
+      "type":"structure",
+      "required":["findingId"],
+      "members":{
+        "findingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The finding Id.</p>",
+          "location":"querystring",
+          "locationName":"findingId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRelatedResourcesForAuditFindingResponse":{
+      "type":"structure",
+      "members":{
+        "relatedResources":{
+          "shape":"RelatedResources",
+          "documentation":"<p>The related resources.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> for the first API call.</p>"
         }
       }
     },
@@ -15851,6 +15937,14 @@
         "roleAliasArn":{
           "shape":"RoleAliasArn",
           "documentation":"<p>The ARN of the role alias that has overly permissive actions.</p>"
+        },
+        "issuerCertificateIdentifier":{
+          "shape":"IssuerCertificateIdentifier",
+          "documentation":"<p>The issuer certificate identifier.</p>"
+        },
+        "deviceCertificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The ARN of the identified device certificate.</p>"
         }
       },
       "documentation":"<p>Information that identifies the noncompliant resource.</p>"
@@ -15890,7 +15984,8 @@
         "CLIENT_ID",
         "ACCOUNT_SETTINGS",
         "ROLE_ALIAS",
-        "IAM_ROLE"
+        "IAM_ROLE",
+        "ISSUER_CERTIFICATE"
       ]
     },
     "Resources":{

@@ -2255,7 +2255,8 @@
         {"shape":"DomainNotFoundFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
         {"shape":"BackupPolicyNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"}
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"DBClusterSnapshotNotFoundFault"}
       ],
       "documentation":"<p>Creates a new DB instance from a DB snapshot. The target database is created from the source database restore point with most of the source's original configuration, including the default security group and DB parameter group. By default, the new DB instance is created as a Single-AZ deployment, except when the instance is a SQL Server instance that has an option group associated with mirroring. In this case, the instance becomes a Multi-AZ deployment, not a Single-AZ deployment.</p> <p>If you want to replace your original DB instance with the new, restored DB instance, then rename your original DB instance before you call the RestoreDBInstanceFromDBSnapshot action. RDS doesn't allow two DB instances with the same name. After you have renamed your original DB instance with a different identifier, then you can pass the original name of the DB instance as the DBInstanceIdentifier in the call to the RestoreDBInstanceFromDBSnapshot action. The result is that you replace the original DB instance with the DB instance created from the snapshot.</p> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterFromSnapshot</code>.</p> </note>"
     },
@@ -3838,7 +3839,7 @@
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
+          "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
         }
       },
       "documentation":"<p/>"
@@ -5739,7 +5740,7 @@
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the storage throughput for the DB instance.</p>"
+          "documentation":"<p>Specifies the storage throughput for the DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",
@@ -10198,7 +10199,7 @@
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
+          "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12373,10 +12374,7 @@
     },
     "RestoreDBInstanceFromDBSnapshotMessage":{
       "type":"structure",
-      "required":[
-        "DBInstanceIdentifier",
-        "DBSnapshotIdentifier"
-      ],
+      "required":["DBInstanceIdentifier"],
       "members":{
         "DBInstanceIdentifier":{
           "shape":"String",
@@ -12384,7 +12382,7 @@
         },
         "DBSnapshotIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier for the DB snapshot to restore from.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBSnapshot.</p> </li> <li> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> </li> </ul>"
+          "documentation":"<p>The identifier for the DB snapshot to restore from.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBSnapshot.</p> </li> <li> <p>Can't be specified when <code>DBClusterSnapshotIdentifier</code> is specified.</p> </li> <li> <p>Must be specified when <code>DBClusterSnapshotIdentifier</code> isn't specified.</p> </li> <li> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> </li> </ul>"
         },
         "DBInstanceClass":{
           "shape":"String",
@@ -12506,6 +12504,10 @@
         "StorageThroughput":{
           "shape":"IntegerOptional",
           "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
+        },
+        "DBClusterSnapshotIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the RDS for MySQL Multi-AZ DB cluster snapshot to restore from.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing Multi-AZ DB cluster snapshot.</p> </li> <li> <p>Can't be specified when <code>DBSnapshotIdentifier</code> is specified.</p> </li> <li> <p>Must be specified when <code>DBSnapshotIdentifier</code> isn't specified.</p> </li> <li> <p>If you are restoring from a shared manual Multi-AZ DB cluster snapshot, the <code>DBClusterSnapshotIdentifier</code> must be the ARN of the shared snapshot.</p> </li> <li> <p>Can't be the identifier of an Aurora DB cluster snapshot.</p> </li> <li> <p>Can't be the identifier of an RDS for PostgreSQL Multi-AZ DB cluster snapshot.</p> </li> </ul>"
         }
       },
       "documentation":"<p/>"

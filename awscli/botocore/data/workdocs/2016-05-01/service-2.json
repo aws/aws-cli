@@ -25,7 +25,8 @@
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"FailedDependencyException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Aborts the upload of the specified document version that was previously initiated by <a>InitiateDocumentVersionUpload</a>. The client should make this call only when it no longer intends to upload the document version, or fails to do so.</p>"
     },
@@ -60,7 +61,8 @@
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"FailedDependencyException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ProhibitedStateException"}
       ],
       "documentation":"<p>Creates a set of permissions for the specified folder or document. The resource permissions are overwritten if the principals already have different permissions.</p>"
     },
@@ -119,6 +121,7 @@
         {"shape":"EntityAlreadyExistsException"},
         {"shape":"ProhibitedStateException"},
         {"shape":"ConflictingOperationException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"LimitExceededException"},
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
@@ -158,9 +161,10 @@
       "errors":[
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"TooManySubscriptionsException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidArgumentException"}
       ],
-      "documentation":"<p>Configure Amazon WorkDocs to use Amazon SNS notifications. The endpoint receives a confirmation message, and must confirm the subscription.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/workdocs/latest/developerguide/subscribe-notifications.html\">Subscribe to Notifications</a> in the <i>Amazon WorkDocs Developer Guide</i>.</p>"
+      "documentation":"<p>Configure Amazon WorkDocs to use Amazon SNS notifications. The endpoint receives a confirmation message, and must confirm the subscription.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/workdocs/latest/developerguide/manage-notifications.html\">Setting up notifications for an IAM user or role</a> in the <i>Amazon WorkDocs Developer Guide</i>.</p>"
     },
     "CreateUser":{
       "name":"CreateUser",
@@ -245,6 +249,7 @@
       "input":{"shape":"DeleteDocumentRequest"},
       "errors":[
         {"shape":"EntityNotExistsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ProhibitedStateException"},
         {"shape":"ConflictingOperationException"},
         {"shape":"ConcurrentModificationException"},
@@ -254,6 +259,26 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Permanently deletes the specified document and its associated metadata.</p>"
+    },
+    "DeleteDocumentVersion":{
+      "name":"DeleteDocumentVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/api/v1/documentVersions/{DocumentId}/versions/{VersionId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDocumentVersionRequest"},
+      "errors":[
+        {"shape":"EntityNotExistsException"},
+        {"shape":"ProhibitedStateException"},
+        {"shape":"ConflictingOperationException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"UnauthorizedResourceAccessException"},
+        {"shape":"FailedDependencyException"},
+        {"shape":"InvalidOperationException"},
+        {"shape":"UnauthorizedOperationException"}
+      ],
+      "documentation":"<p>Deletes a version of an Amazon WorkDocs document. Use the <code>DeletePriorVersions</code> parameter to delete prior versions.</p>"
     },
     "DeleteFolder":{
       "name":"DeleteFolder",
@@ -265,6 +290,7 @@
       "input":{"shape":"DeleteFolderRequest"},
       "errors":[
         {"shape":"EntityNotExistsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ProhibitedStateException"},
         {"shape":"ConflictingOperationException"},
         {"shape":"ConcurrentModificationException"},
@@ -308,7 +334,8 @@
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"FailedDependencyException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ProhibitedStateException"}
       ],
       "documentation":"<p>Deletes the specified list of labels from a resource.</p>"
     },
@@ -398,7 +425,8 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"FailedDependencyException"},
         {"shape":"ServiceUnavailableException"},
-        {"shape":"ProhibitedStateException"}
+        {"shape":"ProhibitedStateException"},
+        {"shape":"InvalidPasswordException"}
       ],
       "documentation":"<p>Retrieves the document versions for the specified document.</p> <p>By default, only active versions are returned.</p>"
     },
@@ -464,6 +492,7 @@
       "input":{"shape":"DescribeResourcePermissionsRequest"},
       "output":{"shape":"DescribeResourcePermissionsResponse"},
       "errors":[
+        {"shape":"InvalidArgumentException"},
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"FailedDependencyException"},
@@ -655,13 +684,15 @@
         {"shape":"EntityAlreadyExistsException"},
         {"shape":"StorageLimitExceededException"},
         {"shape":"StorageLimitWillExceedException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ProhibitedStateException"},
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"FailedDependencyException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"DraftUploadOutOfSyncException"},
-        {"shape":"ResourceAlreadyCheckedOutException"}
+        {"shape":"ResourceAlreadyCheckedOutException"},
+        {"shape":"InvalidPasswordException"}
       ],
       "documentation":"<p>Creates a new document object and version object.</p> <p>The client specifies the parent folder ID and name of the document to upload. The ID is optionally specified when creating a new version of an existing document. This is the first step to upload a document. Next, upload the document to the URL returned from the call, and then call <a>UpdateDocumentVersion</a>.</p> <p>To cancel the document upload, call <a>AbortDocumentVersionUpload</a>.</p>"
     },
@@ -696,6 +727,26 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Removes the permission for the specified principal from the specified resource.</p>"
+    },
+    "RestoreDocumentVersions":{
+      "name":"RestoreDocumentVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/v1/documentVersions/restore/{DocumentId}",
+        "responseCode":204
+      },
+      "input":{"shape":"RestoreDocumentVersionsRequest"},
+      "errors":[
+        {"shape":"EntityNotExistsException"},
+        {"shape":"ProhibitedStateException"},
+        {"shape":"ConflictingOperationException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"UnauthorizedResourceAccessException"},
+        {"shape":"FailedDependencyException"},
+        {"shape":"InvalidOperationException"},
+        {"shape":"UnauthorizedOperationException"}
+      ],
+      "documentation":"<p>Recovers a deleted version of an Amazon WorkDocs document.</p>"
     },
     "UpdateDocument":{
       "name":"UpdateDocument",
@@ -775,6 +826,7 @@
         {"shape":"UnauthorizedOperationException"},
         {"shape":"UnauthorizedResourceAccessException"},
         {"shape":"IllegalUserStateException"},
+        {"shape":"ProhibitedStateException"},
         {"shape":"FailedDependencyException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"DeactivatingLastSystemUserException"},
@@ -1494,6 +1546,40 @@
         }
       }
     },
+    "DeleteDocumentVersionRequest":{
+      "type":"structure",
+      "required":[
+        "DocumentId",
+        "VersionId",
+        "DeletePriorVersions"
+      ],
+      "members":{
+        "AuthenticationToken":{
+          "shape":"AuthenticationHeaderType",
+          "documentation":"<p>Amazon WorkDocs authentication token. Not required when using AWS administrator credentials to access the API.</p>",
+          "location":"header",
+          "locationName":"Authentication"
+        },
+        "DocumentId":{
+          "shape":"ResourceIdType",
+          "documentation":"<p>The ID of a document.</p>",
+          "location":"uri",
+          "locationName":"DocumentId"
+        },
+        "VersionId":{
+          "shape":"DocumentVersionIdType",
+          "documentation":"<p>The version ID of a document.</p>",
+          "location":"uri",
+          "locationName":"VersionId"
+        },
+        "DeletePriorVersions":{
+          "shape":"BooleanType",
+          "documentation":"<p>When set to <code>TRUE</code>, deletes the specified version and <i>all prior versions</i> of a document.</p>",
+          "location":"querystring",
+          "locationName":"deletePriorVersions"
+        }
+      }
+    },
     "DeleteFolderContentsRequest":{
       "type":"structure",
       "required":["FolderId"],
@@ -1662,7 +1748,7 @@
           "locationName":"limit"
         },
         "Marker":{
-          "shape":"MarkerType",
+          "shape":"SearchMarkerType",
           "documentation":"<p>The marker for the next set of results.</p>",
           "location":"querystring",
           "locationName":"marker"
@@ -1677,7 +1763,7 @@
           "documentation":"<p>The list of activities for the specified user and time period.</p>"
         },
         "Marker":{
-          "shape":"MarkerType",
+          "shape":"SearchMarkerType",
           "documentation":"<p>The marker for the next set of results.</p>"
         }
       }
@@ -2055,7 +2141,7 @@
         },
         "Query":{
           "shape":"SearchQueryType",
-          "documentation":"<p>A query to filter users by user name.</p>",
+          "documentation":"<p>A query to filter users by user name. Remember the following about the <code>Userids</code> and <code>Query</code> parameters:</p> <ul> <li> <p>If you don't use either parameter, the API returns a paginated list of all users on the site.</p> </li> <li> <p>If you use both parameters, the API ignores the <code>Query</code> parameter.</p> </li> <li> <p>The <code>Userid</code> parameter only returns user names that match a corresponding user ID.</p> </li> <li> <p>The <code>Query</code> parameter runs a \"prefix\" search for users by the <code>GivenName</code>, <code>SurName</code>, or <code>UserName</code> fields included in a <a href=\"https://docs.aws.amazon.com/workdocs/latest/APIReference/API_CreateUser.html\">CreateUser</a> API call. For example, querying on <code>Ma</code> returns Márcia Oliveira, María García, and Mateo Jackson. If you use multiple characters, the API only returns data that matches all characters. For example, querying on <code>Ma J</code> only returns Mateo Jackson.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"query"
         },
@@ -2288,7 +2374,8 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+      "pattern":"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+      "sensitive":true
     },
     "EntityAlreadyExistsException":{
       "type":"structure",
@@ -2307,7 +2394,10 @@
       "type":"structure",
       "members":{
         "Message":{"shape":"ErrorMessageType"},
-        "EntityIds":{"shape":"EntityIdList"}
+        "EntityIds":{
+          "shape":"EntityIdList",
+          "documentation":"<p>The IDs of the non-existent resources.</p>"
+        }
       },
       "documentation":"<p>The resource does not exist.</p>",
       "error":{"httpStatusCode":404},
@@ -2733,7 +2823,6 @@
     },
     "InitiateDocumentVersionUploadRequest":{
       "type":"structure",
-      "required":["ParentFolderId"],
       "members":{
         "AuthenticationToken":{
           "shape":"AuthenticationHeaderType",
@@ -2825,7 +2914,7 @@
       "members":{
         "Message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The maximum of 100,000 folders under the parent folder has been exceeded.</p>",
+      "documentation":"<p>The maximum of 100,000 files and folders under the parent folder has been exceeded.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -3150,6 +3239,24 @@
         "DOCUMENT"
       ]
     },
+    "RestoreDocumentVersionsRequest":{
+      "type":"structure",
+      "required":["DocumentId"],
+      "members":{
+        "AuthenticationToken":{
+          "shape":"AuthenticationHeaderType",
+          "documentation":"<p>Amazon WorkDocs authentication token. Not required when using AWS administrator credentials to access the API.</p>",
+          "location":"header",
+          "locationName":"Authentication"
+        },
+        "DocumentId":{
+          "shape":"ResourceIdType",
+          "documentation":"<p>The ID of the document.</p>",
+          "location":"uri",
+          "locationName":"DocumentId"
+        }
+      }
+    },
     "RolePermissionType":{
       "type":"string",
       "enum":[
@@ -3165,6 +3272,12 @@
         "OWNER",
         "COOWNER"
       ]
+    },
+    "SearchMarkerType":{
+      "type":"string",
+      "max":12288,
+      "min":1,
+      "pattern":"[\\u0000-\\u00FF]+"
     },
     "SearchQueryType":{
       "type":"string",
@@ -3337,7 +3450,10 @@
     },
     "SubscriptionProtocolType":{
       "type":"string",
-      "enum":["HTTPS"]
+      "enum":[
+        "HTTPS",
+        "SQS"
+      ]
     },
     "SubscriptionType":{
       "type":"string",
@@ -3717,5 +3833,5 @@
       "pattern":"[\\w\\-+.]+(@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]+)?"
     }
   },
-  "documentation":"<p>The WorkDocs API is designed for the following use cases:</p> <ul> <li> <p>File Migration: File migration applications are supported for users who want to migrate their files from an on-premises or off-premises file system or service. Users can insert files into a user directory structure, as well as allow for basic metadata changes, such as modifications to the permissions of files.</p> </li> <li> <p>Security: Support security applications are supported for users who have additional security needs, such as antivirus or data loss prevention. The API actions, along with AWS CloudTrail, allow these applications to detect when changes occur in Amazon WorkDocs. Then, the application can take the necessary actions and replace the target file. If the target file violates the policy, the application can also choose to email the user.</p> </li> <li> <p>eDiscovery/Analytics: General administrative applications are supported, such as eDiscovery and analytics. These applications can choose to mimic or record the actions in an Amazon WorkDocs site, along with AWS CloudTrail, to replicate data for eDiscovery, backup, or analytical applications.</p> </li> </ul> <p>All Amazon WorkDocs API actions are Amazon authenticated and certificate-signed. They not only require the use of the AWS SDK, but also allow for the exclusive use of IAM users and roles to help facilitate access, trust, and permission policies. By creating a role and allowing an IAM user to access the Amazon WorkDocs site, the IAM user gains full administrative visibility into the entire Amazon WorkDocs site (or as set in the IAM policy). This includes, but is not limited to, the ability to modify file permissions and upload any file to any user. This allows developers to perform the three use cases above, as well as give users the ability to grant access on a selective basis using the IAM model.</p>"
+  "documentation":"<p>The WorkDocs API is designed for the following use cases:</p> <ul> <li> <p>File Migration: File migration applications are supported for users who want to migrate their files from an on-premises or off-premises file system or service. Users can insert files into a user directory structure, as well as allow for basic metadata changes, such as modifications to the permissions of files.</p> </li> <li> <p>Security: Support security applications are supported for users who have additional security needs, such as antivirus or data loss prevention. The API actions, along with AWS CloudTrail, allow these applications to detect when changes occur in Amazon WorkDocs. Then, the application can take the necessary actions and replace the target file. If the target file violates the policy, the application can also choose to email the user.</p> </li> <li> <p>eDiscovery/Analytics: General administrative applications are supported, such as eDiscovery and analytics. These applications can choose to mimic or record the actions in an Amazon WorkDocs site, along with AWS CloudTrail, to replicate data for eDiscovery, backup, or analytical applications.</p> </li> </ul> <p>All Amazon WorkDocs API actions are Amazon authenticated and certificate-signed. They not only require the use of the AWS SDK, but also allow for the exclusive use of IAM users and roles to help facilitate access, trust, and permission policies. By creating a role and allowing an IAM user to access the Amazon WorkDocs site, the IAM user gains full administrative visibility into the entire Amazon WorkDocs site (or as set in the IAM policy). This includes, but is not limited to, the ability to modify file permissions and upload any file to any user. This allows developers to perform the three use cases above, as well as give users the ability to grant access on a selective basis using the IAM model.</p> <note> <p>The pricing for Amazon WorkDocs APIs varies depending on the API call type for these actions:</p> <ul> <li> <p> <code>READ (Get*)</code> </p> </li> <li> <p> <code>WRITE (Activate*, Add*, Create*, Deactivate*, Initiate*, Update*)</code> </p> </li> <li> <p> <code>LIST (Describe*)</code> </p> </li> <li> <p> <code>DELETE*, CANCEL</code> </p> </li> </ul> <p>For information about Amazon WorkDocs API pricing, see <a href=\"https://aws.amazon.com/workdocs/pricing/\">Amazon WorkDocs Pricing</a>.</p> </note>"
 }

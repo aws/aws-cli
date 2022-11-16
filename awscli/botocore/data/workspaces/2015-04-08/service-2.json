@@ -688,6 +688,22 @@
       ],
       "documentation":"<p>Modifies the configuration of Bring Your Own License (BYOL) for the specified account.</p>"
     },
+    "ModifyCertificateBasedAuthProperties":{
+      "name":"ModifyCertificateBasedAuthProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyCertificateBasedAuthPropertiesRequest"},
+      "output":{"shape":"ModifyCertificateBasedAuthPropertiesResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Modifies the properties of the certificate-based authentication you want to use with your WorkSpaces.</p>"
+    },
     "ModifyClientProperties":{
       "name":"ModifyClientProperties",
       "http":{
@@ -1170,6 +1186,33 @@
       "member":{"shape":"WorkspaceBundle"}
     },
     "BundleOwner":{"type":"string"},
+    "CertificateAuthorityArn":{
+      "type":"string",
+      "max":200,
+      "min":5,
+      "pattern":"arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+    },
+    "CertificateBasedAuthProperties":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"CertificateBasedAuthStatusEnum",
+          "documentation":"<p>The status of the certificate-based authentication properties.</p>"
+        },
+        "CertificateAuthorityArn":{
+          "shape":"CertificateAuthorityArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager Private CA resource.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of the certificate-based authentication you want to use with your WorkSpaces.</p>"
+    },
+    "CertificateBasedAuthStatusEnum":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
     "ClientDeviceType":{
       "type":"string",
       "enum":[
@@ -1836,6 +1879,14 @@
         }
       },
       "documentation":"<p>Describes the default values that are used to create WorkSpaces. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html\">Update Directory Details for Your WorkSpaces</a>.</p>"
+    },
+    "DeletableCertificateBasedAuthPropertiesList":{
+      "type":"list",
+      "member":{"shape":"DeletableCertificateBasedAuthProperty"}
+    },
+    "DeletableCertificateBasedAuthProperty":{
+      "type":"string",
+      "enum":["CERTIFICATE_BASED_AUTH_PROPERTIES_CERTIFICATE_AUTHORITY_ARN"]
     },
     "DeletableSamlPropertiesList":{
       "type":"list",
@@ -2980,6 +3031,29 @@
       }
     },
     "ModifyAccountResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ModifyCertificateBasedAuthPropertiesRequest":{
+      "type":"structure",
+      "required":["ResourceId"],
+      "members":{
+        "ResourceId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The resource identifiers, in the form of directory IDs.</p>"
+        },
+        "CertificateBasedAuthProperties":{
+          "shape":"CertificateBasedAuthProperties",
+          "documentation":"<p>The properties of the certificate-based authentication.</p>"
+        },
+        "PropertiesToDelete":{
+          "shape":"DeletableCertificateBasedAuthPropertiesList",
+          "documentation":"<p>The properties of the certificate-based authentication you want to delete.</p>"
+        }
+      }
+    },
+    "ModifyCertificateBasedAuthPropertiesResult":{
       "type":"structure",
       "members":{
       }
@@ -4157,6 +4231,10 @@
         "SamlProperties":{
           "shape":"SamlProperties",
           "documentation":"<p>Describes the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.</p>"
+        },
+        "CertificateBasedAuthProperties":{
+          "shape":"CertificateBasedAuthProperties",
+          "documentation":"<p>The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory for WorkSpaces login.</p>"
         }
       },
       "documentation":"<p>Describes a directory that is used with Amazon WorkSpaces.</p>"

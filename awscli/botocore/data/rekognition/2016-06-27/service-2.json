@@ -437,7 +437,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidImageFormatException"}
       ],
-      "documentation":"<p>Detects instances of real-world entities within an image (JPEG or PNG) provided as input. This includes objects like flower, tree, and table; events like wedding, graduation, and birthday party; and concepts like landscape, evening, and nature. </p> <p>For an example, see Analyzing images stored in an Amazon S3 bucket in the Amazon Rekognition Developer Guide.</p> <note> <p> <code>DetectLabels</code> does not support the detection of activities. However, activity detection is supported for label detection in videos. For more information, see StartLabelDetection in the Amazon Rekognition Developer Guide.</p> </note> <p>You pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> For each object, scene, and concept the API returns one or more labels. Each label provides the object name, and the level of confidence that the image contains the object. For example, suppose the input image has a lighthouse, the sea, and a rock. The response includes all three labels, one for each object. </p> <p> <code>{Name: lighthouse, Confidence: 98.4629}</code> </p> <p> <code>{Name: rock,Confidence: 79.2097}</code> </p> <p> <code> {Name: sea,Confidence: 75.061}</code> </p> <p>In the preceding example, the operation returns one label for each of the three objects. The operation can also return multiple labels for the same object in the image. For example, if the input image shows a flower (for example, a tulip), the operation might return the following three labels. </p> <p> <code>{Name: flower,Confidence: 99.0562}</code> </p> <p> <code>{Name: plant,Confidence: 99.0562}</code> </p> <p> <code>{Name: tulip,Confidence: 99.0562}</code> </p> <p>In this example, the detection algorithm more precisely identifies the flower as a tulip.</p> <p>In response, the API returns an array of labels. In addition, the response also includes the orientation correction. Optionally, you can specify <code>MinConfidence</code> to control the confidence threshold for the labels returned. The default is 55%. You can also add the <code>MaxLabels</code> parameter to limit the number of labels returned. </p> <note> <p>If the object detected is a person, the operation doesn't provide the same facial details that the <a>DetectFaces</a> operation provides.</p> </note> <p> <code>DetectLabels</code> returns bounding boxes for instances of common object labels in an array of <a>Instance</a> objects. An <code>Instance</code> object contains a <a>BoundingBox</a> object, for the location of the label on the image. It also includes the confidence by which the bounding box was detected.</p> <p> <code>DetectLabels</code> also returns a hierarchical taxonomy of detected labels. For example, a detected car might be assigned the label <i>car</i>. The label <i>car</i> has two parent labels: <i>Vehicle</i> (its parent) and <i>Transportation</i> (its grandparent). The response returns the entire list of ancestors for a label. Each ancestor is a unique label in the response. In the previous example, <i>Car</i>, <i>Vehicle</i>, and <i>Transportation</i> are returned as unique labels in the response. </p> <p>This is a stateless API operation. That is, the operation does not persist any data.</p> <p>This operation requires permissions to perform the <code>rekognition:DetectLabels</code> action. </p>"
+      "documentation":"<p>Detects instances of real-world entities within an image (JPEG or PNG) provided as input. This includes objects like flower, tree, and table; events like wedding, graduation, and birthday party; and concepts like landscape, evening, and nature. </p> <p>For an example, see Analyzing images stored in an Amazon S3 bucket in the Amazon Rekognition Developer Guide.</p> <p>You pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> <b>Optional Parameters</b> </p> <p>You can specify one or both of the <code>GENERAL_LABELS</code> and <code>IMAGE_PROPERTIES</code> feature types when calling the DetectLabels API. Including <code>GENERAL_LABELS</code> will ensure the response includes the labels detected in the input image, while including <code>IMAGE_PROPERTIES </code>will ensure the response includes information about the image quality and color.</p> <p>When using <code>GENERAL_LABELS</code> and/or <code>IMAGE_PROPERTIES</code> you can provide filtering criteria to the Settings parameter. You can filter with sets of individual labels or with label categories. You can specify inclusive filters, exclusive filters, or a combination of inclusive and exclusive filters. For more information on filtering see <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/labels-detect-labels-image.html\">Detecting Labels in an Image</a>.</p> <p>You can specify <code>MinConfidence</code> to control the confidence threshold for the labels returned. The default is 55%. You can also add the <code>MaxLabels</code> parameter to limit the number of labels returned. The default and upper limit is 1000 labels.</p> <p> <b>Response Elements</b> </p> <p> For each object, scene, and concept the API returns one or more labels. The API returns the following types of information regarding labels:</p> <ul> <li> <p> Name - The name of the detected label. </p> </li> <li> <p> Confidence - The level of confidence in the label assigned to a detected object. </p> </li> <li> <p> Parents - The ancestor labels for a detected label. DetectLabels returns a hierarchical taxonomy of detected labels. For example, a detected car might be assigned the label car. The label car has two parent labels: Vehicle (its parent) and Transportation (its grandparent). The response includes the all ancestors for a label, where every ancestor is a unique label. In the previous example, Car, Vehicle, and Transportation are returned as unique labels in the response. </p> </li> <li> <p> Aliases - Possible Aliases for the label. </p> </li> <li> <p> Categories - The label categories that the detected label belongs to. A given label can belong to more than one category. </p> </li> <li> <p> BoundingBox — Bounding boxes are described for all instances of detected common object labels, returned in an array of Instance objects. An Instance object contains a BoundingBox object, describing the location of the label on the input image. It also includes the confidence for the accuracy of the detected bounding box. </p> </li> </ul> <p> The API returns the following information regarding the image, as part of the ImageProperties structure:</p> <ul> <li> <p>Quality - Information about the Sharpness, Brightness, and Contrast of the input image, scored between 0 to 100. Image quality is returned for the entire image, as well as the background and the foreground. </p> </li> <li> <p>Dominant Color - An array of the dominant colors in the image. </p> </li> <li> <p>Foreground - Information about the Sharpness and Brightness of the input image’s foreground. </p> </li> <li> <p>Background - Information about the Sharpness and Brightness of the input image’s background.</p> </li> </ul> <p>The list of returned labels will include at least one label for every detected object, along with information about that label. In the following example, suppose the input image has a lighthouse, the sea, and a rock. The response includes all three labels, one for each object, as well as the confidence in the label:</p> <p> <code>{Name: lighthouse, Confidence: 98.4629}</code> </p> <p> <code>{Name: rock,Confidence: 79.2097}</code> </p> <p> <code> {Name: sea,Confidence: 75.061}</code> </p> <p>The list of labels can include multiple labels for the same object. For example, if the input image shows a flower (for example, a tulip), the operation might return the following three labels. </p> <p> <code>{Name: flower,Confidence: 99.0562}</code> </p> <p> <code>{Name: plant,Confidence: 99.0562}</code> </p> <p> <code>{Name: tulip,Confidence: 99.0562}</code> </p> <p>In this example, the detection algorithm more precisely identifies the flower as a tulip.</p> <note> <p>If the object detected is a person, the operation doesn't provide the same facial details that the <a>DetectFaces</a> operation provides.</p> </note> <p>This is a stateless API operation. That is, the operation does not persist any data.</p> <p>This operation requires permissions to perform the <code>rekognition:DetectLabels</code> action. </p>"
     },
     "DetectModerationLabels":{
       "name":"DetectModerationLabels",
@@ -1473,7 +1473,7 @@
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The time, in milliseconds from the start of the video, that the celebrity was recognized.</p>"
+          "documentation":"<p>The time, in milliseconds from the start of the video, that the celebrity was recognized. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the celebrity first appears.</p>"
         },
         "Celebrity":{
           "shape":"CelebrityDetail",
@@ -1686,7 +1686,7 @@
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>Time, in milliseconds from the beginning of the video, that the content moderation label was detected.</p>"
+          "documentation":"<p>Time, in milliseconds from the beginning of the video, that the content moderation label was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the moderated content first appears.</p>"
         },
         "ModerationLabel":{
           "shape":"ModerationLabel",
@@ -2557,6 +2557,102 @@
         }
       }
     },
+    "DetectLabelsFeatureList":{
+      "type":"list",
+      "member":{"shape":"DetectLabelsFeatureName"},
+      "max":2,
+      "min":0
+    },
+    "DetectLabelsFeatureName":{
+      "type":"string",
+      "enum":[
+        "GENERAL_LABELS",
+        "IMAGE_PROPERTIES"
+      ]
+    },
+    "DetectLabelsImageBackground":{
+      "type":"structure",
+      "members":{
+        "Quality":{
+          "shape":"DetectLabelsImageQuality",
+          "documentation":"<p>The quality of the image background as defined by brightness and sharpness.</p>"
+        },
+        "DominantColors":{
+          "shape":"DominantColors",
+          "documentation":"<p>The dominant colors found in the background of an image, defined with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).</p>"
+        }
+      },
+      "documentation":"<p>The background of the image with regard to image quality and dominant colors.</p>"
+    },
+    "DetectLabelsImageForeground":{
+      "type":"structure",
+      "members":{
+        "Quality":{
+          "shape":"DetectLabelsImageQuality",
+          "documentation":"<p>The quality of the image foreground as defined by brightness and sharpness.</p>"
+        },
+        "DominantColors":{
+          "shape":"DominantColors",
+          "documentation":"<p>The dominant colors found in the foreground of an image, defined with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).</p>"
+        }
+      },
+      "documentation":"<p>The foreground of the image with regard to image quality and dominant colors.</p>"
+    },
+    "DetectLabelsImageProperties":{
+      "type":"structure",
+      "members":{
+        "Quality":{
+          "shape":"DetectLabelsImageQuality",
+          "documentation":"<p>Information about the quality of the image foreground as defined by brightness, sharpness, and contrast. The higher the value the greater the brightness, sharpness, and contrast respectively.</p>"
+        },
+        "DominantColors":{
+          "shape":"DominantColors",
+          "documentation":"<p>Information about the dominant colors found in an image, described with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).</p>"
+        },
+        "Foreground":{
+          "shape":"DetectLabelsImageForeground",
+          "documentation":"<p>Information about the properties of an image’s foreground, including the foreground’s quality and dominant colors, including the quality and dominant colors of the image.</p>"
+        },
+        "Background":{
+          "shape":"DetectLabelsImageBackground",
+          "documentation":"<p>Information about the properties of an image’s background, including the background’s quality and dominant colors, including the quality and dominant colors of the image.</p>"
+        }
+      },
+      "documentation":"<p>Information about the quality and dominant colors of an input image. Quality and color information is returned for the entire image, foreground, and background.</p>"
+    },
+    "DetectLabelsImagePropertiesSettings":{
+      "type":"structure",
+      "members":{
+        "MaxDominantColors":{
+          "shape":"DetectLabelsMaxDominantColors",
+          "documentation":"<p>The maximum number of dominant colors to return when detecting labels in an image. The default value is 10.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the IMAGE_PROPERTIES feature type.</p>"
+    },
+    "DetectLabelsImageQuality":{
+      "type":"structure",
+      "members":{
+        "Brightness":{
+          "shape":"Float",
+          "documentation":"<p>The brightness of an image provided for label detection.</p>"
+        },
+        "Sharpness":{
+          "shape":"Float",
+          "documentation":"<p>The sharpness of an image provided for label detection.</p>"
+        },
+        "Contrast":{
+          "shape":"Float",
+          "documentation":"<p>The contrast of an image provided for label detection.</p>"
+        }
+      },
+      "documentation":"<p>The quality of an image provided for label detection, with regard to brightness, sharpness, and contrast.</p>"
+    },
+    "DetectLabelsMaxDominantColors":{
+      "type":"integer",
+      "max":20,
+      "min":0
+    },
     "DetectLabelsRequest":{
       "type":"structure",
       "required":["Image"],
@@ -2572,6 +2668,14 @@
         "MinConfidence":{
           "shape":"Percent",
           "documentation":"<p>Specifies the minimum confidence level for the labels to return. Amazon Rekognition doesn't return any labels with confidence lower than this specified value.</p> <p>If <code>MinConfidence</code> is not specified, the operation returns labels with a confidence values greater than or equal to 55 percent.</p>"
+        },
+        "Features":{
+          "shape":"DetectLabelsFeatureList",
+          "documentation":"<p>A list of the types of analysis to perform. Specifying GENERAL_LABELS uses the label detection feature, while specifying IMAGE_PROPERTIES returns information regarding image color and quality. If no option is specified GENERAL_LABELS is used by default.</p>"
+        },
+        "Settings":{
+          "shape":"DetectLabelsSettings",
+          "documentation":"<p>A list of the filters to be applied to returned detected labels and image properties. Specified filters can be inclusive, exclusive, or a combination of both. Filters can be used for individual labels or label categories. The exact label names or label categories must be supplied. For a full list of labels and label categories, see LINK HERE.</p>"
         }
       }
     },
@@ -2589,8 +2693,26 @@
         "LabelModelVersion":{
           "shape":"String",
           "documentation":"<p>Version number of the label detection model that was used to detect labels.</p>"
+        },
+        "ImageProperties":{
+          "shape":"DetectLabelsImageProperties",
+          "documentation":"<p>Information about the properties of the input image, such as brightness, sharpness, contrast, and dominant colors.</p>"
         }
       }
+    },
+    "DetectLabelsSettings":{
+      "type":"structure",
+      "members":{
+        "GeneralLabels":{
+          "shape":"GeneralLabelsSettings",
+          "documentation":"<p>Contains the specified filters for GENERAL_LABELS.</p>"
+        },
+        "ImageProperties":{
+          "shape":"DetectLabelsImagePropertiesSettings",
+          "documentation":"<p>Contains the chosen number of maximum dominant colors in an image.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the DetectLabels request. Settings can include filters for both GENERAL_LABELS and IMAGE_PROPERTIES. GENERAL_LABELS filters can be inclusive or exclusive and applied to individual labels or label categories. IMAGE_PROPERTIES filters allow specification of a maximum number of dominant colors.</p>"
     },
     "DetectModerationLabelsRequest":{
       "type":"structure",
@@ -2745,6 +2867,44 @@
       "member":{"shape":"DistributeDataset"},
       "max":2,
       "min":2
+    },
+    "DominantColor":{
+      "type":"structure",
+      "members":{
+        "Red":{
+          "shape":"UInteger",
+          "documentation":"<p>The Red RGB value for a dominant color.</p>"
+        },
+        "Blue":{
+          "shape":"UInteger",
+          "documentation":"<p>The Blue RGB value for a dominant color.</p>"
+        },
+        "Green":{
+          "shape":"UInteger",
+          "documentation":"<p>The Green RGB value for a dominant color.</p>"
+        },
+        "HexCode":{
+          "shape":"String",
+          "documentation":"<p>The Hex code equivalent of the RGB values for a dominant color.</p>"
+        },
+        "CSSColor":{
+          "shape":"String",
+          "documentation":"<p>The CSS color name of a dominant color.</p>"
+        },
+        "SimplifiedColor":{
+          "shape":"String",
+          "documentation":"<p>One of 12 simplified color names applied to a dominant color.</p>"
+        },
+        "PixelPercent":{
+          "shape":"Percent",
+          "documentation":"<p>The percentage of image pixels that have a given dominant color.</p>"
+        }
+      },
+      "documentation":"<p>A description of the dominant colors in an image.</p>"
+    },
+    "DominantColors":{
+      "type":"list",
+      "member":{"shape":"DominantColor"}
     },
     "Emotion":{
       "type":"structure",
@@ -2968,7 +3128,7 @@
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>Time, in milliseconds from the start of the video, that the face was detected.</p>"
+          "documentation":"<p>Time, in milliseconds from the start of the video, that the face was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the face first appears.</p>"
         },
         "Face":{
           "shape":"FaceDetail",
@@ -3081,6 +3241,40 @@
         "Male",
         "Female"
       ]
+    },
+    "GeneralLabelsFilterList":{
+      "type":"list",
+      "member":{"shape":"GeneralLabelsFilterValue"},
+      "max":100,
+      "min":0
+    },
+    "GeneralLabelsFilterValue":{
+      "type":"string",
+      "max":50,
+      "min":0,
+      "pattern":"[A-Za-z0-9àâèçñó'-_(). ]*"
+    },
+    "GeneralLabelsSettings":{
+      "type":"structure",
+      "members":{
+        "LabelInclusionFilters":{
+          "shape":"GeneralLabelsFilterList",
+          "documentation":"<p>The labels that should be included in the return from DetectLabels.</p>"
+        },
+        "LabelExclusionFilters":{
+          "shape":"GeneralLabelsFilterList",
+          "documentation":"<p>The labels that should be excluded from the return from DetectLabels.</p>"
+        },
+        "LabelCategoryInclusionFilters":{
+          "shape":"GeneralLabelsFilterList",
+          "documentation":"<p>The label categories that should be included in the return from DetectLabels.</p>"
+        },
+        "LabelCategoryExclusionFilters":{
+          "shape":"GeneralLabelsFilterList",
+          "documentation":"<p>The label categories that should be excluded from the return from DetectLabels.</p>"
+        }
+      },
+      "documentation":"<p>Contains filters for the object labels returned by DetectLabels. Filters can be inclusive, exclusive, or a combination of both and can be applied to individual l abels or entire label categories.</p>"
     },
     "Geometry":{
       "type":"structure",
@@ -3730,6 +3924,10 @@
         "Confidence":{
           "shape":"Percent",
           "documentation":"<p>The confidence that Amazon Rekognition has in the accuracy of the bounding box.</p>"
+        },
+        "DominantColors":{
+          "shape":"DominantColors",
+          "documentation":"<p>The dominant colors found in an individual instance of a label.</p>"
         }
       },
       "documentation":"<p>An instance of a label returned by Amazon Rekognition Image (<a>DetectLabels</a>) or by Amazon Rekognition Video (<a>GetLabelDetection</a>).</p>"
@@ -3833,14 +4031,14 @@
       "members":{
         "ProducerTimestamp":{
           "shape":"ULong",
-          "documentation":"<p> The timestamp from the producer corresponding to the fragment. </p>"
+          "documentation":"<p> The timestamp from the producer corresponding to the fragment, in milliseconds, expressed in unix time format. </p>"
         },
         "FragmentNumber":{
           "shape":"KinesisVideoStreamFragmentNumber",
           "documentation":"<p> The unique identifier of the fragment. This value monotonically increases based on the ingestion order. </p>"
         }
       },
-      "documentation":"<p> Specifies the starting point in a Kinesis stream to start processing. You can use the producer timestamp or the fragment number. For more information, see <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_reader_Fragment.html\">Fragment</a>. </p>"
+      "documentation":"<p>Specifies the starting point in a Kinesis stream to start processing. You can use the producer timestamp or the fragment number. One of either producer timestamp or fragment number is required. If you use the producer timestamp, you must put the time in milliseconds. For more information about fragment numbers, see <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_reader_Fragment.html\">Fragment</a>. </p>"
     },
     "KmsKeyId":{
       "type":"string",
@@ -3886,16 +4084,52 @@
         "Parents":{
           "shape":"Parents",
           "documentation":"<p>The parent labels for a label. The response includes all ancestor labels.</p>"
+        },
+        "Aliases":{
+          "shape":"LabelAliases",
+          "documentation":"<p>A list of potential aliases for a given label.</p>"
+        },
+        "Categories":{
+          "shape":"LabelCategories",
+          "documentation":"<p>A list of the categories associated with a given label.</p>"
         }
       },
       "documentation":"<p>Structure containing details about the detected label, including the name, detected instances, parent labels, and level of confidence.</p> <p> </p>"
+    },
+    "LabelAlias":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of an alias for a given label.</p>"
+        }
+      },
+      "documentation":"<p>A potential alias of for a given label.</p>"
+    },
+    "LabelAliases":{
+      "type":"list",
+      "member":{"shape":"LabelAlias"}
+    },
+    "LabelCategories":{
+      "type":"list",
+      "member":{"shape":"LabelCategory"}
+    },
+    "LabelCategory":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of a category that applies to a given label.</p>"
+        }
+      },
+      "documentation":"<p>The category that applies to a given label.</p>"
     },
     "LabelDetection":{
       "type":"structure",
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>Time, in milliseconds from the start of the video, that the label was detected.</p>"
+          "documentation":"<p>Time, in milliseconds from the start of the video, that the label was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the label first appears.</p>"
         },
         "Label":{
           "shape":"Label",
@@ -4394,7 +4628,7 @@
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The time, in milliseconds from the start of the video, that the person's path was tracked.</p>"
+          "documentation":"<p>The time, in milliseconds from the start of the video, that the person's path was tracked. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the person's path first appears.</p>"
         },
         "Person":{
           "shape":"PersonDetail",
@@ -5525,7 +5759,7 @@
         },
         "StartSelector":{
           "shape":"StreamProcessingStartSelector",
-          "documentation":"<p> Specifies the starting point in the Kinesis stream to start processing. You can use the producer timestamp or the fragment number. For more information, see <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_reader_Fragment.html\">Fragment</a>. </p> <p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>"
+          "documentation":"<p> Specifies the starting point in the Kinesis stream to start processing. You can use the producer timestamp or the fragment number. If you use the producer timestamp, you must put the time in milliseconds. For more information about fragment numbers, see <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_reader_Fragment.html\">Fragment</a>. </p> <p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>"
         },
         "StopSelector":{
           "shape":"StreamProcessingStopSelector",
@@ -5640,10 +5874,10 @@
       "members":{
         "KVSStreamStartSelector":{
           "shape":"KinesisVideoStreamStartSelector",
-          "documentation":"<p> Specifies the starting point in the stream to start processing. This can be done with a timestamp or a fragment number in a Kinesis stream. </p>"
+          "documentation":"<p> Specifies the starting point in the stream to start processing. This can be done with a producer timestamp or a fragment number in a Kinesis stream. </p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>"
     },
     "StreamProcessingStopSelector":{
       "type":"structure",
@@ -5938,7 +6172,7 @@
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The time, in milliseconds from the start of the video, that the text was detected.</p>"
+          "documentation":"<p>The time, in milliseconds from the start of the video, that the text was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the text first appears.</p>"
         },
         "TextDetection":{
           "shape":"TextDetection",

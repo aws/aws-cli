@@ -94,7 +94,7 @@
         {"shape":"RateLimitExceededException"},
         {"shape":"ServerInternalException"}
       ],
-      "documentation":"<p>Checks out the specified license.</p>"
+      "documentation":"<p>Checks out the specified license.</p> <note> <p>If the account that created the license is the same that is performing the check out, you must specify the account as the beneficiary.</p> </note>"
     },
     "CreateGrant":{
       "name":"CreateGrant",
@@ -685,6 +685,25 @@
       ],
       "documentation":"<p>Lists grants that are received but not accepted.</p>"
     },
+    "ListReceivedGrantsForOrganization":{
+      "name":"ListReceivedGrantsForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListReceivedGrantsForOrganizationRequest"},
+      "output":{"shape":"ListReceivedGrantsForOrganizationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServerInternalException"},
+        {"shape":"AuthorizationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RateLimitExceededException"}
+      ],
+      "documentation":"<p>Lists the grants received for all accounts in the organization.</p>"
+    },
     "ListReceivedLicenses":{
       "name":"ListReceivedLicenses",
       "http":{
@@ -703,6 +722,25 @@
         {"shape":"RateLimitExceededException"}
       ],
       "documentation":"<p>Lists received licenses.</p>"
+    },
+    "ListReceivedLicensesForOrganization":{
+      "name":"ListReceivedLicensesForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListReceivedLicensesForOrganizationRequest"},
+      "output":{"shape":"ListReceivedLicensesForOrganizationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServerInternalException"},
+        {"shape":"AuthorizationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RateLimitExceededException"}
+      ],
+      "documentation":"<p>Lists the licenses received for all accounts in the organization.</p>"
     },
     "ListResourceInventory":{
       "name":"ListResourceInventory",
@@ -1260,7 +1298,7 @@
         },
         "Principals":{
           "shape":"PrincipalArnList",
-          "documentation":"<p>The grant principals.</p>"
+          "documentation":"<p>The grant principals. This value should be specified as an Amazon Resource Name (ARN).</p>"
         },
         "HomeRegion":{
           "shape":"String",
@@ -1411,11 +1449,11 @@
         },
         "SourceLicenseContext":{
           "shape":"LicenseConversionContext",
-          "documentation":"<p>Information that identifies the license type you are converting from. For the structure of the source license, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli\">Convert a license type using the AWS CLI</a> in the <i>License Manager User Guide</i>.</p>"
+          "documentation":"<p>Information that identifies the license type you are converting from. For the structure of the source license, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli\">Convert a license type using the Amazon Web Services CLI</a> in the <i>License Manager User Guide</i>.</p>"
         },
         "DestinationLicenseContext":{
           "shape":"LicenseConversionContext",
-          "documentation":"<p>Information that identifies the license type you are converting to. For the structure of the destination license, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli\">Convert a license type using the AWS CLI</a> in the <i>License Manager User Guide</i>.</p>"
+          "documentation":"<p>Information that identifies the license type you are converting to. For the structure of the destination license, see <a href=\"https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli\">Convert a license type using the Amazon Web Services CLI</a> in the <i>License Manager User Guide</i>.</p>"
         }
       }
     },
@@ -3235,6 +3273,41 @@
         }
       }
     },
+    "ListReceivedGrantsForOrganizationRequest":{
+      "type":"structure",
+      "required":["LicenseArn"],
+      "members":{
+        "LicenseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the received license.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ParentArn</code> </p> </li> <li> <p> <code>GranteePrincipalArn</code> </p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxSize100",
+          "documentation":"<p>Maximum number of results to return in a single call.</p>"
+        }
+      }
+    },
+    "ListReceivedGrantsForOrganizationResponse":{
+      "type":"structure",
+      "members":{
+        "Grants":{
+          "shape":"GrantList",
+          "documentation":"<p>Lists the grants the organization has received.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for the next set of results.</p>"
+        }
+      }
+    },
     "ListReceivedGrantsRequest":{
       "type":"structure",
       "members":{
@@ -3262,6 +3335,36 @@
         "Grants":{
           "shape":"GrantList",
           "documentation":"<p>Received grant details.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListReceivedLicensesForOrganizationRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>Beneficiary</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxSize100",
+          "documentation":"<p>Maximum number of results to return in a single call.</p>"
+        }
+      }
+    },
+    "ListReceivedLicensesForOrganizationResponse":{
+      "type":"structure",
+      "members":{
+        "Licenses":{
+          "shape":"GrantedLicenseList",
+          "documentation":"<p>Lists the licenses the organization has received.</p>"
         },
         "NextToken":{
           "shape":"String",

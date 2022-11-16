@@ -586,7 +586,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Searches for profiles within a specific domain name using name, phone number, email address, account number, or a custom defined index.</p>"
+      "documentation":"<p>Searches for profiles within a specific domain using one or more predefined search keys (e.g., _fullName, _phone, _email, _account, etc.) and/or custom-defined search keys. A search key is a data type pair that consists of a <code>KeyName</code> and <code>Values</code> list.</p> <p>This operation supports searching for profiles with a minimum of 1 key-value(s) pair and up to 5 key-value(s) pairs using either <code>AND</code> or <code>OR</code> logic.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -710,6 +710,24 @@
           "documentation":"<p>A list of key values.</p>"
         }
       }
+    },
+    "AdditionalSearchKey":{
+      "type":"structure",
+      "required":[
+        "KeyName",
+        "Values"
+      ],
+      "members":{
+        "KeyName":{
+          "shape":"name",
+          "documentation":"<p>A searchable identifier of a customer profile.</p>"
+        },
+        "Values":{
+          "shape":"requestValueList",
+          "documentation":"<p>A list of key values.</p>"
+        }
+      },
+      "documentation":"<p>A data type pair that consists of a <code>KeyName</code> and <code>Values</code> list that is used in conjunction with the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-KeyName\">KeyName</a> and <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-Values\">Values</a> parameters to search for profiles using the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html\">SearchProfiles</a> API.</p>"
     },
     "Address":{
       "type":"structure",
@@ -1677,6 +1695,20 @@
       "type":"string",
       "max":256,
       "pattern":"[a-zA-Z0-9][\\w!@#.-]+"
+    },
+    "FoundByKeyValue":{
+      "type":"structure",
+      "members":{
+        "KeyName":{
+          "shape":"name",
+          "documentation":"<p>A searchable identifier of a customer profile.</p>"
+        },
+        "Values":{
+          "shape":"requestValueList",
+          "documentation":"<p>A list of key values.</p>"
+        }
+      },
+      "documentation":"<p>A data type pair that consists of a <code>KeyName</code> and <code>Values</code> list that were used to find a profile returned in response to a <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html\">SearchProfiles</a> request. </p>"
     },
     "Gender":{
       "type":"string",
@@ -3216,6 +3248,10 @@
         "Attributes":{
           "shape":"Attributes",
           "documentation":"<p>A key value pair of attributes of a customer profile.</p>"
+        },
+        "FoundByItems":{
+          "shape":"foundByList",
+          "documentation":"<p>A list of items used to find a profile returned in a <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html\">SearchProfiles</a> response. An item is a key-value(s) pair that matches an attribute in the profile.</p> <p>If the optional <code>AdditionalSearchKeys</code> parameter was included in the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html\">SearchProfiles</a> request, the <code>FoundByItems</code> list should be interpreted based on the <code>LogicalOperator</code> used in the request:</p> <ul> <li> <p> <code>AND</code> - The profile included in the response matched all of the search keys specified in the request. The <code>FoundByItems</code> will include all of the key-value(s) pairs that were specified in the request (as this is a requirement of <code>AND</code> search logic).</p> </li> <li> <p> <code>OR</code> - The profile included in the response matched at least one of the search keys specified in the request. The <code>FoundByItems</code> will include each of the key-value(s) pairs that the profile was found by.</p> </li> </ul> <p>The <code>OR</code> relationship is the default behavior if the <code>LogicalOperator</code> parameter is not included in the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html\">SearchProfiles</a> request.</p>"
         }
       },
       "documentation":"<p>The standard profile of a customer.</p>"
@@ -3668,7 +3704,7 @@
         },
         "MaxResults":{
           "shape":"maxSize100",
-          "documentation":"<p>The maximum number of objects returned per page.</p>",
+          "documentation":"<p>The maximum number of objects returned per page.</p> <p>The default is 20 if this parameter is not included in the request.</p>",
           "location":"querystring",
           "locationName":"max-results"
         },
@@ -3685,6 +3721,14 @@
         "Values":{
           "shape":"requestValueList",
           "documentation":"<p>A list of key values.</p>"
+        },
+        "AdditionalSearchKeys":{
+          "shape":"additionalSearchKeysList",
+          "documentation":"<p>A list of <code>AdditionalSearchKey</code> objects that are each searchable identifiers of a profile. Each <code>AdditionalSearchKey</code> object contains a <code>KeyName</code> and a list of <code>Values</code> associated with that specific key (i.e., a key-value(s) pair). These additional search keys will be used in conjunction with the <code>LogicalOperator</code> and the required <code>KeyName</code> and <code>Values</code> parameters to search for profiles that satisfy the search criteria. </p>"
+        },
+        "LogicalOperator":{
+          "shape":"logicalOperator",
+          "documentation":"<p>Relationship between all specified search keys that will be used to search for profiles. This includes the required <code>KeyName</code> and <code>Values</code> parameters as well as any key-value(s) pairs specified in the <code>AdditionalSearchKeys</code> list.</p> <p>This parameter influences which profiles will be returned in the response in the following manner:</p> <ul> <li> <p> <code>AND</code> - The response only includes profiles that match all of the search keys.</p> </li> <li> <p> <code>OR</code> - The response includes profiles that match at least one of the search keys.</p> </li> </ul> <p>The <code>OR</code> relationship is the default behavior if this parameter is not included in the request.</p>"
         }
       }
     },
@@ -3693,7 +3737,7 @@
       "members":{
         "Items":{
           "shape":"ProfileList",
-          "documentation":"<p>The list of SearchProfiles instances.</p>"
+          "documentation":"<p>The list of Profiles matching the search criteria.</p>"
         },
         "NextToken":{
           "shape":"token",
@@ -4319,6 +4363,12 @@
       },
       "documentation":"<p>The properties that are applied when using Zendesk as a flow source.</p>"
     },
+    "additionalSearchKeysList":{
+      "type":"list",
+      "member":{"shape":"AdditionalSearchKey"},
+      "max":4,
+      "min":1
+    },
     "boolean":{"type":"boolean"},
     "encryptionKey":{
       "type":"string",
@@ -4329,6 +4379,19 @@
       "type":"integer",
       "max":1098,
       "min":1
+    },
+    "foundByList":{
+      "type":"list",
+      "member":{"shape":"FoundByKeyValue"},
+      "max":5,
+      "min":1
+    },
+    "logicalOperator":{
+      "type":"string",
+      "enum":[
+        "AND",
+        "OR"
+      ]
     },
     "long":{"type":"long"},
     "matchesNumber":{
@@ -4421,5 +4484,5 @@
       "pattern":"[a-f0-9]{32}"
     }
   },
-  "documentation":"<fullname>Amazon Connect Customer Profiles</fullname> <p>Welcome to the Amazon Connect Customer Profiles API Reference. This guide provides information about the Amazon Connect Customer Profiles API, including supported operations, data types, parameters, and schemas.</p> <p>Amazon Connect Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Amazon Connect contact center.</p> <p>If you're new to Amazon Connect , you might find it helpful to also review the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html\">Amazon Connect Administrator Guide</a>.</p>"
+  "documentation":"<fullname>Amazon Connect Customer Profiles</fullname> <p>Amazon Connect Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Amazon Connect contact center. If you're new to Amazon Connect, you might find it helpful to review the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/\">Amazon Connect Administrator Guide</a>.</p>"
 }

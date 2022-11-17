@@ -48,8 +48,6 @@ from botocore.retries import adaptive, standard
 from botocore.utils import (
     CachedProperty,
     EventbridgeSignerSetter,
-    S3ArnParamHandler,
-    S3ControlArnParamHandler,
     S3ControlArnParamHandlerv2,
     S3RegionRedirectorv2,
     ensure_boolean,
@@ -88,7 +86,7 @@ class ClientCreator(object):
 
         try:
             endpoints_ruleset_data = self._load_service_endpoints_ruleset(
-                service_name, api_version
+                service_name,
             )
             partition_data = self._loader.load_data('partitions')
         except UnknownServiceError:
@@ -175,9 +173,9 @@ class ClientCreator(object):
         service_model = ServiceModel(json_model, service_name=service_name)
         return service_model
 
-    def _load_service_endpoints_ruleset(self, service_name, api_version=None):
+    def _load_service_endpoints_ruleset(self, service_name):
         return self._loader.load_service_model(
-            service_name, 'endpoint-rule-set-1', api_version=api_version
+            service_name, 'endpoint-rule-set-1',
         )
 
     def _register_retries(self, client):
@@ -257,9 +255,6 @@ class ClientCreator(object):
         if client.meta.service_model.service_name != 's3':
             return
         S3RegionRedirectorv2(None, client).register()
-        self._set_s3_presign_signature_version(
-            client.meta, client_config, scoped_config
-        )
 
     def _register_s3_control_events(self, client):
         if client.meta.service_model.service_name != 's3control':
@@ -286,9 +281,18 @@ class ClientCreator(object):
             self._response_parser_factory, self._loader,
             self._exceptions_factory, config_store=self._config_store)
         return args_creator.get_client_args(
-            service_model, region_name, is_secure, endpoint_url,
-            verify, credentials, scoped_config, client_config, endpoint_bridge,
-            auth_token
+            service_model,
+            region_name,
+            is_secure,
+            endpoint_url,
+            verify,
+            credentials,
+            scoped_config,
+            client_config,
+            endpoint_bridge,
+            auth_token,
+            endpoints_ruleset_data,
+            partition_data,
         )
 
     def _create_methods(self, service_model):
@@ -566,7 +570,7 @@ class BaseClient(object):
                  endpoint_ruleset_resolver):
         self._serializer = serializer
         self._endpoint = endpoint
-        self._endpoint_ruleset_resolver = endpoint_ruleset_resolver
+        self._ruleset_resolver = endpoint_ruleset_resolver
         self._response_parser = response_parser
         self._request_signer = request_signer
         self._cache = {}

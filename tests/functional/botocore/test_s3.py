@@ -1794,7 +1794,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
         config = Config(signature_version=botocore.UNSIGNED)
         client = self.session.create_client('s3', 'us-east-2', config=config)
         url = client.generate_presigned_url(ClientMethod='list_buckets')
-        self.assertEqual("https://s3.amazonaws.com/", url)
+        self.assertEqual("https://s3.us-east-2.amazonaws.com/", url)
 
     def test_presign_url_with_ssec(self):
         config = Config(signature_version='s3v4')

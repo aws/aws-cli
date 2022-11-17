@@ -1044,15 +1044,6 @@ def customize_endpoint_resolver_builtins(
     elif bucket_is_arn:
         builtins[EndpointResolverBuiltins.AWS_S3_FORCE_PATH_STYLE] = False
 
-    if (
-        context.get('is_presign_request')
-        and context.get('use_global_endpoint')
-        and not builtins[EndpointResolverBuiltins.AWS_S3_FORCE_PATH_STYLE]
-        and not bucket_is_arn
-    ):
-        builtins[EndpointResolverBuiltins.AWS_REGION] = 'aws-global'
-        builtins[EndpointResolverBuiltins.AWS_S3_USE_GLOBAL_ENDPOINT] = True
-
 
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be

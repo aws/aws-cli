@@ -28,15 +28,12 @@ from botocore.discovery import (
     block_endpoint_discovery_required_operations,
 )
 from botocore.docs.docstring import ClientMethodDocstring, PaginatorDocstring
-from botocore.endpoint_provider import (
-    ENDPOINT_RESOLUTION_V2_SERVICES,
-    FORCE_ENDPOINT_RESOLUTION_V2,
-)
 from botocore.exceptions import (
     ClientError,
     DataNotFoundError,
     InvalidEndpointDiscoveryConfigurationError,
     OperationNotPageableError,
+    UnknownServiceError,
     UnknownSignatureVersionError,
 )
 from botocore.history import get_global_history_recorder
@@ -89,17 +86,19 @@ class ClientCreator(object):
         service_name = first_non_none_response(responses, default=service_name)
         service_model = self._load_service_model(service_name)
 
-        if (
-            service_name in ENDPOINT_RESOLUTION_V2_SERVICES
-            or FORCE_ENDPOINT_RESOLUTION_V2
-        ):
+        try:
             endpoints_ruleset_data = self._load_service_endpoints_ruleset(
                 service_name, api_version
             )
             partition_data = self._loader.load_data('partitions')
-        else:
+        except UnknownServiceError:
             endpoints_ruleset_data = None
             partition_data = None
+            logger.info(
+                'No endpoints ruleset found for service %s, falling back to '
+                'legacy endpoint routing.',
+                service_name,
+            )
 
         cls = self._create_client_class(service_name, service_model)
         region_name, client_config = self._normalize_fips_region(

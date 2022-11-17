@@ -163,6 +163,21 @@ class AliasSubCommandInjector(BaseAliasCommandInjector):
                 event_name == 'building-command-table.main':
             self._global_cmd_driver = command_object
             return
+        # We have to transform the event name to figure out what the
+        # hierarchy of commands actually is.  Normally the hierarchical
+        # events are separated by dots:
+        #
+        # some-event.cloudformation.wait.stack-exists
+        #
+        # But specifically for the `building-command-table` event, this
+        # was purposefully avoided to workaround a specific bug.
+        # As a result the actual event name for
+        #
+        # "aws cloudformation wait stack-exists" would be:
+        #
+        # building-command-table.cloudformation_wait_stack-exists
+        #
+        # See https://github.com/aws/aws-cli/pull/5714 for more details.
         key_name = tuple(event_name.split('.', 1)[1].split('_'))
         aliases_for_cmd = self._alias_loader.get_aliases(command=key_name)
         if not aliases_for_cmd:

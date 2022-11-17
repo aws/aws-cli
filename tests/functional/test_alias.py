@@ -268,6 +268,20 @@ class TestAliases(BaseAWSCommandParamsTest):
         )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeVpcs')
 
+    def test_can_extend_subcommand_internal_alises(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2]\n')
+            f.write('regions = describe-regions '
+                    '--query Regions[].RegionName\n')
+        cmdline = 'ec2 regions --region-names us-west-2'
+        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-west-2']})
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
+        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
+
     def test_operation_level_external_alias(self):
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
         with open(self.alias_file, 'a+') as f:
@@ -275,6 +289,22 @@ class TestAliases(BaseAWSCommandParamsTest):
             f.write('mkdir = !mkdir\n')
         self.run_cmd('ec2 mkdir %s' % directory_to_make)
         self.assertTrue(os.path.isdir(directory_to_make))
+
+    def test_can_create_bag_of_options_alias(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command cloudformation list-stacks]\n')
+            f.write('created = --stack-status-filter CREATE_COMPLETE '
+                    '--query StackSummaries[].[StackName,StackStatus] '
+                    '--output text\n')
+
+        cmdline = 'cloudformation list-stacks created'
+        self.assert_params_for_cmd(cmdline, {'StackStatusFilter': ['CREATE_COMPLETE']})
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'cloudformation'
+        )
+        self.assertEqual(self.operations_called[0][0].name, 'ListStacks')
 
     def test_can_merge_explicit_and_alias_local_params(self):
         section = '[command resourcegroupstaggingapi get-resources]\n'

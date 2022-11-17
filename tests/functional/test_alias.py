@@ -16,6 +16,30 @@ from awscli.alias import AliasLoader, register_alias_commands
 from awscli.testutils import skip_if_windows
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.customizations.commands import BasicCommand
+
+
+# We need to test that aliases work with custom BasicCommand,
+# but the actual custom commands in the CLI can be complex and 
+# don't want the alias tests to fail if they are updated with new API
+# calls they invoke.  This custom command is a simple wrapper to the
+# aws resourcegroupstaggingapi get-resources command.
+class CustomTestCommand(BasicCommand):
+    NAME = 'resources'
+    ARG_TABLE = [
+        {'name': 'resource-types', 'action': 'store', 'required': False},
+        {'name': 'tags', 'action': 'store', 'required': False},
+    ]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        client = self._session.create_client('resourcegroupstaggingapi')
+        kwargs = {}
+        if parsed_args.resource_types is not None:
+            kwargs['ResourceTypeFilters'] = [parsed_args.resource_types]
+        if parsed_args.tags is not None:
+            key, value = parsed_args.tags.split('=')
+            kwargs['TagFilters'] = [{'Key': key, 'Values': [value]}]
+        client.get_resources(**kwargs)
 
 
 class TestAliases(BaseAWSCommandParamsTest):
@@ -24,15 +48,15 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
-        event_emitter = self.driver.session.get_component('event_emitter')
+        self.event_emitter = self.driver.session.get_component('event_emitter')
         # Alias injection is part of the built-in handler chain which defaults
         # to the real ~/.aws/cli/alias file.  We need to unregister the default
         # injector so we can swap in our own version that points to a
         # test file.
-        event_emitter.unregister(
+        self.event_emitter.unregister(
             'building-command-table', unique_id='cli-alias-injector')
         register_alias_commands(
-            event_emitter,
+            self.event_emitter,
             alias_filename=self.alias_file
         )
 
@@ -43,6 +67,18 @@ class TestAliases(BaseAWSCommandParamsTest):
     def add_alias(self, alias_name, alias_value):
         with open(self.alias_file, 'a+') as f:
             f.write('%s = %s\n' % (alias_name, alias_value))
+
+    def assert_single_operation_called(self, cmdline,
+                                       service_name, operation_name, params):
+        self.assert_params_for_cmd(cmdline, params)
+        operations_called = self.operations_called
+        self.assertEqual(len(operations_called), 1)
+        single_op = operations_called[0]
+        self.assertEqual(
+            single_op[0].service_model.service_name,
+            service_name,
+        )
+        self.assertEqual(single_op[0].name, operation_name)
 
     def test_subcommand_alias(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
@@ -268,19 +304,16 @@ class TestAliases(BaseAWSCommandParamsTest):
         )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeVpcs')
 
-    def test_can_extend_subcommand_internal_alises(self):
+    def test_can_extend_subcommand_internal_aliases(self):
         with open(self.alias_file, 'a+') as f:
             f.write('[command ec2]\n')
             f.write('regions = describe-regions '
                     '--query Regions[].RegionName\n')
         cmdline = 'ec2 regions --region-names us-west-2'
-        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-west-2']})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
-        )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2', operation_name='DescribeRegions',
+            params={'RegionNames': ['us-west-2']})
 
     def test_operation_level_external_alias(self):
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
@@ -298,13 +331,12 @@ class TestAliases(BaseAWSCommandParamsTest):
                     '--output text\n')
 
         cmdline = 'cloudformation list-stacks created'
-        self.assert_params_for_cmd(cmdline, {'StackStatusFilter': ['CREATE_COMPLETE']})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'cloudformation'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='cloudformation',
+            operation_name='ListStacks',
+            params={'StackStatusFilter': ['CREATE_COMPLETE']},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'ListStacks')
 
     def test_can_merge_explicit_and_alias_local_params(self):
         section = '[command resourcegroupstaggingapi get-resources]\n'
@@ -352,17 +384,51 @@ class TestAliases(BaseAWSCommandParamsTest):
             'UserName': 'test-user',
         })
 
-#    def test_can_handle_bag_of_options_with_custom_command(self):
-#        template_file = self.files.create_file('template', "{}")
-#        with open(self.alias_file, 'a+') as f:
-#            f.write('[command cloudformation deploy]\n')
-#            f.write(f'myapp = --template-file {template_file} --stack-name bar\n')
-#        self.parsed_response = {
-#            'Stacks': [{'StackStatus': 'CREATE_COMPLETE'}],
-#        }
-#        self.run_cmd(f'cloudformation deploy --template-file {template_file} --stack-name bar\n')
-#        op_model, params = self.operations_called[0]
-#        self.assertEqual(op_model.name, 'CreateUser')
-#        self.assertEqual(params, {
-#            'UserName': 'test-user',
-#        })
+    def test_can_handle_bag_of_options_with_custom_command(self):
+        self.event_emitter.register(
+            'building-command-table.resourcegroupstaggingapi',
+            CustomTestCommand.add_command)
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command resourcegroupstaggingapi resources]\n')
+            f.write(f'mycluster = --resource-types ecs:cluster\n')
+        cmdline = 'resourcegroupstaggingapi resources mycluster'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='resourcegroupstaggingapi',
+            operation_name='GetResources',
+            params={'ResourceTypeFilters': ['ecs:cluster']}
+        )
+
+    def test_can_handle_custom_bag_of_options_and_overrides(self):
+        self.event_emitter.register(
+            'building-command-table.resourcegroupstaggingapi',
+            CustomTestCommand.add_command)
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command resourcegroupstaggingapi resources]\n')
+            f.write(f'mycluster = --resource-types ecs:cluster\n')
+        cmdline = 'resourcegroupstaggingapi resources mycluster --tags foo=bar'
+        # We should merge the cmdline params from the 'mycluster' alias along
+        # with the explicitly provided --tags option from cmdline args.
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='resourcegroupstaggingapi',
+            operation_name='GetResources',
+            params={'ResourceTypeFilters': ['ecs:cluster'],
+                    'TagFilters': [{'Key': 'foo', 'Values': ['bar']}]},
+        )
+
+    def test_can_invoke_custom_test_command(self):
+        # Sanity check to ensure the custom test command we're using
+        # works properly so we don't waste time debugging a test because
+        # the test command implementation is wrong.
+        self.event_emitter.register(
+            'building-command-table.resourcegroupstaggingapi',
+            CustomTestCommand.add_command)
+        cmdline = 'resourcegroupstaggingapi resources --resource-types ecs --tags foo=bar'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='resourcegroupstaggingapi',
+            operation_name='GetResources',
+            params={'ResourceTypeFilters': ['ecs'],
+                    'TagFilters': [{'Key': 'foo', 'Values': ['bar']}]},
+        )

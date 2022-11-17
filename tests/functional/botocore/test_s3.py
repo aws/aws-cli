@@ -2171,7 +2171,9 @@ def _s3_addressing_test_cases():
     yield dict(
         region='aws-global', bucket='bucket', key='key',
         s3_config=use_dualstack, signature_version='s3v4',
-        expected_url='https://bucket.s3.dualstack.aws-global.amazonaws.com/key')
+        # The aws-global pseudo region does not support dualstack and should
+        # be resolved to us-east-1.
+        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key')
     yield dict(
         region='us-east-1', bucket='bucket', key='key',
         s3_config=use_dualstack, signature_version='s3v4',
@@ -2777,7 +2779,7 @@ def _addressing_for_presigned_url_test_cases():
     # A region that we don't know about.
     yield dict(region='boto-west-1', bucket='bucket', key='key',
                  signature_version=None,
-                 expected_url='https://bucket.s3.us-west-50.amazonaws.com/key')
+                 expected_url='https://bucket.s3.boto-west-1.amazonaws.com/key')
 
     # Customer provided URL results in us leaving the host untouched.
     yield dict(region='us-west-2', bucket='bucket', key='key',

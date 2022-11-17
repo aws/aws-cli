@@ -708,7 +708,7 @@ def generate_presigned_post(self, Bucket, Key, Fields=None, Conditions=None,
 
     context = {
         'is_presign_request': True,
-        'use_global_endpoint': _should_use_global_endpoint(self),
+        'use_global_endpoint': False,
     }
 
     post_presigner = S3PostPresigner(self._request_signer)

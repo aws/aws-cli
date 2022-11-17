@@ -636,7 +636,7 @@ class BaseClient(object):
             operation_model=operation_model,
             endpoint_url=endpoint_url,
             context=request_context,
-            headers=additonal_headers,
+            headers=additional_headers,
         )
         resolve_checksum_context(request_dict, operation_model, api_params)
 

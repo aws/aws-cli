@@ -566,10 +566,9 @@ class EndpointRulesetResolver:
     @instance_cache
     def _get_dynamic_context_params(self, operation_name):
         """Mapping of param names to member names for an operation"""
-        op_model = self._service_model.operation_model(operation_name)
         return {
             param.name: param.member_name
-            for param in op_model.context_parameters
+            for param in operation_name.context_parameters
         }
 
     @instance_cache

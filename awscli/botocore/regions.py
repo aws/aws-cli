@@ -23,7 +23,6 @@ from enum import Enum
 
 from botocore import UNSIGNED, xform_name
 from botocore.auth import AUTH_TYPE_MAPS
-from botocore.crt import CRT_SUPPORTED_AUTH_TYPES
 from botocore.endpoint_provider import EndpointProvider
 from botocore.exceptions import (
     EndpointProviderError,

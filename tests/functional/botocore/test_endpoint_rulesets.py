@@ -18,7 +18,6 @@ from pathlib import Path
 import pytest
 
 from botocore import xform_name
-from botocore.compat import HAS_CRT
 from botocore.config import Config
 from botocore.endpoint_provider import EndpointProvider
 from botocore.exceptions import (
@@ -182,10 +181,6 @@ def iter_e2e_test_cases_that_produce(endpoints=False, errors=False):
                     op_params,
                     builtins,
                     expected_endpoint,
-                    marks=pytest.mark.skipif(
-                        'sigv4a' in expected_authschemes and not HAS_CRT,
-                        reason="Test case expects sigv4a which requires CRT",
-                    ),
                 )
             if errors and 'error' in expected_object:
                 yield pytest.param(

@@ -26,6 +26,7 @@ class FakeSession(object):
         self.variables = all_variables
         self.profile_does_not_exist = profile_does_not_exist
         self.config = {}
+        self.full_config = {}
         if config_file_vars is None:
             config_file_vars = {}
         self.config_file_vars = config_file_vars

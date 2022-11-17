@@ -67,12 +67,16 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         return content
 
-    def get_sso_session_config(self, session_name):
-        content = (
-            f'[default]\n'
-            f'sso_session={session_name}\n'
-            f'sso_role_name={self.role_name}\n'
-            f'sso_account_id={self.account}\n'
+    def get_sso_session_config(self, session_name, include_profile=True):
+        content = ''
+        if include_profile:
+            content += (
+                f'[default]\n'
+                f'sso_session={session_name}\n'
+                f'sso_role_name={self.role_name}\n'
+                f'sso_account_id={self.account}\n'
+            )
+        content += (
             f'[sso-session {session_name}]\n'
             f'sso_start_url={self.start_url}\n'
             f'sso_region={self.sso_region}\n'

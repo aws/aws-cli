@@ -275,8 +275,6 @@ class SubCommandArgParser(ArgTableArgParser):
         return arg_table_copy
 
 
-
-
 class FirstPassGlobalArgParser(CLIArgParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

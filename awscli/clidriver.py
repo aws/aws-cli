@@ -683,7 +683,6 @@ class ServiceOperation(object):
         self._operation_model = operation_model
         self._session = session
         self._subcommand_table = None
-        self._subcommand_delegated = False
         if operation_model.deprecated:
             self._UNDOCUMENTED = True
 
@@ -734,7 +733,7 @@ class ServiceOperation(object):
         return self._arg_table
 
     def _parse_potential_subcommand(self, args, subcommand_table):
-        if subcommand_table and not self._subcommand_delegated:
+        if subcommand_table:
             parser = SubCommandArgParser(self.arg_table, subcommand_table)
             return parser.parse_known_args(args)
         return None
@@ -751,7 +750,6 @@ class ServiceOperation(object):
             args, subcommand_table)
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
-            self._subcommand_delegated = True
             return subcommand_table[subcommand_name](new_args, parsed_globals)
         operation_parser = self._create_operation_parser(
             self.arg_table, subcommand_table)

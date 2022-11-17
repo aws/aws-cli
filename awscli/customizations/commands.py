@@ -125,11 +125,10 @@ class BasicCommand(CLICommand):
         self._session = session
         self._arg_table = None
         self._subcommand_table = None
-        self._subcommand_delegated = False
         self._lineage = [self]
 
     def _parse_potential_subcommand(self, args, subcommand_table):
-        if subcommand_table and not self._subcommand_delegated:
+        if subcommand_table:
             parser = SubCommandArgParser(self.arg_table, subcommand_table)
             return parser.parse_known_args(args)
         return None
@@ -149,7 +148,6 @@ class BasicCommand(CLICommand):
         )
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
-            self._subcommand_delegated = True
             return self._subcommand_table[subcommand_name](
                 new_args, parsed_globals)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)

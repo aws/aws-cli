@@ -441,6 +441,35 @@ class TestAliases(BaseAWSCommandParamsTest):
                     'TagFilters': [{'Key': 'foo', 'Values': ['bar']}]},
         )
 
+    def test_can_handle_multiple_bag_of_options(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ecs describe-tasks]\n')
+            f.write('mycluster = --cluster mycluster\n')
+            f.write('mytasks = --tasks foo\n')
+
+        cmdline = 'ecs describe-tasks mycluster mytasks'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ecs',
+            operation_name='DescribeTasks',
+            params={'cluster': 'mycluster', 'tasks': ['foo']},
+        )
+
+    def test_can_handlle_multiple_bags_of_options_with_overrides(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ecs describe-tasks]\n')
+            f.write('mycluster = --cluster mycluster\n')
+            f.write('mytasks = --tasks foo\n')
+
+        cmdline = 'ecs describe-tasks mycluster mytasks --include TAGS'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ecs',
+            operation_name='DescribeTasks',
+            params={'cluster': 'mycluster', 'tasks': ['foo'],
+                    'include': ['TAGS']},
+        )
+
     def test_can_invoke_custom_test_command(self):
         # Sanity check to ensure the custom test command we're using
         # works properly so we don't waste time debugging a test because

@@ -83,36 +83,33 @@ class TestAliases(BaseAWSCommandParamsTest):
     def test_subcommand_alias(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
         cmdline = 'my-alias'
-        self.assert_params_for_cmd(cmdline, {})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_subcommand_alias_with_additonal_params(self):
         self.add_alias(
             'my-alias', 'ec2 describe-regions --region-names us-east-1')
         cmdline = 'my-alias'
-        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={'RegionNames': ['us-east-1']},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_subcommand_alias_then_additonal_params(self):
         self.add_alias('my-alias', 'ec2')
         cmdline = 'my-alias describe-regions --region-names us-east-1'
-        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={'RegionNames': ['us-east-1']},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_subcommand_alias_with_global_params(self):
         self.add_alias(
@@ -196,26 +193,24 @@ class TestAliases(BaseAWSCommandParamsTest):
     def test_alias_proxies_to_shadowed_command(self):
         self.add_alias('ec2', 'ec2')
         cmdline = 'ec2 describe-regions'
-        stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_alias_chaining(self):
         self.add_alias('base-alias', 'ec2 describe-regions')
         self.add_alias(
             'wrapper-alias', 'base-alias --region-names us-east-1')
         cmdline = 'wrapper-alias'
-        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={'RegionNames': ['us-east-1']},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_alias_chaining_with_globals(self):
         self.add_alias('base-alias', 'ec2 describe-regions')
@@ -279,13 +274,12 @@ class TestAliases(BaseAWSCommandParamsTest):
             f.write('regions = describe-regions --region-names us-west-2\n')
 
         cmdline = 'ec2 regions'
-        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-west-2']})
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={'RegionNames': ['us-west-2']},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_multi_nested_command_alias(self):
         with open(self.alias_file, 'a+') as f:
@@ -296,13 +290,12 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.parsed_response = {
             'Vpcs': [{'State': 'available'}],
         }
-        self.assert_params_for_cmd(cmdline)
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(
-            self.operations_called[0][0].service_model.service_name,
-            'ec2'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeVpcs',
+            params={},
         )
-        self.assertEqual(self.operations_called[0][0].name, 'DescribeVpcs')
 
     def test_can_extend_subcommand_internal_aliases(self):
         with open(self.alias_file, 'a+') as f:
@@ -351,18 +344,17 @@ class TestAliases(BaseAWSCommandParamsTest):
         # If we add additional operatio-specific params such as
         # "--resource-type-filters ecs", then we should merge
         # those values with the params specified in the alias definition.
-        self.run_cmd(
+        cmdline = (
             'resourcegroupstaggingapi get-resources mysvc '
             '--resource-type-filters ecs')
-        op_model, params = self.operations_called[0]
-        self.assertEqual(op_model.name, 'GetResources')
-        self.assertEqual(params, {
-            'TagFilters': [
-                {'Key': 'foo', 'Values': ['bar']},
-                {'Key': 'bar', 'Values': ['baz']},
-            ],
-            'ResourceTypeFilters': ['ecs'],
-        })
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='resourcegroupstaggingapi',
+            operation_name='GetResources',
+            params={'TagFilters': [{'Key': 'foo', 'Values': ['bar']},
+                                   {'Key': 'bar', 'Values': ['baz']}],
+                    'ResourceTypeFilters': ['ecs']},
+        )
 
     def test_can_handle_bag_of_options_with_required_args(self):
         with open(self.alias_file, 'a+') as f:
@@ -377,12 +369,12 @@ class TestAliases(BaseAWSCommandParamsTest):
         # to delegate to the alias in the hopes that it can provide
         # the required value.  FWIW we had to do something similar
         # in the `--generate-cli-skeleton` flow.
-        self.run_cmd('iam create-user test-user')
-        op_model, params = self.operations_called[0]
-        self.assertEqual(op_model.name, 'CreateUser')
-        self.assertEqual(params, {
-            'UserName': 'test-user',
-        })
+        self.assert_single_operation_called(
+            'iam create-user test-user',
+            service_name='iam',
+            operation_name='CreateUser',
+            params={'UserName': 'test-user'}
+        )
 
     def test_can_handle_bag_of_options_with_custom_command(self):
         self.event_emitter.register(

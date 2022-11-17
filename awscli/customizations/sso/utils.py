@@ -80,8 +80,7 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
 def parse_sso_registration_scopes(raw_scopes):
     parsed_scopes = []
     for scope in raw_scopes.split(','):
-        scope = scope.strip()
-        if scope:
+        if scope := scope.strip():
             parsed_scopes.append(scope)
     return parsed_scopes
 

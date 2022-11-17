@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 _CMD_PROMPT_USAGE = (
     'To keep an existing value, hit enter when prompted for the value. When '
     'you are prompted for information, the current value will be displayed in '
-    '[brackets].  If the config item has no value, it is displayed as '
+    '[brackets]. If the config item has no value, it is displayed as '
     '[None] or omitted entirely.\n\n'
 )
 _CONFIG_EXTRA_INFO = (
@@ -98,7 +98,6 @@ class ScopesValidator(ValidatorWithDefault):
                 document, 'Scope values must be separated by commas')
 
     def _is_comma_separated_list(self, value):
-        value.strip()
         scopes = value.split(',')
         for scope in scopes:
             if re.findall(r'\s', scope.strip()):
@@ -470,7 +469,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             text = 'CLI profile name'
             default_profile = None
             if sso_account_id and sso_role_name:
-                default_profile = '{}-{}'.format(sso_role_name, sso_account_id)
+                default_profile = f'{sso_role_name}-{sso_account_id}'
             validator = RequiredInputValidator(default_profile)
             profile_name = self._prompter.get_value(
                 default_profile, text, validator=validator)

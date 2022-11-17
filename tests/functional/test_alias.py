@@ -281,6 +281,19 @@ class TestAliases(BaseAWSCommandParamsTest):
             params={'RegionNames': ['us-west-2']},
         )
 
+    def test_can_shadow_subcommand_alias(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2]\n')
+            f.write('describe-regions = describe-regions --region-names us-west-2\n')
+
+        cmdline = 'ec2 describe-regions'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='ec2',
+            operation_name='DescribeRegions',
+            params={'RegionNames': ['us-west-2']},
+        )
+
     def test_multi_nested_command_alias(self):
         with open(self.alias_file, 'a+') as f:
             f.write('[command ec2 wait]\n')
@@ -324,6 +337,25 @@ class TestAliases(BaseAWSCommandParamsTest):
                     '--output text\n')
 
         cmdline = 'cloudformation list-stacks created'
+        self.assert_single_operation_called(
+            cmdline,
+            service_name='cloudformation',
+            operation_name='ListStacks',
+            params={'StackStatusFilter': ['CREATE_COMPLETE']},
+        )
+
+    def test_can_support_multiple_alias_expansions(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write(
+                'cfn = cloudformation\n'
+                '[command cloudformation]\n'
+                'stacks = list-stacks\n'
+                '[command cloudformation list-stacks]\n'
+                'created = --stack-status-filter CREATE_COMPLETE '
+                '--query StackSummaries[].[StackName,StackStatus] '
+                '--output text\n')
+
+        cmdline = 'cfn stacks created'
         self.assert_single_operation_called(
             cmdline,
             service_name='cloudformation',

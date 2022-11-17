@@ -28,12 +28,10 @@ from botocore.endpoint_provider import (
 )
 from botocore.exceptions import (
     EndpointResolutionError,
-    MissingDependencyException,
     UnknownSignatureVersionError,
 )
 from botocore.loaders import Loader
 from botocore.regions import EndpointRulesetResolver
-from tests import requires_crt
 
 REGION_TEMPLATE = "{Region}"
 REGION_REF = {"ref": "Region"}
@@ -388,8 +386,7 @@ def test_auth_schemes_conversion_sigv4(empty_resolver):
     }
 
 
-def test_auth_schemes_conversion_sigv4a_with_crt(monkeypatch, empty_resolver):
-    monkeypatch.setattr('botocore.regions.HAS_CRT', True)
+def test_auth_schemes_conversion_sigv4a_with_crt(empty_resolver):
     auth_schemes = [
         {'name': 'sigv4a', 'signingName': 's3', 'signingRegionSet': ['*']}
     ]
@@ -410,7 +407,6 @@ def test_auth_schemes_conversion_no_known_auth_types(empty_resolver):
 def test_auth_schemes_conversion_first_authtype_unknown(
     monkeypatch, empty_resolver
 ):
-    monkeypatch.setattr('botocore.regions.HAS_CRT', False)
     monkeypatch.setattr('botocore.regions.AUTH_TYPE_MAPS', {'bar': None})
     auth_schemes = [
         {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-1'},

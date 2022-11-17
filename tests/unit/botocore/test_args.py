@@ -81,7 +81,7 @@ class TestCreateClientArgs(unittest.TestCase):
             'credentials': None,
             'scoped_config': {},
             'client_config': None,
-            'endpoint_bridge': self.bridge
+            'endpoint_bridge': self.bridge,
             'endpoints_ruleset_data': {
                 'version': '1.0',
                 'parameters': {},
@@ -339,7 +339,7 @@ class TestCreateClientArgs(unittest.TestCase):
                     'rules': [],
                 },
             )
-            m.assert_called_once()
+            self.assertEqual(len(m.call_args_list), 1)
 
     def test_doesnt_create_ruleset_resolver_if_not_given_data(self):
         with mock.patch('botocore.args.EndpointRulesetResolver') as m:

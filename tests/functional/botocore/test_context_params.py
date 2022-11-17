@@ -16,19 +16,7 @@ import pytest
 from botocore.config import Config
 from tests import ClientHTTPStubber, mock
 
-
-# Some tests in this file require ruleset based endpoint resolution to be
-# enabled for all services (including the mock service "otherservice"). This
-# temporary fixutre should be removed once ruleset based endpoint resolution
-# is no longer limited to a subset of services.
-@pytest.fixture(autouse=True)
-def enable_endpoint_resolution_v2_for_all_services():
-    with mock.patch('botocore.client.FORCE_ENDPOINT_RESOLUTION_V2', True):
-        yield
-
-
 # fake rulesets compatible with all fake service models below
-
 FAKE_RULESET_TEMPLATE = {
     "version": "1.0",
     "parameters": {},

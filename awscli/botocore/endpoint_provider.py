@@ -22,7 +22,6 @@ or you can look at the test files in /tests/unit/data/endpoints/valid-rules/
 
 
 import logging
-import os
 import re
 from enum import Enum
 from functools import lru_cache
@@ -35,7 +34,6 @@ from botocore.exceptions import EndpointResolutionError
 from botocore.utils import (
     ArnParser,
     InvalidArnException,
-    ensure_boolean,
     is_valid_ipv4_endpoint_url,
     is_valid_ipv6_endpoint_url,
     normalize_url_path,
@@ -43,18 +41,6 @@ from botocore.utils import (
 )
 
 logger = logging.getLogger(__name__)
-
-# List of services for which rule-based endpoint resolution is always enabled.
-# This list will change and eventually be removed during minor or patch version
-# changes as part of the rollout of rule-based endpoints resolution.
-ENDPOINT_RESOLUTION_V2_SERVICES = ['s3', 's3control', 'events']
-# Feature flag to enable rule-based endpoint resolution for all services.
-# Only for testing use. Rulesets for services may be missing or incomplete
-# until the service is enabled for rule-based endpoint resolution by default.
-# This flag will eventually be removed during a minor or patch version change.
-FORCE_ENDPOINT_RESOLUTION_V2 = ensure_boolean(
-    os.environ.get('BOTO_FORCE_ENDPOINT_RESOLUTION_V2', False)
-)
 
 TEMPLATE_STRING_RE = re.compile(r"\{[a-zA-Z#]+\}")
 GET_ATTR_RE = re.compile(r"(\w+)\[(\d+)\]")

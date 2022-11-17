@@ -793,8 +793,6 @@ class ServiceOperation(object):
                 # method of the operation caller. It represents the return
                 # code of the operation.
                 return override
-        elif getattr(parsed_args, 'subcommand', None) is not None:
-            return subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
         else:
             # No override value was supplied.
             return self._operation_caller.invoke(

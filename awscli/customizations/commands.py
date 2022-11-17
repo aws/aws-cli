@@ -207,9 +207,6 @@ class BasicCommand(CLICommand):
                 return 0
             else:
                 return rc
-        else:
-            return self.subcommand_table[parsed_args.subcommand](remaining,
-                                                                 parsed_globals)
 
     def _validate_value_against_schema(self, model, value):
         validate_parameters(value, model)

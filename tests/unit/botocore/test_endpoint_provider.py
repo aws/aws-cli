@@ -388,7 +388,6 @@ def test_auth_schemes_conversion_sigv4(empty_resolver):
     }
 
 
-@requires_crt()
 def test_auth_schemes_conversion_sigv4a_with_crt(monkeypatch, empty_resolver):
     monkeypatch.setattr('botocore.regions.HAS_CRT', True)
     auth_schemes = [
@@ -397,18 +396,6 @@ def test_auth_schemes_conversion_sigv4a_with_crt(monkeypatch, empty_resolver):
     at, sc = empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
     assert at == 'v4a'
     assert sc == {'region': '*', 'signing_name': 's3'}
-
-
-def test_auth_schemes_conversion_sigv4a_without_crt(
-    monkeypatch, empty_resolver
-):
-    monkeypatch.setattr('botocore.regions.HAS_CRT', False)
-    monkeypatch.setattr('botocore.regions.AUTH_TYPE_MAPS', {})
-    auth_schemes = [
-        {'name': 'sigv4a', 'signingName': 's3', 'signingRegionSet': ['*']}
-    ]
-    with pytest.raises(MissingDependencyException):
-        empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
 
 
 def test_auth_schemes_conversion_no_known_auth_types(empty_resolver):

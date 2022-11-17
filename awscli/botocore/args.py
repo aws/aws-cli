@@ -126,7 +126,7 @@ class ClientArgsCreator(object):
             'client_config': new_config,
             'partition': partition,
             'exceptions_factory': self._exceptions_factory,
-            'endpoint_ruleset_resolver': endpoint_resolver_v2,
+            'endpoint_ruleset_resolver': ruleset_resolver,
         }
 
     def compute_client_args(self, service_model, client_config,

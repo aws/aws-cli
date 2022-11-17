@@ -2160,7 +2160,6 @@ class S3EndpointSetter(object):
         return fix_s3_host
 
 
-
 class S3ControlEndpointSetter(object):
     _DEFAULT_PARTITION = 'aws'
     _DEFAULT_DNS_SUFFIX = 'amazonaws.com'
@@ -2387,7 +2386,7 @@ class S3ControlArnParamHandler:
         )
 
     def register(self, event_emitter):
-       event_emitter.register(
+        event_emitter.register(
             'before-parameter-build.s3-control',
             self.handle_arn,
         )

@@ -30,7 +30,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Specifies the extended metrics that you want a CloudWatch RUM app monitor to send to a destination. Valid destinations include CloudWatch and Evidently.</p> <p>By default, RUM app monitors send some metrics to CloudWatch. These default metrics are listed in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-metrics.html\">CloudWatch metrics that you can collect with CloudWatch RUM</a>.</p> <p>If you also send extended metrics, you can send metrics to Evidently as well as CloudWatch, and you can also optionally send the metrics with additional dimensions. The valid dimension names for the additional dimensions are <code>BrowserName</code>, <code>CountryCode</code>, <code>DeviceType</code>, <code>FileType</code>, <code>OSName</code>, and <code>PageId</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html\"> Extended metrics that you can send to CloudWatch and CloudWatch Evidently</a>.</p> <p>The maximum number of metric definitions that you can specify in one <code>BatchCreateRumMetricDefinitions</code> operation is 200.</p> <pre><code> &lt;p&gt;The maximum number of metric definitions that one destination can contain is 2000.&lt;/p&gt; &lt;p&gt;Extended metrics sent are charged as CloudWatch custom metrics. Each combination of additional dimension name and dimension value counts as a custom metric. For more information, see &lt;a href=&quot;https://aws.amazon.com/cloudwatch/pricing/&quot;&gt;Amazon CloudWatch Pricing&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;You must have already created a destination for the metrics before you send them. For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html&quot;&gt;PutRumMetricsDestination&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;If some metric definitions specified in a &lt;code&gt;BatchCreateRumMetricDefinitions&lt;/code&gt; operations are not valid, those metric definitions fail and return errors, but all valid metric definitions in the same operation still succeed.&lt;/p&gt; </code></pre>",
+      "documentation":"<p>Specifies the extended metrics that you want a CloudWatch RUM app monitor to send to a destination. Valid destinations include CloudWatch and Evidently.</p> <p>By default, RUM app monitors send some metrics to CloudWatch. These default metrics are listed in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-metrics.html\">CloudWatch metrics that you can collect with CloudWatch RUM</a>.</p> <p>If you also send extended metrics, you can send metrics to Evidently as well as CloudWatch, and you can also optionally send the metrics with additional dimensions. The valid dimension names for the additional dimensions are <code>BrowserName</code>, <code>CountryCode</code>, <code>DeviceType</code>, <code>FileType</code>, <code>OSName</code>, and <code>PageId</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html\"> Extended metrics that you can send to CloudWatch and CloudWatch Evidently</a>.</p> <p>The maximum number of metric definitions that you can specify in one <code>BatchCreateRumMetricDefinitions</code> operation is 200.</p> <p>The maximum number of metric definitions that one destination can contain is 2000.</p> <p>Extended metrics sent are charged as CloudWatch custom metrics. Each combination of additional dimension name and dimension value counts as a custom metric. For more information, see <a href=\"https://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> <p>You must have already created a destination for the metrics before you send them. For more information, see <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html\">PutRumMetricsDestination</a>.</p> <p>If some metric definitions specified in a <code>BatchCreateRumMetricDefinitions</code> operations are not valid, those metric definitions fail and return errors, but all valid metric definitions in the same operation still succeed.</p>",
       "idempotent":true
     },
     "BatchDeleteRumMetricDefinitions":{
@@ -356,6 +356,10 @@
           "shape":"ISOTimestampString",
           "documentation":"<p>The date and time that this app monitor was created.</p>"
         },
+        "CustomEvents":{
+          "shape":"CustomEvents",
+          "documentation":"<p>Specifies whether this app monitor allows the web client to define and send custom events.</p> <p>For more information about custom events, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-custom-events.html\">Send custom events</a>.</p>"
+        },
         "DataStorage":{
           "shape":"DataStorage",
           "documentation":"<p>A structure that contains information about whether this app monitor stores a copy of the telemetry data that RUM collects using CloudWatch Logs.</p>"
@@ -416,7 +420,7 @@
         },
         "IncludedPages":{
           "shape":"Pages",
-          "documentation":"<p>If this app monitor is to collect data from only certain pages in your application, this structure lists those pages. </p> <pre><code> &lt;p&gt;You can't include both &lt;code&gt;ExcludedPages&lt;/code&gt; and &lt;code&gt;IncludedPages&lt;/code&gt; in the same operation.&lt;/p&gt; </code></pre>"
+          "documentation":"<p>If this app monitor is to collect data from only certain pages in your application, this structure lists those pages. </p> <p>You can't include both <code>ExcludedPages</code> and <code>IncludedPages</code> in the same operation.</p>"
         },
         "SessionSampleRate":{
           "shape":"SessionSampleRate",
@@ -734,6 +738,10 @@
           "shape":"AppMonitorConfiguration",
           "documentation":"<p>A structure that contains much of the configuration data for the app monitor. If you are using Amazon Cognito for authorization, you must include this structure in your request, and it must include the ID of the Amazon Cognito identity pool to use for authorization. If you don't include <code>AppMonitorConfiguration</code>, you must set up your own authorization method. For more information, see <a href=\"https://docs.aws.amazon.com/monitoring/CloudWatch-RUM-get-started-authorization.html\">Authorize your application to send data to Amazon Web Services</a>.</p> <p>If you omit this argument, the sample rate used for RUM is set to 10% of the user sessions.</p>"
         },
+        "CustomEvents":{
+          "shape":"CustomEvents",
+          "documentation":"<p>Specifies whether this app monitor allows the web client to define and send custom events. If you omit this parameter, custom events are <code>DISABLED</code>.</p> <p>For more information about custom events, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-custom-events.html\">Send custom events</a>.</p>"
+        },
         "CwLogEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to Amazon CloudWatch Logs in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur Amazon CloudWatch Logs charges.</p> <p>If you omit this parameter, the default is <code>false</code>.</p>"
@@ -748,7 +756,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>Assigns one or more tags (key-value pairs) to the app monitor.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <pre><code> &lt;p&gt;You can associate as many as 50 tags with an app monitor.&lt;/p&gt; &lt;p&gt;For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html&quot;&gt;Tagging Amazon Web Services resources&lt;/a&gt;.&lt;/p&gt; </code></pre>"
+          "documentation":"<p>Assigns one or more tags (key-value pairs) to the app monitor.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can associate as many as 50 tags with an app monitor.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
         }
       }
     },
@@ -760,6 +768,23 @@
           "documentation":"<p>The unique ID of the new app monitor.</p>"
         }
       }
+    },
+    "CustomEvents":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"CustomEventsStatus",
+          "documentation":"<p>Specifies whether this app monitor allows the web client to define and send custom events. The default is for custom events to be <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about custom events for this app monitor.</p>"
+    },
+    "CustomEventsStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "CwLog":{
       "type":"structure",
@@ -1131,7 +1156,7 @@
       "members":{
         "DimensionKeys":{
           "shape":"DimensionKeysMap",
-          "documentation":"<p>Use this field only if you are sending the metric to CloudWatch.</p> <p>This field is a map of field paths to dimension names. It defines the dimensions to associate with this metric in CloudWatch. Valid values for the entries in this field are the following:</p> <ul> <li> <p> <code>\"metadata.pageId\": \"PageId\"</code> </p> </li> <li> <p> <code>\"metadata.browserName\": \"BrowserName\"</code> </p> </li> <li> <p> <code>\"metadata.deviceType\": \"DeviceType\"</code> </p> </li> <li> <p> <code>\"metadata.osName\": \"OSName\"</code> </p> </li> <li> <p> <code>\"metadata.countryCode\": \"CountryCode\"</code> </p> </li> <li> <p> <code>\"event_details.fileType\": \"FileType\"</code> </p> </li> </ul> <pre><code> &lt;p&gt; All dimensions listed in this field must also be included in &lt;code&gt;EventPattern&lt;/code&gt;.&lt;/p&gt; </code></pre>"
+          "documentation":"<p>Use this field only if you are sending the metric to CloudWatch.</p> <p>This field is a map of field paths to dimension names. It defines the dimensions to associate with this metric in CloudWatch. Valid values for the entries in this field are the following:</p> <ul> <li> <p> <code>\"metadata.pageId\": \"PageId\"</code> </p> </li> <li> <p> <code>\"metadata.browserName\": \"BrowserName\"</code> </p> </li> <li> <p> <code>\"metadata.deviceType\": \"DeviceType\"</code> </p> </li> <li> <p> <code>\"metadata.osName\": \"OSName\"</code> </p> </li> <li> <p> <code>\"metadata.countryCode\": \"CountryCode\"</code> </p> </li> <li> <p> <code>\"event_details.fileType\": \"FileType\"</code> </p> </li> </ul> <p> All dimensions listed in this field must also be included in <code>EventPattern</code>.</p>"
         },
         "EventPattern":{
           "shape":"EventPattern",
@@ -1527,6 +1552,10 @@
           "shape":"AppMonitorConfiguration",
           "documentation":"<p>A structure that contains much of the configuration data for the app monitor. If you are using Amazon Cognito for authorization, you must include this structure in your request, and it must include the ID of the Amazon Cognito identity pool to use for authorization. If you don't include <code>AppMonitorConfiguration</code>, you must set up your own authorization method. For more information, see <a href=\"https://docs.aws.amazon.com/monitoring/CloudWatch-RUM-get-started-authorization.html\">Authorize your application to send data to Amazon Web Services</a>.</p>"
         },
+        "CustomEvents":{
+          "shape":"CustomEvents",
+          "documentation":"<p>Specifies whether this app monitor allows the web client to define and send custom events. The default is for custom events to be <code>DISABLED</code>.</p> <p>For more information about custom events, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-custom-events.html\">Send custom events</a>.</p>"
+        },
         "CwLogEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to Amazon CloudWatch Logs in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur Amazon CloudWatch Logs charges.</p>"
@@ -1625,5 +1654,5 @@
       "min":1
     }
   },
-  "documentation":"<p>With Amazon CloudWatch RUM, you can perform real-user monitoring to collect client-side data about your web application performance from actual user sessions in real time. The data collected includes page load times, client-side errors, and user behavior. When you view this data, you can see it all aggregated together and also see breakdowns by the browsers and devices that your customers use.</p> <pre><code> &lt;p&gt;You can use the collected data to quickly identify and debug client-side performance issues. CloudWatch RUM helps you visualize anomalies in your application performance and find relevant debugging data such as error messages, stack traces, and user sessions. You can also use RUM to understand the range of end-user impact including the number of users, geolocations, and browsers used.&lt;/p&gt; </code></pre>"
+  "documentation":"<p>With Amazon CloudWatch RUM, you can perform real-user monitoring to collect client-side data about your web application performance from actual user sessions in real time. The data collected includes page load times, client-side errors, and user behavior. When you view this data, you can see it all aggregated together and also see breakdowns by the browsers and devices that your customers use.</p> <p>You can use the collected data to quickly identify and debug client-side performance issues. CloudWatch RUM helps you visualize anomalies in your application performance and find relevant debugging data such as error messages, stack traces, and user sessions. You can also use RUM to understand the range of end-user impact including the number of users, geolocations, and browsers used.</p>"
 }

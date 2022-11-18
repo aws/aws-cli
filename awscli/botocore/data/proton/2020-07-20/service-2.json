@@ -141,7 +141,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deploy a new environment. An Proton environment is created from an environment template that defines infrastructure and resources that can be shared across services.</p> <p class=\"title\"> <b>You can provision environments using the following methods:</b> </p> <ul> <li> <p> <b>Amazon Web Services-managed provisioning</b> – Proton makes direct calls to provision your resources.</p> </li> <li> <p> <b>Self-managed provisioning</b> – Proton makes pull requests on your repository to provide compiled infrastructure as code (IaC) files that your IaC engine uses to provision resources.</p> </li> <li> <p> <b>CodeBuild-based provisioning</b> – Proton uses CodeBuild to run shell commands that you provide. Your commands can read inputs that Proton provides, and are responsible for provisioning or deprovisioning infrastructure and generating output values.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-environments.html\">Environments</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html\">Provisioning methods</a> in the <i>Proton User Guide</i>.</p>",
+      "documentation":"<p>Deploy a new environment. An Proton environment is created from an environment template that defines infrastructure and resources that can be shared across services.</p> <p class=\"title\"> <b>You can provision environments using the following methods:</b> </p> <ul> <li> <p>Amazon Web Services-managed provisioning: Proton makes direct calls to provision your resources.</p> </li> <li> <p>Self-managed provisioning: Proton makes pull requests on your repository to provide compiled infrastructure as code (IaC) files that your IaC engine uses to provision resources.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-environments.html\">Environments</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html\">Provisioning methods</a> in the <i>Proton User Guide</i>.</p>",
       "idempotent":true
     },
     "CreateEnvironmentAccountConnection":{
@@ -959,7 +959,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>List service instances with summary data.</p>"
+      "documentation":"<p>List service instances with summary data. This action lists service instances of all services in the Amazon Web Services account.</p>"
     },
     "ListServicePipelineOutputs":{
       "name":"ListServicePipelineOutputs",
@@ -1078,7 +1078,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Notify Proton of the following information related to a provisioned resource (environment, service instance, or service pipeline):</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html#ag-works-prov-methods-codebuild\">CodeBuild-based provisioning</a>, provide your provisioned resource output values to Proton.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html#ag-works-prov-methods-self\">self-managed provisioning</a>, notify Proton about the status of your provisioned resource. To disambiguate between different deployments of the same resource, set <code>deploymentId</code> to a unique deployment ID of your choice.</p> <pre><code> &lt;/li&gt; &lt;/ul&gt; </code></pre>"
+      "documentation":"<p>Notify Proton of status changes to a provisioned resource when you use self-managed provisioning.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html#ag-works-prov-methods-self\">Self-managed provisioning</a> in the <i>Proton User Guide</i>.</p>"
     },
     "RejectEnvironmentAccountConnection":{
       "name":"RejectEnvironmentAccountConnection",
@@ -1189,7 +1189,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update an environment.</p> <p>If the environment is associated with an environment account connection, <i>don't</i> update or include the <code>protonServiceRoleArn</code>, <code>codebuildRoleArn</code>, and <code>provisioningRepository</code> parameters.</p> <p>You can only update to a new environment account connection if that connection was created in the same environment account that the current environment account connection was created in. The account connection must also be associated with the current environment.</p> <p>If the environment <i>isn't</i> associated with an environment account connection, <i>don't</i> update or include the <code>environmentAccountConnectionId</code> parameter. You <i>can't</i> update or connect the environment to an environment account connection if it <i>isn't</i> already associated with an environment connection.</p> <p>You can update either <code>environmentAccountConnectionId</code> or one or more of <code>protonServiceRoleArn</code>, <code>codebuildRoleArn</code>, and <code>provisioningRepository</code>.</p> <p>If the environment was configured for Amazon Web Services-managed or CodeBuild-based provisioning, omit the <code>provisioningRepository</code> parameter.</p> <p>If the environment was configured for self-managed provisioning, specify the <code>provisioningRepository</code> parameter and omit the <code>protonServiceRoleArn</code>, <code>codebuildRoleArn</code>, and <code>provisioningRepository</code> parameters.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-environments.html\">Environments</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html\">Provisioning methods</a> in the <i>Proton User Guide</i>.</p> <p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
+      "documentation":"<p>Update an environment.</p> <p>If the environment is associated with an environment account connection, <i>don't</i> update or include the <code>protonServiceRoleArn</code> and <code>provisioningRepository</code> parameter to update or connect to an environment account connection.</p> <p>You can only update to a new environment account connection if that connection was created in the same environment account that the current environment account connection was created in. The account connection must also be associated with the current environment.</p> <p>If the environment <i>isn't</i> associated with an environment account connection, <i>don't</i> update or include the <code>environmentAccountConnectionId</code> parameter. You <i>can't</i> update or connect the environment to an environment account connection if it <i>isn't</i> already associated with an environment connection.</p> <p>You can update either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and value. You can’t update both.</p> <p>If the environment was configured for Amazon Web Services-managed provisioning, omit the <code>provisioningRepository</code> parameter.</p> <p>If the environment was configured for self-managed provisioning, specify the <code>provisioningRepository</code> parameter and omit the <code>protonServiceRoleArn</code> and <code>environmentAccountConnectionId</code> parameters.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-environments.html\">Environments</a> and <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html\">Provisioning methods</a> in the <i>Proton User Guide</i>.</p> <p>There are four modes for updating an environment. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include minor or major version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the environment is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can also specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
     },
     "UpdateEnvironmentAccountConnection":{
       "name":"UpdateEnvironmentAccountConnection",
@@ -1399,7 +1399,7 @@
         },
         "pipelineServiceRoleArn":{
           "shape":"RoleArnOrEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service role that Proton uses for provisioning pipelines. Proton assumes this role for Amazon Web Services-managed provisioning.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role you want to use for provisioning pipelines. Assumed by Proton for Amazon Web Services-managed provisioning, and by customer-owned automation for self-managed provisioning.</p>"
         }
       },
       "documentation":"<p>Proton settings that are used for multiple services in the Amazon Web Services account.</p>"
@@ -1777,7 +1777,7 @@
         },
         "componentRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in this account.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.</p> <p>You must specify <code>componentRoleArn</code> to allow directly defined components to be associated with any environments running in this account.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p>"
         },
         "environmentName":{
           "shape":"ResourceName",
@@ -1789,7 +1789,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using Amazon Web Services-managed provisioning and CloudFormation in the associated environment account.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. Proton uses this role to provision infrastructure resources in the associated environment account.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -1830,7 +1830,7 @@
         },
         "environmentAccountConnectionId":{
           "shape":"EnvironmentAccountConnectionId",
-          "documentation":"<p>The ID of the environment account connection that you provide if you want Proton to provision infrastructure resources for your environment or for any of the service instances running in it in an environment account. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton User guide</i>.</p> <p>If you specify the <code>environmentAccountConnectionId</code> parameter, don't specify <code>protonServiceRoleArn</code>, <code>codebuildRoleArn</code>, or <code>provisioningRepository</code>.</p>"
+          "documentation":"<p>The ID of the environment account connection that you provide if you're provisioning your environment infrastructure resources to an environment account. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton User guide</i>.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -1838,11 +1838,11 @@
         },
         "protonServiceRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using Amazon Web Services-managed provisioning and CloudFormation on your behalf.</p> <p>To use Amazon Web Services-managed provisioning for the environment or for any service instance running in the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.</p> <p>To use Amazon Web Services-managed provisioning for the environment, specify either the <code>environmentAccountConnectionId</code> or <code>protonServiceRoleArn</code> parameter and omit the <code>provisioningRepository</code> parameter.</p>"
         },
         "provisioningRepository":{
           "shape":"RepositoryBranchInput",
-          "documentation":"<p>The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p> <p>To use self-managed provisioning for the environment or for any service instance running in the environment, specify this parameter.</p>"
+          "documentation":"<p>The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p> <p>To use self-managed provisioning for the environment, specify this parameter and omit the <code>environmentAccountConnectionId</code> and <code>protonServiceRoleArn</code> parameters.</p>"
         },
         "spec":{
           "shape":"SpecContents",
@@ -2514,7 +2514,7 @@
         },
         "environmentAccountConnectionId":{
           "shape":"EnvironmentAccountConnectionId",
-          "documentation":"<p>The ID of the environment account connection that Proton uses to provision infrastructure resources in an environment account.</p>"
+          "documentation":"<p>The ID of the environment account connection that's used to provision infrastructure resources in an environment account.</p>"
         },
         "environmentAccountId":{
           "shape":"AwsAccountId",
@@ -2534,7 +2534,7 @@
         },
         "protonServiceRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using Amazon Web Services-managed provisioning and CloudFormation on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make calls to other services on your behalf.</p>"
         },
         "provisioning":{
           "shape":"Provisioning",
@@ -2615,7 +2615,7 @@
         },
         "roleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using Amazon Web Services-managed provisioning and CloudFormation in the associated environment account.</p>"
+          "documentation":"<p>The IAM service role that's associated with the environment account connection.</p>"
         },
         "status":{
           "shape":"EnvironmentAccountConnectionStatus",
@@ -3832,9 +3832,47 @@
         }
       }
     },
+    "ListServiceInstancesFilter":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"ListServiceInstancesFilterBy",
+          "documentation":"<p>The name of a filtering criterion.</p>"
+        },
+        "value":{
+          "shape":"ListServiceInstancesFilterValue",
+          "documentation":"<p>A value to filter by.</p> <p>With the date/time keys (<code>*At{Before,After}</code>), the value is a valid <a href=\"https://datatracker.ietf.org/doc/html/rfc3339.html\">RFC 3339</a> string with no UTC offset and with an optional fractional precision (for example, <code>1985-04-12T23:20:50.52Z</code>).</p>"
+        }
+      },
+      "documentation":"<p>A filtering criterion to scope down the result list of the <a>ListServiceInstances</a> action.</p>"
+    },
+    "ListServiceInstancesFilterBy":{
+      "type":"string",
+      "enum":[
+        "name",
+        "deploymentStatus",
+        "templateName",
+        "serviceName",
+        "deployedTemplateVersionStatus",
+        "environmentName",
+        "lastDeploymentAttemptedAtBefore",
+        "lastDeploymentAttemptedAtAfter",
+        "createdAtBefore",
+        "createdAtAfter"
+      ]
+    },
+    "ListServiceInstancesFilterList":{
+      "type":"list",
+      "member":{"shape":"ListServiceInstancesFilter"}
+    },
+    "ListServiceInstancesFilterValue":{"type":"string"},
     "ListServiceInstancesInput":{
       "type":"structure",
       "members":{
+        "filters":{
+          "shape":"ListServiceInstancesFilterList",
+          "documentation":"<p>An array of filtering criteria that scope down the result list. By default, all service instances in the Amazon Web Services account are returned.</p>"
+        },
         "maxResults":{
           "shape":"MaxPageResults",
           "documentation":"<p>The maximum number of service instances to list.</p>"
@@ -3846,6 +3884,14 @@
         "serviceName":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        },
+        "sortBy":{
+          "shape":"ListServiceInstancesSortBy",
+          "documentation":"<p>The field that the result list is sorted by.</p> <p>When you choose to sort by <code>serviceName</code>, service instances within each service are sorted by service instance name.</p> <p>Default: <code>serviceName</code> </p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Result list sort order.</p> <p>Default: <code>ASCENDING</code> </p>"
         }
       }
     },
@@ -3862,6 +3908,18 @@
           "documentation":"<p>An array of service instances with summary data.</p>"
         }
       }
+    },
+    "ListServiceInstancesSortBy":{
+      "type":"string",
+      "enum":[
+        "name",
+        "deploymentStatus",
+        "templateName",
+        "serviceName",
+        "environmentName",
+        "lastDeploymentAttemptedAt",
+        "createdAt"
+      ]
     },
     "ListServicePipelineOutputsInput":{
       "type":"structure",
@@ -4057,15 +4115,15 @@
       "members":{
         "deploymentId":{
           "shape":"DeploymentId",
-          "documentation":"<p>The deployment ID for your provisioned resource. Proton uses it to disambiguate different deployments of the resource. Applicable to <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-works-prov-methods.html#ag-works-prov-methods-self\">self-managed provisioning</a>.</p>"
+          "documentation":"<p>The deployment ID for your provisioned resource.</p>"
         },
         "outputs":{
           "shape":"NotifyResourceDeploymentStatusChangeInputOutputsList",
-          "documentation":"<p>The output values generated by your provisioned resource.</p>"
+          "documentation":"<p>The provisioned resource state change detail data that's returned by Proton.</p>"
         },
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of your provisioned resource.</p>"
+          "documentation":"<p>The provisioned resource Amazon Resource Name (ARN).</p>"
         },
         "status":{
           "shape":"ResourceDeploymentStatus",
@@ -5178,6 +5236,13 @@
       "type":"list",
       "member":{"shape":"ServiceTemplateVersionSummary"}
     },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
+    },
     "SpecContents":{
       "type":"string",
       "max":51200,
@@ -5477,7 +5542,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role in the environment account. Proton uses this role to provision infrastructure resources using Amazon Web Services-managed provisioning and CloudFormation in the associated environment account.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that's associated with the environment account connection to update.</p>"
         }
       }
     },
@@ -5516,7 +5581,7 @@
         },
         "environmentAccountConnectionId":{
           "shape":"EnvironmentAccountConnectionId",
-          "documentation":"<p>The ID of the environment account connection that you provide if you want Proton to provision infrastructure resources for your environment or for any of the service instances running in it in an environment account. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-env-account-connections.html\">Environment account connections</a> in the <i>Proton User guide</i>.</p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p>"
+          "documentation":"<p>The ID of the environment account connection.</p> <p>You can only update to a new environment account connection if it was created in the same environment account that the current environment account connection was created in and is associated with the current environment.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -5524,7 +5589,7 @@
         },
         "protonServiceRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that allows Proton to provision infrastructure using Amazon Web Services-managed provisioning and CloudFormation on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Proton service role that allows Proton to make API calls to other services your behalf.</p>"
         },
         "provisioningRepository":{
           "shape":"RepositoryBranchInput",

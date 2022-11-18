@@ -65,7 +65,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Creates an Amazon EKS add-on.</p> <p>Amazon EKS add-ons help to automate the provisioning and lifecycle management of common operational software for Amazon EKS clusters. Amazon EKS add-ons require clusters running version 1.18 or later because Amazon EKS add-ons rely on the Server-side Apply Kubernetes feature, which is only available in Kubernetes 1.18 and later. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
+      "documentation":"<p>Creates an Amazon EKS add-on.</p> <p>Amazon EKS add-ons help to automate the provisioning and lifecycle management of common operational software for Amazon EKS clusters. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "CreateCluster":{
       "name":"CreateCluster",
@@ -1130,6 +1130,26 @@
       },
       "documentation":"<p>The full description of your connected cluster.</p>"
     },
+    "ControlPlanePlacementRequest":{
+      "type":"structure",
+      "members":{
+        "groupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation. </p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i> </p>"
+    },
+    "ControlPlanePlacementResponse":{
+      "type":"structure",
+      "members":{
+        "groupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the placement group for the Kubernetes control plane instances.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
     "CreateAddonRequest":{
       "type":"structure",
       "required":[
@@ -1223,7 +1243,7 @@
         },
         "outpostConfig":{
           "shape":"OutpostConfigRequest",
-          "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a local cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/create-cluster-outpost.html\">Creating an Amazon EKS cluster on an Amazon Web Services Outpost</a> in the <i>Amazon EKS User Guide</i>. This object isn't available for creating Amazon EKS clusters on the Amazon Web Services cloud.</p>"
+          "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a local cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-overview.html\">Local clusters for Amazon EKS on Amazon Web Services Outposts</a> in the <i>Amazon EKS User Guide</i>. This object isn't available for creating Amazon EKS clusters on the Amazon Web Services cloud.</p>"
         }
       }
     },
@@ -2069,7 +2089,7 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The launch template version number, <code>$Latest</code>, or <code>$Default</code>.</p> <p>If the value is <code>$Latest</code>, Amazon EKS uses the latest version of the launch template.</p> <p>If the value is <code>$Default</code>, Amazon EKS uses the default version of the launch template.</p> <p>Default: The default version of the launch template.</p>"
+          "documentation":"<p>The version number of the launch template to use. If no version is specified, then the template's default version is used.</p>"
         },
         "id":{
           "shape":"String",
@@ -2728,10 +2748,14 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation.</p> <p>Choose an instance type based on the number of nodes that your cluster will have. If your cluster will have:</p> <ul> <li> <p>1–20 nodes, then we recommend specifying a <code>large</code> instance type.</p> </li> <li> <p>21–100 nodes, then we recommend specifying an <code>xlarge</code> instance type.</p> </li> <li> <p>101–250 nodes, then we recommend specifying a <code>2xlarge</code> instance type.</p> </li> </ul> <p>For a list of the available Amazon EC2 instance types, see Compute and storage in <a href=\"http://aws.amazon.com/outposts/rack/features/\">Outposts rack features</a>. The control plane is not automatically scaled by Amazon EKS.</p>"
+          "documentation":"<p>The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. Choose an instance type based on the number of nodes that your cluster will have. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p>The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation. The control plane is not automatically scaled by Amazon EKS.</p> <p> </p>"
+        },
+        "controlPlanePlacement":{
+          "shape":"ControlPlanePlacementRequest",
+          "documentation":"<p>An object representing the placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/create-cluster-outpost.html\">Creating a local Amazon EKS cluster on an Amazon Web Services Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
+      "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-create.html\">Creating a local cluster on an Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
     },
     "OutpostConfigResponse":{
       "type":"structure",
@@ -2747,6 +2771,10 @@
         "controlPlaneInstanceType":{
           "shape":"String",
           "documentation":"<p>The Amazon EC2 instance type used for the control plane. The instance type is the same for all control plane instances.</p>"
+        },
+        "controlPlanePlacement":{
+          "shape":"ControlPlanePlacementResponse",
+          "documentation":"<p>An object representing the placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -3382,7 +3410,7 @@
         },
         "securityGroupIds":{
           "shape":"StringList",
-          "documentation":"<p>Specify one or more security groups for the cross-account elastic network interfaces that Amazon EKS creates to use that allow communication between your nodes and the Kubernetes control plane. If you don't specify any security groups, then familiarize yourself with the difference between Amazon EKS defaults for clusters deployed with Kubernetes:</p> <ul> <li> <p>1.14 Amazon EKS platform version <code>eks.2</code> and earlier</p> </li> <li> <p>1.14 Amazon EKS platform version <code>eks.3</code> and later </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html\">Amazon EKS security group considerations</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p>"
+          "documentation":"<p>Specify one or more security groups for the cross-account elastic network interfaces that Amazon EKS creates to use that allow communication between your nodes and the Kubernetes control plane. If you don't specify any security groups, then familiarize yourself with the difference between Amazon EKS defaults for clusters deployed with Kubernetes. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html\">Amazon EKS security group considerations</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p>"
         },
         "endpointPublicAccess":{
           "shape":"BoxedBoolean",

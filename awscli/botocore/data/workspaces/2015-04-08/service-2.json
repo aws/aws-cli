@@ -136,6 +136,23 @@
       ],
       "documentation":"<p>Creates an IP access control group.</p> <p>An IP access control group provides you with the ability to control the IP addresses from which users are allowed to access their WorkSpaces. To specify the CIDR address ranges, add rules to your IP access control group and then associate the group with your directory. You can add rules when you create the group or at any time using <a>AuthorizeIpRules</a>.</p> <p>There is a default IP access control group associated with your directory. If you don't associate an IP access control group with your directory, the default group is used. The default group includes a default rule that allows users to access their WorkSpaces from anywhere. You cannot modify the default IP access control group for your directory.</p>"
     },
+    "CreateStandbyWorkspaces":{
+      "name":"CreateStandbyWorkspaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateStandbyWorkspacesRequest"},
+      "output":{"shape":"CreateStandbyWorkspacesResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceLimitExceededException"}
+      ],
+      "documentation":"<p>Creates a Standby WorkSpace in a secondary region.</p>"
+    },
     "CreateTags":{
       "name":"CreateTags",
       "http":{
@@ -810,7 +827,8 @@
       "errors":[
         {"shape":"InvalidParameterValuesException"},
         {"shape":"InvalidResourceStateException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Sets the state of the specified WorkSpace.</p> <p>To maintain a WorkSpace without being interrupted, set the WorkSpace state to <code>ADMIN_MAINTENANCE</code>. WorkSpaces in this state do not respond to requests to reboot, stop, start, rebuild, or restore. An AutoStop WorkSpace in this state is not stopped. Users cannot log into a WorkSpace in the <code>ADMIN_MAINTENANCE</code> state.</p>"
     },
@@ -822,6 +840,9 @@
       },
       "input":{"shape":"RebootWorkspacesRequest"},
       "output":{"shape":"RebootWorkspacesResult"},
+      "errors":[
+        {"shape":"OperationNotSupportedException"}
+      ],
       "documentation":"<p>Reboots the specified WorkSpaces.</p> <p>You cannot reboot a WorkSpace unless its state is <code>AVAILABLE</code> or <code>UNHEALTHY</code>.</p> <p>This operation is asynchronous and returns before the WorkSpaces have rebooted.</p>"
     },
     "RebuildWorkspaces":{
@@ -832,6 +853,9 @@
       },
       "input":{"shape":"RebuildWorkspacesRequest"},
       "output":{"shape":"RebuildWorkspacesResult"},
+      "errors":[
+        {"shape":"OperationNotSupportedException"}
+      ],
       "documentation":"<p>Rebuilds the specified WorkSpace.</p> <p>You cannot rebuild a WorkSpace unless its state is <code>AVAILABLE</code>, <code>ERROR</code>, <code>UNHEALTHY</code>, <code>STOPPED</code>, or <code>REBOOTING</code>.</p> <p>Rebuilding a WorkSpace is a potentially destructive action that can result in the loss of data. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/reset-workspace.html\">Rebuild a WorkSpace</a>.</p> <p>This operation is asynchronous and returns before the WorkSpaces have been completely rebuilt.</p>"
     },
     "RegisterWorkspaceDirectory":{
@@ -865,7 +889,8 @@
       "errors":[
         {"shape":"InvalidParameterValuesException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Restores the specified WorkSpace to its last known healthy state.</p> <p>You cannot restore a WorkSpace unless its state is <code> AVAILABLE</code>, <code>ERROR</code>, <code>UNHEALTHY</code>, or <code>STOPPED</code>.</p> <p>Restoring a WorkSpace is a potentially destructive action that can result in the loss of data. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/restore-workspace.html\">Restore a WorkSpace</a>.</p> <p>This operation is asynchronous and returns before the WorkSpace is completely restored.</p>"
     },
@@ -978,7 +1003,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidParameterValuesException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ResourceUnavailableException"}
+        {"shape":"ResourceUnavailableException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Updates a WorkSpace bundle with a new image. For more information about updating WorkSpace bundles, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/update-custom-bundle.html\"> Update a Custom WorkSpaces Bundle</a>.</p> <important> <p>Existing WorkSpaces aren't automatically updated when you update the bundle that they're based on. To update existing WorkSpaces that are based on a bundle that you've updated, you must either rebuild the WorkSpaces or delete and recreate them.</p> </important>"
     },
@@ -1186,6 +1212,13 @@
       "member":{"shape":"WorkspaceBundle"}
     },
     "BundleOwner":{"type":"string"},
+    "BundleType":{
+      "type":"string",
+      "enum":[
+        "REGULAR",
+        "STANDBY"
+      ]
+    },
     "CertificateAuthorityArn":{
       "type":"string",
       "max":200,
@@ -1582,6 +1615,36 @@
         "GroupId":{
           "shape":"IpGroupId",
           "documentation":"<p>The identifier of the group.</p>"
+        }
+      }
+    },
+    "CreateStandbyWorkspacesRequest":{
+      "type":"structure",
+      "required":[
+        "PrimaryRegion",
+        "StandbyWorkspaces"
+      ],
+      "members":{
+        "PrimaryRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the primary WorkSpace.</p>"
+        },
+        "StandbyWorkspaces":{
+          "shape":"StandbyWorkspacesList",
+          "documentation":"<p>Information about the Standby WorkSpace to be created.</p>"
+        }
+      }
+    },
+    "CreateStandbyWorkspacesResult":{
+      "type":"structure",
+      "members":{
+        "FailedStandbyRequests":{
+          "shape":"FailedCreateStandbyWorkspacesRequestList",
+          "documentation":"<p>Information about the Standby WorkSpace that could not be created. </p>"
+        },
+        "PendingStandbyRequests":{
+          "shape":"PendingCreateStandbyWorkspacesRequestList",
+          "documentation":"<p>Information about the Standby WorkSpace that was created.</p>"
         }
       }
     },
@@ -2572,6 +2635,28 @@
     "ErrorType":{"type":"string"},
     "ExceptionErrorCode":{"type":"string"},
     "ExceptionMessage":{"type":"string"},
+    "FailedCreateStandbyWorkspacesRequest":{
+      "type":"structure",
+      "members":{
+        "StandbyWorkspaceRequest":{
+          "shape":"StandbyWorkspace",
+          "documentation":"<p>Information about the Standby WorkSpace that could not be created.</p>"
+        },
+        "ErrorCode":{
+          "shape":"WorkspaceErrorCode",
+          "documentation":"<p>The error code that is returned if the Standby WorkSpace could not be created.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"Description",
+          "documentation":"<p>The text of the error message that is returned if the Standby WorkSpace could not be created.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Standby WorkSpace that could not be created.</p>"
+    },
+    "FailedCreateStandbyWorkspacesRequestList":{
+      "type":"list",
+      "member":{"shape":"FailedCreateStandbyWorkspacesRequest"}
+    },
     "FailedCreateWorkspaceRequest":{
       "type":"structure",
       "members":{
@@ -3262,6 +3347,32 @@
       "max":2048,
       "min":1
     },
+    "PendingCreateStandbyWorkspacesRequest":{
+      "type":"structure",
+      "members":{
+        "UserName":{
+          "shape":"UserName",
+          "documentation":"<p>Describes the Standby WorkSpace that was created.</p> <p>Because this operation is asynchronous, the identifier returned is not immediately available for use with other operations. For example, if you call <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html\"> DescribeWorkspaces</a> before the WorkSpace is created, the information returned can be incomplete. </p>"
+        },
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for the Standby WorkSpace.</p>"
+        },
+        "State":{
+          "shape":"WorkspaceState",
+          "documentation":"<p>The operational state of the Standby WorkSpace.</p>"
+        },
+        "WorkspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the Standby WorkSpace.</p>"
+        }
+      },
+      "documentation":"<p>Information about the Standby WorkSpace.</p>"
+    },
+    "PendingCreateStandbyWorkspacesRequestList":{
+      "type":"list",
+      "member":{"shape":"PendingCreateStandbyWorkspacesRequest"}
+    },
     "Protocol":{
       "type":"string",
       "enum":[
@@ -3400,6 +3511,32 @@
       "type":"string",
       "max":20,
       "min":1
+    },
+    "RelatedWorkspaceProperties":{
+      "type":"structure",
+      "members":{
+        "WorkspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the related WorkSpace.</p>"
+        },
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the related WorkSpace.</p>"
+        },
+        "State":{
+          "shape":"WorkspaceState",
+          "documentation":"<p>Indicates the state of the WorkSpace.</p>"
+        },
+        "Type":{
+          "shape":"StandbyWorkspaceRelationshipType",
+          "documentation":"<p>Indicates the type of WorkSpace.</p>"
+        }
+      },
+      "documentation":"<p>Describes the related WorkSpace. The related WorkSpace could be a Standby WorkSpace or Primary WorkSpace related to the specified WorkSpace.</p>"
+    },
+    "RelatedWorkspaces":{
+      "type":"list",
+      "member":{"shape":"RelatedWorkspaceProperties"}
     },
     "ResourceAlreadyExistsException":{
       "type":"structure",
@@ -3606,6 +3743,43 @@
     "SnapshotList":{
       "type":"list",
       "member":{"shape":"Snapshot"}
+    },
+    "StandbyWorkspace":{
+      "type":"structure",
+      "required":[
+        "PrimaryWorkspaceId",
+        "DirectoryId"
+      ],
+      "members":{
+        "PrimaryWorkspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the Standby WorkSpace.</p>"
+        },
+        "VolumeEncryptionKey":{
+          "shape":"VolumeEncryptionKey",
+          "documentation":"<p>The volume encryption key of the Standby WorkSpace.</p>"
+        },
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for the Standby WorkSpace.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the Standby WorkSpace.</p>"
+        }
+      },
+      "documentation":"<p>Describes a Standby WorkSpace.</p>"
+    },
+    "StandbyWorkspaceRelationshipType":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "STANDBY"
+      ]
+    },
+    "StandbyWorkspacesList":{
+      "type":"list",
+      "member":{"shape":"StandbyWorkspace"}
     },
     "StartRequest":{
       "type":"structure",
@@ -4005,6 +4179,10 @@
         "ModificationStates":{
           "shape":"ModificationStateList",
           "documentation":"<p>The modification states of the WorkSpace.</p>"
+        },
+        "RelatedWorkspaces":{
+          "shape":"RelatedWorkspaces",
+          "documentation":"<p>The Standby WorkSpace or Primary WorkSpace related to the specified WorkSpace.</p>"
         }
       },
       "documentation":"<p>Describes a WorkSpace.</p>"
@@ -4089,6 +4267,14 @@
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the bundle was created.</p>"
+        },
+        "State":{
+          "shape":"WorkspaceBundleState",
+          "documentation":"<p>The state of the WorkSpace bundle.</p>"
+        },
+        "BundleType":{
+          "shape":"BundleType",
+          "documentation":"<p>The type of WorkSpace bundle.</p>"
         }
       },
       "documentation":"<p>Describes a WorkSpace bundle.</p>"
@@ -4104,6 +4290,14 @@
       "max":64,
       "min":1,
       "pattern":"^[a-zA-Z0-9_./()\\\\-]+$"
+    },
+    "WorkspaceBundleState":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "PENDING",
+        "ERROR"
+      ]
     },
     "WorkspaceConnectionStatus":{
       "type":"structure",

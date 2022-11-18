@@ -95,14 +95,24 @@
         },
         "recommendationId":{
           "shape":"RecommendationId",
-          "documentation":"<p>The ID of the recommendation.</p>"
+          "documentation":"<p>The ID of the list of recommendations that contains the item the user interacted with. Provide a <code>recommendationId</code> to have Amazon Personalize implicitly record the recommendations you show your user as impressions data. Or provide a <code>recommendationId</code> if you use a metric attribution to measure the impact of recommendations. </p> <p> For more information on recording impressions data, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/recording-events.html#putevents-including-impressions-data\">Recording impressions data</a>. For more information on creating a metric attribution see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>. </p>"
         },
         "impression":{
           "shape":"Impression",
-          "documentation":"<p>A list of item IDs that represents the sequence of items you have shown the user. For example, <code>[\"itemId1\", \"itemId2\", \"itemId3\"]</code>.</p>"
+          "documentation":"<p>A list of item IDs that represents the sequence of items you have shown the user. For example, <code>[\"itemId1\", \"itemId2\", \"itemId3\"]</code>. Provide a list of items to manually record impressions data for an event. For more information on recording impressions data, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/recording-events.html#putevents-including-impressions-data\">Recording impressions data</a>. </p>"
+        },
+        "metricAttribution":{
+          "shape":"MetricAttribution",
+          "documentation":"<p>Contains information about the metric attribution associated with an event. For more information about metric attributions, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>.</p>"
         }
       },
-      "documentation":"<p>Represents user interaction event information sent using the <code>PutEvents</code> API.</p>"
+      "documentation":"<p>Represents user interaction event information sent using the <code>PutEvents</code> API.</p>",
+      "sensitive":true
+    },
+    "EventAttributionSource":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^[\\x20-\\x7E]*[\\x21-\\x7E]+[\\x20-\\x7E]*$"
     },
     "EventList":{
       "type":"list",
@@ -113,7 +123,8 @@
     "EventPropertiesJSON":{
       "type":"string",
       "max":1024,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "FloatType":{"type":"float"},
     "Impression":{
@@ -150,7 +161,8 @@
     "ItemId":{
       "type":"string",
       "max":256,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "ItemList":{
       "type":"list",
@@ -161,7 +173,19 @@
     "ItemProperties":{
       "type":"string",
       "max":24262,
-      "min":1
+      "min":1,
+      "sensitive":true
+    },
+    "MetricAttribution":{
+      "type":"structure",
+      "required":["eventAttributionSource"],
+      "members":{
+        "eventAttributionSource":{
+          "shape":"EventAttributionSource",
+          "documentation":"<p>The source of the event, such as a third party.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a metric attribution associated with an event. For more information about metric attributions, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>.</p>"
     },
     "PutEventsRequest":{
       "type":"structure",
@@ -270,7 +294,8 @@
     "UserId":{
       "type":"string",
       "max":256,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "UserList":{
       "type":"list",
@@ -281,7 +306,8 @@
     "UserProperties":{
       "type":"string",
       "max":4096,
-      "min":1
+      "min":1,
+      "sensitive":true
     }
   },
   "documentation":"<p>Amazon Personalize can consume real-time user event data, such as <i>stream</i> or <i>click</i> data, and use it for model training either alone or combined with historical data. For more information see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/recording-events.html\">Recording Events</a>.</p>"

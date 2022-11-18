@@ -400,6 +400,10 @@
         "aggregationType":{
           "shape":"AggregationType",
           "documentation":"<p> Specifies whether Amazon AppFlow aggregates the flow records into a single file, or leave them unaggregated. </p>"
+        },
+        "targetFileSize":{
+          "shape":"Long",
+          "documentation":"<p>The desired file size, in MB, for each output file that Amazon AppFlow writes to the flow destination. For each file, Amazon AppFlow attempts to achieve the size that you specify. The actual file sizes might differ from this target based on the number and size of the records that each file contains.</p>"
         }
       },
       "documentation":"<p> The aggregation settings that you can use to customize the output format of your flow data. </p>"
@@ -629,6 +633,10 @@
       "type":"string",
       "max":512,
       "pattern":".*"
+    },
+    "CatalogType":{
+      "type":"string",
+      "enum":["GLUE"]
     },
     "ClientCredentialsArn":{
       "type":"string",
@@ -1571,6 +1579,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p> The tags used to organize, track, or control access for your flow. </p>"
+        },
+        "metadataCatalogConfig":{
+          "shape":"MetadataCatalogConfig",
+          "documentation":"<p>Specifies the configuration that Amazon AppFlow uses when it catalogs the data that's transferred by the associated flow. When Amazon AppFlow catalogs the data from a flow, it stores metadata in a data catalog.</p>"
         }
       }
     },
@@ -2125,6 +2137,18 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p> The tags used to organize, track, or control access for your flow. </p>"
+        },
+        "metadataCatalogConfig":{
+          "shape":"MetadataCatalogConfig",
+          "documentation":"<p>Specifies the configuration that Amazon AppFlow uses when it catalogs the data that's transferred by the associated flow. When Amazon AppFlow catalogs the data from a flow, it stores metadata in a data catalog.</p>"
+        },
+        "lastRunMetadataCatalogDetails":{
+          "shape":"MetadataCatalogDetails",
+          "documentation":"<p>Describes the metadata catalog, metadata table, and data partitions that Amazon AppFlow used for the associated flow run.</p>"
+        },
+        "schemaVersion":{
+          "shape":"Long",
+          "documentation":"<p>The version number of your data schema. Amazon AppFlow assigns this version number. The version number increases by one when you change any of the following settings in your flow configuration:</p> <ul> <li> <p>Source-to-destination field mappings</p> </li> <li> <p>Field data types</p> </li> <li> <p>Partition keys</p> </li> </ul>"
         }
       }
     },
@@ -2449,6 +2473,10 @@
         "dataPullEndTime":{
           "shape":"Date",
           "documentation":"<p> The timestamp that indicates the last new or updated record to be transferred in the flow run. </p>"
+        },
+        "metadataCatalogDetails":{
+          "shape":"MetadataCatalogDetails",
+          "documentation":"<p>Describes the metadata catalog, metadata table, and data partitions that Amazon AppFlow used for the associated flow run.</p>"
         }
       },
       "documentation":"<p> Specifies information about the past flow run instances for a given flow. </p>"
@@ -2643,6 +2671,44 @@
       "type":"string",
       "max":2048,
       "pattern":"[\\s\\w/!@#+=.-]*"
+    },
+    "GlueDataCatalogConfig":{
+      "type":"structure",
+      "required":[
+        "roleArn",
+        "databaseName",
+        "tablePrefix"
+      ],
+      "members":{
+        "roleArn":{
+          "shape":"GlueDataCatalogIAMRole",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that grants Amazon AppFlow the permissions it needs to create Data Catalog tables, databases, and partitions.</p> <p>For an example IAM policy that has the required permissions, see <a href=\"https://docs.aws.amazon.com/appflow/latest/userguide/security_iam_id-based-policy-examples.html\">Identity-based policy examples for Amazon AppFlow</a>.</p>"
+        },
+        "databaseName":{
+          "shape":"GlueDataCatalogDatabaseName",
+          "documentation":"<p>The name of the Data Catalog database that stores the metadata tables that Amazon AppFlow creates in your Amazon Web Services account. These tables contain metadata for the data that's transferred by the flow that you configure with this parameter.</p> <note> <p>When you configure a new flow with this parameter, you must specify an existing database.</p> </note>"
+        },
+        "tablePrefix":{
+          "shape":"GlueDataCatalogTablePrefix",
+          "documentation":"<p>A naming prefix for each Data Catalog table that Amazon AppFlow creates for the flow that you configure with this setting. Amazon AppFlow adds the prefix to the beginning of the each table name.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration that Amazon AppFlow uses when it catalogs your data with the Glue Data Catalog. When Amazon AppFlow catalogs your data, it stores metadata in Data Catalog tables. This metadata represents the data that's transferred by the flow that you configure with these settings.</p> <note> <p>You can configure a flow with these settings only when the flow destination is Amazon S3.</p> </note>"
+    },
+    "GlueDataCatalogDatabaseName":{
+      "type":"string",
+      "max":255,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "GlueDataCatalogIAMRole":{
+      "type":"string",
+      "max":512,
+      "pattern":"arn:aws:iam:.*:[0-9]+:.*"
+    },
+    "GlueDataCatalogTablePrefix":{
+      "type":"string",
+      "max":128,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "GoogleAnalyticsConnectorOperator":{
       "type":"string",
@@ -3108,6 +3174,42 @@
       "max":100,
       "min":1
     },
+    "MetadataCatalogConfig":{
+      "type":"structure",
+      "members":{
+        "glueDataCatalog":{
+          "shape":"GlueDataCatalogConfig",
+          "documentation":"<p>Specifies the configuration that Amazon AppFlow uses when it catalogs your data with the Glue Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration that Amazon AppFlow uses when it catalogs your data. When Amazon AppFlow catalogs your data, it stores metadata in a data catalog.</p>"
+    },
+    "MetadataCatalogDetail":{
+      "type":"structure",
+      "members":{
+        "catalogType":{
+          "shape":"CatalogType",
+          "documentation":"<p>The type of metadata catalog that Amazon AppFlow used for the associated flow run. This parameter returns the following value:</p> <dl> <dt>GLUE</dt> <dd> <p>The metadata catalog is provided by the Glue Data Catalog. Glue includes the Glue Data Catalog as a component.</p> </dd> </dl>"
+        },
+        "tableName":{
+          "shape":"String",
+          "documentation":"<p>The name of the table that stores the metadata for the associated flow run. The table stores metadata that represents the data that the flow transferred. Amazon AppFlow stores the table in the metadata catalog.</p>"
+        },
+        "tableRegistrationOutput":{
+          "shape":"RegistrationOutput",
+          "documentation":"<p>Describes the status of the attempt from Amazon AppFlow to register the metadata table with the metadata catalog. Amazon AppFlow creates or updates this table for the associated flow run.</p>"
+        },
+        "partitionRegistrationOutput":{
+          "shape":"RegistrationOutput",
+          "documentation":"<p>Describes the status of the attempt from Amazon AppFlow to register the data partitions with the metadata catalog. The data partitions organize the flow output into a hierarchical path, such as a folder path in an S3 bucket. Amazon AppFlow creates the partitions (if they don't already exist) based on your flow configuration.</p>"
+        }
+      },
+      "documentation":"<p>Describes the metadata catalog, metadata table, and data partitions that Amazon AppFlow used for the associated flow run.</p>"
+    },
+    "MetadataCatalogDetails":{
+      "type":"list",
+      "member":{"shape":"MetadataCatalogDetail"}
+    },
     "MostRecentExecutionMessage":{
       "type":"string",
       "max":2048,
@@ -3366,7 +3468,8 @@
         "CONCAT_FORMAT",
         "SUBFIELD_CATEGORY_MAP",
         "EXCLUDE_SOURCE_FIELDS_LIST",
-        "INCLUDE_NEW_FIELDS"
+        "INCLUDE_NEW_FIELDS",
+        "ORDERED_PARTITION_KEYS_LIST"
       ]
     },
     "Operators":{
@@ -3401,6 +3504,17 @@
       "pattern":".*",
       "sensitive":true
     },
+    "PathPrefix":{
+      "type":"string",
+      "enum":[
+        "EXECUTION_ID",
+        "SCHEMA_VERSION"
+      ]
+    },
+    "PathPrefixHierarchy":{
+      "type":"list",
+      "member":{"shape":"PathPrefix"}
+    },
     "PortNumber":{
       "type":"integer",
       "max":65535,
@@ -3411,14 +3525,18 @@
       "members":{
         "prefixType":{
           "shape":"PrefixType",
-          "documentation":"<p> Determines the format of the prefix, and whether it applies to the file name, file path, or both. </p>"
+          "documentation":"<p>Determines the format of the prefix, and whether it applies to the file name, file path, or both. </p>"
         },
         "prefixFormat":{
           "shape":"PrefixFormat",
-          "documentation":"<p> Determines the level of granularity that's included in the prefix. </p>"
+          "documentation":"<p>Determines the level of granularity for the date and time that's included in the prefix. </p>"
+        },
+        "pathPrefixHierarchy":{
+          "shape":"PathPrefixHierarchy",
+          "documentation":"<p>Specifies whether the destination file path includes either or both of the following elements:</p> <dl> <dt>EXECUTION_ID</dt> <dd> <p>The ID that Amazon AppFlow assigns to the flow run.</p> </dd> <dt>SCHEMA_VERSION</dt> <dd> <p>The version number of your data schema. Amazon AppFlow assigns this version number. The version number increases by one when you change any of the following settings in your flow configuration:</p> <ul> <li> <p>Source-to-destination field mappings</p> </li> <li> <p>Field data types</p> </li> <li> <p>Partition keys</p> </li> </ul> </dd> </dl>"
         }
       },
-      "documentation":"<p> Determines the prefix that Amazon AppFlow applies to the destination folder name. You can name your destination folders according to the flow frequency and date. </p>"
+      "documentation":"<p>Specifies elements that Amazon AppFlow includes in the file and folder names in the flow destination.</p>"
     },
     "PrefixFormat":{
       "type":"string",
@@ -3651,6 +3769,24 @@
       "type":"string",
       "max":512,
       "pattern":"\\S+"
+    },
+    "RegistrationOutput":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Explains the status of the registration attempt from Amazon AppFlow. If the attempt fails, the message explains why.</p>"
+        },
+        "result":{
+          "shape":"String",
+          "documentation":"<p>Indicates the number of resources that Amazon AppFlow created or updated. Possible resources include metadata tables and data partitions.</p>"
+        },
+        "status":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>Indicates the status of the registration attempt from Amazon AppFlow.</p>"
+        }
+      },
+      "documentation":"<p>Describes the status of an attempt from Amazon AppFlow to register a resource.</p> <p>When you run a flow that you've configured to use a metadata catalog, Amazon AppFlow registers a metadata table and data partitions with that catalog. This operation provides the status of that registration attempt. The operation also indicates how many related resources Amazon AppFlow created or updated.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -4715,7 +4851,8 @@
         "Merge",
         "Passthrough",
         "Truncate",
-        "Validate"
+        "Validate",
+        "Partition"
       ]
     },
     "Tasks":{
@@ -4957,6 +5094,10 @@
         "tasks":{
           "shape":"Tasks",
           "documentation":"<p> A list of tasks that Amazon AppFlow performs while transferring the data in the flow run. </p>"
+        },
+        "metadataCatalogConfig":{
+          "shape":"MetadataCatalogConfig",
+          "documentation":"<p>Specifies the configuration that Amazon AppFlow uses when it catalogs the data that's transferred by the associated flow. When Amazon AppFlow catalogs the data from a flow, it stores metadata in a data catalog.</p>"
         }
       }
     },

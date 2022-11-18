@@ -4382,6 +4382,50 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.12
+=======
+
+* api-change:``amplify``: Adds a new value (WEB_COMPUTE) to the Platform enum that allows customers to create Amplify Apps with Server-Side Rendering support.
+* api-change:``appflow``: AppFlow simplifies the preparation and cataloging of SaaS data into the AWS Glue Data Catalog where your data can be discovered and accessed by AWS analytics and ML services. AppFlow now also supports data field partitioning and file size optimization to improve query performance and reduce cost.
+* api-change:``appsync``: This release introduces the APPSYNC_JS runtime, and adds support for JavaScript in AppSync functions and AppSync pipeline resolvers.
+* api-change:``dms``: Adds support for Internet Protocol Version 6 (IPv6) on DMS Replication Instances
+* api-change:``ec2``: This release adds a new optional parameter "privateIpAddress" for the CreateNatGateway API. PrivateIPAddress will allow customers to select a custom Private IPv4 address instead of having it be auto-assigned.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``emr-serverless``: Adds support for AWS Graviton2 based applications. You can now select CPU architecture when creating new applications or updating existing ones.
+* api-change:``ivschat``: Adds LoggingConfiguration APIs for IVS Chat - a feature that allows customers to store and record sent messages in a chat room to S3 buckets, CloudWatch logs, or Kinesis firehose.
+* api-change:``lambda``: Add Node 18 (nodejs18.x) support to AWS Lambda.
+* api-change:``personalize``: This release provides support for creation and use of metric attributions in AWS Personalize
+* api-change:``polly``: Add two new neural voices - Ola (pl-PL) and Hala (ar-AE).
+* api-change:``rum``: CloudWatch RUM now supports custom events. To use custom events, create an app monitor or update an app monitor with CustomEvent Status as ENABLED.
+* api-change:``s3control``: Added 34 new S3 Storage Lens metrics to support additional customer use cases.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager.
+* api-change:``securityhub``: Added SourceLayerArn and SourceLayerHash field for security findings.  Updated AwsLambdaFunction Resource detail
+* api-change:``servicecatalog-appregistry``: This release adds support for tagged resource associations, which allows you to associate a group of resources with a defined resource tag key and value to the application.
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``textract``: This release adds support for specifying and extracting information from documents using the Signatures feature within Analyze Document API
+* api-change:``workspaces``: The release introduces CreateStandbyWorkspaces, an API that allows you to create standby WorkSpaces associated with a primary WorkSpace in another Region. DescribeWorkspaces now includes related WorkSpaces properties. DescribeWorkspaceBundles and CreateWorkspaceBundle now return more bundle details.
+
+
+1.27.11
+=======
+
+* api-change:``batch``: Documentation updates related to Batch on EKS
+* api-change:``billingconductor``: This release adds a new feature BillingEntity pricing rule.
+* api-change:``cloudformation``: Added UnsupportedTarget HandlerErrorCode for use with CFN Resource Hooks
+* api-change:``comprehendmedical``: This release supports new set of entities and traits. It also adds new category (BEHAVIORAL_ENVIRONMENTAL_SOCIAL).
+* api-change:``connect``: This release adds a new MonitorContact API for initiating monitoring of ongoing Voice and Chat contacts.
+* api-change:``eks``: Adds support for customer-provided placement groups for Kubernetes control plane instances when creating local EKS clusters on Outposts
+* api-change:``elasticache``: for Redis now supports AWS Identity and Access Management authentication access to Redis clusters starting with redis-engine version 7.0
+* api-change:``iottwinmaker``: This release adds the following: 1) ExecuteQuery API allows users to query their AWS IoT TwinMaker Knowledge Graph 2) Pricing plan APIs allow users to configure and manage their pricing mode 3) Support for property groups and tabular property values in existing AWS IoT TwinMaker APIs.
+* api-change:``personalize-events``: This release provides support for creation and use of metric attributions in AWS Personalize
+* api-change:``proton``: Add support for sorting and filtering in ListServiceInstances
+* api-change:``rds``: This release adds support for container databases (CDBs) to Amazon RDS Custom for Oracle. A CDB contains one PDB at creation. You can add more PDBs using Oracle SQL. You can also customize your database installation by setting the Oracle base, Oracle home, and the OS user name and group.
+* api-change:``ssm-incidents``: Add support for PagerDuty integrations on ResponsePlan, IncidentRecord, and RelatedItem APIs
+* api-change:``ssm``: This release adds support for cross account access in CreateOpsItem, UpdateOpsItem and GetOpsItem. It introduces new APIs to setup resource policies for SSM resources: PutResourcePolicy, GetResourcePolicies and DeleteResourcePolicy.
+* api-change:``transfer``: Allow additional operations to throw ThrottlingException
+* api-change:``xray``: This release adds new APIs - PutResourcePolicy, DeleteResourcePolicy, ListResourcePolicies for supporting resource based policies for AWS X-Ray.
+
+
 1.27.10
 =======
 

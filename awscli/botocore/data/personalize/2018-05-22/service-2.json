@@ -176,6 +176,23 @@
       ],
       "documentation":"<p>Creates a recommendation filter. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/filter.html\">Filtering recommendations and user segments</a>.</p>"
     },
+    "CreateMetricAttribution":{
+      "name":"CreateMetricAttribution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMetricAttributionRequest"},
+      "output":{"shape":"CreateMetricAttributionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates a metric attribution. A metric attribution creates reports on the data that you import into Amazon Personalize. Depending on how you imported the data, you can view reports in Amazon CloudWatch or Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>.</p>"
+    },
     "CreateRecommender":{
       "name":"CreateRecommender",
       "http":{
@@ -242,7 +259,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"ResourceInUseException"},
-        {"shape":"TooManyTagsException"}
+        {"shape":"TooManyTagsException"},
+        {"shape":"ResourceAlreadyExistsException"}
       ],
       "documentation":"<p>Trains or retrains an active solution in a Custom dataset group. A solution is created using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html\">CreateSolution</a> operation and must be in the ACTIVE state before calling <code>CreateSolutionVersion</code>. A new version of the solution is created every time you call this operation.</p> <p> <b>Status</b> </p> <p>A solution version can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> <li> <p>CREATE STOPPING</p> </li> <li> <p>CREATE STOPPED</p> </li> </ul> <p>To get the status of the version, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolutionVersion.html\">DescribeSolutionVersion</a>. Wait until the status shows as ACTIVE before calling <code>CreateCampaign</code>.</p> <p>If the status shows as CREATE FAILED, the response includes a <code>failureReason</code> key, which describes why the job failed.</p> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListSolutionVersions.html\">ListSolutionVersions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolutionVersion.html\">DescribeSolutionVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListSolutions.html\">ListSolutions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html\">CreateSolution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolution.html\">DescribeSolution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteSolution.html\">DeleteSolution</a> </p> </li> </ul>"
     },
@@ -319,6 +337,21 @@
         {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>Deletes a filter.</p>"
+    },
+    "DeleteMetricAttribution":{
+      "name":"DeleteMetricAttribution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMetricAttributionRequest"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Deletes a metric attribution.</p>",
+      "idempotent":true
     },
     "DeleteRecommender":{
       "name":"DeleteRecommender",
@@ -529,6 +562,20 @@
       ],
       "documentation":"<p>Describes a filter's properties.</p>",
       "idempotent":true
+    },
+    "DescribeMetricAttribution":{
+      "name":"DescribeMetricAttribution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetricAttributionRequest"},
+      "output":{"shape":"DescribeMetricAttributionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes a metric attribution.</p>"
     },
     "DescribeRecipe":{
       "name":"DescribeRecipe",
@@ -754,6 +801,36 @@
       "documentation":"<p>Lists all filters that belong to a given dataset group.</p>",
       "idempotent":true
     },
+    "ListMetricAttributionMetrics":{
+      "name":"ListMetricAttributionMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMetricAttributionMetricsRequest"},
+      "output":{"shape":"ListMetricAttributionMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Lists the metrics for the metric attribution.</p>",
+      "idempotent":true
+    },
+    "ListMetricAttributions":{
+      "name":"ListMetricAttributions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMetricAttributionsRequest"},
+      "output":{"shape":"ListMetricAttributionsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Lists metric attributions.</p>",
+      "idempotent":true
+    },
     "ListRecipes":{
       "name":"ListRecipes",
       "http":{
@@ -939,6 +1016,22 @@
       ],
       "documentation":"<p>Updates a campaign by either deploying a new solution or changing the value of the campaign's <code>minProvisionedTPS</code> parameter.</p> <p>To update a campaign, the campaign status must be ACTIVE or CREATE FAILED. Check the campaign status using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> operation.</p> <note> <p>You can still get recommendations from a campaign while an update is in progress. The campaign will use the previous solution version and campaign configuration to generate recommendations until the latest campaign update status is <code>Active</code>. </p> </note> <p>For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
       "idempotent":true
+    },
+    "UpdateMetricAttribution":{
+      "name":"UpdateMetricAttribution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMetricAttributionRequest"},
+      "output":{"shape":"UpdateMetricAttributionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceAlreadyExistsException"}
+      ],
+      "documentation":"<p>Updates a metric attribution.</p>"
     },
     "UpdateRecommender":{
       "name":"UpdateRecommender",
@@ -1741,6 +1834,10 @@
         "importMode":{
           "shape":"ImportMode",
           "documentation":"<p>Specify how to add the new records to an existing dataset. The default import mode is <code>FULL</code>. If you haven't imported bulk records into the dataset previously, you can only specify <code>FULL</code>.</p> <ul> <li> <p>Specify <code>FULL</code> to overwrite all existing bulk data in your dataset. Data you imported individually is not replaced.</p> </li> <li> <p>Specify <code>INCREMENTAL</code> to append the new records to the existing data in your dataset. Amazon Personalize replaces any record with the same ID with the new one.</p> </li> </ul>"
+        },
+        "publishAttributionMetricsToS3":{
+          "shape":"Boolean",
+          "documentation":"<p>If you created a metric attribution, specify whether to publish metrics for this import job to Amazon S3</p>"
         }
       }
     },
@@ -1859,6 +1956,42 @@
         "filterArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the new filter.</p>"
+        }
+      }
+    },
+    "CreateMetricAttributionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "datasetGroupArn",
+        "metrics",
+        "metricsOutputConfig"
+      ],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>A name for the metric attribution.</p>"
+        },
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination dataset group for the metric attribution.</p>"
+        },
+        "metrics":{
+          "shape":"MetricAttributes",
+          "documentation":"<p>A list of metric attributes for the metric attribution. Each metric attribute specifies an event type to track and a function. Available functions are <code>SUM()</code> or <code>SAMPLECOUNT()</code>. For SUM() functions, provide the dataset type (either Interactions or Items) and column to sum as a parameter. For example SUM(Items.PRICE).</p>"
+        },
+        "metricsOutputConfig":{
+          "shape":"MetricAttributionOutput",
+          "documentation":"<p>The output configuration details for the metric attribution.</p>"
+        }
+      }
+    },
+    "CreateMetricAttributionResponse":{
+      "type":"structure",
+      "members":{
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the new metric attribution.</p>"
         }
       }
     },
@@ -1985,6 +2118,10 @@
       "type":"structure",
       "required":["solutionArn"],
       "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the solution version.</p>"
+        },
         "solutionArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the solution containing the training configuration information.</p>"
@@ -2268,6 +2405,10 @@
         "importMode":{
           "shape":"ImportMode",
           "documentation":"<p>The import mode used by the dataset import job to import new records.</p>"
+        },
+        "publishAttributionMetricsToS3":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the job publishes metrics to Amazon S3 for a metric attribution.</p>"
         }
       },
       "documentation":"<p>Describes a job that imports training data from a data source (Amazon S3 bucket) to an Amazon Personalize dataset. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a>.</p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>"
@@ -2552,6 +2693,16 @@
         }
       }
     },
+    "DeleteMetricAttributionRequest":{
+      "type":"structure",
+      "required":["metricAttributionArn"],
+      "members":{
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The metric attribution's Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
     "DeleteRecommenderRequest":{
       "type":"structure",
       "required":["recommenderArn"],
@@ -2788,6 +2939,25 @@
         "filter":{
           "shape":"Filter",
           "documentation":"<p>The filter's details.</p>"
+        }
+      }
+    },
+    "DescribeMetricAttributionRequest":{
+      "type":"structure",
+      "required":["metricAttributionArn"],
+      "members":{
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The metric attribution's Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "DescribeMetricAttributionResponse":{
+      "type":"structure",
+      "members":{
+        "metricAttribution":{
+          "shape":"MetricAttribution",
+          "documentation":"<p>The details of the metric attribution.</p>"
         }
       }
     },
@@ -3553,6 +3723,66 @@
         }
       }
     },
+    "ListMetricAttributionMetricsRequest":{
+      "type":"structure",
+      "members":{
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric attribution to retrieve attributes for.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of metrics to return in one page of results.</p>"
+        }
+      }
+    },
+    "ListMetricAttributionMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "metrics":{
+          "shape":"MetricAttributes",
+          "documentation":"<p>The metrics for the specified metric attribution.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token from a previous <code>ListMetricAttributionMetricsResponse</code> request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListMetricAttributionsRequest":{
+      "type":"structure",
+      "members":{
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The metric attributions' dataset group Amazon Resource Name (ARN).</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of metric attributions to return in one page of results.</p>"
+        }
+      }
+    },
+    "ListMetricAttributionsResponse":{
+      "type":"structure",
+      "members":{
+        "metricAttributions":{
+          "shape":"MetricAttributions",
+          "documentation":"<p>The list of metric attributions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        }
+      }
+    },
     "ListRecipesRequest":{
       "type":"structure",
       "members":{
@@ -3726,6 +3956,128 @@
       "type":"integer",
       "max":100,
       "min":1
+    },
+    "MetricAttribute":{
+      "type":"structure",
+      "required":[
+        "eventType",
+        "metricName",
+        "expression"
+      ],
+      "members":{
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p>The metric's event type.</p>"
+        },
+        "metricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The metric's name. The name helps you identify the metric in Amazon CloudWatch or Amazon S3.</p>"
+        },
+        "expression":{
+          "shape":"MetricExpression",
+          "documentation":"<p>The attribute's expression. Available functions are <code>SUM()</code> or <code>SAMPLECOUNT()</code>. For SUM() functions, provide the dataset type (either Interactions or Items) and column to sum as a parameter. For example SUM(Items.PRICE).</p>"
+        }
+      },
+      "documentation":"<p>Contains information on a metric that a metric attribution reports on. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>.</p>"
+    },
+    "MetricAttributes":{
+      "type":"list",
+      "member":{"shape":"MetricAttribute"},
+      "max":10
+    },
+    "MetricAttributesNamesList":{
+      "type":"list",
+      "member":{"shape":"MetricName"},
+      "max":10
+    },
+    "MetricAttribution":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The metric attribution's name.</p>"
+        },
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The metric attribution's Amazon Resource Name (ARN).</p>"
+        },
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The metric attribution's dataset group Amazon Resource Name (ARN).</p>"
+        },
+        "metricsOutputConfig":{
+          "shape":"MetricAttributionOutput",
+          "documentation":"<p>The metric attribution's output configuration.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The metric attribution's status.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The metric attribution's creation date time.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The metric attribution's last updated date time.</p>"
+        },
+        "failureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The metric attribution's failure reason.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on a metric attribution. A metric attribution creates reports on the data that you import into Amazon Personalize. Depending on how you import the data, you can view reports in Amazon CloudWatch or Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>.</p>"
+    },
+    "MetricAttributionOutput":{
+      "type":"structure",
+      "required":["roleArn"],
+      "members":{
+        "s3DataDestination":{"shape":"S3DataConfig"},
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket and add metrics to Amazon CloudWatch. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html\">Measuring impact of recommendations</a>.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration details for a metric attribution.</p>"
+    },
+    "MetricAttributionSummary":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the metric attribution.</p>"
+        },
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The metric attribution's Amazon Resource Name (ARN).</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The metric attribution's status.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The metric attribution's creation date time.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The metric attribution's last updated date time.</p>"
+        },
+        "failureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The metric attribution's failure reason.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of the properties of a metric attribution. For a complete listing, call the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeMetricAttribution.html\">DescribeMetricAttribution</a>.</p>"
+    },
+    "MetricAttributions":{
+      "type":"list",
+      "member":{"shape":"MetricAttributionSummary"},
+      "max":100
+    },
+    "MetricExpression":{
+      "type":"string",
+      "max":256
     },
     "MetricName":{
       "type":"string",
@@ -4174,6 +4526,10 @@
         "lastUpdatedDateTime":{
           "shape":"Date",
           "documentation":"<p>The date and time (in Unix time) that the solution was last updated.</p>"
+        },
+        "recipeArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recipe used by the solution.</p>"
         }
       },
       "documentation":"<p>Provides a summary of the properties of a solution. For a complete listing, call the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolution.html\">DescribeSolution</a> API.</p>"
@@ -4181,6 +4537,10 @@
     "SolutionVersion":{
       "type":"structure",
       "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the solution version.</p>"
+        },
         "solutionVersionArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the solution version.</p>"
@@ -4496,6 +4856,36 @@
         "campaignArn":{
           "shape":"Arn",
           "documentation":"<p>The same campaign ARN as given in the request.</p>"
+        }
+      }
+    },
+    "UpdateMetricAttributionRequest":{
+      "type":"structure",
+      "members":{
+        "addMetrics":{
+          "shape":"MetricAttributes",
+          "documentation":"<p>Add new metric attributes to the metric attribution.</p>"
+        },
+        "removeMetrics":{
+          "shape":"MetricAttributesNamesList",
+          "documentation":"<p>Remove metric attributes from the metric attribution.</p>"
+        },
+        "metricsOutputConfig":{
+          "shape":"MetricAttributionOutput",
+          "documentation":"<p>An output config for the metric attribution.</p>"
+        },
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the metric attribution to update.</p>"
+        }
+      }
+    },
+    "UpdateMetricAttributionResponse":{
+      "type":"structure",
+      "members":{
+        "metricAttributionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the metric attribution that you updated.</p>"
         }
       }
     },

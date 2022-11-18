@@ -14,6 +14,7 @@ import json
 import os
 import platform
 import sys
+import copy
 import logging
 
 import distro
@@ -38,6 +39,7 @@ from awscli.argparser import MainArgParser
 from awscli.argparser import FirstPassGlobalArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
+from awscli.argparser import SubCommandArgParser
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -680,6 +682,7 @@ class ServiceOperation(object):
         self._lineage = [self]
         self._operation_model = operation_model
         self._session = session
+        self._subcommand_table = None
         if operation_model.deprecated:
             self._UNDOCUMENTED = True
 
@@ -704,17 +707,36 @@ class ServiceOperation(object):
         # Represents the lineage of a command in terms of command ``name``
         return [cmd.name for cmd in self.lineage]
 
+    def _build_subcommand_table(self):
+        subcommand_table = OrderedDict()
+        full_name = '_'.join([c.name for c in self.lineage])
+        self._session.emit(
+            'building-command-table.%s' % full_name,
+            command_table=subcommand_table,
+            session=self._session,
+            command_object=self,
+        )
+        return subcommand_table
+
     @property
     def subcommand_table(self):
         # There's no subcommands for an operation so we return an
         # empty dictionary.
-        return {}
+        if self._subcommand_table is None:
+            self._subcommand_table = self._build_subcommand_table()
+        return self._subcommand_table
 
     @property
     def arg_table(self):
         if self._arg_table is None:
             self._arg_table = self._create_argument_table()
         return self._arg_table
+
+    def _parse_potential_subcommand(self, args, subcommand_table):
+        if subcommand_table:
+            parser = SubCommandArgParser(self.arg_table, subcommand_table)
+            return parser.parse_known_args(args)
+        return None
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
@@ -723,7 +745,14 @@ class ServiceOperation(object):
             (self._parent_name, self._name)
         self._emit(event, argument_table=self.arg_table, args=args,
                    session=self._session)
-        operation_parser = self._create_operation_parser(self.arg_table)
+        subcommand_table = self.subcommand_table
+        maybe_parsed_subcommand = self._parse_potential_subcommand(
+            args, subcommand_table)
+        if maybe_parsed_subcommand is not None:
+            new_args, subcommand_name = maybe_parsed_subcommand
+            return subcommand_table[subcommand_name](new_args, parsed_globals)
+        operation_parser = self._create_operation_parser(
+            self.arg_table, subcommand_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if parsed_args.help == 'help':
@@ -848,8 +877,8 @@ class ServiceOperation(object):
         return self._session.emit_first_non_none_response(
             name, **kwargs)
 
-    def _create_operation_parser(self, arg_table):
-        parser = ArgTableArgParser(arg_table)
+    def _create_operation_parser(self, arg_table, subcommand_table):
+        parser = ArgTableArgParser(arg_table, subcommand_table)
         return parser
 
     def _add_customization_to_user_agent(self):

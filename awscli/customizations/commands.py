@@ -1,4 +1,5 @@
 import logging
+import copy
 import os
 
 from botocore import model
@@ -6,7 +7,7 @@ from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli
-from awscli.argparser import ArgTableArgParser
+from awscli.argparser import ArgTableArgParser, SubCommandArgParser
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.clidocs import OperationDocumentEventHandler
@@ -126,6 +127,12 @@ class BasicCommand(CLICommand):
         self._subcommand_table = None
         self._lineage = [self]
 
+    def _parse_potential_subcommand(self, args, subcommand_table):
+        if subcommand_table:
+            parser = SubCommandArgParser(self.arg_table, subcommand_table)
+            return parser.parse_known_args(args)
+        return None
+
     def __call__(self, args, parsed_globals):
         # args is the remaining unparsed args.
         # We might be able to parse these args so we need to create
@@ -136,6 +143,13 @@ class BasicCommand(CLICommand):
             ".".join(self.lineage_names)
         self._session.emit(event, argument_table=self._arg_table, args=args,
                            session=self._session)
+        maybe_parsed_subcommand = self._parse_potential_subcommand(
+            args, self._subcommand_table
+        )
+        if maybe_parsed_subcommand is not None:
+            new_args, subcommand_name = maybe_parsed_subcommand
+            return self._subcommand_table[subcommand_name](
+                new_args, parsed_globals)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
@@ -193,9 +207,6 @@ class BasicCommand(CLICommand):
                 return 0
             else:
                 return rc
-        else:
-            return self.subcommand_table[parsed_args.subcommand](remaining,
-                                                                 parsed_globals)
 
     def _validate_value_against_schema(self, model, value):
         validate_parameters(value, model)

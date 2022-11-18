@@ -18,14 +18,16 @@ from botocore.session import Session
 from awscli.testutils import unittest
 from awscli.testutils import mock
 from awscli.testutils import FileCreator
-from awscli.alias import InvalidAliasException
+from awscli.alias import AliasSubCommandInjector, InvalidAliasException
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
 from awscli.alias import BaseAliasCommand
 from awscli.alias import ServiceAliasCommand
 from awscli.alias import ExternalAliasCommand
+from awscli.alias import InternalAliasSubCommand
 from awscli.argparser import MainArgParser, ArgParseException
 from awscli.commands import CLICommand
+from awscli.clidriver import CLIDriver
 
 
 class FakeParsedArgs(object):
@@ -118,6 +120,119 @@ class TestAliasLoader(unittest.TestCase):
             {'my-alias': 'my-alias-value',
              'my-second-alias': 'my-second-alias-value'})
 
+    def test_get_aliases_for_service(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2]\n')
+            f.write('list = describe-instances\n')
+            f.write('regions = describe-regions\n')
+        alias_interface = AliasLoader(self.alias_file)
+        self.assertEqual(
+            alias_interface.get_aliases(command=('ec2',)),
+            {'list': 'describe-instances', 'regions': 'describe-regions'})
+
+    def test_get_aliases_multiple_nesting(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('[command ec2 wait]\n')
+            f.write('instance-new-state = describe-instances\n')
+        alias_interface = AliasLoader(self.alias_file)
+        self.assertEqual(
+            alias_interface.get_aliases(command=('ec2', 'wait')),
+            {'instance-new-state': 'describe-instances'})
+
+    def test_command_aliases_cleanup_whitespace(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write(
+                '[command iam]\n'
+                'my-alias = \n'
+                '  my-alias-value \\ \n'
+                '  --parameter foo\n'
+            )
+        alias_interface = AliasLoader(self.alias_file)
+        self.assertEqual(
+            alias_interface.get_aliases(command=('iam',)),
+            # The backslash and newline should be preserved, but
+            # still have the beginning and end newlines removed.
+            {'my-alias': 'my-alias-value \\\n--parameter foo'})
+
+
+class TestAliasSubcommandInjector(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.alias_file = self.files.create_file('alias', '[command iam]\n')
+        self.alias_loader = AliasLoader(self.alias_file)
+        self.command_table = {}
+        self.injector = AliasSubCommandInjector(self.alias_loader)
+        self.command_object = mock.Mock(spec=CLICommand)
+        self.session = mock.Mock(spec=Session)
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    def test_operation_alias_command(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('list = list-roles\n')
+
+        self.injector.on_building_command_table(
+            command_table=self.command_table,
+            event_name='building-command-table.iam',
+            session=self.session,
+            command_object=self.command_object)
+        self.assertIn('list', self.command_table)
+        self.assertIsInstance(
+            self.command_table['list'], InternalAliasSubCommand)
+
+    def test_global_parser_events_workflow(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('list = list-roles\n')
+
+        clidriver = mock.Mock(spec=CLIDriver)
+        fake_cmd_table = {'foo': mock.Mock(spec=CLICommand)}
+        clidriver.subcommand_table = fake_cmd_table
+        global_parser = mock.Mock()
+        global_parser.parse_known_args.return_value = (FakeParsedArgs(), [])
+        clidriver.create_parser.return_value = global_parser
+        # First thing that fires building the main (i.e toplevel) command table.
+        # This is the only inconsistent event args with respect to types where
+        # the command object is a CLIDriver instead of a CLICommand subclass.
+        self.injector.on_building_command_table(
+            command_table=fake_cmd_table,
+            event_name='building-command-table.main',
+            session=self.session,
+            command_object=clidriver,
+        )
+        # Then we fire the service specific command table event.
+        self.injector.on_building_command_table(
+            command_table=self.command_table,
+            event_name='building-command-table.iam',
+            session=self.session,
+            command_object=self.command_object,
+        )
+        alias_cmd = self.command_table['list']
+        alias_cmd([], FakeParsedArgs(command='iam'))
+        # We should have plumbed through the global parser correctly:
+        global_parser.parse_known_args.assert_called_with(['iam', 'list-roles'])
+
+    def test_noop_if_no_cmd_aliases_defined(self):
+        self.injector.on_building_command_table(
+            command_table=self.command_table,
+            event_name='building-command-table.iam',
+            session=self.session,
+            command_object=self.command_object)
+        self.assertEqual(self.command_table, {})
+
+    def test_can_inject_external_aliases_in_sub_cmd(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('list = !aws iam list-roles')
+
+        self.injector.on_building_command_table(
+            command_table=self.command_table,
+            event_name='building-command-table.iam',
+            session=self.session,
+            command_object=self.command_object)
+        self.assertIn('list', self.command_table)
+        self.assertIsInstance(
+            self.command_table['list'], ExternalAliasCommand)
+
 
 class TestAliasCommandInjector(unittest.TestCase):
     def setUp(self):
@@ -196,6 +311,129 @@ class TestBaseAliasCommand(unittest.TestCase):
         self.assertEqual(alias_cmd.name, 'alias-name')
         alias_cmd.name = 'new-alias-name'
         self.assertEqual(alias_cmd.name, 'new-alias-name')
+
+
+class TestInternalAliasSubCommand(unittest.TestCase):
+    def setUp(self):
+        self.alias_name = 'myalias'
+        self.alias_value = 'list-stacks'
+        self.session = mock.Mock(spec=Session)
+        self.parent_command = 'cloudformation'
+        self.command_object = mock.Mock(spec=CLICommand)
+        self.command_object.name = self.parent_command
+        self.shadow_proxy_command = None
+        self.command_table = {
+            self.parent_command: self.command_object,
+        }
+        self.global_args_parser = MainArgParser(
+            command_table=self.command_table,
+            version_string='version',
+            description='description',
+            argument_table={}
+        )
+
+    def create_alias_sub_command(self):
+        return InternalAliasSubCommand(
+            alias_name=self.alias_name,
+            alias_value=self.alias_value,
+            command_object=self.command_object,
+            global_args_parser=self.global_args_parser,
+            proxied_sub_command=self.shadow_proxy_command,
+            session=self.session,
+        )
+
+    def test_alias_with_no_args(self):
+        alias_cmd = self.create_alias_sub_command()
+        self.assertEqual(alias_cmd.name, self.alias_name)
+        parsed_globals = FakeParsedArgs(command=self.parent_command)
+        alias_cmd(args=[], parsed_globals=parsed_globals)
+        self.command_object.assert_called_with(
+            [self.alias_value], parsed_globals,
+        )
+
+    def test_alias_with_alias_specific_args(self):
+        # --stack-status-filter is specific to the list-stacks command
+        # and is not a global param.
+        self.alias_value = 'list-stacks --stack-status-filter CREATE_COMPLETE'
+        alias_cmd = self.create_alias_sub_command()
+        parsed_globals = FakeParsedArgs(command=self.parent_command)
+        alias_cmd(args=[], parsed_globals=parsed_globals)
+        self.command_object.assert_called_with(
+            ['list-stacks', '--stack-status-filter', 'CREATE_COMPLETE'],
+            parsed_globals,
+        )
+
+    def test_alias_with_global_args(self):
+        self.alias_value = 'list-stacks --query StackSummaries[]'
+        # The add_argument() calls configures the global_args_parser
+        # to see the --query arg as a global arg and is properly moved
+        # over to the set of parsed_globals.
+        self.global_args_parser.add_argument('--query')
+        alias_cmd = self.create_alias_sub_command()
+        parsed_globals = FakeParsedArgs(command=self.parent_command)
+        alias_cmd(args=[], parsed_globals=parsed_globals)
+        self.command_object.assert_called_with(
+            ['list-stacks'],
+            parsed_globals,
+        )
+        # The --query arg should have moved to the parsed_globals
+        self.assertEqual(parsed_globals.query, 'StackSummaries[]')
+
+    def test_can_combine_global_args_alias_and_explicit(self):
+        self.alias_value = 'list-stacks --query StackSummaries[]'
+        # The add_argument() calls configures the global_args_parser
+        # to see the --query arg as a global arg and is properly moved
+        # over to the set of parsed_globals.
+        self.global_args_parser.add_argument('--query')
+        self.global_args_parser.add_argument('--endpoint-url')
+        alias_cmd = self.create_alias_sub_command()
+        parsed_globals = FakeParsedArgs(
+            command=self.parent_command,
+            endpoint_url='http://localhost:8000/')
+        alias_cmd(args=[], parsed_globals=parsed_globals)
+        self.command_object.assert_called_with(
+            ['list-stacks'],
+            parsed_globals,
+        )
+        # The --query arg should have moved to the parsed_globals
+        # and --endpoint-url should remain untouched.
+        self.assertEqual(parsed_globals.query, 'StackSummaries[]')
+        self.assertEqual(parsed_globals.endpoint_url, 'http://localhost:8000/')
+
+    def test_explicit_value_overrides_alias_value_global_arg(self):
+        self.alias_value = 'list-stacks --query StackSummaries[]'
+        self.global_args_parser.add_argument('--query')
+        alias_cmd = self.create_alias_sub_command()
+        # A query value being in the FakeParsedArgs denotes
+        # that a user explicitly provided this value on the command line,
+        # e.g. 'aws cloudformation my-alias --query StackSummaries[].StackName'
+        parsed_globals = FakeParsedArgs(
+            command=self.parent_command,
+            query='StackSummaries[].StackName',
+        )
+        alias_cmd(args=[], parsed_globals=parsed_globals)
+        self.command_object.assert_called_with(
+            ['list-stacks'],
+            parsed_globals,
+        )
+        # The value from the alias definition overrides the explicitly provided
+        # version.  This seems counterintuitive (I'd expect the more explicit
+        # version from the command line args to take precedence) but this is the
+        # existing behavior with top-level aliases so we want to ensure we preserve
+        # this behavior with sub-command aliases.
+        self.assertEqual(parsed_globals.query, 'StackSummaries[]')
+
+    def test_alias_with_proxied_sub_command(self):
+        self.shadow_proxy_command = mock.Mock(spec=CLICommand)
+        self.alias_name = 'list-stacks'
+        self.alias_value = 'list-stacks --stack-status-filter CREATE_COMPLETE'
+        alias_cmd = self.create_alias_sub_command()
+        parsed_globals = FakeParsedArgs(command=self.parent_command)
+        alias_cmd(args=[], parsed_globals=parsed_globals)
+        self.command_object.assert_not_called()
+        self.shadow_proxy_command.assert_called_with(
+            ['--stack-status-filter', 'CREATE_COMPLETE'], parsed_globals,
+        )
 
 
 class TestServiceAliasCommand(unittest.TestCase):

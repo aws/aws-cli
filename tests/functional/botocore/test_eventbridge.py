@@ -130,9 +130,8 @@ class TestClientEvents(BaseSessionTest):
         default_args = self._default_put_events_args()
         endpoint_id = "badactor.com?foo=bar"
 
-        with pytest.raises(InvalidEndpointConfigurationError) as e:
+        with pytest.raises(InvalidEndpointConfigurationError):
             client.put_events(EndpointId=endpoint_id, **default_args)
-        assert "EndpointId is not a valid hostname component" in str(e.value)
 
     def test_put_event_bad_endpoint_id_explicit_config(self):
         client, stubber = self.create_stubbed_eventbridge_client(
@@ -145,9 +144,8 @@ class TestClientEvents(BaseSessionTest):
         default_args = self._default_put_events_args()
         endpoint_id = "badactor.com?foo=bar"
 
-        with pytest.raises(InvalidEndpointConfigurationError) as e:
+        with pytest.raises(InvalidEndpointConfigurationError):
             client.put_events(EndpointId=endpoint_id, **default_args)
-        assert "EndpointId is not a valid hostname component" in str(e.value)
 
     def test_put_event_empty_endpoint_id(self):
         client, stubber = self.create_stubbed_eventbridge_client(
@@ -156,9 +154,8 @@ class TestClientEvents(BaseSessionTest):
         default_args = self._default_put_events_args()
         endpoint_id = ""
 
-        with pytest.raises(InvalidEndpointConfigurationError) as e:
+        with pytest.raises(InvalidEndpointConfigurationError):
             client.put_events(EndpointId=endpoint_id, **default_args)
-        assert "EndpointId must not be a zero length string" in str(e.value)
 
     def test_put_event_empty_endpoint_id_explicit_config(self):
         client, stubber = self.create_stubbed_eventbridge_client(
@@ -171,9 +168,8 @@ class TestClientEvents(BaseSessionTest):
         default_args = self._default_put_events_args()
         endpoint_id = ""
 
-        with pytest.raises(InvalidEndpointConfigurationError) as e:
+        with pytest.raises(InvalidEndpointConfigurationError):
             client.put_events(EndpointId=endpoint_id, **default_args)
-        assert "EndpointId must not be a zero length string" in str(e.value)
 
     def test_put_event_default_dualstack_endpoint(self):
         config = Config(use_dualstack_endpoint=True, use_fips_endpoint=False)
@@ -227,11 +223,8 @@ class TestClientEvents(BaseSessionTest):
         default_args = self._default_put_events_args()
         endpoint_id = "abc123.456def"
 
-        with pytest.raises(InvalidEndpointConfigurationError) as e:
+        with pytest.raises(InvalidEndpointConfigurationError):
             client.put_events(EndpointId=endpoint_id, **default_args)
-        assert "FIPS is not supported with EventBridge multi-region endpoints" in str(
-            e.value
-        )
 
     def test_put_events_default_dualstack_fips_endpoint(self):
         config = Config(use_dualstack_endpoint=True, use_fips_endpoint=True)
@@ -317,5 +310,5 @@ class TestClientEvents(BaseSessionTest):
                 ("EndpointId", endpoint_id),
             ],
         )
-        assert stubber.requests[0].url == "https://example.org"
+        assert stubber.requests[0].url == "https://example.org/"
         self._assert_sigv4a_headers(stubber.requests[0])

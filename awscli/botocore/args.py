@@ -25,7 +25,10 @@ import botocore.serialize
 import botocore.utils
 from botocore.config import Config
 from botocore.endpoint import EndpointCreator
+from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
+from botocore.regions import EndpointRulesetResolver
 from botocore.signers import RequestSigner
+from botocore.utils import is_s3_accelerate_url
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +43,21 @@ class ClientArgsCreator(object):
         self._exceptions_factory = exceptions_factory
         self._config_store = config_store
 
-    def get_client_args(self, service_model, region_name, is_secure,
-                        endpoint_url, verify, credentials, scoped_config,
-                        client_config, endpoint_bridge, auth_token=None):
+    def get_client_args(
+            self,
+            service_model,
+            region_name,
+            is_secure,
+            endpoint_url,
+            verify,
+            credentials,
+            scoped_config,
+            client_config,
+            endpoint_bridge,
+            auth_token=None,
+            endpoints_ruleset_data=None,
+            partition_data=None,
+    ):
         final_args = self.compute_client_args(
             service_model, client_config, endpoint_bridge, region_name,
             endpoint_url, is_secure, scoped_config)
@@ -85,6 +100,21 @@ class ClientArgsCreator(object):
         serializer = botocore.serialize.create_serializer(
             protocol, parameter_validation)
         response_parser = botocore.parsers.create_parser(protocol)
+
+        ruleset_resolver = self._build_endpoint_resolver(
+            endpoints_ruleset_data,
+            partition_data,
+            client_config,
+            service_model,
+            endpoint_region_name,
+            region_name,
+            endpoint_url,
+            endpoint,
+            is_secure,
+            endpoint_bridge,
+            event_emitter,
+        )
+
         return {
             'serializer': serializer,
             'endpoint': endpoint,
@@ -95,7 +125,8 @@ class ClientArgsCreator(object):
             'loader': self._loader,
             'client_config': new_config,
             'partition': partition,
-            'exceptions_factory': self._exceptions_factory
+            'exceptions_factory': self._exceptions_factory,
+            'endpoint_ruleset_resolver': ruleset_resolver,
         }
 
     def compute_client_args(self, service_model, client_config,
@@ -154,7 +185,7 @@ class ClientArgsCreator(object):
         self._compute_retry_config(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
-        is_s3_service = service_name in ['s3', 's3-control']
+        is_s3_service = self._is_s3_service(service_name)
 
         if is_s3_service and 'dualstack' in endpoint_variant_tags:
             if s3_config is None:
@@ -190,6 +221,16 @@ class ClientArgsCreator(object):
                     s3_configuration.update(client_config.s3)
 
         return s3_configuration
+
+    def _is_s3_service(self, service_name):
+        """Whether the service is S3 or S3 Control.
+
+        Note that throughout this class, service_name refers to the endpoint
+        prefix, not the folder name of the service in botocore/data. For
+        S3 Control, the folder name is 's3control' but the endpoint prefix is
+        's3-control'.
+        """
+        return service_name in ['s3', 's3-control']
 
     def _compute_endpoint_config(self, service_name, region_name, endpoint_url,
                                  is_secure, endpoint_bridge, s3_config):
@@ -278,3 +319,141 @@ class ClientArgsCreator(object):
             return val
         else:
             return val.lower() == 'true'
+
+    def _build_endpoint_resolver(
+        self,
+        endpoints_ruleset_data,
+        partition_data,
+        client_config,
+        service_model,
+        endpoint_region_name,
+        region_name,
+        endpoint_url,
+        endpoint,
+        is_secure,
+        endpoint_bridge,
+        event_emitter,
+    ):
+        if endpoints_ruleset_data is None:
+            return None
+
+        # The legacy EndpointResolver is global to the session, but
+        # EndpointRulesetResolver is service-specific. Builtins for
+        # EndpointRulesetResolver must not be derived from the legacy
+        # endpoint resolver's output, including final_args, s3_config,
+        # etc.
+        s3_config_raw = self.compute_s3_config(client_config) or {}
+        service_name_raw = service_model.endpoint_prefix
+        # Maintain complex logic for s3 and sts endpoints for backwards
+        # compatibility.
+        if service_name_raw in ['s3', 'sts'] or region_name is None:
+            eprv2_region_name = endpoint_region_name
+        else:
+            eprv2_region_name = region_name
+        resolver_builtins = self.compute_endpoint_resolver_builtin_defaults(
+            region_name=eprv2_region_name,
+            service_name=service_name_raw,
+            s3_config=s3_config_raw,
+            endpoint_bridge=endpoint_bridge,
+            client_endpoint_url=endpoint_url,
+            legacy_endpoint_url=endpoint.host,
+        )
+        # botocore does not support client context parameters generically
+        # for every service. Instead, the s3 config section entries are
+        # available as client context parameters. In the future, endpoint
+        # rulesets of services other than s3/s3control may require client
+        # context parameters.
+        client_context = (
+            s3_config_raw if self._is_s3_service(service_name_raw) else {}
+        )
+        sig_version = (
+            client_config.signature_version
+            if client_config is not None
+            else None
+        )
+        return EndpointRulesetResolver(
+            endpoint_ruleset_data=endpoints_ruleset_data,
+            partition_data=partition_data,
+            service_model=service_model,
+            builtins=resolver_builtins,
+            client_context=client_context,
+            event_emitter=event_emitter,
+            use_ssl=is_secure,
+            requested_auth_scheme=sig_version,
+        )
+
+    def compute_endpoint_resolver_builtin_defaults(
+        self,
+        region_name,
+        service_name,
+        s3_config,
+        endpoint_bridge,
+        client_endpoint_url,
+        legacy_endpoint_url,
+    ):
+        # EndpointRulesetResolver rulesets may accept an "SDK::Endpoint" as
+        # input. If the endpoint_url argument of create_client() is set, it
+        # always takes priority.
+        if client_endpoint_url:
+            given_endpoint = client_endpoint_url
+        # If an endpoints.json data file other than the one bundled within
+        # the botocore/data directory is used, the output of legacy
+        # endpoint resolution is provided to EndpointRulesetResolver.
+        elif not endpoint_bridge.resolver_uses_builtin_data():
+            given_endpoint = legacy_endpoint_url
+        else:
+            given_endpoint = None
+
+        # The endpoint rulesets differ from legacy botocore behavior in whether
+        # forcing path style addressing in incompatible situations raises an
+        # exception or silently ignores the config setting. The
+        # AWS_S3_FORCE_PATH_STYLE parameter is adjusted both here and for each
+        # operation so that the ruleset behavior is backwards compatible.
+        if s3_config.get('use_accelerate_endpoint', False):
+            force_path_style = False
+        elif client_endpoint_url is not None and not is_s3_accelerate_url(
+            client_endpoint_url
+        ):
+            force_path_style = s3_config.get('addressing_style') != 'virtual'
+        else:
+            force_path_style = s3_config.get('addressing_style') == 'path'
+
+        return {
+            EPRBuiltins.AWS_REGION: region_name,
+            EPRBuiltins.AWS_USE_FIPS: (
+                # SDK_ENDPOINT cannot be combined with AWS_USE_FIPS
+                given_endpoint is None
+                # use legacy resolver's _resolve_endpoint_variant_config_var()
+                # or default to False if it returns None
+                and endpoint_bridge._resolve_endpoint_variant_config_var(
+                    'use_fips_endpoint'
+                )
+                or False
+            ),
+            EPRBuiltins.AWS_USE_DUALSTACK: (
+                # SDK_ENDPOINT cannot be combined with AWS_USE_DUALSTACK
+                given_endpoint is None
+                # use legacy resolver's _resolve_use_dualstack_endpoint() and
+                # or default to False if it returns None
+                and endpoint_bridge._resolve_use_dualstack_endpoint(
+                    service_name
+                )
+                or False
+            ),
+            EPRBuiltins.AWS_STS_USE_GLOBAL_ENDPOINT: False,
+            EPRBuiltins.AWS_S3_USE_GLOBAL_ENDPOINT: False,
+            EPRBuiltins.AWS_S3_ACCELERATE: s3_config.get(
+                'use_accelerate_endpoint', False
+            ),
+            EPRBuiltins.AWS_S3_FORCE_PATH_STYLE: force_path_style,
+            EPRBuiltins.AWS_S3_USE_ARN_REGION: s3_config.get(
+                'use_arn_region', True
+            ),
+            EPRBuiltins.AWS_S3CONTROL_USE_ARN_REGION: s3_config.get(
+                'use_arn_region', False
+            ),
+            EPRBuiltins.AWS_S3_DISABLE_MRAP: s3_config.get(
+                's3_disable_multiregion_access_points', False
+            ),
+            EPRBuiltins.SDK_ENDPOINT: given_endpoint,
+        }

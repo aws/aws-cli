@@ -1,0 +1,101 @@
+{
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region",
+      "required": true
+    },
+    "PropertyOne": {
+      "type": "boolean"
+    },
+    "PropertyTwo": {
+      "type": "string"
+    },
+    "PropertyThree": {
+      "type": "boolean"
+    }
+  },
+  "rules": [
+    {
+      "documentation": "base rule",
+      "conditions": [
+        {
+          "fn": "aws.partition",
+          "argv": [
+            {
+              "ref": "Region"
+            }
+          ],
+          "assign": "PartResult"
+        }
+      ],
+      "rules": [
+        {
+          "documentation": "the AWS partition",
+          "conditions": [
+            {
+              "fn": "stringEquals",
+              "argv": [
+                "aws",
+                {
+                  "fn": "getAttr",
+                  "argv": [
+                    {
+                      "ref": "PartResult"
+                    },
+                    "name"
+                  ]
+                }
+              ]
+            }
+          ],
+          "endpoint": {
+            "url": "https://aws-partition.{Region}.{PartResult#dnsSuffix}",
+            "properties": {
+              "authSchemes": [
+                {
+                  "name": "sigv4",
+                  "signingName": "serviceName",
+                  "signingRegion": "{Region}"
+                }
+              ],
+              "meta": {
+                "baseSuffix": "{PartResult#dnsSuffix}",
+                "dualStackSuffix": "{PartResult#dualStackDnsSuffix}"
+              }
+            }
+          },
+          "type": "endpoint"
+        },
+        {
+          "documentation": "the other partitions",
+          "conditions": [],
+          "endpoint": {
+            "url": "https://{PartResult#name}.{Region}.{PartResult#dnsSuffix}",
+            "properties": {
+              "authSchemes": [
+                {
+                  "name": "sigv4",
+                  "signingName": "serviceName",
+                  "signingRegion": "{Region}"
+                }
+              ],
+              "meta": {
+                "baseSuffix": "{PartResult#dnsSuffix}",
+                "dualStackSuffix": "{PartResult#dualStackDnsSuffix}"
+              }
+            }
+          },
+          "type": "endpoint"
+        },
+        {
+          "conditions": [],
+          "error": "no rules matched",
+          "type": "error"
+        }
+      ],
+      "type": "tree"
+    }
+  ],
+  "version": "1.3"
+}

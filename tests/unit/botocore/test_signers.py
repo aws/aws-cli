@@ -756,10 +756,11 @@ class TestGenerateUrl(unittest.TestCase):
 
         ref_request_dict = {
             'body': b'',
-            'url': u'https://s3.us-east-1.amazonaws.com/mybucket/mykey',
+            'url': 'https://mybucket.s3.us-east-1.amazonaws.com/mykey',
             'headers': {},
+            'auth_path': '/mybucket/mykey',
             'query_string': {},
-            'url_path': u'/mybucket/mykey',
+            'url_path': '/mykey',
             'method': u'GET',
             # mock.ANY is used because client parameter related events
             # inject values into the context. So using the context's exact
@@ -779,12 +780,13 @@ class TestGenerateUrl(unittest.TestCase):
                 'ResponseContentDisposition': disposition})
         ref_request_dict = {
             'body': b'',
-            'url': (u'https://s3.us-east-1.amazonaws.com/mybucket/mykey'
+            'url': ('https://mybucket.s3.us-east-1.amazonaws.com/mykey'
                     '?response-content-disposition='
                     'attachment%3B%20filename%3D%22download.jpg%22'),
+            'auth_path': '/mybucket/mykey',
             'headers': {},
             'query_string': {u'response-content-disposition': disposition},
-            'url_path': u'/mybucket/mykey',
+            'url_path': '/mykey',
             'method': u'GET',
             'context': mock.ANY}
         self.generate_url_mock.assert_called_with(
@@ -805,10 +807,11 @@ class TestGenerateUrl(unittest.TestCase):
             ExpiresIn=20)
         ref_request_dict = {
             'body': b'',
-            'url': u'https://s3.us-east-1.amazonaws.com/mybucket/mykey',
+            'url': 'https://mybucket.s3.us-east-1.amazonaws.com/mykey',
+            'auth_path': '/mybucket/mykey',
             'headers': {},
             'query_string': {},
-            'url_path': u'/mybucket/mykey',
+            'url_path': '/mykey',
             'method': u'GET',
             'context': mock.ANY}
         self.generate_url_mock.assert_called_with(
@@ -821,10 +824,11 @@ class TestGenerateUrl(unittest.TestCase):
             HttpMethod='PUT')
         ref_request_dict = {
             'body': b'',
-            'url': u'https://s3.us-east-1.amazonaws.com/mybucket/mykey',
+            'url': 'https://mybucket.s3.us-east-1.amazonaws.com/mykey',
+            'auth_path': '/mybucket/mykey',
             'headers': {},
             'query_string': {},
-            'url_path': u'/mybucket/mykey',
+            'url_path': '/mykey',
             'method': u'PUT',
             'context': mock.ANY}
         self.generate_url_mock.assert_called_with(
@@ -886,7 +890,7 @@ class TestGeneratePresignedPost(unittest.TestCase):
         fields = post_kwargs['fields']
         conditions = post_kwargs['conditions']
         self.assertEqual(
-            request_dict['url'], 'https://s3.us-east-1.amazonaws.com/mybucket')
+            request_dict['url'], 'https://mybucket.s3.us-east-1.amazonaws.com/')
         self.assertEqual(post_kwargs['expires_in'], 3600)
         self.assertEqual(
             conditions,
@@ -904,7 +908,7 @@ class TestGeneratePresignedPost(unittest.TestCase):
         fields = post_kwargs['fields']
         conditions = post_kwargs['conditions']
         self.assertEqual(
-            request_dict['url'], 'https://s3.us-east-1.amazonaws.com/mybucket')
+            request_dict['url'], 'https://mybucket.s3.us-east-1.amazonaws.com/')
         self.assertEqual(post_kwargs['expires_in'], 3600)
         self.assertEqual(
             conditions,
@@ -921,7 +925,7 @@ class TestGeneratePresignedPost(unittest.TestCase):
         fields = post_kwargs['fields']
         conditions = post_kwargs['conditions']
         self.assertEqual(
-            request_dict['url'], 'https://s3.us-east-1.amazonaws.com/mybucket')
+            request_dict['url'], 'https://mybucket.s3.us-east-1.amazonaws.com/')
         self.assertEqual(post_kwargs['expires_in'], 50)
         self.assertEqual(
             conditions,
@@ -944,7 +948,7 @@ class TestGeneratePresignedPost(unittest.TestCase):
         fields = post_kwargs['fields']
         conditions = post_kwargs['conditions']
         self.assertEqual(
-            request_dict['url'], 'https://s3.us-east-1.amazonaws.com/mybucket')
+            request_dict['url'], 'https://mybucket.s3.us-east-1.amazonaws.com/')
         self.assertEqual(
             conditions,
             [{'acl': 'public-read'}, {'bucket': 'mybucket'}, {'key': 'mykey'}])
@@ -1004,4 +1008,3 @@ class TestGenerateDBAuthToken(BaseSignerTest):
         self.assertIn(region, result)
         # The hostname won't be changed even if a different region is specified
         self.assertIn(hostname, result)
-

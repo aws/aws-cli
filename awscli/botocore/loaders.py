@@ -401,6 +401,24 @@ class Loader(object):
                 pass
 
     @instance_cache
+    def load_data_with_path(self, name):
+        """Same as ``load_data`` but returns file path as second return value.
+
+        :type name: str
+        :param name: The data path, i.e ``ec2/2015-03-01/service-2``.
+
+        :return: Tuple of the loaded data and the path to the data file
+            where the data was loaded from. If no data could be found then a
+            DataNotFoundError is raised.
+        """
+        for possible_path in self._potential_locations(name):
+            found = self.file_loader.load_file(possible_path)
+            if found is not None:
+                return found, possible_path
+
+        # We didn't find anything that matched on any path.
+        raise DataNotFoundError(data_path=name)
+
     def load_data(self, name):
         """Load data given a data path.
 
@@ -408,21 +426,17 @@ class Loader(object):
         search paths until it's able to load a value.  This is typically
         only needed to load *non* model files (such as _endpoints and
         _retry).  If you need to load model files, you should prefer
-        ``load_service_model``.
+        ``load_service_model``.  Use ``load_data_with_path`` to get the
+        data path of the data file as second return value.
 
         :type name: str
         :param name: The data path, i.e ``ec2/2015-03-01/service-2``.
 
-        :return: The loaded data.  If no data could be found then
+        :return: The loaded data. If no data could be found then
             a DataNotFoundError is raised.
-
         """
-        for possible_path in self._potential_locations(name):
-            found = self.file_loader.load_file(possible_path)
-            if found is not None:
-                return found
-        # We didn't find anything that matched on any path.
-        raise DataNotFoundError(data_path=name)
+        data, _ = self.load_data_with_path(name)
+        return data
 
     def _potential_locations(self, name=None, must_exist=False,
                              is_dir=False):
@@ -440,6 +454,21 @@ class Loader(object):
                         yield full_path
                     elif os.path.exists(full_path):
                         yield full_path
+
+    def is_builtin_path(self, path):
+        """Whether a given path is within the package's data directory.
+
+        This method can be used together with load_data_with_path(name)
+        to determine if data has been loaded from a file bundled with the
+        package, as opposed to a file in a separate location.
+
+        :type path: str
+        :param path: The file path to check.
+
+        :return: Whether the given path is within the package's data directory.
+        """
+        path = os.path.expanduser(os.path.expandvars(path))
+        return path.startswith(self.BUILTIN_DATA_PATH)
 
 
 class ExtrasProcessor(object):

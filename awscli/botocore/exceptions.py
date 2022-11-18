@@ -714,3 +714,19 @@ class InvalidEndpointConfigurationError(BotoCoreError):
     fmt = (
         'Invalid endpoint configuration: {msg}'
     )
+
+
+class EndpointProviderError(BotoCoreError):
+    """Base error for the EndpointProvider class"""
+
+    fmt = '{msg}'
+
+
+class EndpointResolutionError(EndpointProviderError):
+    """Error when input parameters resolve to an error rule"""
+
+    fmt = '{msg}'
+
+
+class UnknownEndpointResolutionBuiltInName(EndpointProviderError):
+    fmt = 'Unknown builtin variable name: {name}'

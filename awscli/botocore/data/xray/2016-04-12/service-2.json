@@ -67,6 +67,21 @@
       ],
       "documentation":"<p>Deletes a group resource.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteResourcePolicy"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResult"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidPolicyRevisionIdException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p>Deletes a resource policy from the target Amazon Web Services account.</p>"
+    },
     "DeleteSamplingRule":{
       "name":"DeleteSamplingRule",
       "http":{
@@ -277,6 +292,20 @@
       ],
       "documentation":"<p>Retrieves IDs and annotations for traces available for a specified time frame using an optional filter. To get the full traces, pass the trace IDs to <code>BatchGetTraces</code>.</p> <p>A filter expression can target traced requests that hit specific service nodes or edges, have errors, or come from a known user. For example, the following filter expression targets traces that pass through <code>api.example.com</code>:</p> <p> <code>service(\"api.example.com\")</code> </p> <p>This filter expression finds traces that have an annotation named <code>account</code> with the value <code>12345</code>:</p> <p> <code>annotation.account = \"12345\"</code> </p> <p>For a full list of indexed fields and keywords that you can use in filter expressions, see <a href=\"https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html\">Using Filter Expressions</a> in the <i>Amazon Web Services X-Ray Developer Guide</i>.</p>"
     },
+    "ListResourcePolicies":{
+      "name":"ListResourcePolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListResourcePolicies"
+      },
+      "input":{"shape":"ListResourcePoliciesRequest"},
+      "output":{"shape":"ListResourcePoliciesResult"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p>Returns the list of resource policies in the target Amazon Web Services account.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -305,6 +334,24 @@
         {"shape":"ThrottledException"}
       ],
       "documentation":"<p>Updates the encryption configuration for X-Ray data.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PutResourcePolicy"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResult"},
+      "errors":[
+        {"shape":"MalformedPolicyDocumentException"},
+        {"shape":"LockoutPreventionException"},
+        {"shape":"InvalidPolicyRevisionIdException"},
+        {"shape":"PolicySizeLimitExceededException"},
+        {"shape":"PolicyCountLimitExceededException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p> Sets the resource policy to grant one or more Amazon Web Services services and accounts permissions to access X-Ray. Each resource policy will be associated with a specific Amazon Web Services account. Each Amazon Web Services account can have a maximum of 5 resource policies, and each policy name must be unique within that account. The maximum size of each resource policy is 5KB. </p>"
     },
     "PutTelemetryRecords":{
       "name":"PutTelemetryRecords",
@@ -572,7 +619,7 @@
         },
         "InsightsConfiguration":{
           "shape":"InsightsConfiguration",
-          "documentation":"<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the new group or false to disable insights for the new group.</p> </li> <li> <p>The NotifcationsEnabled boolean can be set to true to enable insights notifications for the new group. Notifications may only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>"
+          "documentation":"<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the new group or false to disable insights for the new group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications for the new group. Notifications may only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>"
         },
         "Tags":{
           "shape":"TagList",
@@ -626,6 +673,25 @@
       }
     },
     "DeleteGroupResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["PolicyName"],
+      "members":{
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the resource policy to delete.</p>"
+        },
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Specifies a specific policy revision to delete. Provide a <code>PolicyRevisionId</code> to ensure an atomic delete operation. If the provided revision id does not match the latest policy revision id, an <code>InvalidPolicyRevisionIdException</code> exception is returned. </p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResult":{
       "type":"structure",
       "members":{
       }
@@ -1822,6 +1888,15 @@
       "documentation":"<p>A list of EC2 instance IDs corresponding to the segments in a trace. </p>"
     },
     "Integer":{"type":"integer"},
+    "InvalidPolicyRevisionIdException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>A policy revision id was provided which does not match the latest policy revision. This exception is also if a policy revision id of 0 is provided via <code>PutResourcePolicy</code> and a policy with the same name already exists.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "InvalidRequestException":{
       "type":"structure",
       "members":{
@@ -1829,6 +1904,28 @@
       },
       "documentation":"<p>The request is missing required parameters or has invalid parameters.</p>",
       "exception":true
+    },
+    "ListResourcePoliciesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"ResourcePolicyNextToken",
+          "documentation":"<p>Not currently supported.</p>"
+        }
+      }
+    },
+    "ListResourcePoliciesResult":{
+      "type":"structure",
+      "members":{
+        "ResourcePolicies":{
+          "shape":"ResourcePolicyList",
+          "documentation":"<p>The list of resource policies in the target Amazon Web Services account.</p>"
+        },
+        "NextToken":{
+          "shape":"ResourcePolicyNextToken",
+          "documentation":"<p>Pagination token. Not currently supported.</p>"
+        }
+      }
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -1857,10 +1954,54 @@
         }
       }
     },
+    "LockoutPreventionException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The provided resource policy would prevent the caller of this request from calling PutResourcePolicy in the future.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "MalformedPolicyDocumentException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Invalid policy document provided in request.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "NullableBoolean":{"type":"boolean"},
     "NullableDouble":{"type":"double"},
     "NullableInteger":{"type":"integer"},
     "NullableLong":{"type":"long"},
+    "PolicyCountLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Exceeded the maximum number of resource policies for a target Amazon Web Services account.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "PolicyDocument":{"type":"string"},
+    "PolicyName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w+=,.@-]+"
+    },
+    "PolicyRevisionId":{"type":"string"},
+    "PolicySizeLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Exceeded the maximum size for a resource policy.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "Priority":{
       "type":"integer",
       "max":9999,
@@ -1886,6 +2027,40 @@
         "EncryptionConfig":{
           "shape":"EncryptionConfig",
           "documentation":"<p>The new encryption configuration.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "PolicyName",
+        "PolicyDocument"
+      ],
+      "members":{
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the resource policy. Must be unique within a specific Amazon Web Services account.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The resource policy document, which can be up to 5kb in size.</p>"
+        },
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Specifies a specific policy revision, to ensure an atomic create operation. By default the resource policy is created if it does not exist, or updated with an incremented revision id. The revision id is unique to each policy in the account.</p> <p>If the policy revision id does not match the latest revision id, the operation will fail with an <code>InvalidPolicyRevisionIdException</code> exception. You can also provide a <code>PolicyRevisionId</code> of 0. In this case, the operation will fail with an <code>InvalidPolicyRevisionIdException</code> exception if a resource policy with the same name already exists. </p>"
+        },
+        "BypassPolicyLockoutCheck":{
+          "shape":"Boolean",
+          "documentation":"<p>A flag to indicate whether to bypass the resource policy lockout safety check.</p> <important> <p>Setting this value to true increases the risk that the policy becomes unmanageable. Do not set this value to true indiscriminately.</p> </important> <p>Use this parameter only when you include a policy in the request and you intend to prevent the principal that is making the request from making a subsequent <code>PutResourcePolicy</code> request.</p> <p>The default value is false.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The resource policy document, as provided in the <code>PutResourcePolicyRequest</code>.</p>"
         }
       }
     },
@@ -1984,6 +2159,37 @@
       "documentation":"<p>The resource was not found. Verify that the name or Amazon Resource Name (ARN) of the resource is correct.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "ResourcePolicy":{
+      "type":"structure",
+      "members":{
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the resource policy. Must be unique within a specific Amazon Web Services account.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The resource policy document, which can be up to 5kb in size.</p>"
+        },
+        "PolicyRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Returns the current policy revision id for this policy name.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the policy was last updated, in Unix time seconds.</p>"
+        }
+      },
+      "documentation":"<p>A resource policy grants one or more Amazon Web Services services and accounts permissions to access X-Ray. Each resource policy is associated with a specific Amazon Web Services account.</p>"
+    },
+    "ResourcePolicyList":{
+      "type":"list",
+      "member":{"shape":"ResourcePolicy"}
+    },
+    "ResourcePolicyNextToken":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "ResponseTimeRootCause":{
       "type":"structure",
@@ -2917,7 +3123,7 @@
         },
         "InsightsConfiguration":{
           "shape":"InsightsConfiguration",
-          "documentation":"<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotifcationsEnabled boolean can be set to true to enable insights notifications for the group. Notifications can only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>"
+          "documentation":"<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications for the group. Notifications can only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>"
         }
       }
     },

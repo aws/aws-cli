@@ -189,6 +189,18 @@
       ],
       "documentation":"<p>Retrieves an attribute group, either by its name or its ID. The attribute group can be specified either by its unique ID or by its name.</p>"
     },
+    "GetConfiguration":{
+      "name":"GetConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configuration"
+      },
+      "output":{"shape":"GetConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Retrieves a <code>TagKey</code> configuration from an account. </p>"
+    },
     "ListApplications":{
       "name":"ListApplications",
       "http":{
@@ -233,7 +245,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all resources that are associated with specified application. Results are paginated.</p>",
+      "documentation":"<p> Lists all of the resources that are associated with the specified application. Results are paginated. </p> <note> <p> If you share an application, and a consumer account associates a tag query to the application, all of the users who can access the application can also view the tag values in all accounts that are associated with it using this API. </p> </note>",
       "idempotent":true
     },
     "ListAttributeGroups":{
@@ -281,6 +293,20 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all of the tags on the resource.</p>"
+    },
+    "PutConfiguration":{
+      "name":"PutConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/configuration"
+      },
+      "input":{"shape":"PutConfigurationRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p> Associates a <code>TagKey</code> configuration to an account. </p>"
     },
     "SyncResource":{
       "name":"SyncResource",
@@ -338,8 +364,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an existing application with new attributes.</p>"
     },
@@ -361,6 +387,16 @@
     }
   },
   "shapes":{
+    "AppRegistryConfiguration":{
+      "type":"structure",
+      "members":{
+        "tagQueryConfiguration":{
+          "shape":"TagQueryConfiguration",
+          "documentation":"<p> Includes the definition of a <code>tagQuery</code>. </p>"
+        }
+      },
+      "documentation":"<p> Includes all of the Service Catalog AppRegistry settings. </p>"
+    },
     "Application":{
       "type":"structure",
       "members":{
@@ -581,7 +617,9 @@
         },
         "name":{
           "shape":"Name",
-          "documentation":"<p>The name of the attribute group. </p>"
+          "documentation":"<important> <p> This field is no longer supported. We recommend you don't use the field when using <code>ListAttributeGroupsForApplication</code>. </p> </important> <p> The name of the attribute group. </p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is deprecated. We recommend not using the field when using ListAttributeGroupsForApplication."
         }
       },
       "documentation":"<p> The details related to a specific AttributeGroup. </p>"
@@ -906,7 +944,7 @@
         },
         "integrations":{
           "shape":"Integrations",
-          "documentation":"<p>The information about the integration of the application with other services, such as Resource Groups.</p>"
+          "documentation":"<p> The information about the integration of the application with other services, such as Resource Groups. </p>"
         }
       }
     },
@@ -993,6 +1031,15 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs associated with the attribute group.</p>"
+        }
+      }
+    },
+    "GetConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"AppRegistryConfiguration",
+          "documentation":"<p> Retrieves <code>TagKey</code> configuration from an account. </p>"
         }
       }
     },
@@ -1153,7 +1200,7 @@
       "members":{
         "attributeGroupsDetails":{
           "shape":"AttributeGroupDetailsList",
-          "documentation":"<p> The details related to a specific AttributeGroup. </p>"
+          "documentation":"<p> The details related to a specific attribute group. </p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1215,7 +1262,7 @@
     },
     "MaxResults":{
       "type":"integer",
-      "max":25,
+      "max":100,
       "min":1
     },
     "Name":{
@@ -1229,6 +1276,16 @@
       "max":2024,
       "min":1,
       "pattern":"[A-Za-z0-9+/=]+"
+    },
+    "PutConfigurationRequest":{
+      "type":"structure",
+      "required":["configuration"],
+      "members":{
+        "configuration":{
+          "shape":"AppRegistryConfiguration",
+          "documentation":"<p> Associates a <code>TagKey</code> configuration to an account. </p>"
+        }
+      }
     },
     "Resource":{
       "type":"structure",
@@ -1251,6 +1308,16 @@
         }
       },
       "documentation":"<p> The information about the resource.</p>"
+    },
+    "ResourceDetails":{
+      "type":"structure",
+      "members":{
+        "tagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the tag.</p>"
+        }
+      },
+      "documentation":"<p> The details related to the resource. </p>"
     },
     "ResourceGroup":{
       "type":"structure",
@@ -1289,8 +1356,16 @@
           "documentation":"<p>The name of the resource.</p>"
         },
         "arn":{
-          "shape":"StackArn",
+          "shape":"Arn",
           "documentation":"<p>The Amazon resource name (ARN) that specifies the resource across services.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> Provides information about the Service Catalog App Registry resource type. </p>"
+        },
+        "resourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p> The details related to the resource. </p>"
         }
       },
       "documentation":"<p>The information about the resource.</p>"
@@ -1322,7 +1397,10 @@
     },
     "ResourceType":{
       "type":"string",
-      "enum":["CFN_STACK"]
+      "enum":[
+        "CFN_STACK",
+        "RESOURCE_TAG_VALUE"
+      ]
     },
     "Resources":{
       "type":"list",
@@ -1391,13 +1469,29 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"(?!aws:)[a-zA-Z+-=._:/]+"
+      "pattern":"[a-zA-Z+-=._:/]+"
+    },
+    "TagKeyConfig":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^(?!\\s+$)[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
     },
     "TagKeys":{
       "type":"list",
       "member":{"shape":"TagKey"},
       "max":50,
       "min":0
+    },
+    "TagQueryConfiguration":{
+      "type":"structure",
+      "members":{
+        "tagKey":{
+          "shape":"TagKeyConfig",
+          "documentation":"<p> Condition in the IAM policy that associates resources to an application. </p>"
+        }
+      },
+      "documentation":"<p> The definition of <code>tagQuery</code>. Specifies which resources are associated with an application. </p>"
     },
     "TagResourceRequest":{
       "type":"structure",

@@ -3065,6 +3065,18 @@
         "EngineVersion":{
           "shape":"String",
           "documentation":"<p>The database engine version.</p>"
+        },
+        "BackupRetentionPeriod":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of days for which automatic DB snapshots are retained.</p>"
+        },
+        "AllocatedStorage":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The allocated storage size in gibibytes (GiB) for all database engines except Amazon Aurora. For Aurora, <code>AllocatedStorage</code> always returns 1, because Aurora DB cluster storage size isn't fixed, but instead automatically adjusts as needed.</p>"
+        },
+        "Iops":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
@@ -3554,6 +3566,10 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The network type of the DB cluster.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for: Aurora DB clusters only</p>"
+        },
+        "DBSystemId":{
+          "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4683,6 +4699,10 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The network type of the DB instance.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>This setting is only for Aurora DB clusters.</p>"
+        },
+        "DBSystemId":{
+          "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -5220,7 +5240,11 @@
           "shape":"Boolean",
           "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p>"
         },
-        "TagList":{"shape":"TagList"}
+        "TagList":{"shape":"TagList"},
+        "DBSystemId":{
+          "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
+        }
       },
       "documentation":"<p>Contains the details for an Amazon RDS DB cluster snapshot</p> <p>This data type is used as a response element in the <code>DescribeDBClusterSnapshots</code> action.</p>",
       "wrapper":true
@@ -5409,6 +5433,10 @@
         "SupportsBabelfish":{
           "shape":"Boolean",
           "documentation":"<p>A value that indicates whether the engine version supports Babelfish for Aurora PostgreSQL.</p>"
+        },
+        "CustomDBEngineVersionManifest":{
+          "shape":"CustomDBEngineVersionManifest",
+          "documentation":"<p>JSON string that lists the installation files and parameters that RDS Custom uses to create a custom engine version (CEV). RDS Custom applies the patches in the order in which they're listed in the manifest. You can set the Oracle home, Oracle base, and UNIX/Linux user and group using the installation parameters. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields\">JSON fields in the CEV manifest</a> in the <i>Amazon RDS User Guide</i>. </p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the action <code>DescribeDBEngineVersions</code>.</p>"
@@ -5741,6 +5769,10 @@
         "StorageThroughput":{
           "shape":"IntegerOptional",
           "documentation":"<p>Specifies the storage throughput for the DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p>"
+        },
+        "DBSystemId":{
+          "shape":"String",
+          "documentation":"<p>The Oracle system ID (Oracle SID) for a container database (CDB). The Oracle SID is also the name of the CDB. This setting is valid for RDS Custom only.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",

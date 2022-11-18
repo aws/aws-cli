@@ -770,6 +770,10 @@
           "shape":"IncidentTemplate",
           "documentation":"<p>Details used to create an incident when using this response plan.</p>"
         },
+        "integrations":{
+          "shape":"Integrations",
+          "documentation":"<p>Information about third-party services integrated into the response plan.</p>"
+        },
         "name":{
           "shape":"ResponsePlanName",
           "documentation":"<p>The short format name of the response plan. Can't include spaces.</p>"
@@ -1212,6 +1216,10 @@
           "shape":"IncidentTemplate",
           "documentation":"<p>Details used to create the incident when using this response plan.</p>"
         },
+        "integrations":{
+          "shape":"Integrations",
+          "documentation":"<p>Information about third-party services integrated into the Incident Manager response plan.</p>"
+        },
         "name":{
           "shape":"ResponsePlanName",
           "documentation":"<p>The short format name of the response plan. The name can't contain spaces.</p>"
@@ -1468,6 +1476,23 @@
       "max":100,
       "min":0
     },
+    "Integration":{
+      "type":"structure",
+      "members":{
+        "pagerDutyConfiguration":{
+          "shape":"PagerDutyConfiguration",
+          "documentation":"<p>Information about the PagerDuty service where the response plan creates an incident.</p>"
+        }
+      },
+      "documentation":"<p>Information about third-party services integrated into a response plan.</p>",
+      "union":true
+    },
+    "Integrations":{
+      "type":"list",
+      "member":{"shape":"Integration"},
+      "max":1,
+      "min":0
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["message"],
@@ -1521,6 +1546,10 @@
         "metricDefinition":{
           "shape":"MetricDefinition",
           "documentation":"<p>The metric definition, if the related item is a metric in Amazon CloudWatch.</p>"
+        },
+        "pagerDutyIncidentDetail":{
+          "shape":"PagerDutyIncidentDetail",
+          "documentation":"<p>Details about an incident that is associated with a PagerDuty incident.</p>"
         },
         "url":{
           "shape":"Url",
@@ -1745,6 +1774,84 @@
       "member":{"shape":"NotificationTargetItem"},
       "max":10,
       "min":0
+    },
+    "PagerDutyConfiguration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pagerDutyIncidentConfiguration",
+        "secretId"
+      ],
+      "members":{
+        "name":{
+          "shape":"PagerDutyConfigurationNameString",
+          "documentation":"<p>The name of the PagerDuty configuration.</p>"
+        },
+        "pagerDutyIncidentConfiguration":{
+          "shape":"PagerDutyIncidentConfiguration",
+          "documentation":"<p>Details about the PagerDuty service associated with the configuration.</p>"
+        },
+        "secretId":{
+          "shape":"PagerDutyConfigurationSecretIdString",
+          "documentation":"<p>The ID of the Amazon Web Services Secrets Manager secret that stores your PagerDuty key, either a General Access REST API Key or User Token REST API Key, and other user credentials.</p>"
+        }
+      },
+      "documentation":"<p>Details about the PagerDuty configuration for a response plan.</p>"
+    },
+    "PagerDutyConfigurationNameString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "PagerDutyConfigurationSecretIdString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "PagerDutyIncidentConfiguration":{
+      "type":"structure",
+      "required":["serviceId"],
+      "members":{
+        "serviceId":{
+          "shape":"PagerDutyIncidentConfigurationServiceIdString",
+          "documentation":"<p>The ID of the PagerDuty service that the response plan associates with an incident when it launches.</p>"
+        }
+      },
+      "documentation":"<p>Details about the PagerDuty service where the response plan creates an incident.</p>"
+    },
+    "PagerDutyIncidentConfigurationServiceIdString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "PagerDutyIncidentDetail":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "autoResolve":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to resolve the PagerDuty incident when you resolve the associated Incident Manager incident.</p>"
+        },
+        "id":{
+          "shape":"PagerDutyIncidentDetailIdString",
+          "documentation":"<p>The ID of the incident associated with the PagerDuty service for the response plan.</p>"
+        },
+        "secretId":{
+          "shape":"PagerDutyIncidentDetailSecretIdString",
+          "documentation":"<p>The ID of the Amazon Web Services Secrets Manager secret that stores your PagerDuty key, either a General Access REST API Key or User Token REST API Key, and other user credentials.</p>"
+        }
+      },
+      "documentation":"<p>Details about the PagerDuty incident associated with an incident created by an Incident Manager response plan.</p>"
+    },
+    "PagerDutyIncidentDetailIdString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "PagerDutyIncidentDetailSecretIdString":{
+      "type":"string",
+      "max":512,
+      "min":1
     },
     "Policy":{
       "type":"string",
@@ -2640,6 +2747,10 @@
         "incidentTemplateTitle":{
           "shape":"IncidentTitle",
           "documentation":"<p>The short format name of the incident. The title can't contain spaces.</p>"
+        },
+        "integrations":{
+          "shape":"Integrations",
+          "documentation":"<p>Information about third-party services integrated into the response plan.</p>"
         }
       }
     },

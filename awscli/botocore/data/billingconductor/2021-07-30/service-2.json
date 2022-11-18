@@ -837,6 +837,10 @@
         }
       }
     },
+    "BillingEntity":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9 ]+"
+    },
     "BillingGroupArn":{
       "type":"string",
       "pattern":"(arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/)?[0-9]{12}"
@@ -1195,6 +1199,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p> A map that contains tag keys and tag values that are attached to a pricing rule. </p>"
+        },
+        "BillingEntity":{
+          "shape":"BillingEntity",
+          "documentation":"<p> The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace. </p>"
         }
       }
     },
@@ -2371,6 +2379,10 @@
         "LastModifiedTime":{
           "shape":"Instant",
           "documentation":"<p> The most recent time when the pricing rule was modified. </p>"
+        },
+        "BillingEntity":{
+          "shape":"BillingEntity",
+          "documentation":"<p> The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace. </p>"
         }
       },
       "documentation":"<p> A representation of a pricing rule. </p>"
@@ -2386,7 +2398,8 @@
       "type":"string",
       "enum":[
         "GLOBAL",
-        "SERVICE"
+        "SERVICE",
+        "BILLING_ENTITY"
       ]
     },
     "PricingRuleType":{
@@ -2822,6 +2835,10 @@
         "LastModifiedTime":{
           "shape":"Instant",
           "documentation":"<p> The most recent time the pricing rule was modified. </p>"
+        },
+        "BillingEntity":{
+          "shape":"BillingEntity",
+          "documentation":"<p> The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace. </p>"
         }
       }
     },
@@ -2917,8 +2934,10 @@
         "MULTIPLE_PRICING_PLAN_ARN",
         "ILLEGAL_CHILD_ASSOCIATE_RESOURCE",
         "CUSTOM_LINE_ITEM_ASSOCIATION_EXISTS",
+        "INVALID_BILLING_GROUP",
         "INVALID_BILLING_PERIOD_FOR_OPERATION",
-        "INVALID_BILLING_GROUP"
+        "ILLEGAL_BILLING_ENTITY",
+        "ILLEGAL_MODIFIER_PERCENTAGE"
       ]
     }
   },

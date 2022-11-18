@@ -185,7 +185,8 @@
         {"shape":"InternalServerError"},
         {"shape":"OpsItemAlreadyExistsException"},
         {"shape":"OpsItemLimitExceededException"},
-        {"shape":"OpsItemInvalidParameterException"}
+        {"shape":"OpsItemInvalidParameterException"},
+        {"shape":"OpsItemAccessDeniedException"}
       ],
       "documentation":"<p>Creates a new OpsItem. You must have permission in Identity and Access Management (IAM) to create a new OpsItem. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-getting-started.html\">Getting started with OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>Operations engineers and IT professionals use Amazon Web Services Systems Manager OpsCenter to view, investigate, and remediate operational issues impacting the performance and health of their Amazon Web Services resources. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html\">Amazon Web Services Systems Manager OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
     },
@@ -386,6 +387,21 @@
         {"shape":"ResourceDataSyncInvalidConfigurationException"}
       ],
       "documentation":"<p>Deletes a resource data sync configuration. After the configuration is deleted, changes to data on managed nodes are no longer synced to or from the target. Deleting a sync configuration doesn't delete data.</p>"
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourcePolicyInvalidParameterException"},
+        {"shape":"ResourcePolicyConflictException"}
+      ],
+      "documentation":"<p>Deletes a Systems Manager resource policy. A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. Currently, <code>OpsItemGroup</code> is the only resource that supports Systems Manager resource policies. The resource policy for <code>OpsItemGroup</code> enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).</p>"
     },
     "DeregisterManagedInstance":{
       "name":"DeregisterManagedInstance",
@@ -1148,7 +1164,8 @@
       "output":{"shape":"GetOpsItemResponse"},
       "errors":[
         {"shape":"InternalServerError"},
-        {"shape":"OpsItemNotFoundException"}
+        {"shape":"OpsItemNotFoundException"},
+        {"shape":"OpsItemAccessDeniedException"}
       ],
       "documentation":"<p>Get information about an OpsItem by using the ID. You must have permission in Identity and Access Management (IAM) to view information about an OpsItem. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-getting-started.html\">Getting started with OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>Operations engineers and IT professionals use Amazon Web Services Systems Manager OpsCenter to view, investigate, and remediate operational issues impacting the performance and health of their Amazon Web Services resources. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html\">OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
     },
@@ -1276,6 +1293,20 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Retrieves the patch baseline that should be used for the specified patch group.</p>"
+    },
+    "GetResourcePolicies":{
+      "name":"GetResourcePolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePoliciesRequest"},
+      "output":{"shape":"GetResourcePoliciesResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourcePolicyInvalidParameterException"}
+      ],
+      "documentation":"<p>Returns an array of the <code>Policy</code> object.</p>"
     },
     "GetServiceSetting":{
       "name":"GetServiceSetting",
@@ -1641,6 +1672,22 @@
         {"shape":"IncompatiblePolicyException"}
       ],
       "documentation":"<p>Add a parameter to the system.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourcePolicyInvalidParameterException"},
+        {"shape":"ResourcePolicyLimitExceededException"},
+        {"shape":"ResourcePolicyConflictException"}
+      ],
+      "documentation":"<p>Creates or updates a Systems Manager resource policy. A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. Currently, <code>OpsItemGroup</code> is the only resource that supports Systems Manager resource policies. The resource policy for <code>OpsItemGroup</code> enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).</p>"
     },
     "RegisterDefaultPatchBaseline":{
       "name":"RegisterDefaultPatchBaseline",
@@ -2068,7 +2115,8 @@
         {"shape":"OpsItemNotFoundException"},
         {"shape":"OpsItemAlreadyExistsException"},
         {"shape":"OpsItemLimitExceededException"},
-        {"shape":"OpsItemInvalidParameterException"}
+        {"shape":"OpsItemInvalidParameterException"},
+        {"shape":"OpsItemAccessDeniedException"}
       ],
       "documentation":"<p>Edit or change an OpsItem. You must have permission in Identity and Access Management (IAM) to update an OpsItem. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-getting-started.html\">Getting started with OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>Operations engineers and IT professionals use Amazon Web Services Systems Manager OpsCenter to view, investigate, and remediate operational issues impacting the performance and health of their Amazon Web Services resources. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html\">OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
     },
@@ -4368,7 +4416,7 @@
         },
         "IamRole":{
           "shape":"IamRole",
-          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-service-role.html\">Create an IAM service role for a hybrid environment</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-service-role.html\">Create an IAM service role for a hybrid environment</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>You can't specify an IAM service-linked role for this parameter. You must create a unique role.</p> </note>"
         },
         "RegistrationLimit":{
           "shape":"RegistrationLimit",
@@ -4750,7 +4798,7 @@
         },
         "OpsItemType":{
           "shape":"OpsItemType",
-          "documentation":"<p>The type of OpsItem to create. Currently, the only valid values are <code>/aws/changerequest</code> and <code>/aws/issue</code>.</p>"
+          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> </li> <li> <p> <code>/aws/insights</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> </ul>"
         },
         "OperationalData":{
           "shape":"OpsItemOperationalData",
@@ -4803,6 +4851,10 @@
         "PlannedEndTime":{
           "shape":"DateTime",
           "documentation":"<p>The time specified in a change request for a runbook workflow to end. Currently supported only for the OpsItem type <code>/aws/changerequest</code>.</p>"
+        },
+        "AccountId":{
+          "shape":"OpsItemAccountId",
+          "documentation":"<p>The target Amazon Web Services account where you want to create an OpsItem. To make this call, your account must be configured to work with OpsItems across accounts. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-OpsCenter-multiple-accounts.html\">Setting up OpsCenter to work with OpsItems across accounts</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         }
       }
     },
@@ -4812,6 +4864,10 @@
         "OpsItemId":{
           "shape":"String",
           "documentation":"<p>The ID of the OpsItem.</p>"
+        },
+        "OpsItemArn":{
+          "shape":"OpsItemArn",
+          "documentation":"<p>The OpsItem Amazon Resource Name (ARN).</p>"
         }
       }
     },
@@ -5165,6 +5221,33 @@
       }
     },
     "DeleteResourceDataSyncResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PolicyId",
+        "PolicyHash"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArnString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to which the policies are attached.</p>"
+        },
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The policy ID.</p>"
+        },
+        "PolicyHash":{
+          "shape":"PolicyHash",
+          "documentation":"<p>ID of the current policy version. The hash helps to prevent multiple calls from attempting to overwrite a policy.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
       "type":"structure",
       "members":{
       }
@@ -7992,6 +8075,10 @@
         "OpsItemId":{
           "shape":"OpsItemId",
           "documentation":"<p>The ID of the OpsItem that you want to get.</p>"
+        },
+        "OpsItemArn":{
+          "shape":"OpsItemArn",
+          "documentation":"<p>The OpsItem Amazon Resource Name (ARN).</p>"
         }
       }
     },
@@ -8334,6 +8421,59 @@
           "documentation":"<p>Information about the patches to use to update the managed nodes, including target operating systems and source repositories. Applies to Linux managed nodes only.</p>"
         }
       }
+    },
+    "GetResourcePoliciesRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArnString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to which the policies are attached.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to start the list. Use this token to get the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"ResourcePolicyMaxResults",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>"
+        }
+      }
+    },
+    "GetResourcePoliciesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of items to return. Use this token to get the next set of results.</p>"
+        },
+        "Policies":{
+          "shape":"GetResourcePoliciesResponseEntries",
+          "documentation":"<p>An array of the <code>Policy</code> object.</p>"
+        }
+      }
+    },
+    "GetResourcePoliciesResponseEntries":{
+      "type":"list",
+      "member":{"shape":"GetResourcePoliciesResponseEntry"}
+    },
+    "GetResourcePoliciesResponseEntry":{
+      "type":"structure",
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>A policy ID.</p>"
+        },
+        "PolicyHash":{
+          "shape":"PolicyHash",
+          "documentation":"<p>ID of the current policy version. The hash helps to prevent a situation where multiple users attempt to overwrite a policy. You must provide this hash when updating or deleting a policy.</p>"
+        },
+        "Policy":{
+          "shape":"Policy",
+          "documentation":"<p>A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. Currently, <code>OpsItemGroup</code> is the only resource that supports Systems Manager resource policies. The resource policy for <code>OpsItemGroup</code> enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).</p>"
+        }
+      },
+      "documentation":"<p>A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. Currently, <code>OpsItemGroup</code> is the only resource that supports Systems Manager resource policies. The resource policy for <code>OpsItemGroup</code> enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).</p>"
     },
     "GetServiceSettingRequest":{
       "type":"structure",
@@ -11464,7 +11604,7 @@
         },
         "OpsItemType":{
           "shape":"OpsItemType",
-          "documentation":"<p>The type of OpsItem. Currently, the only valid values are <code>/aws/changerequest</code> and <code>/aws/issue</code>.</p>"
+          "documentation":"<p>The type of OpsItem. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> </li> <li> <p> <code>/aws/insights</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> </ul>"
         },
         "CreatedTime":{
           "shape":"DateTime",
@@ -11541,9 +11681,25 @@
         "PlannedEndTime":{
           "shape":"DateTime",
           "documentation":"<p>The time specified in a change request for a runbook workflow to end. Currently supported only for the OpsItem type <code>/aws/changerequest</code>.</p>"
+        },
+        "OpsItemArn":{
+          "shape":"OpsItemArn",
+          "documentation":"<p>The OpsItem Amazon Resource Name (ARN).</p>"
         }
       },
       "documentation":"<p>Operations engineers and IT professionals use Amazon Web Services Systems Manager OpsCenter to view, investigate, and remediate operational work items (OpsItems) impacting the performance and health of their Amazon Web Services resources. OpsCenter is integrated with Amazon EventBridge and Amazon CloudWatch. This means you can configure these services to automatically create an OpsItem in OpsCenter when a CloudWatch alarm enters the ALARM state or when EventBridge processes an event from any Amazon Web Services service that publishes events. Configuring Amazon CloudWatch alarms and EventBridge events to automatically create OpsItems allows you to quickly diagnose and remediate issues with Amazon Web Services resources from a single console.</p> <p>To help you diagnose issues, each OpsItem includes contextually relevant information such as the name and ID of the Amazon Web Services resource that generated the OpsItem, alarm or event details, alarm history, and an alarm timeline graph. For the Amazon Web Services resource, OpsCenter aggregates information from Config, CloudTrail logs, and EventBridge, so you don't have to navigate across multiple console pages during your investigation. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html\">OpsCenter</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
+    },
+    "OpsItemAccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have permission to view OpsItems in the specified account. Verify that your account is configured either as a Systems Manager delegated administrator or that you are logged into the Organizations management account.</p>",
+      "exception":true
+    },
+    "OpsItemAccountId":{
+      "type":"string",
+      "pattern":"^[0-9]{12}$"
     },
     "OpsItemAlreadyExistsException":{
       "type":"structure",
@@ -11553,6 +11709,12 @@
       },
       "documentation":"<p>The OpsItem already exists.</p>",
       "exception":true
+    },
+    "OpsItemArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:ssm:[a-z0-9-\\.]{0,63}:[0-9]{12}:opsitem.*"
     },
     "OpsItemCategory":{
       "type":"string",
@@ -11737,7 +11899,8 @@
         "ChangeRequestByApproverName",
         "ChangeRequestByTemplate",
         "ChangeRequestByTargetsResourceGroup",
-        "InsightByType"
+        "InsightByType",
+        "AccountId"
       ]
     },
     "OpsItemFilterOperator":{
@@ -12041,7 +12204,7 @@
         },
         "OpsItemType":{
           "shape":"OpsItemType",
-          "documentation":"<p>The type of OpsItem. Currently, the only valid values are <code>/aws/changerequest</code> and <code>/aws/issue</code>.</p>"
+          "documentation":"<p>The type of OpsItem. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> </li> <li> <p> <code>/aws/insights</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> </ul>"
         },
         "ActualStartTime":{
           "shape":"DateTime",
@@ -13251,6 +13414,12 @@
       "documentation":"<p>You specified more than the maximum number of allowed policies for the parameter. The maximum is 10.</p>",
       "exception":true
     },
+    "Policy":{
+      "type":"string",
+      "pattern":"\\S+"
+    },
+    "PolicyHash":{"type":"string"},
+    "PolicyId":{"type":"string"},
     "Product":{"type":"string"},
     "ProgressCounters":{
       "type":"structure",
@@ -13415,6 +13584,44 @@
         "Tier":{
           "shape":"ParameterTier",
           "documentation":"<p>The tier assigned to the parameter.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArnString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to which the policies are attached.</p>"
+        },
+        "Policy":{
+          "shape":"Policy",
+          "documentation":"<p>A policy you want to associate with a resource.</p>"
+        },
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The policy ID.</p>"
+        },
+        "PolicyHash":{
+          "shape":"PolicyHash",
+          "documentation":"<p>ID of the current policy version. The hash helps to prevent a situation where multiple users attempt to overwrite a policy.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The policy ID. To update a policy, you must specify <code>PolicyId</code> and <code>PolicyHash</code>.</p>"
+        },
+        "PolicyHash":{
+          "shape":"PolicyHash",
+          "documentation":"<p>ID of the current policy version. The hash helps to prevent a situation where multiple users attempt to overwrite a policy. You must provide this hash when updating or deleting a policy.</p>"
         }
       }
     },
@@ -13739,6 +13946,11 @@
         }
       },
       "documentation":"<p>Information about targets that resolved during the Automation execution.</p>"
+    },
+    "ResourceArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20
     },
     "ResourceComplianceSummaryItem":{
       "type":"structure",
@@ -14102,6 +14314,42 @@
       },
       "documentation":"<p>Error returned when the caller has exceeded the default resource quotas. For example, too many maintenance windows or patch baselines have been created.</p> <p>For information about resource quotas in Systems Manager, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/ssm.html#limits_ssm\">Systems Manager service quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>",
       "exception":true
+    },
+    "ResourcePolicyConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The hash provided in the call doesn't match the stored hash. This exception is thrown when trying to update an obsolete policy version or when multiple requests to update a policy are sent.</p>",
+      "exception":true
+    },
+    "ResourcePolicyInvalidParameterException":{
+      "type":"structure",
+      "members":{
+        "ParameterNames":{"shape":"ResourcePolicyParameterNamesList"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>One or more parameters specified for the call aren't valid. Verify the parameters and their values and try again.</p>",
+      "exception":true
+    },
+    "ResourcePolicyLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Limit":{"shape":"Integer"},
+        "LimitType":{"shape":"String"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The <a>PutResourcePolicy</a> API action enforces two limits. A policy can't be greater than 1024 bytes in size. And only one policy can be attached to <code>OpsItemGroup</code>. Verify these limits and try again.</p>",
+      "exception":true
+    },
+    "ResourcePolicyMaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ResourcePolicyParameterNamesList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "ResourceType":{
       "type":"string",
@@ -16042,7 +16290,7 @@
         },
         "IamRole":{
           "shape":"IamRole",
-          "documentation":"<p>The IAM role you want to assign or change.</p>"
+          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-service-role.html\">Create an IAM service role for a hybrid environment</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>You can't specify an IAM service-linked role for this parameter. You must create a unique role.</p> </note>"
         }
       }
     },
@@ -16114,6 +16362,10 @@
         "PlannedEndTime":{
           "shape":"DateTime",
           "documentation":"<p>The time specified in a change request for a runbook workflow to end. Currently supported only for the OpsItem type <code>/aws/changerequest</code>.</p>"
+        },
+        "OpsItemArn":{
+          "shape":"OpsItemArn",
+          "documentation":"<p>The OpsItem Amazon Resource Name (ARN).</p>"
         }
       }
     },

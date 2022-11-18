@@ -1422,11 +1422,26 @@
       },
       "documentation":"<p>Indicates whether the user requires a password to authenticate.</p>"
     },
+    "AuthenticationMode":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"InputAuthenticationType",
+          "documentation":"<p>Specifies the authentication type. Possible options are IAM authentication, password and no password.</p>"
+        },
+        "Passwords":{
+          "shape":"PasswordListInput",
+          "documentation":"<p>Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the authentication mode to use.</p>"
+    },
     "AuthenticationType":{
       "type":"string",
       "enum":[
         "password",
-        "no-password"
+        "no-password",
+        "iam"
       ]
     },
     "AuthorizationAlreadyExistsFault":{
@@ -2924,6 +2939,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.</p>"
+        },
+        "AuthenticationMode":{
+          "shape":"AuthenticationMode",
+          "documentation":"<p>Specifies how to authenticate the user.</p>"
         }
       }
     },
@@ -4147,6 +4166,14 @@
         "ReplicationGroup":{"shape":"ReplicationGroup"}
       }
     },
+    "InputAuthenticationType":{
+      "type":"string",
+      "enum":[
+        "password",
+        "no-password-required",
+        "iam"
+      ]
+    },
     "InsufficientCacheClusterCapacityFault":{
       "type":"structure",
       "members":{
@@ -4862,6 +4889,10 @@
         "NoPasswordRequired":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates no password is required for the user.</p>"
+        },
+        "AuthenticationMode":{
+          "shape":"AuthenticationMode",
+          "documentation":"<p>Specifies how to authenticate the user.</p>"
         }
       }
     },

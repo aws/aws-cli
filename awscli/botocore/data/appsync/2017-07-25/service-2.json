@@ -144,7 +144,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Creates a <code>Resolver</code> object.</p> <p>A resolver converts incoming requests into a format that a data source can understand, and converts the data source's responses into GraphQL.</p>"
     },
@@ -278,7 +279,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Deletes a <code>Resolver</code> object.</p>"
     },
@@ -315,6 +317,21 @@
         {"shape":"NotFoundException"}
       ],
       "documentation":"<p>Removes an <code>ApiAssociation</code> object from a custom domain.</p>"
+    },
+    "EvaluateCode":{
+      "name":"EvaluateCode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/dataplane-evaluatecode"
+      },
+      "input":{"shape":"EvaluateCodeRequest"},
+      "output":{"shape":"EvaluateCodeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Evaluates the given code and returns the response. The code definition requirements depend on the specified runtime. For <code>APPSYNC_JS</code> runtimes, the code defines the request and response functions. The request function takes the incoming request after a GraphQL operation is parsed and converts it into a request configuration for the selected data source operation. The response function interprets responses from the data source and maps it to the shape of the GraphQL field output type. </p>"
     },
     "EvaluateMappingTemplate":{
       "name":"EvaluateMappingTemplate",
@@ -823,7 +840,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Updates a <code>Resolver</code> object.</p>"
     },
@@ -1023,6 +1041,24 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "AppSyncRuntime":{
+      "type":"structure",
+      "required":[
+        "name",
+        "runtimeVersion"
+      ],
+      "members":{
+        "name":{
+          "shape":"RuntimeName",
+          "documentation":"<p>The <code>name</code> of the runtime to use. Currently, the only allowed value is <code>APPSYNC_JS</code>.</p>"
+        },
+        "runtimeVersion":{
+          "shape":"String",
+          "documentation":"<p>The <code>version</code> of the runtime to use. Currently, the only allowed version is <code>1.0.0</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes a runtime used by an AWS AppSync pipeline resolver or AWS AppSync function. Specifies the name and version of the runtime to use. Note that if a runtime is specified, code must also be specified.</p>"
+    },
     "AssociateApiRequest":{
       "type":"structure",
       "required":[
@@ -1102,14 +1138,31 @@
       },
       "documentation":"<p>The Identity and Access Management (IAM) configuration.</p>"
     },
+    "BadRequestDetail":{
+      "type":"structure",
+      "members":{
+        "codeErrors":{
+          "shape":"CodeErrors",
+          "documentation":"<p>Contains the list of errors in the request.</p>"
+        }
+      },
+      "documentation":"<p>Provides further details for the reason behind the bad request. For reason type <code>CODE_ERROR</code>, the detail will contain a list of code errors.</p>"
+    },
     "BadRequestException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"ErrorMessage"}
+        "message":{"shape":"ErrorMessage"},
+        "reason":{"shape":"BadRequestReason"},
+        "detail":{"shape":"BadRequestDetail"}
       },
       "documentation":"<p>The request is not well formed. For example, a value is invalid or a required field is missing. Check the field values, and then try again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "BadRequestReason":{
+      "type":"string",
+      "documentation":"<p>Provides context for the cause of the bad request. The only supported value is <code>CODE_ERROR</code>.</p>",
+      "enum":["CODE_ERROR"]
     },
     "Blob":{"type":"blob"},
     "Boolean":{"type":"boolean"},
@@ -1138,6 +1191,54 @@
       "max":2048,
       "min":20,
       "pattern":"^arn:[a-z-]*:(acm|iam):[a-z0-9-]*:\\d{12}:(certificate|server-certificate)/[0-9A-Za-z_/-]*$"
+    },
+    "Code":{
+      "type":"string",
+      "max":32768,
+      "min":1
+    },
+    "CodeError":{
+      "type":"structure",
+      "members":{
+        "errorType":{
+          "shape":"String",
+          "documentation":"<p>The type of code error. </p> <p>Examples include, but aren't limited to: <code>LINT_ERROR</code>, <code>PARSER_ERROR</code>.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>A user presentable error.</p> <p>Examples include, but aren't limited to: <code>Parsing error: Unterminated string literal</code>.</p>"
+        },
+        "location":{
+          "shape":"CodeErrorLocation",
+          "documentation":"<p>The line, column, and span location of the error in the code.</p>"
+        }
+      },
+      "documentation":"<p>Describes an AppSync error.</p>"
+    },
+    "CodeErrorColumn":{"type":"integer"},
+    "CodeErrorLine":{"type":"integer"},
+    "CodeErrorLocation":{
+      "type":"structure",
+      "members":{
+        "line":{
+          "shape":"CodeErrorLine",
+          "documentation":"<p>The line number in the code. Defaults to <code>0</code> if unknown.</p>"
+        },
+        "column":{
+          "shape":"CodeErrorColumn",
+          "documentation":"<p>The column number in the code. Defaults to <code>0</code> if unknown.</p>"
+        },
+        "span":{
+          "shape":"CodeErrorSpan",
+          "documentation":"<p>The span/length of the error. Defaults to <code>-1</code> if unknown.</p>"
+        }
+      },
+      "documentation":"<p>Describes the location of the error in a code sample.</p>"
+    },
+    "CodeErrorSpan":{"type":"integer"},
+    "CodeErrors":{
+      "type":"list",
+      "member":{"shape":"CodeError"}
     },
     "CognitoUserPoolConfig":{
       "type":"structure",
@@ -1369,8 +1470,7 @@
       "required":[
         "apiId",
         "name",
-        "dataSourceName",
-        "functionVersion"
+        "dataSourceName"
       ],
       "members":{
         "apiId":{
@@ -1401,12 +1501,17 @@
         },
         "functionVersion":{
           "shape":"String",
-          "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29.</p>"
+          "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29. Note that when using VTL and mapping templates, the <code>functionVersion</code> is required.</p>"
         },
         "syncConfig":{"shape":"SyncConfig"},
         "maxBatchSize":{
           "shape":"MaxBatchSize",
           "documentation":"<p>The maximum batching size for a resolver.</p>"
+        },
+        "runtime":{"shape":"AppSyncRuntime"},
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The <code>function</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
         }
       }
     },
@@ -1528,6 +1633,11 @@
         "maxBatchSize":{
           "shape":"MaxBatchSize",
           "documentation":"<p>The maximum batching size for a resolver.</p>"
+        },
+        "runtime":{"shape":"AppSyncRuntime"},
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The <code>resolver</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
         }
       }
     },
@@ -1969,9 +2079,66 @@
           "documentation":"<p>The error payload.</p>"
         }
       },
-      "documentation":"<p>Contains the list of errors generated when attempting to evaluate a mapping template.</p>"
+      "documentation":"<p>Contains the list of errors generated. When using JavaScript, this will apply to the request or response function evaluation.</p>"
     },
     "ErrorMessage":{"type":"string"},
+    "EvaluateCodeErrorDetail":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The error payload.</p>"
+        },
+        "codeErrors":{
+          "shape":"CodeErrors",
+          "documentation":"<p>Contains the list of <code>CodeError</code> objects.</p>"
+        }
+      },
+      "documentation":"<p>Contains the list of errors from a code evaluation response.</p>"
+    },
+    "EvaluateCodeRequest":{
+      "type":"structure",
+      "required":[
+        "runtime",
+        "code",
+        "context"
+      ],
+      "members":{
+        "runtime":{
+          "shape":"AppSyncRuntime",
+          "documentation":"<p>The runtime to be used when evaluating the code. Currently, only the <code>APPSYNC_JS</code> runtime is supported.</p>"
+        },
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The code definition to be evaluated. Note that <code>code</code> and <code>runtime</code> are both required for this action. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
+        },
+        "context":{
+          "shape":"Context",
+          "documentation":"<p>The map that holds all of the contextual information for your resolver invocation. A <code>context</code> is required for this action.</p>"
+        },
+        "function":{
+          "shape":"String",
+          "documentation":"<p>The function within the code to be evaluated. If provided, the valid values are <code>request</code> and <code>response</code>.</p>"
+        }
+      }
+    },
+    "EvaluateCodeResponse":{
+      "type":"structure",
+      "members":{
+        "evaluationResult":{
+          "shape":"EvaluationResult",
+          "documentation":"<p>The result of the evaluation operation.</p>"
+        },
+        "error":{
+          "shape":"EvaluateCodeErrorDetail",
+          "documentation":"<p>Contains the payload of the response error.</p>"
+        },
+        "logs":{
+          "shape":"Logs",
+          "documentation":"<p>A list of logs that were generated by calls to <code>util.log.info</code> and <code>util.log.error</code> in the evaluated code.</p>"
+        }
+      }
+    },
     "EvaluateMappingTemplateRequest":{
       "type":"structure",
       "required":[
@@ -1999,6 +2166,10 @@
         "error":{
           "shape":"ErrorDetail",
           "documentation":"<p>The <code>ErrorDetail</code> object.</p>"
+        },
+        "logs":{
+          "shape":"Logs",
+          "documentation":"<p>A list of logs that were generated by calls to <code>util.log.info</code> and <code>util.log.error</code> in the evaluated code.</p>"
         }
       }
     },
@@ -2074,6 +2245,11 @@
         "maxBatchSize":{
           "shape":"MaxBatchSize",
           "documentation":"<p>The maximum batching size for a resolver.</p>"
+        },
+        "runtime":{"shape":"AppSyncRuntime"},
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The <code>function</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
         }
       },
       "documentation":"<p>A function is a reusable entity. You can use multiple functions to compose the resolver logic.</p>"
@@ -2864,6 +3040,10 @@
       },
       "documentation":"<p>The Amazon CloudWatch Logs configuration.</p>"
     },
+    "Logs":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Long":{"type":"long"},
     "MapOfStringToString":{
       "type":"map",
@@ -3049,6 +3229,11 @@
         "maxBatchSize":{
           "shape":"MaxBatchSize",
           "documentation":"<p>The maximum batching size for a resolver.</p>"
+        },
+        "runtime":{"shape":"AppSyncRuntime"},
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The <code>resolver</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
         }
       },
       "documentation":"<p>Describes a resolver.</p>"
@@ -3075,6 +3260,10 @@
       "max":65536,
       "min":1,
       "pattern":"[_A-Za-z][_0-9A-Za-z]*"
+    },
+    "RuntimeName":{
+      "type":"string",
+      "enum":["APPSYNC_JS"]
     },
     "SchemaStatus":{
       "type":"string",
@@ -3444,8 +3633,7 @@
         "apiId",
         "name",
         "functionId",
-        "dataSourceName",
-        "functionVersion"
+        "dataSourceName"
       ],
       "members":{
         "apiId":{
@@ -3482,12 +3670,17 @@
         },
         "functionVersion":{
           "shape":"String",
-          "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29.</p>"
+          "documentation":"<p>The <code>version</code> of the request mapping template. Currently, the supported value is 2018-05-29. Note that when using VTL and mapping templates, the <code>functionVersion</code> is required.</p>"
         },
         "syncConfig":{"shape":"SyncConfig"},
         "maxBatchSize":{
           "shape":"MaxBatchSize",
           "documentation":"<p>The maximum batching size for a resolver.</p>"
+        },
+        "runtime":{"shape":"AppSyncRuntime"},
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The <code>function</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
         }
       }
     },
@@ -3613,6 +3806,11 @@
         "maxBatchSize":{
           "shape":"MaxBatchSize",
           "documentation":"<p>The maximum batching size for a resolver.</p>"
+        },
+        "runtime":{"shape":"AppSyncRuntime"},
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The <code>resolver</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
         }
       }
     },

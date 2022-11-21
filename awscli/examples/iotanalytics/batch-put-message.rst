@@ -3,6 +3,7 @@
 The following ``batch-put-message`` example sends a message to the specified channel. ::
 
     aws iotanalytics batch-put-message \
+        --cli-binary-format raw-in-base64-out \
         --cli-input-json file://batch-put-message.json
 
 Contents of ``batch-put-message.json``::

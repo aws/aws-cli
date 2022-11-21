@@ -54,6 +54,18 @@ from botocore.utils import (
     get_service_module_name,
 )
 
+_LEGACY_SIGNATURE_VERSIONS = frozenset(
+    (
+        'v2',
+        'v3',
+        'v3https',
+        'v4',
+        's3',
+        's3v4',
+    )
+)
+
+
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
 
@@ -104,7 +116,11 @@ class ClientCreator(object):
         endpoint_bridge = ClientEndpointBridge(
             self._endpoint_resolver, scoped_config, client_config,
             service_signing_name=service_model.metadata.get('signingName'),
-            config_store=self._config_store)
+            config_store=self._config_store,
+            service_signature_version=service_model.metadata.get(
+                'signatureVersion'
+            ),
+        )
         client_args = self._get_client_args(
             service_model, region_name, is_secure, endpoint_url,
             verify,
@@ -356,13 +372,15 @@ class ClientEndpointBridge(object):
 
     def __init__(self, endpoint_resolver, scoped_config=None,
                  client_config=None, default_endpoint=None,
-                 service_signing_name=None, config_store=None):
+                 service_signing_name=None, config_store=None,
+                 service_signature_version=None):
         self.service_signing_name = service_signing_name
         self.endpoint_resolver = endpoint_resolver
         self.scoped_config = scoped_config
         self.client_config = client_config
         self.default_endpoint = default_endpoint or self.DEFAULT_ENDPOINT
         self.config_store = config_store
+        self.service_signature_version = service_signature_version
 
     def resolve(self, service_name, region_name=None, endpoint_url=None,
                 is_secure=True):
@@ -538,9 +556,18 @@ class ClientEndpointBridge(object):
         if configured_version is not None:
             return configured_version
 
+        potential_versions = resolved.get('signatureVersions', [])
+        if (
+            self.service_signature_version is not None
+            and self.service_signature_version
+            not in _LEGACY_SIGNATURE_VERSIONS
+        ):
+            # Prefer the service model as most specific
+            # source of truth for new signature versions.
+            potential_versions = [self.service_signature_version]
+
         # Pick a signature version from the endpoint metadata if present.
         if 'signatureVersions' in resolved:
-            potential_versions = resolved['signatureVersions']
             if service_name == 's3':
                 return 's3v4'
             if 'v4' in potential_versions:
@@ -551,7 +578,8 @@ class ClientEndpointBridge(object):
                 if known in AUTH_TYPE_MAPS:
                     return known
         raise UnknownSignatureVersionError(
-            signature_version=resolved.get('signatureVersions'))
+            signature_version=potential_versions
+        )
 
 
 class BaseClient(object):

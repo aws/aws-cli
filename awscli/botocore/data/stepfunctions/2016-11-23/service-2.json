@@ -26,7 +26,7 @@
         {"shape":"InvalidName"},
         {"shape":"TooManyTags"}
       ],
-      "documentation":"<p>Creates an activity. An activity is a task that you write in any programming language and host on any machine that has access to AWS Step Functions. Activities must poll Step Functions using the <code>GetActivityTask</code> API action and respond using <code>SendTask*</code> API actions. This function lets Step Functions know the existence of your activity and returns an identifier for use in a state machine and when polling from the activity.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateActivity</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateActivity</code>'s idempotency check is based on the activity <code>name</code>. If a following request has different <code>tags</code> values, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>",
+      "documentation":"<p>Creates an activity. An activity is a task that you write in any programming language and host on any machine that has access to Step Functions. Activities must poll Step Functions using the <code>GetActivityTask</code> API action and respond using <code>SendTask*</code> API actions. This function lets Step Functions know the existence of your activity and returns an identifier for use in a state machine and when polling from the activity.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateActivity</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateActivity</code>'s idempotency check is based on the activity <code>name</code>. If a following request has different <code>tags</code> values, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>",
       "idempotent":true
     },
     "CreateStateMachine":{
@@ -49,7 +49,7 @@
         {"shape":"StateMachineTypeNotSupported"},
         {"shape":"TooManyTags"}
       ],
-      "documentation":"<p>Creates a state machine. A state machine consists of a collection of states that can do work (<code>Task</code> states), determine to which states to transition next (<code>Choice</code> states), stop an execution with an error (<code>Fail</code> states), and so on. State machines are specified using a JSON-based, structured language. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> in the AWS Step Functions User Guide.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateStateMachine</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateStateMachine</code>'s idempotency check is based on the state machine <code>name</code>, <code>definition</code>, <code>type</code>, <code>LoggingConfiguration</code> and <code>TracingConfiguration</code>. If a following request has a different <code>roleArn</code> or <code>tags</code>, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>roleArn</code> and <code>tags</code> will not be updated, even if they are different.</p> </note>",
+      "documentation":"<p>Creates a state machine. A state machine consists of a collection of states that can do work (<code>Task</code> states), determine to which states to transition next (<code>Choice</code> states), stop an execution with an error (<code>Fail</code> states), and so on. State machines are specified using a JSON-based, structured language. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> in the Step Functions User Guide.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateStateMachine</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateStateMachine</code>'s idempotency check is based on the state machine <code>name</code>, <code>definition</code>, <code>type</code>, <code>LoggingConfiguration</code> and <code>TracingConfiguration</code>. If a following request has a different <code>roleArn</code> or <code>tags</code>, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>roleArn</code> and <code>tags</code> will not be updated, even if they are different.</p> </note>",
       "idempotent":true
     },
     "DeleteActivity":{
@@ -76,7 +76,7 @@
       "errors":[
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Deletes a state machine. This is an asynchronous operation: It sets the state machine's status to <code>DELETING</code> and begins the deletion process. </p> <note> <p>For <code>EXPRESS</code>state machines, the deletion will happen eventually (usually less than a minute). Running executions may emit logs after <code>DeleteStateMachine</code> API is called.</p> </note>"
+      "documentation":"<p>Deletes a state machine. This is an asynchronous operation: It sets the state machine's status to <code>DELETING</code> and begins the deletion process. </p> <note> <p>For <code>EXPRESS</code> state machines, the deletion will happen eventually (usually less than a minute). Running executions may emit logs after <code>DeleteStateMachine</code> API is called.</p> </note>"
     },
     "DescribeActivity":{
       "name":"DescribeActivity",
@@ -147,7 +147,7 @@
         {"shape":"ActivityWorkerLimitExceeded"},
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Used by workers to retrieve a task (with the specified activity ARN) which has been scheduled for execution by a running state machine. This initiates a long poll, where the service holds the HTTP connection open and responds as soon as a task becomes available (i.e. an execution of a task of this type is needed.) The maximum time the service holds on to the request before responding is 60 seconds. If no task is available within 60 seconds, the poll returns a <code>taskToken</code> with a null string.</p> <important> <p>Workers should set their client side socket timeout to at least 65 seconds (5 seconds higher than the maximum time the service may hold the poll request).</p> <p>Polling with <code>GetActivityTask</code> can cause latency in some implementations. See <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/bp-activity-pollers.html\">Avoid Latency When Polling for Activity Tasks</a> in the Step Functions Developer Guide.</p> </important>"
+      "documentation":"<p>Used by workers to retrieve a task (with the specified activity ARN) which has been scheduled for execution by a running state machine. This initiates a long poll, where the service holds the HTTP connection open and responds as soon as a task becomes available (i.e. an execution of a task of this type is needed.) The maximum time the service holds on to the request before responding is 60 seconds. If no task is available within 60 seconds, the poll returns a <code>taskToken</code> with a null string.</p> <note> <p>This API action isn't logged in CloudTrail.</p> </note> <important> <p>Workers should set their client side socket timeout to at least 65 seconds (5 seconds higher than the maximum time the service may hold the poll request).</p> <p>Polling with <code>GetActivityTask</code> can cause latency in some implementations. See <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/bp-activity-pollers.html\">Avoid Latency When Polling for Activity Tasks</a> in the Step Functions Developer Guide.</p> </important>"
     },
     "GetExecutionHistory":{
       "name":"GetExecutionHistory",
@@ -283,7 +283,7 @@
         {"shape":"StateMachineDoesNotExist"},
         {"shape":"StateMachineDeleting"}
       ],
-      "documentation":"<p>Starts a state machine execution.</p> <note> <p> <code>StartExecution</code> is idempotent. If <code>StartExecution</code> is called with the same name and input as a running execution, the call will succeed and return the same response as the original request. If the execution is closed or if the input is different, it will return a 400 <code>ExecutionAlreadyExists</code> error. Names can be reused after 90 days. </p> </note>",
+      "documentation":"<p>Starts a state machine execution.</p> <note> <p> <code>StartExecution</code> is idempotent for <code>STANDARD</code> workflows. For a <code>STANDARD</code> workflow, if <code>StartExecution</code> is called with the same name and input as a running execution, the call will succeed and return the same response as the original request. If the execution is closed or if the input is different, it will return a <code>400 ExecutionAlreadyExists</code> error. Names can be reused after 90 days. </p> <p> <code>StartExecution</code> is not idempotent for <code>EXPRESS</code> workflows. </p> </note>",
       "idempotent":true
     },
     "StartSyncExecution":{
@@ -302,7 +302,7 @@
         {"shape":"StateMachineDeleting"},
         {"shape":"StateMachineTypeNotSupported"}
       ],
-      "documentation":"<p>Starts a Synchronous Express state machine execution.</p>",
+      "documentation":"<p>Starts a Synchronous Express state machine execution. <code>StartSyncExecution</code> is not available for <code>STANDARD</code> workflows.</p> <note> <p> <code>StartSyncExecution</code> will return a <code>200 OK</code> response, even if your execution fails, because the status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your execution from running, such as permissions errors, limit errors, or issues with your state machine code and configuration. </p> </note> <note> <p>This API action isn't logged in CloudTrail.</p> </note>",
       "endpoint":{"hostPrefix":"sync-"}
     },
     "StopExecution":{
@@ -332,7 +332,7 @@
         {"shape":"ResourceNotFound"},
         {"shape":"TooManyTags"}
       ],
-      "documentation":"<p>Add a tag to a Step Functions resource.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>AWS Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
+      "documentation":"<p>Add a tag to a Step Functions resource.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -575,11 +575,11 @@
       "members":{
         "name":{
           "shape":"Name",
-          "documentation":"<p>The name of the activity to create. This name must be unique for your AWS account and region for 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions\"> Limits Related to State Machine Executions</a> in the <i>AWS Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>\" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>"
+          "documentation":"<p>The name of the activity to create. This name must be unique for your Amazon Web Services account and region for 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions\"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>\" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>The list of tags to add to a resource.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>AWS Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
+          "documentation":"<p>The list of tags to add to a resource.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
         }
       }
     },
@@ -626,15 +626,15 @@
         },
         "loggingConfiguration":{
           "shape":"LoggingConfiguration",
-          "documentation":"<p>Defines what execution history events are logged and where they are logged.</p> <note> <p>By default, the <code>level</code> is set to <code>OFF</code>. For more information see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html\">Log Levels</a> in the AWS Step Functions User Guide.</p> </note>"
+          "documentation":"<p>Defines what execution history events are logged and where they are logged.</p> <note> <p>By default, the <code>level</code> is set to <code>OFF</code>. For more information see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html\">Log Levels</a> in the Step Functions User Guide.</p> </note>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be added when creating a state machine.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>AWS Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
+          "documentation":"<p>Tags to be added when creating a state machine.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
         },
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
-          "documentation":"<p>Selects whether AWS X-Ray tracing is enabled.</p>"
+          "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
         }
       }
     },
@@ -778,7 +778,7 @@
         "outputDetails":{"shape":"CloudWatchEventsExecutionDataDetails"},
         "traceHeader":{
           "shape":"TraceHeader",
-          "documentation":"<p>The AWS X-Ray trace header that was passed to the execution.</p>"
+          "documentation":"<p>The X-Ray trace header that was passed to the execution.</p>"
         }
       }
     },
@@ -825,7 +825,7 @@
         "loggingConfiguration":{"shape":"LoggingConfiguration"},
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
-          "documentation":"<p>Selects whether AWS X-Ray tracing is enabled.</p>"
+          "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
         }
       }
     },
@@ -868,7 +868,7 @@
         },
         "roleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used when creating this state machine. (The IAM role maintains security by granting Step Functions access to AWS resources.)</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used when creating this state machine. (The IAM role maintains security by granting Step Functions access to Amazon Web Services resources.)</p>"
         },
         "type":{
           "shape":"StateMachineType",
@@ -881,7 +881,7 @@
         "loggingConfiguration":{"shape":"LoggingConfiguration"},
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
-          "documentation":"<p>Selects whether AWS X-Ray tracing is enabled.</p>"
+          "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
         }
       }
     },
@@ -994,7 +994,7 @@
         },
         "roleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for executing AWS Lambda tasks.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for executing Lambda tasks.</p>"
         }
       },
       "documentation":"<p>Contains details about the start of the execution.</p>"
@@ -1203,7 +1203,7 @@
         },
         "lambdaFunctionSucceededEventDetails":{
           "shape":"LambdaFunctionSucceededEventDetails",
-          "documentation":"<p>Contains details about a lambda function that terminated successfully during an execution.</p>"
+          "documentation":"<p>Contains details about a Lambda function that terminated successfully during an execution.</p>"
         },
         "lambdaFunctionTimedOutEventDetails":{"shape":"LambdaFunctionTimedOutEventDetails"},
         "stateEnteredEventDetails":{"shape":"StateEnteredEventDetails"},
@@ -1371,7 +1371,7 @@
           "documentation":"<p>A more detailed explanation of the cause of the failure.</p>"
         }
       },
-      "documentation":"<p>Contains details about a lambda function that failed during an execution.</p>"
+      "documentation":"<p>Contains details about a Lambda function that failed during an execution.</p>"
     },
     "LambdaFunctionScheduleFailedEventDetails":{
       "type":"structure",
@@ -1385,7 +1385,7 @@
           "documentation":"<p>A more detailed explanation of the cause of the failure.</p>"
         }
       },
-      "documentation":"<p>Contains details about a failed lambda function schedule event that occurred during an execution.</p>"
+      "documentation":"<p>Contains details about a failed Lambda function schedule event that occurred during an execution.</p>"
     },
     "LambdaFunctionScheduledEventDetails":{
       "type":"structure",
@@ -1393,11 +1393,11 @@
       "members":{
         "resource":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the scheduled lambda function.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scheduled Lambda function.</p>"
         },
         "input":{
           "shape":"SensitiveData",
-          "documentation":"<p>The JSON data input to the lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>"
+          "documentation":"<p>The JSON data input to the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>"
         },
         "inputDetails":{
           "shape":"HistoryEventExecutionDataDetails",
@@ -1405,11 +1405,15 @@
         },
         "timeoutInSeconds":{
           "shape":"TimeoutInSeconds",
-          "documentation":"<p>The maximum allowed duration of the lambda function.</p>",
+          "documentation":"<p>The maximum allowed duration of the Lambda function.</p>",
           "box":true
+        },
+        "taskCredentials":{
+          "shape":"TaskCredentials",
+          "documentation":"<p>The credentials that Step Functions uses for the task.</p>"
         }
       },
-      "documentation":"<p>Contains details about a lambda function scheduled during an execution.</p>"
+      "documentation":"<p>Contains details about a Lambda function scheduled during an execution.</p>"
     },
     "LambdaFunctionStartFailedEventDetails":{
       "type":"structure",
@@ -1430,14 +1434,14 @@
       "members":{
         "output":{
           "shape":"SensitiveData",
-          "documentation":"<p>The JSON data output by the lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>"
+          "documentation":"<p>The JSON data output by the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>"
         },
         "outputDetails":{
           "shape":"HistoryEventExecutionDataDetails",
           "documentation":"<p>Contains details about the output of an execution history event.</p>"
         }
       },
-      "documentation":"<p>Contains details about a lambda function that successfully terminated during an execution.</p>"
+      "documentation":"<p>Contains details about a Lambda function that successfully terminated during an execution.</p>"
     },
     "LambdaFunctionTimedOutEventDetails":{
       "type":"structure",
@@ -1451,7 +1455,7 @@
           "documentation":"<p>A more detailed explanation of the cause of the timeout.</p>"
         }
       },
-      "documentation":"<p>Contains details about a lambda function timeout that occurred during an execution.</p>"
+      "documentation":"<p>Contains details about a Lambda function timeout that occurred during an execution.</p>"
     },
     "ListActivitiesInput":{
       "type":"structure",
@@ -1569,7 +1573,7 @@
       "members":{
         "cloudWatchLogsLogGroup":{
           "shape":"CloudWatchLogsLogGroup",
-          "documentation":"<p>An object describing a CloudWatch log group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html\">AWS::Logs::LogGroup</a> in the AWS CloudFormation User Guide.</p>"
+          "documentation":"<p>An object describing a CloudWatch log group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html\">AWS::Logs::LogGroup</a> in the CloudFormation User Guide.</p>"
         }
       },
       "documentation":"<p/>"
@@ -1604,6 +1608,11 @@
         }
       },
       "documentation":"<p>The <code>LoggingConfiguration</code> data type is used to set CloudWatch Logs options.</p>"
+    },
+    "LongArn":{
+      "type":"string",
+      "max":1600,
+      "min":1
     },
     "MapIterationEventDetails":{
       "type":"structure",
@@ -1754,7 +1763,7 @@
         },
         "name":{
           "shape":"Name",
-          "documentation":"<p>The name of the execution. This name must be unique for your AWS account, region, and state machine for 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions\"> Limits Related to State Machine Executions</a> in the <i>AWS Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>\" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>"
+          "documentation":"<p>The name of the execution. This name must be unique for your Amazon Web Services account, region, and state machine for 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions\"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>\" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>"
         },
         "input":{
           "shape":"SensitiveData",
@@ -1762,7 +1771,7 @@
         },
         "traceHeader":{
           "shape":"TraceHeader",
-          "documentation":"<p>Passes the AWS X-Ray trace header. The trace header can also be passed in the request payload.</p>"
+          "documentation":"<p>Passes the X-Ray trace header. The trace header can also be passed in the request payload.</p>"
         }
       }
     },
@@ -1801,7 +1810,7 @@
         },
         "traceHeader":{
           "shape":"TraceHeader",
-          "documentation":"<p>Passes the AWS X-Ray trace header. The trace header can also be passed in the request payload.</p>"
+          "documentation":"<p>Passes the X-Ray trace header. The trace header can also be passed in the request payload.</p>"
         }
       }
     },
@@ -1858,7 +1867,7 @@
         "outputDetails":{"shape":"CloudWatchEventsExecutionDataDetails"},
         "traceHeader":{
           "shape":"TraceHeader",
-          "documentation":"<p>The AWS X-Ray trace header that was passed to the execution.</p>"
+          "documentation":"<p>The X-Ray trace header that was passed to the execution.</p>"
         },
         "billingDetails":{
           "shape":"BillingDetails",
@@ -2038,7 +2047,7 @@
           "documentation":"<p>The value of a tag.</p>"
         }
       },
-      "documentation":"<p>Tags are key-value pairs that can be associated with Step Functions state machines and activities.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>AWS Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
+      "documentation":"<p>Tags are key-value pairs that can be associated with Step Functions state machines and activities.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -2080,6 +2089,16 @@
       "max":256,
       "min":0
     },
+    "TaskCredentials":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The ARN of an IAM role that Step Functions assumes for the task. The role can allow cross-account access to resources.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the credentials that Step Functions uses for a task.</p>"
+    },
     "TaskDoesNotExist":{
       "type":"structure",
       "members":{
@@ -2096,11 +2115,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "error":{
           "shape":"SensitiveError",
@@ -2124,11 +2143,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "region":{
           "shape":"Name",
@@ -2147,6 +2166,10 @@
           "shape":"TimeoutInSeconds",
           "documentation":"<p>The maximum allowed duration between two heartbeats for the task.</p>",
           "box":true
+        },
+        "taskCredentials":{
+          "shape":"TaskCredentials",
+          "documentation":"<p>The credentials that Step Functions uses for the task.</p>"
         }
       },
       "documentation":"<p>Contains details about a task scheduled during an execution.</p>"
@@ -2160,11 +2183,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "error":{
           "shape":"SensitiveError",
@@ -2186,11 +2209,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         }
       },
       "documentation":"<p>Contains details about the start of a task during an execution.</p>"
@@ -2204,11 +2227,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "error":{
           "shape":"SensitiveError",
@@ -2230,11 +2253,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "output":{
           "shape":"SensitiveData",
@@ -2256,11 +2279,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "output":{
           "shape":"SensitiveData",
@@ -2289,11 +2312,11 @@
       "members":{
         "resourceType":{
           "shape":"Name",
-          "documentation":"<p>The action of the resource called by a task state.</p>"
+          "documentation":"<p>The service name of the resource in a task state.</p>"
         },
         "resource":{
           "shape":"Name",
-          "documentation":"<p>The service name of the resource in a task state.</p>"
+          "documentation":"<p>The action of the resource called by a task state.</p>"
         },
         "error":{
           "shape":"SensitiveError",
@@ -2319,7 +2342,7 @@
         "message":{"shape":"ErrorMessage"},
         "resourceName":{"shape":"Arn"}
       },
-      "documentation":"<p>You've exceeded the number of tags allowed for a resource. See the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html\"> Limits Topic</a> in the AWS Step Functions Developer Guide.</p>",
+      "documentation":"<p>You've exceeded the number of tags allowed for a resource. See the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html\"> Limits Topic</a> in the Step Functions Developer Guide.</p>",
       "exception":true
     },
     "TraceHeader":{
@@ -2333,10 +2356,10 @@
       "members":{
         "enabled":{
           "shape":"Enabled",
-          "documentation":"<p>When set to <code>true</code>, AWS X-Ray tracing is enabled.</p>"
+          "documentation":"<p>When set to <code>true</code>, X-Ray tracing is enabled.</p>"
         }
       },
-      "documentation":"<p>Selects whether or not the state machine's AWS X-Ray tracing is enabled. Default is <code>false</code> </p>"
+      "documentation":"<p>Selects whether or not the state machine's X-Ray tracing is enabled. Default is <code>false</code> </p>"
     },
     "UnsignedInteger":{
       "type":"integer",
@@ -2386,7 +2409,7 @@
         },
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
-          "documentation":"<p>Selects whether AWS X-Ray tracing is enabled.</p>"
+          "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
         }
       }
     },
@@ -2403,5 +2426,5 @@
     "includedDetails":{"type":"boolean"},
     "truncated":{"type":"boolean"}
   },
-  "documentation":"<fullname>AWS Step Functions</fullname> <p>AWS Step Functions is a service that lets you coordinate the components of distributed applications and microservices using visual workflows.</p> <p>You can use Step Functions to build applications from individual components, each of which performs a discrete function, or <i>task</i>, allowing you to scale and change applications quickly. Step Functions provides a console that helps visualize the components of your application as a series of steps. Step Functions automatically triggers and tracks each step, and retries steps when there are errors, so your application executes predictably and in the right order every time. Step Functions logs the state of each step, so you can quickly diagnose and debug any issues.</p> <p>Step Functions manages operations and underlying infrastructure to ensure your application is available at any scale. You can run tasks on AWS, your own servers, or any system that has access to AWS. You can access and use Step Functions using the console, the AWS SDKs, or an HTTP API. For more information about Step Functions, see the <i> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html\">AWS Step Functions Developer Guide</a> </i>.</p>"
+  "documentation":"<fullname>Step Functions</fullname> <p>Step Functions is a service that lets you coordinate the components of distributed applications and microservices using visual workflows.</p> <p>You can use Step Functions to build applications from individual components, each of which performs a discrete function, or <i>task</i>, allowing you to scale and change applications quickly. Step Functions provides a console that helps visualize the components of your application as a series of steps. Step Functions automatically triggers and tracks each step, and retries steps when there are errors, so your application executes predictably and in the right order every time. Step Functions logs the state of each step, so you can quickly diagnose and debug any issues.</p> <p>Step Functions manages operations and underlying infrastructure to ensure your application is available at any scale. You can run tasks on Amazon Web Services, your own servers, or any system that has access to Amazon Web Services. You can access and use Step Functions using the console, the Amazon Web Services SDKs, or an HTTP API. For more information about Step Functions, see the <i> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html\">Step Functions Developer Guide</a> </i>.</p>"
 }

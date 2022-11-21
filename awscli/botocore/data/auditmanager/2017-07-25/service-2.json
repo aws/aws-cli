@@ -106,7 +106,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Uploads one or more pieces of evidence to a control in an Audit Manager assessment. </p>"
+      "documentation":"<p>Uploads one or more pieces of evidence to a control in an Audit Manager assessment. You can upload manual evidence from any Amazon Simple Storage Service (Amazon S3) bucket by specifying the S3 URI of the evidence. </p> <p>You must upload manual evidence to your S3 bucket before you can upload it to your assessment. For instructions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html\">CreateBucket</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html\">PutObject</a> in the <i>Amazon Simple Storage Service API Reference.</i> </p> <p>The following restrictions apply to this action:</p> <ul> <li> <p>Maximum size of an individual evidence file: 100 MB</p> </li> <li> <p>Number of daily manual evidence uploads per control: 100</p> </li> <li> <p>Supported file formats: See <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/upload-evidence.html#supported-manual-evidence-files\">Supported file types for manual evidence</a> in the <i>Audit Manager User Guide</i> </p> </li> </ul> <p>For more information about Audit Manager service restrictions, see <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/service-quotas.html\">Quotas and restrictions for Audit Manager</a>.</p>"
     },
     "CreateAssessment":{
       "name":"CreateAssessment",
@@ -285,7 +285,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Removes the specified Amazon Web Services account as a delegated administrator for Audit Manager. </p> <important> <p>When you remove a delegated administrator from your Audit Manager settings, you continue to have access to the evidence that you previously collected under that account. This is also the case when you deregister a delegated administrator from Organizations. However, Audit Manager will stop collecting and attaching evidence to that delegated administrator account moving forward.</p> </important> <note> <p>When you deregister a delegated administrator account for Audit Manager, the data for that account isn’t deleted. If you want to delete resource data for a delegated administrator account, you must perform that task separately before you deregister the account. Either, you can do this in the Audit Manager console. Or, you can use one of the delete API operations that are provided by Audit Manager. </p> <p>To delete your Audit Manager resource data, see the following instructions: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessment.html\">DeleteAssessment</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/delete-assessment.html\">Deleting an assessment</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessmentFramework.html\">DeleteAssessmentFramework</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/delete-custom-framework.html\">Deleting a custom framework</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessmentFrameworkShare.html\">DeleteAssessmentFrameworkShare</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/deleting-shared-framework-requests.html\">Deleting a share request</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessmentReport.html\">DeleteAssessmentReport</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/generate-assessment-report.html#delete-assessment-report-steps\">Deleting an assessment report</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteControl.html\">DeleteControl</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/delete-controls.html\">Deleting a custom control</a> in the <i>Audit Manager User Guide</i>)</p> </li> </ul> <p>At this time, Audit Manager doesn't provide an option to delete evidence. All available delete operations are listed above.</p> </note>"
+      "documentation":"<p>Removes the specified Amazon Web Services account as a delegated administrator for Audit Manager. </p> <p>When you remove a delegated administrator from your Audit Manager settings, you continue to have access to the evidence that you previously collected under that account. This is also the case when you deregister a delegated administrator from Organizations. However, Audit Manager will stop collecting and attaching evidence to that delegated administrator account moving forward.</p> <important> <p>Keep in mind the following cleanup task if you use evidence finder:</p> <p>Before you use your management account to remove a delegated administrator, make sure that the current delegated administrator account signs in to Audit Manager and disables evidence finder first. Disabling evidence finder automatically deletes the event data store that was created in their account when they enabled evidence finder. If this task isn’t completed, the event data store remains in their account. In this case, we recommend that the original delegated administrator goes to CloudTrail Lake and manually <a href=\"https://docs.aws.amazon.com/userguide/awscloudtrail/latest/userguide/query-eds-disable-termination.html\">deletes the event data store</a>.</p> <p>This cleanup task is necessary to ensure that you don't end up with multiple event data stores. Audit Manager will ignore an unused event data store after you remove or change a delegated administrator account. However, the unused event data store continues to incur storage costs from CloudTrail Lake if you don't delete it.</p> </important> <p>When you deregister a delegated administrator account for Audit Manager, the data for that account isn’t deleted. If you want to delete resource data for a delegated administrator account, you must perform that task separately before you deregister the account. Either, you can do this in the Audit Manager console. Or, you can use one of the delete API operations that are provided by Audit Manager. </p> <p>To delete your Audit Manager resource data, see the following instructions: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessment.html\">DeleteAssessment</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/delete-assessment.html\">Deleting an assessment</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessmentFramework.html\">DeleteAssessmentFramework</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/delete-custom-framework.html\">Deleting a custom framework</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessmentFrameworkShare.html\">DeleteAssessmentFrameworkShare</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/deleting-shared-framework-requests.html\">Deleting a share request</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteAssessmentReport.html\">DeleteAssessmentReport</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/generate-assessment-report.html#delete-assessment-report-steps\">Deleting an assessment report</a> in the <i>Audit Manager User Guide</i>)</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeleteControl.html\">DeleteControl</a> (see also: <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/delete-controls.html\">Deleting a custom control</a> in the <i>Audit Manager User Guide</i>)</p> </li> </ul> <p>At this time, Audit Manager doesn't provide an option to delete evidence. All available delete operations are listed above.</p>"
     },
     "DisassociateAssessmentReportEvidenceFolder":{
       "name":"DisassociateAssessmentReportEvidenceFolder",
@@ -550,7 +550,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns a list of the in-scope Amazon Web Services for the specified assessment. </p>"
+      "documentation":"<p>Returns a list of all of the Amazon Web Services that you can choose to include in your assessment. When you <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_CreateAssessment.html\">create an assessment</a>, specify which of these services you want to include to narrow the assessment's <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_Scope.html\">scope</a>.</p>"
     },
     "GetSettings":{
       "name":"GetSettings",
@@ -1576,14 +1576,14 @@
         },
         "errorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p> The error code that the <code>AssessmentReportEvidence</code> API returned. </p>"
+          "documentation":"<p> The error code that was returned. </p>"
         },
         "errorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p> The error message that the <code>AssessmentReportEvidence</code> API returned. </p>"
+          "documentation":"<p> The error message that was returned. </p>"
         }
       },
-      "documentation":"<p> An error entity for the <code>AssessmentReportEvidence</code> API. This is used to provide more meaningful errors than a simple string message. </p>"
+      "documentation":"<p> An error entity for assessment report evidence errors. This is used to provide more meaningful errors than a simple string message. </p>"
     },
     "AssessmentReportEvidenceErrors":{
       "type":"list",
@@ -1969,6 +1969,12 @@
       "type":"list",
       "member":{"shape":"ChangeLog"}
     },
+    "CloudTrailArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:.*:cloudtrail:.*"
+    },
     "ComplianceType":{
       "type":"string",
       "max":100,
@@ -2011,7 +2017,7 @@
         },
         "controlSources":{
           "shape":"ControlSources",
-          "documentation":"<p> The data source that determines where Audit Manager collects evidence from for the control. </p>"
+          "documentation":"<p> The data source types that determine where Audit Manager collects evidence from for the control. </p>"
         },
         "controlMappingSources":{
           "shape":"ControlMappingSources",
@@ -2416,6 +2422,10 @@
           "documentation":"<p> The identifier for the assessment. </p>",
           "location":"uri",
           "locationName":"assessmentId"
+        },
+        "queryStatement":{
+          "shape":"QueryStatement",
+          "documentation":"<p>A SQL statement that represents an evidence finder query.</p> <p>Provide this parameter when you want to generate an assessment report from the results of an evidence finder search query. When you use this parameter, Audit Manager generates a one-time report using only the evidence from the query output. This report does not include any assessment evidence that was manually <a href=\"https://docs.aws.amazon.com/userguide/generate-assessment-report.html#generate-assessment-report-include-evidence\">added to a report using the console</a>, or <a href=\"https://docs.aws.amazon.com/APIReference-evidenceFinder/API_BatchAssociateAssessmentReportEvidence.html\">associated with a report using the API</a>. </p> <p>To use this parameter, the <a href=\"https://docs.aws.amazon.com/APIReference-evidenceFinder/API_EvidenceFinderSetup.html#auditmanager-Type-EvidenceFinderSetup-enablementStatus\">enablementStatus</a> of evidence finder must be <code>ENABLED</code>. </p> <p> For examples and help resolving <code>queryStatement</code> validation exceptions, see <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/evidence-finder-issues.html#querystatement-exceptions\">Troubleshooting evidence finder issues</a> in the AWS Audit Manager User Guide. </p>"
         }
       }
     },
@@ -2916,7 +2926,7 @@
         },
         "complianceCheck":{
           "shape":"String",
-          "documentation":"<p> The evaluation status for evidence that falls under the compliance check category. For evidence collected from Security Hub, a <i>Pass</i> or <i>Fail</i> result is shown. For evidence collected from Config, a <i>Compliant</i> or <i>Noncompliant</i> result is shown. </p>"
+          "documentation":"<p>The evaluation status for automated evidence that falls under the compliance check category.</p> <ul> <li> <p>Audit Manager classes evidence as non-compliant if Security Hub reports a <i>Fail</i> result, or if Config reports a <i>Non-compliant</i> result.</p> </li> <li> <p>Audit Manager classes evidence as compliant if Security Hub reports a <i>Pass</i> result, or if Config reports a <i>Compliant</i> result.</p> </li> <li> <p>If a compliance check isn't available or applicable, then no compliance evaluation can be made for that evidence. This is the case if the evidence uses Config or Security Hub as the underlying data source type, but those services aren't enabled. This is also the case if the evidence uses an underlying data source type that doesn't support compliance checks (such as manual evidence, Amazon Web Services API calls, or CloudTrail). </p> </li> </ul>"
         },
         "awsOrganization":{
           "shape":"String",
@@ -2955,6 +2965,45 @@
       "type":"map",
       "key":{"shape":"EvidenceAttributeKey"},
       "value":{"shape":"EvidenceAttributeValue"}
+    },
+    "EvidenceFinderBackfillStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "COMPLETED"
+      ]
+    },
+    "EvidenceFinderEnablement":{
+      "type":"structure",
+      "members":{
+        "eventDataStoreArn":{
+          "shape":"CloudTrailArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudTrail Lake event data store that’s used by evidence finder. The event data store is the lake of evidence data that evidence finder runs queries against.</p>"
+        },
+        "enablementStatus":{
+          "shape":"EvidenceFinderEnablementStatus",
+          "documentation":"<p>The current status of the evidence finder feature and the related event data store. </p> <ul> <li> <p> <code>ENABLE_IN_PROGRESS</code> means that you requested to enable evidence finder. An event data store is currently being created to support evidence finder queries.</p> </li> <li> <p> <code>ENABLED</code> means that an event data store was successfully created and evidence finder is enabled. We recommend that you wait 24 hours until the event data store is backfilled with your past evidence data. You can use evidence finder in the meantime, but not all data might be available until the backfill is complete.</p> </li> <li> <p> <code>DISABLE_IN_PROGRESS</code> means that you requested to disable evidence finder, and your request is pending the deletion of the event data store.</p> </li> <li> <p> <code>DISABLED</code> means that you have permanently disabled evidence finder and the event data store has been deleted. You can't re-enable evidence finder after this point.</p> </li> </ul>"
+        },
+        "backfillStatus":{
+          "shape":"EvidenceFinderBackfillStatus",
+          "documentation":"<p>The current status of the evidence data backfill process. </p> <p>The backfill starts after you enable evidence finder. During this task, Audit Manager populates an event data store with your past evidence data so that your evidence can be queried.</p> <ul> <li> <p> <code>NOT_STARTED</code> means that the backfill hasn’t started yet. </p> </li> <li> <p> <code>IN_PROGRESS</code> means that the backfill is in progress. This can take up to 24 hours to complete, depending on the amount of evidence data. </p> </li> <li> <p> <code>COMPLETED</code> means that the backfill is complete. All of your past evidence is now queryable. </p> </li> </ul>"
+        },
+        "error":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Represents any errors that occurred when enabling or disabling evidence finder. </p>"
+        }
+      },
+      "documentation":"<p>The settings object that specifies whether evidence finder is enabled. This object also describes the related event data store, and the backfill status for populating the event data store with evidence data.</p>"
+    },
+    "EvidenceFinderEnablementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "ENABLE_IN_PROGRESS",
+        "DISABLE_IN_PROGRESS"
+      ]
     },
     "EvidenceIds":{
       "type":"list",
@@ -4214,6 +4263,12 @@
         "ASSESSMENT_REPORT"
       ]
     },
+    "QueryStatement":{
+      "type":"string",
+      "max":10000,
+      "min":1,
+      "pattern":"(?s).*"
+    },
     "Region":{
       "type":"string",
       "pattern":"^[a-z]{2}-[a-z]+-[0-9]{1}$"
@@ -4273,6 +4328,10 @@
         "value":{
           "shape":"String",
           "documentation":"<p> The value of the resource. </p>"
+        },
+        "complianceCheck":{
+          "shape":"String",
+          "documentation":"<p> The evaluation status for a resource that was assessed when collecting compliance check evidence. </p> <ul> <li> <p>Audit Manager classes the resource as non-compliant if Security Hub reports a <i>Fail</i> result, or if Config reports a <i>Non-compliant</i> result.</p> </li> <li> <p>Audit Manager classes the resource as compliant if Security Hub reports a <i>Pass</i> result, or if Config reports a <i>Compliant</i> result.</p> </li> <li> <p>If a compliance check isn't available or applicable, then no compliance evaluation can be made for that resource. This is the case if a resource assessment uses Config or Security Hub as the underlying data source type, but those services aren't enabled. This is also the case if the resource assessment uses an underlying data source type that doesn't support compliance checks (such as manual evidence, Amazon Web Services API calls, or CloudTrail). </p> </li> </ul>"
         }
       },
       "documentation":"<p> A system asset that's evaluated in an Audit Manager assessment. </p>"
@@ -4401,7 +4460,8 @@
         "IS_AWS_ORG_ENABLED",
         "SNS_TOPIC",
         "DEFAULT_ASSESSMENT_REPORTS_DESTINATION",
-        "DEFAULT_PROCESS_OWNERS"
+        "DEFAULT_PROCESS_OWNERS",
+        "EVIDENCE_FINDER_ENABLEMENT"
       ]
     },
     "Settings":{
@@ -4426,6 +4486,10 @@
         "kmsKey":{
           "shape":"KmsKey",
           "documentation":"<p> The KMS key details. </p>"
+        },
+        "evidenceFinderEnablement":{
+          "shape":"EvidenceFinderEnablement",
+          "documentation":"<p>The current evidence finder status and event data store details.</p>"
         }
       },
       "documentation":"<p> The settings object that holds all supported Audit Manager settings. </p>"
@@ -4491,7 +4555,7 @@
         },
         "keywordValue":{
           "shape":"KeywordValue",
-          "documentation":"<p> The value of the keyword that's used when mapping a control data source. For example, this can be a CloudTrail event name, a rule name for Config, a Security Hub control, or the name of an Amazon Web Services API call. </p> <p>If you’re mapping a data source to a rule in Config, the <code>keywordValue</code> that you specify depends on the type of rule:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html\">managed rules</a>, you can use the rule identifier as the <code>keywordValue</code>. You can find the rule identifier from the <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">list of Config managed rules</a>.</p> <ul> <li> <p>Managed rule name: <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-acl-prohibited.html\">s3-bucket-acl-prohibited</a> </p> <p> <code>keywordValue</code>: <code>S3_BUCKET_ACL_PROHIBITED</code> </p> </li> </ul> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html\">custom rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. This prefix distinguishes the rule from a managed rule.</p> <ul> <li> <p>Custom rule name: my-custom-config-rule</p> <p> <code>keywordValue</code>: <code>Custom_my-custom-config-rule</code> </p> </li> </ul> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/service-linked-awsconfig-rules.html\">service-linked rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. In addition, you remove the suffix ID that appears at the end of the rule name.</p> <ul> <li> <p>Service-linked rule name: CustomRuleForAccount-conformance-pack-szsm1uv0w</p> <p> <code>keywordValue</code>: <code>Custom_CustomRuleForAccount-conformance-pack</code> </p> </li> <li> <p>Service-linked rule name: securityhub-api-gw-cache-encrypted-101104e1</p> <p> <code>keywordValue</code>: <code>Custom_securityhub-api-gw-cache-encrypted</code> </p> </li> <li> <p>Service-linked rule name: OrgConfigRule-s3-bucket-versioning-enabled-dbgzf8ba</p> <p> <code>keywordValue</code>: <code>Custom_OrgConfigRule-s3-bucket-versioning-enabled</code> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p> The value of the keyword that's used when mapping a control data source. For example, this can be a CloudTrail event name, a rule name for Config, a Security Hub control, or the name of an Amazon Web Services API call. </p> <p>If you’re mapping a data source to a rule in Config, the <code>keywordValue</code> that you specify depends on the type of rule:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html\">managed rules</a>, you can use the rule identifier as the <code>keywordValue</code>. You can find the rule identifier from the <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">list of Config managed rules</a>.</p> <ul> <li> <p>Managed rule name: <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-acl-prohibited.html\">s3-bucket-acl-prohibited</a> </p> <p> <code>keywordValue</code>: <code>S3_BUCKET_ACL_PROHIBITED</code> </p> </li> </ul> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html\">custom rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. This prefix distinguishes the rule from a managed rule.</p> <ul> <li> <p>Custom rule name: my-custom-config-rule</p> <p> <code>keywordValue</code>: <code>Custom_my-custom-config-rule</code> </p> </li> </ul> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/service-linked-awsconfig-rules.html\">service-linked rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. In addition, you remove the suffix ID that appears at the end of the rule name.</p> <ul> <li> <p>Service-linked rule name: CustomRuleForAccount-conformance-pack-szsm1uv0w</p> <p> <code>keywordValue</code>: <code>Custom_CustomRuleForAccount-conformance-pack</code> </p> </li> <li> <p>Service-linked rule name: OrgConfigRule-s3-bucket-versioning-enabled-dbgzf8ba</p> <p> <code>keywordValue</code>: <code>Custom_OrgConfigRule-s3-bucket-versioning-enabled</code> </p> </li> </ul> </li> </ul>"
         }
       },
       "documentation":"<p> The keyword to search for in CloudTrail logs, Config rules, Security Hub checks, and Amazon Web Services API names. </p> <p> To learn more about the supported keywords that you can use when mapping a control data source, see the following pages in the <i>Audit Manager User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/control-data-sources-ash.html\">Config rules supported by Audit Manager</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/control-data-sources-config.html\">Security Hub controls supported by Audit Manager</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/control-data-sources-api.html\">API calls supported by Audit Manager</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/audit-manager/latest/userguide/control-data-sources-cloudtrail.html\">CloudTrail event names supported by Audit Manager</a> </p> </li> </ul>"
@@ -5014,6 +5078,10 @@
         "kmsKey":{
           "shape":"KmsKey",
           "documentation":"<p> The KMS key details. </p>"
+        },
+        "evidenceFinderEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the evidence finder feature is enabled. Change this attribute to enable or disable evidence finder.</p> <important> <p>When you use this attribute to disable evidence finder, Audit Manager deletes the event data store that’s used to query your evidence data. As a result, you can’t re-enable evidence finder and use the feature again. Your only alternative is to <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeregisterAccount.html\">deregister</a> and then <a href=\"https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_RegisterAccount.html\">re-register</a> Audit Manager. </p> <p>Disabling evidence finder is permanent, so consider this decision carefully before you proceed. If you’re using Audit Manager as a delegated administrator, keep in mind that this action applies to all member accounts in your organization.</p> </important>"
         }
       }
     },

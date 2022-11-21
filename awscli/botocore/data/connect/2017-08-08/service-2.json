@@ -2991,6 +2991,12 @@
       "max":100,
       "min":1
     },
+    "AllowedAccessControlTags":{
+      "type":"map",
+      "key":{"shape":"SecurityProfilePolicyKey"},
+      "value":{"shape":"SecurityProfilePolicyValue"},
+      "max":2
+    },
     "AllowedMonitorCapabilities":{
       "type":"list",
       "member":{"shape":"MonitorCapability"},
@@ -4335,6 +4341,12 @@
         }
       }
     },
+    "CreateSecurityProfileName":{
+      "type":"string",
+      "max":127,
+      "min":1,
+      "pattern":"^[ a-zA-Z0-9_@-]+$"
+    },
     "CreateSecurityProfileRequest":{
       "type":"structure",
       "required":[
@@ -4343,7 +4355,7 @@
       ],
       "members":{
         "SecurityProfileName":{
-          "shape":"SecurityProfileName",
+          "shape":"CreateSecurityProfileName",
           "documentation":"<p>The name of the security profile.</p>"
         },
         "Description":{
@@ -4363,6 +4375,14 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "AllowedAccessControlTags":{
+          "shape":"AllowedAccessControlTags",
+          "documentation":"<p>The list of tags that a security profile uses to restrict access to resources in Amazon Connect.</p>"
+        },
+        "TagRestrictedResources":{
+          "shape":"TagRestrictedResourceList",
+          "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect.</p>"
         }
       }
     },
@@ -10453,6 +10473,14 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "AllowedAccessControlTags":{
+          "shape":"AllowedAccessControlTags",
+          "documentation":"<p>The list of tags that a security profile uses to restrict access to resources in Amazon Connect.</p>"
+        },
+        "TagRestrictedResources":{
+          "shape":"TagRestrictedResourceList",
+          "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect.</p>"
         }
       },
       "documentation":"<p>Contains information about a security profile.</p>"
@@ -10473,6 +10501,15 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "SecurityProfilePolicyKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SecurityProfilePolicyValue":{
+      "type":"string",
+      "max":256
     },
     "SecurityProfileSearchConditionList":{
       "type":"list",
@@ -11074,6 +11111,16 @@
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       }
+    },
+    "TagRestrictedResourceList":{
+      "type":"list",
+      "member":{"shape":"TagRestrictedResourceName"},
+      "max":10
+    },
+    "TagRestrictedResourceName":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "TagValue":{
       "type":"string",
@@ -12237,6 +12284,14 @@
           "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
+        },
+        "AllowedAccessControlTags":{
+          "shape":"AllowedAccessControlTags",
+          "documentation":"<p>The list of tags that a security profile uses to restrict access to resources in Amazon Connect.</p>"
+        },
+        "TagRestrictedResources":{
+          "shape":"TagRestrictedResourceList",
+          "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect.</p>"
         }
       }
     },

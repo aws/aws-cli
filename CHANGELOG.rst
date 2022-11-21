@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.27.14
+=======
+
+* api-change:``route53``: Amazon Route 53 now supports the Asia Pacific (Hyderabad) Region (ap-south-2) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+
+
 1.27.13
 =======
 

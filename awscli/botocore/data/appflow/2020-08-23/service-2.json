@@ -683,6 +683,11 @@
       "pattern":"\\S+",
       "sensitive":true
     },
+    "ClusterIdentifier":{
+      "type":"string",
+      "max":512,
+      "pattern":"\\S+"
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -1213,10 +1218,7 @@
     },
     "ConnectorProfileConfig":{
       "type":"structure",
-      "required":[
-        "connectorProfileProperties",
-        "connectorProfileCredentials"
-      ],
+      "required":["connectorProfileProperties"],
       "members":{
         "connectorProfileProperties":{
           "shape":"ConnectorProfileProperties",
@@ -1802,12 +1804,22 @@
       },
       "documentation":"<p> The connector metadata specific to Amazon Connect Customer Profiles. </p>"
     },
+    "DataApiRoleArn":{
+      "type":"string",
+      "max":512,
+      "pattern":"arn:aws:iam:.*:[0-9]+:.*"
+    },
     "DataPullMode":{
       "type":"string",
       "enum":[
         "Incremental",
         "Complete"
       ]
+    },
+    "DatabaseName":{
+      "type":"string",
+      "max":512,
+      "pattern":"\\S+"
     },
     "DatabaseUrl":{
       "type":"string",
@@ -3667,13 +3679,9 @@
     },
     "RedshiftConnectorProfileCredentials":{
       "type":"structure",
-      "required":[
-        "username",
-        "password"
-      ],
       "members":{
         "username":{
-          "shape":"Username",
+          "shape":"String",
           "documentation":"<p> The name of the user. </p>"
         },
         "password":{
@@ -3686,7 +3694,6 @@
     "RedshiftConnectorProfileProperties":{
       "type":"structure",
       "required":[
-        "databaseUrl",
         "bucketName",
         "roleArn"
       ],
@@ -3705,7 +3712,27 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of IAM role that grants Amazon Redshift read-only access to Amazon S3. For more information, and for the polices that you attach to this role, see <a href=\"https://docs.aws.amazon.com/appflow/latest/userguide/security_iam_service-role-policies.html#redshift-access-s3\">Allow Amazon Redshift to access your Amazon AppFlow data in Amazon S3</a>.</p>"
+        },
+        "dataApiRoleArn":{
+          "shape":"DataApiRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that permits Amazon AppFlow to access your Amazon Redshift database through the Data API. For more information, and for the polices that you attach to this role, see <a href=\"https://docs.aws.amazon.com/appflow/latest/userguide/security_iam_service-role-policies.html#access-redshift\">Allow Amazon AppFlow to access Amazon Redshift databases with the Data API</a>.</p>"
+        },
+        "isRedshiftServerless":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the connector profile defines a connection to an Amazon Redshift Serverless data warehouse.</p>"
+        },
+        "clusterIdentifier":{
+          "shape":"ClusterIdentifier",
+          "documentation":"<p>The unique ID that's assigned to an Amazon Redshift cluster.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of an Amazon Redshift workgroup.</p>"
+        },
+        "databaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p>The name of an Amazon Redshift database.</p>"
         }
       },
       "documentation":"<p> The connector-specific profile properties when using Amazon Redshift. </p>"
@@ -5318,6 +5345,11 @@
       "type":"string",
       "max":512,
       "pattern":"[\\s\\w/!@#+=.-]*"
+    },
+    "WorkgroupName":{
+      "type":"string",
+      "max":512,
+      "pattern":"\\S+"
     },
     "WriteOperationType":{
       "type":"string",

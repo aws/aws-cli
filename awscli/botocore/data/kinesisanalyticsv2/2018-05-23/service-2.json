@@ -151,7 +151,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidArgumentException"}
       ],
-      "documentation":"<p>Creates and returns a URL that you can use to connect to an application's extension. Currently, the only available extension is the Apache Flink dashboard.</p> <p>The IAM role or user used to call this API defines the permissions to access the extension. After the presigned URL is created, no additional permission is required to access this URL. IAM authorization policies for this API are also enforced for every HTTP request that attempts to connect to the extension. </p> <p>You control the amount of time that the URL will be valid using the <code>SessionExpirationDurationInSeconds</code> parameter. If you do not provide this parameter, the returned URL is valid for twelve hours.</p> <note> <p>The URL that you get from a call to CreateApplicationPresignedUrl must be used within 3 minutes to be valid. If you first try to use the URL after the 3-minute limit expires, the service returns an HTTP 403 Forbidden error.</p> </note>"
+      "documentation":"<p>Creates and returns a URL that you can use to connect to an application's extension.</p> <p>The IAM role or user used to call this API defines the permissions to access the extension. After the presigned URL is created, no additional permission is required to access this URL. IAM authorization policies for this API are also enforced for every HTTP request that attempts to connect to the extension. </p> <p>You control the amount of time that the URL will be valid using the <code>SessionExpirationDurationInSeconds</code> parameter. If you do not provide this parameter, the returned URL is valid for twelve hours.</p> <note> <p>The URL that you get from a call to CreateApplicationPresignedUrl must be used within 3 minutes to be valid. If you first try to use the URL after the 3-minute limit expires, the service returns an HTTP 403 Forbidden error.</p> </note>"
     },
     "CreateApplicationSnapshot":{
       "name":"CreateApplicationSnapshot",
@@ -272,7 +272,8 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"UnsupportedOperationException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes a snapshot of application state.</p>"
     },
@@ -967,7 +968,7 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p>The runtime environment for the application (<code>SQL-1_0</code>, <code>FLINK-1_6</code>, <code>FLINK-1_8</code>, or <code>FLINK-1_11</code>).</p>"
+          "documentation":"<p>The runtime environment for the application.</p>"
         },
         "ServiceExecutionRole":{
           "shape":"RoleARN",
@@ -1574,7 +1575,7 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p>The runtime environment for the application (<code>SQL-1_0</code>, <code>FLINK-1_6</code>, <code>FLINK-1_8</code>, or <code>FLINK-1_11</code>).</p>"
+          "documentation":"<p>The runtime environment for the application.</p>"
         },
         "ServiceExecutionRole":{
           "shape":"RoleARN",
@@ -1594,7 +1595,7 @@
         },
         "ApplicationMode":{
           "shape":"ApplicationMode",
-          "documentation":"<p>Use the <code>STREAMING</code> mode to create a Kinesis Data Analytics Studio notebook. To create a Kinesis Data Analytics Studio notebook, use the <code>INTERACTIVE</code> mode.</p>"
+          "documentation":"<p>Use the <code>STREAMING</code> mode to create a Kinesis Data Analytics For Flink application. To create a Kinesis Data Analytics Studio notebook, use the <code>INTERACTIVE</code> mode.</p>"
         }
       }
     },
@@ -3520,7 +3521,8 @@
         "ZEPPELIN-FLINK-1_0",
         "FLINK-1_11",
         "FLINK-1_13",
-        "ZEPPELIN-FLINK-2_0"
+        "ZEPPELIN-FLINK-2_0",
+        "FLINK-1_15"
       ]
     },
     "S3ApplicationCodeLocationDescription":{
